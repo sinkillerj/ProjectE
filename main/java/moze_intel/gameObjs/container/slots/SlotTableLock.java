@@ -1,0 +1,51 @@
+package moze_intel.gameObjs.container.slots;
+
+import moze_intel.gameObjs.tiles.TransmuteTile;
+import moze_intel.utils.Utils;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+public class SlotTableLock extends Slot
+{
+	private TransmuteTile tile;
+	
+	public SlotTableLock(TransmuteTile tile, int par2, int par3, int par4) 
+	{
+		super(tile, par2, par3, par4);
+		this.tile = tile;
+	}
+	
+	@Override
+	public boolean isItemValid(ItemStack stack)
+	{
+		return Utils.DoesItemHaveEmc(stack);
+	}
+	
+	@Override
+	public void putStack(ItemStack stack)
+	{
+		if (stack == null)
+		{
+			return;
+		}
+		
+		super.putStack(stack);
+		
+		tile.handleKnowledge(stack.copy());
+	}
+	
+	@Override
+	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
+	{
+		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
+		
+		tile.updateOutputs();
+	}
+	
+	@Override
+	public int getSlotStackLimit()
+    {
+		return 1;
+    }
+}

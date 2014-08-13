@@ -1,0 +1,94 @@
+package moze_intel.gameObjs.blocks;
+
+import java.util.List;
+
+import moze_intel.gameObjs.ObjHandler;
+import moze_intel.gameObjs.items.tools.DarkPickaxe;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class MatterBlock extends Block
+{
+	@SideOnly(Side.CLIENT)
+	private IIcon dmIcon;
+	@SideOnly(Side.CLIENT)
+	private IIcon rmIcon;
+	
+	public MatterBlock() 
+	{
+		super(Material.iron);
+		this.setCreativeTab(ObjHandler.cTab);
+	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0) 
+		{
+			return 1000000.0F;
+		}
+		else
+		{
+			return 2000000.0F;
+		}
+	}
+	
+	@Override
+	public boolean canHarvestBlock(EntityPlayer player, int meta)
+    {
+		ItemStack stack = player.getHeldItem();
+		
+		if (stack != null)
+		{
+			return stack.getItem() instanceof DarkPickaxe;
+		}
+		
+        return false;
+    }
+	
+	@Override
+	public int damageDropped(int meta)
+    {
+        return meta;
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	{
+		for (int i = 0; i <= 1; i++)
+		{
+			list.add(new ItemStack(item , 1, i));
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister register)
+	{
+		dmIcon = register.registerIcon("projecte:dm");
+		rmIcon = register.registerIcon("projecte:rm");
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta)
+	{
+		if (meta == 0) 
+		{
+			return dmIcon;
+		}
+		else return rmIcon;
+	}
+	
+}
