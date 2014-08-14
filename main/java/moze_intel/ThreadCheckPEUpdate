@@ -1,0 +1,35 @@
+package moze_intel;
+
+import java.io.*;
+import java.net.*;
+
+/**
+*	Checks for updates and notifies the server if an update is available.
+*	@author condorcraft110
+*/
+public class ThreadCheckPEUpdate extends Thread
+{
+	public void run()
+	{
+		// May be typos and/or errors, I'm using GitHub's text editor instead of Eclipse
+		try
+		{
+			URLConnection connection = new URL("http://files.condorcraft110.net/moze/pecv.txt").openConnection();
+			connection.connect();
+			
+			Scanner scanner = new Scanner(connection.getInputStream());
+			String version = scanner.nextLine();
+			
+			scanner.close();
+			connection.close();
+			
+			if(!version.equals(MozeCore.VERSION))
+				MozeCore.logger.logInfo("An update is available for Project E (version " + version + "). You have version " + MozeCore.VERSION + " installed.");
+				// TODO send message to player as well
+		}
+		catch(Exception e)
+		{
+			// TODO handle exception
+		}
+	}
+}
