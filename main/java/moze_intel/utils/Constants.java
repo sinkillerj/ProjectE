@@ -1,6 +1,8 @@
 package moze_intel.utils;
 
-import moze_intel.EMC.ItemStackMap;
+import java.util.LinkedHashMap;
+
+import moze_intel.EMC.IStack;
 import moze_intel.gameObjs.ObjHandler;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -8,25 +10,25 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class Constants 
 {
-	public static ItemStackMap<ItemStack, Integer> fuelMap;
+	public static final LinkedHashMap<IStack, Integer> FUEL_MAP = new LinkedHashMap(); 
 	
 	public static final float PLAYER_WALK_SPEED = 0.1F;
 	
-	public static final int[] kleinStarsMaxEMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
-	public static final int[] relayKleinChargeRate = new int[] {16, 48, 160};
-	public static final float[] collectorLightVal = new float[] {0.4375F, 0.6875F, 1.0F};
+	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
+	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
+	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
 	
-	public static final float[] explosiveLensRadius = new float[] {4.0F, 8.0F, 12.0F, 16.0F};
-	public static final int[] explosiveLensCots = new int[] {384, 768, 1536, 2304};
+	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F};
+	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304};
 	
-	public static final int tileEmcConsumerMaxEmc = 1073741824;
+	public static final int TILE_MAX_EMC = 1073741824;
 	
-	public static final int collectorMK1Max = 10000;
-	public static final int collectorMK2Max = 30000;
-	public static final int collectorMK3Max = 60000;
-	public static final int collectorMk1Gen = 4;
-	public static final int collectorMK2Gen = 12;
-	public static final int collectorMK3Gen = 40;
+	public static final int COLLECTOR_MK1_MAX = 10000;
+	public static final int COLLECTOR_MK2_MAX = 30000;
+	public static final int COLLECTOR_MK3_MAX = 60000;
+	public static final int COLLECTOR_MK1_GEN = 4;
+	public static final int COLLECTOR_MK2_GEN = 12;
+	public static final int COLLECTOR_MK3_GEN = 40;
 	
 	public static final int RELAY_MK1_OUTPUT = 64;
 	public static final int RELAY_MK2_OUTPUT = 192;
@@ -36,48 +38,42 @@ public class Constants
 	public static final int RELAY_MK2_MAX = 1000000;
 	public static final int RELAY_MK3_MAX = 10000000;
 	
-	public static final int alchemicalCoalEmc = 512;
-	public static final int mobiusFuelEmc = 2048;
-	public static final int aeternalisFuelEmc = 8192;
+	public static final int COAL_BURN_TIME = 1600;
+	public static final int ALCH_BURN_TIME = COAL_BURN_TIME * 4;
+	public static final int MOBIUS_BURN_TIME = ALCH_BURN_TIME * 4;
+	public static final int AETERNALIS_BUR_TIME = MOBIUS_BURN_TIME * 4;
 	
-	public static final int coalBurnTime = 1600;
-	public static final int alchemicalCoalBurnTime = coalBurnTime * 4;
-	public static final int mobiusFuelBurnTime = alchemicalCoalBurnTime * 4;
-	public static final int aeternalisFuelBurnTime = mobiusFuelBurnTime * 4;
+	public static final int ALCH_CHEST_GUI = 0;
+	public static final int ALCH_BAG_GUI = 1;
+	public static final int TRANSMUTE_STONE_GUI = 2;
+	public static final int CONDENSER_GUI = 3;
+	public static final int RM_FURNACE_GUI = 4;
+	public static final int DM_FURNACE_GUI = 5;
+	public static final int COLLECTOR1_GUI = 6;
+	public static final int COLLECTOR2_GUI = 7;
+	public static final int COLLECTOR3_GUI = 8;
+	public static final int RELAY1_GUI = 9;
+	public static final int RELAY2_GUI = 10;
+	public static final int RELAY3_GUI = 11;
+	public static final int MERCURIAL_GUI = 12;
 	
-	public static final int alchChestGUI = 0;
-	public static final int alchBagGUI = 1;
-	public static final int transmStoneGUI = 2;
-	public static final int condenserGUI = 3;
-	public static final int rmFurnaceGUI = 4;
-	public static final int dmFurnaceGUI = 5;
-	public static final int collectorMK1GUI = 6;
-	public static final int collectorMK2GUI = 7;
-	public static final int collectorMK3GUI = 8;
-	public static final int relayMK1GUI = 9;
-	public static final int relayMK2GUI = 10;
-	public static final int relayMK3GUI = 11;
-	public static final int mercurialEyeGUI = 12;
+	public static final int MAX_CONDENSER_PROGRESS = 102;
 	
-	public static final int maxCondenserProgress = 102;
-	
-	public static final int chestRenderID = RenderingRegistry.getNextAvailableRenderId();
-	public static final int condenserRenderID = RenderingRegistry.getNextAvailableRenderId();
+	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	public static final int MAX_VEIN_SIZE = 250;
 	
 	public static void init()
 	{
-		fuelMap = new ItemStackMap();
-		fuelMap.put(new ItemStack(Items.coal, 1, 1), 32);
-		fuelMap.put(new ItemStack(Items.redstone), 64);
-		fuelMap.put(new ItemStack(Items.coal), 128);
-		fuelMap.put(new ItemStack(Items.gunpowder), 192);
-		fuelMap.put(new ItemStack(Items.glowstone_dust), 384);
-		fuelMap.put(new ItemStack(ObjHandler.fuels, 1, 0), 512);
-		fuelMap.put(new ItemStack(Items.blaze_powder), 768);
-		//fuelMap.put(new ItemStack(Blocks.glowstone), 1536);
-		fuelMap.put(new ItemStack(ObjHandler.fuels, 1, 1), 2048);
-		fuelMap.put(new ItemStack(ObjHandler.fuels, 1, 2), 8192);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.coal, 1, 1)), 32);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.redstone)), 64);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.coal)), 128);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.gunpowder)), 192);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.glowstone_dust)), 384);
+		FUEL_MAP.put(new IStack(new ItemStack(Items.blaze_powder)), 768);
+		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 0)), 512);
+		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 1)), 2048);
+		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 2)), 8192);
 	}
 }

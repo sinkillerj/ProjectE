@@ -45,7 +45,7 @@ public class KleinStar extends ItemBase
 			return 1.0D;
 		}
 		
-		return 1.0D - starEmc / (double)Utils.GetKleinStarMaxEmc(stack);
+		return 1.0D - starEmc / (double)Utils.getKleinStarMaxEmc(stack);
     }
 
 	

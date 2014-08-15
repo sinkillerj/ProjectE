@@ -38,7 +38,7 @@ public class BlackHoleBand extends RingToggle
 		AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		for (EntityItem item : itemList)
-			if (Utils.HasSpace(player.inventory.mainInventory, item.getEntityItem())) 
+			if (Utils.hasSpace(player.inventory.mainInventory, item.getEntityItem())) 
 			{
 				item.delayBeforeCanPickup = 0;
 				double d1 = (player.posX - item.posX);

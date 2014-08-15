@@ -33,8 +33,11 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
 			byte slot = subNBT.getByte("Slot");
+			
 			if (slot >= 0 && slot < 104)
+			{
 				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
+			}
 		}	
 	}
 	
@@ -45,7 +48,11 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < 104; i++)
 		{
-			if (inventory[i] == null) continue;
+			if (inventory[i] == null) 
+			{
+				continue;
+			}
+			
 			NBTTagCompound subNBT = new NBTTagCompound();
 			subNBT.setByte("Slot", (byte) i);
 			inventory[i].writeToNBT(subNBT);
@@ -73,7 +80,9 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 		if (stack != null)
 		{
 			if (stack.stackSize <= qnt)
+			{
 				inventory[slot] = null;
+			}
 			else
 			{
 				stack = stack.splitStack(qnt);
@@ -100,8 +109,12 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 	public void setInventorySlotContents(int slot, ItemStack stack) 
 	{
 		inventory[slot] = stack;
+		
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+		{
 			stack.stackSize = this.getInventoryStackLimit();
+		}
+		
 		this.markDirty();
 	}
 
@@ -186,12 +199,12 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 			{
 				ItemStack current = inventory[i];
 				
-				if (current == null || Utils.AreItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
+				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
 				{
 					continue;
 				}
 						
-				if (Utils.DoesItemHaveEmc(current) && current.getMaxStackSize() > 1)
+				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
 				{
 					gem.consumeItem(gemDensity, current, this, i);
 					break;

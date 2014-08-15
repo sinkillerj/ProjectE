@@ -1,7 +1,9 @@
 package moze_intel.gameObjs.tiles;
 
+import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
+import moze_intel.network.packets.RelaySyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class RelayMK1Tile extends TileEmcProducer implements IInventory
 {
@@ -16,6 +19,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	private int invBufferSize;
 	private final int chargeRate;
 	public int displayEmc;
+	private int numUsing;
 	
 	public RelayMK1Tile()
 	{
@@ -38,10 +42,14 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	@Override
 	public void updateEntity()
 	{	
-		if (worldObj.isRemote) return;
-		this.CheckSurroundingBlocks(true);
+		if (worldObj.isRemote) 
+		{
+			return;
+		}
 		
-		SendEmc();
+		this.checkSurroundingBlocks(true);
+		
+		sendEmc();
 		sortInventory();
 		
 		ItemStack stack = inventory[0];
@@ -56,19 +64,19 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 					emcVal = chargeRate;
 				}
 			
-				if (emcVal > 0 && this.GetStoredEMC() + emcVal <= this.GetMaxEmc())
+				if (emcVal > 0 && this.getStoredEMC() + emcVal <= this.getMaxEmc())
 				{
-					this.AddEmc(emcVal);
+					this.addEmc(emcVal);
 					ItemBase.removeEmc(stack, emcVal);
 				}
 			}
 			else
 			{
-				int emcVal = Utils.GetEmcValue(stack);
+				int emcVal = Utils.getEmcValue(stack);
 				
-				if (emcVal > 0 && (this.GetStoredEMC() + emcVal) <= this.GetMaxEmc())
+				if (emcVal > 0 && (this.getStoredEMC() + emcVal) <= this.getMaxEmc())
 				{
-					this.AddEmc(emcVal);
+					this.addEmc(emcVal);
 					decrStackSize(0, 1);
 				}
 			}
@@ -76,30 +84,36 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		
 		ItemStack star = inventory[getSizeInventory() - 1]; 
 		
-		if (star != null && this.GetStoredEMC() > 0 && star.getItem().equals(ObjHandler.kleinStars))
+		if (star != null && this.getStoredEMC() > 0 && star.getItem().equals(ObjHandler.kleinStars))
 		{
 			chargeKleinStars(star);
 		}
 		
-		displayEmc = (int) this.GetStoredEMC();
+		displayEmc = (int) this.getStoredEMC();
+		
+		if (numUsing > 0)
+		{
+			MozeCore.pktHandler.sendToAllAround(new RelaySyncPKT(displayEmc, this.xCoord, this.yCoord, this.zCoord),
+					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+		}
 	}
 	
-	private void SendEmc()
+	private void sendEmc()
 	{
-		if (this.GetStoredEMC() == 0) return;
+		if (this.getStoredEMC() == 0) return;
 		
-		int numRequesting = this.GetNumRequesting();
+		int numRequesting = this.getNumRequesting();
 		if (numRequesting == 0) return;
 		
-		if (this.GetStoredEMC() <= chargeRate)
+		if (this.getStoredEMC() <= chargeRate)
 		{
-			this.SendEmcToRequesting(this.GetStoredEMC() / numRequesting);
-			this.SetEmcValue(0);
+			this.sendEmcToRequesting(this.getStoredEMC() / numRequesting);
+			this.setEmcValue(0);
 		}
 		else 
 		{
-			this.SendEmcToRequesting(chargeRate / numRequesting);
-			this.RemoveEmc(chargeRate);
+			this.sendEmcToRequesting(chargeRate / numRequesting);
+			this.removeEmc(chargeRate);
 		}
 	}
 	
@@ -124,7 +138,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 				inventory[i] = null;
 				break;
 			}
-			else if (Utils.AreItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
+			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
 				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 				
@@ -147,32 +161,32 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	private void chargeKleinStars(ItemStack star)
 	{
 		double starEmc = ItemBase.getEmc(star);
-		int maxStarEmc = Utils.GetKleinStarMaxEmc(star);
-		double toSend = this.GetStoredEMC() < chargeRate ? this.GetStoredEMC() : chargeRate;
+		int maxStarEmc = Utils.getKleinStarMaxEmc(star);
+		double toSend = this.getStoredEMC() < chargeRate ? this.getStoredEMC() : chargeRate;
 			
 		if ((starEmc + toSend) <= maxStarEmc)
 		{
 			ItemBase.addEmc(star, toSend);
-			this.RemoveEmc(toSend);
+			this.removeEmc(toSend);
 		}
 		else
 		{
 			toSend = maxStarEmc - starEmc;
 			ItemBase.addEmc(star, toSend);
-			this.RemoveEmc(toSend);
+			this.removeEmc(toSend);
 		}
 	}
 	
-	public int GetEmcScaled(int i)
+	public int getEmcScaled(int i)
 	{
-		return displayEmc * i / this.GetMaxEmc();
+		return displayEmc * i / this.getMaxEmc();
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.SetEmcValue(nbt.getDouble("EMC"));
+		this.setEmcValue(nbt.getDouble("EMC"));
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
 		inventory = new ItemStack[getSizeInventory()];
@@ -189,7 +203,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.GetStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEMC());
 		
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); i++)
@@ -281,13 +295,13 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	@Override
 	public void openInventory() 
 	{
-		
+		numUsing++;
 	}
 
 	@Override
 	public void closeInventory() 
 	{
-		
+		numUsing--;
 	}
 
 	@Override

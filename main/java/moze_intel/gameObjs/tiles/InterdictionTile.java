@@ -17,11 +17,6 @@ public class InterdictionTile extends TileEntity
 	
 	public void updateEntity()
 	{
-		/*if (worldObj.isRemote) 
-		{
-			return;
-		}*/
-		
 		if (bBox == null)
 		{
 			bBox = AxisAlignedBB.getBoundingBox(xCoord - 8, yCoord - 8, zCoord - 8, xCoord + 8, yCoord + 8, zCoord + 8);

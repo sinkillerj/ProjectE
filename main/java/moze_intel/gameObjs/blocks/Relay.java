@@ -29,7 +29,7 @@ public class Relay extends BlockDirection
 	{
 		super(Material.rock);
 		this.setBlockName("relay_MK"+Integer.toString(tier));
-		this.setLightLevel(Constants.collectorLightVal[tier - 1]);
+		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(10.0f);
 		this.tier = tier;
 	}
@@ -41,13 +41,13 @@ public class Relay extends BlockDirection
 			switch (tier)
 			{
 				case 1:
-					player.openGui(MozeCore.instance, Constants.relayMK1GUI, world, x, y, z);
+					player.openGui(MozeCore.instance, Constants.RELAY1_GUI, world, x, y, z);
 					break;
 				case 2:
-					player.openGui(MozeCore.instance, Constants.relayMK2GUI, world, x, y, z);
+					player.openGui(MozeCore.instance, Constants.RELAY2_GUI, world, x, y, z);
 					break;
 				case 3:
-					player.openGui(MozeCore.instance, Constants.relayMK3GUI, world, x, y, z);
+					player.openGui(MozeCore.instance, Constants.RELAY3_GUI, world, x, y, z);
 					break;
 			}
 		return true;

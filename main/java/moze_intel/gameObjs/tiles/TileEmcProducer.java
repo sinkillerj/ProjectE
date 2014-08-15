@@ -16,7 +16,7 @@ public abstract class TileEmcProducer extends TileEmc
 		super(maxEmc);
 	}
 	
-	public int GetNumRequesting()
+	public int getNumRequesting()
 	{
 		int result = 0;
 		
@@ -32,7 +32,7 @@ public abstract class TileEmcProducer extends TileEmc
 	/**
 	 * The amount of emc must be previously devided by the amount of tiles requesting.
 	 */
-	public void SendEmcToRequesting(double emc)
+	public void sendEmcToRequesting(double emc)
 	{
 		for (int i = 0; i < 6; i++)
 		{
@@ -66,12 +66,12 @@ public abstract class TileEmcProducer extends TileEmc
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			
 			if (tile instanceof TileEmc)
-				((TileEmc) worldObj.getTileEntity(x, y, z)).AddEmc(emc);
-			else ((TileEmcConsumerDirection) worldObj.getTileEntity(x, y, z)).AddEmc(emc);
+				((TileEmc) worldObj.getTileEntity(x, y, z)).addEmc(emc);
+			else ((TileEmcConsumerDirection) worldObj.getTileEntity(x, y, z)).addEmc(emc);
 		}
 	}
 	
-	public void CheckSurroundingBlocks(boolean isFromRelay)
+	public void checkSurroundingBlocks(boolean isFromRelay)
 	{
 		TileEmcProducer tile = (TileEmcProducer) worldObj.getTileEntity(xCoord, yCoord, zCoord);
 		for (int i = 0; i < 6; i++)
@@ -111,14 +111,14 @@ public abstract class TileEmcProducer extends TileEmc
 			{
 				if (closeTileEnt instanceof TileEmc)
 				{
-					if (((TileEmc) closeTileEnt).HasMaxedEmc())
+					if (((TileEmc) closeTileEnt).hasMaxedEmc())
 						tile.areBlocksRequestingEmc[i] = false;
 					else
 						tile.areBlocksRequestingEmc[i] = ((TileEmc) closeTileEnt).isRequestingEmc;
 				}
 				else if (closeTileEnt instanceof TileEmcConsumerDirection)
 				{
-					if (((TileEmcConsumerDirection) closeTileEnt).HasMaxedEmc())
+					if (((TileEmcConsumerDirection) closeTileEnt).hasMaxedEmc())
 						tile.areBlocksRequestingEmc[i] = false;
 					else
 						tile.areBlocksRequestingEmc[i] = ((TileEmcConsumerDirection) closeTileEnt).isRequestingEmc;
@@ -128,7 +128,7 @@ public abstract class TileEmcProducer extends TileEmc
 		}
 	}
 	
-	public void SendRelayBonus()
+	public void sendRelayBonus()
 	{
 		for (int i = 0; i < 6; i++)
 		{
@@ -162,11 +162,11 @@ public abstract class TileEmcProducer extends TileEmc
 			
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile instanceof RelayMK3Tile)
-				((RelayMK3Tile) tile).AddEmc(0.5F); //10 EMC/s -> 0.5 EMC/tick 
+				((RelayMK3Tile) tile).addEmc(0.5F); //10 EMC/s -> 0.5 EMC/tick 
 			else if (tile instanceof RelayMK2Tile)
-				((RelayMK2Tile) tile).AddEmc(0.15F); //3 EMC/s -> 3 EMC/tick
+				((RelayMK2Tile) tile).addEmc(0.15F); //3 EMC/s -> 3 EMC/tick
 			else if (tile instanceof RelayMK1Tile)
-				((RelayMK1Tile) tile).AddEmc(0.05F); //1 EMC/s -> 0.05 EMC/tick
+				((RelayMK1Tile) tile).addEmc(0.05F); //1 EMC/s -> 0.05 EMC/tick
 		}
 	}
 }

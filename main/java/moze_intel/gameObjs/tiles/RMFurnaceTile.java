@@ -8,11 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RMFurnaceTile extends TileEmc implements IInventory
+public class RMFurnaceTile extends TileEntity implements IInventory
 {
 	public ItemStack[] inventory = new ItemStack[27];
 	public int outputSlot = 14;
@@ -27,7 +28,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     @Override
     public void updateEntity()
     {
-    	PushSmeltStack();
+    	pushSmeltStack();
     	
     	boolean flag = furnaceBurnTime > 0;
     	boolean flag1 = false;
@@ -37,7 +38,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	
     	if (!worldObj.isRemote)
     	{
-    		if (furnaceBurnTime == 0 && CanSmelt())
+    		if (furnaceBurnTime == 0 && canSmelt())
     		{
     			currentItemBurnTime = furnaceBurnTime = getItemBurnTime(inventory[0]);
     		
@@ -54,14 +55,14 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     			}
     		}
     	
-    		if (furnaceBurnTime > 0 && CanSmelt())
+    		if (furnaceBurnTime > 0 && canSmelt())
     		{
     			++furnaceCookTime;
     		
     			if (furnaceCookTime == ticksBeforeSmelt)
     			{
     				furnaceCookTime = 0;
-    				SmeltItem();
+    				smeltItem();
     				flag1 = true;
     			}
     		}
@@ -80,7 +81,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	
     	ItemStack output = inventory[outputSlot];
     	if (output != null && output.stackSize == output.getMaxStackSize())
-    		PushOutput();
+    		pushOutput();
     }
     
     public boolean isBurning()
@@ -88,7 +89,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	return furnaceBurnTime > 0;
     }
     
-    private void PushSmeltStack()
+    private void pushSmeltStack()
     {
     	for (int i = inputStorage[0]; i <= inputStorage[1]; i++)
     	{
@@ -102,7 +103,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	}
     }
     
-    private void PushOutput()
+    private void pushOutput()
     {
     	ItemStack output = inventory[outputSlot];
     	
@@ -119,7 +120,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	}
     }
     
-    private void SmeltItem()
+    private void smeltItem()
     {
     	ItemStack toSmelt = inventory[1];
     	ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
@@ -133,7 +134,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     	decrStackSize(1, 1);
     }
     
-    private boolean CanSmelt() 
+    private boolean canSmelt() 
     {
     	ItemStack toSmelt = inventory[1];
     	
@@ -160,7 +161,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
     @SideOnly(Side.CLIENT)
     public int getCookProgressScaled(int value)
     {
-    	return (furnaceCookTime + (isBurning() && CanSmelt() ? 1 : 0)) * value / ticksBeforeSmelt;
+    	return (furnaceCookTime + (isBurning() && canSmelt() ? 1 : 0)) * value / ticksBeforeSmelt;
     }
     
     @SideOnly(Side.CLIENT)
@@ -176,7 +177,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.SetEmcValue(nbt.getDouble("EMC"));
+		//this.SetEmcValue(nbt.getDouble("EMC"));
 		furnaceBurnTime = nbt.getShort("BurnTime");
         furnaceCookTime = nbt.getShort("CookTime");
         currentItemBurnTime = getItemBurnTime(inventory[0]);
@@ -196,7 +197,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.GetStoredEMC());
+		//nbt.setDouble("EMC", this.GetStoredEMC());
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		

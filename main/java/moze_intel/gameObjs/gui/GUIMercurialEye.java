@@ -38,7 +38,7 @@ public class GUIMercurialEye extends GuiContainer
 		ItemStack klein = inventory.getKleinStack();
 		
 		if (target != null)
-			this.fontRendererObj.drawString(Integer.toString(Utils.GetEmcValue(target)), 124, 34, 4210752);
+			this.fontRendererObj.drawString(Integer.toString(Utils.getEmcValue(target)), 124, 34, 4210752);
 		
 		if (klein != null)
 			this.fontRendererObj.drawString(Integer.toString((int) ItemBase.getEmc(klein)), 5, 34, 4210752);

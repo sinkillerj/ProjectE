@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import moze_intel.MozeCore;
-import moze_intel.gameObjs.ObjHandler;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -33,20 +31,8 @@ public class RecipeMapper
 			IRecipe recipe = iter.next();
 			ItemStack output = recipe.getRecipeOutput();
 			
-			if (output == null)
+			if (output == null || output.getItem() == null || output.stackSize < 1)
 			{
-				continue;
-			}
-			
-			if (output.stackSize < 1)
-			{
-				MozeCore.logger.logFatal("Recipe with stack-size of 0: "+output);
-				continue;
-			}
-			
-			if (output.getItem() == null)
-			{
-				MozeCore.logger.logFatal("ItemStack with null item: "+output);
 				continue;
 			}
 			
@@ -128,7 +114,12 @@ public class RecipeMapper
 				
 				for (ItemStack stack : inputs)
 				{
-					if (stack != null && stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+					if (stack == null || stack.getItem() == null)
+					{
+						continue;
+					}
+					
+					if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
 					{
 						rInput.addToInputs(stack);
 					}

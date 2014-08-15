@@ -129,7 +129,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return;
 			
 			double kleinEmc = ItemBase.getEmc(klein);
-			int targetEmc = Utils.GetEmcValue(target);
+			int targetEmc = Utils.getEmcValue(target);
 			
 			if (kleinEmc < targetEmc)
 				return;
@@ -173,7 +173,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player) 
 	{
-		player.openGui(MozeCore.instance, Constants.mercurialEyeGUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+		player.openGui(MozeCore.instance, Constants.MERCURIAL_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
 	}
 	
 	@Override

@@ -27,6 +27,7 @@ public class AlchChestContainer extends Container
 		for(int i = 0; i < 3; i++)
 			  for(int j = 0; j < 9; j++)
 			        this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 152 + i * 18));
+		
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 210));
@@ -42,6 +43,7 @@ public class AlchChestContainer extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
+		
 		if (slot == null || !slot.getHasStack()) 
 		{
 			return null;

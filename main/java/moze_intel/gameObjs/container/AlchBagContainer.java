@@ -37,7 +37,7 @@ public class AlchBagContainer extends Container
     {
         super.detectAndSendChanges();
         
-        inventory.Update();
+        inventory.update();
     }
 	
 	@Override

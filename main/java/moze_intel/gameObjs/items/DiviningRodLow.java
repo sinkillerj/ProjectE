@@ -62,7 +62,7 @@ public class DiviningRodLow extends ItemBase
 							continue;
 						
 						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
-						totalEmc += Utils.GetEmcValue(drops.get(0));
+						totalEmc += Utils.getEmcValue(drops.get(0));
 						numBlocks++;	
 					}
 			

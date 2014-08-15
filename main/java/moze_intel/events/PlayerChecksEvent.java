@@ -6,6 +6,7 @@ import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.network.packets.StepHeightPKT;
 import moze_intel.utils.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -60,7 +61,7 @@ public class PlayerChecksEvent
 		{
 			if (!canPlayerStep(player))
 			{
-				MozeCore.pktHandler.sendTo(new StepHeightPKT(0), player);
+				MozeCore.pktHandler.sendTo(new StepHeightPKT(0.5f), player);
 				removePlayerStepChecks(player);
 			}
 		}

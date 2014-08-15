@@ -13,7 +13,6 @@ import java.util.Random;
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.IStack;
-import moze_intel.EMC.ItemStackMap;
 import moze_intel.gameObjs.items.ItemBase;
 import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.gameObjs.items.ItemMode;
@@ -72,11 +71,11 @@ public class Utils
 	
 	public static void init()
 	{
-		LoadTransmutations();
-		LoadEntityLists();
+		loadTransmutations();
+		loadEntityLists();
 	}
 	
-	public static boolean AreItemStacksEqual(ItemStack stack1, ItemStack stack2)
+	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		if (stack1.getItem() != stack2.getItem()) return false;
 		boolean flag = false;
@@ -114,15 +113,25 @@ public class Utils
 		return true;
 	}
 	
-	public static boolean AreItemStacksEqualIgnoreNBT(ItemStack stack1, ItemStack stack2)
+	public static boolean areItemStacksEqualIgnoreNBT(ItemStack stack1, ItemStack stack2)
 	{
-		if (stack1.getItem() != stack2.getItem()) return false;
+		if (stack1.getItem() != stack2.getItem())
+		{
+			return false;
+		}
+		
 		boolean flag = false;
 		if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+		{
 			flag = true;
+		}
 		if (stack1.getItemDamage() != stack2.getItemDamage())
 		{
-			if (flag) return true;
+			if (flag)
+			{
+				return true;
+			}
+			
 			return false;
 		}
 		//if (stack1.getItem() instanceof ItemCharge || stack1.getItem() instanceof ItemMode) return true;
@@ -131,7 +140,7 @@ public class Utils
 	}
 	
 	
-	public static boolean BasicAreStacksEqual(ItemStack stack1, ItemStack stack2)
+	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		return stack1.getItem() == stack2.getItem() ? stack1.getItemDamage() == stack2.getItemDamage() ? true : false : false;
 	}
@@ -152,7 +161,7 @@ public class Utils
 		return false;
 	}
 	
-	public static boolean ContainsItemStack(ItemStack[] stacks, ItemStack toSearch)
+	public static boolean containsItemStack(ItemStack[] stacks, ItemStack toSearch)
 	{
 		for (ItemStack stack : stacks)
 		{
@@ -165,26 +174,13 @@ public class Utils
 		}
 		return false;
 	}
-	
-	public static float GetKleinStarEmcDecimal(ItemStack stack)
-	{
-		if (!stack.hasTagCompound()) return 0;
-		NBTTagCompound nbt = stack.stackTagCompound;
-		return nbt.getFloat("EMC");
-	}
-	
-	public static int GetEmcValue(ItemStack stack)
+	public static int getEmcValue(ItemStack stack)
 	{
 		if (stack == null) 
 		{
 			return 0;
 		}
-		
-		/*if (emc.containsKey(stack))
-		{
-			return emc.getValue(stack);
-		}*/
-		
+
 		IStack iStack = new IStack(stack);
 		
 		if (EMCMapper.emc.containsKey(iStack))
@@ -195,7 +191,7 @@ public class Utils
 		return 0;
 	}
 	
-	public static ItemStack[] GetItemsWithMostEMC(List<ItemStack> knowledge, int maxValue)
+	public static ItemStack[] getItemsWithMostEMC(List<ItemStack> knowledge, int maxValue)
 	{
 		int dim = knowledge.size() < 12 ? knowledge.size() : 12;
 		ItemStack[] result = new ItemStack[dim];
@@ -206,9 +202,13 @@ public class Utils
 			int bigEmc = 0;
 			for (ItemStack stack : knowledge)
 			{
-				int currentVal = GetEmcValue(stack);
-				if (currentVal > maxValue) continue;
-				if (currentVal > bigEmc && !ContainsItemStack(result, stack))
+				int currentVal = getEmcValue(stack);
+				
+				if (currentVal > maxValue) 
+				{
+					continue;
+				}
+				if (currentVal > bigEmc && !containsItemStack(result, stack))
 				{
 					bigEmc = currentVal;
 					lastResult = stack;
@@ -219,7 +219,7 @@ public class Utils
 		return result;
 	}
 	
-	public static boolean DoesItemHaveEmc(ItemStack stack)
+	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
 		if (stack == null) 
 		{
@@ -227,74 +227,98 @@ public class Utils
 		}
 		
 		return EMCMapper.emc.containsKey(new IStack(stack));
-		//return emc.containsKey(stack);
 	}
 	
-	public static Block GetTransmutationResult(Block current, boolean isSneaking)
+	public static Block getTransmutationResult(Block current, boolean isSneaking)
 	{
 		if (transmutations.containsKey(current))
+		{
 			return isSneaking ? transmutations.get(current)[0] : transmutations.get(current)[1];
+		}
+		
 		return null;
 	}
 	
-	public static boolean InvContainsItem(IInventory inv, ItemStack toSearch)
+	public static boolean invContainsItem(IInventory inv, ItemStack toSearch)
 	{
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
+			
 			if (stack != null && stack.getItem() == toSearch.getItem() && stack.getItemDamage() == toSearch.getItemDamage())
+			{
 				return true;
+			}
 		}
 		return false;
 	}
 	
-	public static boolean InvContainsItem(ItemStack inv[], Item toSearch)
+	public static boolean invContainsItem(ItemStack inv[], Item toSearch)
 	{
 		for (ItemStack stack : inv)
+		{
 			if (stack != null && stack.getItem() == toSearch)
+			{
 				return true;
+			}
+		}
 		return false;
 	}
 	
 	/**DOES NOT check if the map contains the element!**/
-	public static ItemStack GetNextInMap(ItemStackMap map, ItemStack start)
+	public static ItemStack getNextInMap(LinkedHashMap<IStack, Integer> map, ItemStack start)
 	{
 		List<ItemStack> keys = new ArrayList(map.keySet());
-		int startIndex = 0;
+		int index = keys.indexOf(new IStack(start));
 		
-		for (ItemStack stack : keys)
+		if (index == -1 || index >= (keys.size() - 1))
 		{
-			if (BasicAreStacksEqual(stack, start))
-				break;
-			startIndex++;
+			return null;
 		}
-			
-		return keys.get(startIndex + 1);
+		
+		return keys.get(index + 1);
 	}
 	
-	public static int GetKleinStarMaxEmc(ItemStack stack)
+	public static int getKleinStarMaxEmc(ItemStack stack)
 	{
-		return Constants.kleinStarsMaxEMC[stack.getItemDamage()];
+		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 	
-	public static boolean HasSpace(IInventory inv, ItemStack stack)
+	public static boolean hasSpace(IInventory inv, ItemStack stack)
 	{
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
-			if (invStack == null) return true;
-			if (Utils.AreItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize()) return true;
+			
+			if (invStack == null) 
+			{
+				return true;
+			}
+			
+			if (Utils.areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize()) 
+			{
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
-	public static boolean HasSpace(ItemStack[] inv, ItemStack stack)
+	public static boolean hasSpace(ItemStack[] inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
 		{
-			if (invStack == null) return true;
-			if (Utils.AreItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize()) return true;
+			if (invStack == null) 
+			{
+				return true;
+			}
+			
+			if (Utils.areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize()) 
+			{
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
@@ -324,7 +348,7 @@ public class Utils
 				return null;
 			}
 			
-			if (AreItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
 			{
 				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 				
@@ -343,7 +367,7 @@ public class Utils
 		return stack.copy();
 	}
 	
-	public static void SpawnEntityItem(World world, ItemStack stack, int x, int y, int z)
+	public static void spawnEntityItem(World world, ItemStack stack, int x, int y, int z)
 	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
         float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -406,12 +430,21 @@ public class Utils
 		Class entClass = toRandomize.getClass();
 		
 		if (peacefuls.contains(entClass))
+		{
 			return getNewEntityInstance((Class) getRandomListEntry(peacefuls, entClass), world);
+		}
 		else if (mobs.contains(entClass))
+		{
 			return getNewEntityInstance((Class) getRandomListEntry(mobs, entClass), world);
+		}
 		else if (world.rand.nextInt(2) == 0)
+		{
 			return new EntitySlime(world);
-		else return new EntitySheep(world);
+		}
+		else 
+		{
+			return new EntitySheep(world);
+		}
 	}
 	
 	public static Object getRandomListEntry(List<?> list, Object toExclude)
@@ -442,10 +475,15 @@ public class Utils
 					((EntitySkeleton) ent).setSkeletonType(1);
 					ent.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
 				}
-				else ent.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+				else 
+				{
+					ent.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+				}
 			}
 			else if (ent instanceof EntityPigZombie)
+			{
 				ent.setCurrentItemOrArmor(0, new ItemStack(Items.golden_sword));
+			}
 			
 			return ent;
 		}
@@ -487,9 +525,9 @@ public class Utils
 			}
 			else if (!metRequirement)
 			{
-				if(Constants.fuelMap.containsKey(stack))
+				if(Constants.FUEL_MAP.containsKey(stack))
 				{
-					int emc = Constants.fuelMap.get(stack);
+					int emc = Constants.FUEL_MAP.get(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 					
 					if (stack.stackSize >= toRemove)
@@ -627,7 +665,7 @@ public class Utils
 				continue;
 			}
 			
-			if (BasicAreStacksEqual(stack, s))
+			if (basicAreStacksEqual(stack, s))
 			{
 				return s;
 			}
@@ -777,7 +815,7 @@ public class Utils
 	    return random;
 	}
 	
-	private static void LoadTransmutations()
+	private static void loadTransmutations()
 	{
 		transmutations.put(Blocks.stone, new Block[] {Blocks.cobblestone, Blocks.grass});
 		transmutations.put(Blocks.cobblestone, new Block[] {Blocks.stone, Blocks.grass});
@@ -793,7 +831,7 @@ public class Utils
 		transmutations.put(Blocks.pumpkin, new Block[] {Blocks.melon_block, Blocks.melon_block});
 	}
 	
-	private static void LoadEntityLists()
+	private static void loadEntityLists()
 	{
 		//Peacefuls
 		peacefuls.add(EntityCow.class);

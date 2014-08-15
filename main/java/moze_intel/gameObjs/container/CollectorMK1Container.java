@@ -14,13 +14,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class CollectorMK1Container extends Container
 {
 	private CollectorMK1Tile tile;
-	private int storedEmc;
 	private int sunLevel;
-	private int kleinCharge;
 	
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
 	{
 		this.tile = collector;
+		tile.openInventory();
 		
 		//Klein Star Slot
 		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 124, 58));
@@ -50,8 +49,7 @@ public class CollectorMK1Container extends Container
 	public void addCraftingToCrafters(ICrafting par1ICrafting)
     {
         super.addCraftingToCrafters(par1ICrafting);
-        par1ICrafting.sendProgressBarUpdate(this, 0, tile.displayEmc);
-        par1ICrafting.sendProgressBarUpdate(this, 1, tile.displaySunLevel);
+        par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
     }
 	
 	@Override
@@ -63,30 +61,27 @@ public class CollectorMK1Container extends Container
         {
             ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-            if (storedEmc != tile.GetStoredEMC())
-                icrafting.sendProgressBarUpdate(this, 0, (int) tile.GetStoredEMC());
-            if(sunLevel != tile.GetSunLevel())
-            	icrafting.sendProgressBarUpdate(this, 1, tile.GetSunLevel());
-            if(kleinCharge != tile.GetKleinStarCharge())
-            	icrafting.sendProgressBarUpdate(this, 2, tile.GetKleinStarCharge());
+            if(sunLevel != tile.getSunLevel())
+            {
+            	icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
+            }
         }
         
-        storedEmc = (int) tile.GetStoredEMC();
-        sunLevel = tile.GetSunLevel();
-        kleinCharge = tile.GetKleinStarCharge();
-        
+        sunLevel = tile.getSunLevel();
     }
 	
 	@SideOnly(Side.CLIENT)
     public void updateProgressBar(int par1, int par2)
     {
-        if (par1 == 0)
-            tile.displayEmc = par2;
-        if (par1 == 1)
-        	tile.displaySunLevel = par2;
-        if (par1 == 2)
-        	tile.displayKleinCharge = par2;
+        tile.displaySunLevel = par2;
     }
+	
+	@Override
+	public void onContainerClosed(EntityPlayer player)
+	{
+		super.onContainerClosed(player);
+		tile.closeInventory();
+	}
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)

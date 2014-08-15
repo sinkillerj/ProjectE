@@ -27,7 +27,7 @@ public class GUIRelayMK3 extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		this.fontRendererObj.drawString("Relay MK3", 38, 6, 4210752);
-		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 127, 19, 4210752);
+		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 125, 39, 4210752);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class GUIRelayMK3 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Emc bar progress
-		int progress = tile.GetEmcScaled(102);
+		int progress = tile.getEmcScaled(102);
 		this.drawTexturedModalRect(x + 105, y + 6, 30, 195, progress, 10);
 	}
 }

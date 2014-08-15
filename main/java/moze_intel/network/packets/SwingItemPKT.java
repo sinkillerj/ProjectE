@@ -23,10 +23,4 @@ public class SwingItemPKT implements IMessage, IMessageHandler<SwingItemPKT, IMe
 
 	@Override
 	public void toBytes(ByteBuf buf) {}
-
-	/*@Override
-	public void handleClientSide(EntityPlayer player) 
-	{
-		player.swingItem();
-	}*/
 }

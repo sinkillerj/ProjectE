@@ -21,7 +21,7 @@ public class SlotTableInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !tile.HasMaxedEmc() && Utils.DoesItemHaveEmc(stack);
+		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
 	}
 	
 	@Override
@@ -36,22 +36,22 @@ public class SlotTableInput extends Slot
 		
 		if (stack.getItem().equals(ObjHandler.kleinStars))
 		{
-			int remainingEmc = Utils.GetKleinStarMaxEmc(stack) - (int) Math.ceil(ItemBase.getEmc(stack));
+			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemBase.getEmc(stack));
 			
-			if (tile.GetStoredEMC() >= remainingEmc)
+			if (tile.getStoredEMC() >= remainingEmc)
 			{
 				ItemBase.addEmc(stack, remainingEmc);
-				tile.RemoveEmc(remainingEmc);
+				tile.removeEmc(remainingEmc);
 			}
 			else
 			{
-				ItemBase.addEmc(stack, tile.GetStoredEMC());
-				tile.SetEmcValue(0);
+				ItemBase.addEmc(stack, tile.getStoredEMC());
+				tile.setEmcValue(0);
 			}
 		}
 		else
 		{
-			tile.AddEmc(Utils.GetEmcValue(stack));
+			tile.addEmc(Utils.getEmcValue(stack));
 		}
 		
 		tile.handleKnowledge(stack.copy());
@@ -64,7 +64,7 @@ public class SlotTableInput extends Slot
 		
 		if (!stack.getItem().equals(ObjHandler.kleinStars))
 		{
-			tile.RemoveEmc(Utils.GetEmcValue(stack));
+			tile.removeEmc(Utils.getEmcValue(stack));
 			tile.updateOutputs();
 		}
 	}

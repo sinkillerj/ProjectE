@@ -1,13 +1,9 @@
 package moze_intel.gameObjs.tiles;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.omg.CORBA.UserException;
-
 import moze_intel.utils.Constants;
-import moze_intel.utils.FileHelper;
-import moze_intel.utils.KnowledgeHandler;
+import moze_intel.utils.PlayerKnowledge;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,27 +16,14 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 public class TransmuteTile extends TileEmc implements IInventory
 {
-	private String username = "";
+	private EntityPlayer player = null;
 	private final int LOCK_INDEX = 8;
 	private final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
 	private final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
 	private final int MAX_MATTER_SIZE = 12;
 	private ItemStack[] inventory = new ItemStack[26];
+	private List<ItemStack> knowledge = null;
 	public int learnFlag = 0;
-	
-	@Override	
-	public Packet getDescriptionPacket() 
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
-	}
-	
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
-	{
-		this.readFromNBT(packet.func_148857_g());
-	}
 	
 	
 	public void handleKnowledge(ItemStack stack)
@@ -58,7 +41,12 @@ public class TransmuteTile extends TileEmc implements IInventory
 		if (!hasKnowledge(stack))
 		{
 			learnFlag = 300;
-			KnowledgeHandler.addPlayerKnowledge(username, stack);//knowledge.add(stack);
+			PlayerKnowledge.addKnowledge(player, stack);
+			
+			if (!this.worldObj.isRemote)
+			{
+				PlayerKnowledge.syncPlayerProps(player);
+			}
 		}
 		
 		updateOutputs();
@@ -66,9 +54,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int maxEmc = Utils.GetEmcValue(inventory[MATTER_INDEXES[0]]);
+		int maxEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
 		
-		if (maxEmc > this.GetStoredEMC())
+		if (maxEmc > this.getStoredEMC())
 		{
 			updateOutputs();
 		}
@@ -83,9 +71,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		if (lock != null)
 		{
-			if (Constants.fuelMap.containsKey(lock))
+			if (Constants.FUEL_MAP.containsKey(lock))
 			{
-				if (this.GetStoredEMC() < Utils.GetEmcValue(lock))
+				if (this.getStoredEMC() < Utils.getEmcValue(lock))
 				{
 					fuels[0] = null;
 				}
@@ -99,7 +87,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 			}
 			else
 			{
-				if (this.GetStoredEMC() < Utils.GetEmcValue(lock))
+				if (this.getStoredEMC() < Utils.getEmcValue(lock))
 				{
 					matter[0] = null;
 				}
@@ -123,7 +111,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		{
 			if (currentIndex < 4)
 			{
-				int prevEmc = Utils.GetEmcValue(fuels[currentIndex - 1]);
+				int prevEmc = Utils.getEmcValue(fuels[currentIndex - 1]);
 							
 				if (prevEmc != 0)
 				{
@@ -131,7 +119,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 				}
 			}
 					
-			int prevEmc = Utils.GetEmcValue(matter[currentIndex - 1]);
+			int prevEmc = Utils.getEmcValue(matter[currentIndex - 1]);
 					
 			if (prevEmc == 0)
 			{
@@ -161,18 +149,18 @@ public class TransmuteTile extends TileEmc implements IInventory
 		ItemStack max = null;
 		int currentMax = 0;
 		
-		for (ItemStack stack : getKnowledge())
+		for (ItemStack stack : knowledge)
 		{
-			boolean flag = Constants.fuelMap.containsKey(stack);
+			boolean flag = Constants.FUEL_MAP.containsKey(stack);
 			
 			if (flag && !isFuel || !flag && isFuel)
 			{
 				continue;
 			}
 			
-			int emc = Utils.GetEmcValue(stack);
+			int emc = Utils.getEmcValue(stack);
 			
-			if (emc > this.GetStoredEMC())
+			if (emc > this.getStoredEMC())
 			{
 				continue;
 			}
@@ -200,7 +188,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private ItemStack getFromKnowledge(ItemStack stack)
 	{
-		for (ItemStack s : getKnowledge())
+		for (ItemStack s : knowledge)
 		{
 			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
 			{
@@ -213,7 +201,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private boolean hasKnowledge(ItemStack stack)
 	{
-		for (ItemStack s : getKnowledge())
+		for (ItemStack s : knowledge)
 		{
 			if (s == null)
 			{
@@ -231,14 +219,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private List<ItemStack> getKnowledge()
 	{
-		List<ItemStack> list = KnowledgeHandler.getPlayerKnowledge(username);
-		
-		if (list == null)
-		{
-			return new ArrayList();
-		}
-		
-		return list;
+		return PlayerKnowledge.getPlayerKnowledge(player);
 	}
 	
 	private boolean arrayContains(ItemStack[] array, ItemStack stack)
@@ -259,14 +240,28 @@ public class TransmuteTile extends TileEmc implements IInventory
 		return false;
 	}
 	
-	public String getCurrentUsername()
+	public boolean isUsed()
 	{
-		return username;
+		return player != null;
 	}
 	
-	public void setUsername(String user)
+	public void setPlayer(EntityPlayer player)
 	{
-		this.username = user;
+		this.player = player;
+	}
+	
+	@Override	
+	public Packet getDescriptionPacket() 
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		this.writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+	}
+	
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
+	{
+		this.readFromNBT(packet.func_148857_g());
 	}
 	
 	@Override
@@ -274,7 +269,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	{
 		super.readFromNBT(nbt);
 		
-		this.SetEmcValue(nbt.getDouble("EMC"));
+		this.setEmcValue(nbt.getDouble("EMC"));
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
 		inventory = new ItemStack[26];
@@ -296,7 +291,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	{
 		super.writeToNBT(nbt);
 		
-		nbt.setDouble("EMC", this.GetStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEMC());
 		
 		NBTTagList list = new NBTTagList();
 		
@@ -359,6 +354,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 			inventory[slot] = null;
 			return stack;
 		}
+		
 		return null;
 	}
 
@@ -402,13 +398,14 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public void openInventory() 
 	{
+		this.knowledge = getKnowledge();
 		updateOutputs();
 	}
 
 	@Override
 	public void closeInventory() 
 	{
-		username = "";
+		player = null;
 	}
 
 	@Override

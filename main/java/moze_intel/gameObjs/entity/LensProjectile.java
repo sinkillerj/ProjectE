@@ -51,7 +51,7 @@ public class LensProjectile extends EntityThrowable
 	protected void onImpact(MovingObjectPosition mop) 
 	{
 		if (this.worldObj.isRemote) return;
-		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.explosiveLensRadius[charge]);
+		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
 		this.setDead();

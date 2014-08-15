@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CommonProxy
 {
-	public void RegisterKeyBinds() {} 
-	public void RegisterRenderers() {}
-	public void RegisterClientOnlyEvents() {}
+	public void registerKeyBinds() {} 
+	public void registerRenderers() {}
+	public void registerClientOnlyEvents() {}
 }

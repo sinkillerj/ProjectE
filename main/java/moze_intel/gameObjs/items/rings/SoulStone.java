@@ -26,7 +26,6 @@ public class SoulStone extends RingToggle
 			if (this.getEmc(stack) < 128 && !this.consumeFuel(player, stack, 128, false))
 			{
 				stack.setItemDamage(0);
-				this.playUnChargeSound(player);
 			}
 			else if (player.getHealth() < player.getMaxHealth())
 			{
@@ -55,18 +54,16 @@ public class SoulStone extends RingToggle
 		{
 			if (this.getEmc(stack) < 128 && !this.consumeFuel(player, stack, 128, false))
 			{
-				this.playUnChargeSound(player);
+				//NOOP (used to be sounds)
 			}
 			else
 			{
 				stack.setItemDamage(1);
-				this.playChargeSound(player);
 			}
 		}
 		else
 		{
 			stack.setItemDamage(0);
-			this.playUnChargeSound(player);
 		}
 	}
 }

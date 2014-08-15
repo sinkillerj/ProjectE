@@ -83,7 +83,7 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 							continue;
 						}
 						
-						int blockEmc = Utils.GetEmcValue(drops.get(0));
+						int blockEmc = Utils.getEmcValue(drops.get(0));
 						
 						totalEmc += blockEmc;
 						

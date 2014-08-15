@@ -67,8 +67,8 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
 		if (!world.isRemote)
 		{
 			if (isHighTier)
-				player.openGui(MozeCore.instance, Constants.rmFurnaceGUI, world, x, y, z);
-			else player.openGui(MozeCore.instance, Constants.dmFurnaceGUI, world, x, y, z);
+				player.openGui(MozeCore.instance, Constants.RM_FURNACE_GUI, world, x, y, z);
+			else player.openGui(MozeCore.instance, Constants.DM_FURNACE_GUI, world, x, y, z);
 		}
 		return true;
 	}

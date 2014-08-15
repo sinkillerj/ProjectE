@@ -29,7 +29,6 @@ public class LifeStone extends RingToggle
 			if (itemEmc < 64 && !this.consumeFuel(player, stack, 64, false))
 			{
 				stack.setItemDamage(0);
-				this.playUnChargeSound(player);
 			}
 			else if (player.getHealth() < player.getMaxHealth())
 			{
@@ -71,18 +70,16 @@ public class LifeStone extends RingToggle
 		{
 			if (this.getEmc(stack) < 64 && !this.consumeFuel(player, stack, 64, false))
 			{
-				this.playUnChargeSound(player);
+				//NOOP (used to be sounds)
 			}
 			else
 			{
 				stack.setItemDamage(1);
-				this.playChargeSound(player);
 			}
 		}
 		else
 		{
 			stack.setItemDamage(0);
-			this.playUnChargeSound(player);
 		}
 	}
 }

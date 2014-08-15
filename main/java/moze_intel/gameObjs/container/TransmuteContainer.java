@@ -5,10 +5,10 @@ import moze_intel.gameObjs.container.slots.SlotTableInput;
 import moze_intel.gameObjs.container.slots.SlotTableLock;
 import moze_intel.gameObjs.container.slots.SlotTableOutput;
 import moze_intel.gameObjs.tiles.TransmuteTile;
-import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -53,6 +53,7 @@ public class TransmuteContainer extends Container
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++) 
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 123 + i * 18));
+		
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 181));
@@ -71,6 +72,12 @@ public class TransmuteContainer extends Container
 	{
 		return null;
 	}
+	
+	@Override
+	public void addCraftingToCrafters(ICrafting par1ICrafting)
+    {
+        super.addCraftingToCrafters(par1ICrafting);
+    }
 	
 	@Override
 	public ItemStack slotClick(int index, int mouseBtn, int isShifting, EntityPlayer player)

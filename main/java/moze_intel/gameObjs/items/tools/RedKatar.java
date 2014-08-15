@@ -41,7 +41,7 @@ public class RedKatar extends ItemMode
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (this.GetMode(stack) != 0 || block.equals(Blocks.bedrock))
+		if (this.getMode(stack) != 0 || block.equals(Blocks.bedrock))
 		{
 			return false;
 		}
@@ -59,7 +59,7 @@ public class RedKatar extends ItemMode
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if (this.GetMode(stack) != 0)
+		if (this.getMode(stack) != 0)
 		{
 			return 1.0f;
 		}
@@ -75,7 +75,7 @@ public class RedKatar extends ItemMode
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
     {
-		if (!(damager instanceof EntityPlayer) || this.GetMode(stack) != 3)
+		if (!(damager instanceof EntityPlayer) || this.getMode(stack) != 3)
 		{
 			return false;
 		}
@@ -97,7 +97,7 @@ public class RedKatar extends ItemMode
 	@Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
     {
-		if (this.GetMode(stack) != 1)
+		if (this.getMode(stack) != 1)
 		{
 			return false;
 		}
@@ -113,7 +113,7 @@ public class RedKatar extends ItemMode
 			return stack;
 		}
 		
-		byte mode = this.GetMode(stack);
+		byte mode = this.getMode(stack);
 		byte charge = this.getCharge(stack);
 		
 		if (mode == 0)
@@ -184,7 +184,7 @@ public class RedKatar extends ItemMode
 	
 	private boolean tillSoil(World world, ItemStack stack, EntityPlayer player, int x, int y, int z, int param, byte charge)
 	{
-		if (this.GetMode(stack) != 1 || !player.canPlayerEdit(x, y, z, param, stack))
+		if (this.getMode(stack) != 1 || !player.canPlayerEdit(x, y, z, param, stack))
 		{
 			return false;
 		}
@@ -329,6 +329,11 @@ public class RedKatar extends ItemMode
 		
 		for (EntityLiving ent : list)
 		{
+			if (ent.getHealth() <= 0)
+			{
+				continue;
+			}
+			
 			DamageSource dmg = DamageSource.causePlayerDamage(player);
 			float totalDmg = 15.0f;
 			

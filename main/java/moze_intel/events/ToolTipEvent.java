@@ -2,8 +2,7 @@ package moze_intel.events;
 
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.IStack;
-import moze_intel.utils.Utils;
-import net.minecraft.item.Item;
+import moze_intel.config.ProjectEConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -24,10 +23,18 @@ public class ToolTipEvent
 			return;
 		}
 		
-		/*for (int id : OreDictionary.getOreIDs(current))
+		if (ProjectEConfig.showUnlocalizedNames)
 		{
-			event.toolTip.add(OreDictionary.getOreName(id));
-		}*/
+			event.toolTip.add("UN: "+current.getUnlocalizedName());
+		}
+		
+		if (ProjectEConfig.showODNames)
+		{
+			for (int id : OreDictionary.getOreIDs(current))
+			{
+				event.toolTip.add("OD: "+OreDictionary.getOreName(id));
+			}
+		}
 		
 		IStack stack = new IStack(current);
 		

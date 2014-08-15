@@ -121,7 +121,7 @@ public class LootBall extends Entity
 			List<ItemStack> list = new ArrayList();
 			ItemStack bag = getAlchemyBag(player.inventory.mainInventory);
 			
-			if (bag != null && Utils.InvContainsItem(new AlchBagInventory(bag), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (bag != null && Utils.invContainsItem(new AlchBagInventory(bag), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				for (ItemStack stack : items)
 				{
@@ -154,7 +154,7 @@ public class LootBall extends Entity
 							list.add(remaining);
 						}
 						
-						if (!playSound && !Utils.AreItemStacksEqual(stack, remaining))
+						if (!playSound && !Utils.areItemStacksEqual(stack, remaining))
 						{
 							playSound = true;
 						}
@@ -182,7 +182,7 @@ public class LootBall extends Entity
 						list.add(remaining);
 					}
 				
-					if (!playSound && !Utils.AreItemStacksEqual(stack, remaining))
+					if (!playSound && !Utils.areItemStacksEqual(stack, remaining))
 					{
 						playSound = true;
 					}
@@ -214,7 +214,7 @@ public class LootBall extends Entity
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.InvContainsItem(new AlchBagInventory(stack), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(new AlchBagInventory(stack), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

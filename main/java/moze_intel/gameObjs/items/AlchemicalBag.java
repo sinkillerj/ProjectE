@@ -44,7 +44,7 @@ public class AlchemicalBag extends ItemBase
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(MozeCore.instance, Constants.alchBagGUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(MozeCore.instance, Constants.ALCH_BAG_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 		return stack;
 	}
@@ -60,7 +60,7 @@ public class AlchemicalBag extends ItemBase
 		EntityPlayer player = (EntityPlayer) entity;
 		AlchBagInventory inventory = new AlchBagInventory(stack);
 		
-		if (Utils.InvContainsItem(inventory, new ItemStack(ObjHandler.blackHole, 1, 1)))
+		if (Utils.invContainsItem(inventory, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
 			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
@@ -132,12 +132,12 @@ public class AlchemicalBag extends ItemBase
 			{
 				ItemStack current = inventory.getStackInSlot(i);
 				
-				if (current == null || Utils.AreItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
+				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
 				{
 					continue;
 				}
 						
-				if (Utils.DoesItemHaveEmc(current) && current.getMaxStackSize() > 1)
+				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
 				{
 					gem.consumeItem(gemDensity, current, inventory, i);
 					break;

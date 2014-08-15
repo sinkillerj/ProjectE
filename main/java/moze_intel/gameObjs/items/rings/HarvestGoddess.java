@@ -36,7 +36,6 @@ public class HarvestGoddess extends RingToggle
 			if (storedEmc == 0 && !this.consumeFuel(player, stack, 64, true))
 			{
 				stack.setItemDamage(0);
-				this.playUnChargeSound(player);
 			}
 			else
 			{
@@ -59,7 +58,7 @@ public class HarvestGoddess extends RingToggle
 		
 		if (player.isSneaking())
 		{
-			Object[] obj = GetStackFromInventory(player.inventory.mainInventory, Items.dye, 15, 4);
+			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.dye, 15, 4);
 
 			if (obj == null) 
 			{
@@ -68,7 +67,7 @@ public class HarvestGoddess extends RingToggle
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
 
-			if (boneMeal != null && UseBoneMeal(world, x, y, z))
+			if (boneMeal != null && useBoneMeal(world, x, y, z))
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();
@@ -80,14 +79,14 @@ public class HarvestGoddess extends RingToggle
 		
 		if (block == Blocks.farmland)
 		{
-			PlantSeeds(world, player, x, y, z);
+			plantSeeds(world, player, x, y, z);
 			return true;
 		}
 		
 		return false;
 	}
 	
-	private boolean UseBoneMeal(World world, int xCoord, int yCoord, int zCoord)
+	private boolean useBoneMeal(World world, int xCoord, int yCoord, int zCoord)
 	{
 		boolean result = false;
 		
@@ -120,7 +119,7 @@ public class HarvestGoddess extends RingToggle
 		return result;
 	}
 	
-	private void PlantSeeds(World world, EntityPlayer player, int xCoord, int yCoord, int zCoord)
+	private void plantSeeds(World world, EntityPlayer player, int xCoord, int yCoord, int zCoord)
 	{
 		for (int x = xCoord - 8; x <= xCoord + 8; x++)
 			for (int z = zCoord - 8; z <= zCoord + 8; z++)
@@ -128,7 +127,7 @@ public class HarvestGoddess extends RingToggle
 				Block block = player.worldObj.getBlock(x, yCoord, z);
 				if (block == null || block == Blocks.air) continue;
 				
-				Object[] obj = GetStackFromInventory(player.inventory.mainInventory, IPlantable.class);
+				Object[] obj = getStackFromInventory(player.inventory.mainInventory, IPlantable.class);
 				
 				if (obj == null) 
 				{
@@ -146,7 +145,7 @@ public class HarvestGoddess extends RingToggle
 			}
 	}
 	
-	private Object[] GetStackFromInventory(ItemStack[] inv, Class<?> type)
+	private Object[] getStackFromInventory(ItemStack[] inv, Class<?> type)
 	{
 		Object[] obj = new Object[2];
 		for (int i = 0; i < inv.length;i++)
@@ -162,7 +161,7 @@ public class HarvestGoddess extends RingToggle
 		return null;
 	}
 	
-	private Object[] GetStackFromInventory(ItemStack[] inv, Item item, int meta)
+	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta)
 	{
 		Object[] obj = new Object[2];
 		for (int i = 0; i < inv.length;i++)
@@ -178,7 +177,7 @@ public class HarvestGoddess extends RingToggle
 		return null;
 	}
 	
-	private Object[] GetStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
+	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
 		for (int i = 0; i < inv.length;i++)
@@ -201,18 +200,16 @@ public class HarvestGoddess extends RingToggle
 		{
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, true))
 			{
-				this.playUnChargeSound(player);
+				//NOOP (used to be sounds)
 			}
 			else
 			{
 				stack.setItemDamage(1);
-				this.playChargeSound(player);
 			}
 		}
 		else
 		{
 			stack.setItemDamage(0);
-			this.playUnChargeSound(player);
 		}
 	}
 }

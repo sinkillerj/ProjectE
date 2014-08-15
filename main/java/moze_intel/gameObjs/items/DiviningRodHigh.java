@@ -61,7 +61,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 						if (drops.size() == 0)
 							continue;
 						
-						int blockEmc = Utils.GetEmcValue(drops.get(0));
+						int blockEmc = Utils.getEmcValue(drops.get(0));
 						emcValues.add(blockEmc);
 						totalEmc += blockEmc;
 						numBlocks++;	

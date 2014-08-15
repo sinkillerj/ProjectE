@@ -1,7 +1,9 @@
 package moze_intel.gameObjs.tiles;
 
+import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
+import moze_intel.network.packets.CollectorSyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 {
@@ -24,13 +27,14 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 	public int displayEmc;
 	public int displaySunLevel;
 	public int displayKleinCharge;
+	private int numUsing;
 	
 	public CollectorMK1Tile()
 	{
-		super(Constants.collectorMK1Max);
+		super(Constants.COLLECTOR_MK1_MAX);
 		inventory = new ItemStack[11];
 		invBufferSize = 8;
-		emcGen = Constants.collectorMk1Gen;
+		emcGen = Constants.COLLECTOR_MK1_GEN;
 		upgradedSlot = 9;
 		lockSlot = 10;
 	}
@@ -63,19 +67,25 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		}
 		else 
 		{
-			CheckFuelOrKlein();
+			checkFuelOrKlein();
 		}
 		
-		if (!this.HasMaxedEmc())
+		if (!this.hasMaxedEmc())
 		{
-			this.AddEmc(GetSunRelativeEmc(emcGen) / 20.0f);
+			this.addEmc(getSunRelativeEmc(emcGen) / 20.0f);
 		}
 		
-		UpdateEmc();
+		updateEmc();
 		
-		displayEmc = (int) this.GetStoredEMC();
-		displaySunLevel = GetSunLevel();
-		displayKleinCharge = GetKleinStarCharge();
+		displayEmc = (int) this.getStoredEMC();
+		displaySunLevel = getSunLevel();
+		displayKleinCharge = getKleinStarCharge();
+		
+		if (numUsing > 0)
+		{
+			MozeCore.pktHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this.xCoord, this.yCoord, this.zCoord),
+					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+		}
 	}
 	
 	private void sortInventory()
@@ -99,7 +109,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 				inventory[i] = null;
 				break;
 			}
-			else if (Utils.AreItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
+			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
 				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 				
@@ -119,11 +129,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		}
 	}
 	
-	public void CheckFuelOrKlein()
+	public void checkFuelOrKlein()
 	{
 		if (inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
-			if(ItemBase.getEmc(inventory[0]) != Utils.GetKleinStarMaxEmc(inventory[0]))
+			if(ItemBase.getEmc(inventory[0]) != Utils.getKleinStarMaxEmc(inventory[0]))
 			{
 				hasKleinStar = true;
 				hasFuel = false;
@@ -143,21 +153,21 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		}
 	}
 	
-	public void UpdateEmc()
+	public void updateEmc()
 	{
-		this.CheckSurroundingBlocks(false);
-		int numRequest = this.GetNumRequesting();
+		this.checkSurroundingBlocks(false);
+		int numRequest = this.getNumRequesting();
 		
-		if (this.GetStoredEMC() == 0)
+		if (this.getStoredEMC() == 0)
 		{
 			return;
 		}
 		else if (hasKleinStar)
 		{
-			double toSend = this.GetStoredEMC() < emcGen ? this.GetStoredEMC() : emcGen;
+			double toSend = this.getStoredEMC() < emcGen ? this.getStoredEMC() : emcGen;
 			
 			double starEmc = ItemBase.getEmc(inventory[0]);
-			int maxStarEmc = Utils.GetKleinStarMaxEmc(inventory[0]);
+			int maxStarEmc = Utils.getKleinStarMaxEmc(inventory[0]);
 			
 			if ((starEmc + toSend) > maxStarEmc)
 			{
@@ -165,7 +175,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 			}
 			
 			ItemBase.addEmc(inventory[0], toSend);
-			this.RemoveEmc(toSend);
+			this.removeEmc(toSend);
 		}
 		else if (hasFuel)
 		{
@@ -173,19 +183,19 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		}
 		else if (numRequest > 0 && !this.isRequestingEmc)
 		{
-			double toSend = this.GetStoredEMC() < emcGen ? this.GetStoredEMC() : emcGen;
-			this.SendEmcToRequesting(toSend / numRequest);
-			this.SendRelayBonus();
-			this.RemoveEmc(toSend);
+			double toSend = this.getStoredEMC() < emcGen ? this.getStoredEMC() : emcGen;
+			this.sendEmcToRequesting(toSend / numRequest);
+			this.sendRelayBonus();
+			this.removeEmc(toSend);
 		}
 	}
 	
-	private float GetSunRelativeEmc(int emc)
+	private float getSunRelativeEmc(int emc)
 	{
-		return (float) GetSunLevel() * emc / 16;
+		return (float) getSunLevel() * emc / 16;
 	}
 	
-	public int GetKleinStarCharge()
+	public int getKleinStarCharge()
 	{
 		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
@@ -194,16 +204,16 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		return -1;
 	}
 	
-	public int GetKleinStarChargeScaled(int i)
+	public int getKleinStarChargeScaled(int i)
 	{
 		if (inventory[0] == null || displayKleinCharge <= 0)
 		{
 			return 0;
 		}
-		return displayKleinCharge * i / Utils.GetKleinStarMaxEmc(inventory[0]);
+		return displayKleinCharge * i / Utils.getKleinStarMaxEmc(inventory[0]);
 	}
 	
-	public int GetSunLevel()
+	public int getSunLevel()
 	{
 		if (worldObj.provider.isHellWorld)
 		{
@@ -212,35 +222,38 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		return worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
 	}
 	
-	public int GetEmcScaled(int i)
+	public int getEmcScaled(int i)
 	{
 		if (displayEmc == 0) 
 		{
 			return 0;
 		}
-		return displayEmc * i / this.GetMaxEmc();
+		return displayEmc * i / this.getMaxEmc();
 	}
 	
-	public int GetSunLevelScaled(int i)
+	public int getSunLevelScaled(int i)
 	{
 		return displaySunLevel * i / 16;
 	}
 	
-	public int GetFuelUpgradeCost()
+	public int getFuelUpgradeCost()
 	{
 		if (inventory[lockSlot] == null)
 		{
-			ItemStack upgradeResult = Utils.GetNextInMap(Constants.fuelMap, inventory[0]);
-			return Constants.fuelMap.get(upgradeResult) - Constants.fuelMap.get(inventory[0]);
+			ItemStack upgradeResult = Utils.getNextInMap(Constants.FUEL_MAP, inventory[0]);
+			return Constants.FUEL_MAP.get(upgradeResult) - Constants.FUEL_MAP.get(inventory[0]);
 		}
-		else return Constants.fuelMap.get(inventory[lockSlot]) - Constants.fuelMap.get(inventory[0]);
+		else 
+		{
+			return Constants.FUEL_MAP.get(inventory[lockSlot]) - Constants.FUEL_MAP.get(inventory[0]);
+		}
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.SetEmcValue(nbt.getDouble("EMC"));
+		this.setEmcValue(nbt.getDouble("EMC"));
 		storedFuelEmc = nbt.getDouble("FuelEMC");
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
@@ -249,8 +262,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
 			byte slot = subNBT.getByte("Slot");
+			
 			if (slot >= 0 && slot < getSizeInventory())
+			{
 				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
+			}
 		}
 	}
 	
@@ -258,13 +274,17 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.GetStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEMC());
 		nbt.setDouble("FuelEMC", storedFuelEmc);
 		
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); i++)
 		{
-			if (inventory[i] == null) continue;
+			if (inventory[i] == null) 
+			{
+				continue;
+			}
+			
 			NBTTagCompound subNBT = new NBTTagCompound();
 			subNBT.setByte("Slot", (byte) i);
 			inventory[i].writeToNBT(subNBT);
@@ -292,7 +312,9 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		if (stack != null)
 		{
 			if (stack.stackSize <= qty)
+			{
 				inventory[slot] = null;
+			}
 			else
 			{
 				stack = stack.splitStack(qty);
@@ -351,13 +373,13 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 	@Override
 	public void openInventory() 
 	{
-		
+		numUsing++;
 	}
 
 	@Override
 	public void closeInventory() 
 	{
-		
+		numUsing--;
 	}
 
 	@Override

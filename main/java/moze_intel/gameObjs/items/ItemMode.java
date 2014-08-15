@@ -21,26 +21,26 @@ public abstract class ItemMode extends ItemCharge
 		this.modes = modeDescrp;
 	}
 	
-	public byte GetMode(ItemStack stack)
+	public byte getMode(ItemStack stack)
 	{
 		return stack.stackTagCompound.getByte("Mode");
 	}
 	
-	public String GetModeDescription(ItemStack stack)
+	public String getModeDescription(ItemStack stack)
 	{
 		return modes[stack.stackTagCompound.getByte("Mode")];
 	}
 	
-	protected void ChangeMode(ItemStack stack)
+	protected void changeMode(ItemStack stack)
 	{
-		byte newMode = (byte) (GetMode(stack) + 1);
+		byte newMode = (byte) (getMode(stack) + 1);
 		stack.stackTagCompound.setByte("Mode", (byte) (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	public void changeMode(ItemStack stack, EntityPlayer player)
 	{
-		ChangeMode(stack);
-		player.addChatComponentMessage(new ChatComponentText("Switched to "+modes[GetMode(stack)]+" mode"));
+		changeMode(stack);
+		player.addChatComponentMessage(new ChatComponentText("Switched to "+modes[getMode(stack)]+" mode"));
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public abstract class ItemMode extends ItemCharge
 	{
 		if (stack.hasTagCompound())
 		{
-			list.add("Mode: "+EnumChatFormatting.AQUA+GetModeDescription(stack));
+			list.add("Mode: "+EnumChatFormatting.AQUA+getModeDescription(stack));
 		}
 	}
 }

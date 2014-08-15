@@ -49,7 +49,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
     @Override
     public int getRenderType()
     {
-        return Constants.chestRenderID;
+        return Constants.CHEST_RENDER_ID;
     }
 	
 	@Override
@@ -57,7 +57,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	{
 		if (!world.isRemote) 
 		{
-			player.openGui(MozeCore.instance, Constants.alchChestGUI, world, x, y, z);
+			player.openGui(MozeCore.instance, Constants.ALCH_CHEST_GUI, world, x, y, z);
 		}
 		return true;
 	}

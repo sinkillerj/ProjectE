@@ -6,6 +6,6 @@ public class CollectorMK3Tile extends CollectorMK1Tile
 {
 	public CollectorMK3Tile()
 	{
-		super(Constants.collectorMK3Max, Constants.collectorMK3Gen, 17, 18);
+		super(Constants.COLLECTOR_MK3_MAX, Constants.COLLECTOR_MK3_GEN, 17, 18);
 	}
 }

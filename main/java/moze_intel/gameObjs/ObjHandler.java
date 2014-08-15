@@ -499,11 +499,11 @@ public class ObjHandler
 				switch (fuel.getItemDamage())
 				{
 					case 0:
-						return Constants.alchemicalCoalBurnTime;
+						return Constants.ALCH_BURN_TIME;
 					case 1:
-						return Constants.mobiusFuelBurnTime;
+						return Constants.MOBIUS_BURN_TIME;
 					case 2:
-						return Constants.aeternalisFuelBurnTime;
+						return Constants.AETERNALIS_BUR_TIME;
 				}
 			}
 			else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
@@ -511,11 +511,11 @@ public class ObjHandler
 				switch (fuel.getItemDamage())
 				{
 					case 0:
-						return Constants.alchemicalCoalBurnTime * 9;
+						return Constants.ALCH_BURN_TIME * 9;
 					case 1:
-						return Constants.mobiusFuelBurnTime * 9;
+						return Constants.MOBIUS_BURN_TIME * 9;
 					case 2:
-						return Constants.aeternalisFuelBurnTime * 9;
+						return Constants.AETERNALIS_BUR_TIME * 9;
 				}
 			}
 			

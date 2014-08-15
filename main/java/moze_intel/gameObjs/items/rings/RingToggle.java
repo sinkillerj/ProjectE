@@ -5,7 +5,6 @@ import moze_intel.gameObjs.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
@@ -56,27 +55,15 @@ public abstract class RingToggle extends ItemBase implements IItemModeChanger
 		ringOff = register.registerIcon(this.getTexture("rings", name+"_off"));
 	}
 	
-	public void playChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:heal", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
-	}
-	
-	public void playUnChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:break", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
-	}
-	
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)
 		{
 			stack.setItemDamage(1);
-			playChargeSound(player);
 		}
 		else
 		{
 			stack.setItemDamage(0);
-			playUnChargeSound(player);
 		}
 	}
 }

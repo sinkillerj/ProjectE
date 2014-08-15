@@ -45,15 +45,15 @@ public class GUICollectorMK3 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
-		int progress = tile.GetSunLevelScaled(12);
+		int progress = tile.getSunLevelScaled(12);
 		this.drawTexturedModalRect(x + 160, y + 49 - progress, 220, 13 - progress, 12, progress);
 				
 		//EMC storage. Max is 48
-		progress = tile.GetEmcScaled(48);
+		progress = tile.getEmcScaled(48);
 		this.drawTexturedModalRect(x + 98, y + 18, 0, 166, progress, 10);
 				
 		//Klein Star Charge Progress. Max is 48
-		progress = tile.GetKleinStarChargeScaled(48);
+		progress = tile.getKleinStarChargeScaled(48);
 		this.drawTexturedModalRect(x + 98, y + 58, 0, 166, progress, 10);
 	}
 }

@@ -30,7 +30,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class ClientProxy extends CommonProxy
 {	
-	public void RegisterKeyBinds()
+	public void registerKeyBinds()
 	{
 		for (int i = 0; i < KeyBinds.array.length; i++)
 		{
@@ -39,7 +39,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void RegisterRenderers() 
+	public void registerRenderers() 
 	{
 		//Items
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.alchChest), new ChestItemRenderer());
@@ -60,7 +60,7 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void RegisterClientOnlyEvents() 
+	public void registerClientOnlyEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());

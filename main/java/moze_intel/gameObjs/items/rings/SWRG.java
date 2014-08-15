@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
@@ -135,8 +134,9 @@ public class SWRG extends ItemBase
 				else 
 				{
 					if (this.consumeFuel(player, stack, 64, false))
+					{
 						ChangeMode(player, stack, newMode);
-					else PlayUnChargeSound(player);
+					}
 				}
 			}
 			else ChangeMode(player, stack, newMode);
@@ -148,7 +148,6 @@ public class SWRG extends ItemBase
 	{
 		if (this.getEmc(ring) == 0 && !this.consumeFuel(player, ring, 64, false))
 		{
-			PlayUnChargeSound(player);
 			return;
 		}
 		
@@ -207,15 +206,6 @@ public class SWRG extends ItemBase
 	public void ChangeMode(EntityPlayer player, ItemStack stack, int mode)
 	{
 		stack.setItemDamage(mode);
-		
-		if (mode == 0) 
-		{
-			PlayUnChargeSound(player);
-		}
-		else if (mode >= 1) 
-		{
-			PlayChargeSound(player);
-		}
 	}
 	
 	public boolean isFlyingEnabled(ItemStack stack)
@@ -231,16 +221,6 @@ public class SWRG extends ItemBase
 		else if (damage < 3)
 			return 0.32F;
 		else return 0.64F;
-	}
-	
-	public void PlayChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:heal", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
-	}
-	
-	public void PlayUnChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:break", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
 	}
 	
 	@Override

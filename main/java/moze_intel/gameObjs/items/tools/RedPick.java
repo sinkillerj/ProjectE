@@ -44,7 +44,7 @@ public class RedPick extends ItemMode
 		}
 		
 		EntityPlayer player = (EntityPlayer) eLiving;
-		byte mode = this.GetMode(stack);
+		byte mode = this.getMode(stack);
 		
 		if (mode == 0)
 		{

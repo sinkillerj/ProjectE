@@ -50,13 +50,13 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	{
 		TransmuteTile tile = (TransmuteTile) world.getTileEntity(x, y, z);
 			
-		if (tile.getCurrentUsername().isEmpty())
+		if (!tile.isUsed())
 		{
-			tile.setUsername(player.getCommandSenderName());
+			tile.setPlayer(player);
 			
 			if (!world.isRemote)
 			{
-				player.openGui(MozeCore.MODID, Constants.transmStoneGUI, world, x, y, z);
+				player.openGui(MozeCore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
 			}
 		}
 		else

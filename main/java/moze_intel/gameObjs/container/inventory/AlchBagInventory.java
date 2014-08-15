@@ -117,7 +117,7 @@ public class AlchBagInventory implements IInventory
 		return true;
 	}
 	
-	public void Update()
+	public void update()
 	{
 		readFromNBT(invItem.stackTagCompound);
 	}

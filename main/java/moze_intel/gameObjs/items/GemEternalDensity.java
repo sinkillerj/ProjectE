@@ -64,12 +64,12 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 			
 			ItemStack current = inv.getStackInSlot(i);
 			
-			if (current == null || Utils.AreItemStacksEqual(Utils.getNormalizedStack(current), getItemStackTarget(getTarget(stack))))
+			if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), getItemStackTarget(getTarget(stack))))
 			{
 				continue;
 			}
 					
-			if (Utils.DoesItemHaveEmc(current) && current.getMaxStackSize() > 1)
+			if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
 			{
 				consumeItem(stack, current, inv, i);
 				break;
@@ -144,7 +144,7 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 	
 	public void consumeItem(ItemStack gem, ItemStack stack, IInventory inv, int slotIndex)
 	{
-		int itemEmc = Utils.GetEmcValue(stack);
+		int itemEmc = Utils.getEmcValue(stack);
 		inv.decrStackSize(slotIndex, 1);
 		this.addEmc(gem, itemEmc);
 		addStackToBuffer(gem, Utils.getNormalizedStack(stack));

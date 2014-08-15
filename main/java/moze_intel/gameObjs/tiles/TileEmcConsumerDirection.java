@@ -12,7 +12,7 @@ public class TileEmcConsumerDirection extends TileEntityDirection
 	
 	public TileEmcConsumerDirection()
 	{
-		maxAmount = Constants.tileEmcConsumerMaxEmc;
+		maxAmount = Constants.TILE_MAX_EMC;
 	}
 	
 	public TileEmcConsumerDirection(int maxAmount)
@@ -20,7 +20,7 @@ public class TileEmcConsumerDirection extends TileEntityDirection
 		this.maxAmount = maxAmount;
 	}
 	
-	public void AddEmc(double amount)
+	public void addEmc(double amount)
 	{
 		emc += amount;
 		
@@ -29,12 +29,12 @@ public class TileEmcConsumerDirection extends TileEntityDirection
 			emc = maxAmount;
 		}
 	}
-	public void AddEmc(ItemStack stack)
+	public void addEmc(ItemStack stack)
 	{
-		AddEmc(Utils.GetEmcValue(stack) * stack.stackSize);
+		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
 	}
 	
-	public void RemoveEmc(double amount)
+	public void removeEmc(double amount)
 	{
 		emc -= amount;
 		
@@ -44,27 +44,27 @@ public class TileEmcConsumerDirection extends TileEntityDirection
 		}
 	}
 	
-	public void RemoveItemRelativeEmc(ItemStack stack)
+	public void removeItemRelativeEmc(ItemStack stack)
 	{
-		RemoveEmc(Utils.GetEmcValue(stack));
+		removeEmc(Utils.getEmcValue(stack));
 	}
 	
-	public double GetStoredEMC()
+	public double getStoredEMC()
 	{
 		return emc;
 	}
 	
-	public int GetMaxEmc()
+	public int getMaxEmc()
 	{
 		return maxAmount;
 	}
 	
-	public boolean HasMaxedEmc()
+	public boolean hasMaxedEmc()
 	{
 		return emc == maxAmount;
 	}
 	
-	public void SetEmcValue(double value)
+	public void setEmcValue(double value)
 	{
 		emc = value;
 	}

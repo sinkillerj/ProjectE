@@ -4,20 +4,17 @@ import moze_intel.gameObjs.tiles.RelayMK1Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class RelayMK1Container extends Container 
 {
 	private RelayMK1Tile tile;
-	private int storedEmc;
 	
 	public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay)
 	{
 		this.tile = relay;
+		tile.openInventory();
 		
 		//Klein Star charge slot
 		this.addSlotToContainer(new Slot(tile, 0, 67, 43));
@@ -41,34 +38,11 @@ public class RelayMK1Container extends Container
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
-    {
-        super.addCraftingToCrafters(par1ICrafting);
-        par1ICrafting.sendProgressBarUpdate(this, 0, tile.displayEmc);
-    }
-	
-	@Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-        
-        for (int i = 0; i < this.crafters.size(); ++i)
-        {
-            ICrafting icrafting = (ICrafting)this.crafters.get(i);
-
-            if (storedEmc != tile.displayEmc)//tile.GetStoredEMC())
-                icrafting.sendProgressBarUpdate(this, 0, tile.displayEmc);//(int) tile.GetStoredEMC());
-        }
-        
-        storedEmc = tile.displayEmc;//(int) tile.GetStoredEMC();
-    }
-	
-	@SideOnly(Side.CLIENT)
-    public void updateProgressBar(int par1, int par2)
-    {
-        if (par1 == 0)
-            tile.displayEmc = par2;
-    }
+	public void onContainerClosed(EntityPlayer player)
+	{
+		super.onContainerClosed(player);
+		tile.closeInventory();
+	}
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)

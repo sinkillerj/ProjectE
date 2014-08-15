@@ -14,7 +14,6 @@ public class ConnectionHandler
 	@SubscribeEvent
 	public void playerConnect(PlayerLoggedInEvent event)
 	{
-		System.out.println("Player "+event.player.getCommandSenderName()+" logged in.");
 		MozeCore.pktHandler.sendTo(new ClientSyncPKT(EMCMapper.emc), (EntityPlayerMP) event.player);
 	}
 	

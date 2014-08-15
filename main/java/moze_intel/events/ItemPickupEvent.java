@@ -27,7 +27,7 @@ public class ItemPickupEvent
 		
 		AlchBagInventory inv = new AlchBagInventory(bag);
 		
-		if (Utils.HasSpace(inv, event.item.getEntityItem()))
+		if (Utils.hasSpace(inv, event.item.getEntityItem()))
 		{
 			ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
 			if (remain == null)
@@ -49,7 +49,7 @@ public class ItemPickupEvent
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.InvContainsItem(new AlchBagInventory(stack), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(new AlchBagInventory(stack), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

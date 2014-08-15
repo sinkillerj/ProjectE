@@ -1,5 +1,7 @@
 package moze_intel.gameObjs.tiles;
 
+import moze_intel.MozeCore;
+import moze_intel.network.packets.TTableSyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
 import net.minecraft.item.ItemStack;
@@ -13,7 +15,7 @@ public abstract class TileEmc extends TileEntity
 	
 	public TileEmc()
 	{
-		maxAmount = Constants.tileEmcConsumerMaxEmc;
+		maxAmount = Constants.TILE_MAX_EMC;
 	}
 	
 	public TileEmc(int maxAmount)
@@ -21,7 +23,7 @@ public abstract class TileEmc extends TileEntity
 		this.maxAmount = maxAmount;
 	}
 	
-	public void AddEmc(double amount)
+	public void addEmc(double amount)
 	{
 		emc += amount;
 		
@@ -29,14 +31,16 @@ public abstract class TileEmc extends TileEntity
 		{
 			emc = maxAmount;
 		}
+		
+		sendUpdatePKT();
 	}
 	
-	public void AddEmc(ItemStack stack)
+	public void addEmc(ItemStack stack)
 	{
-		AddEmc(Utils.GetEmcValue(stack) * stack.stackSize);
+		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
 	}
 	
-	public void RemoveEmc(double amount)
+	public void removeEmc(double amount)
 	{
 		emc -= amount;
 		
@@ -44,30 +48,47 @@ public abstract class TileEmc extends TileEntity
 		{
 			emc = 0;
 		}
+		
+		sendUpdatePKT();
 	}
 	
-	public void RemoveItemRelativeEmc(ItemStack stack)
+	public void removeItemRelativeEmc(ItemStack stack)
 	{
-		RemoveEmc(Utils.GetEmcValue(stack));
+		removeEmc(Utils.getEmcValue(stack));
 	}
 	
-	public double GetStoredEMC()
+	public double getStoredEMC()
 	{
 		return emc;
 	}
 	
-	public int GetMaxEmc()
+	public int getMaxEmc()
 	{
 		return maxAmount;
 	}
 	
-	public boolean HasMaxedEmc()
+	public boolean hasMaxedEmc()
 	{
 		return emc == maxAmount;
 	}
 	
-	public void SetEmcValue(double value)
+	public void setEmcValue(double value)
 	{
 		emc = value;
+		
+		sendUpdatePKT();
+	}
+	
+	public void setEmcWithoutPKT(double value)
+	{
+		emc = value;
+	}
+	
+	public void sendUpdatePKT()
+	{
+		if (this.worldObj != null && !this.worldObj.isRemote)
+		{
+			MozeCore.pktHandler.sendToAll(new TTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
+		}
 	}
 }

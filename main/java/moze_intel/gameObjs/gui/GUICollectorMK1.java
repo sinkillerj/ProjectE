@@ -27,8 +27,11 @@ public class GUICollectorMK1 extends GuiContainer
 		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 60, 32, 4210752);
 		
 		int kleinCharge = tile.displayKleinCharge;
+		
 		if (kleinCharge != -1)
+		{
 			this.fontRendererObj.drawString(Integer.toString(kleinCharge), 60, 44, 4210752);
+		}
 	}
 
 	@Override
@@ -43,14 +46,14 @@ public class GUICollectorMK1 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
-		int progress = tile.GetSunLevelScaled(12);
+		int progress = tile.getSunLevelScaled(12);
 		this.drawTexturedModalRect(x + 126, y + 49 - progress, 177, 13 - progress, 12, progress);
 		
 		//EMC storage. Max is 48
-		this.drawTexturedModalRect(x + 64, y + 18, 0, 166, tile.GetEmcScaled(48), 10);
+		this.drawTexturedModalRect(x + 64, y + 18, 0, 166, tile.getEmcScaled(48), 10);
 		
 		//Klein Star Charge Progress. Max is 48
-		progress = tile.GetKleinStarChargeScaled(48);
+		progress = tile.getKleinStarChargeScaled(48);
 		this.drawTexturedModalRect(x + 64, y + 58, 0, 166, progress, 10);
 	}
 }

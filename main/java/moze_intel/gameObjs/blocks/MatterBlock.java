@@ -3,7 +3,6 @@ package moze_intel.gameObjs.blocks;
 import java.util.List;
 
 import moze_intel.gameObjs.ObjHandler;
-import moze_intel.gameObjs.items.tools.DarkPickaxe;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -33,6 +32,7 @@ public class MatterBlock extends Block
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
+		
 		if (meta == 0) 
 		{
 			return 1000000.0F;
@@ -50,7 +50,14 @@ public class MatterBlock extends Block
 		
 		if (stack != null)
 		{
-			return stack.getItem() instanceof DarkPickaxe;
+			if (meta == 1)
+			{
+				return stack.getItem() == ObjHandler.rmPick;
+			}
+			else
+			{
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick;
+			}
 		}
 		
         return false;

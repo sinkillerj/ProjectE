@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -138,7 +137,12 @@ public class EMCMapper
 		}
 	}
 	
-	private static void addMapping(ItemStack stack, int value)
+	public static void clearMap()
+	{
+		emc.clear();
+	}
+	
+	public static void addMapping(ItemStack stack, int value)
 	{
 		addMapping(new IStack(stack), value);
 	}

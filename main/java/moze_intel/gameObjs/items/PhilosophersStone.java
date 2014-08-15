@@ -46,12 +46,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 		Block block = (mop == null || mop.typeOfHit != MovingObjectType.BLOCK) ? null : world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-		Block result = (block == null) ? null : Utils.GetTransmutationResult(block, player.isSneaking());
+		Block result = (block == null) ? null : Utils.getTransmutationResult(block, player.isSneaking());
 		
 		if (result != null)
 		{
 			Coordinates pos = new Coordinates(mop);
-			int mode = this.GetMode(stack);
+			int mode = this.getMode(stack);
 			int charge = this.getCharge(stack);			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			

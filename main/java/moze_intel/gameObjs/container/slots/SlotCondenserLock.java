@@ -18,7 +18,7 @@ public class SlotCondenserLock extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
     {
-        return Utils.DoesItemHaveEmc(stack);
+        return Utils.doesItemHaveEmc(stack);
     }
 	
 	@Override

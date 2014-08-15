@@ -21,6 +21,6 @@ public class SlotCollectorInv extends Slot
 			return false;
 		}
 		
-        return stack.getItem().equals(ObjHandler.kleinStars) || Constants.fuelMap.containsKey(stack);
+        return stack.getItem().equals(ObjHandler.kleinStars) || Constants.FUEL_MAP.containsKey(stack);
     }
 }

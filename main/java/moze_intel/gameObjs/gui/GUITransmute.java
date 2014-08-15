@@ -36,7 +36,7 @@ public class GUITransmute extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString("Transmutation", 28, 6, 4210752);
-		String emc = String.format("EMC: %,d", (int) tile.GetStoredEMC()); 
+		String emc = String.format("EMC: %,d", (int) tile.getStoredEMC()); 
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 96, 4210752);
 		
 		if (tile.learnFlag > 0)

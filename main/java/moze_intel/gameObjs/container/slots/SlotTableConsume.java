@@ -29,16 +29,16 @@ public class SlotTableConsume extends Slot
 		
 		if (stack.getItem().equals(ObjHandler.kleinStars))
 		{
-			int remainEmc = tile.GetMaxEmc() - (int) Math.ceil(tile.GetStoredEMC());
+			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEMC());
 			
 			if (ItemBase.getEmc(stack) >= remainEmc)
 			{
-				tile.AddEmc(remainEmc);
+				tile.addEmc(remainEmc);
 				ItemBase.removeEmc(stack, remainEmc);
 			}
 			else
 			{
-				tile.AddEmc(ItemBase.getEmc(stack));
+				tile.addEmc(ItemBase.getEmc(stack));
 				ItemBase.setEmc(stack, 0);
 			}
 			
@@ -47,12 +47,15 @@ public class SlotTableConsume extends Slot
 	        return;
 		}
 		
-		while (!tile.HasMaxedEmc() && stack.stackSize > 0)
+		int toAdd = 0;
+		
+		while (!tile.hasMaxedEmc() && stack.stackSize > 0)
 		{
-			tile.AddEmc(Utils.GetEmcValue(stack));
+			toAdd += Utils.getEmcValue(stack);
 			stack.stackSize--;
 		}
 		
+		tile.addEmc(toAdd);
         this.onSlotChanged();
         tile.handleKnowledge(cache);
     }
@@ -60,6 +63,6 @@ public class SlotTableConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !tile.HasMaxedEmc() && Utils.DoesItemHaveEmc(stack);
+		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
 	}
 }

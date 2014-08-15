@@ -26,21 +26,20 @@ public class Ignition extends RingToggle
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
 			{
 				stack.setItemDamage(0);
-				this.playUnChargeSound(player);
 			}
 			else 
 			{
-				SetNearbyOnFlames(world, player);
+				setNearbyOnFlames(world, player);
 				this.removeEmc(stack, 0.32F);
 			}
 		}
 		else 
 		{
-			ExtinguishNearby(world, player);
+			extinguishNearby(world, player);
 		}
 	}
 	
-	private void ExtinguishNearby(World world, EntityPlayer player)
+	private void extinguishNearby(World world, EntityPlayer player)
 	{
 		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
 			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
@@ -49,7 +48,7 @@ public class Ignition extends RingToggle
 						world.setBlockToAir(x, y, z);
 	}
 	
-	private void SetNearbyOnFlames(World world, EntityPlayer player)
+	private void setNearbyOnFlames(World world, EntityPlayer player)
 	{
 		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
 			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
@@ -66,18 +65,16 @@ public class Ignition extends RingToggle
 		{
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
 			{
-				this.playUnChargeSound(player);
+				//NOOP (used to be sounds)
 			}
 			else
 			{
 				stack.setItemDamage(1);
-				this.playChargeSound(player);
 			}
 		}
 		else
 		{
 			stack.setItemDamage(0);
-			this.playUnChargeSound(player);
 		}
 	}
 }

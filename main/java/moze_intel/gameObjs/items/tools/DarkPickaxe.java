@@ -44,7 +44,7 @@ public class DarkPickaxe extends ItemMode
 		}
 		
 		EntityPlayer player = (EntityPlayer) eLiving;
-		byte mode = this.GetMode(stack);
+		byte mode = this.getMode(stack);
 		
 		if (mode == 0)
 		{
@@ -199,6 +199,7 @@ public class DarkPickaxe extends ItemMode
 		{
 			return 14.0f + (12.0F * this.getCharge(stack));
 		}
+		
 		return 1.0F;
 	}
 	

@@ -52,53 +52,53 @@ public class GuiHandler implements IGuiHandler
 		
 		switch (ID)
 		{
-			case Constants.alchChestGUI:
+			case Constants.ALCH_CHEST_GUI:
 				if (tile != null && tile instanceof AlchChestTile)
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
 				break;
-			case Constants.alchBagGUI:
+			case Constants.ALCH_BAG_GUI:
 				return new AlchBagContainer(player.inventory, new AlchBagInventory(player.getHeldItem()));
-			case Constants.transmStoneGUI:
+			case Constants.TRANSMUTE_STONE_GUI:
 				if (tile != null && tile instanceof TransmuteTile)
 					return new TransmuteContainer(player.inventory, (TransmuteTile) tile);
 				break;
-			case Constants.condenserGUI:
+			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);
 				break;
-			case Constants.rmFurnaceGUI:
+			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new RMFurnaceContainer(player.inventory, (RMFurnaceTile) tile);
 				break;
-			case Constants.dmFurnaceGUI:
+			case Constants.DM_FURNACE_GUI:
 				if (tile != null && tile instanceof DMFurnaceTile)
 					return new DMFurnaceContainer(player.inventory, (DMFurnaceTile) tile);
 				break;
-			case Constants.collectorMK1GUI:
+			case Constants.COLLECTOR1_GUI:
 				if (tile != null && tile instanceof CollectorMK1Tile)
 					return new CollectorMK1Container(player.inventory, (CollectorMK1Tile) tile);
 				break;
-			case Constants.collectorMK2GUI:
+			case Constants.COLLECTOR2_GUI:
 				if (tile != null && tile instanceof CollectorMK2Tile)
 					return new CollectorMK2Container(player.inventory, (CollectorMK2Tile) tile);
 				break;
-			case Constants.collectorMK3GUI:
+			case Constants.COLLECTOR3_GUI:
 				if (tile != null && tile instanceof CollectorMK3Tile)
 					return new CollectorMK3Container(player.inventory, (CollectorMK3Tile) tile);
 				break;
-			case Constants.relayMK1GUI:
+			case Constants.RELAY1_GUI:
 				if (tile != null && tile instanceof RelayMK1Tile)
 					return new RelayMK1Container(player.inventory, (RelayMK1Tile) tile);
 				break;
-			case Constants.relayMK2GUI:
+			case Constants.RELAY2_GUI:
 				if (tile != null && tile instanceof RelayMK2Tile)
 					return new RelayMK2Container(player.inventory, (RelayMK2Tile) tile);
 				break;
-			case Constants.relayMK3GUI:
+			case Constants.RELAY3_GUI:
 				if (tile != null && tile instanceof RelayMK3Tile)
 					return new RelayMK3Container(player.inventory, (RelayMK3Tile) tile);
 				break;
-			case Constants.mercurialEyeGUI:
+			case Constants.MERCURIAL_GUI:
 				return new MercurialEyeContainer(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
 		}
 		return null;
@@ -111,53 +111,53 @@ public class GuiHandler implements IGuiHandler
 		
 		switch (ID)
 		{
-			case Constants.alchChestGUI:
+			case Constants.ALCH_CHEST_GUI:
 				if (tile != null && tile instanceof AlchChestTile)
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
 				break;
-			case Constants.alchBagGUI:
+			case Constants.ALCH_BAG_GUI:
 				return new GUIAlchChest(player.inventory, new AlchBagInventory(player.getHeldItem()));
-			case Constants.transmStoneGUI:
+			case Constants.TRANSMUTE_STONE_GUI:
 				if (tile != null && tile instanceof TransmuteTile)
 					return new GUITransmute(player.inventory, (TransmuteTile) tile);
 				break;
-			case Constants.condenserGUI:
+			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new GUICondenser(player.inventory, (CondenserTile) tile);
 				break;
-			case Constants.rmFurnaceGUI:
+			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new GUIRMFurnace(player.inventory, (RMFurnaceTile) tile);
 				break;
-			case Constants.dmFurnaceGUI:
+			case Constants.DM_FURNACE_GUI:
 				if (tile != null && tile instanceof DMFurnaceTile)
 					return new GUIDMFurnace(player.inventory, (DMFurnaceTile) tile);
 				break;
-			case Constants.collectorMK1GUI:
+			case Constants.COLLECTOR1_GUI:
 				if (tile != null && tile instanceof CollectorMK1Tile)
 					return new GUICollectorMK1(player.inventory, (CollectorMK1Tile) tile);
 				break;
-			case Constants.collectorMK2GUI:
+			case Constants.COLLECTOR2_GUI:
 				if (tile != null && tile instanceof CollectorMK2Tile)
 					return new GUICollectorMK2(player.inventory, (CollectorMK2Tile) tile);
 				break;
-			case Constants.collectorMK3GUI:
+			case Constants.COLLECTOR3_GUI:
 				if (tile != null && tile instanceof CollectorMK3Tile)
 					return new GUICollectorMK3(player.inventory, (CollectorMK3Tile) tile);
 				break;
-			case Constants.relayMK1GUI:
+			case Constants.RELAY1_GUI:
 				if (tile != null && tile instanceof RelayMK1Tile)
 					return new GUIRelayMK1(player.inventory, (RelayMK1Tile) tile);
 				break;
-			case Constants.relayMK2GUI:
+			case Constants.RELAY2_GUI:
 				if (tile != null && tile instanceof RelayMK2Tile)
 					return new GUIRelayMK2(player.inventory, (RelayMK2Tile) tile);
 				break;
-			case Constants.relayMK3GUI:
+			case Constants.RELAY3_GUI:
 				if (tile != null && tile instanceof RelayMK3Tile)
 					return new GUIRelayMK3(player.inventory, (RelayMK3Tile) tile);
 				break;
-			case Constants.mercurialEyeGUI:
+			case Constants.MERCURIAL_GUI:
 				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
 		}
 		return null;

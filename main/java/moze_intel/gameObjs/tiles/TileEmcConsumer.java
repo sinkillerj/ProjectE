@@ -8,43 +8,43 @@ import net.minecraft.tileentity.TileEntity;
 public abstract class TileEmcConsumer extends TileEntity
 {
 	private int emc;
-	private final int maxAmount = Constants.tileEmcConsumerMaxEmc;
+	private final int MAX_AMOUNT = Constants.TILE_MAX_EMC;
 	
-	public void AddEmc(int amount)
+	public void addEmc(int amount)
 	{
 		emc += amount;
-		if (emc > maxAmount || emc < 0)
-			emc = maxAmount;
+		if (emc > MAX_AMOUNT || emc < 0)
+			emc = MAX_AMOUNT;
 	}
 	
-	public void AddEmc(ItemStack stack)
+	public void addEmc(ItemStack stack)
 	{
-		AddEmc(Utils.GetEmcValue(stack) * stack.stackSize);
+		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
 	}
 	
-	public void RemoveEmc(int amount)
+	public void removeEmc(int amount)
 	{
 		emc -= amount;
 		if (emc < 0)
 			emc = 0;
 	}
 	
-	public void RemoveItemRelativeEmc(ItemStack stack)
+	public void removeItemRelativeEmc(ItemStack stack)
 	{
-		RemoveEmc(Utils.GetEmcValue(stack));
+		removeEmc(Utils.getEmcValue(stack));
 	}
 	
-	public int GetStoredEMC()
+	public int getStoredEMC()
 	{
 		return emc;
 	}
 	
-	public boolean HasMaxedEmc()
+	public boolean hasMaxedEmc()
 	{
-		return emc == maxAmount;
+		return emc == MAX_AMOUNT;
 	}
 	
-	public void SetEmcValue(int value)
+	public void setEmcValue(int value)
 	{
 		emc = value;
 	}
