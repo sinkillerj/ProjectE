@@ -24,8 +24,10 @@ public class ThreadCheckPEUpdate extends Thread
 			connection.close();
 			
 			if(!version.equals(MozeCore.VERSION))
+			{
 				MozeCore.logger.logInfo("An update is available for Project E (version " + version + "). You have version " + MozeCore.VERSION + " installed.");
 				// TODO send message to player as well
+			}
 		}
 		catch(Exception e)
 		{
