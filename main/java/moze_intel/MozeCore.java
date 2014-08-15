@@ -81,6 +81,7 @@ public class MozeCore
     	proxy.RegisterKeyBinds();
     	proxy.RegisterRenderers();
     	Utils.init();
+    	new ThreadCheckPEUpdate().start();
     }
 
     @Mod.EventHandler
