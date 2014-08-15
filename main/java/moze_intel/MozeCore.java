@@ -99,7 +99,6 @@ public class MozeCore
     	FileHelper.getWorldDir();
     	KnowledgeHandler.load();
     	logger.logInfo("Loading player transmutation knowledge.");
-    	new ThreadCheckPEUpdate().start();
     }
     
     @Mod.EventHandler
