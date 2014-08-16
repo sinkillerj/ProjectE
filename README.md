@@ -10,7 +10,7 @@ If you have a bug to report, open an issue. I'll try to fix every single one of 
 ##Changelog
 
 ###Version Alpha 0.1e
-* NEW: Fixed incorrect Thread starting. Sorry for that one.
+* FIX: Incorrect Thread starting. Sorry for that one.
 
 ###Version Alpha 0.1d
 
