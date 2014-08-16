@@ -9,11 +9,23 @@ If you have a bug to report, open an issue. I'll try to fix every single one of 
 
 ##Changelog
 
-###Version 0.1b
+###Version Alpha 0.1d
+
+* NEW: Update checker
+* NEW: Added reverse recipes for matter/fuel blocks
+* NEW: zh_CN.lang
+
+* FIX: Transmutation table knowledge reset on player death
+* FIX: Fuel mapping initialization 
+
+###Version Alpha 0.1c
+
+* FIX: Major client-packet leak
+
+###Version Alpha 0.1b
 
 * NEW: custom EMC mapping file
 * NEW: basic configuration file
-
 
 * FIX: Fixed Transmutation Table knowledge saving/syncing
 * FIX: Fixed Katar right click bug
