@@ -525,9 +525,9 @@ public class Utils
 			}
 			else if (!metRequirement)
 			{
-				if(Constants.FUEL_MAP.containsKey(stack))
+				if(Constants.isStackFuel(stack))
 				{
-					int emc = Constants.FUEL_MAP.get(stack);
+					int emc = Utils.getEmcValue(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 					
 					if (stack.stackSize >= toRemove)

@@ -1,6 +1,6 @@
 package moze_intel.utils;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import moze_intel.EMC.IStack;
 import moze_intel.gameObjs.ObjHandler;
@@ -10,7 +10,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class Constants 
 {
-	public static final LinkedHashMap<IStack, Integer> FUEL_MAP = new LinkedHashMap(); 
+	private static final LinkedList FUEL_MAP = new LinkedList(); 
 	
 	public static final float PLAYER_WALK_SPEED = 0.1F;
 	
@@ -66,14 +66,19 @@ public class Constants
 	
 	public static void init()
 	{
-		FUEL_MAP.put(new IStack(new ItemStack(Items.coal, 1, 1)), 32);
-		FUEL_MAP.put(new IStack(new ItemStack(Items.redstone)), 64);
-		FUEL_MAP.put(new IStack(new ItemStack(Items.coal)), 128);
-		FUEL_MAP.put(new IStack(new ItemStack(Items.gunpowder)), 192);
-		FUEL_MAP.put(new IStack(new ItemStack(Items.glowstone_dust)), 384);
-		FUEL_MAP.put(new IStack(new ItemStack(Items.blaze_powder)), 768);
-		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 0)), 512);
-		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 1)), 2048);
-		FUEL_MAP.put(new IStack(new ItemStack(ObjHandler.fuels, 1, 2)), 8192);
+		FUEL_MAP.add(new IStack(new ItemStack(Items.coal, 1, 1)));
+		FUEL_MAP.add(new IStack(new ItemStack(Items.redstone)));
+		FUEL_MAP.add(new IStack(new ItemStack(Items.coal)));
+		FUEL_MAP.add(new IStack(new ItemStack(Items.gunpowder)));
+		FUEL_MAP.add(new IStack(new ItemStack(Items.glowstone_dust)));
+		FUEL_MAP.add(new IStack(new ItemStack(Items.blaze_powder)));
+		FUEL_MAP.add(new IStack(new ItemStack(ObjHandler.fuels, 1, 0)));
+		FUEL_MAP.add(new IStack(new ItemStack(ObjHandler.fuels, 1, 1)));
+		FUEL_MAP.add(new IStack(new ItemStack(ObjHandler.fuels, 1, 2)));
+	}
+	
+	public static boolean isStackFuel(ItemStack stack)
+	{
+		return FUEL_MAP.contains(new IStack(stack));
 	}
 }

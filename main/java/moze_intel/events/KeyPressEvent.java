@@ -11,9 +11,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class KeyPressEvent 
 {
-	private boolean firstJump = false;
-	long lastJump;
-	
 	@SubscribeEvent
 	public void keyPress(KeyInputEvent event)
 	{

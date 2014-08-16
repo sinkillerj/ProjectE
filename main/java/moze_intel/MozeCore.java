@@ -10,6 +10,7 @@ import moze_intel.events.ConnectionHandler;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.events.RegisterPropertiesEvent;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientKnowledgeSyncPKT;
 import moze_intel.network.packets.ClientSyncPKT;
 import moze_intel.network.packets.CollectorSyncPKT;
@@ -25,6 +26,7 @@ import moze_intel.proxies.CommonProxy;
 import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
+import moze_intel.utils.ThreadCheckUpdate;
 import moze_intel.utils.Utils;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -45,7 +47,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1b";
+    public static final String VERSION = "Alpha 0.1d";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;
@@ -83,8 +85,7 @@ public class MozeCore
     	pktHandler.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
     	pktHandler.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
     	pktHandler.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
-    	
-    	Constants.init();
+    	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -97,6 +98,8 @@ public class MozeCore
     	
     	ObjHandler.Register();
     	ObjHandler.AddRecipes();
+    	
+    	Constants.init();
     }
     
     @EventHandler
@@ -110,11 +113,16 @@ public class MozeCore
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
+    	new ThreadCheckUpdate(true).run();
+    	
     	FileHelper.readUserData();
     	
     	logger.logInfo("Starting server-side EMC mapping.");
+    	
     	RecipeMapper.map();
-    	moze_intel.EMC.EMCMapper.map();
+    	EMCMapper.map();
+    	
+    	logger.logInfo("Registered "+EMCMapper.emc.size()+" EMC values.");
     }
     
     @Mod.EventHandler

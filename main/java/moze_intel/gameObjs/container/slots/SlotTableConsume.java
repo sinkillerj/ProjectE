@@ -33,12 +33,12 @@ public class SlotTableConsume extends Slot
 			
 			if (ItemBase.getEmc(stack) >= remainEmc)
 			{
-				tile.addEmc(remainEmc);
+				tile.addEmcWithPKT(remainEmc);
 				ItemBase.removeEmc(stack, remainEmc);
 			}
 			else
 			{
-				tile.addEmc(ItemBase.getEmc(stack));
+				tile.addEmcWithPKT(ItemBase.getEmc(stack));
 				ItemBase.setEmc(stack, 0);
 			}
 			
@@ -55,7 +55,7 @@ public class SlotTableConsume extends Slot
 			stack.stackSize--;
 		}
 		
-		tile.addEmc(toAdd);
+		tile.addEmcWithPKT(toAdd);
         this.onSlotChanged();
         tile.handleKnowledge(cache);
     }

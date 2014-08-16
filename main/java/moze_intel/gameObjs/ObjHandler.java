@@ -479,6 +479,13 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(gemLegs), rmLegs, new ItemStack(kleinStars, 1, 5), blackHole, timeWatch);
 		GameRegistry.addShapelessRecipe(new ItemStack(gemFeet), rmFeet, new ItemStack(kleinStars, 1, 5), swrg, swrg);
 		
+		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 0), matterBlock);
+		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 1), new ItemStack(matterBlock, 1, 1));
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 0), new ItemStack(fuelBlock, 1, 0));
+		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 1), new ItemStack(fuelBlock, 1, 1));
+		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
+		
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());

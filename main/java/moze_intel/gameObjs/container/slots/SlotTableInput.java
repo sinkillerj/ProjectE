@@ -41,17 +41,17 @@ public class SlotTableInput extends Slot
 			if (tile.getStoredEMC() >= remainingEmc)
 			{
 				ItemBase.addEmc(stack, remainingEmc);
-				tile.removeEmc(remainingEmc);
+				tile.removeEmcWithPKT(remainingEmc);
 			}
 			else
 			{
 				ItemBase.addEmc(stack, tile.getStoredEMC());
-				tile.setEmcValue(0);
+				tile.setEmcValueWithPKT(0);
 			}
 		}
 		else
 		{
-			tile.addEmc(Utils.getEmcValue(stack));
+			tile.addEmcWithPKT(Utils.getEmcValue(stack));
 		}
 		
 		tile.handleKnowledge(stack.copy());
@@ -64,7 +64,7 @@ public class SlotTableInput extends Slot
 		
 		if (!stack.getItem().equals(ObjHandler.kleinStars))
 		{
-			tile.removeEmc(Utils.getEmcValue(stack));
+			tile.removeEmcWithPKT(Utils.getEmcValue(stack));
 			tile.updateOutputs();
 		}
 	}

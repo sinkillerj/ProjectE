@@ -25,7 +25,7 @@ public class SlotTableOutput extends Slot
 		
 		ItemStack stack = getStack().copy();
 		stack.stackSize = par1;
-		tile.removeItemRelativeEmc(stack);
+		tile.removeItemRelativeEmcWithPKT(stack);
 		tile.checkForUpdates();
 		
 		return stack;

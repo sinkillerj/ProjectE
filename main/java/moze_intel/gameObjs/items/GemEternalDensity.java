@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -64,7 +64,7 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 			
 			ItemStack current = inv.getStackInSlot(i);
 			
-			if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), getItemStackTarget(getTarget(stack))))
+			if (current == null || current.getItem() instanceof ItemFood || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), getItemStackTarget(getTarget(stack))))
 			{
 				continue;
 			}
@@ -87,12 +87,10 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 			if (stack.getItemDamage() == 0)
 			{
 				stack.setItemDamage(1);
-				playChargeSound(player);
 			}
 			else
 			{
 				stack.setItemDamage(0);
-				playUnChargeSound(player);
 				onGemUncharge(player, stack);
 			}
 		}
@@ -192,17 +190,7 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 	{
 		return stack.stackTagCompound.getTagList("Item Buffer", NBT.TAG_COMPOUND);
 	}
-	
-	private void playChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:heal", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
-	}
-	
-	private void playUnChargeSound(EntityPlayer player)
-	{
-		player.worldObj.playSoundAtEntity(player, "projecte:break", 0.8F, 1.0F / (Item.itemRand.nextFloat() * 0.4F + 0.8F));
-	}
-	
+
 	private void changeTarget(ItemStack stack)
 	{
 		byte current = stack.stackTagCompound.getByte("Target");

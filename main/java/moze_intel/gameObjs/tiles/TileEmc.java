@@ -31,6 +31,11 @@ public abstract class TileEmc extends TileEntity
 		{
 			emc = maxAmount;
 		}
+	}
+	
+	public void addEmcWithPKT(double amount)
+	{
+		addEmc(amount);
 		
 		sendUpdatePKT();
 	}
@@ -48,6 +53,11 @@ public abstract class TileEmc extends TileEntity
 		{
 			emc = 0;
 		}
+	}
+	
+	public void removeEmcWithPKT(double amount)
+	{
+		removeEmc(amount);
 		
 		sendUpdatePKT();
 	}
@@ -55,6 +65,13 @@ public abstract class TileEmc extends TileEntity
 	public void removeItemRelativeEmc(ItemStack stack)
 	{
 		removeEmc(Utils.getEmcValue(stack));
+	}
+	
+	public void removeItemRelativeEmcWithPKT(ItemStack stack)
+	{
+		removeItemRelativeEmc(stack);
+		
+		sendUpdatePKT();
 	}
 	
 	public double getStoredEMC()
@@ -75,13 +92,13 @@ public abstract class TileEmc extends TileEntity
 	public void setEmcValue(double value)
 	{
 		emc = value;
-		
-		sendUpdatePKT();
 	}
 	
-	public void setEmcWithoutPKT(double value)
+	public void setEmcValueWithPKT(double value)
 	{
-		emc = value;
+		setEmcValue(value);
+		
+		sendUpdatePKT();
 	}
 	
 	public void sendUpdatePKT()

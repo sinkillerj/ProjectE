@@ -3,6 +3,7 @@ package moze_intel.network.packets;
 import io.netty.buffer.ByteBuf;
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.tiles.TileEmc;
+import moze_intel.utils.Coordinates;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -33,11 +34,12 @@ public class TTableSyncPKT implements IMessage, IMessageHandler<TTableSyncPKT, I
 		
 		if (tile == null)
 		{
-			MozeCore.logger.logFatal("NULL tile-entity reference! Please report to dev!");
+			MozeCore.logger.logFatal("NULL transmutation-tile reference! Please report to dev!");
+			MozeCore.logger.logFatal("Coords: "+new Coordinates(pkt.x, pkt.y, pkt.z));
 		}
 		else if (tile instanceof TileEmc)
 		{
-			((TileEmc) tile).setEmcWithoutPKT(pkt.emc);
+			((TileEmc) tile).setEmcValue(pkt.emc);
 		}
 		
 		return null;

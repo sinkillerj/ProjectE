@@ -71,7 +71,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		if (lock != null)
 		{
-			if (Constants.FUEL_MAP.containsKey(lock))
+			if (Constants.isStackFuel(lock))
 			{
 				if (this.getStoredEMC() < Utils.getEmcValue(lock))
 				{
@@ -151,7 +151,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		for (ItemStack stack : knowledge)
 		{
-			boolean flag = Constants.FUEL_MAP.containsKey(stack);
+			boolean flag = Constants.isStackFuel(stack);
 			
 			if (flag && !isFuel || !flag && isFuel)
 			{

@@ -236,7 +236,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		return displaySunLevel * i / 16;
 	}
 	
-	public int getFuelUpgradeCost()
+	/*public int getFuelUpgradeCost()
 	{
 		if (inventory[lockSlot] == null)
 		{
@@ -247,7 +247,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		{
 			return Constants.FUEL_MAP.get(inventory[lockSlot]) - Constants.FUEL_MAP.get(inventory[0]);
 		}
-	}
+	}*/
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)

@@ -2,6 +2,7 @@ package moze_intel.events;
 
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
+import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientSyncPKT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,6 +16,7 @@ public class ConnectionHandler
 	public void playerConnect(PlayerLoggedInEvent event)
 	{
 		MozeCore.pktHandler.sendTo(new ClientSyncPKT(EMCMapper.emc), (EntityPlayerMP) event.player);
+		MozeCore.pktHandler.sendTo(new ClientCheckUpdatePKT(), (EntityPlayerMP) event.player);
 	}
 	
 	@SubscribeEvent
