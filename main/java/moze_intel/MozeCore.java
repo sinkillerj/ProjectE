@@ -10,6 +10,9 @@ import moze_intel.events.ConnectionHandler;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.events.RegisterPropertiesEvent;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.ThreadCheckUpdate;
+import moze_intel.network.commands.ChangelogCMD;
+import moze_intel.network.commands.ReloadCfgCMD;
 import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientKnowledgeSyncPKT;
 import moze_intel.network.packets.ClientSyncPKT;
@@ -26,7 +29,6 @@ import moze_intel.proxies.CommonProxy;
 import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
-import moze_intel.utils.ThreadCheckUpdate;
 import moze_intel.utils.Utils;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -47,7 +49,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1e";
+    public static final String VERSION = "Alpha 0.1f";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;
@@ -113,7 +115,13 @@ public class MozeCore
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
-    	new ThreadCheckUpdate(true).start();
+    	event.registerServerCommand(new ChangelogCMD());
+    	event.registerServerCommand(new ReloadCfgCMD());
+    	
+    	if (!ThreadCheckUpdate.hasRunServer())
+    	{
+    		new ThreadCheckUpdate(true).start();
+    	}
     	
     	FileHelper.readUserData();
     	
@@ -132,5 +140,8 @@ public class MozeCore
     	logger.logInfo("Cleared player check-lists: server stopping.");
     	
     	EMCMapper.clearMap();
+    	proxy.clearAllData();
+    	
+    	logger.logInfo("Completed server-stop actions.");
     }
 }

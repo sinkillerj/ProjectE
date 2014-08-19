@@ -10,10 +10,9 @@ import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
+import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,9 +58,9 @@ public class RedHammer extends ItemCharge
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != null && canHarvestBlock(b, stack))
+					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						ArrayList<ItemStack> blockDrops = b.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, x, y, z);
 						
 						if (blockDrops.isEmpty())
 						{

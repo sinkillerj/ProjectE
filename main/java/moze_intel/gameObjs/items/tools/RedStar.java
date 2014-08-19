@@ -13,8 +13,6 @@ import moze_intel.utils.Coordinates;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,9 +58,9 @@ public class RedStar extends ItemCharge
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != null && canHarvestBlock(b, stack))
+					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						ArrayList<ItemStack> blockDrops = b.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, x, y, z);
 						
 						if (!blockDrops.isEmpty())
 						{
@@ -102,7 +100,7 @@ public class RedStar extends ItemCharge
 							
 							if (Utils.isOre(block))
 							{
-								Utils.harvestVein(world, stack, new Coordinates(x, y, z), block, drops, 0);
+								Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 							}
 						}
 				
@@ -120,7 +118,7 @@ public class RedStar extends ItemCharge
 			
 			if (Utils.isOre(block) || block.equals(Blocks.gravel))
 			{
-				Utils.harvestVein(world, stack, new Coordinates(mop), block, drops, 0);
+				Utils.harvestVein(world, player, stack, new Coordinates(mop), block, drops, 0);
 			}
 			else if (block.getHarvestTool(0) == null || block.getHarvestTool(0).equals("shovel"))
 			{
@@ -134,12 +132,12 @@ public class RedStar extends ItemCharge
 							Block b = world.getBlock(x, y, z);
 							String harvest = b.getHarvestTool(0);
 							
-							if (b == null || (harvest != null && !harvest.equals("shovel")))
+							if (b == Blocks.air || (harvest != null && !harvest.equals("shovel")))
 							{
 								continue;
 							}
 							
-							ArrayList<ItemStack> blockDrops = b.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+							ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, x, y, z);
 							
 							if (!blockDrops.isEmpty())
 							{

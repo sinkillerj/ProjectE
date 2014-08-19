@@ -147,7 +147,7 @@ public class RedKatar extends ItemMode
 				{
 					Block block = world.getBlock(x, y, z);
 					
-					if (block == null)
+					if (block == Blocks.air)
 					{
 						continue;
 					}
@@ -164,7 +164,7 @@ public class RedKatar extends ItemMode
 					
 					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
 					{
-						ArrayList<ItemStack> blockDrops = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
 					
 						if (!blockDrops.isEmpty())
 						{
@@ -209,7 +209,7 @@ public class RedKatar extends ItemMode
 				{
 					Block block = world.getBlock(i, y, j);
 					
-					if (block != null && world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
+					if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
 					{
 						Block block1 = Blocks.farmland;
 	            			

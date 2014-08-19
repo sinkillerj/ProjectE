@@ -128,6 +128,7 @@ public abstract class FileHelper
 					catch (Exception e)
 					{
 						MozeCore.logger.logFatal("Syntax error in custom emc file.");
+						e.printStackTrace();
 						continue;
 					}
 					
@@ -160,6 +161,7 @@ public abstract class FileHelper
 					catch (Exception e)
 					{
 						MozeCore.logger.logFatal("Syntax error in custom emc file.");
+						e.printStackTrace();
 						continue;
 					}
 					
@@ -238,7 +240,7 @@ public abstract class FileHelper
 		
 		while ((line = reader.readLine()) != null)
 		{
-			line.trim();
+			line = line.trim();
 			
 			if (line.isEmpty())
 			{
@@ -272,16 +274,20 @@ public abstract class FileHelper
 
 			ItemStack stack = new ItemStack((Item) Item.itemRegistry.getObject(obj), 1, metaData);
 			
-			if (stack.getUnlocalizedName() == null)
+			try
 			{
-				MozeCore.logger.logInfo("NULL unlocalized name for: "+stack);
-				continue;
-			}
+				if (stack.getUnlocalizedName() == null)
+				{
+					MozeCore.logger.logInfo("NULL unlocalized name for: "+stack);
+					continue;
+				}
 			
-			if (stack.getUnlocalizedName().equalsIgnoreCase(unlocalName))
-			{
-				return stack;
+				if (stack.getUnlocalizedName().equalsIgnoreCase(unlocalName))
+				{
+					return stack;
+				}
 			}
+			catch (Exception e) {}
 		}
 		
 		return null;

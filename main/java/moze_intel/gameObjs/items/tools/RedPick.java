@@ -13,8 +13,6 @@ import moze_intel.utils.Coordinates;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -125,13 +123,11 @@ public class RedPick extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b == null || !canHarvestBlock(b, stack))
+					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						continue;
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, x, y, z));
+						world.setBlockToAir(i, j, k);
 					}
-					
-					drops.addAll(block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)));
-					world.setBlockToAir(i, j, k);
 				}
 			
 		world.spawnEntityInWorld(new LootBall(world, drops, x, y, z));
@@ -155,7 +151,7 @@ public class RedPick extends ItemMode
 						
 						if (Utils.isOre(block))
 						{
-							Utils.harvestVein(world, stack, new Coordinates(x, y, z), block, drops, 0);
+							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}
 					}
 			

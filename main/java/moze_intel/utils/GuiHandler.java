@@ -8,6 +8,7 @@ import moze_intel.gameObjs.container.CollectorMK3Container;
 import moze_intel.gameObjs.container.CondenserContainer;
 import moze_intel.gameObjs.container.DMFurnaceContainer;
 import moze_intel.gameObjs.container.MercurialEyeContainer;
+import moze_intel.gameObjs.container.PhilosStoneContainer;
 import moze_intel.gameObjs.container.RMFurnaceContainer;
 import moze_intel.gameObjs.container.RelayMK1Container;
 import moze_intel.gameObjs.container.RelayMK2Container;
@@ -100,6 +101,8 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.MERCURIAL_GUI:
 				return new MercurialEyeContainer(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
+			case Constants.PHILOS_STONE_GUI:
+				return new PhilosStoneContainer(player.inventory);
 		}
 		return null;
 	}
@@ -159,7 +162,10 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.MERCURIAL_GUI:
 				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
+			case Constants.PHILOS_STONE_GUI:
+				return new GUIPhilosStone(player.inventory);
 		}
+		
 		return null;
 	}
 }

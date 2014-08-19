@@ -40,11 +40,6 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	{
 		updateChest();
 		
-		if (worldObj.isRemote) 
-		{
-			return;
-		}
-		
 		displayEmc = (int) this.getStoredEMC();
 		lock = getStackInSlot(0);
 		
@@ -73,7 +68,7 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 			condense();
 		}
 		
-		if (numPlayersUsing > 0)
+		if (numPlayersUsing > 0 && !worldObj.isRemote)
 		{
 			MozeCore.pktHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
 				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));

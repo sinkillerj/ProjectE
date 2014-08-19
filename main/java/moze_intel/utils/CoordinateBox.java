@@ -45,6 +45,16 @@ public class CoordinateBox
     	this.maxZ += z;
     }
     
+    public void offset(double x, double y, double z)
+    {
+    	this.minX += x;
+    	this.maxX += x;
+    	this.maxY += y;
+    	this.minY += y;
+    	this.minZ += z;
+    	this.maxZ += z;
+    }
+    
     @Override
     public String toString()
     {

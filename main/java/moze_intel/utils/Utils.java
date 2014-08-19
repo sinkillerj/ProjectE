@@ -364,6 +364,7 @@ public class Utils
 				stack.stackSize -= remaining;
 			}
 		}
+		
 		return stack.copy();
 	}
 	
@@ -614,12 +615,7 @@ public class Utils
 		return OreDictionary.getOreName(oreIds[0]);
 	}
 	
-	public static ArrayList<ItemStack> getBlockDrops(World world, Block block, Coordinates coords, ItemStack stack)
-	{
-		return block.getDrops(world, coords.x, coords.y, coords.z, world.getBlockMetadata(coords.x, coords.y, coords.z), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
-	}
-	
-	public static void harvestVein(World world, ItemStack stack, Coordinates coords, Block target, List<ItemStack> currentDrops, int numMined)
+	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, Coordinates coords, Block target, List<ItemStack> currentDrops, int numMined)
 	{
 		if (numMined >= Constants.MAX_VEIN_SIZE)
 		{
@@ -636,10 +632,10 @@ public class Utils
 					
 					if (block.equals(target))
 					{
-						currentDrops.addAll(Utils.getBlockDrops(world, block, new Coordinates(x, y, z), stack));
+						currentDrops.addAll(Utils.getBlockDrops(world, player, block, stack, x, y, z));
 						world.setBlockToAir(x, y, z);
 						numMined++;
-						harvestVein(world, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
+						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
 				}
 	}
@@ -806,6 +802,20 @@ public class Utils
 						}
 					}
 				}
+	}
+	
+	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && block.canSilkHarvest(world, player, x, y, z, meta))
+		{
+			ArrayList<ItemStack> list = new ArrayList();
+			list.add(new ItemStack(block, 1, meta));
+			return list;
+		}
+		
+		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 	}
 	
 	public static int randomIntInRange(int max, int min)

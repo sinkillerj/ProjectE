@@ -29,7 +29,8 @@ public class ClientSyncPKT implements IMessage, IMessageHandler<ClientSyncPKT, I
 		MozeCore.logger.logInfo("Receiving EMC mapping from the server.");
 		
 		EMCMapper.emc.clear();
-		EMCMapper.emc = (LinkedHashMap<IStack, Integer>) message.map.clone();
+		EMCMapper.emc = (LinkedHashMap<IStack, Integer>) message.map;
+		
 		return null;
 	}
 	

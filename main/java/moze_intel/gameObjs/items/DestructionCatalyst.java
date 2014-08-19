@@ -9,10 +9,9 @@ import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
+import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -66,8 +65,11 @@ public class DestructionCatalyst extends ItemCharge
 					{
 						Block block = world.getBlock(x, y, z);
 						float hardness = block.getBlockHardness(world, x, y, z);
+						
 						if (block == null || block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
+						{
 							continue;
+						}
 						
 						if (!this.consumeFuel(player, stack, 8, true))
 						{
@@ -75,21 +77,29 @@ public class DestructionCatalyst extends ItemCharge
 						}
 						
 						if (!hasAction)
+						{
 							hasAction = true;
+						}
 						
-						ArrayList<ItemStack> list = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+						ArrayList<ItemStack> list = Utils.getBlockDrops(world, player, block, stack, x, y, z);
+						
 						if (list != null && list.size() > 0)
+						{
 							drops.addAll(list);
+						}
 						
 						world.setBlockToAir(x, y, z);
+						
 						if (world.rand.nextInt(8) == 0)
+						{
 							MozeCore.pktHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+						}
 					}
 			
 			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			
 			if (hasAction)
 			{
-				world.playSoundAtEntity(player, "projecte:destruct", 0.5F, 1.0F);
 				world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
 			}
 		}

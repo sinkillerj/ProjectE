@@ -49,7 +49,7 @@ public class RedHoe extends ItemCharge
             	{
             		Block block = world.getBlock(i, y, j);
             		
-            		if (block != null && world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
+            		if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
             		{
             			Block block1 = Blocks.farmland;
             			

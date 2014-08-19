@@ -63,6 +63,11 @@ public class SlotTableConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
+		if (this.getStack() != null && this.getStack().getItem() == ObjHandler.kleinStars)
+		{
+			return false;
+		}
+		
 		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
 	}
 }

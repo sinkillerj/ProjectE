@@ -3,6 +3,7 @@ package moze_intel.proxies;
 import moze_intel.events.FovChangeEvent;
 import moze_intel.events.KeyPressEvent;
 import moze_intel.events.ToolTipEvent;
+import moze_intel.events.TransmutationRenderingEvent;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.entity.LavaProjectile;
 import moze_intel.gameObjs.entity.LensProjectile;
@@ -64,6 +65,7 @@ public class ClientProxy extends CommonProxy
 	{
 		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
+		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 		FMLCommonHandler.instance().bus().register(new KeyPressEvent());
 	}
 }

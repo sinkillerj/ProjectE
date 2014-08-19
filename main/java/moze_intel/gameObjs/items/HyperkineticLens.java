@@ -25,7 +25,9 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		if (world.isRemote) return stack;
 		
 		if (shootProjectile(player, stack))
+		{
 			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+		}
 		
 		return stack;
 	}
@@ -41,7 +43,6 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 			return false;
 		}
 		
-		world.playSoundAtEntity(player, "projecte:wall", 1.0F, 1.0F);
 		world.spawnEntityInWorld(new LensProjectile(world, player, this.getCharge(stack)));
 		return true;
 	}

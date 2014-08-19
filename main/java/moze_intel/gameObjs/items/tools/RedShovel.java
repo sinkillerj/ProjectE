@@ -9,10 +9,9 @@ import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
+import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -79,12 +78,12 @@ public class RedShovel extends ItemCharge
 						{
 							Block block = world.getBlock(x, y, z);
 							
-							if (block == null || !canHarvestBlock(block, stack))
+							if (block == Blocks.air || !canHarvestBlock(block, stack))
 							{
 								continue;
 							}
 							
-							ArrayList<ItemStack> blockDrops = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+							ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
 							
 							if (!blockDrops.isEmpty())
 							{

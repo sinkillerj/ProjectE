@@ -4,6 +4,7 @@ import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.MobRandomizer;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.SwingItemPKT;
+import moze_intel.utils.Constants;
 import moze_intel.utils.Coordinates;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
@@ -21,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PhilosophersStone extends ItemMode implements IProjectileShooter
+public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
 	public PhilosophersStone()
 	{
@@ -56,13 +57,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
 			if (mode == 0)
+			{
 				doWorldTransmutation(world, block, result, pos, 0, 0, charge);
+			}
 			else if (mode == 1)
+			{
 				getAxisOrientedPanel(direction, charge, block, result, pos, world);
-			else getAxisOrientedLine(direction, charge, block, result, pos, world, player);
+			}
+			else 
+			{
+				getAxisOrientedLine(direction, charge, block, result, pos, world, player);
+			}
 			
 			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
+		
 		return stack;
 	}
 	
@@ -199,5 +208,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter
     public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone"));
+	}
+
+	@Override
+	public void doExtraFunction(ItemStack stack, EntityPlayer player) 
+	{
+		if (!player.worldObj.isRemote)
+		{
+			player.openGui(MozeCore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+		}
 	}
 }
