@@ -1,16 +1,14 @@
-<<<<<<< HEAD
 ###Version Alpha 0.1f
-* NEW: Philosopher's crafting
+* NEW: Philosopher's stone crafting
 * NEW: Philosopher's stone AOE higlight
 * NEW: /projecte changelog command
 * NEW: /projecte reloadcfg (allows for editing custom EMC values without reloading the world)
+
 * FIX: Optimized Update Checker
 * FIX: Tool silk-touch enchantment
 * FIX: Transmutation table dupe bug
 * FIX: Client-sync for energy condensers
 
-=======
->>>>>>> origin/master
 ###Version Alpha 0.1e
 * FIX: Incorrect Thread starting. Sorry for that one.
 
