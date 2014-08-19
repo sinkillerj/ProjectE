@@ -107,7 +107,7 @@ public class RedHammer extends ItemCharge
 		
 		String harvest = block.getHarvestTool(0);
 		
-		if (harvest == null || harvest.equals("pickaxe"))
+		if (harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
 		{
 			return true;
 		}
@@ -123,7 +123,9 @@ public class RedHammer extends ItemCharge
 			return 1200000.0F;
 		}
 		
-		if(block.getHarvestTool(metadata) == null || block.getHarvestTool(metadata).equals("pickaxe"))
+		String harvest = block.getHarvestTool(metadata);
+		
+		if(harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
 		{
 			return 16.0f + (14.0F * this.getCharge(stack));
 		}

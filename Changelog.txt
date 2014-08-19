@@ -1,3 +1,6 @@
+###Version Alpha 0.1g
+* FIX: Tools not working correctly with Chisel. Modders, please don't overwrite stuff you don't need to.
+
 ###Version Alpha 0.1f
 * NEW: Philosopher's stone crafting
 * NEW: Philosopher's stone AOE higlight

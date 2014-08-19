@@ -183,7 +183,7 @@ public class RedStar extends ItemCharge
 		
 		String harvest = block.getHarvestTool(0);
 		
-		if (harvest == null || harvest.equals("shovel") || harvest.equals("pickaxe"))
+		if (harvest == null || harvest.equals("shovel") || harvest.equals("pickaxe") || harvest.equals("chisel"))
 		{
 			return true;
 		}
