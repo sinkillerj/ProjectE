@@ -40,6 +40,11 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	{
 		updateChest();
 		
+		if (this.worldObj.isRemote)
+		{
+			return;
+		}
+		
 		displayEmc = (int) this.getStoredEMC();
 		lock = getStackInSlot(0);
 		

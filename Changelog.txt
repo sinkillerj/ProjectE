@@ -1,3 +1,7 @@
+###Version Alpha 0.1h
+* FIX: Major condenser derp
+* FIX: .lang files
+
 ###Version Alpha 0.1g
 * FIX: Tools not working correctly with Chisel. Modders, please don't overwrite stuff you don't need to.
 
