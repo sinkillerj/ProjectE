@@ -1,3 +1,7 @@
+###Version Alpha 0.1f
+* FIX: Transmutation knowledge sync issue (sorry for that one)
+* FIX: Possible null-pointer in EMC mapping
+
 ###Version Alpha 0.1i
 * NEW: Alchemical Bags with the same colour share inventory (per player)
 * NEW: Fuels can now be upgraded in Energy Collectors

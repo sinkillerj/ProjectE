@@ -94,46 +94,50 @@ public class EMCMapper
 			ItemStack key = entry.getKey();
 			ItemStack value = entry.getValue();
 			
-			if (entry == null || value == null)
+			if (key == null || value == null)
 			{
 				continue;
 			}
 			
-			IStack input = new IStack(key);
-			IStack result = new IStack(value);
+			try
+			{
+				IStack input = new IStack(key);
+				IStack result = new IStack(value);
 			
-			if (emc.containsKey(input) && !emc.containsKey(result))
-			{
-				if (failed.contains(result))
+				if (emc.containsKey(input) && !emc.containsKey(result))
 				{
-					continue;
+					if (failed.contains(result))
+					{
+						continue;
+					}
+				
+					int totalEmc = emc.get(input) / result.qnty;
+				
+					if (totalEmc <= 0)
+					{
+						continue;
+					}
+				
+					addMapping(result, totalEmc);
 				}
-				
-				int totalEmc = emc.get(input) / result.qnty;
-				
-				if (totalEmc <= 0)
+				else if (!emc.containsKey(input) && emc.containsKey(result))
 				{
-					continue;
-				}
+					if (failed.contains(input))
+					{
+						continue;
+					}
 				
-				addMapping(result, totalEmc);
+					int totalEmc = emc.get(result) * result.qnty;
+					
+					if (totalEmc <= 0)
+					{
+						continue;
+					}
+				
+					addMapping(input, totalEmc);
+				}
 			}
-			else if (!emc.containsKey(input) && emc.containsKey(result))
-			{
-				if (failed.contains(input))
-				{
-					continue;
-				}
-				
-				int totalEmc = emc.get(result) * result.qnty;
-				
-				if (totalEmc <= 0)
-				{
-					continue;
-				}
-				
-				addMapping(input, totalEmc);
-			}
+			catch (Exception e) {}
 		}
 	}
 	

@@ -43,16 +43,18 @@ public class RegisterPropertiesEvent
 			if (playerKnowledge != null)
 			{
 				PlayerKnowledge.getProperties(player).loadNBTData(playerKnowledge);
-				PlayerKnowledge.getProperties(player).syncPlayerProps(player);
 			}
+			
+			PlayerKnowledge.getProperties(player).syncPlayerProps(player);
 			
 			NBTTagCompound playerBagData = CommonProxy.getEntityBagData(player.getCommandSenderName());
 			
 			if (playerBagData != null)
 			{
 				PlayerBagInventory.getProperties(player).loadNBTData(playerBagData);
-				PlayerKnowledge.getProperties(player).syncPlayerProps(player);
 			}
+			
+			PlayerKnowledge.getProperties(player).syncPlayerProps(player);
 		}
 	}
 	
