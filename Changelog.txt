@@ -1,3 +1,12 @@
+###Version Alpha 0.1i
+* NEW: Alchemical Bags with the same colour share inventory (per player)
+* NEW: Fuels can now be upgraded in Energy Collectors
+* NEW: Energy Collectors are now ISided (automantion!)
+* NEW: Changed command usage: now projecte_log and projecte_cfg
+* FIX: Incorrect permissions for commands
+* FIX: Watch of flowing time not working on crops
+* FIX: Dark/Red matter furnaces not breakable with dm/rm tools
+
 ###Version Alpha 0.1h
 * FIX: Major condenser derp
 * FIX: .lang files

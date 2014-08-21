@@ -89,7 +89,6 @@ public class VolcaniteAmulet extends ItemBase implements IProjectileShooter
 	{
 		World world = player.worldObj;
 		world.spawnEntityInWorld(new LavaProjectile(world, player));
-		world.playSoundAtEntity(player, "projecte:transmute", 0.6F, 1.0F);
 		return true;
 	}
 	

@@ -1,6 +1,7 @@
 package moze_intel.events;
 
 import moze_intel.proxies.CommonProxy;
+import moze_intel.utils.PlayerBagInventory;
 import moze_intel.utils.PlayerKnowledge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,6 +23,11 @@ public class RegisterPropertiesEvent
 			{
 				PlayerKnowledge.register(player);
 			}
+			
+			if (PlayerBagInventory.getProperties(player) == null)
+			{
+				PlayerBagInventory.register(player);
+			}
 		}
 	}
 	
@@ -32,14 +38,21 @@ public class RegisterPropertiesEvent
 		{
 			EntityPlayer player = (EntityPlayer) event.entity;
 			
-			NBTTagCompound playerData = CommonProxy.getEntityData(player.getCommandSenderName());
+			NBTTagCompound playerKnowledge = CommonProxy.getEntityKnowledge(player.getCommandSenderName());
 			
-			if (playerData != null)
+			if (playerKnowledge != null)
 			{
-				PlayerKnowledge.getProperties(player).loadNBTData(playerData);
+				PlayerKnowledge.getProperties(player).loadNBTData(playerKnowledge);
+				PlayerKnowledge.getProperties(player).syncPlayerProps(player);
 			}
 			
-			PlayerKnowledge.getProperties(player).syncPlayerProps(player);
+			NBTTagCompound playerBagData = CommonProxy.getEntityBagData(player.getCommandSenderName());
+			
+			if (playerBagData != null)
+			{
+				PlayerBagInventory.getProperties(player).loadNBTData(playerBagData);
+				PlayerKnowledge.getProperties(player).syncPlayerProps(player);
+			}
 		}
 	}
 	
@@ -48,11 +61,14 @@ public class RegisterPropertiesEvent
 	{
 		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
 		{
-			NBTTagCompound playerData = new NBTTagCompound();
+			NBTTagCompound playerKnowledge = new NBTTagCompound();
+			NBTTagCompound playerBagData = new NBTTagCompound();
 			
-			PlayerKnowledge.getProperties((EntityPlayer) event.entity).saveNBTData(playerData);
+			PlayerKnowledge.getProperties((EntityPlayer) event.entity).saveNBTData(playerKnowledge);
+			PlayerBagInventory.getProperties((EntityPlayer) event.entity).saveNBTData(playerBagData);
 			
-			CommonProxy.storeEntityData(event.entity.getCommandSenderName(), playerData);
+			CommonProxy.storeEntityKnowleddge(event.entity.getCommandSenderName(), playerKnowledge);
+			CommonProxy.storeEntityBagData(event.entity.getCommandSenderName(), playerBagData);
 		}
 	}
 }

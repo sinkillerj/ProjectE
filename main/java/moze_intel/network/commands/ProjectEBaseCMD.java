@@ -6,10 +6,10 @@ import net.minecraft.command.ICommandSender;
 public abstract class ProjectEBaseCMD extends CommandBase
 {
 	@Override
-	public final String getCommandName() 
-	{
-		return "projecte";
-	}
+	public abstract String getCommandName();
+	
+	@Override
+	public abstract int getRequiredPermissionLevel();
 
 	@Override
 	public abstract String getCommandUsage(ICommandSender sender);

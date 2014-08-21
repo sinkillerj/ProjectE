@@ -1,6 +1,8 @@
 package moze_intel.gameObjs.container;
 
+import moze_intel.gameObjs.container.slots.SlotCollectorInv;
 import moze_intel.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -21,18 +23,18 @@ public class CollectorMK3Container extends Container
 		tile.openInventory();
 		
 		//Klein Star Slot
-		this.addSlotToContainer(new Slot(tile, 0, 158, 58));
+		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 158, 58));
 						
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotCollectorInv(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
 					
 		//Upgrade Result
-		this.addSlotToContainer(new Slot(tile, 17, 158, 13));
+		this.addSlotToContainer(new SlotCollectorInv(tile, 17, 158, 13));
 						
 		//Upgrade Target
-		this.addSlotToContainer(new Slot(tile, 18, 187, 36));
+		this.addSlotToContainer(new SlotCollectorInv(tile, 18, 187, 36));
 					
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -81,9 +83,48 @@ public class CollectorMK3Container extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        return null;
+		Slot slot = this.getSlot(slotIndex);
+		
+		if (slot == null || !slot.getHasStack()) 
+		{
+			return null;
+		}
+		
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		
+		if (slotIndex <= 18)
+		{
+			if (!this.mergeItemStack(stack, 19, 54, false))
+			{
+				return null;
+			}
+		}
+		else if (slotIndex >= 19 && slotIndex <= 54)
+		{
+			if (!Constants.isStackFuel(stack) || Constants.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 16, false))
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
+		}
+		
+		if (stack.stackSize == 0)
+		{
+			slot.putStack((ItemStack) null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+		
+		slot.onPickupFromSlot(player, stack);
+		return newStack;
     }
 
 	@Override

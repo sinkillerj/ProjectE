@@ -10,24 +10,39 @@ import net.minecraft.util.ChatComponentText;
 public class ReloadCfgCMD extends ProjectEBaseCMD
 {
 	@Override
+	public String getCommandName() 
+	{
+		return "projecte_cfg";
+	}
+	
+	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-		return "/projecte reloadcfg";
+		return "/projecte_cfg";
 	}
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		if (params[0].equals("reloadcfg"))
-		{
-			sender.addChatMessage(new ChatComponentText("[ProjectE] Reloading EMC registrations..."));
+		sender.addChatMessage(new ChatComponentText("[ProjectE] Reloading EMC registrations..."));
 			
-			EMCMapper.clearMap();
-			FileHelper.readUserData();
-			EMCMapper.map();
-			
-			sender.addChatMessage(new ChatComponentText("[ProjectE] Done! Sending updates to clients."));
-			MozeCore.pktHandler.sendToAll(new ClientSyncPKT());
-		}
+		EMCMapper.clearMap();
+		FileHelper.readUserData();
+		EMCMapper.map();
+		
+		sender.addChatMessage(new ChatComponentText("[ProjectE] Done! Sending updates to clients."));
+		MozeCore.pktHandler.sendToAll(new ClientSyncPKT());
+	}
+
+	@Override
+	public int getRequiredPermissionLevel() 
+	{
+		return 4;
+	}
+
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
+		return sender.canCommandSenderUseCommand(4, "/projecte reloadcfg");
 	}
 }

@@ -200,7 +200,7 @@ public class ObjHandler
 	public static Item mobRandomizer = new RandomizerProjectile();
 	public static Item lensExplosive = new LensExplosive();
 	
-	public static void Register()
+	public static void register()
 	{
 		//Blocks
 		GameRegistry.registerBlock(alchChest, "Alchemical Chest");
@@ -322,7 +322,7 @@ public class ObjHandler
 		EntityRegistry.registerModEntity(HomingArrow.class, "Homing Arrow", 8, MozeCore.instance, 256, 10, true);
 	}
 	
-	public static void AddRecipes()
+	public static void addRecipes()
 	{
 		//Shaped Recipes
 		//Philos Stone

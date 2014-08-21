@@ -253,6 +253,19 @@ public class Utils
 		return false;
 	}
 	
+	public static boolean invContainsItem(ItemStack inv[], ItemStack toSearch)
+	{
+		for (ItemStack stack : inv)
+		{
+			if (stack != null && basicAreStacksEqual(stack, toSearch))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public static boolean invContainsItem(ItemStack inv[], Item toSearch)
 	{
 		for (ItemStack stack : inv)
@@ -361,6 +374,41 @@ public class Utils
 				
 				invStack.stackSize += remaining;
 				inv.setInventorySlotContents(i, invStack);
+				stack.stackSize -= remaining;
+			}
+		}
+		
+		return stack.copy();
+	}
+	
+	/**
+	 *	Returns an itemstack if the stack passed could not entirely fit in the inventory, otherwise returns null. 
+	 */
+	public static ItemStack pushStackInInv(ItemStack[] inv, ItemStack stack)
+	{
+		for (int i = 0; i < inv.length; i++)
+		{
+			ItemStack invStack = inv[i];
+			
+			if (invStack == null)
+			{
+				inv[i] = stack;
+				return null;
+			}
+			
+			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			{
+				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
+				
+				if (remaining >= stack.stackSize)
+				{
+					invStack.stackSize += stack.stackSize;
+					inv[i] = invStack;
+					return null;
+				}
+				
+				invStack.stackSize += remaining;
+				inv[i] = invStack;
 				stack.stackSize -= remaining;
 			}
 		}
@@ -656,6 +704,24 @@ public class Utils
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			
+			if (s == null)
+			{
+				continue;
+			}
+			
+			if (basicAreStacksEqual(stack, s))
+			{
+				return s;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static ItemStack getStackFromInv(ItemStack[] inv, ItemStack stack)
+	{
+		for (ItemStack s : inv)
+		{
 			if (s == null)
 			{
 				continue;

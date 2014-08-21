@@ -1,6 +1,8 @@
 package moze_intel.gameObjs.container;
 
+import moze_intel.gameObjs.container.slots.SlotCollectorInv;
 import moze_intel.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -21,12 +23,12 @@ public class CollectorMK2Container extends Container
 		tile.openInventory();
 		
 		//Klein Star Slot
-		this.addSlotToContainer(new Slot(tile, 0, 140, 58));
+		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 140, 58));
 				
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotCollectorInv(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
 				
 		//Upgrade Result
 		this.addSlotToContainer(new Slot(tile, 13, 140, 13));
@@ -81,9 +83,48 @@ public class CollectorMK2Container extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        return null;
+		Slot slot = this.getSlot(slotIndex);
+		
+		if (slot == null || !slot.getHasStack()) 
+		{
+			return null;
+		}
+		
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		
+		if (slotIndex <= 14)
+		{
+			if (!this.mergeItemStack(stack, 15, 50, false))
+			{
+				return null;
+			}
+		}
+		else if (slotIndex >= 15 && slotIndex <= 50)
+		{
+			if (!Constants.isStackFuel(stack) || Constants.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 12, false))
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
+		}
+		
+		if (stack.stackSize == 0)
+		{
+			slot.putStack((ItemStack) null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+		
+		slot.onPickupFromSlot(player, stack);
+		return newStack;
     }
 
 	@Override

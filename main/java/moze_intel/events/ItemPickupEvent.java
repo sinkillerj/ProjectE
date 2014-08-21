@@ -2,6 +2,8 @@ package moze_intel.events;
 
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.container.inventory.AlchBagInventory;
+import moze_intel.utils.PlayerBagInventory;
+import moze_intel.utils.PlayerKnowledge;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -18,14 +20,14 @@ public class ItemPickupEvent
 		World world = player.worldObj;
 		
 		if (world.isRemote)	return;
-		ItemStack bag = getAlchemyBag(player.inventory.mainInventory);
+		ItemStack bag = getAlchemyBag(player, player.inventory.mainInventory);
 		
 		if (bag == null)
 		{
 			return;
 		}
 		
-		AlchBagInventory inv = new AlchBagInventory(bag);
+		ItemStack[] inv = PlayerBagInventory.getPlayerBagData(player, bag.getItemDamage());
 		
 		if (Utils.hasSpace(inv, event.item.getEntityItem()))
 		{
@@ -40,7 +42,7 @@ public class ItemPickupEvent
 		}
 	}
 	
-	private ItemStack getAlchemyBag(ItemStack[] inventory)
+	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
@@ -49,7 +51,7 @@ public class ItemPickupEvent
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(new AlchBagInventory(stack), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

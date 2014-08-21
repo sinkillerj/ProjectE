@@ -15,6 +15,7 @@ import moze_intel.network.commands.ChangelogCMD;
 import moze_intel.network.commands.ReloadCfgCMD;
 import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientKnowledgeSyncPKT;
+import moze_intel.network.packets.ClientSyncBagDataPKT;
 import moze_intel.network.packets.ClientSyncPKT;
 import moze_intel.network.packets.CollectorSyncPKT;
 import moze_intel.network.packets.CondenserSyncPKT;
@@ -49,7 +50,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1h";
+    public static final String VERSION = "Alpha 0.1i";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;
@@ -88,6 +89,7 @@ public class MozeCore
     	pktHandler.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
     	pktHandler.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
     	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
+    	pktHandler.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -98,8 +100,8 @@ public class MozeCore
     	
     	proxy.registerClientOnlyEvents();
     	
-    	ObjHandler.Register();
-    	ObjHandler.AddRecipes();
+    	ObjHandler.register();
+    	ObjHandler.addRecipes();
     	
     	Constants.init();
     }
@@ -140,7 +142,8 @@ public class MozeCore
     	logger.logInfo("Cleared player check-lists: server stopping.");
     	
     	EMCMapper.clearMap();
-    	proxy.clearAllData();
+    	proxy.clearAllKnowledge();
+    	proxy.clearAllBagData();
     	
     	logger.logInfo("Completed server-stop actions.");
     }

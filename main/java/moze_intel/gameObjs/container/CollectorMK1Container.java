@@ -2,6 +2,8 @@ package moze_intel.gameObjs.container;
 
 import moze_intel.gameObjs.container.slots.SlotCollectorInv;
 import moze_intel.gameObjs.tiles.CollectorMK1Tile;
+import moze_intel.utils.Constants;
+import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -84,9 +86,48 @@ public class CollectorMK1Container extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        return null;
+		Slot slot = this.getSlot(slotIndex);
+		
+		if (slot == null || !slot.getHasStack()) 
+		{
+			return null;
+		}
+		
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		
+		if (slotIndex <= 10)
+		{
+			if (!this.mergeItemStack(stack, 11, 46, false))
+			{
+				return null;
+			}
+		}
+		else if (slotIndex >= 11 && slotIndex <= 46)
+		{
+			if (!Constants.isStackFuel(stack) || Constants.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 8, false))
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
+		}
+		
+		if (stack.stackSize == 0)
+		{
+			slot.putStack((ItemStack) null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+		
+		slot.onPickupFromSlot(player, stack);
+		return newStack;
     }
 
 	@Override

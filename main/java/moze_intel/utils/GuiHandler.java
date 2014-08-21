@@ -58,7 +58,7 @@ public class GuiHandler implements IGuiHandler
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI:
-				return new AlchBagContainer(player.inventory, new AlchBagInventory(player.getHeldItem()));
+				return new AlchBagContainer(player.inventory, new AlchBagInventory(player, player.getHeldItem()));
 			case Constants.TRANSMUTE_STONE_GUI:
 				if (tile != null && tile instanceof TransmuteTile)
 					return new TransmuteContainer(player.inventory, (TransmuteTile) tile);
@@ -119,7 +119,7 @@ public class GuiHandler implements IGuiHandler
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI:
-				return new GUIAlchChest(player.inventory, new AlchBagInventory(player.getHeldItem()));
+				return new GUIAlchChest(player.inventory, new AlchBagInventory(player, player.getHeldItem()));
 			case Constants.TRANSMUTE_STONE_GUI:
 				if (tile != null && tile instanceof TransmuteTile)
 					return new GUITransmute(player.inventory, (TransmuteTile) tile);

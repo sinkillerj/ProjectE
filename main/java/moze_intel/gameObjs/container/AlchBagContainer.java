@@ -33,14 +33,6 @@ public class AlchBagContainer extends Container
 	}
 	
 	@Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-        
-        inventory.update();
-    }
-	
-	@Override
 	public boolean canInteractWith(EntityPlayer player) 
 	{
 		return true;
@@ -67,7 +59,7 @@ public class AlchBagContainer extends Container
 		}
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack)null);
+			slot.putStack((ItemStack) null);
 		}
 		else
 		{
@@ -85,5 +77,12 @@ public class AlchBagContainer extends Container
 			return null;
 		}
 		return super.slotClick(slot, button, flag, player);
+	}
+	
+	@Override
+	public void onContainerClosed(EntityPlayer player) 
+	{
+		inventory.closeInventory();
+		super.onContainerClosed(player);
 	}
 }

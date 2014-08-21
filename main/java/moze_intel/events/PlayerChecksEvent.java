@@ -11,7 +11,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class PlayerChecksEvent
@@ -25,11 +27,6 @@ public class PlayerChecksEvent
 	public void tickEvent(WorldTickEvent event)
 	{
 		World world = event.world;
-		
-		if (world.isRemote)
-		{
-			return;
-		}
 		
 		for (EntityPlayerMP player : flyChecks)
 		{
@@ -64,6 +61,25 @@ public class PlayerChecksEvent
 				MozeCore.pktHandler.sendTo(new StepHeightPKT(0.5f), player);
 				removePlayerStepChecks(player);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void playerChangeDimension(PlayerChangedDimensionEvent event)
+	{
+		if (canPlayerFly(event.player))
+		{
+			Utils.setPlayerFlight((EntityPlayerMP) event.player, true);
+		}
+		
+		if (isPlayerFireImmune(event.player))
+		{
+			Utils.setPlayerFireImmunity(event.player, true);
+		}
+		
+		if (canPlayerStep((EntityPlayerMP) event.player))
+		{
+			MozeCore.pktHandler.sendTo(new StepHeightPKT(1.0f), (EntityPlayerMP) event.player);
 		}
 	}
 	

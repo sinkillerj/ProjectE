@@ -1,5 +1,8 @@
 package moze_intel.gameObjs.container.inventory;
 
+import java.util.List;
+
+import moze_intel.utils.PlayerBagInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,13 +13,13 @@ public class AlchBagInventory implements IInventory
 {
 	private final ItemStack invItem;
 	private ItemStack[] inventory = new ItemStack[104];
+	private EntityPlayer player;
 	
-	public AlchBagInventory(ItemStack stack)
+	public AlchBagInventory(EntityPlayer player, ItemStack stack)
 	{
 		invItem = stack;
-		if (!invItem.hasTagCompound())
-			invItem.setTagCompound(new NBTTagCompound());
-		readFromNBT(invItem.stackTagCompound);
+		this.player = player;
+		inventory = PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage());
 	}
 
 	@Override
@@ -43,7 +46,9 @@ public class AlchBagInventory implements IInventory
 				markDirty();
 			}
 			else
+			{
 				setInventorySlotContents(slot, null);
+			}
 		}
 		return stack;
 	}
@@ -52,8 +57,12 @@ public class AlchBagInventory implements IInventory
 	public ItemStack getStackInSlotOnClosing(int slot) 
 	{
 		ItemStack stack = getStackInSlot(slot);
+		
 		if(stack != null)
+		{
 			setInventorySlotContents(slot, null);
+		}
+		
 		return stack;
 	}
 
@@ -63,7 +72,9 @@ public class AlchBagInventory implements IInventory
 		inventory[slot] = stack;
 
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
+		{
 			stack.stackSize = this.getInventoryStackLimit();
+		}
 
 		markDirty();
 	}
@@ -90,9 +101,12 @@ public class AlchBagInventory implements IInventory
 	public void markDirty() 
 	{
 		for (int i = 0; i < 104; ++i)
+		{
 			if (getStackInSlot(i) != null && getStackInSlot(i).stackSize == 0)
+			{
 				inventory[i] = null;
-		writeToNBT(invItem.stackTagCompound);
+			}
+		}
 	}
 
 	@Override
@@ -109,43 +123,16 @@ public class AlchBagInventory implements IInventory
 	@Override
 	public void closeInventory() 
 	{
+		if (!player.worldObj.isRemote)
+		{
+			PlayerBagInventory.setPlayerBagData(player, invItem.getItemDamage(), inventory);
+			PlayerBagInventory.syncPlayerProps(player);
+		}
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
-	}
-	
-	public void update()
-	{
-		readFromNBT(invItem.stackTagCompound);
-	}
-	
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[104];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			byte slot = subNBT.getByte("Slot");
-			if (slot >= 0 && slot < 104)
-				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
-		}	
-	}
-	
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < 104; i++)
-		{
-			if (getStackInSlot(i) == null) continue;
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			getStackInSlot(i).writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-		nbt.setTag("Items", list);
 	}
 }

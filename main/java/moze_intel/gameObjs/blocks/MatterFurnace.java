@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,13 +45,18 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
 		isHighTier = isRM;
 		textureName = isHighTier ? "rm" : "dm";
 		this.setBlockName(textureName+"_furnace");
-		if (isActive) this.setLightLevel(0.875F);
+		
+		if (isActive) 
+		{
+			this.setLightLevel(0.875F);
+		}
 	}
 	
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
+		
 		if (meta == 0) 
 		{
 			return 1000000.0F;
@@ -60,6 +66,17 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
 			return 2000000.0F;
 		}
 	}
+	
+	@Override
+	public Item getItemDropped(int no, Random rand, int clue)
+    {
+        if (isHighTier)
+        {
+        	return Item.getItemFromBlock(ObjHandler.rmFurnaceOff);
+        }
+        
+        return Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+    }
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)

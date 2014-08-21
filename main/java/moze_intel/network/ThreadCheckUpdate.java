@@ -21,7 +21,6 @@ public class ThreadCheckUpdate extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	
 	private final String changelogURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/Changelog.txt";
 	private final String githubURL = "https://github.com/MozeIntel/ProjectE";
 	private boolean isServerSide;
@@ -89,7 +88,7 @@ public class ThreadCheckUpdate extends Thread
 				{
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("New update for Project-E is available! Version: "+latestVersion));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Get it at "+githubURL));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Use /projecte changelog for update notes."));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Use /projecte_log for update notes."));
 				}
 			}
 			else

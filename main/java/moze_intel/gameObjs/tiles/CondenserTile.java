@@ -73,7 +73,7 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 			condense();
 		}
 		
-		if (numPlayersUsing > 0 && !worldObj.isRemote)
+		if (numPlayersUsing > 0)
 		{
 			MozeCore.pktHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
 				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));

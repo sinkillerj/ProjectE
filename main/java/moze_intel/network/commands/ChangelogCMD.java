@@ -9,34 +9,44 @@ import net.minecraft.util.ChatComponentText;
 public class ChangelogCMD extends ProjectEBaseCMD
 {
 	public static final List<String> changelog = new ArrayList();
+	
+	@Override
+	public String getCommandName() 
+	{
+		return "projecte_log";
+	}
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte changelog";
+		return "/projecte_log";
 	}
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		if (params.length == 0)
+		if (ChangelogCMD.changelog.isEmpty())
 		{
-			return;
+			sender.addChatMessage(new ChatComponentText("ProjectE is up to date."));
 		}
-		
-		if (params[0].equalsIgnoreCase("changelog"))
+		else
 		{
-			if (ChangelogCMD.changelog.isEmpty())
+			for (String s: ChangelogCMD.changelog)
 			{
-				sender.addChatMessage(new ChatComponentText("ProjectE is up to date."));
-			}
-			else
-			{
-				for (String s: ChangelogCMD.changelog)
-				{
-					sender.addChatMessage(new ChatComponentText(s));
-				}
+				sender.addChatMessage(new ChatComponentText(s));
 			}
 		}
+	}
+
+	@Override
+	public int getRequiredPermissionLevel() 
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
+		return true;
 	}
 }

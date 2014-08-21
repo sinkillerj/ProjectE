@@ -1,6 +1,7 @@
 package moze_intel.gameObjs.items;
 
 import moze_intel.utils.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -61,9 +62,27 @@ public class TimeWatch extends ItemCharge implements IItemModeChanger
 		}
 			
 		AxisAlignedBB bBox = player.boundingBox.expand(8, 8, 8);
+		
 		for (TileEntity tile : Utils.getTileEntitiesWithinAABB(world, bBox))
 			for (int i = 0; i < bonusTicks; i++)
+			{
 				tile.updateEntity();
+			}
+		
+		for (int x = (int) bBox.minX; x <= bBox.maxX; x++)
+			for (int y = (int) bBox.minY; y <= bBox.maxY; y++)
+				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
+				{
+					Block block = world.getBlock(x, y, z);
+					
+					if (block.getTickRandomly())
+					{
+						for (int i = 0; i < bonusTicks; i++)
+						{
+							block.updateTick(world, x, y, z, itemRand);
+						}
+					}
+				}
 		
 		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
 		{

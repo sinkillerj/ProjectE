@@ -140,6 +140,24 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 		}
 	}
 	
+	public void checkEmcBounds(ItemStack gem, ItemStack[] inv)
+	{
+		int reqEmc = emcChain[this.getTarget(gem)];
+		
+		if (this.getEmc(gem) >= reqEmc)
+		{
+			ItemStack remain = Utils.pushStackInInv(inv, getItemStackTarget(gem));
+			
+			if (remain != null)
+			{
+				gem.setItemDamage(0);
+			}
+			
+			this.removeEmc(gem, reqEmc);
+			clearItemBuffer(gem);
+		}
+	}
+	
 	public void consumeItem(ItemStack gem, ItemStack stack, IInventory inv, int slotIndex)
 	{
 		int itemEmc = Utils.getEmcValue(stack);
@@ -147,6 +165,21 @@ public class GemEternalDensity extends ItemBase implements IItemModeChanger
 		this.addEmc(gem, itemEmc);
 		addStackToBuffer(gem, Utils.getNormalizedStack(stack));
 	}
+	
+	public void consumeItem(ItemStack gem, ItemStack stack, ItemStack[] inv, int slotIndex)
+	{
+		int itemEmc = Utils.getEmcValue(stack);
+		
+		inv[slotIndex].stackSize -= 1;
+		
+		if (inv[slotIndex].stackSize == 0)
+		{
+			inv[slotIndex] = null;
+		}
+		
+		this.addEmc(gem, itemEmc);
+		addStackToBuffer(gem, Utils.getNormalizedStack(stack));
+	} 
 	
 	private ItemStack getItemStackTarget(ItemStack stack)
 	{

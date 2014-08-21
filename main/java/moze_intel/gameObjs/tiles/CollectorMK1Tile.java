@@ -1,5 +1,7 @@
 package moze_intel.gameObjs.tiles;
 
+import scala.actors.threadpool.Arrays;
+import scala.tools.nsc.interpreter.Results;
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
@@ -8,21 +10,22 @@ import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class CollectorMK1Tile extends TileEmcProducer implements IInventory
+public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
 	private ItemStack[] inventory;
+	private int[] accessibleSlots;
 	private final int invBufferSize;
 	private final int emcGen;
 	private final int lockSlot;
 	private final int upgradedSlot;
 	private boolean hasKleinStar;
 	private boolean hasFuel;
-	public int fuelUpgradeCost;
 	public double storedFuelEmc;
 	public int displayEmc;
 	public int displaySunLevel;
@@ -34,6 +37,14 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		super(Constants.COLLECTOR_MK1_MAX);
 		inventory = new ItemStack[11];
 		invBufferSize = 8;
+		
+		accessibleSlots = new int[invBufferSize];
+		
+		for (int i = 0; i < invBufferSize; i++)
+		{
+			accessibleSlots[i] = i + 1;
+		}
+		
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 		upgradedSlot = 9;
 		lockSlot = 10;
@@ -44,6 +55,14 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		super(maxEmc);
 		inventory = new ItemStack[lockSlot + 1];
 		invBufferSize = lockSlot - 2;
+		
+		accessibleSlots = new int[invBufferSize];
+		
+		for (int i = 0; i < invBufferSize; i++)
+		{
+			accessibleSlots[i] = i + 1;
+		}
+		
 		this.emcGen = emcGen;
 		this.upgradedSlot = upgradedSlot;
 		this.lockSlot = lockSlot;
@@ -106,8 +125,9 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 			if (following == null)
 			{
 				inventory[nextIndex] = current;
-				inventory[i] = null;
-				break;
+				decrStackSize(i, current.stackSize);
+				
+				continue;
 			}
 			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
@@ -124,7 +144,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 					decrStackSize(i, missingForFullStack);
 				}
 				
-				break;
+				continue;
 			}
 		}
 	}
@@ -179,7 +199,27 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		}
 		else if (hasFuel)
 		{
+			ItemStack result = inventory[lockSlot] == null ? Constants.getFuelUpgrade(inventory[0]) : inventory[lockSlot];
 			
+			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
+			
+			if (upgradeCost > 0 && this.getStoredEMC() >= upgradeCost)
+			{
+				ItemStack upgrade = inventory[upgradedSlot];
+
+				if (inventory[upgradedSlot] == null)
+				{
+					this.removeEmc(upgradeCost);
+					inventory[upgradedSlot] = result;
+					this.decrStackSize(0, 1);
+				}
+				else if (Utils.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
+				{
+					this.removeEmc(upgradeCost);
+					upgrade.stackSize++;
+					this.decrStackSize(0, 1);
+				}
+			}
 		}
 		else if (numRequest > 0 && !this.isRequestingEmc)
 		{
@@ -261,6 +301,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
+			
 			byte slot = subNBT.getByte("Slot");
 			
 			if (slot >= 0 && slot < getSizeInventory())
@@ -278,6 +319,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 		nbt.setDouble("FuelEMC", storedFuelEmc);
 		
 		NBTTagList list = new NBTTagList();
+		
 		for (int i = 0; i < getSizeInventory(); i++)
 		{
 			if (inventory[i] == null) 
@@ -385,6 +427,39 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
+		return true;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) 
+	{
+		if (side == 0 || side == 1)
+		{
+			return new int[] {upgradedSlot};
+		}
+		
+		return accessibleSlots;
+	}
+
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, int side) 
+	{
+		if (side == 0 || side == 1)
+		{
+			return false;
+		}
+		
+		return Constants.isStackFuel(stack);
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side) 
+	{
+		if (side == 0 || side == 1)
+		{
+			return slot == upgradedSlot;
+		}
+		
 		return false;
 	}
 }

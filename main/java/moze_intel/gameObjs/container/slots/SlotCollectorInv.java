@@ -21,6 +21,6 @@ public class SlotCollectorInv extends Slot
 			return false;
 		}
 		
-        return stack.getItem().equals(ObjHandler.kleinStars) || Constants.isStackFuel(stack);
+        return stack.getItem().equals(ObjHandler.kleinStars) || (Constants.isStackFuel(stack) && !Constants.isStackMaxFuel(stack));
     }
 }

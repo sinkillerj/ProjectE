@@ -1,6 +1,7 @@
 package moze_intel.gameObjs.container;
 
 import moze_intel.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -45,10 +46,10 @@ public class RelayMK3Container extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
-    {
-        return null;
-    }
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	{
+		return null;
+	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer var1) 

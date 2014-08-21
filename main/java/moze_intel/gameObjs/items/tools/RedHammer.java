@@ -118,7 +118,7 @@ public class RedHammer extends ItemCharge
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if (block == ObjHandler.matterBlock)
+		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
 		{
 			return 1200000.0F;
 		}

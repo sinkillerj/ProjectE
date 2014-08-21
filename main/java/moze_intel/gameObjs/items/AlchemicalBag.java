@@ -7,6 +7,7 @@ import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.gameObjs.items.rings.RingToggle;
 import moze_intel.utils.Constants;
+import moze_intel.utils.PlayerBagInventory;
 import moze_intel.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -58,9 +59,9 @@ public class AlchemicalBag extends ItemBase
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AlchBagInventory inventory = new AlchBagInventory(stack);
+		ItemStack[] inv = PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage());
 		
-		if (Utils.invContainsItem(inventory, new ItemStack(ObjHandler.blackHole, 1, 1)))
+		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
 			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
@@ -80,7 +81,7 @@ public class AlchemicalBag extends ItemBase
 			}
 		}
 		
-		ItemStack rTalisman = Utils.getStackFromInv(inventory, new ItemStack(ObjHandler.repairTalisman));
+		ItemStack rTalisman = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
 		
 		if (rTalisman != null)
 		{
@@ -94,9 +95,9 @@ public class AlchemicalBag extends ItemBase
 			{
 				boolean hasAction = false;
 				
-				for (int i = 0; i < inventory.getSizeInventory(); i++)
+				for (int i = 0; i < inv.length; i++)
 				{
-					ItemStack invStack = inventory.getStackInSlot(i);
+					ItemStack invStack = inv[i];
 				
 					if (invStack == null || invStack.getItem() instanceof RingToggle) 
 					{
@@ -106,7 +107,7 @@ public class AlchemicalBag extends ItemBase
 					if (invStack.isItemStackDamageable() && invStack.getItemDamage() > 0)
 					{
 						invStack.setItemDamage(invStack.getItemDamage() - 1);
-						inventory.setInventorySlotContents(i, invStack);
+						inv[i] = invStack;
 						
 						if (!hasAction)
 						{
@@ -122,15 +123,15 @@ public class AlchemicalBag extends ItemBase
 			}
 		}
 		
-		ItemStack gemDensity = Utils.getStackFromInv(inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+		ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 		
 		if (gemDensity != null)
 		{
 			GemEternalDensity gem = (GemEternalDensity) gemDensity.getItem(); 
 			
-			for (int i = 0; i < inventory.getSizeInventory(); i++)
+			for (int i = 0; i < inv.length; i++)
 			{
-				ItemStack current = inventory.getStackInSlot(i);
+				ItemStack current = inv[i];
 				
 				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
 				{
@@ -139,12 +140,12 @@ public class AlchemicalBag extends ItemBase
 						
 				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
 				{
-					gem.consumeItem(gemDensity, current, inventory, i);
+					gem.consumeItem(gemDensity, current, inv, i);
 					break;
 				}
 			}
 			
-			gem.checkEmcBounds(gemDensity, inventory);
+			gem.checkEmcBounds(gemDensity, inv);
 		}
 	}
 	
