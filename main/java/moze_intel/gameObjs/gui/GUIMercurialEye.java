@@ -29,7 +29,7 @@ public class GUIMercurialEye extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString("Mercurial Eye", 52, 6, 4210752);
+		/*this.fontRendererObj.drawString("Mercurial Eye", 52, 6, 4210752);
 		this.fontRendererObj.drawString("Target", 124, 24, 4210752);
 		this.fontRendererObj.drawString("Klein", 5, 24, 4210752);
 		this.fontRendererObj.drawString("Inventory", 5, this.ySize - 90, 4210752);
@@ -41,7 +41,7 @@ public class GUIMercurialEye extends GuiContainer
 			this.fontRendererObj.drawString(Integer.toString(Utils.getEmcValue(target)), 124, 34, 4210752);
 		
 		if (klein != null)
-			this.fontRendererObj.drawString(Integer.toString((int) ItemBase.getEmc(klein)), 5, 34, 4210752);
+			this.fontRendererObj.drawString(Integer.toString((int) ItemBase.getEmc(klein)), 5, 34, 4210752);*/
 	}
 
 	@Override

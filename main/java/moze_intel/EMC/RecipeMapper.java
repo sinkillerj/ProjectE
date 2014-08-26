@@ -1,5 +1,9 @@
 package moze_intel.EMC;
 
+import ic2.api.recipe.IMachineRecipeManager;
+import ic2.api.recipe.Recipes;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -9,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import cpw.mods.fml.common.Loader;
 import moze_intel.MozeCore;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -146,7 +151,7 @@ public class RecipeMapper
 			}
 		}
 	}
-	
+
 	public static Set<Entry<IStack, LinkedList<RecipeInput>>> getEntrySet()
 	{
 		return recipes.entrySet();

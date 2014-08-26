@@ -1,4 +1,4 @@
-package moze_intel.gameObjs.container.slots.mercurial;
+package moze_intel.gameObjs.container.slots;
 
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;

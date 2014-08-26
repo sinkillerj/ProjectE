@@ -31,6 +31,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("gem_armor_"+armorType);
+		this.setHasSubtypes(false);
+		this.setMaxDamage(0);
 	}
 	
 	@Override

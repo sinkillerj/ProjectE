@@ -1,6 +1,7 @@
 package moze_intel;
 
 import java.io.File;
+import java.util.Iterator;
 
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.RecipeMapper;
@@ -31,6 +32,9 @@ import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
 import moze_intel.utils.Utils;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -50,7 +54,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1j";
+    public static final String VERSION = "Alpha 0.1k";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;

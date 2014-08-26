@@ -1,8 +1,8 @@
 package moze_intel.gameObjs.container;
 
 import moze_intel.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.gameObjs.container.slots.mercurial.SlotMercurialKlein;
-import moze_intel.gameObjs.container.slots.mercurial.SlotMercurialTarget;
+import moze_intel.gameObjs.container.slots.SlotMercurialKlein;
+import moze_intel.gameObjs.container.slots.SlotMercurialTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -18,19 +18,19 @@ public class MercurialEyeContainer extends Container
 		inventory = mercEyeInv;
 		
 		//Klein Star
-		this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 51, 26));
+		this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 50, 26));
 		
 		//Target
-		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 105, 26));
+		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 55 + i * 18));
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 56 + i * 18));
 		
 		//Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 6 + i * 18, 113));
+			this.addSlotToContainer(new Slot(invPlayer, i, 6 + i * 18, 114));
 	}
 
 	@Override

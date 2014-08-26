@@ -1,6 +1,7 @@
 package moze_intel.gameObjs.container;
 
 import moze_intel.gameObjs.container.slots.SlotCollectorInv;
+import moze_intel.gameObjs.container.slots.SlotCollectorLock;
 import moze_intel.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -35,7 +36,7 @@ public class CollectorMK1Container extends Container
 		this.addSlotToContainer(new SlotCollectorInv(tile, 9, 124, 13));
 		
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorInv(tile, 10, 153, 36));
+		this.addSlotToContainer(new SlotCollectorLock(tile, 10, 153, 36));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)

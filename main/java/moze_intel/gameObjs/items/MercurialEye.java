@@ -1,19 +1,24 @@
 package moze_intel.gameObjs.items;
 
 import moze_intel.MozeCore;
+import moze_intel.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.utils.Constants;
+import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -24,34 +29,38 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 {
 	public MercurialEye() 
 	{
-		super("mercurial_eye", (byte) 4, new String[] {"Creation", "Extension", "Pillar Extension", "Transmutation"});
+		super("mercurial_eye", (byte) 4, new String[] {"Extension", "Transmutation"});
 	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if(!world.isRemote)
+		if (world.isRemote)
 		{
-			player.addChatComponentMessage(new ChatComponentText("Sorry, still WIP! :P"));
+			return stack;
 		}
-		return stack;
-		/*MercurialEyeInventory inv = new MercurialEyeInventory(stack);
+		
+		MercurialEyeInventory inv = new MercurialEyeInventory(stack);
 		ItemStack klein = inv.getKleinStack();
 		ItemStack target = inv.getTargetStack();
 		
 		if (target == null)
+		{
 			return stack;
+		}
 		
 		Block targetBlock = Block.getBlockFromItem(target.getItem());
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		
 		if (mop == null || !mop.typeOfHit.equals(MovingObjectType.BLOCK))
+		{
 			return stack;
+		}
 		
-		byte mode = this.GetMode(stack);
+		byte mode = this.getMode(stack);
 		int offset = 0;
 		
-		switch(this.GetCharge(stack))
+		switch(this.getCharge(stack))
 		{
 			case 0:
 				offset = 0;
@@ -68,44 +77,64 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 		
 		
-		ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
-		Coordinates coords = new Coordinates(mop);
+		CoordinateBox box = getAxisRelativePanel(new Coordinates(mop), offset, getRelativeOrientation(player));
 		
-		switch (mode)
-		{
-			case 0:
-			{
-				if (direction.offsetX != 0)
-					coords.x += direction.offsetX;
-				else if (direction.offsetY != 0)
-					coords.y += direction.offsetY;
-				else coords.z += direction.offsetZ;
-				
-				
-				if (offset == 0)
+		int emcCost = Utils.getEmcValue(target);
+		
+		for (int x = (int) box.minX; x <= box.maxX; x++)
+			for (int y = (int) box.minY; y <= box.maxY; y++)
+				for (int z = (int) box.minZ; z <= box.maxZ; z++)
 				{
-					if (world.getBlock (coords.x, coords.y, coords.z) == Blocks.air)
-						changeBlock(player, world, coords, mop.sideHit, klein, target, targetBlock, true);
+					Block block = world.getBlock(x, y, z);
+					
+					if (mode == 0)
+					{
+						if (ItemBase.getEmc(klein) >= emcCost && block == Blocks.air)
+						{
+							world.setBlock(x, y, z, targetBlock);
+							ItemBase.removeEmc(stack, emcCost);
+						}
+					}
+					else
+					{
+						if (block == Blocks.air)
+						{
+							continue;
+						}
+						
+						int emcDifference = Utils.getEmcValue(new ItemStack(block, 1, world.getBlockMetadata(x, y, z))) - emcCost;
+						
+						if (emcDifference <= 0)
+						{
+							world.setBlock(x, y, z, targetBlock);
+						}
+						else if (ItemBase.getEmc(klein) >= emcDifference)
+						{
+							world.setBlock(x, y, z, targetBlock);
+							ItemBase.removeEmc(klein, emcDifference);
+						}
+					}
 				}
-				else
-				{
-					AxisAlignedBB bBox = getAABBFromDirection(player, direction, coords, offset, 0);
-					System.out.println(bBox);
-					for (int x = (int) bBox.minX; x <= bBox.maxX; x++)
-						for (int y = (int) bBox.minY; y <= bBox.maxY; y++)
-							for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
-							{
-								if (world.getBlock(x, y, z) == Blocks.air)
-								{
-									changeBlock(player, world, new Coordinates(x, y, z), mop.sideHit, klein, target, targetBlock, true);
-								}
-							}
-				}
-			}
 			
-			default:
-				return stack;
-		}*/
+		
+		
+		return stack;
+	}
+	
+	private CoordinateBox getAxisRelativePanel(Coordinates coords, int offset, String orientation)
+	{
+		if (orientation.equals("DOWN") || orientation.equals("UP"))
+		{
+			return new CoordinateBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
+		}
+		else if (orientation.equals("NORTH") || orientation.equals("SOUTH"))
+		{
+			return new CoordinateBox(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z);
+		}
+		else
+		{
+			return new CoordinateBox(coords.x, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
+		}
 	}
 	
 	private String getRelativeOrientation(Entity ent)
@@ -113,61 +142,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		int dir = MathHelper.floor_double(ent.rotationPitch * 4.0F / 360.0F + 0.5D);
 		
 		if (dir == 1)
+		{
 			return "DOWN";
+		}
 		
 		if (dir == -1)
+		{
 			return "UP";
+		}
 		
         return Direction.directions[MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3];
-	}
-	
-	private void changeBlock(EntityPlayer player, World world, Coordinates coords, int sideHit, ItemStack klein, ItemStack target, Block block, boolean useEmc)
-	{
-		if (useEmc)
-		{
-			if (klein == null)
-				return;
-			
-			double kleinEmc = ItemBase.getEmc(klein);
-			int targetEmc = Utils.getEmcValue(target);
-			
-			if (kleinEmc < targetEmc)
-				return;
-			
-			this.removeEmc(klein, targetEmc);
-		}
-		
-		world.setBlock(coords.x, coords.y, coords.z, block, target.getItemDamage(), 3);
-		block.onBlockAdded(world, coords.x, coords.y, coords.z);
-		block.onBlockPlaced(world, coords.x, coords.y, coords.z, sideHit, coords.x, coords.y, coords.z, target.getItemDamage());
-		block.onBlockPlacedBy(world, coords.x, coords.y, coords.z, player, target);
-		
-		if (world.rand.nextInt(8) == 0)
-		{
-			MozeCore.pktHandler.sendToAllAround(new ParticlePKT("largesmoke", coords.x, coords.y + 1, coords.z), new TargetPoint(world.provider.dimensionId, coords.x, coords.y + 1, coords.z, 32));
-		}
-	}
-	
-	public AxisAlignedBB getAABBFromDirection(EntityPlayer player, ForgeDirection direction, Coordinates coords, int offset, int depth)
-	{
-		if (direction.offsetX != 0)
-		{
-			if (direction.offsetX > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - depth, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
-			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - offset, coords.z - offset, coords.x + depth, coords.y + offset, coords.z + offset);
-		}
-		else if (direction.offsetY != 0)
-		{
-			if (direction.offsetY > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - depth, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
-			else return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y + depth, coords.z + offset);
-		}
-		else
-		{
-			if (direction.offsetZ > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - depth, coords.x + offset, coords.y + offset, coords.z);
-			else return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z + depth);
-		}
 	}
 	
 	@Override

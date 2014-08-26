@@ -1,6 +1,7 @@
 package moze_intel.gameObjs.container;
 
 import moze_intel.gameObjs.container.slots.SlotCollectorInv;
+import moze_intel.gameObjs.container.slots.SlotCollectorLock;
 import moze_intel.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +35,7 @@ public class CollectorMK3Container extends Container
 		this.addSlotToContainer(new SlotCollectorInv(tile, 17, 158, 13));
 						
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorInv(tile, 18, 187, 36));
+		this.addSlotToContainer(new SlotCollectorLock(tile, 18, 187, 36));
 					
 		//Player inventory
 		for (int i = 0; i < 3; i++)

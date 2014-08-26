@@ -2,11 +2,13 @@ package moze_intel.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -54,8 +56,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -73,6 +78,87 @@ public class Utils
 	{
 		loadTransmutations();
 		loadEntityLists();
+	}
+	
+	public static boolean doesItemHaveEmc(ItemStack stack)
+	{
+		if (stack == null) 
+		{
+			return false;
+		}
+		
+		IStack iStack = new IStack(stack);
+		
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
+		{
+			iStack.damage = 0;
+		}
+		
+		return EMCMapper.emc.containsKey(iStack);
+	}
+	
+	public static int getEmcValue(ItemStack stack)
+	{
+		if (stack == null) 
+		{
+			return 0;
+		}
+		
+		IStack iStack = new IStack(stack);
+		
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
+		{
+			iStack.damage = 0;
+			
+			if (EMCMapper.emc.containsKey(iStack))
+			{
+				int emc = EMCMapper.emc.get(iStack);
+				
+				int relDamage = stack.getMaxDamage() - stack.getItemDamage();
+				
+				if (relDamage == 0)
+				{
+					//Impossible?
+					return 0;
+				}
+				
+				int result = emc * relDamage / stack.getMaxDamage();
+				
+				if (result == 0)
+				{
+					result = 1;
+				}
+				
+				return result + getEnchantEmcBonus(stack);
+			}
+		}
+		else
+		{
+			if (EMCMapper.emc.containsKey(iStack))
+			{
+				return EMCMapper.emc.get(iStack) + getEnchantEmcBonus(stack);
+			}
+		}
+			
+		return 0;
+	}
+	
+	public static int getEnchantEmcBonus(ItemStack stack)
+	{
+		int result = 0;
+		
+		Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+		
+		if (!enchants.isEmpty())
+		{
+			for (Entry<Integer, Integer> entry : enchants.entrySet())
+			{
+				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
+				result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
+			}
+		}
+		
+		return result;
 	}
 	
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
@@ -174,22 +260,6 @@ public class Utils
 		}
 		return false;
 	}
-	public static int getEmcValue(ItemStack stack)
-	{
-		if (stack == null) 
-		{
-			return 0;
-		}
-
-		IStack iStack = new IStack(stack);
-		
-		if (EMCMapper.emc.containsKey(iStack))
-		{
-			return EMCMapper.emc.get(iStack);
-		}
-		
-		return 0;
-	}
 	
 	public static ItemStack[] getItemsWithMostEMC(List<ItemStack> knowledge, int maxValue)
 	{
@@ -217,16 +287,6 @@ public class Utils
 			result[i] = lastResult;
 		}
 		return result;
-	}
-	
-	public static boolean doesItemHaveEmc(ItemStack stack)
-	{
-		if (stack == null) 
-		{
-			return false;
-		}
-		
-		return EMCMapper.emc.containsKey(new IStack(stack));
 	}
 	
 	public static Block getTransmutationResult(Block current, boolean isSneaking)

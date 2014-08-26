@@ -3,7 +3,10 @@ package moze_intel.events;
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.IStack;
 import moze_intel.config.ProjectEConfig;
+import moze_intel.utils.Utils;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -36,11 +39,10 @@ public class ToolTipEvent
 			}
 		}
 		
-		IStack stack = new IStack(current);
-		
-		if (EMCMapper.emc.containsKey(stack))
+		if (Utils.doesItemHaveEmc(current))
 		{
-			int value = EMCMapper.emc.get(stack);
+			int value = Utils.getEmcValue(current);
+			
 			event.toolTip.add(String.format("EMC: %,d", value));
 			
 			if (current.stackSize > 1)

@@ -55,5 +55,9 @@ public class GUICollectorMK2 extends GuiContainer
 		//Klein Star Charge Progress. Max is 48
 		progress = tile.getKleinStarChargeScaled(48);
 		this.drawTexturedModalRect(x + 80, y + 58, 0, 166, progress, 10);
+		
+		//Fuel Progress. Max is 24.
+		progress = tile.getFuelProgressScaled(24);
+		this.drawTexturedModalRect(x + 154, y + 55 - progress, 201, 38 - progress, 10, progress + 1);
 	}
 }

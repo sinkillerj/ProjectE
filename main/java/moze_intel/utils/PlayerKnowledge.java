@@ -34,7 +34,16 @@ public class PlayerKnowledge implements IExtendedEntityProperties
 	
 	public static PlayerKnowledge getProperties(EntityPlayer player)
 	{
-		return (PlayerKnowledge) player.getExtendedProperties(EXT_PROP_NAME);
+		PlayerKnowledge result = (PlayerKnowledge) player.getExtendedProperties(EXT_PROP_NAME);
+		
+		if (result == null)
+		{
+			register(player);
+		}
+		
+		result = (PlayerKnowledge) player.getExtendedProperties(EXT_PROP_NAME);
+		
+		return result;
 	}
 	
 	public static void addKnowledge(EntityPlayer player, ItemStack stack)

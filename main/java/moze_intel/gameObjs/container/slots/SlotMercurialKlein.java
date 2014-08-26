@@ -1,4 +1,4 @@
-package moze_intel.gameObjs.container.slots.mercurial;
+package moze_intel.gameObjs.container.slots;
 
 import moze_intel.gameObjs.items.KleinStar;
 import net.minecraft.inventory.IInventory;

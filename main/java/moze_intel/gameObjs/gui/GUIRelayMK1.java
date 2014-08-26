@@ -41,8 +41,16 @@ public class GUIRelayMK1 extends GuiContainer
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
-		//Emc bar progress
+		//Emc bar progress. Max is 102.
 		int progress = tile.getEmcScaled(102);
 		this.drawTexturedModalRect(x + 64, y + 6, 30, 177, progress, 10);
+		
+		//Klein start bar progress. Max is 30.
+		progress = tile.getKleinEmcScaled(30);
+		this.drawTexturedModalRect(x + 116, y + 67, 0, 177, progress, 10);
+		
+		//Burn Slot bar progress. Max is 30.
+		progress = tile.getRawEmcScaled(30);
+		drawTexturedModalRect(x + 64, y + 67, 0, 177, progress, 10);
 	}
 }

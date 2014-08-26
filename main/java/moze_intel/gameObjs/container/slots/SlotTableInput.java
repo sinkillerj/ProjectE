@@ -21,7 +21,7 @@ public class SlotTableInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
+		return !this.getHasStack() && !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
 	}
 	
 	@Override

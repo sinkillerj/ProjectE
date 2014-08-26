@@ -19,6 +19,8 @@ public class RMArmor extends ItemArmor implements ISpecialArmor
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("rm_armor_"+armorType);
+		this.setHasSubtypes(false);
+		this.setMaxDamage(0);
 	}
 	
 	@Override

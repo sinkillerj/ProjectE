@@ -68,6 +68,8 @@ public class Constants
 	
 	public static final int MAX_VEIN_SIZE = 250;
 	
+	public static final int ENCH_EMC_BONUS = 5000;
+	
 	public static void init()
 	{
 		FUEL_MAP.add(new IStack(new ItemStack(Items.coal, 1, 1)));

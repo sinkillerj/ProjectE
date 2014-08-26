@@ -163,7 +163,6 @@ public class EMCMapper
 	
 	private static void lazyInit()
     {
-    	//Building stuff
     	addMapping(new ItemStack(Blocks.cobblestone), 1);
     	addMapping(new ItemStack(Blocks.stone), 1);
     	addMapping(new ItemStack(Blocks.netherrack), 1);
@@ -264,6 +263,9 @@ public class EMCMapper
     		}
     		addMapping(new ItemStack(Items.dye, 1, i), 16);
     	}
+    	
+    	addMapping(new ItemStack(Items.enchanted_book), 2048);
+    	addMapping(new ItemStack(Items.emerald), 16384);
     }
 	
 	private static void loadEmcFromOD()

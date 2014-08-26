@@ -19,6 +19,8 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	private int invBufferSize;
 	private final int chargeRate;
 	public int displayEmc;
+	public int displayKleinEmc;
+	public int displayRawEmc;
 	private int numUsing;
 	
 	public RelayMK1Tile()
@@ -53,6 +55,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		sortInventory();
 		
 		ItemStack stack = inventory[0];
+		
 		if (stack != null)
 		{
 			if(stack.getItem().equals(ObjHandler.kleinStars))
@@ -90,10 +93,12 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		}
 		
 		displayEmc = (int) this.getStoredEMC();
+		displayKleinEmc = getKleinStarEmc();
+		displayRawEmc = getRawEmc();
 		
 		if (numUsing > 0)
 		{
-			MozeCore.pktHandler.sendToAllAround(new RelaySyncPKT(displayEmc, this.xCoord, this.yCoord, this.zCoord),
+			MozeCore.pktHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayKleinEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
 					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}
@@ -180,6 +185,58 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	public int getEmcScaled(int i)
 	{
 		return displayEmc * i / this.getMaxEmc();
+	}
+	
+	private int getKleinStarEmc()
+	{
+		if (inventory[getSizeInventory() - 1] != null)
+		{
+			return (int) ItemBase.getEmc(inventory[getSizeInventory() - 1]);
+		}
+		
+		return 0;
+	}
+	
+	public int getKleinEmcScaled(int i)
+	{
+		if (inventory[getSizeInventory() - 1] != null)
+		{
+			return displayKleinEmc * i / Utils.getKleinStarMaxEmc(inventory[getSizeInventory() - 1]);
+		}
+		
+		return 0;
+	}
+	
+	private int getRawEmc()
+	{
+		if (inventory[0] == null)
+		{
+			return 0;
+		}
+		
+		if (inventory[0].getItem() == ObjHandler.kleinStars)
+		{
+			return (int) ItemBase.getEmc(inventory[0]);
+		}
+		
+		return Utils.getEmcValue(inventory[0]) * inventory[0].stackSize;
+	}
+	
+	public int getRawEmcScaled(int i)
+	{
+		if (inventory[0] == null)
+		{
+			return 0;
+		}
+		
+		if (inventory[0].getItem() == ObjHandler.kleinStars)
+		{
+			return displayRawEmc * i / Utils.getKleinStarMaxEmc(inventory[0]);
+		}
+		
+		int emc = Utils.getEmcValue(inventory[0]);
+		
+		return displayRawEmc * i / (emc * inventory[0].getMaxStackSize());
 	}
 	
 	@Override

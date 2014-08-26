@@ -70,7 +70,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	
 	@Override
 	public void updateEntity()
-	{	
+	{
 		if (worldObj.isRemote) 
 		{
 			return;
@@ -199,7 +199,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else if (hasFuel)
 		{
-			ItemStack result = inventory[lockSlot] == null ? Constants.getFuelUpgrade(inventory[0]) : inventory[lockSlot];
+			ItemStack result = inventory[lockSlot] == null ? Constants.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
 			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
 			
@@ -210,13 +210,13 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 				if (inventory[upgradedSlot] == null)
 				{
 					this.removeEmc(upgradeCost);
-					inventory[upgradedSlot] = result;
+					this.setInventorySlotContents(upgradedSlot, result);
 					this.decrStackSize(0, 1);
 				}
 				else if (Utils.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
 				{
 					this.removeEmc(upgradeCost);
-					upgrade.stackSize++;
+					inventory[upgradedSlot].stackSize++;
 					this.decrStackSize(0, 1);
 				}
 			}
@@ -241,6 +241,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			return (int) ItemBase.getEmc(inventory[0]);
 		}
+		
 		return -1;
 	}
 	
@@ -250,6 +251,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			return 0;
 		}
+		
 		return displayKleinCharge * i / Utils.getKleinStarMaxEmc(inventory[0]);
 	}
 	
@@ -276,18 +278,36 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return displaySunLevel * i / 16;
 	}
 	
-	/*public int getFuelUpgradeCost()
+	public int getFuelProgressScaled(int i)
 	{
-		if (inventory[lockSlot] == null)
+		if (inventory[0] == null || !Constants.isStackFuel(inventory[0]))
 		{
-			ItemStack upgradeResult = Utils.getNextInMap(Constants.FUEL_MAP, inventory[0]);
-			return Constants.FUEL_MAP.get(upgradeResult) - Constants.FUEL_MAP.get(inventory[0]);
+			return 0;
 		}
-		else 
+		
+		int reqEmc = 0;
+		
+		if (inventory[lockSlot] != null)
 		{
-			return Constants.FUEL_MAP.get(inventory[lockSlot]) - Constants.FUEL_MAP.get(inventory[0]);
+			reqEmc = Utils.getEmcValue(inventory[lockSlot]) - Utils.getEmcValue(inventory[0]);
+			
+			if (reqEmc < 0)
+			{
+				return 0;
+			}
 		}
-	}*/
+		else
+		{
+			reqEmc = Utils.getEmcValue(Constants.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
+		}
+		
+		if (this.getStoredEMC() >= reqEmc)
+		{
+			return i;
+		}
+		
+		return displayEmc * i / reqEmc;
+	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
