@@ -1,6 +1,6 @@
 ###Version Alpha 0.1k
 * NEW: Damaged items now have EMC (relative to the damage amount)
-* NEW: Enchanted items now have an EMC bonus (EMC for enchantments is based on the rarity an level of the enchant)
+* NEW: Enchanted items now have an EMC bonus (EMC for enchantments is based on the rarity and level of the enchant)
 * NEW: Changed GUI textures (thank you Jarno <3), will be a config option in the future
 * NEW: Added some more code to the Mercurial Eye. Still not finished
 * FIX: Collector automation weirdness (incorrect ISided properties)
