@@ -7,13 +7,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.api.util.*;
 
-public class EMCMapper 
+public class EMCMapper
 {
 	public static LinkedHashMap<IStack, Integer> emc = new LinkedHashMap();
 	public static LinkedList<IStack> failed = new LinkedList();
@@ -163,6 +167,7 @@ public class EMCMapper
 	
 	private static void lazyInit()
     {
+		//Vanilla
     	addMapping(new ItemStack(Blocks.cobblestone), 1);
     	addMapping(new ItemStack(Blocks.stone), 1);
     	addMapping(new ItemStack(Blocks.netherrack), 1);
@@ -266,6 +271,7 @@ public class EMCMapper
     	
     	addMapping(new ItemStack(Items.enchanted_book), 2048);
     	addMapping(new ItemStack(Items.emerald), 16384);
+
     }
 	
 	private static void loadEmcFromOD()
@@ -281,6 +287,8 @@ public class EMCMapper
 		//building stuff
 		map.put("stone", 1);
 		map.put("cobblestone", 1);
+		map.put("blockMarble", 1);
+		map.put("whiteStone", 64);
 		
 		//ingots
 		map.put("ingotIron", 256);
@@ -305,6 +313,7 @@ public class EMCMapper
 		map.put("ingotElectrum", 1280);
 		map.put("ingotSignalum", 160);
 		map.put("ingotEnderium", 6144);
+		map.put("ingotPlatinum", 2084);
 		
 		//AE2
 		map.put("crystalCertusQuartz", 64);
@@ -319,6 +328,9 @@ public class EMCMapper
 		
 		//TE
 		map.put("blockGlassHardened", 192);
+		
+		//MISC
+		map.put("enderChest", 3184); // This is for ender Chests mod which adds over 74 pages of ender chests in nei
 		
 		
 		//Black-list all ores/dusts
@@ -358,4 +370,5 @@ public class EMCMapper
 		list.addAll(OreDictionary.getOres(oreName));
 		return list;
 	}
+
 }
