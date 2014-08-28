@@ -49,7 +49,7 @@ public class RedAxe extends ItemCharge
 	{
 		if(block.getHarvestTool(metadata) != null && block.getHarvestTool(metadata).equals("axe"))
 		{
-			return 16.0f + (14.0f * this.getCharge(stack));
+			return 18.0f + (14.0f * this.getCharge(stack));
 		}
 		
 		return 1.0F;

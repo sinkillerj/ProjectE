@@ -49,7 +49,7 @@ public class DarkAxe extends ItemCharge
 	{
 		if(block.getHarvestTool(metadata) != null && block.getHarvestTool(metadata).equals("axe"))
 		{
-			return 14.0f + (12.0f * this.getCharge(stack));
+			return 15.0f + (12.0f * this.getCharge(stack));
 		}
 		
 		return 1.0F;
