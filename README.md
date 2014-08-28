@@ -9,7 +9,7 @@ If you have a bug to report, open an issue. I'll try to fix every single one of 
 
 
 
-#Where to find things
+# Where to find things
 
 - EMC Values are in EMCMapper
 - Recipes are in ObjHandler
