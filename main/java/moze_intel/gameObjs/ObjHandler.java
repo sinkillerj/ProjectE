@@ -398,15 +398,15 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(rmStar), new Object[]{"123", "RRR", "RRR", '1', rmHammer, '2', rmPick, '3', rmShovel, 'R', new ItemStack(matter, 1, 1)});
 		
 		//Armor
-		GameRegistry.addRecipe(new ItemStack(dmHelmet), new Object[]{"MMM", "MXM", "XXX", 'M', matter});
+		GameRegistry.addRecipe(new ItemStack(dmHelmet), new Object[]{"MMM", "MXM", 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(dmChest), new Object[]{"MXM", "MMM", "MMM", 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(dmLegs), new Object[]{"MMM", "MXM", "MXM", 'M', matter});
-		GameRegistry.addRecipe(new ItemStack(dmFeet), new Object[]{"MXM", "MXM", "XXX", 'M', matter});
+		GameRegistry.addRecipe(new ItemStack(dmFeet), new Object[]{"MXM", "MXM", 'M', matter});
 		
-		GameRegistry.addRecipe(new ItemStack(rmHelmet), new Object[]{"MMM", "MDM", "XXX", 'M', new ItemStack(matter, 1, 1), 'D', dmHelmet});
+		GameRegistry.addRecipe(new ItemStack(rmHelmet), new Object[]{"MMM", "MDM", 'M', new ItemStack(matter, 1, 1), 'D', dmHelmet});
 		GameRegistry.addRecipe(new ItemStack(rmChest), new Object[]{"MDM", "MMM", "MMM", 'M', new ItemStack(matter, 1, 1), 'D', dmChest});
 		GameRegistry.addRecipe(new ItemStack(rmLegs), new Object[]{"MMM", "MDM", "MXM", 'M', new ItemStack(matter, 1, 1), 'D', dmLegs});
-		GameRegistry.addRecipe(new ItemStack(rmFeet), new Object[]{"MDM", "MXM", "XXX", 'M', new ItemStack(matter, 1, 1), 'D', dmFeet});
+		GameRegistry.addRecipe(new ItemStack(rmFeet), new Object[]{"MDM", "MXM", 'M', new ItemStack(matter, 1, 1), 'D', dmFeet});
 		
 		//Rings
 		GameRegistry.addRecipe(new ItemStack(ironBand), new Object[] {"III", "ILI", "III", 'I', Items.iron_ingot, 'L', Items.lava_bucket});
