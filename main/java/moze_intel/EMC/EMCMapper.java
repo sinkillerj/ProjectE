@@ -326,6 +326,21 @@ public class EMCMapper
 		map.put("ingotSignalum", 160);
 		map.put("ingotEnderium", 6144);
 		map.put("ingotPlatinum", 2084);
+		map.put("ingotAluminum", 128);
+		map.put("ingotAluminumBrass", 512);
+		map.put("ingotArdite", 1024);
+		map.put("ingotCobalt", 1024);
+		map.put("ingotManyullyn", 2048);
+		map.put("ingotAlumite", 1024);
+		
+		//Ingot Blocks
+		map.put("blockAluminum", 1152);
+		map.put("blockAluminumBrass", 4608);
+		map.put("blockArdite", 9216);
+		map.put("blockCobalt", 9216);
+		map.put("blockManyullyn", 18432);
+		map.put("blockEnder", 55296);
+		map.put("blockAlumite", 9216);
 		
 		//AE2
 		map.put("crystalCertusQuartz", 64);
