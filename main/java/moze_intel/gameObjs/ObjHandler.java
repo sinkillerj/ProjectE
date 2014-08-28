@@ -383,7 +383,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(dmShovel), new Object[]{"XMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(dmSword), new Object[]{"XMX", "XMX", "XDX", 'D', Items.diamond, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(dmHoe), new Object[]{"MMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter});
-		GameRegistry.addRecipe(new ItemStack(dmShears), new Object[]{"XMX", "DXX", "XXX", 'D', Items.diamond, 'M', matter});
+		GameRegistry.addRecipe(new ItemStack(dmShears), new Object[]{"XM", "DX", 'D', Items.diamond, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(dmHammer), new Object[]{"MDM", "XDX", "XDX", 'D', Items.diamond, 'M', matter});
 		
 		//RM Tools
@@ -392,7 +392,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(rmShovel), new Object[]{"XRX", "XSX", "XMX", 'R', new ItemStack(matter, 1, 1), 'S', dmShovel, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(rmSword), new Object[]{"XRX", "XRX", "XSX", 'R', new ItemStack(matter, 1, 1), 'S', dmSword});
 		GameRegistry.addRecipe(new ItemStack(rmHoe), new Object[]{"RRX", "XHX", "XMX", 'R', new ItemStack(matter, 1, 1), 'H', dmHoe, 'M', matter});
-		GameRegistry.addRecipe(new ItemStack(rmShears), new Object[]{"XRX", "SXX", "XXX", 'R', new ItemStack(matter, 1, 1), 'S', dmShears});
+		GameRegistry.addRecipe(new ItemStack(rmShears), new Object[]{"XR", "SX", 'R', new ItemStack(matter, 1, 1), 'S', dmShears});
 		GameRegistry.addRecipe(new ItemStack(rmHammer), new Object[]{"RMR", "XHX", "XMX", 'R', new ItemStack(matter, 1, 1), 'H', dmHammer, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(rmKatar), new Object[]{"123", "4RR", "RRR", '1', rmShears, '2', rmAxe, '3', rmSword, '4', rmHoe, 'R', new ItemStack(matter, 1, 1)});
 		GameRegistry.addRecipe(new ItemStack(rmStar), new Object[]{"123", "RRR", "RRR", '1', rmHammer, '2', rmPick, '3', rmShovel, 'R', new ItemStack(matter, 1, 1)});
