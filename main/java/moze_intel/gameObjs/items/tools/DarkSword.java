@@ -1,5 +1,6 @@
 package moze_intel.gameObjs.items.tools;
 
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.items.ItemCharge;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -93,6 +94,11 @@ public class DarkSword extends ItemCharge
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "sword"));
+    	if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "sword"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "sword_old"));
+		}
 	}
 }

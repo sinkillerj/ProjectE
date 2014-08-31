@@ -1,6 +1,8 @@
 package moze_intel.gameObjs.items;
 
+import appeng.api.definitions.Blocks;
 import moze_intel.MozeCore;
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.entity.MobRandomizer;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.SwingItemPKT;
@@ -8,16 +10,21 @@ import moze_intel.utils.Constants;
 import moze_intel.utils.Coordinates;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.entity.living.ZombieEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,6 +49,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		//TODO Add cool sound effects and fancing rendering for the transumtation block.
 		if (world.isRemote)
 		{
+			if(ProjectEConfig.UseOldResources == false){
+				
+			}
+			else{
+				player.playSound(MozeCore.MODID + ":transmute_old", 0.5f, 1.0f);
+			}
 			return stack;
 		}
 		
@@ -200,6 +213,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		World world = player.worldObj;
 		world.spawnEntityInWorld(new MobRandomizer(world, player));
+		//Sound Effect
+		if(ProjectEConfig.UseOldResources==false){
+			
+		}else{
+			player.playSound(MozeCore.MODID + ":philball_old", 1.0f, 1.0f);
+		}
 		return true;
 	}
 	
@@ -207,7 +226,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
+		if(ProjectEConfig.UseOldResources == false){
 		this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone_old"));
+		}
 	}
 
 	@Override
@@ -215,7 +239,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.worldObj.isRemote)
 		{
-			player.openGui(MozeCore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+			//player.openGui(MozeCore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.addChatMessage(new ChatComponentText("This feature is not yet implemented. Please try again later."));
 		}
 	}
 }

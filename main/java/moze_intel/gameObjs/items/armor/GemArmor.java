@@ -136,7 +136,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
 				}
 				else if (player.isPotionActive(Potion.nightVision.id))
 				{
-					player.removePotionEffect(Potion.nightVision.id);
+					//player.removePotionEffect(Potion.nightVision.id);
 				}
 				
 				if (player.isInWater())

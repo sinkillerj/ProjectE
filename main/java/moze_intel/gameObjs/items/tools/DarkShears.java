@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import moze_intel.MozeCore;
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.network.packets.SwingItemPKT;
@@ -166,6 +167,11 @@ public class DarkShears extends ItemCharge
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shears"));
+		if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shears"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shears_old"));
+		}
 	}
 }

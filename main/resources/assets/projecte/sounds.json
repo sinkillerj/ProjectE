@@ -1,0 +1,6 @@
+{
+   "transmute_old": {"category": "master","sounds": [{"name": "ee2/transmute","stream": false}]},
+   "philball_old": {"category": "master","sounds": [{"name": "ee2/philball","stream": false}]},
+   "flash_old": {"category": "master","sounds": [{"name": "ee2/flash","stream": false}]},
+   "break_old": {"category": "master","sounds": [{"name": "ee2/break","stream": false}]}
+   }

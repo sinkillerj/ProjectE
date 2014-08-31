@@ -9,7 +9,7 @@ public class ProjectEConfig
 {
 	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
-	public static boolean UseOldTextures;
+	public static boolean UseOldResources;
 	
 	public static void init(File configFile)
 	{
@@ -21,7 +21,7 @@ public class ProjectEConfig
 			
 			showUnlocalizedNames = config.getBoolean("Show unlocalized names in tool-tips", "Misc", false, "Set this to true to show item unlocalized names (usefull for custom EMC registration)");
 			showODNames = config.getBoolean("Show Ore-Dictionary names in tool-tips", "Misc", false, "Set this to true to show item Ore Dictionary names (usefull for custom EMC registration)");
-			UseOldTextures = config.getBoolean("Use the old EE2 Textures", "Misc", false, "Set this to true to enjoy the retro feel of the EE2 textures");
+			UseOldResources = config.getBoolean("Use the old EE2 Textures", "Misc", false, "Set this to true to enjoy the retro feel of the EE2 textures");
 			
 			MozeCore.logger.logInfo("Loaded configuration file.");
 		}

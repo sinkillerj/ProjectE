@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moze_intel.MozeCore;
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemCharge;
@@ -144,6 +145,11 @@ public class DarkHammer extends ItemCharge
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hammer"));
+		if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hammer"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hammer_old"));
+		}
 	}
 }

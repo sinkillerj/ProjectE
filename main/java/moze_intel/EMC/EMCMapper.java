@@ -271,7 +271,19 @@ public class EMCMapper
     	
     	addMapping(new ItemStack(Items.enchanted_book), 2048);
     	addMapping(new ItemStack(Items.emerald), 16384);
-
+    	addMapping(new ItemStack(Items.nether_star), 30720);
+    	addMapping(new ItemStack(Items.iron_horse_armor), 1280);      // < 
+    	addMapping(new ItemStack(Items.golden_horse_armor), 1024);    // < This is going off the assumption that it takes 5 to make one armor
+    	addMapping(new ItemStack(Items.diamond_horse_armor), 40960);  // <
+    	addMapping(new ItemStack(Blocks.tallgrass), 1);
+    	addMapping(new ItemStack(Blocks.beacon), 104172);
+    	addMapping(new ItemStack(Blocks.packed_ice), 4);
+    	addMapping(new ItemStack(Items.snowball), 1);
+    	addMapping(new ItemStack(Items.filled_map), 1472);
+    	addMapping(new ItemStack(Items.chainmail_boots), 512);
+    	addMapping(new ItemStack(Items.chainmail_leggings), 896);
+    	addMapping(new ItemStack(Items.chainmail_chestplate), 1024);
+    	addMapping(new ItemStack(Items.chainmail_helmet), 640);
     }
 	
 	private static void loadEmcFromOD()
@@ -314,6 +326,21 @@ public class EMCMapper
 		map.put("ingotSignalum", 160);
 		map.put("ingotEnderium", 6144);
 		map.put("ingotPlatinum", 2084);
+		map.put("ingotAluminum", 128);
+		map.put("ingotAluminumBrass", 512);
+		map.put("ingotArdite", 1024);
+		map.put("ingotCobalt", 1024);
+		map.put("ingotManyullyn", 2048);
+		map.put("ingotAlumite", 1024);
+		
+		//Ingot Blocks
+		map.put("blockAluminum", 1152);
+		map.put("blockAluminumBrass", 4608);
+		map.put("blockArdite", 9216);
+		map.put("blockCobalt", 9216);
+		map.put("blockManyullyn", 18432);
+		map.put("blockEnder", 55296);
+		map.put("blockAlumite", 9216);
 		
 		//AE2
 		map.put("crystalCertusQuartz", 64);
@@ -331,6 +358,9 @@ public class EMCMapper
 		
 		//MISC
 		map.put("enderChest", 3184); // This is for ender Chests mod which adds over 74 pages of ender chests in nei
+		map.put("itemSkull", 10240); // Recipe for the Skulls & Heads
+		map.put("treeLeaves", 1);
+		map.put("listAllfishraw", 64);
 		
 		
 		//Black-list all ores/dusts

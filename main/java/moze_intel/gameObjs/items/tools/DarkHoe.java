@@ -1,5 +1,6 @@
 package moze_intel.gameObjs.items.tools;
 
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.items.ItemCharge;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -90,6 +91,11 @@ public class DarkHoe extends ItemCharge
    	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
    	{
-   		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hoe"));
+    	if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hoe"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "hoe_old"));
+		}
    	}
 }
