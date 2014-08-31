@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moze_intel.MozeCore;
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemMode;
@@ -210,8 +211,13 @@ public class DarkPickaxe extends ItemMode
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "pick"));//Constants.dmToolTextures+"pick");
+		if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "pick"));//Constants.dmToolTextures+"pick");
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "pick_old"));
+		}
 	}
 }

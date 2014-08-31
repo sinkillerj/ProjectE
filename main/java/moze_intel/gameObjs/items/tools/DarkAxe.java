@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moze_intel.MozeCore;
+import moze_intel.config.ProjectEConfig;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.network.packets.SwingItemPKT;
@@ -117,6 +118,11 @@ public class DarkAxe extends ItemCharge
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "axe"));
+		if(ProjectEConfig.UseOldResources == false){
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "axe"));
+		}
+		else{
+			this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "axe_old"));
+		}
 	}
 }
