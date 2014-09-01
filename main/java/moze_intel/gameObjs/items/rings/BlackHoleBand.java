@@ -37,6 +37,7 @@ public class BlackHoleBand extends RingToggle
 		EntityPlayer player = (EntityPlayer) entity;
 		AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
+		
 		for (EntityItem item : itemList)
 			if (Utils.hasSpace(player.inventory.mainInventory, item.getEntityItem())) 
 			{

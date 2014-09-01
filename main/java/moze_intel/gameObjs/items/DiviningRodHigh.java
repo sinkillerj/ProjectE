@@ -1,9 +1,12 @@
 package moze_intel.gameObjs.items;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import moze_intel.MozeCore;
+import moze_intel.EMC.IStack;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
@@ -14,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -53,18 +57,46 @@ public class DiviningRodHigh extends DiviningRodMedium
 					for (int k = (int) box.minZ; k <= box.maxZ; k++)
 					{
 						Block block = world.getBlock(i, j, k);
-						if (block == null || block == Blocks.air)
+						
+						if (block == Blocks.air)
+						{
 							continue;
+						}
 						
 						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 						
 						if (drops.size() == 0)
+						{
 							continue;
+						}
 						
 						int blockEmc = Utils.getEmcValue(drops.get(0));
-						emcValues.add(blockEmc);
-						totalEmc += blockEmc;
-						numBlocks++;	
+						
+						if (blockEmc == 0)
+						{
+							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							
+							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+							{
+								if (entry.getKey().getItem().equals(drops.get(0).getItem()))
+								{
+									int currentValue = Utils.getEmcValue(entry.getValue());
+									
+									if (currentValue != 0)
+									{
+										emcValues.add(currentValue);
+										totalEmc += currentValue;
+									}	
+								}
+							}
+						}
+						else
+						{
+							emcValues.add(blockEmc);
+							totalEmc += blockEmc;
+						}
+						
+						numBlocks++;
 					}
 			
 			
@@ -109,6 +141,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		byte mode = this.getMode(stack);
+		
 		if (mode == 2)
 		{
 			stack.stackTagCompound.setByte("Mode", (byte) 0);
@@ -117,6 +150,8 @@ public class DiviningRodHigh extends DiviningRodMedium
 		{
 			stack.stackTagCompound.setByte("Mode", (byte) (mode + 1));
 		}
+		
+		player.addChatComponentMessage(new ChatComponentText("Changed mode to: "+modes[getMode(stack)]));
 	}
 	
 	@Override

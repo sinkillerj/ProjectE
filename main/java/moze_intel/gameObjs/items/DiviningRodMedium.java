@@ -1,7 +1,9 @@
 package moze_intel.gameObjs.items;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import moze_intel.MozeCore;
 import moze_intel.network.packets.SwingItemPKT;
@@ -15,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -27,7 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 {
-	private String[] modes;
+	protected String[] modes;
 	
 	public DiviningRodMedium()
 	{
@@ -44,7 +47,9 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
 		if (!stack.hasTagCompound())
+		{
 			stack.setTagCompound(new NBTTagCompound());
+		}
 	}
 	
 	@Override
@@ -71,7 +76,7 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 					{
 						Block block = world.getBlock(i, j, k);
 						
-						if (block == null || block == Blocks.air)
+						if (block == Blocks.air)
 						{
 							continue;
 						}
@@ -85,12 +90,34 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 						
 						int blockEmc = Utils.getEmcValue(drops.get(0));
 						
-						totalEmc += blockEmc;
+						if (blockEmc == 0)
+						{
+							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							
+							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+							{
+								if (entry.getKey().getItem().equals(drops.get(0).getItem()))
+								{
+									int currentValue = Utils.getEmcValue(entry.getValue());
+									
+									if (currentValue != 0)
+									{
+										blockEmc = currentValue;
+										totalEmc += currentValue;
+									}	
+								}
+							}
+						}
+						else
+						{
+							totalEmc += blockEmc;
+						}
 						
 						if (blockEmc > max)
 						{
 							max = blockEmc;
 						}
+						
 						numBlocks++;	
 					}
 			
@@ -133,8 +160,13 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 	public void changeMode(ItemStack stack)
 	{
 		if (getMode(stack) == 1)
+		{
 			stack.stackTagCompound.setByte("Mode", (byte) 0);
-		else stack.stackTagCompound.setByte("Mode", (byte) 1);
+		}
+		else 
+		{
+			stack.stackTagCompound.setByte("Mode", (byte) 1);
+		}
 	}
 	
 	@Override

@@ -104,7 +104,7 @@ public class AlchemicalBag extends ItemBase
 						continue;
 					}
 				
-					if (invStack.isItemStackDamageable() && invStack.getItemDamage() > 0)
+					if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 					{
 						invStack.setItemDamage(invStack.getItemDamage() - 1);
 						inv[i] = invStack;

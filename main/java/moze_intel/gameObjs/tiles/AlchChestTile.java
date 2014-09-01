@@ -1,14 +1,20 @@
 package moze_intel.gameObjs.tiles;
 
+import java.util.Iterator;
+import java.util.List;
+
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.GemEternalDensity;
 import moze_intel.gameObjs.items.rings.RingToggle;
 import moze_intel.utils.Utils;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.AxisAlignedBB;
 
 public class AlchChestTile extends TileEntityDirection implements IInventory
 {
@@ -147,73 +153,6 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
     {
 		super.updateEntity();
 
-		ItemStack rTalisman = Utils.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
-		
-		if (rTalisman != null)
-		{
-			byte coolDown = rTalisman.stackTagCompound.getByte("Cooldown");
-			
-			if (coolDown > 0)
-			{
-				rTalisman.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-			}
-			else
-			{
-				boolean hasAction = false;
-				
-				for (int i = 0; i < 104; i++)
-				{
-					ItemStack invStack = inventory[i];
-				
-					if (invStack == null || invStack.getItem() instanceof RingToggle) 
-					{
-						continue;
-					}
-				
-					if (invStack.isItemStackDamageable() && invStack.getItemDamage() > 0)
-					{
-						invStack.setItemDamage(invStack.getItemDamage() - 1);
-						inventory[i] = invStack;
-						
-						if (!hasAction)
-						{
-							hasAction = true;
-						}
-					}
-				}
-				
-				if (hasAction)
-				{
-					rTalisman.stackTagCompound.setByte("Cooldown", (byte) 19);
-				}
-			}
-		}
-		
-		ItemStack gemDensity = Utils.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-		
-		if (gemDensity != null)
-		{
-			GemEternalDensity gem = (GemEternalDensity) gemDensity.getItem(); 
-			
-			for (int i = 0; i < 104; i++)
-			{
-				ItemStack current = inventory[i];
-				
-				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
-				{
-					continue;
-				}
-						
-				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
-				{
-					gem.consumeItem(gemDensity, current, this, i);
-					break;
-				}
-			}
-			
-			gem.checkEmcBounds(gemDensity, this);
-		}
-
         if (++ticksSinceSync % 20 * 4 == 0)
         {
             worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
@@ -260,7 +199,165 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
                lidAngle = 0.0F;
             }
         }
+        
+        if (!this.worldObj.isRemote)
+        {
+        	ItemStack rTalisman = Utils.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
+    		
+    		if (rTalisman != null)
+    		{
+    			byte coolDown = rTalisman.stackTagCompound.getByte("Cooldown");
+    			
+    			if (coolDown > 0)
+    			{
+    				rTalisman.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+    			}
+    			else
+    			{
+    				boolean hasAction = false;
+    				
+    				for (int i = 0; i < 104; i++)
+    				{
+    					ItemStack invStack = inventory[i];
+    				
+    					if (invStack == null || invStack.getItem() instanceof RingToggle) 
+    					{
+    						continue;
+    					}
+    				
+    					if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+    					{
+    						invStack.setItemDamage(invStack.getItemDamage() - 1);
+    						inventory[i] = invStack;
+    						
+    						if (!hasAction)
+    						{
+    							hasAction = true;
+    						}
+    					}
+    				}
+    				
+    				if (hasAction)
+    				{
+    					rTalisman.stackTagCompound.setByte("Cooldown", (byte) 19);
+    				}
+    			}
+    		}
+    		
+    		ItemStack gemDensity = Utils.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+    		
+    		if (gemDensity != null)
+    		{
+    			GemEternalDensity gem = (GemEternalDensity) gemDensity.getItem(); 
+    			
+    			for (int i = 0; i < 104; i++)
+    			{
+    				ItemStack current = inventory[i];
+    				
+    				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
+    				{
+    					continue;
+    				}
+    						
+    				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
+    				{
+    					gem.consumeItem(gemDensity, current, this, i);
+    					break;
+    				}
+    			}
+    			
+    			gem.checkEmcBounds(gemDensity, this);
+    		}
+        }
+    		
+        ItemStack blackHoleBand = Utils.getStackFromInv(this, new ItemStack(ObjHandler.blackHole, 1, 1));
+    		
+        if (blackHoleBand != null)
+        {
+        	AxisAlignedBB box = AxisAlignedBB.getBoundingBox(this.xCoord - 5, this.yCoord - 5, this.zCoord - 5, this.xCoord + 5, this.yCoord + 5, this.zCoord + 5);
+    			
+        	List<EntityItem> itemList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, box);
+        	List<LootBall> lootList = this.worldObj.getEntitiesWithinAABB(LootBall.class, box);
+        	
+        	for (EntityItem item : itemList)
+        	{
+        		if (getDistance(item.posX, item.posY, item.posZ) <= 0.5f)
+        		{
+        			if (!this.worldObj.isRemote)
+        			{
+        			
+        				if (Utils.hasSpace(this, item.getEntityItem()))
+        				{
+        					ItemStack remain = Utils.pushStackInInv(this, item.getEntityItem());
+    						
+        					if (remain == null)
+        					{
+        						item.setDead();
+        					}
+    					}
+        			}
+    			}
+    			else
+    			{
+    				double d1 = (this.xCoord - item.posX);
+    				double d2 = (this.yCoord - item.posY);
+    				double d3 = (this.zCoord - item.posZ);
+    				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+
+    				item.motionX += d1 / d4 * 0.1D;
+    				item.motionY += d2 / d4 * 0.1D;
+    				item.motionZ += d3 / d4 * 0.1D;
+    	                
+    				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+    			}
+    		}
+        	
+        	for (LootBall loot : lootList)
+        	{
+        		if (getDistance(loot.posX, loot.posY, loot.posZ) <= 0.5f)
+        		{
+        			if (!this.worldObj.isRemote)
+        			{
+        				//Avoids concurrent modification exception
+        				Iterator<ItemStack> iter = loot.getItemList().iterator();
+        				
+        				while (iter.hasNext())
+        				{
+        					ItemStack current = iter.next();
+        					
+        					if (Utils.hasSpace(this, current))
+        					{
+        						ItemStack remain = Utils.pushStackInInv(this, current);
+        						
+        						if (remain == null)
+        						{
+        							iter.remove();
+        						}
+        					}
+        				}
+        			}
+    			}
+    			else
+    			{
+    				double d1 = (this.xCoord - loot.posX);
+    				double d2 = (this.yCoord - loot.posY);
+    				double d3 = (this.zCoord - loot.posZ);
+    				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+
+    				loot.motionX += d1 / d4 * 0.1D;
+    				loot.motionY += d2 / d4 * 0.1D;
+    				loot.motionZ += d3 / d4 * 0.1D;
+    	                
+    				loot.moveEntity(loot.motionX, loot.motionY, loot.motionZ);
+    			}
+        	}
+        }
     }
+	
+	private double getDistance(double x, double y, double z)
+	{
+		return Math.sqrt((Math.pow((this.xCoord - x), 2) + Math.pow((this.yCoord - y), 2) + Math.pow((this.zCoord - z), 2)));
+	}
 	
 	@Override
     public boolean receiveClientEvent(int number, int arg)

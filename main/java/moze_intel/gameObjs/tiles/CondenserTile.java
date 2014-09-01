@@ -92,11 +92,11 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	
 	private void condense()
 	{
-		if (!hasSpace()) 
+		/*if (!hasSpace()) 
 		{
 			this.isRequestingEmc = false;
 			return;
-		}
+		}*/
 		
 		for (int i = 1; i < 92; i++)
 		{
@@ -112,7 +112,7 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 			break;
 		}
 		
-		if (this.getStoredEMC() >= requiredEmc)
+		if (this.getStoredEMC() >= requiredEmc && this.hasSpace())
 		{
 			double result = this.getStoredEMC() - requiredEmc;
 			pushStack();

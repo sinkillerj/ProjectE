@@ -7,17 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
-import appeng.api.util.*;
 
-public class EMCMapper
+public class EMCMapper 
 {
 	public static LinkedHashMap<IStack, Integer> emc = new LinkedHashMap();
 	public static LinkedList<IStack> failed = new LinkedList();
@@ -157,7 +153,7 @@ public class EMCMapper
 	
 	private static void addMapping(IStack stack, int value)
 	{
-		if (emc.containsKey(stack))
+		if (emc.containsKey(stack) || value <= 0)
 		{
 			return;
 		}
@@ -167,7 +163,6 @@ public class EMCMapper
 	
 	private static void lazyInit()
     {
-		//Vanilla
     	addMapping(new ItemStack(Blocks.cobblestone), 1);
     	addMapping(new ItemStack(Blocks.stone), 1);
     	addMapping(new ItemStack(Blocks.netherrack), 1);
@@ -271,7 +266,21 @@ public class EMCMapper
     	
     	addMapping(new ItemStack(Items.enchanted_book), 2048);
     	addMapping(new ItemStack(Items.emerald), 16384);
-
+    	
+    	addMapping(new ItemStack(Items.nether_star), 262144);
+    	addMapping(new ItemStack(Items.iron_horse_armor), 1280);       
+    	addMapping(new ItemStack(Items.golden_horse_armor), 1024);    
+    	addMapping(new ItemStack(Items.diamond_horse_armor), 40960);  
+    	addMapping(new ItemStack(Blocks.tallgrass), 1);
+    	addMapping(new ItemStack(Blocks.packed_ice), 4);
+    	addMapping(new ItemStack(Items.snowball), 1);
+    	addMapping(new ItemStack(Items.filled_map), 1472);
+    	
+    	//Still deciding if chainmail should have emc
+    	/*addMapping(new ItemStack(Items.chainmail_boots), 512);
+    	addMapping(new ItemStack(Items.chainmail_leggings), 896);
+    	addMapping(new ItemStack(Items.chainmail_chestplate), 1024);
+    	addMapping(new ItemStack(Items.chainmail_helmet), 640);*/
     }
 	
 	private static void loadEmcFromOD()
@@ -287,8 +296,6 @@ public class EMCMapper
 		//building stuff
 		map.put("stone", 1);
 		map.put("cobblestone", 1);
-		map.put("blockMarble", 1);
-		map.put("whiteStone", 64);
 		
 		//ingots
 		map.put("ingotIron", 256);
@@ -302,7 +309,7 @@ public class EMCMapper
 		map.put("dustCharcoal", 16);
 		map.put("dustSulfur", 32);
 		
-		//Ingots
+		//Ingots (blocks will get auto-mapped)
 		map.put("ingotCopper", 128);
 		map.put("ingotTin", 256);
 		map.put("ingotBronze", 160);
@@ -313,8 +320,13 @@ public class EMCMapper
 		map.put("ingotElectrum", 1280);
 		map.put("ingotSignalum", 160);
 		map.put("ingotEnderium", 6144);
-		map.put("ingotPlatinum", 2084);
-		
+		map.put("ingotAluminum", 128);
+		map.put("ingotAluminumBrass", 512);
+		map.put("ingotArdite", 1024);
+		map.put("ingotCobalt", 1024);
+		map.put("ingotManyullyn", 2048);
+		map.put("ingotAlumite", 1024);
+			
 		//AE2
 		map.put("crystalCertusQuartz", 64);
 		map.put("crystalFluix", 256);
@@ -329,8 +341,9 @@ public class EMCMapper
 		//TE
 		map.put("blockGlassHardened", 192);
 		
-		//MISC
-		map.put("enderChest", 3184); // This is for ender Chests mod which adds over 74 pages of ender chests in nei
+		//Vanilla 
+		map.put("treeLeaves", 1);
+		map.put("listAllfishraw", 64);
 		
 		
 		//Black-list all ores/dusts
@@ -370,5 +383,4 @@ public class EMCMapper
 		list.addAll(OreDictionary.getOres(oreName));
 		return list;
 	}
-
 }

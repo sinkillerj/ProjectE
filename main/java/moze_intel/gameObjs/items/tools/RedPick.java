@@ -125,7 +125,7 @@ public class RedPick extends ItemMode
 					
 					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						drops.addAll(Utils.getBlockDrops(world, player, b, stack, x, y, z));
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
 					}
 				}

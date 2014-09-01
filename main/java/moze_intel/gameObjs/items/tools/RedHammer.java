@@ -60,7 +60,7 @@ public class RedHammer extends ItemCharge
 					
 					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, x, y, z);
+						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, i, j, k);
 						
 						if (blockDrops.isEmpty())
 						{

@@ -23,6 +23,7 @@ import moze_intel.gameObjs.gui.GUICollectorMK3;
 import moze_intel.gameObjs.gui.GUICondenser;
 import moze_intel.gameObjs.gui.GUIDMFurnace;
 import moze_intel.gameObjs.gui.GUIMercurialEye;
+import moze_intel.gameObjs.gui.GUIPhilosStone;
 import moze_intel.gameObjs.gui.GUIRMFurnace;
 import moze_intel.gameObjs.gui.GUIRelayMK1;
 import moze_intel.gameObjs.gui.GUIRelayMK2;

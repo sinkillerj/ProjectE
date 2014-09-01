@@ -154,6 +154,12 @@ public class Utils
 			for (Entry<Integer, Integer> entry : enchants.entrySet())
 			{
 				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
+				
+				if (ench.getWeight() == 0)
+				{
+					continue;
+				}
+				
 				result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
 			}
 		}
@@ -942,6 +948,37 @@ public class Utils
 		}
 		
 		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+	}
+	
+	/**
+	 *	@throws NullPointerException 
+	 */
+	public static ItemStack getStackFromString(String unlocalName, int metaData)
+	{
+		Iterator<String> iter = Item.itemRegistry.getKeys().iterator();
+		
+		while (iter.hasNext())
+		{
+			String obj = iter.next();
+			
+			ItemStack stack = new ItemStack((Item) Item.itemRegistry.getObject(obj), 1, metaData);
+			
+			try
+			{
+				if (stack.getUnlocalizedName() == null)
+				{
+					continue;
+				}
+			
+				if (stack.getUnlocalizedName().equalsIgnoreCase(unlocalName))
+				{
+					return stack;
+				}
+			}
+			catch (Exception e) {}
+		}
+		
+		return null;
 	}
 	
 	public static int randomIntInRange(int max, int min)

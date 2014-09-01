@@ -1,3 +1,14 @@
+###Version Alpha 0.1l
+* FIX: Talisman of repair repairing items it shouldn't
+* FIX: Condenser stopping if it's inventory filled up
+* FIX: Dark/Red matter tools ressetting block meta-data
+* FIX: Dark/Red matter axes not being able to break certain blocks
+* FIX: Dark/Red matter armor and shear recipes
+* NEW: In game commands (projecte_addEMC and projecte_removeEMC)
+* NEW: Black hole bands now work in alchemical chest
+* NEW: Some tiCon EMC integration
+* NEW: Philosopher's stone has an animation (still needs some work)
+
 ###Version Alpha 0.1k
 * NEW: Damaged items now have EMC (relative to the damage amount)
 * NEW: Enchanted items now have an EMC bonus (EMC for enchantments is based on the rarity and level of the enchant)

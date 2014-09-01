@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import appeng.api.AEApi;
 import cpw.mods.fml.common.Loader;
 import moze_intel.MozeCore;
 import net.minecraft.item.ItemStack;
@@ -151,7 +152,7 @@ public class RecipeMapper
 			}
 		}
 	}
-
+	
 	public static Set<Entry<IStack, LinkedList<RecipeInput>>> getEntrySet()
 	{
 		return recipes.entrySet();

@@ -29,7 +29,7 @@ public class DarkAxe extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block.equals(Blocks.bedrock))
+		if (block == Blocks.bedrock)
 		{
 			return false;
 		}
@@ -47,9 +47,11 @@ public class DarkAxe extends ItemCharge
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if(block.getHarvestTool(metadata) != null && block.getHarvestTool(metadata).equals("axe"))
+		String harvest = block.getHarvestTool(metadata);
+		
+		if (harvest == null || harvest.equals("axe"))
 		{
-			return 14.0f + (12.0f * this.getCharge(stack));
+			return 15.0f + (12.0f * this.getCharge(stack));
 		}
 		
 		return 1.0F;

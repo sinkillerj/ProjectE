@@ -1,7 +1,6 @@
 package moze_intel;
 
 import java.io.File;
-import java.util.Iterator;
 
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.RecipeMapper;
@@ -12,8 +11,11 @@ import moze_intel.events.PlayerChecksEvent;
 import moze_intel.events.RegisterPropertiesEvent;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.network.ThreadCheckUpdate;
+import moze_intel.network.commands.AddEmcCMD;
 import moze_intel.network.commands.ChangelogCMD;
 import moze_intel.network.commands.ReloadCfgCMD;
+import moze_intel.network.commands.RemoveEmcCMD;
+import moze_intel.network.packets.AddEmcPKT;
 import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientKnowledgeSyncPKT;
 import moze_intel.network.packets.ClientSyncBagDataPKT;
@@ -32,9 +34,6 @@ import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
 import moze_intel.utils.Utils;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -54,7 +53,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1k";
+    public static final String VERSION = "Alpha 0.1l";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;
@@ -94,6 +93,7 @@ public class MozeCore
     	pktHandler.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
     	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
     	pktHandler.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
+    	pktHandler.registerMessage(AddEmcPKT.class, AddEmcPKT.class, 13, Side.SERVER);
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -123,6 +123,8 @@ public class MozeCore
     {
     	event.registerServerCommand(new ChangelogCMD());
     	event.registerServerCommand(new ReloadCfgCMD());
+    	event.registerServerCommand(new AddEmcCMD());
+    	event.registerServerCommand(new RemoveEmcCMD());
     	
     	if (!ThreadCheckUpdate.hasRunServer())
     	{

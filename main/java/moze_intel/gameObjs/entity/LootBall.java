@@ -71,45 +71,52 @@ public class LootBall extends Entity
 	{
 		super.onUpdate();
 		
-		 this.prevPosX = this.posX;
-         this.prevPosY = this.posY;
-         this.prevPosZ = this.posZ;
-         this.motionY -= 0.03999999910593033D;
-         this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
-         this.moveEntity(this.motionX, this.motionY, this.motionZ);
-         boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
+		this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        this.motionY -= 0.03999999910593033D;
+        this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
+        
          
+        if (flag || this.ticksExisted % 25 == 0)
+        {
+            if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava)
+            {
+                this.motionY = 0.20000000298023224D;
+                this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+                this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+                this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+            }
+        }
          
-         if (flag || this.ticksExisted % 25 == 0)
-         {
-             if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava)
-             {
-                 this.motionY = 0.20000000298023224D;
-                 this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-                 this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-                 this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
-             }
-         }
-         
-         float f = 0.98F;
+        float f = 0.98F;
 
-         if (this.onGround)
-             f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+        if (this.onGround)
+            f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
 
-         this.motionX *= (double)f;
-         this.motionY *= 0.9800000190734863D;
-         this.motionZ *= (double)f;
+        this.motionX *= (double)f;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= (double)f;
 
-         if (this.onGround)
-             this.motionY *= -0.5D;
+        if (this.onGround)
+            this.motionY *= -0.5D;
 
-         ++this.age;
+        ++this.age;
 
 		
 		if (!this.worldObj.isRemote)
 		{
 			if (age > lifespan)
+			{
 				this.setDead();
+			}
+			
+			if (this.items.isEmpty())
+			{
+				this.setDead();
+			}
 		}
 	}
 	

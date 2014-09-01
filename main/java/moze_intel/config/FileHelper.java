@@ -2,14 +2,19 @@ package moze_intel.config;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.imageio.plugins.common.InputStreamAdapter;
+
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
+import moze_intel.utils.Utils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -123,7 +128,7 @@ public abstract class FileHelper
 					
 					try
 					{
-						 stack = getStackFromString(token.line, Integer.valueOf(meta.line));
+						 stack = Utils.getStackFromString(token.line, Integer.valueOf(meta.line));
 					}
 					catch (Exception e)
 					{
@@ -234,6 +239,163 @@ public abstract class FileHelper
 		}
 	}
 	
+	/**
+	 * For UN additions only.
+	 */
+	public static void addToFile(ItemStack stack, int emc)
+	{
+		PrintWriter writer = null;
+		BufferedReader reader = null;
+		
+		boolean hasFound = false;
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader(EMC_CONFIG));
+			
+			String line;
+			String input = "";
+			
+			while ((line = reader.readLine()) != null)
+			{
+				input += line + "\n";
+				
+				if (line.startsWith("U:") && line.substring(2).equalsIgnoreCase(stack.getUnlocalizedName()))
+				{
+					while ((line = reader.readLine()) != null)
+					{
+						if (line.startsWith("E:"))
+						{
+							input += "E:" + emc + "\n";
+							hasFound = true;
+						}
+						else
+						{
+							input += line + "\n";
+						}
+					}
+				}
+			}
+			
+			if (!hasFound)
+			{
+				input += "U:" + stack.getUnlocalizedName() + "\n";
+				input += "M:" + stack.getItemDamage() + "\n";
+				input += "E:" + emc + "\n";
+			}
+			
+			writer = new PrintWriter(new FileOutputStream(EMC_CONFIG, false));
+			writer.write(input);
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (writer != null)
+			{
+				writer.close();
+			}
+			
+			if (reader != null)
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * For OD additions only.
+	 */
+	public static void addToFile(String odName, int emc)
+	{
+		PrintWriter writer = null;
+		BufferedReader reader = null;
+		
+		boolean hasFound = false;
+		
+		List<String> toChange = new ArrayList();
+		
+		for (ItemStack stack : OreDictionary.getOres(odName))
+		{
+			if (stack != null)
+			{
+				toChange.add(stack.getUnlocalizedName());
+			}
+		}
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader(EMC_CONFIG));
+			
+			String line;
+			String input = "";
+			
+			while ((line = reader.readLine()) != null)
+			{
+				input += line + "\n";
+				
+				if (line.startsWith("O:") && toChange.contains(line.substring(2)))
+				{
+					while ((line = reader.readLine()) != null)
+					{
+						if (line.startsWith("E:"))
+						{
+							input += "E:" + emc + "\n";
+							hasFound = true;
+						}
+						else
+						{
+							input += line + "\n";
+						}
+					}
+				}
+			}
+			
+			if (!hasFound)
+			{
+				input += "OD:" + odName + "\n";
+				input += "E:" + emc + "\n";
+			}
+			
+			writer = new PrintWriter(new FileOutputStream(EMC_CONFIG, false));
+			
+			writer.write(input);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (writer != null)
+			{
+				writer.close();
+			}
+			
+			if (reader != null)
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	private static Token getNextToken(BufferedReader reader) throws IOException
 	{
 		String line;
@@ -256,38 +418,6 @@ public abstract class FileHelper
 					return new Token(c, line.substring(2));
 				}
 			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 *	@throws NullPointerException 
-	 */
-	private static ItemStack getStackFromString(String unlocalName, int metaData)
-	{
-		Iterator<String> iter = Item.itemRegistry.getKeys().iterator();
-		
-		while (iter.hasNext())
-		{
-			String obj = iter.next();
-
-			ItemStack stack = new ItemStack((Item) Item.itemRegistry.getObject(obj), 1, metaData);
-			
-			try
-			{
-				if (stack.getUnlocalizedName() == null)
-				{
-					MozeCore.logger.logInfo("NULL unlocalized name for: "+stack);
-					continue;
-				}
-			
-				if (stack.getUnlocalizedName().equalsIgnoreCase(unlocalName))
-				{
-					return stack;
-				}
-			}
-			catch (Exception e) {}
 		}
 		
 		return null;

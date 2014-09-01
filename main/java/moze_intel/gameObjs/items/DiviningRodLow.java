@@ -1,6 +1,8 @@
 package moze_intel.gameObjs.items;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import moze_intel.MozeCore;
 import moze_intel.network.packets.SwingItemPKT;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
@@ -53,16 +56,49 @@ public class DiviningRodLow extends ItemBase
 			int numBlocks = 0;
 			
 			CoordinateBox box = getBoxFromDirection(ForgeDirection.getOrientation(mop.sideHit), new Coordinates(mop));
+			
 			for (int i = (int) box.minX; i <= box.maxX; i++)
 				for (int j = (int) box.minY; j <= box.maxY; j++)
 					for (int k = (int) box.minZ; k <= box.maxZ; k++)
 					{
 						Block block = world.getBlock(i, j, k);
-						if (block == null || block == Blocks.air)
+						
+						if (block == Blocks.air)
+						{
 							continue;
+						}
 						
 						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
-						totalEmc += Utils.getEmcValue(drops.get(0));
+						
+						if (drops.isEmpty())
+						{
+							continue;
+						}
+						
+						int blockEmc = Utils.getEmcValue(drops.get(0));
+						
+						if (blockEmc == 0)
+						{
+							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							
+							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+							{
+								if (entry.getKey().getItem().equals(drops.get(0).getItem()))
+								{
+									int currentValue = Utils.getEmcValue(entry.getValue());
+									
+									if (currentValue != 0)
+									{
+										totalEmc += currentValue;
+									}	
+								}
+							}
+						}
+						else
+						{
+							totalEmc += blockEmc;
+						}
+						
 						numBlocks++;	
 					}
 			

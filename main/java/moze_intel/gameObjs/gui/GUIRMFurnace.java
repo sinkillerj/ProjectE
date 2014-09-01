@@ -40,11 +40,11 @@ public class GUIRMFurnace extends GuiContainer
 		if (tile.isBurning())
 		{
 			progress = tile.getBurnTimeRemainingScaled(12);
-			this.drawTexturedModalRect(x + 65, y + 36 + 12 - progress, 210, 12 - progress, 14, progress + 2);
+			this.drawTexturedModalRect(x + 57, y + 37 + 10 - progress, 210, 10 - progress, 21, progress + 2);
 		}
 		
 		progress = tile.getCookProgressScaled(24);
-		this.drawTexturedModalRect(x + 88, y + 34, 210, 14, progress + 1, 16);
+		this.drawTexturedModalRect(x + 80, y + 39, 210, 20, progress + 5, 20);
 	}
 	
 	@Override
