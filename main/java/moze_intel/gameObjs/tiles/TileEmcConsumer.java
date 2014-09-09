@@ -13,6 +13,7 @@ public abstract class TileEmcConsumer extends TileEntity
 	public void addEmc(int amount)
 	{
 		emc += amount;
+		
 		if (emc > MAX_AMOUNT || emc < 0)
 			emc = MAX_AMOUNT;
 	}

@@ -1,20 +1,29 @@
 package moze_intel.gameObjs.tiles;
 
+import scala.actors.threadpool.Arrays;
+import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.blocks.MatterFurnace;
+import moze_intel.gameObjs.items.KleinStar;
+import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.Facing;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RMFurnaceTile extends TileEntity implements IInventory
+public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory
 {
+	private final float EMC_CONSUMPTION = 1.6f;
 	public ItemStack[] inventory = new ItemStack[27];
 	public int outputSlot = 14;
 	public int[] inputStorage = new int[] {2, 13};
@@ -25,10 +34,20 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     public int currentItemBurnTime;
     public int furnaceCookTime;
     
+    public RMFurnaceTile() 
+    {
+    	super(64);
+    	this.isRequestingEmc = true;
+	}
+    
     @Override
     public void updateEntity()
     {
-    	pushSmeltStack();
+    	if (!this.worldObj.isRemote)
+    	{
+    		pullFromInventories();
+    		pushSmeltStack();
+    	}
     	
     	boolean flag = furnaceBurnTime > 0;
     	boolean flag1 = false;
@@ -38,6 +57,21 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     	
     	if (!worldObj.isRemote)
     	{
+    		if (inventory[0] != null && inventory[0].getItem() == ObjHandler.kleinStars)
+    		{
+    			if (KleinStar.getEmc(inventory[0]) >= EMC_CONSUMPTION)
+    			{
+    				KleinStar.removeEmc(inventory[0], EMC_CONSUMPTION);
+    				this.addEmc(EMC_CONSUMPTION);
+    			}
+    		}
+    		
+    		if (this.getStoredEMC() >= EMC_CONSUMPTION)
+    		{
+    			furnaceBurnTime = 1;
+    			this.removeEmc(EMC_CONSUMPTION);
+    		}
+    		
     		if (furnaceBurnTime == 0 && canSmelt())
     		{
     			currentItemBurnTime = furnaceBurnTime = getItemBurnTime(inventory[0]);
@@ -49,8 +83,11 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     				if (inventory[0] != null)
     				{
     					--inventory[0].stackSize;
+    					
     					if (inventory[0].stackSize == 0)
+    					{
     						inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+    					}
     				}
     			}
     		}
@@ -72,16 +109,22 @@ public class RMFurnaceTile extends TileEntity implements IInventory
             {
                 flag1 = true;
                 Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
-                if (block instanceof MatterFurnace)
+                
+                if (!this.worldObj.isRemote && block instanceof MatterFurnace)
                 	((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
             }
     	}
     	
-    	if (flag1) markDirty();
+    	if (flag1) 
+    	{
+    		markDirty();
+    	}
     	
-    	ItemStack output = inventory[outputSlot];
-    	if (output != null && output.stackSize == output.getMaxStackSize())
+    	if (!this.worldObj.isRemote)
+    	{
     		pushOutput();
+    		pushToInventories();
+    	}
     }
     
     public boolean isBurning()
@@ -91,21 +134,52 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     
     private void pushSmeltStack()
     {
+    	ItemStack stack = getStackInSlot(1);
+    	
     	for (int i = inputStorage[0]; i <= inputStorage[1]; i++)
     	{
-    		ItemStack stack = getStackInSlot(1);
-    		if (stack != null) return;
+    		if (stack != null && stack.stackSize == stack.getMaxStackSize()) 
+    		{
+    			return;
+    		}
+    		
     		ItemStack slotStack = getStackInSlot(i);
-    		if (slotStack == null) continue;
-    		inventory[1] = slotStack;
-    		inventory[i] = null;
-    		return;
+    		
+    		if (slotStack != null && (stack == null || Utils.areItemStacksEqual(slotStack, stack))) 
+    		{
+    			if (stack == null)
+    			{
+    				inventory[1] = slotStack.copy();
+    				inventory[i] = null;
+    				return;
+    			}
+    			
+    			int remain = stack.getMaxStackSize() - stack.stackSize;
+    			
+    			if (slotStack.stackSize <= remain)
+    			{
+    				inventory[i] = null;
+    				inventory[1].stackSize += stack.stackSize;
+    				return;
+    			}
+    			else
+    			{
+    				this.decrStackSize(i, remain);
+    				inventory[1].stackSize += remain;
+    				return;
+    			}
+    		}
     	}
     }
     
     private void pushOutput()
     {
     	ItemStack output = inventory[outputSlot];
+    	
+    	if (output == null)
+    	{
+    		return;
+    	}
     	
     	for (int i = outputStorage[0]; i <= outputStorage[1]; i++)
     	{
@@ -117,19 +191,321 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     			inventory[outputSlot] = null;
     			return;
     		}
+    		else
+    		{
+    			if (Utils.areItemStacksEqual(output, stack) && stack.stackSize < stack.getMaxStackSize())
+    			{
+    				int remain = stack.getMaxStackSize() - stack.stackSize;
+    				
+    				if (output.stackSize <= remain)
+    				{
+    					inventory[outputSlot] = null;
+    					inventory[i].stackSize += output.stackSize;
+    					return;
+    				}
+    				else
+    				{
+    					this.decrStackSize(outputSlot, remain);
+    					inventory[i].stackSize += remain;
+    				}
+    				
+    			}
+    		}
+    	}
+    }
+    
+    private void pullFromInventories()
+    {
+    	TileEntity tile = this.worldObj.getTileEntity(this.xCoord, this.yCoord + 1, this.zCoord);
+    	
+    	if (tile instanceof ISidedInventory)
+    	{
+    		final int side = 0;
+    		ISidedInventory inv = (ISidedInventory) tile;
+    		
+    		int[] slots = inv.getAccessibleSlotsFromSide(side);
+    		
+    		if (slots.length > 0)
+    		{
+    			for (int i : slots)
+    			{
+    				ItemStack stack = inv.getStackInSlot(i);
+    				
+    				if (stack == null)
+    				{
+    					continue;
+    				}
+    				
+    				if (inv.canExtractItem(i, stack, side))
+    				{
+    					if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars)
+    					{
+    						if (inventory[0] == null)
+    						{
+    							inventory[0] = stack;
+    							inv.setInventorySlotContents(i, null);
+    						}
+    						else if (Utils.areItemStacksEqual(stack, inventory[0]))
+    						{
+    							int remain = inventory[0].getMaxStackSize() - inventory[0].stackSize;
+    							
+    							if (stack.stackSize <= remain)
+    							{
+    								inventory[0].stackSize += stack.stackSize;
+    								inv.setInventorySlotContents(i, null);
+    							}
+    							else
+    							{
+    								inventory[0].stackSize += remain;
+    								stack.stackSize -= remain;
+    							}
+    						}
+    						
+    						continue;
+    					}
+    					
+    					for (int j = inputStorage[0]; j < inputStorage[1]; j++)
+    					{
+    						ItemStack otherStack = inventory[j];
+    						
+    						if (otherStack == null)
+    						{
+    							inventory[j] = stack;
+    							inv.setInventorySlotContents(i, null);
+    							break;
+    						}
+    						else if (Utils.areItemStacksEqual(stack, otherStack))
+    						{
+    							int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
+    							
+    							if (stack.stackSize <= remain)
+    							{
+    								inventory[j].stackSize += stack.stackSize;
+    								inv.setInventorySlotContents(i, null);
+    								break;
+    							}
+    							else
+    							{
+    								inventory[j].stackSize += remain;
+    								stack.stackSize -= remain;
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
+    	else if (tile instanceof IInventory)
+    	{
+    		IInventory inv = (IInventory) tile;
+    		
+    		for (int i = 0; i < inv.getSizeInventory(); i++)
+    		{
+    			ItemStack stack = inv.getStackInSlot(i);
+    			
+    			if (stack == null)
+    			{
+    				continue;
+    			}
+    			
+    			if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars)
+    			{
+    				ItemStack fuel = inventory[0];
+    				
+    				if (fuel == null)
+    				{
+    					inventory[0] = stack;
+    					inv.setInventorySlotContents(i, null);
+    				}
+    				else
+    				{
+    					int remain = fuel.getMaxStackSize() - fuel.stackSize;
+    					
+    					if (stack.stackSize <= remain)
+    					{
+    						inventory[0].stackSize += stack.stackSize;
+    						inv.setInventorySlotContents(i, null);
+    					}
+    					else
+    					{
+    						inventory[0].stackSize += remain;
+    						stack.stackSize -= remain;
+    					}
+    				}
+    				
+    				continue;
+    			}
+    			else if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null)
+    			{
+    				continue;
+    			}
+    			
+    			for (int j = inputStorage[0]; j < inputStorage[1]; j++)
+    			{
+    				ItemStack otherStack = inventory[j];
+    				
+    				if (otherStack == null)
+    				{
+    					inventory[j] = stack;
+    					inv.setInventorySlotContents(i, null);
+    					break;
+    				}
+    				else if (Utils.areItemStacksEqual(stack, otherStack))
+    				{
+    					int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
+    					
+    					if (stack.stackSize <= remain)
+    					{
+    						inventory[j].stackSize += stack.stackSize;
+    						inv.setInventorySlotContents(i, null);
+    						break;
+    					}
+    					else
+    					{
+    						inventory[j].stackSize += remain;
+    						stack.stackSize -= remain;
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    private void pushToInventories()
+    {
+    	int iSide = 0;
+    	
+    	for (int i = 0; i < 5; i++)
+    	{
+    		int x = this.xCoord;
+    		int y = this.yCoord;
+    		int z = this.zCoord;
+    		
+    		switch (i)
+    		{
+    			case 0:
+    				x++;
+    				iSide = 5;
+    				break;
+    			case 2:
+    				z++;
+    				iSide = 3;
+    				break;
+    			case 3:
+    				x--;
+    				iSide = 4;
+    				break;
+    			case 4:
+    				y--;
+    				iSide = 0;
+    				break;
+    			case 1:
+    				z--;
+    				iSide = 2;
+    				break;
+    		}
+    		
+    		TileEntity tile = this.worldObj.getTileEntity(x, y, z);
+    		
+    		if (tile == null)
+    		{
+    			continue;
+    		}
+    		
+    		if (tile != null && tile instanceof ISidedInventory)
+    		{
+    			ISidedInventory inv = (ISidedInventory) tile;
+    			
+    			if (inv != null)
+    	    	{
+    	    		int[] slots = inv.getAccessibleSlotsFromSide(Facing.oppositeSide[iSide]);
+    	    		
+    	    		if (slots.length > 0)
+    	    		{
+    	    			for (int j = outputStorage[0]; j < outputStorage[1]; j++)
+    	    			{
+    	    				ItemStack stack = inventory[j];
+    	    				
+    	    				if (stack == null)
+    	    				{
+    	    					continue;
+    	    				}
+    	    				
+    	    				for (int k : slots)
+    	    				{
+    	    					if (inv.canInsertItem(k, stack, Facing.oppositeSide[iSide]))
+    	    					{
+    	    						ItemStack otherStack = inv.getStackInSlot(k);
+    	    						
+    	    						if (otherStack == null)
+    	    						{
+    	    							inv.setInventorySlotContents(k, stack);
+    	    							inventory[j] = null;
+    	    						}
+    	    						else if (Utils.areItemStacksEqual(stack, otherStack))
+    	    						{
+    	    							int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
+    	    							
+    	    							if (stack.stackSize <= remain)
+    	    							{
+    	    								otherStack.stackSize += stack.stackSize;
+    	    								inventory[j] = null;
+    	    							}
+    	    							else
+    	    							{
+    	    								otherStack.stackSize += remain;
+    	    								inventory[j].stackSize -= remain;
+    	    							}
+    	    						}
+    	    					}
+    	    				}
+    	    			}
+    	    		}
+    	    	}
+    		}
+    		else if (tile instanceof IInventory)
+    		{
+    			for (int j = outputStorage[0]; j <= outputStorage[1]; j++)
+    			{
+    				ItemStack stack = inventory[j];
+    				
+    				if (stack != null)
+    				{
+    					ItemStack result = Utils.pushStackInInv((IInventory) tile, stack);
+    					
+    					if (result == null)
+    					{
+    						inventory[j] = null;
+    					}
+    					else
+    					{
+    						inventory[j].stackSize = result.stackSize;
+    					}
+    				}
+    			}
+    		}
     	}
     }
     
     private void smeltItem()
     {
     	ItemStack toSmelt = inventory[1];
-    	ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
+    	ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
     	ItemStack currentSmelted = getStackInSlot(outputSlot);
+
+    	if (Utils.getOreDictionaryName(toSmelt).startsWith("ore"))
+    	{
+    		smeltResult.stackSize *= 2;
+    	}
     	
     	if (currentSmelted == null) 
-    		setInventorySlotContents(outputSlot, smeltResult.copy());
+    	{
+    		setInventorySlotContents(outputSlot, smeltResult);
+    	}
     	else
+    	{
     		currentSmelted.stackSize += smeltResult.stackSize;
+    	}
     	
     	decrStackSize(1, 1);
     }
@@ -138,15 +514,27 @@ public class RMFurnaceTile extends TileEntity implements IInventory
     {
     	ItemStack toSmelt = inventory[1];
     	
-    	if (toSmelt == null) return false;
+    	if (toSmelt == null) 
+    	{
+    		return false;
+    	}
     	
     	ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
-    	if (smeltResult == null) return false;
+    	if (smeltResult == null) 
+    	{
+    		return false;
+    	}
     	
     	ItemStack currentSmelted = getStackInSlot(outputSlot);
     	
-    	if (currentSmelted == null) return true;
-    	if (!smeltResult.isItemEqual(currentSmelted)) return false;
+    	if (currentSmelted == null) 
+    	{
+    		return true;
+    	}
+    	if (!smeltResult.isItemEqual(currentSmelted))
+    	{
+    		return false;
+    	}
     	
     	int result = currentSmelted.stackSize + smeltResult.stackSize;
     	return result <= currentSmelted.getMaxStackSize();
@@ -177,7 +565,7 @@ public class RMFurnaceTile extends TileEntity implements IInventory
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		//this.SetEmcValue(nbt.getDouble("EMC"));
+		this.setEmcValue(nbt.getDouble("EMC"));
 		furnaceBurnTime = nbt.getShort("BurnTime");
         furnaceCookTime = nbt.getShort("CookTime");
         currentItemBurnTime = getItemBurnTime(inventory[0]);
@@ -197,7 +585,7 @@ public class RMFurnaceTile extends TileEntity implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		//nbt.setDouble("EMC", this.GetStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEMC());
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		
@@ -303,6 +691,45 @@ public class RMFurnaceTile extends TileEntity implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
+		if (stack == null)
+		{
+			return false;
+		}
+		
+		if (slot == 0)
+		{
+			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars;
+		}
+		else if (slot >= 1 && slot <= 13)
+		{
+			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+		}
+		
 		return false;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) 
+	{
+		if (side == 1 || side == 0)
+		{
+			return new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+		}
+		else
+		{
+			return new int[] {14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
+		}
+	}
+
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, int side) 
+	{
+		return slot <= 13;
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side) 
+	{
+		return slot >= 14;
 	}
 }

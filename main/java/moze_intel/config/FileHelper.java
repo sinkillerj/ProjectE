@@ -252,7 +252,8 @@ public abstract class FileHelper
 		try
 		{
 			reader = new BufferedReader(new FileReader(EMC_CONFIG));
-			
+
+			String internal = Item.itemRegistry.getNameForObject(stack.getItem());
 			String line;
 			String input = "";
 			
@@ -260,7 +261,7 @@ public abstract class FileHelper
 			{
 				input += line + "\n";
 				
-				if (line.startsWith("U:") && line.substring(2).equalsIgnoreCase(stack.getUnlocalizedName()))
+				if (line.startsWith("U:") && line.substring(2).equalsIgnoreCase(internal))
 				{
 					while ((line = reader.readLine()) != null)
 					{
@@ -279,7 +280,7 @@ public abstract class FileHelper
 			
 			if (!hasFound)
 			{
-				input += "U:" + stack.getUnlocalizedName() + "\n";
+				input += "U:" + internal + "\n";
 				input += "M:" + stack.getItemDamage() + "\n";
 				input += "E:" + emc + "\n";
 			}

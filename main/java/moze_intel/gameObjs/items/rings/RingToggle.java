@@ -25,7 +25,8 @@ public abstract class RingToggle extends ItemBase implements IItemModeChanger
 		name = unlocalName;
 		this.setUnlocalizedName(unlocalName);
 		this.setMaxStackSize(1);
-		this.setMaxDamage(1);
+		this.setMaxDamage(0);
+		this.setHasSubtypes(true);
 	}
 	
 	@Override

@@ -29,12 +29,14 @@ public class IStack
 	
 	public IStack(ItemStack stack)
 	{
-		this(net.minecraft.item.Item.getIdFromItem(stack.getItem()), stack.getItemDamage(), stack.stackSize);
+		//this(net.minecraft.item.Item.getIdFromItem(stack.getItem()), stack.getItemDamage(), stack.stackSize);
+		this(Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage(), stack.stackSize);
 	}
 	
 	public IStack(ItemStack stack, int qnty)
 	{
-		this(net.minecraft.item.Item.getIdFromItem(stack.getItem()), stack.getItemDamage(), qnty);
+		//this(net.minecraft.item.Item.getIdFromItem(stack.getItem()), stack.getItemDamage(), qnty);
+		this(Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage(), stack.stackSize);
 	}
 	
 	@Override

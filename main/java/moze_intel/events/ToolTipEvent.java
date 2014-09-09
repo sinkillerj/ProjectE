@@ -5,6 +5,7 @@ import moze_intel.EMC.IStack;
 import moze_intel.config.ProjectEConfig;
 import moze_intel.utils.Utils;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -28,7 +29,8 @@ public class ToolTipEvent
 		
 		if (ProjectEConfig.showUnlocalizedNames)
 		{
-			event.toolTip.add("UN: "+current.getUnlocalizedName());
+			//event.toolTip.add("UN: "+current.getUnlocalizedName());
+			event.toolTip.add("UN: "+Item.itemRegistry.getNameForObject(current.getItem()));
 		}
 		
 		if (ProjectEConfig.showODNames)

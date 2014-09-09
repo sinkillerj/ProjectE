@@ -1,3 +1,13 @@
+###Version Alpha 0.1m
+* NEW: Tranmsutation table shift-clicking! (finally!)
+* NEW: Red/Dark matter furnaces are properly I-Sided and auto input/output
+* NEW: Red/Dark matter furnaces can be powered with Klein stars/collectors/relays
+* NEW: Red/Dark matter furnaces shift clicking now works as intended
+* NEW: Red/Dark matter furnaces double ore outputs
+* FIX: Crafting klein stars now preserves the stored EMC of the lower tier stars
+* FIX: Possible null-pointer on player knowledge (again. For the 3rd time.)
+* NEW: Added de.Lang (thank you kaneman!)
+
 ###Version Alpha 0.1l
 * FIX: Talisman of repair repairing items it shouldn't
 * FIX: Condenser stopping if it's inventory filled up

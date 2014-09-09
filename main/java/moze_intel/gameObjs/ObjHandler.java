@@ -14,6 +14,7 @@ import moze_intel.gameObjs.blocks.Relay;
 import moze_intel.gameObjs.blocks.TransmutationStone;
 import moze_intel.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.gameObjs.customRecipes.RecipesCovalenceRepair;
+import moze_intel.gameObjs.customRecipes.RecipesKleinStars;
 import moze_intel.gameObjs.entity.HomingArrow;
 import moze_intel.gameObjs.entity.LavaProjectile;
 import moze_intel.gameObjs.entity.LensProjectile;
@@ -489,8 +490,10 @@ public class ObjHandler
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
+		GameRegistry.addRecipe(new RecipesKleinStars());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipesAlchemyBags.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Klein Star Recipes", RecipesKleinStars.class, Category.SHAPELESS, "before:minecraft:shaped");
 		
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());

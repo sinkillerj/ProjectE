@@ -60,14 +60,14 @@ public class KleinStar extends ItemBase
 		return stack;
 	}
 	
-	@Override
+	/*@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
 		if (!world.isRemote)
 		{
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-	}
+	}*/
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 

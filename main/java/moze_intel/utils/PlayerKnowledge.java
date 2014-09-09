@@ -34,16 +34,16 @@ public class PlayerKnowledge implements IExtendedEntityProperties
 	
 	public static PlayerKnowledge getProperties(EntityPlayer player)
 	{
-		PlayerKnowledge result = (PlayerKnowledge) player.getExtendedProperties(EXT_PROP_NAME);
+		IExtendedEntityProperties properties = player.getExtendedProperties(EXT_PROP_NAME);
 		
-		if (result == null)
+		if (properties == null)
 		{
 			register(player);
 		}
 		
-		result = (PlayerKnowledge) player.getExtendedProperties(EXT_PROP_NAME);
+		properties = player.getExtendedProperties(EXT_PROP_NAME);
 		
-		return result;
+		return (PlayerKnowledge) properties;
 	}
 	
 	public static void addKnowledge(EntityPlayer player, ItemStack stack)
@@ -103,7 +103,12 @@ public class PlayerKnowledge implements IExtendedEntityProperties
 		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
-			knowledge.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
+			ItemStack stack = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+			
+			if (Utils.doesItemHaveEmc(stack))
+			{
+				knowledge.add(stack);
+			}
 		}
 	}
 	

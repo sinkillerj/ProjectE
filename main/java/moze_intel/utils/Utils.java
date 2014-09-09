@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import cpw.mods.fml.common.registry.GameData;
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.IStack;
@@ -169,40 +170,7 @@ public class Utils
 	
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
-		if (stack1.getItem() != stack2.getItem()) return false;
-		boolean flag = false;
-		
-		if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-		{
-			flag = true;
-		}
-		if (stack1.getItemDamage() != stack2.getItemDamage())
-		{
-			if (flag) 
-			{
-				return true;
-			}
-			
-			return false;
-		}
-		
-		if (stack1.getItem() instanceof ItemCharge || stack1.getItem() instanceof ItemMode) 
-		{
-			return true;
-		}
-		if (stack1.hasTagCompound() && !stack2.hasTagCompound()) 
-		{
-			return false;
-		}
-		if (!stack1.hasTagCompound() && stack2.hasTagCompound()) 
-		{
-			return false;
-		}
-		if (stack1.hasTagCompound() && stack2.hasTagCompound())
-		{
-			return stack1.stackTagCompound.equals(stack2.stackTagCompound);
-		}
-		return true;
+		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
 	}
 	
 	public static boolean areItemStacksEqualIgnoreNBT(ItemStack stack1, ItemStack stack2)
@@ -427,7 +395,7 @@ public class Utils
 				return null;
 			}
 			
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (Utils.areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
 			{
 				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 				
@@ -462,7 +430,7 @@ public class Utils
 				return null;
 			}
 			
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (Utils.areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
 			{
 				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 				
@@ -953,32 +921,16 @@ public class Utils
 	/**
 	 *	@throws NullPointerException 
 	 */
-	public static ItemStack getStackFromString(String unlocalName, int metaData)
+	public static ItemStack getStackFromString(String internal, int metaData)
 	{
-		Iterator<String> iter = Item.itemRegistry.getKeys().iterator();
+		Object obj = Item.itemRegistry.getObject(internal);
 		
-		while (iter.hasNext())
+		if (obj == null)
 		{
-			String obj = iter.next();
-			
-			ItemStack stack = new ItemStack((Item) Item.itemRegistry.getObject(obj), 1, metaData);
-			
-			try
-			{
-				if (stack.getUnlocalizedName() == null)
-				{
-					continue;
-				}
-			
-				if (stack.getUnlocalizedName().equalsIgnoreCase(unlocalName))
-				{
-					return stack;
-				}
-			}
-			catch (Exception e) {}
+			return null;
 		}
 		
-		return null;
+		return new ItemStack((Item) obj, 1, metaData);
 	}
 	
 	public static int randomIntInRange(int max, int min)

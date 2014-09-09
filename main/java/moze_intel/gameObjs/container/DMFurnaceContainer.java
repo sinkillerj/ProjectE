@@ -1,5 +1,6 @@
 package moze_intel.gameObjs.container;
 
+import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -7,6 +8,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.tileentity.TileEntityFurnace;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -103,9 +106,58 @@ public class DMFurnaceContainer  extends Container
     }
     
     @Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        return null;
+    	Slot slot = this.getSlot(slotIndex);
+		
+		if (slot == null || !slot.getHasStack()) 
+		{
+			return null;
+		}
+		
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		
+		if (slotIndex <= 18)
+		{
+			if (!this.mergeItemStack(stack, 19, 55, false))
+			{
+				return null;
+			}
+		}
+		else
+		{
+			
+			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() == ObjHandler.kleinStars)
+			{
+				if (!this.mergeItemStack(stack, 0, 1, false))
+				{
+					return null;
+				}
+			}
+			else if (FurnaceRecipes.smelting().getSmeltingResult(newStack) != null)
+			{
+				if (!this.mergeItemStack(stack, 1, 10, false))
+				{
+					return null;
+				}
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+		if (stack.stackSize == 0)
+		{
+			slot.putStack((ItemStack) null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+		
+		return newStack;
     }
 	
 	/*@Override
@@ -113,6 +165,7 @@ public class DMFurnaceContainer  extends Container
 	{
 		if (!par4EntityPlayer.worldObj.isRemote)
 			System.out.println(par1);
+		
 		return super.slotClick(par1, par2, par3, par4EntityPlayer);
 	}*/
 }

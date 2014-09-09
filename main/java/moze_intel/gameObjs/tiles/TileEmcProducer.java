@@ -36,11 +36,15 @@ public abstract class TileEmcProducer extends TileEmc
 	{
 		for (int i = 0; i < 6; i++)
 		{
-			if (!areBlocksRequestingEmc[i]) continue;
+			if (!areBlocksRequestingEmc[i]) 
+			{
+				continue;
+			}
 			
 			int x = xCoord;
 			int y = yCoord;
 			int z = zCoord;
+			
 			switch (i)
 			{
 				case 0:
@@ -67,7 +71,10 @@ public abstract class TileEmcProducer extends TileEmc
 			
 			if (tile instanceof TileEmc)
 				((TileEmc) worldObj.getTileEntity(x, y, z)).addEmc(emc);
-			else ((TileEmcConsumerDirection) worldObj.getTileEntity(x, y, z)).addEmc(emc);
+			else
+			{
+				((TileEmcConsumerDirection) worldObj.getTileEntity(x, y, z)).addEmc(emc);
+			}
 		}
 	}
 	
@@ -103,6 +110,7 @@ public abstract class TileEmcProducer extends TileEmc
 			}
 			
 			TileEntity closeTileEnt = worldObj.getTileEntity(x, y, z);
+			
 			if (closeTileEnt == null)
 				tile.areBlocksRequestingEmc[i] = false;
 			else if (isFromRelay && closeTileEnt instanceof RelayMK1Tile)

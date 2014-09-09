@@ -5,6 +5,8 @@ import moze_intel.gameObjs.container.slots.SlotTableInput;
 import moze_intel.gameObjs.container.slots.SlotTableLock;
 import moze_intel.gameObjs.container.slots.SlotTableOutput;
 import moze_intel.gameObjs.tiles.TransmuteTile;
+import moze_intel.utils.Constants;
+import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -68,8 +70,50 @@ public class TransmuteContainer extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
+		Slot slot = this.getSlot(slotIndex);
+		
+		if (slot == null || !slot.getHasStack()) 
+		{
+			return null;
+		}
+		
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		
+		if (slotIndex >= 10 && slotIndex <= 25)
+		{	
+			int emc = Utils.getEmcValue(newStack);
+			int stackSize = 0;
+			
+			while (tile.getStoredEMC() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
+			{
+				tile.removeEmc(emc);
+				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
+				stackSize++;
+			}
+			
+			tile.updateOutputs();
+		}
+		else if (slotIndex >= 26)
+		{
+			int emc = Utils.getEmcValue(stack);
+			
+			while(!tile.hasMaxedEmc() && stack.stackSize > 0)
+			{
+				tile.addEmc(emc);
+				--stack.stackSize;
+			}
+			
+			tile.handleKnowledge(newStack);
+			
+			if (stack.stackSize == 0)
+			{
+				slot.putStack(null);
+			}
+		}
+		
 		return null;
 	}
 	
@@ -78,84 +122,6 @@ public class TransmuteContainer extends Container
     {
         super.addCraftingToCrafters(par1ICrafting);
     }
-	
-	@Override
-	public ItemStack slotClick(int index, int mouseBtn, int isShifting, EntityPlayer player)
-	{
-		/*System.out.println(index);
-		if (isShifting == 1)
-		{
-			Slot slot = this.getSlot(index);
-			ItemStack stack = slot.getStack();
-			
-			if (stack != null)
-			{
-				if (index <= 8)
-				{
-					return super.slotClick(index, 0, 0, player);
-				}
-				
-				if (index > 9 && index <= 25)
-				{
-					int reqEmc = Utils.GetEmcValue(stack);
-					boolean canExtract = false;
-					
-					do
-					{
-						canExtract = false;
-						
-						for (int i = 0; i < player.inventory.mainInventory.length; i++)
-						{
-							ItemStack invStack = player.inventory.getStackInSlot(i);
-							
-							if (invStack == null)
-							{
-								player.inventory.setInventorySlotContents(i, stack.copy());
-								tile.RemoveEmc(reqEmc);
-								canExtract = true;
-								break;
-							}
-							else if (ItemStack.areItemStacksEqual(stack, Utils.getNormalizedStack(invStack)))
-							{
-								if (invStack.stackSize < invStack.getMaxStackSize())
-								{
-									invStack.stackSize++;
-									tile.RemoveEmc(reqEmc);
-									canExtract = true;
-									break;
-								}
-							}
-						}
-						
-					}while(canExtract && tile.GetStoredEMC() >= reqEmc);
-					
-					tile.updateOutputs();
-					
-					return null;
-				}
-				else if (index > 25)
-				{
-					SlotTableConsume consume = (SlotTableConsume) this.getSlot(9);
-					
-					while (stack != null && !tile.HasMaxedEmc())
-					{
-						consume.putStack(Utils.getNormalizedStack(stack));
-						stack.stackSize--;
-						
-						if (stack.stackSize == 0)
-						{
-							stack = null;
-							slot.putStack(null);
-						}
-					}
-					
-					return null;
-				}
-			}
-		}*/
-		
-		return super.slotClick(index, mouseBtn, isShifting, player);
-	}
 	
 	@Override
 	public void onContainerClosed(EntityPlayer p_75134_1_)
