@@ -4,6 +4,7 @@
 * NEW: Red/Dark matter furnaces can be powered with Klein stars/collectors/relays
 * NEW: Red/Dark matter furnaces shift clicking now works as intended
 * NEW: Red/Dark matter furnaces double ore outputs
+* NEW: Changed custom EMC algo to use internal names instead of Unlocalized Names
 * FIX: Crafting klein stars now preserves the stored EMC of the lower tier stars
 * FIX: Possible null-pointer on player knowledge (again. For the 3rd time.)
 * NEW: Added de.Lang (thank you kaneman!)
