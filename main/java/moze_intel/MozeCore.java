@@ -53,7 +53,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1m";
+    public static final String VERSION = "Alpha 0.1n";
     public static final MozeLogger logger = new MozeLogger();
     
     public static File CONFIG_DIR;

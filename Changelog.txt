@@ -1,3 +1,6 @@
+###Version Alpha 0.1n
+* FIX: Shift clicking items in the transmutation table with no EMC value
+
 ###Version Alpha 0.1m
 * NEW: Tranmsutation table shift-clicking! (finally!)
 * NEW: Red/Dark matter furnaces are properly I-Sided and auto input/output

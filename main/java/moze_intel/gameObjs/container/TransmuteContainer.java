@@ -85,6 +85,7 @@ public class TransmuteContainer extends Container
 		if (slotIndex >= 10 && slotIndex <= 25)
 		{	
 			int emc = Utils.getEmcValue(newStack);
+			
 			int stackSize = 0;
 			
 			while (tile.getStoredEMC() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
@@ -99,6 +100,11 @@ public class TransmuteContainer extends Container
 		else if (slotIndex >= 26)
 		{
 			int emc = Utils.getEmcValue(stack);
+			
+			if (emc == 0)
+			{
+				return null;
+			}
 			
 			while(!tile.hasMaxedEmc() && stack.stackSize > 0)
 			{
