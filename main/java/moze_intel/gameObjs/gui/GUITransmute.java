@@ -3,6 +3,8 @@ package moze_intel.gameObjs.gui;
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.container.TransmuteContainer;
 import moze_intel.gameObjs.tiles.TransmuteTile;
+import moze_intel.network.packets.SearchUpdatePKT;
+import moze_intel.utils.NeiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -54,6 +56,22 @@ public class GUITransmute extends GuiContainer
 		}
 	}
 	
+	public String lastSearch = "";
+
+	@Override
+	public void updateScreen() {
+		if (NeiHelper.haveNei) {
+			String srch = NeiHelper.getSearchText();
+			if (!lastSearch.equals(srch)) {
+				lastSearch = srch;
+				MozeCore.pktHandler.sendToServer(new SearchUpdatePKT(srch));
+				tile.filter = srch.toLowerCase();
+				tile.updateOutputs();
+			}
+		}
+		super.updateScreen();
+	}
+
 	@Override
 	public void onGuiClosed()
 	{

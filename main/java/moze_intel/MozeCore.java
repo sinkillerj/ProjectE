@@ -29,11 +29,13 @@ import moze_intel.network.packets.SetFlyPKT;
 import moze_intel.network.packets.StepHeightPKT;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.network.packets.TTableSyncPKT;
+import moze_intel.network.packets.SearchUpdatePKT;
 import moze_intel.proxies.CommonProxy;
 import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
 import moze_intel.utils.Utils;
+import moze_intel.utils.NeiHelper;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -94,6 +96,7 @@ public class MozeCore
     	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
     	pktHandler.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
     	pktHandler.registerMessage(AddEmcPKT.class, AddEmcPKT.class, 13, Side.SERVER);
+    	pktHandler.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 99, Side.SERVER);
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -116,6 +119,7 @@ public class MozeCore
     	proxy.registerKeyBinds();
     	proxy.registerRenderers();
     	Utils.init();
+    	NeiHelper.init();
     }
 
     @Mod.EventHandler
