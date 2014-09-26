@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 
 public class TransmuteContainer extends Container
 {
-	private TransmuteTile tile;
+	public TransmuteTile tile;
 	
 	public TransmuteContainer(InventoryPlayer invPlayer, TransmuteTile tile)
 	{

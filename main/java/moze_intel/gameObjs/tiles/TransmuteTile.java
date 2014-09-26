@@ -24,6 +24,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	private List<ItemStack> knowledge = null;
 	public int learnFlag = 0;
+	public String filter = "";
 	
 	
 	public void handleKnowledge(ItemStack stack)
@@ -160,6 +161,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 			{
 				continue;
 			}
+			
+			if ((filter.length()>0) && !stack.getDisplayName().toLowerCase().contains(filter))
+				continue;
 			
 			int emc = Utils.getEmcValue(stack);
 			
