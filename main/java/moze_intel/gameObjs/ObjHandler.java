@@ -23,24 +23,7 @@ import moze_intel.gameObjs.entity.MobRandomizer;
 import moze_intel.gameObjs.entity.NovaCataclysmPrimed;
 import moze_intel.gameObjs.entity.NovaCatalystPrimed;
 import moze_intel.gameObjs.entity.WaterProjectile;
-import moze_intel.gameObjs.items.AlchemicalBag;
-import moze_intel.gameObjs.items.AlchemicalFuel;
-import moze_intel.gameObjs.items.CataliticLens;
-import moze_intel.gameObjs.items.CovalenceDust;
-import moze_intel.gameObjs.items.DestructionCatalyst;
-import moze_intel.gameObjs.items.DiviningRodHigh;
-import moze_intel.gameObjs.items.DiviningRodLow;
-import moze_intel.gameObjs.items.DiviningRodMedium;
-import moze_intel.gameObjs.items.EvertideAmulet;
-import moze_intel.gameObjs.items.GemEternalDensity;
-import moze_intel.gameObjs.items.HyperkineticLens;
-import moze_intel.gameObjs.items.KleinStar;
-import moze_intel.gameObjs.items.Matter;
-import moze_intel.gameObjs.items.MercurialEye;
-import moze_intel.gameObjs.items.PhilosophersStone;
-import moze_intel.gameObjs.items.RepairTalisman;
-import moze_intel.gameObjs.items.TimeWatch;
-import moze_intel.gameObjs.items.VolcaniteAmulet;
+import moze_intel.gameObjs.items.*;
 import moze_intel.gameObjs.items.armor.DMArmor;
 import moze_intel.gameObjs.items.armor.GemArmor;
 import moze_intel.gameObjs.items.armor.RMArmor;
@@ -134,6 +117,8 @@ public class ObjHandler
 	public static Item fuels = new AlchemicalFuel();
 	public static Item covalence = new CovalenceDust();
 	public static Item matter = new Matter();
+    public static Item tome = new Tome();
+    public static Item transtablet = new TransmutationTablet();
 	
 	public static Item dmPick = new DarkPickaxe();
 	public static Item dmAxe = new DarkAxe();
@@ -231,6 +216,8 @@ public class ObjHandler
 		GameRegistry.registerItem(fuels, fuels.getUnlocalizedName());
 		GameRegistry.registerItem(covalence, covalence.getUnlocalizedName());
 		GameRegistry.registerItem(matter, matter.getUnlocalizedName());
+        GameRegistry.registerItem(tome, tome.getUnlocalizedName());
+        GameRegistry.registerItem(transtablet, transtablet.getUnlocalizedName());
 		
 		GameRegistry.registerItem(dmPick, dmPick.getUnlocalizedName());
 		GameRegistry.registerItem(dmAxe, dmAxe.getUnlocalizedName());
@@ -330,6 +317,9 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(philosStone), new Object[]{"RGR", "GDG", "RGR", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond});
 		
 		GameRegistry.addRecipe(new ItemStack(philosStone), new Object[]{"GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond});
+
+        //Tome
+        GameRegistry.addRecipe(new ItemStack(tome), new Object[]{"HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5)});
 		
 		//Interdiction torch
 		GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), new Object[]{"RDR", "DPD", "GGG", 'R', Blocks.redstone_torch, 'G', Items.glowstone_dust, 'D', Items.diamond, 'P', philosStone});
