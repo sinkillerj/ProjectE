@@ -23,7 +23,7 @@ public class TransmutationTablet extends ItemBase
     {
         if (!world.isRemote)
         {
-            player.openGui(MozeCore.instance, Constants.RM_FURNACE_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+            player.openGui(MozeCore.instance, Constants.TRANSMUTE_STONE_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
         }
         return stack;
     }
