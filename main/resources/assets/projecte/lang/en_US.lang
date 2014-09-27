@@ -16,7 +16,6 @@ item.alchemical_bag_magenta.name=Alchemical Bag
 item.alchemical_bag_orange.name=Alchemical Bag
 item.alchemical_bag_white.name=Alchemical Bag
 item.repair_talisman.name=Repair Talisman
-item.tome.name=Alchemical Tome
 item.klein_star_1.name=Klein Star Ein
 item.klein_star_2.name=Klein Star Zwei
 item.klein_star_3.name=Klein Star Drei
@@ -87,6 +86,7 @@ item.gem_armor_2.name=Gem Leggings
 item.gem_armor_3.name=Gem Boots
 item.arcana_ring.name=Ring of Arcana
 item.zero_ring.name=Zero Ring
+item.tome.name=Alchemical Tome
 
 tile.alchemy_chest.name=Alchemical Chest
 tile.interdiction_torch.name=Interdiction Torch

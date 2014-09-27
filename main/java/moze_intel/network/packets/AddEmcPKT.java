@@ -8,6 +8,8 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
 import moze_intel.config.FileHelper;
+import moze_intel.playerData.TransmutationKnowledge;
+import moze_intel.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -44,17 +46,19 @@ public class AddEmcPKT implements IMessage, IMessageHandler<AddEmcPKT, IMessage>
 		}
 		else
 		{
-			for (ItemStack stack : OreDictionary.getOres((String) pkt.obj))
+			for (ItemStack stack : Utils.getODItems((String) pkt.obj))
 			{
 				FileHelper.addToFile(stack, pkt.emc);
 			}
 		}
 		
-		EMCMapper.clearMap();
+		EMCMapper.clearMaps();
 		
 		FileHelper.readUserData();
 		
 		EMCMapper.map();
+		
+		TransmutationKnowledge.loadCompleteKnowledge();
 		
 		MozeCore.pktHandler.sendToAll(new ClientSyncPKT());
 		return null;

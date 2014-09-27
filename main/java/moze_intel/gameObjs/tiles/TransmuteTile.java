@@ -2,8 +2,9 @@ package moze_intel.gameObjs.tiles;
 
 import java.util.List;
 
+import moze_intel.gameObjs.ObjHandler;
+import moze_intel.playerData.TransmutationKnowledge;
 import moze_intel.utils.Constants;
-import moze_intel.utils.PlayerKnowledge;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -22,7 +23,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
 	private final int MAX_MATTER_SIZE = 12;
 	private ItemStack[] inventory = new ItemStack[26];
-	private List<ItemStack> knowledge = null;
 	public int learnFlag = 0;
 	public String filter = "";
 	
@@ -39,14 +39,22 @@ public class TransmuteTile extends TileEmc implements IInventory
 			stack.stackTagCompound = null;
 		}
 		
-		if (!hasKnowledge(stack))
+		if (!hasKnowledge(stack) && !TransmutationKnowledge.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
-			PlayerKnowledge.addKnowledge(player, stack);
 			
-			if (!this.worldObj.isRemote)
+			if (stack.getItem() == ObjHandler.tome)
 			{
-				PlayerKnowledge.syncPlayerProps(player);
+				TransmutationKnowledge.setAllKnowledge(player.getCommandSenderName());
+			}
+			else
+			{
+				TransmutationKnowledge.addToKnowledge(player.getCommandSenderName(), stack);
+			
+				if (!this.worldObj.isRemote)
+				{
+					TransmutationKnowledge.sync(player);
+				}
 			}
 		}
 		
@@ -153,7 +161,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		ItemStack max = null;
 		int currentMax = 0;
 		
-		for (ItemStack stack : knowledge)
+		for (ItemStack stack : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
 		{
 			boolean flag = Constants.isStackFuel(stack);
 			
@@ -162,8 +170,10 @@ public class TransmuteTile extends TileEmc implements IInventory
 				continue;
 			}
 			
-			if ((filter.length()>0) && !stack.getDisplayName().toLowerCase().contains(filter))
+			if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
+			{
 				continue;
+			}
 			
 			int emc = Utils.getEmcValue(stack);
 			
@@ -195,7 +205,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private ItemStack getFromKnowledge(ItemStack stack)
 	{
-		for (ItemStack s : knowledge)
+		for (ItemStack s : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
 		{
 			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
 			{
@@ -208,7 +218,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private boolean hasKnowledge(ItemStack stack)
 	{
-		for (ItemStack s : knowledge)
+		for (ItemStack s : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
 		{
 			if (s == null)
 			{
@@ -226,7 +236,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	private List<ItemStack> getKnowledge()
 	{
-		return PlayerKnowledge.getPlayerKnowledge(player);
+		return TransmutationKnowledge.getKnowledge(player.getCommandSenderName());
 	}
 	
 	private boolean arrayContains(ItemStack[] array, ItemStack stack)
@@ -405,7 +415,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public void openInventory() 
 	{
-		this.knowledge = getKnowledge();
 		updateOutputs();
 	}
 

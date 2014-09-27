@@ -116,6 +116,10 @@ public class RedStar extends ItemCharge
 			Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 			List<ItemStack> drops = new ArrayList();
 			
+			if (block.getBlockHardness(null, 0, 0, 0) == -1)
+			{
+				return stack;
+			}
 			if (Utils.isOre(block) || block.equals(Blocks.gravel))
 			{
 				Utils.harvestVein(world, player, stack, new Coordinates(mop), block, drops, 0);
@@ -176,7 +180,7 @@ public class RedStar extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block.equals(Blocks.bedrock))
+		if (block.getBlockHardness(null, 0, 0, 0) == -1)
 		{
 			return false;
 		}
@@ -199,7 +203,7 @@ public class RedStar extends ItemCharge
 			return 1200000.0F;
 		}
 		
-		return 16.0f + (14.0F * this.getCharge(stack));
+		return 48.0f;
 	}
 	
 	@Override

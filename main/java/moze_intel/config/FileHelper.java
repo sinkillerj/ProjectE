@@ -176,7 +176,7 @@ public abstract class FileHelper
 				else if (token.discriminator == 'O')
 				{
 					String oreName = token.line;
-					List<ItemStack> oreList = OreDictionary.getOres(oreName);
+					List<ItemStack> oreList = Utils.getODItems(oreName);
 					
 					if (oreList.isEmpty())
 					{
@@ -326,7 +326,7 @@ public abstract class FileHelper
 		
 		List<String> toChange = new ArrayList();
 		
-		for (ItemStack stack : OreDictionary.getOres(odName))
+		for (ItemStack stack : Utils.getODItems(odName))
 		{
 			if (stack != null)
 			{

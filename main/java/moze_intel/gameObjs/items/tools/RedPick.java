@@ -168,7 +168,7 @@ public class RedPick extends ItemMode
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.bedrock)
+		if (block.getBlockHardness(null, 0, 0, 0) == -1)
 		{
 			return false;
 		}
@@ -197,6 +197,7 @@ public class RedPick extends ItemMode
 		{
 			return 16.0f + (14.0F * this.getCharge(stack));
 		}
+		
 		return 1.0F;
 	}
 	

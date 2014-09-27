@@ -29,7 +29,7 @@ public class DarkAxe extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.bedrock)
+		if (block.getBlockHardness(null, 0, 0, 0) == -1)
 		{
 			return false;
 		}

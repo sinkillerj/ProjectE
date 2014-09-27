@@ -56,19 +56,21 @@ public class GUITransmute extends GuiContainer
 		}
 	}
 	
-	public String lastSearch = "";
-
 	@Override
-	public void updateScreen() {
-		if (NeiHelper.haveNei) {
+	public void updateScreen() 
+	{
+		if (NeiHelper.haveNei) 
+		{
 			String srch = NeiHelper.getSearchText();
-			if (!lastSearch.equals(srch)) {
-				lastSearch = srch;
+			
+			if (!tile.filter.equals(srch)) 
+			{
 				MozeCore.pktHandler.sendToServer(new SearchUpdatePKT(srch));
 				tile.filter = srch.toLowerCase();
 				tile.updateOutputs();
 			}
 		}
+		
 		super.updateScreen();
 	}
 

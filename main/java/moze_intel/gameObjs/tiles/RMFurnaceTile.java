@@ -244,6 +244,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     						{
     							inventory[0] = stack;
     							inv.setInventorySlotContents(i, null);
+    							break;
     						}
     						else if (Utils.areItemStacksEqual(stack, inventory[0]))
     						{
@@ -253,6 +254,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     							{
     								inventory[0].stackSize += stack.stackSize;
     								inv.setInventorySlotContents(i, null);
+    								break;
     							}
     							else
     							{
@@ -316,6 +318,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     				{
     					inventory[0] = stack;
     					inv.setInventorySlotContents(i, null);
+    					break;
     				}
     				else
     				{
@@ -325,6 +328,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     					{
     						inventory[0].stackSize += stack.stackSize;
     						inv.setInventorySlotContents(i, null);
+    						break;
     					}
     					else
     					{
@@ -441,6 +445,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     	    						{
     	    							inv.setInventorySlotContents(k, stack);
     	    							inventory[j] = null;
+    	    							break;
     	    						}
     	    						else if (Utils.areItemStacksEqual(stack, otherStack))
     	    						{
@@ -450,6 +455,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     	    							{
     	    								otherStack.stackSize += stack.stackSize;
     	    								inventory[j] = null;
+    	    								break;
     	    							}
     	    							else
     	    							{
@@ -476,6 +482,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     					if (result == null)
     					{
     						inventory[j] = null;
+    						break;
     					}
     					else
     					{

@@ -41,7 +41,7 @@ public class RedKatar extends ItemMode
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (this.getMode(stack) != 0 || block.equals(Blocks.bedrock))
+		if (this.getMode(stack) != 0 || block.getBlockHardness(null, 0, 0, 0) == -1)
 		{
 			return false;
 		}

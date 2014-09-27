@@ -1,78 +1,16 @@
 package moze_intel.gameObjs;
 
 import moze_intel.MozeCore;
-import moze_intel.gameObjs.blocks.AlchemicalChest;
-import moze_intel.gameObjs.blocks.Collector;
-import moze_intel.gameObjs.blocks.Condenser;
-import moze_intel.gameObjs.blocks.FuelBlock;
-import moze_intel.gameObjs.blocks.InterdictionTorch;
-import moze_intel.gameObjs.blocks.MatterBlock;
-import moze_intel.gameObjs.blocks.MatterFurnace;
-import moze_intel.gameObjs.blocks.NovaCataclysm;
-import moze_intel.gameObjs.blocks.NovaCatalyst;
-import moze_intel.gameObjs.blocks.Relay;
-import moze_intel.gameObjs.blocks.TransmutationStone;
-import moze_intel.gameObjs.customRecipes.RecipesAlchemyBags;
-import moze_intel.gameObjs.customRecipes.RecipesCovalenceRepair;
-import moze_intel.gameObjs.customRecipes.RecipesKleinStars;
-import moze_intel.gameObjs.entity.HomingArrow;
-import moze_intel.gameObjs.entity.LavaProjectile;
-import moze_intel.gameObjs.entity.LensProjectile;
-import moze_intel.gameObjs.entity.LootBall;
-import moze_intel.gameObjs.entity.MobRandomizer;
-import moze_intel.gameObjs.entity.NovaCataclysmPrimed;
-import moze_intel.gameObjs.entity.NovaCatalystPrimed;
-import moze_intel.gameObjs.entity.WaterProjectile;
+import moze_intel.gameObjs.blocks.*;
+import moze_intel.gameObjs.customRecipes.*;
+import moze_intel.gameObjs.tiles.*;
+import moze_intel.gameObjs.entity.*;
 import moze_intel.gameObjs.items.*;
-import moze_intel.gameObjs.items.armor.DMArmor;
-import moze_intel.gameObjs.items.armor.GemArmor;
-import moze_intel.gameObjs.items.armor.RMArmor;
-import moze_intel.gameObjs.items.itemBlocks.ItemFuelBlock;
-import moze_intel.gameObjs.items.itemBlocks.ItemMatterBlock;
-import moze_intel.gameObjs.items.itemEntities.LavaOrb;
-import moze_intel.gameObjs.items.itemEntities.LensExplosive;
-import moze_intel.gameObjs.items.itemEntities.LootBallItem;
-import moze_intel.gameObjs.items.itemEntities.RandomizerProjectile;
-import moze_intel.gameObjs.items.itemEntities.WaterOrb;
-import moze_intel.gameObjs.items.rings.ArchangelSmite;
-import moze_intel.gameObjs.items.rings.BlackHoleBand;
-import moze_intel.gameObjs.items.rings.BodyStone;
-import moze_intel.gameObjs.items.rings.HarvestGoddess;
-import moze_intel.gameObjs.items.rings.Ignition;
-import moze_intel.gameObjs.items.rings.IronBand;
-import moze_intel.gameObjs.items.rings.LifeStone;
-import moze_intel.gameObjs.items.rings.MindStone;
-import moze_intel.gameObjs.items.rings.SWRG;
-import moze_intel.gameObjs.items.rings.SoulStone;
-import moze_intel.gameObjs.items.rings.Zero;
-import moze_intel.gameObjs.items.tools.DarkAxe;
-import moze_intel.gameObjs.items.tools.DarkHammer;
-import moze_intel.gameObjs.items.tools.DarkHoe;
-import moze_intel.gameObjs.items.tools.DarkPickaxe;
-import moze_intel.gameObjs.items.tools.DarkShears;
-import moze_intel.gameObjs.items.tools.DarkShovel;
-import moze_intel.gameObjs.items.tools.DarkSword;
-import moze_intel.gameObjs.items.tools.RedAxe;
-import moze_intel.gameObjs.items.tools.RedHammer;
-import moze_intel.gameObjs.items.tools.RedHoe;
-import moze_intel.gameObjs.items.tools.RedKatar;
-import moze_intel.gameObjs.items.tools.RedPick;
-import moze_intel.gameObjs.items.tools.RedShears;
-import moze_intel.gameObjs.items.tools.RedShovel;
-import moze_intel.gameObjs.items.tools.RedStar;
-import moze_intel.gameObjs.items.tools.RedSword;
-import moze_intel.gameObjs.tiles.AlchChestTile;
-import moze_intel.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.gameObjs.tiles.CollectorMK2Tile;
-import moze_intel.gameObjs.tiles.CollectorMK3Tile;
-import moze_intel.gameObjs.tiles.CondenserTile;
-import moze_intel.gameObjs.tiles.DMFurnaceTile;
-import moze_intel.gameObjs.tiles.InterdictionTile;
-import moze_intel.gameObjs.tiles.RMFurnaceTile;
-import moze_intel.gameObjs.tiles.RelayMK1Tile;
-import moze_intel.gameObjs.tiles.RelayMK2Tile;
-import moze_intel.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.gameObjs.tiles.TransmuteTile;
+import moze_intel.gameObjs.items.tools.*;
+import moze_intel.gameObjs.items.rings.*;
+import moze_intel.gameObjs.items.armor.*;
+import moze_intel.gameObjs.items.itemBlocks.*;
+import moze_intel.gameObjs.items.itemEntities.*;
 import moze_intel.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -117,8 +55,6 @@ public class ObjHandler
 	public static Item fuels = new AlchemicalFuel();
 	public static Item covalence = new CovalenceDust();
 	public static Item matter = new Matter();
-    public static Item tome = new Tome();
-    public static Item transtablet = new TransmutationTablet();
 	
 	public static Item dmPick = new DarkPickaxe();
 	public static Item dmAxe = new DarkAxe();
@@ -179,6 +115,7 @@ public class ObjHandler
 	public static Item mindStone = new MindStone();
 	public static Item lifeStone = new LifeStone();
 	
+	public static Item tome = new Tome();
 	
 	public static Item waterOrb = new WaterOrb();
 	public static Item lavaOrb = new LavaOrb();
@@ -216,8 +153,6 @@ public class ObjHandler
 		GameRegistry.registerItem(fuels, fuels.getUnlocalizedName());
 		GameRegistry.registerItem(covalence, covalence.getUnlocalizedName());
 		GameRegistry.registerItem(matter, matter.getUnlocalizedName());
-        GameRegistry.registerItem(tome, tome.getUnlocalizedName());
-        GameRegistry.registerItem(transtablet, transtablet.getUnlocalizedName());
 		
 		GameRegistry.registerItem(dmPick, dmPick.getUnlocalizedName());
 		GameRegistry.registerItem(dmAxe, dmAxe.getUnlocalizedName());
@@ -285,6 +220,8 @@ public class ObjHandler
 		GameRegistry.registerItem(hyperLens, hyperLens.getUnlocalizedName());
 		GameRegistry.registerItem(cataliticLens, cataliticLens.getUnlocalizedName());
 		
+		GameRegistry.registerItem(tome, tome.getUnlocalizedName());
+		
 		//Tile Entities
 		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
 		GameRegistry.registerTileEntity(InterdictionTile.class, "Interdiction Torch Tile");
@@ -317,9 +254,6 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(philosStone), new Object[]{"RGR", "GDG", "RGR", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond});
 		
 		GameRegistry.addRecipe(new ItemStack(philosStone), new Object[]{"GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond});
-
-        //Tome
-        GameRegistry.addRecipe(new ItemStack(tome), new Object[]{"HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5)});
 		
 		//Interdiction torch
 		GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), new Object[]{"RDR", "DPD", "GGG", 'R', Blocks.redstone_torch, 'G', Items.glowstone_dust, 'D', Items.diamond, 'P', philosStone});
@@ -476,6 +410,9 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 0), new ItemStack(fuelBlock, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 1), new ItemStack(fuelBlock, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
+		
+		//Tome
+		GameRegistry.addRecipe(new ItemStack(tome), new Object[]{"HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5)});
 		
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());

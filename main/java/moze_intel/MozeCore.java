@@ -1,6 +1,7 @@
 package moze_intel;
 
 import java.io.File;
+import java.io.IOException;
 
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.RecipeMapper;
@@ -25,17 +26,20 @@ import moze_intel.network.packets.CondenserSyncPKT;
 import moze_intel.network.packets.KeyPressPKT;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.RelaySyncPKT;
+import moze_intel.network.packets.SearchUpdatePKT;
 import moze_intel.network.packets.SetFlyPKT;
 import moze_intel.network.packets.StepHeightPKT;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.network.packets.TTableSyncPKT;
-import moze_intel.network.packets.SearchUpdatePKT;
+import moze_intel.playerData.AlchemicalBagData;
+import moze_intel.playerData.IOHandler;
+import moze_intel.playerData.TransmutationKnowledge;
 import moze_intel.proxies.CommonProxy;
 import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
 import moze_intel.utils.MozeLogger;
-import moze_intel.utils.Utils;
 import moze_intel.utils.NeiHelper;
+import moze_intel.utils.Utils;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -70,7 +74,7 @@ public class MozeCore
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
-    {
+    {	
     	CONFIG_DIR = new File(event.getModConfigurationDirectory(), "ProjectE");
     	
     	if (!CONFIG_DIR.exists())
@@ -96,7 +100,7 @@ public class MozeCore
     	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
     	pktHandler.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
     	pktHandler.registerMessage(AddEmcPKT.class, AddEmcPKT.class, 13, Side.SERVER);
-    	pktHandler.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 99, Side.SERVER);
+    	pktHandler.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 14, Side.SERVER);
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -142,19 +146,61 @@ public class MozeCore
     	RecipeMapper.map();
     	EMCMapper.map();
     	
-    	logger.logInfo("Registered "+EMCMapper.emc.size()+" EMC values.");
+    	logger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
+    	
+    	File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
+    	
+    	if (!dir.exists())
+    	{
+    		dir.mkdir(); 
+    	}
+    	
+    	File knowledge = new File(dir, "knowledge.dat");
+    	
+    	if (!knowledge.exists())
+    	{
+    		try 
+    		{
+    			knowledge.createNewFile();
+			}
+    		catch (IOException e) 
+    		{
+    			logger.logFatal("Couldn't create transmutation knowledge file!");
+				e.printStackTrace();
+			}
+    	}
+    	
+    	File bagData = new File(dir, "bagdata.dat");
+    	
+    	if (!bagData.exists())
+    	{
+    		try 
+    		{
+    			bagData.createNewFile();
+			}
+    		catch (IOException e) 
+    		{
+    			logger.logFatal("Couldn't create alchemical bag data file!");
+				e.printStackTrace();
+			}
+    	}
+    	
+    	IOHandler.init(knowledge, bagData);
+    	
+    	TransmutationKnowledge.loadCompleteKnowledge();
     }
     
     @Mod.EventHandler
     public void serverQuit(FMLServerStoppedEvent event)
     {
+    	IOHandler.saveData();
+    	TransmutationKnowledge.clear();
+    	AlchemicalBagData.clear();
+    	
     	PlayerChecksEvent.clearLists();
     	logger.logInfo("Cleared player check-lists: server stopping.");
     	
-    	EMCMapper.clearMap();
-    	proxy.clearAllKnowledge();
-    	proxy.clearAllBagData();
-    	
+    	EMCMapper.clearMaps();
     	logger.logInfo("Completed server-stop actions.");
     }
 }

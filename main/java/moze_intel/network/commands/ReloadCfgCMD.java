@@ -26,7 +26,7 @@ public class ReloadCfgCMD extends ProjectEBaseCMD
 	{
 		sender.addChatMessage(new ChatComponentText("[ProjectE] Reloading EMC registrations..."));
 			
-		EMCMapper.clearMap();
+		EMCMapper.clearMaps();
 		FileHelper.readUserData();
 		EMCMapper.map();
 		

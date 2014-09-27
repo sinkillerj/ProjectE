@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import moze_intel.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class EMCMapper 
 {
 	public static LinkedHashMap<IStack, Integer> emc = new LinkedHashMap();
+	public static LinkedList<IStack> blackList = new LinkedList();
 	public static LinkedList<IStack> failed = new LinkedList();
 	
 	public static void map()
@@ -24,63 +26,66 @@ public class EMCMapper
 		loadEmcFromOD();
 		mapFromSmelting();
 		
-		boolean canMap = false;
-		
-		do
+		for (int i = 0; i < 2; i++)
 		{
-			canMap = false;
+			boolean canMap = false;
 			
-			for (Entry<IStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
+			do
 			{
-				IStack key = entry.getKey();
+				canMap = false;
 				
-				if (emc.containsKey(key) || failed.contains(key))
+				for (Entry<IStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
 				{
-					continue;
-				}
-				
-				int totalEmc = 0; 
-				boolean toMap = true;
-				
-				A: for (RecipeInput rInput : entry.getValue())
-				{
-					toMap = true;
+					IStack key = entry.getKey();
 					
-					B: for (IStack stack : rInput)
+					if (emc.containsKey(key) || failed.contains(key) || blackList.contains(key))
 					{
-						if (emc.containsKey(stack))
-						{
-							totalEmc += emc.get(stack);
-						}
-						else
-						{
-							toMap = false;
-							break B;
-						}
+						continue;
 					}
 					
-					if (toMap)
+					int totalEmc = 0; 
+					boolean toMap = true;
+					
+					A: for (RecipeInput rInput : entry.getValue())
 					{
-						totalEmc /= key.qnty;
+						toMap = true;
 						
-						if (totalEmc <= 0)
+						B: for (IStack stack : rInput)
 						{
-							failed.add(key);
-							continue;
+							if (emc.containsKey(stack))
+							{
+								totalEmc += emc.get(stack);
+							}
+							else
+							{
+								toMap = false;
+								break B;
+							}
 						}
 						
-						addMapping(key, totalEmc);
-						canMap = true;
-						
-						break A;
+						if (toMap)
+						{
+							totalEmc /= key.qnty;
+							
+							if (totalEmc <= 0)
+							{
+								failed.add(key);
+								continue;
+							}
+							
+							addMapping(key, totalEmc);
+							canMap = true;
+							
+							break A;
+						}
 					}
 				}
+				
 			}
+			while (canMap);
 			
+			mapFromSmelting();
 		}
-		while (canMap);
-		
-		mapFromSmelting();
 		
 		failed.clear();
 	}
@@ -106,7 +111,7 @@ public class EMCMapper
 			
 				if (emc.containsKey(input) && !emc.containsKey(result))
 				{
-					if (failed.contains(result))
+					if (failed.contains(result) || blackList.contains(result))
 					{
 						continue;
 					}
@@ -122,7 +127,7 @@ public class EMCMapper
 				}
 				else if (!emc.containsKey(input) && emc.containsKey(result))
 				{
-					if (failed.contains(input))
+					if (failed.contains(input) || blackList.contains(input))
 					{
 						continue;
 					}
@@ -141,9 +146,10 @@ public class EMCMapper
 		}
 	}
 	
-	public static void clearMap()
+	public static void clearMaps()
 	{
 		emc.clear();
+		blackList.clear();
 	}
 	
 	public static void addMapping(ItemStack stack, int value)
@@ -151,14 +157,29 @@ public class EMCMapper
 		addMapping(new IStack(stack), value);
 	}
 	
+	public static void addMapping(String odName, int value)
+	{
+		for (ItemStack stack : Utils.getODItems(odName))
+		{
+			addMapping(stack, value);
+		}
+	}
+	
 	private static void addMapping(IStack stack, int value)
 	{
-		if (emc.containsKey(stack) || value <= 0)
+		if (emc.containsKey(stack))
 		{
 			return;
 		}
 		
-		emc.put(stack, value);
+		if (value <= 0)
+		{
+			blackList.add(stack);
+		}
+		else
+		{
+			emc.put(stack, value);
+		}
 	}
 	
 	private static void lazyInit()
@@ -171,8 +192,8 @@ public class EMCMapper
     	addMapping(new ItemStack(Blocks.mycelium), 1);
     	addMapping(new ItemStack(Blocks.leaves), 1);
     	addMapping(new ItemStack(Blocks.leaves2), 1);
-    	addMapping(new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE), 1);
-    	addMapping(new ItemStack(Blocks.stained_glass, 1, OreDictionary.WILDCARD_VALUE), 1);
+    	addMapping(new ItemStack(Blocks.sand, 1, 0), 1);
+    	addMapping(new ItemStack(Blocks.sand, 1, 1), 1);
     	addMapping(new ItemStack(Blocks.snow), 1);
     	addMapping(new ItemStack(Blocks.ice), 1);
     	addMapping(new ItemStack(Blocks.deadbush), 1);
@@ -185,25 +206,25 @@ public class EMCMapper
     	addMapping(new ItemStack(Items.melon), 16);
     	addMapping(new ItemStack(Items.clay_ball), 16);
     	addMapping(new ItemStack(Blocks.waterlily), 16);
-    	addMapping(new ItemStack(Blocks.red_flower, 1, OreDictionary.WILDCARD_VALUE), 16);
+    	
+    	for (int i = 0; i <= 8; i++)
+    	{
+    		addMapping(new ItemStack(Blocks.red_flower, 1, i), 16);
+    	}
+    	
     	addMapping(new ItemStack(Blocks.yellow_flower), 16);
     	addMapping(new ItemStack(Items.wheat), 24);
     	addMapping(new ItemStack(Items.nether_wart), 24);
-    	addMapping(new ItemStack(Blocks.log, 1, OreDictionary.WILDCARD_VALUE), 32);
-    	addMapping(new ItemStack(Blocks.log2, 1, OreDictionary.WILDCARD_VALUE), 32);
-    	addMapping(new ItemStack(Blocks.planks), 8);
     	addMapping(new ItemStack(Items.stick), 4);
     	addMapping(new ItemStack(Blocks.red_mushroom), 32);
     	addMapping(new ItemStack(Blocks.brown_mushroom), 32);
-    	addMapping(new ItemStack(Blocks.sapling, 1, OreDictionary.WILDCARD_VALUE), 32);
     	addMapping(new ItemStack(Items.reeds), 32);
-    	addMapping(new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE), 48);
     	addMapping(new ItemStack(Blocks.soul_sand), 49);
     	addMapping(new ItemStack(Blocks.obsidian), 64);
     	
     	for (int i = 0; i < 16; i++)
     	{
-    		addMapping(new ItemStack(Blocks.stained_hardened_clay, 1, OreDictionary.WILDCARD_VALUE), 64);
+    		addMapping(new ItemStack(Blocks.stained_hardened_clay, 1, i), 64);
     	}
     	
     	addMapping(new ItemStack(Items.apple), 128);
@@ -261,6 +282,7 @@ public class EMCMapper
     		{
     			continue;
     		}
+    		
     		addMapping(new ItemStack(Items.dye, 1, i), 16);
     	}
     	
@@ -275,75 +297,70 @@ public class EMCMapper
     	addMapping(new ItemStack(Blocks.packed_ice), 4);
     	addMapping(new ItemStack(Items.snowball), 1);
     	addMapping(new ItemStack(Items.filled_map), 1472);
-    	
-    	//Still deciding if chainmail should have emc
-    	/*addMapping(new ItemStack(Items.chainmail_boots), 512);
-    	addMapping(new ItemStack(Items.chainmail_leggings), 896);
-    	addMapping(new ItemStack(Items.chainmail_chestplate), 1024);
-    	addMapping(new ItemStack(Items.chainmail_helmet), 640);*/
     }
 	
 	private static void loadEmcFromOD()
 	{
-		LinkedHashMap<String, Integer> map = new LinkedHashMap();
-		
 		//trees
-		map.put("logWood", 32);
-		map.put("plankWood", 8);
-		map.put("treeSapling", 32);
-		map.put("stickWood", 4);
+		addMapping("logWood", 32);
+		addMapping("plankWood", 8);
+		addMapping("treeSapling", 32);
+		addMapping("stickWood", 4);
+		addMapping("blockGlass", 1);
+		addMapping("blockCloth", 48);
 		
 		//building stuff
-		map.put("stone", 1);
-		map.put("cobblestone", 1);
+		addMapping("stone", 1);
+		addMapping("cobblestone", 1);
 		
 		//ingots
-		map.put("ingotIron", 256);
-		map.put("ingotGold", 2048);
+		addMapping("ingotIron", 256);
+		addMapping("ingotGold", 2048);
 		
 		//gems and dusts
-		map.put("gemDiamond", 8192);
-		map.put("dustRedstone", 64);
-		map.put("dustGlowstone", 384);
-		map.put("dustCoal", 64);
-		map.put("dustCharcoal", 16);
-		map.put("dustSulfur", 32);
+		addMapping("gemDiamond", 8192);
+		addMapping("dustRedstone", 64);
+		addMapping("dustGlowstone", 384);
+		addMapping("dustCoal", 64);
+		addMapping("dustCharcoal", 16);
+		addMapping("dustSulfur", 32);
 		
 		//Ingots (blocks will get auto-mapped)
-		map.put("ingotCopper", 128);
-		map.put("ingotTin", 256);
-		map.put("ingotBronze", 160);
-		map.put("ingotSilver", 512);
-		map.put("ingotLead", 512);
-		map.put("ingotNickel", 1024);
-		map.put("ingotInvar", 512);
-		map.put("ingotElectrum", 1280);
-		map.put("ingotSignalum", 160);
-		map.put("ingotEnderium", 6144);
-		map.put("ingotAluminum", 128);
-		map.put("ingotAluminumBrass", 512);
-		map.put("ingotArdite", 1024);
-		map.put("ingotCobalt", 1024);
-		map.put("ingotManyullyn", 2048);
-		map.put("ingotAlumite", 1024);
+		addMapping("ingotCopper", 128);
+		addMapping("ingotTin", 256);
+		addMapping("ingotBronze", 160);
+		addMapping("ingotSilver", 512);
+		addMapping("ingotLead", 512);
+		addMapping("ingotNickel", 1024);
+		addMapping("ingotInvar", 512);
+		addMapping("ingotElectrum", 1280);
+		addMapping("ingotSignalum", 160);
+		addMapping("ingotEnderium", 6144);
+		addMapping("ingotAluminum", 128);
+		addMapping("ingotAluminumBrass", 512);
+		addMapping("ingotArdite", 1024);
+		addMapping("ingotCobalt", 1024);
+		addMapping("ingotManyullyn", 2048);
+		addMapping("ingotAlumite", 1024);
 			
 		//AE2
-		map.put("crystalCertusQuartz", 64);
-		map.put("crystalFluix", 256);
-		map.put("dustCertusQuartz", 32);
-		map.put("dustFluix", 128);
+		addMapping("crystalCertusQuartz", 64);
+		addMapping("crystalFluix", 256);
+		addMapping("dustCertusQuartz", 32);
+		addMapping("dustFluix", 128);
 		
 		//BOP-ProjectRed
-		map.put("gemRuby", 2048);
-		map.put("gemSapphire", 2048);
-		map.put("gemPeridot", 2048);
+		addMapping("gemRuby", 2048);
+		addMapping("gemSapphire", 2048);
+		addMapping("gemPeridot", 2048);
+		addMapping("blockMarble", 4);
 		
 		//TE
-		map.put("blockGlassHardened", 192);
+		addMapping("blockGlassHardened", 192);
 		
 		//Vanilla 
-		map.put("treeLeaves", 1);
-		map.put("listAllfishraw", 64);
+		addMapping("treeLeaves", 1);
+		addMapping("listAllfishraw", 64);
 		
 		
 		//Black-list all ores/dusts
@@ -360,19 +377,6 @@ public class EMCMapper
 					
 					failed.add(new IStack(stack));
 				}
-			}
-		}
-		
-		for (Entry<String, Integer> entry : map.entrySet())
-		{
-			for (ItemStack stack : getODItems(entry.getKey()))
-			{
-				if (stack == null)
-				{
-					continue;
-				}
-				
-				addMapping(stack, entry.getValue());
 			}
 		}
 	}

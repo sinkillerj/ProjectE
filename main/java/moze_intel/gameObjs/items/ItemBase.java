@@ -13,7 +13,7 @@ public abstract class ItemBase extends Item
 	{
 		this.setCreativeTab(ObjHandler.cTab);
 	}
-	
+
 	public static double getEmc(ItemStack stack)
 	{
 		if (stack.stackTagCompound == null)

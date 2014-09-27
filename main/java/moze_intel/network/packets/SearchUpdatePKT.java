@@ -11,37 +11,50 @@ import moze_intel.gameObjs.container.TransmuteContainer;
 import moze_intel.gameObjs.tiles.TransmuteTile;
 import net.minecraft.inventory.Container;
 
-public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> {
+public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
+{
 	private String search;
 
-	public SearchUpdatePKT() {
-	}
+	public SearchUpdatePKT() {}
 
-	public SearchUpdatePKT(String search) {
+	public SearchUpdatePKT(String search) 
+	{
 		this.search = search;
 	}
 
 	@Override
-	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) {
+	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) 
+	{
 		Container cont = ctx.getServerHandler().playerEntity.openContainer;
-		if (cont instanceof TransmuteContainer) {
-			TransmuteTile tt = ((TransmuteContainer) cont).tile;
-			if (pkt.search!=null)
-				tt.filter = pkt.search.toLowerCase();
+		
+		if (cont instanceof TransmuteContainer) 
+		{
+			TransmuteTile tile = ((TransmuteContainer) cont).tile;
+			
+			if (pkt.search != null)
+			{
+				tile.filter = pkt.search.toLowerCase();
+			}
 			else
-				tt.filter = "";
-			tt.updateOutputs();
+			{
+				tile.filter = "";
+			}
+			
+			tile.updateOutputs();
 		}
+		
 		return null;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		search = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(ByteBuf buf)
+	{
 		ByteBufUtils.writeUTF8String(buf, search);
 	}
 }

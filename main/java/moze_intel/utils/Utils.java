@@ -95,7 +95,7 @@ public class Utils
 			iStack.damage = 0;
 		}
 		
-		return EMCMapper.emc.containsKey(iStack);
+		return EMCMapper.emc.containsKey(iStack) && !EMCMapper.blackList.contains(iStack);
 	}
 	
 	public static int getEmcValue(ItemStack stack)
@@ -695,6 +695,49 @@ public class Utils
 		}
 		
 		return OreDictionary.getOreName(oreIds[0]);
+	}
+	
+	public static List<ItemStack> getODItems(String oreName)
+	{
+		List<ItemStack> result = new ArrayList();
+		
+		for (ItemStack stack : OreDictionary.getOres(oreName))
+		{
+			if (stack == null)
+			{
+				continue;
+			}
+			
+			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			{
+				ItemStack copy = stack.copy();
+				copy.setItemDamage(0);
+				
+				result.add(copy.copy());
+				
+				for (int i = 1; i < OreDictionary.WILDCARD_VALUE; i++)
+				{
+					copy.setItemDamage(i);
+					
+					if (copy.getUnlocalizedName().equals(stack.getUnlocalizedName()))
+					{
+						break;
+					}
+					else
+					{
+						result.add(copy.copy());
+					}
+				}
+				
+				break;
+			}
+			else
+			{
+				result.add(stack.copy());
+			}
+		}
+		
+		return result;
 	}
 	
 	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, Coordinates coords, Block target, List<ItemStack> currentDrops, int numMined)

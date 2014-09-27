@@ -100,7 +100,7 @@ public class DarkHammer extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block.equals(Blocks.bedrock))
+		if (block.getBlockHardness(null, 0, 0, 0) == -1)
 		{
 			return false;
 		}

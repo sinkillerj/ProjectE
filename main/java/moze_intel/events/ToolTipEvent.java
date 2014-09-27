@@ -29,7 +29,6 @@ public class ToolTipEvent
 		
 		if (ProjectEConfig.showUnlocalizedNames)
 		{
-			//event.toolTip.add("UN: "+current.getUnlocalizedName());
 			event.toolTip.add("UN: "+Item.itemRegistry.getNameForObject(current.getItem()));
 		}
 		

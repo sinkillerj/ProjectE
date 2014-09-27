@@ -6,7 +6,7 @@ import java.util.List;
 
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.container.inventory.AlchBagInventory;
-import moze_intel.utils.PlayerBagInventory;
+import moze_intel.playerData.AlchemicalBagData;
 import moze_intel.utils.Utils;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -222,7 +222,7 @@ public class LootBall extends Entity
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

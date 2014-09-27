@@ -1,25 +1,22 @@
 package moze_intel.gameObjs.container.inventory;
 
-import java.util.List;
-
-import moze_intel.utils.PlayerBagInventory;
+import scala.actors.threadpool.Arrays;
+import moze_intel.playerData.AlchemicalBagData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class AlchBagInventory implements IInventory
 {
 	private final ItemStack invItem;
-	private ItemStack[] inventory = new ItemStack[104];
+	private ItemStack[] inventory;
 	private EntityPlayer player;
 	
 	public AlchBagInventory(EntityPlayer player, ItemStack stack)
 	{
 		invItem = stack;
 		this.player = player;
-		inventory = PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage());
+		inventory = AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 	}
 
 	@Override
@@ -38,6 +35,7 @@ public class AlchBagInventory implements IInventory
 	public ItemStack decrStackSize(int slot, int qty)
 	{
 		ItemStack stack = getStackInSlot(slot);
+		
 		if(stack != null)
 		{
 			if(stack.stackSize > qty)
@@ -70,7 +68,7 @@ public class AlchBagInventory implements IInventory
 	public void setInventorySlotContents(int slot, ItemStack stack) 
 	{
 		inventory[slot] = stack;
-
+		
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 		{
 			stack.stackSize = this.getInventoryStackLimit();
@@ -125,8 +123,8 @@ public class AlchBagInventory implements IInventory
 	{
 		if (!player.worldObj.isRemote)
 		{
-			PlayerBagInventory.setPlayerBagData(player, invItem.getItemDamage(), inventory);
-			PlayerBagInventory.syncPlayerProps(player);
+			AlchemicalBagData.set(player.getCommandSenderName(), (byte) invItem.getItemDamage(), inventory);
+			AlchemicalBagData.sync(player);
 		}
 	}
 

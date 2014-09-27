@@ -4,10 +4,9 @@ import java.util.List;
 
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
-import moze_intel.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.gameObjs.items.rings.RingToggle;
+import moze_intel.playerData.AlchemicalBagData;
 import moze_intel.utils.Constants;
-import moze_intel.utils.PlayerBagInventory;
 import moze_intel.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -59,7 +58,7 @@ public class AlchemicalBag extends ItemBase
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage());
+		ItemStack[] inv = AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage());//PlayerBagInventory.getPlayerBagData(player, stack.getItemDamage());
 		
 		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
