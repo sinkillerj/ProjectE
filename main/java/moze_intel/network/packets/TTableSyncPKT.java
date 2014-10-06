@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.tiles.TileEmc;
 import moze_intel.utils.Coordinates;
+import moze_intel.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -34,8 +35,8 @@ public class TTableSyncPKT implements IMessage, IMessageHandler<TTableSyncPKT, I
 		
 		if (tile == null)
 		{
-			MozeCore.logger.logFatal("NULL transmutation-tile reference! Please report to dev!");
-			MozeCore.logger.logFatal("Coords: "+new Coordinates(pkt.x, pkt.y, pkt.z));
+			PELogger.logFatal("NULL transmutation-tile reference! Please report to dev!");
+			PELogger.logFatal("Coords: "+new Coordinates(pkt.x, pkt.y, pkt.z));
 		}
 		else if (tile instanceof TileEmc)
 		{

@@ -344,7 +344,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(blackHole), new Object[]{"SSS", "DID", "SSS", 'I', ironBand, 'S', Items.string, 'D', matter});
 		GameRegistry.addRecipe(new ItemStack(everTide), new Object[]{"WWW", "DDD", "WWW", 'W', Items.water_bucket, 'D', matter});
 		GameRegistry.addRecipe(new ItemStack(volcanite), new Object[]{"LLL", "DDD", "LLL", 'L', Items.lava_bucket, 'D', matter});
-		GameRegistry.addRecipe(new ItemStack(eternalDensity), new Object[]{"DOD", "MDM", "DOD", 'D', Items.diamond, 'O', Blocks.obsidian, 'M', matter});
+		//GameRegistry.addRecipe(new ItemStack(eternalDensity), new Object[]{"DOD", "MDM", "DOD", 'D', Items.diamond, 'O', Blocks.obsidian, 'M', matter});
 		GameRegistry.addRecipe(new ItemStack(zero), new Object[]{"SBS", "MIM", "SBS", 'S', Blocks.snow, 'B', Items.snowball, 'M', matter, 'I', ironBand});
 		//GameRegistry.addRecipe(new ItemStack(arcana), new Object[]{"ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1)});
 		

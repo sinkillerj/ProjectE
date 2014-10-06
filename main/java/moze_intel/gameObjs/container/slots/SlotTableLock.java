@@ -1,5 +1,7 @@
 package moze_intel.gameObjs.container.slots;
 
+import moze_intel.gameObjs.ObjHandler;
+import moze_intel.gameObjs.items.ItemBase;
 import moze_intel.gameObjs.tiles.TransmuteTile;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +34,33 @@ public class SlotTableLock extends Slot
 		
 		super.putStack(stack);
 		
-		tile.handleKnowledge(stack.copy());
+		if (stack.getItem() == ObjHandler.kleinStars)
+		{
+			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEMC());
+			
+			if (ItemBase.getEmc(stack) >= remainEmc)
+			{
+				tile.addEmcWithPKT(remainEmc);
+				ItemBase.removeEmc(stack, remainEmc);
+			}
+			else
+			{
+				tile.addEmcWithPKT(ItemBase.getEmc(stack));
+				ItemBase.setEmc(stack, 0);
+			}
+			
+	        tile.handleKnowledge(stack.copy());
+	        return;
+		}
+		
+		if (stack.getItem() != ObjHandler.tome)
+		{
+			tile.handleKnowledge(stack.copy());
+		}
+		else
+		{
+			tile.updateOutputs();
+		}
 	}
 	
 	@Override

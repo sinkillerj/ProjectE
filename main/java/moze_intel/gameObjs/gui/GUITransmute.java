@@ -3,6 +3,7 @@ package moze_intel.gameObjs.gui;
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.container.TransmuteContainer;
 import moze_intel.gameObjs.tiles.TransmuteTile;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SearchUpdatePKT;
 import moze_intel.utils.NeiHelper;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,13 @@ public class GUITransmute extends GuiContainer
 		this.tile = tile;
 		this.xSize = 228;
 		this.ySize = 202;
+	}
+	
+	@Override
+	public void initGui() 
+	{
+		tile.setPlayer(Minecraft.getMinecraft().thePlayer);
+		super.initGui();
 	}
 
 	@Override
@@ -73,7 +81,7 @@ public class GUITransmute extends GuiContainer
 			
 			if (!tile.filter.equals(srch)) 
 			{
-				MozeCore.pktHandler.sendToServer(new SearchUpdatePKT(srch));
+				PacketHandler.sendToServer(new SearchUpdatePKT(srch));
 				tile.filter = srch.toLowerCase();
 				tile.updateOutputs();
 			}

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemCharge;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
@@ -120,7 +120,7 @@ public class RedShears extends ItemCharge
 			if (!drops.isEmpty())
 			{
 				world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-				MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			}
 		}
 		

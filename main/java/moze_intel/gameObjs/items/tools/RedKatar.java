@@ -3,9 +3,9 @@ package moze_intel.gameObjs.items.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemMode;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
@@ -41,7 +41,7 @@ public class RedKatar extends ItemMode
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (this.getMode(stack) != 0 || block.getBlockHardness(null, 0, 0, 0) == -1)
+		if (this.getMode(stack) != 0 || block == Blocks.obsidian)
 		{
 			return false;
 		}
@@ -178,7 +178,7 @@ public class RedKatar extends ItemMode
 		if (!drops.isEmpty())
 		{
 			world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 	}
 	
@@ -293,7 +293,7 @@ public class RedKatar extends ItemMode
 		if (!drops.isEmpty())
 		{
 			world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 	}
 	
@@ -358,7 +358,7 @@ public class RedKatar extends ItemMode
 			}
 		}
 		
-		MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		
 		if (!drops.isEmpty())
 		{

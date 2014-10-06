@@ -1,7 +1,6 @@
 package moze_intel;
 
 import java.io.File;
-import java.io.IOException;
 
 import moze_intel.EMC.EMCMapper;
 import moze_intel.EMC.RecipeMapper;
@@ -11,34 +10,21 @@ import moze_intel.events.ConnectionHandler;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.events.RegisterPropertiesEvent;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.ThreadCheckUpdate;
 import moze_intel.network.commands.AddEmcCMD;
 import moze_intel.network.commands.ChangelogCMD;
+import moze_intel.network.commands.ClearKnowledgeCMD;
 import moze_intel.network.commands.ReloadCfgCMD;
 import moze_intel.network.commands.RemoveEmcCMD;
-import moze_intel.network.packets.AddEmcPKT;
-import moze_intel.network.packets.ClientCheckUpdatePKT;
-import moze_intel.network.packets.ClientKnowledgeSyncPKT;
-import moze_intel.network.packets.ClientSyncBagDataPKT;
-import moze_intel.network.packets.ClientSyncPKT;
-import moze_intel.network.packets.CollectorSyncPKT;
-import moze_intel.network.packets.CondenserSyncPKT;
-import moze_intel.network.packets.KeyPressPKT;
-import moze_intel.network.packets.ParticlePKT;
-import moze_intel.network.packets.RelaySyncPKT;
-import moze_intel.network.packets.SearchUpdatePKT;
-import moze_intel.network.packets.SetFlyPKT;
-import moze_intel.network.packets.StepHeightPKT;
-import moze_intel.network.packets.SwingItemPKT;
-import moze_intel.network.packets.TTableSyncPKT;
+import moze_intel.network.commands.ResetEmcCMD;
 import moze_intel.playerData.AlchemicalBagData;
 import moze_intel.playerData.IOHandler;
 import moze_intel.playerData.TransmutationKnowledge;
 import moze_intel.proxies.CommonProxy;
-import moze_intel.utils.Constants;
 import moze_intel.utils.GuiHandler;
-import moze_intel.utils.MozeLogger;
 import moze_intel.utils.NeiHelper;
+import moze_intel.utils.PELogger;
 import moze_intel.utils.Utils;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -51,16 +37,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = MozeCore.MODID, name = MozeCore.MODNAME, version = MozeCore.VERSION)
 public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.1n";
-    public static final MozeLogger logger = new MozeLogger();
+    public static final String VERSION = "Alpha 0.2a";
     
     public static File CONFIG_DIR;
     
@@ -69,8 +52,6 @@ public class MozeCore
     
     @SidedProxy(clientSide="moze_intel.proxies.ClientProxy", serverSide="moze_intel.proxies.CommonProxy")
 	public static CommonProxy proxy;
-    
-    public static SimpleNetworkWrapper pktHandler;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -85,22 +66,7 @@ public class MozeCore
     	ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
     	FileHelper.init();
     	
-    	pktHandler = NetworkRegistry.INSTANCE.newSimpleChannel("projecte");
-    	pktHandler.registerMessage(ClientSyncPKT.class, ClientSyncPKT.class, 0, Side.CLIENT);
-    	pktHandler.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
-    	pktHandler.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
-    	pktHandler.registerMessage(SwingItemPKT.class, SwingItemPKT.class, 3, Side.CLIENT);
-    	pktHandler.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
-    	pktHandler.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
-    	pktHandler.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
-    	pktHandler.registerMessage(TTableSyncPKT.class, TTableSyncPKT.class, 7, Side.CLIENT);
-    	pktHandler.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
-    	pktHandler.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
-    	pktHandler.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
-    	pktHandler.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
-    	pktHandler.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
-    	pktHandler.registerMessage(AddEmcPKT.class, AddEmcPKT.class, 13, Side.SERVER);
-    	pktHandler.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 14, Side.SERVER);
+    	PacketHandler.register();
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.events.ItemPickupEvent());
@@ -113,8 +79,6 @@ public class MozeCore
     	
     	ObjHandler.register();
     	ObjHandler.addRecipes();
-    	
-    	Constants.init();
     }
     
     @EventHandler
@@ -122,6 +86,7 @@ public class MozeCore
     {
     	proxy.registerKeyBinds();
     	proxy.registerRenderers();
+    	
     	Utils.init();
     	NeiHelper.init();
     }
@@ -133,6 +98,8 @@ public class MozeCore
     	event.registerServerCommand(new ReloadCfgCMD());
     	event.registerServerCommand(new AddEmcCMD());
     	event.registerServerCommand(new RemoveEmcCMD());
+    	event.registerServerCommand(new ResetEmcCMD());
+    	event.registerServerCommand(new ClearKnowledgeCMD());
     	
     	if (!ThreadCheckUpdate.hasRunServer())
     	{
@@ -141,53 +108,21 @@ public class MozeCore
     	
     	FileHelper.readUserData();
     	
-    	logger.logInfo("Starting server-side EMC mapping.");
+    	PELogger.logInfo("Starting server-side EMC mapping.");
     	
     	RecipeMapper.map();
     	EMCMapper.map();
     	
-    	logger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
+    	PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
     	
     	File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
     	
     	if (!dir.exists())
     	{
-    		dir.mkdir(); 
+    		dir.mkdirs(); 
     	}
     	
-    	File knowledge = new File(dir, "knowledge.dat");
-    	
-    	if (!knowledge.exists())
-    	{
-    		try 
-    		{
-    			knowledge.createNewFile();
-			}
-    		catch (IOException e) 
-    		{
-    			logger.logFatal("Couldn't create transmutation knowledge file!");
-				e.printStackTrace();
-			}
-    	}
-    	
-    	File bagData = new File(dir, "bagdata.dat");
-    	
-    	if (!bagData.exists())
-    	{
-    		try 
-    		{
-    			bagData.createNewFile();
-			}
-    		catch (IOException e) 
-    		{
-    			logger.logFatal("Couldn't create alchemical bag data file!");
-				e.printStackTrace();
-			}
-    	}
-    	
-    	IOHandler.init(knowledge, bagData);
-    	
-    	TransmutationKnowledge.loadCompleteKnowledge();
+    	IOHandler.init(new File(dir, "knowledge.dat"), new File(dir, "bagdata.dat"));
     }
     
     @Mod.EventHandler
@@ -196,11 +131,12 @@ public class MozeCore
     	IOHandler.saveData();
     	TransmutationKnowledge.clear();
     	AlchemicalBagData.clear();
+    	PELogger.logInfo("Saved player data.");
     	
     	PlayerChecksEvent.clearLists();
-    	logger.logInfo("Cleared player check-lists: server stopping.");
+    	PELogger.logInfo("Cleared player check-lists: server stopping.");
     	
     	EMCMapper.clearMaps();
-    	logger.logInfo("Completed server-stop actions.");
+    	PELogger.logInfo("Completed server-stop actions.");
     }
 }

@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import moze_intel.MozeCore;
-import moze_intel.EMC.IStack;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
@@ -43,7 +42,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 		
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			long totalEmc = 0;
 			List<Integer> emcValues = new ArrayList();
 			int numBlocks = 0;

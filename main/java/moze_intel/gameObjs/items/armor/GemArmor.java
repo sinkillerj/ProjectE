@@ -1,8 +1,8 @@
 package moze_intel.gameObjs.items.armor;
 
-import moze_intel.MozeCore;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.StepHeightPKT;
 import moze_intel.utils.Utils;
 import net.minecraft.block.Block;
@@ -73,7 +73,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
 				
 				if (!PlayerChecksEvent.isStepAssistDisabled(playerMP) && !PlayerChecksEvent.isPlayerCheckedForStep(playerMP))
 				{
-					MozeCore.pktHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+					PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
 					PlayerChecksEvent.addPlayerStepChecks(playerMP);
 				}
 			}

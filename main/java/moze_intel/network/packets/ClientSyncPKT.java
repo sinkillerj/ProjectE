@@ -5,34 +5,31 @@ import io.netty.buffer.ByteBuf;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
-import moze_intel.EMC.IStack;
+import moze_intel.EMC.FuelMapper;
+import moze_intel.EMC.SimpleStack;
 import moze_intel.playerData.TransmutationKnowledge;
+import moze_intel.utils.PELogger;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientSyncPKT implements IMessage, IMessageHandler<ClientSyncPKT, IMessage>
 {
-	private static LinkedHashMap<IStack, Integer> map;
+	private static LinkedHashMap<SimpleStack, Integer> map;
 	
 	public ClientSyncPKT() {}
-	
-	public ClientSyncPKT(LinkedHashMap map)
-	{
-		this.map = (LinkedHashMap) map.clone();
-	}
-	
+
 	@Override
 	public IMessage onMessage(ClientSyncPKT message, MessageContext ctx)
 	{
-		MozeCore.logger.logInfo("Receiving EMC mapping from the server.");
+		PELogger.logInfo("Receiving EMC mapping from the server.");
 		
 		EMCMapper.emc.clear();
-		EMCMapper.emc = (LinkedHashMap<IStack, Integer>) message.map;
+		EMCMapper.emc = (LinkedHashMap<SimpleStack, Integer>) message.map;
 		
 		TransmutationKnowledge.loadCompleteKnowledge();
+		FuelMapper.loadMap();
 		
 		return null;
 	}
@@ -46,7 +43,7 @@ public class ClientSyncPKT implements IMessage, IMessageHandler<ClientSyncPKT, I
 		
 		for (int i = 0; i < size; i++)
 		{
-			IStack stack = new IStack(buf.readInt(), buf.readInt(), buf.readInt());
+			SimpleStack stack = new SimpleStack(buf.readInt(), buf.readInt(), buf.readInt());
 			map.put(stack, buf.readInt());
 		}
 	}
@@ -54,11 +51,11 @@ public class ClientSyncPKT implements IMessage, IMessageHandler<ClientSyncPKT, I
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(map.size());
+		buf.writeInt(EMCMapper.emc.size());
 		
-		for (Entry<IStack, Integer> entry : map.entrySet())
+		for (Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
 		{
-			IStack key = entry.getKey();
+			SimpleStack key = entry.getKey();
 			buf.writeInt(key.id);
 			buf.writeInt(key.damage);
 			buf.writeInt(key.qnty);

@@ -1,7 +1,7 @@
 package moze_intel.gameObjs.items;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.LensProjectile;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.Constants;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,7 +26,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		
 		if (shootProjectile(player, stack))
 		{
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 		
 		return stack;

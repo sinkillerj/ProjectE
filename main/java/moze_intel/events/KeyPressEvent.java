@@ -1,6 +1,6 @@
 package moze_intel.events;
 
-import moze_intel.MozeCore;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.KeyPressPKT;
 import moze_intel.utils.KeyBinds;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +18,7 @@ public class KeyPressEvent
 		{
 			if (KeyBinds.isPressed(i))
 			{
-				MozeCore.pktHandler.sendToServer(new KeyPressPKT(i));
+				PacketHandler.sendToServer(new KeyPressPKT(i));
 			}
 		}
 	}

@@ -1,0 +1,102 @@
+package moze_intel.EMC;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import moze_intel.gameObjs.ObjHandler;
+import moze_intel.utils.PELogger;
+import moze_intel.utils.Utils;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+public class FuelMapper 
+{
+	private static final List<SimpleStack> FUEL_MAP = new ArrayList(); 
+	
+	public static void loadMap()
+	{
+		if (!FUEL_MAP.isEmpty())
+		{
+			FUEL_MAP.clear();
+		}
+		
+		addToMap(new ItemStack(Items.coal, 1, 1));
+		addToMap(new ItemStack(Items.redstone));
+		addToMap(new ItemStack(Blocks.redstone_block));
+		addToMap(new ItemStack(Items.coal));
+		addToMap(new ItemStack(Blocks.coal_block));
+		addToMap(new ItemStack(Items.gunpowder));
+		addToMap(new ItemStack(Items.glowstone_dust));
+		addToMap(new ItemStack(Blocks.glowstone));
+		addToMap(new ItemStack(ObjHandler.fuels, 1, 0));
+		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 0));
+		addToMap(new ItemStack(Items.blaze_powder));
+		addToMap(new ItemStack(Blocks.glowstone));
+		addToMap(new ItemStack(ObjHandler.fuels, 1, 1));
+		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
+		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
+		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
+		
+		Collections.sort(FUEL_MAP, new Comparator<SimpleStack>()
+		{
+			@Override
+			public int compare(SimpleStack s1, SimpleStack s2)
+			{
+				int emc1 = EMCMapper.emc.get(s1);
+				int emc2 = EMCMapper.emc.get(s2);
+				
+				if (emc1 < emc2)
+				{
+					return -1;
+				}
+				else if (emc1 > emc2)
+				{
+					return 1;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+		});
+	}
+	
+	private static void addToMap(ItemStack stack)
+	{
+		if (Utils.doesItemHaveEmc(stack))
+		{
+			FUEL_MAP.add(new SimpleStack(stack));
+		}
+	}
+	
+	public static boolean isStackFuel(ItemStack stack)
+	{
+		return FUEL_MAP.contains(new SimpleStack(stack));
+	}
+	
+	public static boolean isStackMaxFuel(ItemStack stack)
+	{
+		return FUEL_MAP.indexOf(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
+	}
+	
+	public static ItemStack getFuelUpgrade(ItemStack stack)
+	{
+		SimpleStack fuel = new SimpleStack(stack);
+		
+		int index = FUEL_MAP.indexOf(fuel);
+		
+		if (index == -1)
+		{
+			PELogger.logFatal("Fuel not found in fuel map: "+stack);
+			return null;
+		}
+		
+		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
+		
+		return Utils.getStackFromSimpleStack(FUEL_MAP.get(nextIndex));
+	}
+}

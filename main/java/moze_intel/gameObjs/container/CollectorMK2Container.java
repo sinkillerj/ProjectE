@@ -1,9 +1,9 @@
 package moze_intel.gameObjs.container;
 
+import moze_intel.EMC.FuelMapper;
 import moze_intel.gameObjs.container.slots.SlotCollectorInv;
 import moze_intel.gameObjs.container.slots.SlotCollectorLock;
 import moze_intel.gameObjs.tiles.CollectorMK2Tile;
-import moze_intel.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -105,7 +105,7 @@ public class CollectorMK2Container extends Container
 		}
 		else if (slotIndex >= 15 && slotIndex <= 50)
 		{
-			if (!Constants.isStackFuel(stack) || Constants.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 12, false))
+			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 12, false))
 			{
 				return null;
 			}

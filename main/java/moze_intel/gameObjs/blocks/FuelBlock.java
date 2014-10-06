@@ -22,6 +22,7 @@ public class FuelBlock extends Block
 	public FuelBlock() 
 	{
 		super(Material.rock);
+		this.setBlockName("fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
 	}

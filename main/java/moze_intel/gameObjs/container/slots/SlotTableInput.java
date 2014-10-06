@@ -34,7 +34,7 @@ public class SlotTableInput extends Slot
 		
 		super.putStack(stack);
 		
-		if (stack.getItem().equals(ObjHandler.kleinStars))
+		if (stack.getItem() == ObjHandler.kleinStars)
 		{
 			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemBase.getEmc(stack));
 			
@@ -54,13 +54,20 @@ public class SlotTableInput extends Slot
 			tile.addEmcWithPKT(Utils.getEmcValue(stack));
 		}
 		
-		tile.handleKnowledge(stack.copy());
+		if (stack.getItem() != ObjHandler.tome)
+		{
+			tile.handleKnowledge(stack.copy());
+		}
+		else
+		{
+			tile.updateOutputs();
+		}
 	}
 	
 	@Override
-	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack stack)
+	public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
 	{
-		super.onPickupFromSlot(par1EntityPlayer, stack);
+		super.onPickupFromSlot(player, stack);
 		
 		if (!stack.getItem().equals(ObjHandler.kleinStars))
 		{

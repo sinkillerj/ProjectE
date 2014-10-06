@@ -1,12 +1,9 @@
 package moze_intel.network.commands;
 
-import moze_intel.MozeCore;
-import moze_intel.network.packets.AddEmcPKT;
+import moze_intel.EMC.EMCMapper;
 import moze_intel.utils.Utils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RemoveEmcCMD extends ProjectEBaseCMD
@@ -75,7 +72,14 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 			
-			MozeCore.pktHandler.sendToServer(new AddEmcPKT(stack, 0));
+			if (EMCMapper.addCustomEntry(stack, 0))
+			{
+				sendSuccess(sender, "Removed EMC for " + unlocalName);
+			}
+			else
+			{
+				sendError(sender, "An error occured during the operation.");
+			}
 		}
 		else if (type.equals("OD"))
 		{
@@ -87,21 +91,18 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 			
-			MozeCore.pktHandler.sendToServer(new AddEmcPKT(odName, 0));
+			if (EMCMapper.addCustomEntry(odName, 0))
+			{
+				sendSuccess(sender, "Removed EMC for " + odName);
+			}
+			else
+			{
+				sendError(sender, "An error occured during the operation.");
+			}
 		}
 		else
 		{
-			
+			sendError(sender, "Error: " + type + "is invalid! The type must either be UN or OD!");
 		}
-	}
-	
-	private void sendError(ICommandSender sender, String message)
-	{
-		sendMessage(sender, EnumChatFormatting.RED + message);
-	}
-	
-	private void sendMessage(ICommandSender sender, String message)
-	{
-		sender.addChatMessage(new ChatComponentText(message));
 	}
 }

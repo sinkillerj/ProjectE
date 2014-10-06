@@ -2,7 +2,6 @@ package moze_intel.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,14 +11,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import cpw.mods.fml.common.registry.GameData;
-import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
-import moze_intel.EMC.IStack;
+import moze_intel.EMC.FuelMapper;
+import moze_intel.EMC.SimpleStack;
 import moze_intel.gameObjs.items.ItemBase;
-import moze_intel.gameObjs.items.ItemCharge;
-import moze_intel.gameObjs.items.ItemMode;
 import moze_intel.gameObjs.items.KleinStar;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SetFlyPKT;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
@@ -57,11 +54,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -88,7 +82,7 @@ public class Utils
 			return false;
 		}
 		
-		IStack iStack = new IStack(stack);
+		SimpleStack iStack = new SimpleStack(stack);
 		
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
@@ -105,7 +99,7 @@ public class Utils
 			return 0;
 		}
 		
-		IStack iStack = new IStack(stack);
+		SimpleStack iStack = new SimpleStack(stack);
 		
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
@@ -313,10 +307,10 @@ public class Utils
 	}
 	
 	/**DOES NOT check if the map contains the element!**/
-	public static ItemStack getNextInMap(LinkedHashMap<IStack, Integer> map, ItemStack start)
+	public static ItemStack getNextInMap(LinkedHashMap<SimpleStack, Integer> map, ItemStack start)
 	{
 		List<ItemStack> keys = new ArrayList(map.keySet());
-		int index = keys.indexOf(new IStack(start));
+		int index = keys.indexOf(new SimpleStack(start));
 		
 		if (index == -1 || index >= (keys.size() - 1))
 		{
@@ -572,7 +566,7 @@ public class Utils
 		}
 		catch (Exception e)
 		{
-			MozeCore.logger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
+			PELogger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
 			e.printStackTrace();
 		}
 		
@@ -608,7 +602,7 @@ public class Utils
 			}
 			else if (!metRequirement)
 			{
-				if(Constants.isStackFuel(stack))
+				if(FuelMapper.isStackFuel(stack))
 				{
 					int emc = Utils.getEmcValue(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
@@ -676,7 +670,7 @@ public class Utils
 	
 	public static void setPlayerFlight(EntityPlayerMP player, boolean state)
 	{
-		MozeCore.pktHandler.sendTo(new SetFlyPKT(state), player);
+		PacketHandler.sendTo(new SetFlyPKT(state), player);
 		player.capabilities.allowFlying = state;
 		
 		if (!state)
@@ -976,11 +970,43 @@ public class Utils
 		return new ItemStack((Item) obj, 1, metaData);
 	}
 	
+	/**
+	 * @throws NullPointerException
+	 */
+	public static ItemStack getStackFromSimpleStack(SimpleStack stack)
+	{
+		return new ItemStack((Item) Item.itemRegistry.getObjectById(stack.id), 1, stack.damage);
+	}
+	
 	public static int randomIntInRange(int max, int min)
 	{
 		Random rand = new Random();
 	    int random = rand.nextInt((max - min) + 1) + min;
 	    return random;
+	}
+	
+	public static void writerToNBT(NBTTagCompound nbt, ItemStack stack)
+	{
+		nbt.setString("Name", Item.itemRegistry.getNameForObject(stack.getItem()));
+		nbt.setByte("Count", (byte) stack.stackSize);
+		nbt.setShort("Damage", (short) stack.getItemDamage());
+	}
+	
+	public static ItemStack readFromNBT(NBTTagCompound nbt)
+	{
+		String name = nbt.getString("Name");
+		
+		if (!name.isEmpty())
+		{
+			Item item = (Item) Item.itemRegistry.getObject(name);
+			
+			if (item != null)
+			{
+				return new ItemStack(item, nbt.getByte("Count"), nbt.getShort("Damage"));
+			}
+		}
+		
+		return null;
 	}
 	
 	private static void loadTransmutations()

@@ -18,6 +18,7 @@ public class RepairTalisman extends ItemBase
 		this.setMaxStackSize(1);
 	}
 	
+	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
 		if (!stack.hasTagCompound())

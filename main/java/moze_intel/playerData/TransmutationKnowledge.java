@@ -3,12 +3,12 @@ package moze_intel.playerData;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
-import moze_intel.EMC.IStack;
+import moze_intel.EMC.SimpleStack;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ClientKnowledgeSyncPKT;
+import moze_intel.utils.PELogger;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -26,15 +26,15 @@ public abstract class TransmutationKnowledge
 	
 	public static void loadCompleteKnowledge()
 	{
-		for (IStack stack : EMCMapper.emc.keySet())
+		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
 			try
 			{
-				CACHED_TOME_KNOWLEDGE.add(new ItemStack((Item) Item.itemRegistry.getObjectById(stack.id), 1, stack.damage));
+				CACHED_TOME_KNOWLEDGE.add(Utils.getStackFromSimpleStack(stack));
 			}
 			catch (Exception e)
 			{
-				MozeCore.logger.logInfo("Failed to cache knowledge: " + e.toString());
+				PELogger.logInfo("Failed to cache knowledge: " + e.toString());
 				e.printStackTrace();
 			}
 		}
@@ -107,9 +107,22 @@ public abstract class TransmutationKnowledge
 		return TOME_KNOWLEDGE.contains(username);
 	}
 	
+	public static void clearKnowledge(String username)
+	{
+		if (TOME_KNOWLEDGE.contains(username))
+		{
+			TOME_KNOWLEDGE.remove(username);
+		}
+		
+		if (MAP.containsKey(username))
+		{
+			MAP.remove(username);
+		}
+	}
+	
 	public static void sync(EntityPlayer player)
 	{
-		MozeCore.pktHandler.sendTo(new ClientKnowledgeSyncPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
 	}
 	
 	public static void clear()
@@ -121,21 +134,30 @@ public abstract class TransmutationKnowledge
 	
 	public static void loadFromNBT(NBTTagCompound playerKnowledge)
 	{
-		NBTTagList list = playerKnowledge.getTagList("data", NBT.TAG_COMPOUND);
-		
-		LinkedList<ItemStack> itemList = new LinkedList<ItemStack>(); 
-		
-		for (int i = 0; i < list.tagCount(); i++)
+		if (playerKnowledge.getBoolean("tome"))
 		{
-			ItemStack stack = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+			loadCompleteKnowledge();
 			
-			if (stack != null)
-			{
-				itemList.add(stack);
-			}
+			setAllKnowledge(playerKnowledge.getString("player"));
 		}
-		
-		setKnowledge(playerKnowledge.getString("player"), itemList);
+		else
+		{
+			NBTTagList list = playerKnowledge.getTagList("data", NBT.TAG_COMPOUND);
+			
+			LinkedList<ItemStack> itemList = new LinkedList<ItemStack>(); 
+			
+			for (int i = 0; i < list.tagCount(); i++)
+			{
+				ItemStack stack = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+				
+				if (stack != null)
+				{
+					itemList.add(stack);
+				}
+			}
+			
+			setKnowledge(playerKnowledge.getString("player"), itemList);
+		}
 	}
 	
 	private static NBTTagCompound getPlayerNBT(String username)
@@ -143,6 +165,8 @@ public abstract class TransmutationKnowledge
 		NBTTagCompound knowledge = new NBTTagCompound();
 		
 		knowledge.setString("player", username);
+		
+		knowledge.setBoolean("tome", TOME_KNOWLEDGE.contains(username));
 		
 		NBTTagList list = new NBTTagList();
 		

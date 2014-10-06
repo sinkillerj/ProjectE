@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import moze_intel.MozeCore;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
@@ -62,7 +62,7 @@ public class DiviningRodMedium extends ItemBase implements IItemModeChanger
 		
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			long totalEmc = 0;
 			int max = 0;
 			int numBlocks = 0;

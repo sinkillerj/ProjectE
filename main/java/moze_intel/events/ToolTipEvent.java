@@ -1,7 +1,7 @@
 package moze_intel.events;
 
 import moze_intel.EMC.EMCMapper;
-import moze_intel.EMC.IStack;
+import moze_intel.EMC.SimpleStack;
 import moze_intel.config.ProjectEConfig;
 import moze_intel.utils.Utils;
 import net.minecraft.init.Items;

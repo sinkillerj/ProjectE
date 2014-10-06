@@ -7,6 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import moze_intel.config.FileHelper;
+import moze_intel.network.PacketHandler;
+import moze_intel.network.packets.ClientSyncPKT;
+import moze_intel.playerData.TransmutationKnowledge;
 import moze_intel.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -16,9 +20,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class EMCMapper 
 {
-	public static LinkedHashMap<IStack, Integer> emc = new LinkedHashMap();
-	public static LinkedList<IStack> blackList = new LinkedList();
-	public static LinkedList<IStack> failed = new LinkedList();
+	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap();
+	public static LinkedList<SimpleStack> blackList = new LinkedList();
+	public static LinkedList<SimpleStack> failed = new LinkedList();
 	
 	public static void map()
 	{
@@ -34,9 +38,9 @@ public class EMCMapper
 			{
 				canMap = false;
 				
-				for (Entry<IStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
+				for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
 				{
-					IStack key = entry.getKey();
+					SimpleStack key = entry.getKey();
 					
 					if (emc.containsKey(key) || failed.contains(key) || blackList.contains(key))
 					{
@@ -50,7 +54,7 @@ public class EMCMapper
 					{
 						toMap = true;
 						
-						B: for (IStack stack : rInput)
+						B: for (SimpleStack stack : rInput)
 						{
 							if (emc.containsKey(stack))
 							{
@@ -88,6 +92,9 @@ public class EMCMapper
 		}
 		
 		failed.clear();
+		
+		TransmutationKnowledge.loadCompleteKnowledge();
+		FuelMapper.loadMap();
 	}
 	
 	public static void mapFromSmelting()
@@ -106,8 +113,8 @@ public class EMCMapper
 			
 			try
 			{
-				IStack input = new IStack(key);
-				IStack result = new IStack(value);
+				SimpleStack input = new SimpleStack(key);
+				SimpleStack result = new SimpleStack(value);
 			
 				if (emc.containsKey(input) && !emc.containsKey(result))
 				{
@@ -146,15 +153,44 @@ public class EMCMapper
 		}
 	}
 	
+	public static boolean addCustomEntry(ItemStack stack, int value)
+	{
+		if (FileHelper.addToFile(stack, value))
+		{
+			clearMaps();
+			FileHelper.readUserData();
+			map();
+			PacketHandler.sendToAll(new ClientSyncPKT());
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean addCustomEntry(String odName, int value)
+	{
+		if (FileHelper.addToFile(odName, value))
+		{
+			clearMaps();
+			FileHelper.readUserData();
+			map();
+			PacketHandler.sendToAll(new ClientSyncPKT());
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public static void clearMaps()
 	{
 		emc.clear();
 		blackList.clear();
+		
 	}
 	
 	public static void addMapping(ItemStack stack, int value)
 	{
-		addMapping(new IStack(stack), value);
+		addMapping(new SimpleStack(stack), value);
 	}
 	
 	public static void addMapping(String odName, int value)
@@ -165,7 +201,7 @@ public class EMCMapper
 		}
 	}
 	
-	private static void addMapping(IStack stack, int value)
+	private static void addMapping(SimpleStack stack, int value)
 	{
 		if (emc.containsKey(stack))
 		{
@@ -297,6 +333,8 @@ public class EMCMapper
     	addMapping(new ItemStack(Blocks.packed_ice), 4);
     	addMapping(new ItemStack(Items.snowball), 1);
     	addMapping(new ItemStack(Items.filled_map), 1472);
+    	addMapping(new ItemStack(Items.blaze_powder), 768);
+    	addMapping(new ItemStack(Items.dye, 1, 15), 48);
     }
 	
 	private static void loadEmcFromOD()
@@ -375,7 +413,7 @@ public class EMCMapper
 						continue;
 					}
 					
-					failed.add(new IStack(stack));
+					failed.add(new SimpleStack(stack));
 				}
 			}
 		}

@@ -18,11 +18,12 @@ public abstract class NeiHelper
 			fldSearchField = clsLayoutManager.getField("searchField");
 			mtdText = clsTextField.getMethod("text");
 			haveNei = true;
-			MozeLogger.logInfo("NEI helper loaded!");
+			PELogger.logInfo("NEI helper loaded!");
 			
-		} catch (Throwable e) 
+		}
+		catch (Exception e) 
 		{
-			MozeLogger.logWarn("NEI helper not loaded: " + e.toString());
+			PELogger.logWarn("NEI failed to load: " + e.toString());
 		}
 	}
 

@@ -1,3 +1,13 @@
+###Version Alpha 0.2a
+* Finally out of 0.1 stage! :D
+* NEW: Transmutation table is now searcheable with NEI
+* NEW: Alchemical Tome (unlocks all knowledge in the transmutation table)
+* NEW: Completely redone knowledge/alchemical bag data saving
+* NEW: Better fuel mapping (know updates with the recipe based and user based EMC)
+* NEW: Working and completely redone commands (and added a new command, resetEMC)
+* FIX: Little error in EMC mapping
+* FIX: A lot of bugs, too many to list. Mainly tranmsutation table and red/dark matter furnaces.
+
 ###Version Alpha 0.1n
 * FIX: Shift clicking items in the transmutation table with no EMC value
 

@@ -3,15 +3,15 @@ package moze_intel.playerData;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import scala.actors.threadpool.Arrays;
-import moze_intel.MozeCore;
-import moze_intel.network.packets.ClientKnowledgeSyncPKT;
+import cpw.mods.fml.common.FMLCommonHandler;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ClientSyncBagDataPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class AlchemicalBagData 
@@ -50,7 +50,7 @@ public abstract class AlchemicalBagData
 	
 	public static void sync(EntityPlayer player)
 	{
-		MozeCore.pktHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
 	}
 	
 	public static void clear()

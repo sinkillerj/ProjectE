@@ -16,7 +16,7 @@ public class SlotTableOutput extends Slot
 	}
 	
 	@Override
-	public ItemStack decrStackSize(int par1)
+	public ItemStack decrStackSize(int slot)
 	{
 		for (int i = 0; i <= 7; i++)
 		{
@@ -24,7 +24,7 @@ public class SlotTableOutput extends Slot
 		}
 		
 		ItemStack stack = getStack().copy();
-		stack.stackSize = par1;
+		stack.stackSize = slot;
 		tile.removeItemRelativeEmcWithPKT(stack);
 		tile.checkForUpdates();
 		
@@ -44,7 +44,7 @@ public class SlotTableOutput extends Slot
     }
 	
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public boolean canTakeStack(EntityPlayer player)
 	{
 		return true;
 	}

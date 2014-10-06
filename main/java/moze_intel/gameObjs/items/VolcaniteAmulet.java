@@ -1,8 +1,8 @@
 package moze_intel.gameObjs.items;
 
-import moze_intel.MozeCore;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.gameObjs.entity.LavaProjectile;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -32,7 +32,7 @@ public class VolcaniteAmulet extends ItemBase implements IProjectileShooter
 		{
 			if (shootProjectile(player, stack))
 			{
-				MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			}
 		}
 		return stack;

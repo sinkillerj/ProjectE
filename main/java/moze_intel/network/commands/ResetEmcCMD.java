@@ -1,23 +1,27 @@
 package moze_intel.network.commands;
 
+import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
+import moze_intel.config.FileHelper;
+import moze_intel.network.PacketHandler;
+import moze_intel.network.packets.ClientSyncPKT;
 import moze_intel.utils.Utils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class AddEmcCMD extends ProjectEBaseCMD 
+public class ResetEmcCMD extends ProjectEBaseCMD
 {
 	@Override
 	public String getCommandName() 
 	{
-		return "projecte_addEMC";
+		return "projecte_resetEMC";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_addEMC <UN/OD> <the actual unlocalized-name/ore dictionary name> <metadata (ONLY with Unlocalized names!> <EMC value>";
+		return "/projecte_resetEMC <UN/OD> <Actual unlocalized/ore-dictionary name> <Metada (ONLY with UN registrations!)";
 	}
 	
 	@Override
@@ -39,9 +43,9 @@ public class AddEmcCMD extends ProjectEBaseCMD
 		
 		if (type.equalsIgnoreCase("UN"))
 		{
-			if (params.length < 4)
+			if (params.length < 3)
 			{
-				sendError(sender, "Error: not enough parameters! UN registration requires the unlocalized name, the meta-data and the EMC value!");
+				sendError(sender, "Error: Error: not enough parameters! UN registration requires the unlocalized name and the meta-data!");
 				return;
 			}
 			
@@ -72,42 +76,23 @@ public class AddEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 			
-			if (stack != null)
+			
+			if (FileHelper.removeFromFile(stack))
 			{
-				int emc;
+				EMCMapper.clearMaps();
+				FileHelper.readUserData();
+				EMCMapper.map();
+				PacketHandler.sendToAll(new ClientSyncPKT());
 				
-				try
-				{
-					emc = Integer.valueOf(params[3]);
-				}
-				catch (Exception e)
-				{
-					sendError(sender, "Error: the EMC value needs to be a number!");
-					return;
-				}
-				
-				if (EMCMapper.addCustomEntry(stack, emc))
-				{
-					sendSuccess(sender, "Added EMC (" + emc + ") to " + unlocalName);
-				}
-				else
-				{
-					sendError(sender, "An error occured during the operation.");
-				}
+				sendSuccess(sender, "Reset EMC for " + unlocalName);
 			}
 			else
 			{
-				sendError(sender, "Error: couldn't find any item/block with unlocalized-name: " + unlocalName);
+				sendError(sender, "The EMC for " + unlocalName + " has not been modified!");
 			}
 		}
-		else if (type.equalsIgnoreCase("OD"))
+		else if (type.equals("OD"))
 		{
-			if (params.length < 3)
-			{
-				sendError(sender, "Error: not enough parameters UN registration requires the ore-dictionary name and the EMC value!");
-				return;
-			}
-			
 			String odName = params[1];
 			
 			if (OreDictionary.getOres(odName).isEmpty())
@@ -116,25 +101,19 @@ public class AddEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 			
-			int emc;
 			
-			try
+			if (FileHelper.removeFromFile(odName))
 			{
-				emc = Integer.valueOf(params[2]);
-			}
-			catch (Exception e)
-			{
-				sendError(sender, "Error: the EMC value needs to be a number!");
-				return;
-			}
-			
-			if (EMCMapper.addCustomEntry(odName, emc))
-			{
-				sendSuccess(sender, "Added EMC (" + emc + ") to " + odName);
+				EMCMapper.clearMaps();
+				FileHelper.readUserData();
+				EMCMapper.map();
+				PacketHandler.sendToAll(new ClientSyncPKT());
+				
+				sendSuccess(sender, "Reset EMC for " + odName);
 			}
 			else
 			{
-				sendError(sender, "An error occured during the operation.");
+				sendError(sender, "The EMC for " + odName + " has not been modified!");
 			}
 		}
 		else

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import moze_intel.MozeCore;
-import moze_intel.utils.Utils;
+import moze_intel.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +19,32 @@ public abstract class IOHandler
 	
 	public static void init(File knowledge, File bagData)
 	{
+		if (!knowledge.exists())
+    	{
+    		try 
+    		{
+    			knowledge.createNewFile();
+			}
+    		catch (IOException e) 
+    		{
+    			PELogger.logFatal("Couldn't create transmutation knowledge file!");
+				e.printStackTrace();
+			}
+    	}
+		
+		if (!bagData.exists())
+    	{
+    		try 
+    		{
+    			bagData.createNewFile();
+			}
+    		catch (IOException e) 
+    		{
+    			PELogger.logFatal("Couldn't create alchemical bag data file!");
+				e.printStackTrace();
+			}
+    	}
+		
 		knowledgeFile = knowledge;
 		bagDataFile = bagData;
 		
@@ -35,7 +61,7 @@ public abstract class IOHandler
 		}
 		catch (IOException e) 
 		{
-			MozeCore.logger.logFatal("Caught exception in file I/O (if this is the first time you load the world, this is normal)");
+			PELogger.logFatal("Caught exception in file I/O (if this is the first time you load the world, this is normal)");
 			e.printStackTrace();
 		}
 		
@@ -87,7 +113,7 @@ public abstract class IOHandler
 		}
 		catch (Exception e)
 		{
-			MozeCore.logger.logFatal("Caught exception in file I/O (if this is the first time you load the world, this is normal)");
+			PELogger.logFatal("Caught exception in file I/O (if this is the first time you load the world, this is normal)");
 			e.printStackTrace();
 		}
 		
@@ -112,6 +138,7 @@ public abstract class IOHandler
 					for (int k = 0; k < subList2.tagCount(); k++)
 					{
 						NBTTagCompound subNbt2 = subList2.getCompoundTagAt(k);
+						
 						inv[subNbt2.getByte("index")] = ItemStack.loadItemStackFromNBT(subNbt2);
 					}
 					

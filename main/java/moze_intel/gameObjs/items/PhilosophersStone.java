@@ -2,6 +2,7 @@ package moze_intel.gameObjs.items;
 
 import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.MobRandomizer;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.Constants;
@@ -39,7 +40,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		//TODO Add cool sound effects and fancing rendering for the transumtation block.
 		if (world.isRemote)
 		{
 			return stack;
@@ -69,7 +69,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				getAxisOrientedLine(direction, charge, block, result, pos, world, player);
 			}
 			
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 		
 		return stack;
@@ -190,7 +190,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			
 			if (world.rand.nextInt(8) == 0)
 			{
-				MozeCore.pktHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 			}
 		}
 	}

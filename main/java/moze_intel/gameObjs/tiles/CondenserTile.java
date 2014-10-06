@@ -1,7 +1,7 @@
 package moze_intel.gameObjs.tiles;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.CondenserSyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -75,7 +75,7 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 		
 		if (numPlayersUsing > 0)
 		{
-			MozeCore.pktHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
+			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
 				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}

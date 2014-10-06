@@ -1,6 +1,6 @@
 package moze_intel.gameObjs.entity;
 
-import moze_intel.MozeCore;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.Entity;
@@ -67,7 +67,7 @@ public class MobRandomizer extends EntityThrowable
 			
 			for (int i = 0; i < 4; i++)
 			{
-				MozeCore.pktHandler.sendToAllAround(new ParticlePKT("portal", ent.posX + (this.rand.nextDouble() - 0.5D) * (double)ent.width, ent.posY + this.rand.nextDouble() * (double)ent.height - 0.25D, ent.posZ + (this.rand.nextDouble() - 0.5D) * (double)ent.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D),
+				PacketHandler.sendToAllAround(new ParticlePKT("portal", ent.posX + (this.rand.nextDouble() - 0.5D) * (double)ent.width, ent.posY + this.rand.nextDouble() * (double)ent.height - 0.25D, ent.posZ + (this.rand.nextDouble() - 0.5D) * (double)ent.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D),
 				new TargetPoint(this.worldObj.provider.dimensionId, ent.posX, ent.posY, ent.posZ, 32));
 			}
 		}

@@ -1,8 +1,8 @@
 package moze_intel.gameObjs.tiles;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.RelaySyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -98,7 +98,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		
 		if (numUsing > 0)
 		{
-			MozeCore.pktHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayKleinEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
+			PacketHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayKleinEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
 					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}

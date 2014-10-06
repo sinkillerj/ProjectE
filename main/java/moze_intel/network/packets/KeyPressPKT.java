@@ -1,7 +1,6 @@
 package moze_intel.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.MozeCore;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.IExtraFunction;
@@ -9,6 +8,7 @@ import moze_intel.gameObjs.items.IItemModeChanger;
 import moze_intel.gameObjs.items.IProjectileShooter;
 import moze_intel.gameObjs.items.ItemCharge;
 import moze_intel.gameObjs.items.ItemMode;
+import moze_intel.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -78,7 +78,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 		{
 			if (((IProjectileShooter) item).shootProjectile(player, stack))
 			{
-				MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			}
 		}
 		else if (message.key == 3 && item instanceof IExtraFunction)

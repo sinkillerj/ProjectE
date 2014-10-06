@@ -3,7 +3,7 @@
   "modid": "ProjectE",
   "name": "ProjectE",
   "description": "A complete remake of EE2.",
-  "version": "0.2a-rc1",
+  "version": "0.2a",
   "mcversion": "1.7.10",
   "url": "",
   "updateUrl": "https://github.com/MozeIntel/ProjectE",

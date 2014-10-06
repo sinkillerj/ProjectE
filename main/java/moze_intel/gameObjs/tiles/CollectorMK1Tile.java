@@ -1,10 +1,9 @@
 package moze_intel.gameObjs.tiles;
 
-import scala.actors.threadpool.Arrays;
-import scala.tools.nsc.interpreter.Results;
-import moze_intel.MozeCore;
+import moze_intel.EMC.FuelMapper;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.CollectorSyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -102,7 +101,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		if (numUsing > 0)
 		{
-			MozeCore.pktHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this.xCoord, this.yCoord, this.zCoord),
+			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this.xCoord, this.yCoord, this.zCoord),
 					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}
@@ -199,7 +198,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else if (hasFuel)
 		{
-			ItemStack result = inventory[lockSlot] == null ? Constants.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
+			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
 			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
 			
@@ -280,7 +279,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	
 	public int getFuelProgressScaled(int i)
 	{
-		if (inventory[0] == null || !Constants.isStackFuel(inventory[0]))
+		if (inventory[0] == null || !FuelMapper.isStackFuel(inventory[0]))
 		{
 			return 0;
 		}
@@ -298,7 +297,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else
 		{
-			reqEmc = Utils.getEmcValue(Constants.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
+			reqEmc = Utils.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
 		}
 		
 		if (this.getStoredEMC() >= reqEmc)
@@ -469,7 +468,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			return false;
 		}
 		
-		return Constants.isStackFuel(stack);
+		return FuelMapper.isStackFuel(stack);
 	}
 
 	@Override

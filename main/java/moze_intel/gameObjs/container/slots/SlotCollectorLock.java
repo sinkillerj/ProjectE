@@ -1,7 +1,6 @@
 package moze_intel.gameObjs.container.slots;
 
-import moze_intel.gameObjs.ObjHandler;
-import moze_intel.utils.Constants;
+import moze_intel.EMC.FuelMapper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,6 +20,6 @@ public class SlotCollectorLock extends Slot
 			return false;
 		}
 		
-        return Constants.isStackFuel(stack);
+        return FuelMapper.isStackFuel(stack);
     }
 }

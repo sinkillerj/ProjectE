@@ -27,26 +27,6 @@ public class SlotTableConsume extends Slot
 		
 		ItemStack cache = stack.copy();
 		
-		if (stack.getItem().equals(ObjHandler.kleinStars))
-		{
-			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEMC());
-			
-			if (ItemBase.getEmc(stack) >= remainEmc)
-			{
-				tile.addEmcWithPKT(remainEmc);
-				ItemBase.removeEmc(stack, remainEmc);
-			}
-			else
-			{
-				tile.addEmcWithPKT(ItemBase.getEmc(stack));
-				ItemBase.setEmc(stack, 0);
-			}
-			
-			super.putStack(stack);
-	        tile.handleKnowledge(cache);
-	        return;
-		}
-		
 		int toAdd = 0;
 		
 		while (!tile.hasMaxedEmc() && stack.stackSize > 0)
@@ -63,11 +43,6 @@ public class SlotTableConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (this.getStack() != null && this.getStack().getItem() == ObjHandler.kleinStars)
-		{
-			return false;
-		}
-		
 		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
 	}
 }

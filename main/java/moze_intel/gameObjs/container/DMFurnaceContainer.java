@@ -159,13 +159,4 @@ public class DMFurnaceContainer  extends Container
 		
 		return newStack;
     }
-	
-	/*@Override
-	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
-	{
-		if (!par4EntityPlayer.worldObj.isRemote)
-			System.out.println(par1);
-		
-		return super.slotClick(par1, par2, par3, par4EntityPlayer);
-	}*/
 }

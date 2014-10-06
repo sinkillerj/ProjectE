@@ -9,13 +9,13 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 	
-public class RecipeInput implements Iterable<IStack>
+public class RecipeInput implements Iterable<SimpleStack>
 {
-	private LinkedList<IStack> list;
+	private LinkedList<SimpleStack> list;
 		
 	public RecipeInput()
 	{
-		list = new LinkedList<IStack>();
+		list = new LinkedList<SimpleStack>();
 	}
 		
 	public RecipeInput(ItemStack[] inputs)
@@ -26,12 +26,12 @@ public class RecipeInput implements Iterable<IStack>
 		{
 			if (stack != null)
 			{
-				list.add(new IStack(stack));
+				list.add(new SimpleStack(stack));
 			}
 		}
 	}
 		
-	public RecipeInput(List<IStack> inputs)
+	public RecipeInput(List<SimpleStack> inputs)
 	{
 		this();
 			
@@ -40,16 +40,16 @@ public class RecipeInput implements Iterable<IStack>
 		
 	public void addToInputs(ItemStack stack)
 	{
-		list.add(new IStack(stack));
+		list.add(new SimpleStack(stack));
 	}
 		
-	public LinkedList<IStack> getInputs()
+	public LinkedList<SimpleStack> getInputs()
 	{
 		return list;
 	}
 
 	@Override
-	public Iterator<IStack> iterator()
+	public Iterator<SimpleStack> iterator()
 	{
 		return list.iterator();
 	}

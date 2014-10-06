@@ -3,10 +3,10 @@ package moze_intel.gameObjs.items.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.entity.LootBall;
 import moze_intel.gameObjs.items.ItemCharge;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
 import moze_intel.utils.Coordinates;
@@ -73,7 +73,7 @@ public class RedStar extends ItemCharge
 		if (!drops.isEmpty())
 		{
 			world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 		
 		return true;
@@ -107,7 +107,7 @@ public class RedStar extends ItemCharge
 				if (!drops.isEmpty())
 				{
 					world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-					MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+					PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 				}
 				
 				return stack;
@@ -154,7 +154,7 @@ public class RedStar extends ItemCharge
 			if (!drops.isEmpty())
 			{
 				world.spawnEntityInWorld(new LootBall(world, drops, player.posX, player.posY, player.posZ));
-				MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			}
 		}
 		
@@ -180,7 +180,7 @@ public class RedStar extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block.getBlockHardness(null, 0, 0, 0) == -1)
+		if (block == Blocks.obsidian)
 		{
 			return false;
 		}

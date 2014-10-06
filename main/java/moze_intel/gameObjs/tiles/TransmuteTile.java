@@ -1,10 +1,11 @@
 package moze_intel.gameObjs.tiles;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import moze_intel.EMC.FuelMapper;
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.playerData.TransmutationKnowledge;
-import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -21,7 +22,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private final int LOCK_INDEX = 8;
 	private final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
 	private final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
-	private final int MAX_MATTER_SIZE = 12;
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
@@ -39,6 +39,11 @@ public class TransmuteTile extends TileEmc implements IInventory
 			stack.stackTagCompound = null;
 		}
 		
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		{
+			stack.setItemDamage(0);
+		}
+		
 		if (!hasKnowledge(stack) && !TransmutationKnowledge.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
@@ -50,11 +55,11 @@ public class TransmuteTile extends TileEmc implements IInventory
 			else
 			{
 				TransmutationKnowledge.addToKnowledge(player.getCommandSenderName(), stack);
+			}
 			
-				if (!this.worldObj.isRemote)
-				{
-					TransmutationKnowledge.sync(player);
-				}
+			if (!this.worldObj.isRemote)
+			{
+				TransmutationKnowledge.sync(player);
 			}
 		}
 		
@@ -76,6 +81,13 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void updateOutputs()
 	{
+		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) TransmutationKnowledge.getKnowledge(player.getCommandSenderName()).clone();
+		
+		if (knowledge == null)
+		{
+			return;
+		}
+		
 		ItemStack[] matter = new ItemStack[12];
 		ItemStack[] fuels = new ItemStack[4];
 		int currentIndex = 0;
@@ -83,7 +95,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		if (lock != null)
 		{
-			if (Constants.isStackFuel(lock))
+			if (FuelMapper.isStackFuel(lock))
 			{
 				if (this.getStoredEMC() < Utils.getEmcValue(lock))
 				{
@@ -94,7 +106,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 					fuels[0] = getFromKnowledge(lock);
 				}
 				
-				matter[0] = getMaxEmc(0, matter, false);
+				matter[0] = getMaxEmc(0, matter, false, knowledge);
 				currentIndex++;
 			}
 			else
@@ -108,14 +120,14 @@ public class TransmuteTile extends TileEmc implements IInventory
 					matter[0] = getFromKnowledge(lock);
 				}
 				
-				fuels[0] = getMaxEmc(0, fuels, true);
+				fuels[0] = getMaxEmc(0, fuels, true, knowledge);
 				currentIndex++;
 			}
 		}
 		else
 		{
-			matter[0] = getMaxEmc(0, matter, false);
-			fuels[0] = getMaxEmc(0, fuels, true);
+			matter[0] = getMaxEmc(0, matter, false, knowledge);
+			fuels[0] = getMaxEmc(0, fuels, true, knowledge);
 			currentIndex++;
 		}
 			
@@ -127,7 +139,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 							
 				if (prevEmc != 0)
 				{
-					fuels[currentIndex] = getMaxEmc(prevEmc, fuels, true);
+					fuels[currentIndex] = getMaxEmc(prevEmc, fuels, true, knowledge);
 				}
 			}
 					
@@ -139,7 +151,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 				continue;
 			}
 				
-			matter[currentIndex] = getMaxEmc(prevEmc, matter, false);
+			matter[currentIndex] = getMaxEmc(prevEmc, matter, false, knowledge);
 			currentIndex++;
 		}
 		
@@ -156,14 +168,14 @@ public class TransmuteTile extends TileEmc implements IInventory
 		}
 	}
 	
-	private ItemStack getMaxEmc(int maxValue, ItemStack[] currentInv, boolean isFuel)
+	private ItemStack getMaxEmc(int maxValue, ItemStack[] currentInv, boolean isFuel, LinkedList<ItemStack> knowledge)
 	{
 		ItemStack max = null;
 		int currentMax = 0;
 		
-		for (ItemStack stack : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
+		for (ItemStack stack : knowledge)
 		{
-			boolean flag = Constants.isStackFuel(stack);
+			boolean flag = FuelMapper.isStackFuel(stack);
 			
 			if (flag && !isFuel || !flag && isFuel)
 			{
@@ -234,11 +246,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 		return false;
 	}
 	
-	private List<ItemStack> getKnowledge()
-	{
-		return TransmutationKnowledge.getKnowledge(player.getCommandSenderName());
-	}
-	
 	private boolean arrayContains(ItemStack[] array, ItemStack stack)
 	{
 		for (ItemStack s : array)
@@ -287,20 +294,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 		super.readFromNBT(nbt);
 		
 		this.setEmcValue(nbt.getDouble("EMC"));
-		
-		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[26];
-		
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			byte slot = subNBT.getByte("Slot");
-			
-			if (slot >= 0 && slot < 26)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
-			}
-		}
 	}
 	
 	@Override
@@ -309,23 +302,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 		super.writeToNBT(nbt);
 		
 		nbt.setDouble("EMC", this.getStoredEMC());
-		
-		NBTTagList list = new NBTTagList();
-		
-		for (int i = 0; i < 26; i++)
-		{
-			if (inventory[i] == null) 
-			{
-				continue;
-			}
-			
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			inventory[i].writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-
-		nbt.setTag("Items", list);
 	}
 	
 	@Override

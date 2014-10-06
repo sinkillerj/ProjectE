@@ -6,18 +6,15 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.sun.imageio.plugins.common.InputStreamAdapter;
 
 import moze_intel.MozeCore;
 import moze_intel.EMC.EMCMapper;
+import moze_intel.utils.PELogger;
 import moze_intel.utils.Utils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class FileHelper 
 {
@@ -36,7 +33,7 @@ public abstract class FileHelper
 			}
 			catch (IOException e)
 			{
-				MozeCore.logger.logFatal("Exception in file I/O");
+				PELogger.logFatal("Exception in file I/O");
 				e.printStackTrace();
 			}
 			
@@ -114,13 +111,13 @@ public abstract class FileHelper
 					
 					if (meta == null)
 					{
-						MozeCore.logger.logFatal("Unexpected end of custom emc file.");
+						PELogger.logFatal("Unexpected end of custom emc file.");
 						break;
 					}
 					
 					if (meta.discriminator != token.getNextDiscriminator())
 					{
-						MozeCore.logger.logFatal("Unexpected token in custom emc file.");
+						PELogger.logFatal("Unexpected token in custom emc file.");
 						continue;
 					}
 					
@@ -132,14 +129,14 @@ public abstract class FileHelper
 					}
 					catch (Exception e)
 					{
-						MozeCore.logger.logFatal("Syntax error in custom emc file.");
+						PELogger.logFatal("Syntax error in custom emc file.");
 						e.printStackTrace();
 						continue;
 					}
 					
 					if (stack == null)
 					{
-						MozeCore.logger.logFatal("Couldn't get Item/Block from unlocalized name: "+token.line);
+						PELogger.logFatal("Couldn't get Item/Block from unlocalized name: "+token.line);
 						continue;
 					}
 					
@@ -147,13 +144,13 @@ public abstract class FileHelper
 					
 					if (emc == null)
 					{
-						MozeCore.logger.logFatal("Unexpected end of custom emc file.");
+						PELogger.logFatal("Unexpected end of custom emc file.");
 						break;
 					}
 					
 					if (emc.discriminator != meta.getNextDiscriminator())
 					{
-						MozeCore.logger.logFatal("Unexpected token in custom emc file.");
+						PELogger.logFatal("Unexpected token in custom emc file.");
 						continue;
 					}
 					
@@ -165,13 +162,13 @@ public abstract class FileHelper
 					}
 					catch (Exception e)
 					{
-						MozeCore.logger.logFatal("Syntax error in custom emc file.");
+						PELogger.logFatal("Syntax error in custom emc file.");
 						e.printStackTrace();
 						continue;
 					}
 					
 					EMCMapper.addMapping(stack, emcValue);
-					MozeCore.logger.logInfo(("Register custom EMC value ("+emcValue+") for: "+token.line));
+					PELogger.logInfo(("Register custom EMC value ("+emcValue+") for: "+token.line));
 				}
 				else if (token.discriminator == 'O')
 				{
@@ -180,7 +177,7 @@ public abstract class FileHelper
 					
 					if (oreList.isEmpty())
 					{
-						MozeCore.logger.logFatal(("Ore-Dictionary search for "+oreName+" in custom emc file returned nothing."));
+						PELogger.logFatal(("Ore-Dictionary search for "+oreName+" in custom emc file returned nothing."));
 						continue;
 					}
 					
@@ -188,7 +185,7 @@ public abstract class FileHelper
 					
 					if (emc.discriminator != token.getNextDiscriminator())
 					{
-						MozeCore.logger.logFatal("Unexpected token in custom emc file.");
+						PELogger.logFatal("Unexpected token in custom emc file.");
 						continue;
 					}
 					
@@ -200,7 +197,7 @@ public abstract class FileHelper
 					}
 					catch (Exception e)
 					{
-						MozeCore.logger.logFatal("Syntax error in custom emc file.");
+						PELogger.logFatal("Syntax error in custom emc file.");
 						continue;
 					}
 					
@@ -214,13 +211,13 @@ public abstract class FileHelper
 						EMCMapper.addMapping(stack, emcValue);
 					}
 					
-					MozeCore.logger.logInfo("Registered custom EMC value ("+emcValue+") for: "+oreName);
+					PELogger.logInfo("Registered custom EMC value ("+emcValue+") for: "+oreName);
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			MozeCore.logger.logFatal("Caught exception in custom emc file handling!");
+			PELogger.logFatal("Caught exception in custom emc file handling!");
 			e.printStackTrace();
 		}
 		finally
@@ -242,7 +239,7 @@ public abstract class FileHelper
 	/**
 	 * For UN additions only.
 	 */
-	public static void addToFile(ItemStack stack, int emc)
+	public static boolean addToFile(ItemStack stack, int emc)
 	{
 		PrintWriter writer = null;
 		BufferedReader reader = null;
@@ -254,32 +251,96 @@ public abstract class FileHelper
 			reader = new BufferedReader(new FileReader(EMC_CONFIG));
 
 			String internal = Item.itemRegistry.getNameForObject(stack.getItem());
-			String line;
 			String input = "";
 			
-			while ((line = reader.readLine()) != null)
+			boolean foundStack = false;
+			boolean foundMeta = false;
+
+			Token token = null;
+			LinkedList<String> list = new LinkedList();
+			
+			while ((token = getNextToken(reader, list)) != null)
 			{
-				input += line + "\n";
-				
-				if (line.startsWith("U:") && line.substring(2).equalsIgnoreCase(internal))
+				if (token.discriminator == 'U' && token.line.equals(internal))
 				{
-					while ((line = reader.readLine()) != null)
+					if (foundStack || foundMeta)
 					{
-						if (line.startsWith("E:"))
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						foundStack = true;
+					}
+				}
+				else if (token.discriminator == 'M')
+				{
+					if (!foundStack || foundMeta)
+					{
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						int meta = -1;
+						
+						try
 						{
-							input += "E:" + emc + "\n";
-							hasFound = true;
+							meta = Integer.valueOf(token.line);
 						}
-						else
+						catch (NumberFormatException e)
 						{
-							input += line + "\n";
+							e.printStackTrace();
+						}
+						
+						if (meta == stack.getItemDamage())
+						{
+							foundMeta = true;
 						}
 					}
 				}
+				else if (token.discriminator == 'E')
+				{
+					if (!foundStack || !foundMeta)
+					{
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						list.set(list.size() - 1, "E:" + emc);
+						hasFound = true;
+						foundStack = false;
+						foundMeta = false;
+					}
+				}
+				else
+				{
+					foundStack = false;
+					foundMeta = false;
+				}
+				
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
+			}
+			
+			if (!list.isEmpty())
+			{
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
 			}
 			
 			if (!hasFound)
 			{
+				input += "\n";
 				input += "U:" + internal + "\n";
 				input += "M:" + stack.getItemDamage() + "\n";
 				input += "E:" + emc + "\n";
@@ -292,6 +353,7 @@ public abstract class FileHelper
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 		finally
 		{
@@ -312,64 +374,215 @@ public abstract class FileHelper
 				}
 			}
 		}
+		
+		return true;
 	}
 	
 	/**
 	 * For OD additions only.
 	 */
-	public static void addToFile(String odName, int emc)
+	public static boolean addToFile(String odName, int emc)
 	{
 		PrintWriter writer = null;
 		BufferedReader reader = null;
 		
 		boolean hasFound = false;
 		
-		List<String> toChange = new ArrayList();
-		
-		for (ItemStack stack : Utils.getODItems(odName))
+		try
 		{
-			if (stack != null)
+			reader = new BufferedReader(new FileReader(EMC_CONFIG));
+			
+			String input = "";
+			Token token = null;
+			LinkedList<String> list = new LinkedList();
+			
+			boolean foundString = false;
+			
+			while ((token = getNextToken(reader, list)) != null)
 			{
-				toChange.add(stack.getUnlocalizedName());
+				if (token.discriminator == 'O')
+				{
+					if (foundString)
+					{
+						foundString = false;
+					}
+					else if (token.line.equals(odName))
+					{
+						foundString = true;
+					}
+				}
+				else if (token.discriminator == 'E' && foundString)
+				{
+					list.set(list.size() - 1, "E:" + emc);
+					hasFound = true;
+					foundString = false;
+				}
+				else
+				{
+					foundString = false;
+				}
+				
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
+			}
+			
+			if (!list.isEmpty())
+			{
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
+			}
+			
+			if (!hasFound)
+			{
+				input += "\n";
+				input += "O:" + odName + "\n";
+				input += "E:" + emc + "\n";
+			}
+			
+			writer = new PrintWriter(new FileOutputStream(EMC_CONFIG, false));
+			writer.write(input);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		finally
+		{
+			if (writer != null)
+			{
+				writer.close();
+			}
+			
+			if (reader != null)
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
+		
+		return true;
+	}
+	
+	/**
+	 * For UN entries only
+	 */
+	public static boolean removeFromFile(ItemStack stack)
+	{
+		PrintWriter writer = null;
+		BufferedReader reader = null;
+		
+		boolean hasFound = false;
 		
 		try
 		{
 			reader = new BufferedReader(new FileReader(EMC_CONFIG));
 			
-			String line;
+			String internal = Item.itemRegistry.getNameForObject(stack.getItem());
 			String input = "";
+			Token token = null;
+			LinkedList<String> list = new LinkedList();
 			
-			while ((line = reader.readLine()) != null)
+			boolean foundStack = false;
+			boolean foundMeta = false;
+			int stackIndex = 0;
+			int metaIndex = 0;
+			
+			while ((token = getNextToken(reader, list)) != null)
 			{
-				input += line + "\n";
-				
-				if (line.startsWith("O:") && toChange.contains(line.substring(2)))
+				if (token.discriminator == 'U' && token.line.equals(internal))
 				{
-					while ((line = reader.readLine()) != null)
+					if (foundStack || foundMeta)
 					{
-						if (line.startsWith("E:"))
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						foundStack = true;
+						stackIndex = list.size() - 1;
+					}
+				}
+				else if (token.discriminator == 'M')
+				{
+					if (!foundStack || foundMeta)
+					{
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						int meta = -1;
+						
+						try
 						{
-							input += "E:" + emc + "\n";
-							hasFound = true;
+							meta = Integer.valueOf(token.line);
 						}
-						else
+						catch (NumberFormatException e)
 						{
-							input += line + "\n";
+							e.printStackTrace();
+						}
+						
+						if (stack.getItemDamage() == meta)
+						{
+							foundMeta = true;
+							metaIndex = list.size() - 1;
 						}
 					}
 				}
+				else if (token.discriminator == 'E')
+				{
+					if (!foundStack || !foundMeta)
+					{
+						foundStack = false;
+						foundMeta = false;
+					}
+					else
+					{
+						if (stackIndex > 0 && list.get(stackIndex - 1).isEmpty())
+						{
+							list.remove(stackIndex - 1);
+							stackIndex--;
+							metaIndex--;
+						}
+						
+						list.remove(stackIndex);
+						list.remove(metaIndex);
+						list.removeLast();
+						hasFound = true;
+						foundStack = false;
+						foundMeta = false;
+					}
+				}
+				else
+				{
+					foundStack = false;
+					foundMeta = false;
+				}
 			}
 			
-			if (!hasFound)
+			for (String s : list)
 			{
-				input += "OD:" + odName + "\n";
-				input += "E:" + emc + "\n";
+				input += s + "\n";
 			}
+				
+			list.clear();
 			
 			writer = new PrintWriter(new FileOutputStream(EMC_CONFIG, false));
-			
 			writer.write(input);
 		}
 		catch (Exception e)
@@ -395,6 +608,132 @@ public abstract class FileHelper
 				}
 			}
 		}
+		
+		return hasFound;
+	}
+	
+	/**
+	 * For OD entries only.
+	 */
+	public static boolean removeFromFile(String odName)
+	{
+		PrintWriter writer = null;
+		BufferedReader reader = null;
+		
+		boolean hasFound = false;
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader(EMC_CONFIG));
+			
+			String input = "";
+			Token token = null;
+			LinkedList<String> list = new LinkedList();
+			
+			boolean foundString = false;
+			
+			while ((token = getNextToken(reader, list)) != null)
+			{
+				if (token.discriminator == 'O')
+				{
+					if (token.line.equals(odName))
+					{
+						foundString = true;
+						
+						if (list.size() > 1 && list.get(list.size() - 2).isEmpty())
+						{
+							list.remove(list.size() - 2);
+						}
+						
+						list.removeLast();
+					}
+				}
+				else if (token.discriminator == 'E' && foundString)
+				{
+					list.removeLast();
+					hasFound = true;
+					foundString = false;
+				}
+				else
+				{
+					foundString = false;
+				}
+				
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
+			}
+			
+			if (!list.isEmpty())
+			{
+				for (String s : list)
+				{
+					input += s + "\n";
+				}
+				
+				list.clear();
+			}
+			
+			writer = new PrintWriter(new FileOutputStream(EMC_CONFIG, false));
+			writer.write(input);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (writer != null)
+			{
+				writer.close();
+			}
+			
+			if (reader != null)
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return hasFound;
+	}
+	
+	private static Token getNextToken(BufferedReader reader, LinkedList<String> readLines) throws IOException
+	{
+		String line;
+		
+		while ((line = reader.readLine()) != null)
+		{
+			readLines.add(line);
+			
+			line = line.trim();
+			
+			if (line.isEmpty())
+			{
+				continue;
+			}
+			
+			char startChar = line.charAt(0);
+			
+			for (char c : TOKENS)
+			{
+				if (startChar == c && line.charAt(1) == ':')
+				{
+					return new Token(c, line.substring(2));
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	private static Token getNextToken(BufferedReader reader) throws IOException
@@ -403,6 +742,7 @@ public abstract class FileHelper
 		
 		while ((line = reader.readLine()) != null)
 		{
+			
 			line = line.trim();
 			
 			if (line.isEmpty())

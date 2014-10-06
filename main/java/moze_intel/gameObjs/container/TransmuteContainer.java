@@ -82,7 +82,13 @@ public class TransmuteContainer extends Container
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 		
-		if (slotIndex >= 10 && slotIndex <= 25)
+		//System.out.println(slotIndex);
+		
+		if (slotIndex <= 7)
+		{
+			return null;
+		}
+		else if (slotIndex >= 10 && slotIndex <= 25)
 		{	
 			int emc = Utils.getEmcValue(newStack);
 			
@@ -124,15 +130,15 @@ public class TransmuteContainer extends Container
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
-    {
-        super.addCraftingToCrafters(par1ICrafting);
-    }
-	
-	@Override
 	public void onContainerClosed(EntityPlayer p_75134_1_)
     {
 		super.onContainerClosed(p_75134_1_);
 		tile.closeInventory();
     }
+	
+	@Override
+	public ItemStack slotClick(int slotIndex, int no, int clue, EntityPlayer player) 
+	{
+		return super.slotClick(slotIndex, no, clue, player);
+	}
 }

@@ -1,8 +1,8 @@
 package moze_intel.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.tiles.RelayMK1Tile;
+import moze_intel.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -37,7 +37,7 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		
 		if (tile == null)
 		{
-			MozeCore.logger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
+			PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
 		}
 		else
 		{

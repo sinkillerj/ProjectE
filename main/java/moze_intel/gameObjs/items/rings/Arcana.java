@@ -2,7 +2,6 @@ package moze_intel.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.MozeCore;
 import moze_intel.events.PlayerChecksEvent;
 import moze_intel.gameObjs.items.IItemModeChanger;
 import moze_intel.gameObjs.items.ItemBase;
@@ -80,8 +79,6 @@ public class Arcana extends ItemBase implements IItemModeChanger
 			case 3:
 				Utils.repellEntities(player);
 				break;
-			default:
-				MozeCore.logger.logFatal("Please report to mod author: impossible item damage on ring of arcana.");
 		}
 	}
 	

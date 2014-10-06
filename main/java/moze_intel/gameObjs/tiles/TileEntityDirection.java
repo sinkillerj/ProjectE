@@ -37,7 +37,9 @@ public class TileEntityDirection extends TileEntity
         super.readFromNBT(nbtTagCompound);
 
         if (nbtTagCompound.hasKey("Direction"))
+        {
             this.orientation = ForgeDirection.getOrientation(nbtTagCompound.getByte("Direction"));
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.List;
 
 import moze_intel.MozeCore;
 import moze_intel.network.commands.ChangelogCMD;
+import moze_intel.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 
@@ -28,6 +29,7 @@ public class ThreadCheckUpdate extends Thread
 	public ThreadCheckUpdate(boolean isServer) 
 	{
 		this.isServerSide = isServer;
+		this.setName("ProjectE Update Checker " + (isServer ? "Server" : "Client"));
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class ThreadCheckUpdate extends Thread
 			
 			if (line == null)
 			{
-				MozeCore.logger.logFatal("Update check failed!");
+				PELogger.logFatal("Update check failed!");
 				throw new IOException("No data from URL: "+changelogURL);
 			}
 			
@@ -73,11 +75,11 @@ public class ThreadCheckUpdate extends Thread
 			
 			if (!MozeCore.VERSION.equals(latestVersion))
 			{
-				MozeCore.logger.logInfo("Mod is outdated! Check "+githubURL+" to get the latest version ("+latestVersion+").");
+				PELogger.logInfo("Mod is outdated! Check "+githubURL+" to get the latest version ("+latestVersion+").");
 				
 				for (String s : changes)
 				{
-					MozeCore.logger.logInfo(s);
+					PELogger.logInfo(s);
 				}
 				
 				if (isServerSide)
@@ -86,19 +88,19 @@ public class ThreadCheckUpdate extends Thread
 				}
 				else
 				{
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("New update for Project-E is available! Version: "+latestVersion));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Get it at "+githubURL));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("New update for Project-E is available! Version: " + latestVersion));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Get it at " + githubURL));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Use /projecte_log for update notes."));
 				}
 			}
 			else
 			{
-				MozeCore.logger.logInfo("Mod is updated.");
+				PELogger.logInfo("Mod is updated.");
 			}
 		}
 		catch(Exception e)
 		{
-			MozeCore.logger.logFatal("Caught exception in Update Checker thread!");
+			PELogger.logFatal("Caught exception in Update Checker thread!");
 			e.printStackTrace();
 		}
 		finally
@@ -111,7 +113,7 @@ public class ThreadCheckUpdate extends Thread
 				} 
 				catch (IOException e) 
 				{
-					MozeCore.logger.logFatal("Caught exception in Update Checker thread!");
+					PELogger.logFatal("Caught exception in Update Checker thread!");
 					e.printStackTrace();
 				}
 			}

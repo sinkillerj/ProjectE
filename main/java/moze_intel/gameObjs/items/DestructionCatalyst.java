@@ -3,8 +3,8 @@ package moze_intel.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.entity.LootBall;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ParticlePKT;
 import moze_intel.network.packets.SwingItemPKT;
 import moze_intel.utils.CoordinateBox;
@@ -92,11 +92,11 @@ public class DestructionCatalyst extends ItemCharge
 						
 						if (world.rand.nextInt(8) == 0)
 						{
-							MozeCore.pktHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
 			
-			MozeCore.pktHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			
 			if (hasAction)
 			{

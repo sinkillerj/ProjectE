@@ -1,9 +1,5 @@
 package moze_intel.EMC;
 
-import ic2.api.recipe.IMachineRecipeManager;
-import ic2.api.recipe.Recipes;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,9 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import appeng.api.AEApi;
-import cpw.mods.fml.common.Loader;
-import moze_intel.MozeCore;
+import moze_intel.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -26,7 +20,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeMapper 
 {
-	private static LinkedHashMap<IStack, LinkedList<RecipeInput>> recipes = new LinkedHashMap();	
+	private static LinkedHashMap<SimpleStack, LinkedList<RecipeInput>> recipes = new LinkedHashMap();	
 	
 	public static void map()
 	{
@@ -42,7 +36,7 @@ public class RecipeMapper
 				continue;
 			}
 			
-			IStack outStack = new IStack(output);
+			SimpleStack outStack = new SimpleStack(output);
 			List<ItemStack> inputs = new ArrayList();
 			
 			if (recipe instanceof ShapedRecipes)
@@ -78,7 +72,7 @@ public class RecipeMapper
 					}
 					else
 					{
-						MozeCore.logger.logInfo("Uknown object for shaped recipe: "+obj);
+						PELogger.logInfo("Uknown object for shaped recipe: "+obj);
 					}
 				}
 			}
@@ -109,7 +103,7 @@ public class RecipeMapper
 					}
 					else
 					{
-						MozeCore.logger.logInfo("Uknown object for shapeless recipe: "+obj);
+						PELogger.logInfo("Uknown object for shapeless recipe: "+obj);
 					}
 				}
 			}
@@ -153,7 +147,7 @@ public class RecipeMapper
 		}
 	}
 	
-	public static Set<Entry<IStack, LinkedList<RecipeInput>>> getEntrySet()
+	public static Set<Entry<SimpleStack, LinkedList<RecipeInput>>> getEntrySet()
 	{
 		return recipes.entrySet();
 	}

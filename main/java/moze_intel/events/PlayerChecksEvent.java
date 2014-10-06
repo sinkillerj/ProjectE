@@ -2,16 +2,15 @@ package moze_intel.events;
 
 import java.util.LinkedList;
 
-import moze_intel.MozeCore;
 import moze_intel.gameObjs.ObjHandler;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.StepHeightPKT;
+import moze_intel.utils.PELogger;
 import moze_intel.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -58,7 +57,7 @@ public class PlayerChecksEvent
 		{
 			if (!canPlayerStep(player))
 			{
-				MozeCore.pktHandler.sendTo(new StepHeightPKT(0.5f), player);
+				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
 				removePlayerStepChecks(player);
 			}
 		}
@@ -79,7 +78,7 @@ public class PlayerChecksEvent
 		
 		if (canPlayerStep((EntityPlayerMP) event.player))
 		{
-			MozeCore.pktHandler.sendTo(new StepHeightPKT(1.0f), (EntityPlayerMP) event.player);
+			PacketHandler.sendTo(new StepHeightPKT(1.0f), (EntityPlayerMP) event.player);
 		}
 	}
 	
@@ -88,7 +87,7 @@ public class PlayerChecksEvent
 		if (!flyChecks.contains(player))
 		{
 			flyChecks.add(player);
-			MozeCore.logger.logInfo("Added "+player.getCommandSenderName()+" to flight checks.");
+			PELogger.logInfo("Added "+player.getCommandSenderName()+" to flight checks.");
 		}
 	}
 	
@@ -97,7 +96,7 @@ public class PlayerChecksEvent
 		if (!fireChecks.contains(player))
 		{
 			fireChecks.add(player);
-			MozeCore.logger.logInfo("Added "+player.getCommandSenderName()+" to fire checks.");
+			PELogger.logInfo("Added "+player.getCommandSenderName()+" to fire checks.");
 		}
 	}
 	
@@ -106,7 +105,7 @@ public class PlayerChecksEvent
 		if (!stepChecks.contains(player))
 		{
 			stepChecks.add(player);
-			MozeCore.logger.logInfo("Added "+player.getCommandSenderName()+" to step height checks.");
+			PELogger.logInfo("Added "+player.getCommandSenderName()+" to step height checks.");
 		}
 	}
 	
@@ -115,7 +114,7 @@ public class PlayerChecksEvent
 		if (!stepDisabled.contains(player))
 		{
 			stepDisabled.add(player);
-			MozeCore.logger.logInfo(player.getCommandSenderName() + "disabled step assist.");
+			PELogger.logInfo(player.getCommandSenderName() + "disabled step assist.");
 		}
 	}
 	
@@ -124,7 +123,7 @@ public class PlayerChecksEvent
 		if (flyChecks.contains(player))
 		{
 			flyChecks.remove();
-			MozeCore.logger.logInfo("Removed "+player.getCommandSenderName()+" from flight checks.");
+			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from flight checks.");
 		}
 	}
 	
@@ -133,7 +132,7 @@ public class PlayerChecksEvent
 		if (fireChecks.contains(player))
 		{
 			fireChecks.remove(player);
-			MozeCore.logger.logInfo("Removed "+player.getCommandSenderName()+" from fire checks.");
+			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from fire checks.");
 		}
 	}
 	
@@ -142,7 +141,7 @@ public class PlayerChecksEvent
 		if (stepChecks.contains(player))
 		{
 			stepChecks.remove(player);
-			MozeCore.logger.logInfo("Removed "+player.getCommandSenderName()+" from step height checks.");
+			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from step height checks.");
 		}
 	}
 	
@@ -151,7 +150,7 @@ public class PlayerChecksEvent
 		if (stepDisabled.contains(player))
 		{
 			stepDisabled.remove(player);
-			MozeCore.logger.logInfo(player.getCommandSenderName() + "disabled step assist.");
+			PELogger.logInfo(player.getCommandSenderName() + "disabled step assist.");
 		}
 	}
 	

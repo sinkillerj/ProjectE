@@ -1,6 +1,6 @@
 package moze_intel.gameObjs.tiles;
 
-import moze_intel.MozeCore;
+import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.TTableSyncPKT;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -105,7 +105,7 @@ public abstract class TileEmc extends TileEntity
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			MozeCore.pktHandler.sendToAll(new TTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
+			PacketHandler.sendToAll(new TTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
 		}
 	}
 }
