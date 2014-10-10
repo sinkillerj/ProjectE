@@ -3,6 +3,7 @@ package moze_intel.events;
 import moze_intel.network.PacketHandler;
 import moze_intel.network.packets.ClientCheckUpdatePKT;
 import moze_intel.network.packets.ClientSyncPKT;
+import moze_intel.playerData.AlchemicalBagData;
 import moze_intel.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +19,7 @@ public class ConnectionHandler
 		PacketHandler.sendTo(new ClientSyncPKT(), (EntityPlayerMP) event.player);
 		PacketHandler.sendTo(new ClientCheckUpdatePKT(), (EntityPlayerMP) event.player);
 	}
+		
 	
 	@SubscribeEvent
 	public void playerDisconnect(ClientDisconnectionFromServerEvent event)

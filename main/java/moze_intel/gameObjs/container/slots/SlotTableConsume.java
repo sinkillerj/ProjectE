@@ -2,6 +2,7 @@ package moze_intel.gameObjs.container.slots;
 
 import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.items.ItemBase;
+import moze_intel.gameObjs.items.KleinStar;
 import moze_intel.gameObjs.tiles.TransmuteTile;
 import moze_intel.utils.Utils;
 import net.minecraft.inventory.Slot;
@@ -27,12 +28,17 @@ public class SlotTableConsume extends Slot
 		
 		ItemStack cache = stack.copy();
 		
-		int toAdd = 0;
+		double toAdd = 0;
 		
 		while (!tile.hasMaxedEmc() && stack.stackSize > 0)
 		{
 			toAdd += Utils.getEmcValue(stack);
 			stack.stackSize--;
+		}
+		
+		if (cache.getItem() == ObjHandler.kleinStars)
+		{
+			toAdd += KleinStar.getEmc(cache);
 		}
 		
 		tile.addEmcWithPKT(toAdd);

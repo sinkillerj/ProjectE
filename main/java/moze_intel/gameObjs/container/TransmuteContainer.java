@@ -1,9 +1,11 @@
 package moze_intel.gameObjs.container;
 
+import moze_intel.gameObjs.ObjHandler;
 import moze_intel.gameObjs.container.slots.SlotTableConsume;
 import moze_intel.gameObjs.container.slots.SlotTableInput;
 import moze_intel.gameObjs.container.slots.SlotTableLock;
 import moze_intel.gameObjs.container.slots.SlotTableOutput;
+import moze_intel.gameObjs.items.KleinStar;
 import moze_intel.gameObjs.tiles.TransmuteTile;
 import moze_intel.utils.Constants;
 import moze_intel.utils.Utils;
@@ -82,8 +84,6 @@ public class TransmuteContainer extends Container
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 		
-		//System.out.println(slotIndex);
-		
 		if (slotIndex <= 7)
 		{
 			return null;
@@ -94,8 +94,20 @@ public class TransmuteContainer extends Container
 			
 			int stackSize = 0;
 			
+			boolean removed = false;
+			
 			while (tile.getStoredEMC() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
 			{
+				if (!removed)
+				{
+					for (int i = 0; i <= 7; i++)
+					{
+						tile.setInventorySlotContents(i, null);
+					}
+					
+					removed = true;
+				}
+				
 				tile.removeEmc(emc);
 				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
 				stackSize++;
@@ -120,6 +132,11 @@ public class TransmuteContainer extends Container
 			
 			tile.handleKnowledge(newStack);
 			
+			if (stack.getItem() == ObjHandler.kleinStars)
+			{
+				tile.addEmc(KleinStar.getEmc(stack));
+			}
+			
 			if (stack.stackSize == 0)
 			{
 				slot.putStack(null);
@@ -135,10 +152,4 @@ public class TransmuteContainer extends Container
 		super.onContainerClosed(p_75134_1_);
 		tile.closeInventory();
     }
-	
-	@Override
-	public ItemStack slotClick(int slotIndex, int no, int clue, EntityPlayer player) 
-	{
-		return super.slotClick(slotIndex, no, clue, player);
-	}
 }

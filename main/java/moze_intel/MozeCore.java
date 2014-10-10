@@ -36,6 +36,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = MozeCore.MODID, name = MozeCore.MODNAME, version = MozeCore.VERSION)
@@ -43,7 +44,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2a";
+    public static final String VERSION = "Alpha 0.2b";
     
     public static File CONFIG_DIR;
     
@@ -126,9 +127,15 @@ public class MozeCore
     }
     
     @Mod.EventHandler
-    public void serverQuit(FMLServerStoppedEvent event)
+    public void serverStopping (FMLServerStoppingEvent event)
     {
     	IOHandler.saveData();
+    	PELogger.logInfo("Saved transmutation and alchemical bag data.");
+    }
+    
+    @Mod.EventHandler
+    public void serverQuit(FMLServerStoppedEvent event)
+    {
     	TransmutationKnowledge.clear();
     	AlchemicalBagData.clear();
     	PELogger.logInfo("Saved player data.");

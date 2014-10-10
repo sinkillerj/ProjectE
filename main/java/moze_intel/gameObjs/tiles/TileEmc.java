@@ -27,7 +27,7 @@ public abstract class TileEmc extends TileEntity
 	{
 		emc += amount;
 		
-		if (emc > maxAmount)
+		if (emc > maxAmount || emc < 0)
 		{
 			emc = maxAmount;
 		}

@@ -60,13 +60,8 @@ public class RedStar extends ItemCharge
 					
 					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, i, j, k);
-						
-						if (!blockDrops.isEmpty())
-						{
-							drops.addAll(blockDrops);
-							world.setBlockToAir(i, j, k);
-						}
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
+						world.setBlockToAir(i, j, k);
 					}
 				}
 		
@@ -98,7 +93,7 @@ public class RedStar extends ItemCharge
 						{
 							Block block = world.getBlock(x, y, z);
 							
-							if (Utils.isOre(block))
+							if (Utils.isOre(block) && canHarvestBlock(block, stack))
 							{
 								Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 							}
@@ -134,18 +129,10 @@ public class RedStar extends ItemCharge
 						for (int z = (int) box.minZ; z <= box.maxZ; z++)
 						{
 							Block b = world.getBlock(x, y, z);
-							String harvest = b.getHarvestTool(0);
 							
-							if (b == Blocks.air || (harvest != null && !harvest.equals("shovel")))
+							if (b != Blocks.air && canHarvestBlock(b, stack))
 							{
-								continue;
-							}
-							
-							ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, x, y, z);
-							
-							if (!blockDrops.isEmpty())
-							{
-								drops.addAll(blockDrops);
+								drops.addAll(Utils.getBlockDrops(world, player, b, stack, x, y, z));
 								world.setBlockToAir(x, y, z);
 							}
 						}
@@ -180,7 +167,7 @@ public class RedStar extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.obsidian)
+		if (block == Blocks.bedrock)
 		{
 			return false;
 		}

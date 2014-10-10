@@ -1,3 +1,9 @@
+###Version Alpha 0.2b
+* FIX: Alchemical bags resetting (and sometimes randomizing) their inventory after a server restart
+* FIX: Transmutation table dupe bug
+* FIX: Consuming a klein start in a transmutation table will also add any stored EMC in the klein star to the table
+* FIX: Red/Dark matter tools breaking bedrock
+
 ###Version Alpha 0.2a
 * Finally out of 0.1 stage! :D
 * NEW: Transmutation table is now searcheable with NEI

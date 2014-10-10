@@ -149,7 +149,7 @@ public class RedPick extends ItemMode
 					{
 						Block block = world.getBlock(x, y, z);
 						
-						if (Utils.isOre(block))
+						if (Utils.isOre(block) && canHarvestBlock(block, stack))
 						{
 							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}
@@ -168,7 +168,7 @@ public class RedPick extends ItemMode
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.obsidian)
+		if (block == Blocks.bedrock)
 		{
 			return false;
 		}

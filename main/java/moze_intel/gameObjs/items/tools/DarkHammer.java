@@ -60,14 +60,7 @@ public class DarkHammer extends ItemCharge
 					
 					if (b != Blocks.air && canHarvestBlock(b, stack))
 					{
-						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, b, stack, i, j, k);
-						
-						if (blockDrops.isEmpty())
-						{
-							continue;
-						}
-						
-						drops.addAll(blockDrops);
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
 					}
 				}
@@ -100,7 +93,7 @@ public class DarkHammer extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.obsidian)
+		if (block == Blocks.bedrock)
 		{
 			return false;
 		}

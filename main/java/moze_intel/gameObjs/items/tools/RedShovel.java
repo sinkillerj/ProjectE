@@ -33,7 +33,7 @@ public class RedShovel extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.obsidian)
+		if (block == Blocks.bedrock)
 		{
 			return false;
 		}
@@ -83,12 +83,7 @@ public class RedShovel extends ItemCharge
 								continue;
 							}
 							
-							ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
-							
-							if (!blockDrops.isEmpty())
-							{
-								drops.addAll(blockDrops);
-							}
+							drops.addAll(Utils.getBlockDrops(world, player, block, stack, x, y, z));
 							
 							world.setBlockToAir(x, y, z);
 						}

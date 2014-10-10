@@ -35,14 +35,6 @@ public class GUITransmute extends GuiContainer
 	}
 
 	@Override
-	public void initGui()
-	{
-		// Ensure that the player is set on client side if the gui is re-opened after switching out
-		tile.setPlayer(Minecraft.getMinecraft().thePlayer);
-		super.initGui();
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
 		GL11.glColor4f(1F, 1F, 1F, 1F);
