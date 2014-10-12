@@ -10,6 +10,7 @@ If you have a bug to report, open an issue. I'll try to fix every single one of 
 #Building Instructions
 
 1. Clone the repository into desktop.
+2. Run the gradlew commands setupDecompWorkspace and eclipse/idea depending on your IDE.
 2. There will be a script with the commands required to build.
 3. Make any changes that you want.
 4. Run build.bat
