@@ -61,6 +61,7 @@ public class Constants
 	public static final int RELAY3_GUI = 11;
 	public static final int MERCURIAL_GUI = 12;
 	public static final int PHILOS_STONE_GUI = 13;
+    public static final int PORTABLE_STONE_GUI = 14;
 	
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	

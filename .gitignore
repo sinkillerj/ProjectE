@@ -32,6 +32,7 @@ eclipse/
 out/
 main/java/appeng/
 main/java/invtweaks/
+main/java/ic2/
 
 
 #################
@@ -218,3 +219,8 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+main/java/moze_intel/EMC/IStack.java
+main/java/moze_intel/network/packets/AddEmcPKT.java
+main/java/moze_intel/utils/MozeLogger.java
+main/java/moze_intel/utils/PlayerBagInventory.java
+main/java/moze_intel/utils/PlayerKnowledge.java
