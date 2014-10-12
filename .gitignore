@@ -28,6 +28,11 @@ local.properties
 # PDT-specific
 .buildpath
 
+eclipse/
+out/
+main/java/appeng/
+main/java/invtweaks/
+
 
 #################
 ## Visual Studio
