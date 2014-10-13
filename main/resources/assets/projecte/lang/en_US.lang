@@ -87,7 +87,7 @@ item.gem_armor_3.name=Gem Boots
 item.arcana_ring.name=Ring of Arcana
 item.zero_ring.name=Zero Ring
 item.tome.name=Alchemical Tome
-item.trans_tablet.name=Transmutation Tablet [Very WIP]
+item.transmutation_tablet.name=Transmutation Tablet
 
 tile.alchemy_chest.name=Alchemical Chest
 tile.interdiction_torch.name=Interdiction Torch
