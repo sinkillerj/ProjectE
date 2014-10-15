@@ -4,6 +4,7 @@ import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -54,21 +55,40 @@ public class Collector extends BlockDirection
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack itemStack)
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
 	{
-		int l = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int orientation = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		
-		if (l == 0)
+		if (orientation == 0)
+		{
             world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		}
 
-        if (l == 1)
+        if (orientation == 1)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+        }
 
-        if (l == 2)
+        if (orientation == 2)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+        }
 
-        if (l == 3)
+        if (orientation == 3)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+        }
+        
+        TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
+		{
+			stack.stackTagCompound.setInteger("x", x);
+			stack.stackTagCompound.setInteger("y", y);
+			stack.stackTagCompound.setInteger("z", z);
+			
+			tile.readFromNBT(stack.stackTagCompound);
+		}
 	}
 	
 	@Override

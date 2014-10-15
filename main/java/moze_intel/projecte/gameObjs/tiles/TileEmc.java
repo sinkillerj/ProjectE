@@ -1,17 +1,17 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.api.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.TTableSyncPKT;
+import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileEmc extends TileEntity
+public abstract class TileEmc extends TileEntity implements ITileEmc
 {
 	private double emc;
 	private final int maxAmount;
-	public boolean isRequestingEmc = false;
 	
 	public TileEmc()
 	{
@@ -21,6 +21,18 @@ public abstract class TileEmc extends TileEntity
 	public TileEmc(int maxAmount)
 	{
 		this.maxAmount = maxAmount;
+	}
+	
+	@Override
+	public void setEmc(double value) 
+	{
+		this.emc = value <= maxAmount ? value : maxAmount;
+	}
+
+	@Override
+	public double getStoredEmc() 
+	{
+		return 0;
 	}
 	
 	public void addEmc(double amount)
@@ -105,7 +117,7 @@ public abstract class TileEmc extends TileEntity
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAll(new TTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
+			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
 		}
 	}
 }

@@ -9,6 +9,7 @@ import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,8 +35,6 @@ public class TransmutationRenderingEvent
 {
 	private Minecraft mc = Minecraft.getMinecraft();
 	private final List<CoordinateBox> renderList = new ArrayList();
-	private float timer = 1.0f;
-	private float boost;
 	private double playerX;
 	private double playerY;
 	private double playerZ;
@@ -153,18 +152,9 @@ public class TransmutationRenderingEvent
         				break;
         			}
         		}
-        		
-        		drawAll();
+            	
+            	drawAll();
             	renderList.clear();
-        		
-            	if (timer <= 0.25f)
-            	{
-            		boost = 0.0005f;
-        		}
-            	else if (timer >= 0.45f)
-            	{
-            		boost = -0.0005f;
-        		}
         	}
         	else if (transmutationResult != null)
 			{
@@ -184,7 +174,7 @@ public class TransmutationRenderingEvent
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, timer);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
 		
         Tessellator tessellator = Tessellator.instance;
         
@@ -243,7 +233,7 @@ public class TransmutationRenderingEvent
 	        tessellator.draw();
 		}
 		
-		timer += boost;
+		
 		
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -263,19 +253,4 @@ public class TransmutationRenderingEvent
 			renderList.add(box);
 		}
 	}
-	
-	/**
-     * Adds a quad to the tesselator at the specified position with the set width and height and color.  Args:
-     * tessellator, x, y, width, height, color
-     */
-    private void renderQuad(Tessellator t, int x, int y, int width, int height, int color)
-    {
-        t.startDrawingQuads();
-        t.setColorOpaque_I(color);
-        t.addVertex((double)(x + 0), (double)(y + 0), 0.0D);
-        t.addVertex((double)(x + 0), (double)(y + height), 0.0D);
-        t.addVertex((double)(x + width), (double)(y + height), 0.0D);
-        t.addVertex((double)(x + width), (double)(y + 0), 0.0D);
-        t.draw();
-    }
 }

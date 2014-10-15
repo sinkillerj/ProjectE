@@ -29,7 +29,6 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		chargeRate = Constants.RELAY_MK1_OUTPUT;
 		inventory = new ItemStack[8];
 		invBufferSize = 6;
-		this.isRequestingEmc = true;
 	}
 	
 	public RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
@@ -38,7 +37,6 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		this.chargeRate = chargeRate;
 		inventory = new ItemStack[sizeInv + 2];
 		invBufferSize = sizeInv;
-		this.isRequestingEmc = true;
 	}
 	
 	@Override
@@ -365,5 +363,11 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return false;
+	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return true;
 	}
 }

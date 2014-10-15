@@ -37,7 +37,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     public RMFurnaceTile() 
     {
     	super(64);
-    	this.isRequestingEmc = true;
 	}
     
     @Override
@@ -738,5 +737,11 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
 		return slot >= 14;
+	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return true;
 	}
 }

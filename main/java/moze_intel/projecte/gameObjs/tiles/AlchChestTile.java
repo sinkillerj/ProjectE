@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 
-public class AlchChestTile extends TileEntityDirection implements IInventory
+public class AlchChestTile extends TileEmcDirection implements IInventory
 {
 	private ItemStack[] inventory = new ItemStack[104];
 	public float lidAngle;
@@ -64,6 +64,7 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 			inventory[i].writeToNBT(subNBT);
 			list.appendTag(subNBT);
 		}
+		
 		nbt.setTag("Items", list);
 	}
 
@@ -388,5 +389,11 @@ public class AlchChestTile extends TileEntityDirection implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
+	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return false;
 	}
 }

@@ -2,24 +2,16 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import java.util.LinkedList;
 
-import scala.actors.threadpool.Arrays;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.PortableTableSyncPKT;
 import moze_intel.projecte.playerData.TransmutationKnowledge;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransmuteTabletInventory implements IInventory

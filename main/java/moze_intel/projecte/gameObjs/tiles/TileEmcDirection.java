@@ -1,24 +1,25 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.Utils;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEmcDirection extends TileEmc
+public abstract class TileEmcDirection extends TileEmc
 {
 	private ForgeDirection orientation;
 	
 	public TileEmcDirection()
 	{
-		super();
-		this.orientation = ForgeDirection.SOUTH;
-	}
-	
-	public TileEmcDirection(int maxEmc)
-	{
-		super(maxEmc);
 		this.orientation = ForgeDirection.SOUTH;
 	}
 	
@@ -37,13 +38,45 @@ public class TileEmcDirection extends TileEmc
         this.orientation = ForgeDirection.getOrientation(orientation);
     }
     
+    public void setRelativeOrientation(EntityLivingBase ent, boolean sendPacket)
+	{
+		int direction = 0;
+        int facing = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+
+        if (facing == 0)
+        {
+            direction = ForgeDirection.NORTH.ordinal();
+        }
+        else if (facing == 1)
+        {
+            direction = ForgeDirection.EAST.ordinal();
+        }
+        else if (facing == 2)
+        {
+            direction = ForgeDirection.SOUTH.ordinal();
+        }
+        else if (facing == 3)
+        {
+            direction = ForgeDirection.WEST.ordinal();
+        }
+        
+        setOrientation(direction);
+        
+        if (sendPacket)
+        {
+        	PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction));
+        }
+	}
+    
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
         super.readFromNBT(nbtTagCompound);
 
         if (nbtTagCompound.hasKey("Direction"))
+        {
             this.orientation = ForgeDirection.getOrientation(nbtTagCompound.getByte("Direction"));
+        }
     }
 
     @Override

@@ -2,14 +2,13 @@ package moze_intel.projecte;
 
 import java.io.File;
 
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.FileHelper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
 import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerChecksEvent;
-import moze_intel.projecte.events.RegisterPropertiesEvent;
+import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -28,10 +27,6 @@ import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.NeiHelper;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -52,7 +47,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2c-rc1";
+    public static final String VERSION = "Alpha 0.2c-rc2";
     
     public static File CONFIG_DIR;
     
@@ -79,7 +74,7 @@ public class MozeCore
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.projecte.events.ItemPickupEvent());
-    	MinecraftForge.EVENT_BUS.register(new RegisterPropertiesEvent());
+    	MinecraftForge.EVENT_BUS.register(new PlayerEvents());
     	
     	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
     	FMLCommonHandler.instance().bus().register(new ConnectionHandler());

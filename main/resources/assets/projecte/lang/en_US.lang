@@ -91,7 +91,7 @@ item.transmutation_tablet.name=Transmutation Tablet
 
 tile.alchemy_chest.name=Alchemical Chest
 tile.interdiction_torch.name=Interdiction Torch
-tile.transmutation_stone.name=Transmutation Tablet
+tile.transmutation_stone.name=Transmutation Table
 tile.condenser.name=Energy Condenser
 tile.rm_furnace.name=Red Matter Furnace
 tile.dm_furnace.name=Dark Matter Furnace

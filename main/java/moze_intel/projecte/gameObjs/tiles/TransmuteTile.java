@@ -415,4 +415,10 @@ public class TransmuteTile extends TileEmc implements IInventory
 	{
 		return false;
 	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return false;
+	}
 }

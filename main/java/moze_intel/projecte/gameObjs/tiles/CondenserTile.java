@@ -13,27 +13,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class CondenserTile extends TileEmcConsumerDirection implements IInventory, ISidedInventory
+public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory
 {
 	private ItemStack[] inventory = new ItemStack[92];
-	private int[] validInventorySlots = new int[91];
 	private ItemStack lock;
 	private int ticksSinceSync;
+	private boolean isRequestingEmc;
 	public int displayEmc;
 	public float lidAngle;
     public float prevLidAngle;
     public int numPlayersUsing;
 	public int requiredEmc;
 	
-	public CondenserTile()
-	{
-		super(100000000);
-		
-		for (int i = 1; i < 92; i++)
-		{
-			validInventorySlots[i - 1] = i;
-		}
-	}
 	
 	@Override
 	public void updateEntity()
@@ -92,12 +83,6 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	
 	private void condense()
 	{
-		/*if (!hasSpace()) 
-		{
-			this.isRequestingEmc = false;
-			return;
-		}*/
-		
 		for (int i = 1; i < 92; i++)
 		{
 			ItemStack stack = getStackInSlot(i);
@@ -423,7 +408,14 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
-		return validInventorySlots;
+		int[] slots = new int[91];
+		
+		for (int i = 1; i < 92; i++)
+		{
+			slots[i - 1] = i;
+		}
+		
+		return slots;
 	}
 
 	@Override
@@ -436,5 +428,11 @@ public class CondenserTile extends TileEmcConsumerDirection implements IInventor
 	public boolean canExtractItem(int slot, ItemStack item, int side) 
 	{
 		return isStackEqualToLock(item);
+	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return isRequestingEmc;
 	}
 }

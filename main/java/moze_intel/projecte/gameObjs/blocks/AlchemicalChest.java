@@ -59,6 +59,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		{
 			player.openGui(MozeCore.instance, Constants.ALCH_CHEST_GUI, world, x, y, z);
 		}
+		
 		return true;
 	}
 

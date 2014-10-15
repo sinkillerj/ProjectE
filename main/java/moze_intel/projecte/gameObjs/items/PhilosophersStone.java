@@ -5,7 +5,10 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
@@ -17,7 +20,11 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -51,7 +58,37 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		}
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+		
 		Block block = (mop == null || mop.typeOfHit != MovingObjectType.BLOCK) ? null : world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+		
+		if (block != null)
+		{
+			TileEntity tile = world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+			
+			if (player.isSneaking())
+			{
+				if (tile instanceof TileEmc)
+				{
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setBoolean("ProjectEBlock", true);
+					tile.writeToNBT(nbt);
+					
+					ItemStack s = new ItemStack(block);
+					
+					if (s.getHasSubtypes())
+					{
+						s.setItemDamage(world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
+					}
+					
+					s.setTagCompound(nbt);
+					
+					world.removeTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+					world.setBlock(mop.blockX, mop.blockY, mop.blockZ, Blocks.air, 0, 2);
+					Utils.spawnEntityItem(world, s, mop.blockX, mop.blockY, mop.blockZ);
+				}
+			}
+		}
+		
 		Block result = (block == null) ? null : Utils.getTransmutationResult(block, player.isSneaking());
 		
 		if (result != null)
@@ -222,6 +259,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		list.add("Press " + Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode()) + " to open the crafting grid.");
+		list.add("Acts like a wrench for ProjectE blocks.");
+		list.add("Left clicking changes the block's orientation.");
+		list.add("Shift right clicking will pick up the block.");
 	}
 	
 	@Override

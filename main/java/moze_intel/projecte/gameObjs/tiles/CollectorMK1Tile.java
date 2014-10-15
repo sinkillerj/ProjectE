@@ -25,6 +25,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	private final int upgradedSlot;
 	private boolean hasKleinStar;
 	private boolean hasFuel;
+	private boolean isRequestingEmc;
 	public double storedFuelEmc;
 	public int displayEmc;
 	public int displaySunLevel;
@@ -509,5 +510,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		
 		return false;
+	}
+
+	@Override
+	public boolean isRequestingEmc() 
+	{
+		return isRequestingEmc;
 	}
 }

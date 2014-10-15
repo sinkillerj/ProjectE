@@ -8,6 +8,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionHelper;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -54,6 +55,16 @@ public class ToolTipEvent
 		
 		if (current.hasTagCompound())
 		{
+			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
+			{
+				event.toolTip.add(EnumChatFormatting.GREEN + "Wrenched block!");
+				
+				if (current.stackTagCompound.getDouble("EMC") > 0)
+				{
+					event.toolTip.add(String.format("Stored EMC: %,d", (int) current.stackTagCompound.getDouble("EMC")));
+				}
+			}
+			
 			if (current.stackTagCompound.hasKey("StoredEMC"))
 			{
 				event.toolTip.add(String.format("Stored EMC: %,d", (int) current.stackTagCompound.getDouble("StoredEMC")));

@@ -11,16 +11,16 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class TTableSyncPKT implements IMessage, IMessageHandler<TTableSyncPKT, IMessage>
+public class ClientTableSyncPKT implements IMessage, IMessageHandler<ClientTableSyncPKT, IMessage>
 {
 	private double emc;
 	private int x;
 	private int y;
 	private int z;
 	
-	public TTableSyncPKT() {}
+	public ClientTableSyncPKT() {}
 	
-	public TTableSyncPKT(double emc, int x, int y, int z) 
+	public ClientTableSyncPKT(double emc, int x, int y, int z) 
 	{
 		this.emc = emc;
 		this.x = x;
@@ -29,7 +29,7 @@ public class TTableSyncPKT implements IMessage, IMessageHandler<TTableSyncPKT, I
 	}
 	
 	@Override
-	public IMessage onMessage(TTableSyncPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(ClientTableSyncPKT pkt, MessageContext ctx) 
 	{
 		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
 		

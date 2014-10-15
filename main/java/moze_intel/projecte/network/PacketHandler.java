@@ -1,7 +1,7 @@
 package moze_intel.projecte.network;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import moze_intel.projecte.network.packets.*;
+import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -21,7 +21,7 @@ public abstract class PacketHandler
     	HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
     	HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
     	HANDLER.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
-    	HANDLER.registerMessage(TTableSyncPKT.class, TTableSyncPKT.class, 7, Side.CLIENT);
+    	HANDLER.registerMessage(ClientTableSyncPKT.class, ClientTableSyncPKT.class, 7, Side.CLIENT);
     	HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
     	HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
     	HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
@@ -29,7 +29,7 @@ public abstract class PacketHandler
     	HANDLER.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
     	HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
     	HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
-    	HANDLER.registerMessage(PortableTableSyncPKT.class, PortableTableSyncPKT.class, 15, Side.CLIENT);
+    	HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
 	}
 	
 	/**
