@@ -5,7 +5,7 @@ Repository for ProjectE, complete rewrite of EE2 for minecraft 1.7.10
 Link to all versions of ProjectE: https://www.dropbox.com/sh/0re51mv4tp5l0xx/AAD9pmU4zOSQDSVgjVCtB5IJa
 
 ProjectE is an open-source project. Do whatever you want with the code and assets. 
-If you have a bug to report, open an issue. I'll try to fix every single one of them.
+If you have a bug to report, open an issue.
 
 #Building Instructions
 
@@ -15,5 +15,3 @@ If you have a bug to report, open an issue. I'll try to fix every single one of 
 3. Make any changes that you want.
 4. Run build.bat
 5. There will be a built jar in build/libs
-
-If you have any issues just open an issue and I'll try to help.
