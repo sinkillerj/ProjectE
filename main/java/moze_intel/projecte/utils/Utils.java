@@ -63,7 +63,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class Utils 
+public final class Utils 
 {	
 	private static HashMap<Block, Block[]> transmutations = new HashMap();
 	private static List<Class> peacefuls = new ArrayList();

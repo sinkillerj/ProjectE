@@ -54,7 +54,7 @@ public class RepairTalisman extends ItemBase implements IBauble
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 			
-				if (invStack == null || invStack.getItem() instanceof IItemModeChanger) 
+				if (invStack == null || invStack.getItem() instanceof IModeChanger) 
 				{
 					continue;
 				}
@@ -75,7 +75,7 @@ public class RepairTalisman extends ItemBase implements IBauble
 			{
 				ItemStack invStack = player.inventory.armorItemInSlot(i);
 			
-				if (invStack == null || invStack.getItem() instanceof IItemModeChanger) 
+				if (invStack == null || invStack.getItem() instanceof IModeChanger) 
 				{
 					continue;
 				}

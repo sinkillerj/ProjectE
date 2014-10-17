@@ -111,10 +111,6 @@ public class RedStar extends ItemCharge
 			Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 			List<ItemStack> drops = new ArrayList();
 			
-			if (block.getBlockHardness(null, 0, 0, 0) == -1)
-			{
-				return stack;
-			}
 			if (Utils.isOre(block) || block.equals(Blocks.gravel))
 			{
 				Utils.harvestVein(world, player, stack, new Coordinates(mop), block, drops, 0);

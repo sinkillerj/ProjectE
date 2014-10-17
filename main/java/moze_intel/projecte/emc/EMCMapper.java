@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 
-public abstract class EMCMapper 
+public final class EMCMapper 
 {
 	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap();
 	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap();
@@ -91,6 +91,47 @@ public abstract class EMCMapper
 			while (canMap);
 			
 			mapFromSmelting();
+		}
+		
+		//Makes sure items from other mods have the lowest EMC possible
+		for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
+		{
+			if (!emc.containsKey(entry.getKey()) || entry.getKey().toString().startsWith("minecraft:") || entry.getValue().size() <= 1)
+			{
+				continue;
+			}
+			
+			int currentEmc = emc.get(entry.getKey());
+			int minEmc = currentEmc;
+			
+			for (RecipeInput input : entry.getValue())
+			{
+				int emc = 0;
+				
+				for (SimpleStack s : input.getInputs())
+				{
+					if (!EMCMapper.emc.containsKey(s))
+					{
+						emc = 0;
+						break;
+					}
+					
+					else 
+					{
+						emc += EMCMapper.emc.get(s);
+					}
+				}
+				
+				if (emc > 0 && emc < minEmc)
+				{
+					minEmc = emc / entry.getKey().qnty;
+				}
+			}
+			
+			if (minEmc < currentEmc)
+			{
+				emc.put(entry.getKey(), minEmc);
+			}
 		}
 		
 		failed.clear();

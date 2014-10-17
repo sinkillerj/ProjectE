@@ -91,20 +91,8 @@ public class TransmuteTabletContainer extends Container
 			
 			int stackSize = 0;
 			
-			boolean removed = false;
-			
 			while (table.emc >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
 			{
-				if (!removed)
-				{
-					for (int i = 0; i <= 7; i++)
-					{
-						table.setInventorySlotContents(i, null);
-					}
-					
-					removed = true;
-				}
-				
 				table.removeEmc(emc);
 				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
 				stackSize++;

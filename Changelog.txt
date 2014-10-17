@@ -1,3 +1,18 @@
+###Version Alpha 0.2c
+* NEW: Transmutation tablet (portable version of the transmutation table)
+* NEW: ProjectE achievements
+* NEW: Philosopher's stone is now a "wrench"
+* NEW: Can toggle nightvision and step-assist for gem armor
+* NEW: Baubles support for power items (rings and amulets)
+* NEW: Cannot give EMC to the transmutation table from the left inventory slots
+* NEW: Basic API interfaces for modders
+* FIX: EMC mapping now searches for the lowest returning EMC recipe (only for other mod items/blocks)
+* FIX: Red/Dark matter furnace dupe bug
+* FIX: Crash on world load with a couple of other mods
+* FIX: Philosopher's stone block rendering
+* FIX: Morning star crash when right-clicking a TiCon ore
+* FIX: A lot of other stuff.
+
 ###Version Alpha 0.2b
 * FIX: Alchemical bags resetting (and sometimes randomizing) their inventory after a server restart
 * FIX: Transmutation table dupe bug

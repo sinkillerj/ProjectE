@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import moze_intel.projecte.gameObjs.items.IItemModeChanger;
+import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class RingToggle extends ItemBase implements IItemModeChanger
+public abstract class RingToggle extends ItemBase implements IModeChanger
 {
 	private String name;
 	@SideOnly(Side.CLIENT)

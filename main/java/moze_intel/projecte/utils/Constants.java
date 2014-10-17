@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
-public class Constants 
+public final class Constants 
 {
 	public static final float PLAYER_WALK_SPEED = 0.1F;
 	

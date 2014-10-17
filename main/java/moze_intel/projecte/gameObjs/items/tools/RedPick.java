@@ -5,9 +5,11 @@ import java.util.List;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
@@ -22,6 +24,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -199,6 +202,17 @@ public class RedPick extends ItemMode
 		}
 		
 		return 1.0F;
+	}
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			player.addStat(AchievementHandler.RM_PICK, 1);
+		}
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * Class for basic mod interactions with ProjectE.<br>
  * For now, it's very simplistic, will be expanded in the future.<br>
  */
-public abstract class ProjectEAPI
+public final class ProjectEAPI
 {
 	/**
 	 * Register an EMC value for the specified itemstack.<br>

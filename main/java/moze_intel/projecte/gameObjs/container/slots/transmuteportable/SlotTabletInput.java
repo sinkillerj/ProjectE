@@ -22,7 +22,7 @@ public class SlotTabletInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && Utils.doesItemHaveEmc(stack) && stack.getItem() == ObjHandler.kleinStars;
+		return !this.getHasStack() && Utils.doesItemHaveEmc(stack);
 	}
 	
 	@Override
@@ -49,7 +49,14 @@ public class SlotTabletInput extends Slot
 				ItemBase.addEmc(stack, table.emc);
 				table.emc = 0;
 			}
-			
+		}
+		
+		if (stack.getItem() != ObjHandler.tome)
+		{
+			table.handleKnowledge(stack.copy());
+		}
+		else
+		{
 			table.updateOutputs();
 		}
 	}

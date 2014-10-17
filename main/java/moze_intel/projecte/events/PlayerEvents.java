@@ -1,36 +1,49 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
-import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientCheckUpdatePKT;
 import moze_intel.projecte.network.packets.ClientSyncPKT;
 import moze_intel.projecte.playerData.AlchemicalBagData;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraft.stats.Achievement;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 
-public class PlayerEvents
+public class PlayerEvents 
 {
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event)
+	public void playerConnect(PlayerLoggedInEvent event)
 	{
-		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
-		{
-			TransmutationKnowledge.sync((EntityPlayer) event.entity);
-			AlchemicalBagData.sync((EntityPlayer) event.entity);
-		}
+		PacketHandler.sendTo(new ClientSyncPKT(), (EntityPlayerMP) event.player);
+		PacketHandler.sendTo(new ClientCheckUpdatePKT(), (EntityPlayerMP) event.player);
 	}
+		
+	
+	@SubscribeEvent
+	public void playerDisconnect(ClientDisconnectionFromServerEvent event)
+	{
+		String userName = Minecraft.getMinecraft().thePlayer.getCommandSenderName();
+		PELogger.logInfo("Removing "+userName+" from scheduled checklists: Player disconnected.");
+		PlayerChecksEvent.removePlayerFromLists(userName);
+	}
+	
+	/*@SubscribeEvent
+	public void onItemCrafted(ItemCraftedEvent event)
+	{
+		if (!event.player.worldObj.isRemote)
+		{
+			Achievement achievement = AchievementHandler.getAchievementForItem(event.crafting);
+			
+			
+			if (achievement != null)
+			{
+				event.player.addStat(achievement, 1);
+			}
+		}
+	}*/
 }

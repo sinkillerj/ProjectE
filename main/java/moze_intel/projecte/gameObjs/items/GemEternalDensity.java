@@ -26,7 +26,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class GemEternalDensity extends ItemBase implements IItemModeChanger, IBauble
+public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 {
 	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
 	private final int[] emcChain = new int[] {256, 2048, 8192, 139264, 466944};

@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class IMCHandler 
+public final class IMCHandler 
 {
 	public static void handleIMC(IMCMessage msg)
 	{

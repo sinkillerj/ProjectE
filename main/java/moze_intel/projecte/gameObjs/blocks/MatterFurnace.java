@@ -6,7 +6,9 @@ import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
@@ -27,7 +29,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MatterFurnace extends BlockContainer implements ITileEntityProvider
+public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 {
 	private String textureName;
 	private boolean isActive;
@@ -84,9 +86,15 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
 		if (!world.isRemote)
 		{
 			if (isHighTier)
+			{
 				player.openGui(MozeCore.instance, Constants.RM_FURNACE_GUI, world, x, y, z);
-			else player.openGui(MozeCore.instance, Constants.DM_FURNACE_GUI, world, x, y, z);
+			}
+			else
+			{
+				player.openGui(MozeCore.instance, Constants.DM_FURNACE_GUI, world, x, y, z);
+			}
 		}
+		
 		return true;
 	}
 	
@@ -100,33 +108,19 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
 			for (int i = 0; i < tile.getSizeInventory(); i++)
 			{
 				ItemStack stack = tile.getStackInSlot(i);
-				if (stack == null) continue;
 				
-				float f = rand.nextFloat() * 0.8F + 0.1F;
-	            float f1 = rand.nextFloat() * 0.8F + 0.1F;
-	            EntityItem entityitem;
-	            
-	            for (float f2 = rand .nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
-	            {
-	                int j1 = rand.nextInt(21) + 10;
-
-	                if (j1 > stack.stackSize)
-	                    j1 = stack.stackSize;
-
-	                stack.stackSize -= j1;
-	                entityitem = new EntityItem(world, (double)((float)x + f), (double)((float)y + f1), (double)((float)z + f2), new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
-	                float f3 = 0.05F;
-	                entityitem.motionX = (double)((float)rand.nextGaussian() * f3);
-	                entityitem.motionY = (double)((float)rand.nextGaussian() * f3 + 0.2F);
-	                entityitem.motionZ = (double)((float)rand.nextGaussian() * f3);
-
-	                if (stack.hasTagCompound())
-	                    entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-	            }			
+				if (stack == null) 
+				{
+					continue;
+				}
+				
+				Utils.spawnEntityItem(world, stack, x, y, z);
 			}
+			
 			world.func_147453_f(x, y, z, block);
 		}
-		super.breakBlock(world, x, y, z, block, noclue);
+		
+		world.removeTileEntity(x, y, z);
 	}
 	
 	public void updateFurnaceBlockState(boolean isActive, World world, int x, int y, int z)
@@ -164,16 +158,38 @@ public class MatterFurnace extends BlockContainer implements ITileEntityProvider
         int l = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
         if (l == 0)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+        }
 
         if (l == 1)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+        }
 
         if (l == 2)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+        }
 
         if (l == 3)
+        {
             world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+        }
+        
+        TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
+		{
+			stack.stackTagCompound.setInteger("x", x);
+			stack.stackTagCompound.setInteger("y", y);
+			stack.stackTagCompound.setInteger("z", z);
+			stack.stackTagCompound.setInteger("EMC", 0);
+			stack.stackTagCompound.setShort("BurnTime", (short) 0);
+			stack.stackTagCompound.setShort("CookTime", (short) 0);
+			
+			tile.readFromNBT(stack.stackTagCompound);
+		}
     }
 	
 	@SideOnly(Side.CLIENT)

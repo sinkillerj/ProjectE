@@ -18,11 +18,6 @@ public class SlotTableOutput extends Slot
 	@Override
 	public ItemStack decrStackSize(int slot)
 	{
-		for (int i = 0; i <= 7; i++)
-		{
-			tile.setInventorySlotContents(i, null);
-		}
-		
 		ItemStack stack = getStack().copy();
 		stack.stackSize = slot;
 		tile.removeItemRelativeEmcWithPKT(stack);

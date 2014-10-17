@@ -18,6 +18,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -128,22 +131,22 @@ public class ObjHandler
 	public static void register()
 	{
 		//Blocks
-		GameRegistry.registerBlock(alchChest, "Alchemical Chest");
+		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "Alchemical Chest");
 		GameRegistry.registerBlock(confuseTorch, "Interdiction Torch");
-		GameRegistry.registerBlock(transmuteStone, "Transmutation Stone");
-		GameRegistry.registerBlock(condenser, "Condenser");
-		GameRegistry.registerBlock(rmFurnaceOff, "RM Furnace");
+		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "Transmutation Stone");
+		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "Condenser");
+		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "RM Furnace");
 		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
-		GameRegistry.registerBlock(dmFurnaceOff, "DM Furnace");
+		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
 		GameRegistry.registerBlock(dmFurnaceOn, "DM Furnace Lit");
 		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "Matter Block");
 		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "Fuel Block");
-		GameRegistry.registerBlock(energyCollector, "Collector MK1");
-		GameRegistry.registerBlock(collectorMK2, "Collector MK2");
-		GameRegistry.registerBlock(collectorMK3, "Collector MK3");
-		GameRegistry.registerBlock(relay, "Relay MK1");
-		GameRegistry.registerBlock(relayMK2, "Realy MK2");
-		GameRegistry.registerBlock(relayMK3, "Relay MK3");
+		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "Collector MK1");
+		GameRegistry.registerBlock(collectorMK2, ItemRelayBlock.class, "Collector MK2");
+		GameRegistry.registerBlock(collectorMK3, ItemRelayBlock.class, "Collector MK3");
+		GameRegistry.registerBlock(relay, ItemRelayBlock.class, "Relay MK1");
+		GameRegistry.registerBlock(relayMK2, ItemRelayBlock.class, "Realy MK2");
+		GameRegistry.registerBlock(relayMK3, ItemRelayBlock.class, "Relay MK3");
 		GameRegistry.registerBlock(novaCatalyst, "Nova Catalyst");
 		GameRegistry.registerBlock(novaCataclysm, "Nova Cataclysm");
 		
@@ -288,12 +291,12 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(transmuteStone), new Object[]{"OSO", "SPS", "OSO", 'S', Blocks.stone, 'O', Blocks.obsidian, 'P', philosStone});
 		
 		//Matter Blocks
-		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 0), new Object[]{"DDX", "DDX", "XXX", 'D', matter});
-		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 1), new Object[]{"DDX", "DDX", "XXX", 'D', new ItemStack(matter, 1, 1)});
+		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 0), new Object[]{"DD", "DD", 'D', matter});
+		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 1), new Object[]{"DD", "DD", 'D', new ItemStack(matter, 1, 1)});
 		
 		//Matter Furnaces
 		GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), new Object[]{"DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.furnace});
-		GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), new Object[]{"XRX", "RFR", "XXX", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff});
+		GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), new Object[]{"XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff});
 		
 		//Collectors
 		GameRegistry.addRecipe(new ItemStack(energyCollector), new Object[]{"GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', Blocks.diamond_block, 'T', Blocks.glass});

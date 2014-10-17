@@ -13,7 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public abstract class FuelMapper 
+public final class FuelMapper 
 {
 	private static final List<SimpleStack> FUEL_MAP = new ArrayList(); 
 	

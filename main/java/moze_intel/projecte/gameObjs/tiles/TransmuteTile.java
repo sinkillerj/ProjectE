@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransmuteTile extends TileEmc implements IInventory
 {
@@ -304,6 +305,15 @@ public class TransmuteTile extends TileEmc implements IInventory
 		super.readFromNBT(nbt);
 		
 		this.setEmcValue(nbt.getDouble("EMC"));
+		
+		NBTTagList items = nbt.getTagList("Items", NBT.TAG_COMPOUND);
+		
+		for (int i = 0; i < items.tagCount(); i++)
+		{
+			NBTTagCompound tag = items.getCompoundTagAt(i);
+			
+			inventory[tag.getByte("Slot")] = ItemStack.loadItemStackFromNBT(tag);
+		}
 	}
 	
 	@Override
@@ -312,6 +322,21 @@ public class TransmuteTile extends TileEmc implements IInventory
 		super.writeToNBT(nbt);
 		
 		nbt.setDouble("EMC", this.getStoredEMC());
+		
+		NBTTagList items = new NBTTagList();
+		
+		for (int i = 0; i <= 8; i++)
+		{
+			if (inventory[i] != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("Slot", (byte) i);
+				inventory[i].writeToNBT(tag);
+				items.appendTag(tag);
+			}
+		}
+		
+		nbt.setTag("Items", items);
 	}
 	
 	@Override

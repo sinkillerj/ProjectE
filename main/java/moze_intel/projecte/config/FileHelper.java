@@ -16,7 +16,7 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public abstract class FileHelper 
+public final class FileHelper 
 {
 	private static File EMC_CONFIG;
 	private static final char[] TOKENS = new char[] {'U', 'O', 'M', 'E'};

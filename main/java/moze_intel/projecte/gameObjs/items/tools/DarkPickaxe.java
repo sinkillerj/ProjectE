@@ -8,6 +8,7 @@ import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
@@ -199,6 +200,17 @@ public class DarkPickaxe extends ItemMode
 		}
 		
 		return 1.0F;
+	}
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			player.addStat(AchievementHandler.DM_PICK, 1);
+		}
 	}
 	
 	@Override

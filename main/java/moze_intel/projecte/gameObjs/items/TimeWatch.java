@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TimeWatch extends ItemCharge implements IItemModeChanger, IBauble
+public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;

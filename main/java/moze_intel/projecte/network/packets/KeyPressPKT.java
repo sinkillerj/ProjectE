@@ -4,7 +4,8 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IExtraFunction;
-import moze_intel.projecte.gameObjs.items.IItemModeChanger;
+import moze_intel.projecte.gameObjs.items.IItemCharge;
+import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.IProjectileShooter;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.items.ItemMode;
@@ -65,20 +66,13 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 		
 		Item item = stack.getItem();
 		
-		if (message.key == 0 && item instanceof ItemCharge)
+		if (message.key == 0 && item instanceof IItemCharge)
 		{
-			((ItemCharge) item).changeCharge(player);
+			((IItemCharge) item).changeCharge(player, stack);
 		}
-		else if (message.key == 1)
+		else if (message.key == 1 && item instanceof IModeChanger)
 		{
-			if (item instanceof ItemMode)
-			{
-				((ItemMode) item).changeMode(stack, player);
-			}
-			else if (item instanceof IItemModeChanger)
-			{
-				((IItemModeChanger) item).changeMode(player, stack);
-			}
+			((IModeChanger) item).changeMode(player, stack);
 		}
 		else if (message.key == 2 && item instanceof IProjectileShooter)
 		{

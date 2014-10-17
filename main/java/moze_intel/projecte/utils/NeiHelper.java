@@ -3,7 +3,7 @@ package moze_intel.projecte.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public abstract class NeiHelper 
+public final class NeiHelper 
 {
 	public static boolean haveNei = false;
 	private static Field fldSearchField;

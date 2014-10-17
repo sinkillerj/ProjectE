@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +28,17 @@ public class TransmutationTablet extends ItemBase
 		}
 		
 		return stack;
+	}
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			player.addStat(AchievementHandler.PORTABLE_TRANSMUTATION, 1);
+		}
 	}
 	
 	@Override

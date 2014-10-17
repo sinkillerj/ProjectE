@@ -6,9 +6,9 @@ import moze_intel.projecte.config.FileHelper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
-import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.PlayerChecksEvent;
+import moze_intel.projecte.events.PlayerJoinWorld;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -22,6 +22,7 @@ import moze_intel.projecte.playerData.AlchemicalBagData;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.TransmutationKnowledge;
 import moze_intel.projecte.proxies.CommonProxy;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.NeiHelper;
@@ -47,7 +48,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2c-rc2";
+    public static final String VERSION = "Alpha 0.2c";
     
     public static File CONFIG_DIR;
     
@@ -74,10 +75,10 @@ public class MozeCore
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.projecte.events.ItemPickupEvent());
-    	MinecraftForge.EVENT_BUS.register(new PlayerEvents());
+    	MinecraftForge.EVENT_BUS.register(new PlayerJoinWorld());
     	
     	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
-    	FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+    	FMLCommonHandler.instance().bus().register(new PlayerEvents());
     	
     	proxy.registerClientOnlyEvents();
     	
@@ -93,6 +94,7 @@ public class MozeCore
     	
     	Utils.init();
     	NeiHelper.init();
+    	AchievementHandler.init();
     }
 
     @Mod.EventHandler

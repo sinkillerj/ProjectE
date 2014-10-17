@@ -65,6 +65,13 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		return Utils.getStackFromSimpleStack(this).getUnlocalizedName();
+		Object obj = Item.itemRegistry.getObjectById(id);
+		
+		if (obj != null)
+		{
+			return Item.itemRegistry.getNameForObject(obj);
+		}
+		
+		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
 	}
 }

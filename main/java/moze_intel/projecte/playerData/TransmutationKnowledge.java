@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public abstract class TransmutationKnowledge 
+public final class TransmutationKnowledge 
 {
 	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap();
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList();
@@ -30,7 +30,13 @@ public abstract class TransmutationKnowledge
 		{
 			try
 			{
-				CACHED_TOME_KNOWLEDGE.add(Utils.getStackFromSimpleStack(stack));
+				ItemStack s = Utils.getStackFromSimpleStack(stack);
+				
+				//Apparently items can still not have EMC if they are in the EMC map.
+				if (Utils.doesItemHaveEmc(s))
+				{
+					CACHED_TOME_KNOWLEDGE.add(s);
+				}
 			}
 			catch (Exception e)
 			{

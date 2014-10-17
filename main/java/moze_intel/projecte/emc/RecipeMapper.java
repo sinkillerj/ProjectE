@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public abstract class RecipeMapper 
+public final class RecipeMapper 
 {
 	private static LinkedHashMap<SimpleStack, LinkedList<RecipeInput>> recipes = new LinkedHashMap();	
 	

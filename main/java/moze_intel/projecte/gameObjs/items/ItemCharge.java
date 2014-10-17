@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class ItemCharge extends ItemBase
+public class ItemCharge extends ItemBase implements IItemCharge
 {
 	byte numCharges;
 	
@@ -50,15 +50,18 @@ public class ItemCharge extends ItemBase
 		}
 	}
 	
+	@Override
 	public byte getCharge(ItemStack stack)
 	{
 		return stack.stackTagCompound.getByte("Charge");
 	}
 	
-	private void changeCharge(ItemStack stack, boolean isSneaking)
+	@Override
+	public void changeCharge(EntityPlayer player, ItemStack stack)
 	{
 		byte currentCharge = getCharge(stack);
-		if (isSneaking)
+		
+		if (player.isSneaking())
 		{
 			if (currentCharge > 0)
 			{
@@ -69,10 +72,5 @@ public class ItemCharge extends ItemBase
 		{
 			stack.stackTagCompound.setByte("Charge", (byte) (currentCharge + 1));
 		}
-	}
-	
-	public void changeCharge(EntityPlayer player)
-	{
-		changeCharge(player.getHeldItem(), player.isSneaking());
 	}
 }

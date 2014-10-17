@@ -47,7 +47,7 @@ public class RecipeInput implements Iterable<SimpleStack>
 	{
 		return list;
 	}
-
+	
 	@Override
 	public Iterator<SimpleStack> iterator()
 	{

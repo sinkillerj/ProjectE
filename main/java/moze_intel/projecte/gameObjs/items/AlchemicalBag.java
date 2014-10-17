@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -186,6 +187,17 @@ public class AlchemicalBag extends ItemBase
 		String color = " ("+"\u00a7"+colorCodes[i]+localizedColors[i]+"\u00a7"+colorCodes[0]+")";
 		return name + color;
     }
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			player.addStat(AchievementHandler.ALCH_BAG, 1);
+		}
+	}
 	
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs cTab, List list)

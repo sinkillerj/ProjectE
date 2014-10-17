@@ -5,6 +5,7 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
@@ -12,6 +13,7 @@ import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.KeyBinds;
@@ -72,6 +74,15 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					NBTTagCompound nbt = new NBTTagCompound();
 					nbt.setBoolean("ProjectEBlock", true);
 					tile.writeToNBT(nbt);
+					
+					if (block == ObjHandler.dmFurnaceOn)
+					{
+						block = ObjHandler.dmFurnaceOff;
+					}
+					else if (block == ObjHandler.rmFurnaceOn)
+					{
+						block = ObjHandler.rmFurnaceOff;
+					}
 					
 					ItemStack s = new ItemStack(block);
 					
@@ -234,6 +245,17 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			{
 				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 			}
+		}
+	}
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			player.addStat(AchievementHandler.PHIL_STONE, 1);
 		}
 	}
 	

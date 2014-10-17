@@ -42,17 +42,19 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     @Override
     public void updateEntity()
     {
+    	boolean flag = furnaceBurnTime > 0;
+    	boolean flag1 = false;
+    	
+    	if (furnaceBurnTime > 0)
+    	{
+    		--furnaceBurnTime;
+    	}
+    	
     	if (!this.worldObj.isRemote)
     	{
     		pullFromInventories();
     		pushSmeltStack();
     	}
-    	
-    	boolean flag = furnaceBurnTime > 0;
-    	boolean flag1 = false;
-    	
-    	if (furnaceBurnTime > 0)
-    		--furnaceBurnTime;
     	
     	if (!worldObj.isRemote)
     	{
@@ -110,7 +112,9 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
                 Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
                 
                 if (!this.worldObj.isRemote && block instanceof MatterFurnace)
+                {
                 	((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                }
             }
     	}
     	
@@ -133,16 +137,11 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     
     private void pushSmeltStack()
     {
-    	ItemStack stack = getStackInSlot(1);
+    	ItemStack stack = inventory[1];
     	
     	for (int i = inputStorage[0]; i <= inputStorage[1]; i++)
     	{
-    		if (stack != null && stack.stackSize == stack.getMaxStackSize()) 
-    		{
-    			return;
-    		}
-    		
-    		ItemStack slotStack = getStackInSlot(i);
+    		ItemStack slotStack = inventory[i];
     		
     		if (slotStack != null && (stack == null || Utils.areItemStacksEqual(slotStack, stack))) 
     		{
@@ -150,22 +149,25 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     			{
     				inventory[1] = slotStack.copy();
     				inventory[i] = null;
-    				return;
+    				break;
     			}
     			
     			int remain = stack.getMaxStackSize() - stack.stackSize;
     			
+    			if (remain == 0)
+    			{
+    				break;
+    			}
     			if (slotStack.stackSize <= remain)
     			{
     				inventory[i] = null;
-    				inventory[1].stackSize += stack.stackSize;
-    				return;
+    				inventory[1].stackSize += slotStack.stackSize;
+    				break;
     			}
     			else
     			{
     				this.decrStackSize(i, remain);
     				inventory[1].stackSize += remain;
-    				return;
     			}
     		}
     	}
@@ -207,7 +209,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     					this.decrStackSize(outputSlot, remain);
     					inventory[i].stackSize += remain;
     				}
-    				
     			}
     		}
     	}
@@ -311,17 +312,15 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     			
     			if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars)
     			{
-    				ItemStack fuel = inventory[0];
-    				
-    				if (fuel == null)
+    				if (inventory[0] == null)
     				{
     					inventory[0] = stack;
     					inv.setInventorySlotContents(i, null);
     					break;
     				}
-    				else
+    				else if (Utils.areItemStacksEqual(stack, inventory[0]))
     				{
-    					int remain = fuel.getMaxStackSize() - fuel.stackSize;
+    					int remain = inventory[0].getMaxStackSize() - inventory[0].stackSize;
     					
     					if (stack.stackSize <= remain)
     					{
@@ -378,35 +377,16 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     {
     	int iSide = 0;
     	
-    	for (int i = 0; i < 5; i++)
+    	for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
     	{
-    		int x = this.xCoord;
-    		int y = this.yCoord;
-    		int z = this.zCoord;
-    		
-    		switch (i)
+    		if (dir.offsetY > 0)
     		{
-    			case 0:
-    				x++;
-    				iSide = 5;
-    				break;
-    			case 2:
-    				z++;
-    				iSide = 3;
-    				break;
-    			case 3:
-    				x--;
-    				iSide = 4;
-    				break;
-    			case 4:
-    				y--;
-    				iSide = 0;
-    				break;
-    			case 1:
-    				z--;
-    				iSide = 2;
-    				break;
+    			continue;
     		}
+    		
+    		int x = this.xCoord + dir.offsetX;
+    		int y = this.yCoord + dir.offsetY;
+    		int z = this.zCoord + dir.offsetZ;
     		
     		TileEntity tile = this.worldObj.getTileEntity(x, y, z);
     		
@@ -623,15 +603,21 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public ItemStack decrStackSize(int slot, int qty) 
 	{
 		ItemStack stack = inventory[slot];
+		
 		if (stack != null)
 		{
 			if (stack.stackSize <= qty)
+			{
 				inventory[slot] = null;
+			}
 			else
 			{
 				stack = stack.splitStack(qty);
+				
 				if (stack.stackSize == 0)
+				{
 					inventory[slot] = null;
+				}
 			}
 		}
 		return stack;

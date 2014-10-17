@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -75,6 +76,24 @@ public class KleinStar extends ItemBase
 		if (!stack.hasTagCompound())
 		{
 			stack.stackTagCompound = new NBTTagCompound();
+		}
+	}
+	
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	{
+		super.onCreated(stack, world, player);
+		
+		if (!world.isRemote)
+		{
+			if (stack.getItemDamage() == 5)
+			{
+				player.addStat(AchievementHandler.KLEIN_MASTER, 1);
+			}
+			else
+			{
+				player.addStat(AchievementHandler.KLEIN_BASIC, 1);
+			}
 		}
 	}
 	

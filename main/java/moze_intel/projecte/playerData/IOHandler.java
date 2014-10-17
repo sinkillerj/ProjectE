@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public abstract class IOHandler
+public final class IOHandler
 {
 	private static File knowledgeFile;
 	private static File bagDataFile;

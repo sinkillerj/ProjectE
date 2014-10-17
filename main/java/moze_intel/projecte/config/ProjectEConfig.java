@@ -5,7 +5,7 @@ import java.io.File;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.common.config.Configuration;
 
-public class ProjectEConfig 
+public final class ProjectEConfig 
 {
 	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;

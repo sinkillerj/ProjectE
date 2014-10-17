@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PELogger 
+public final class PELogger 
 {
 	private static Logger logger = LogManager.getLogger(MozeCore.MODID);
 

@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.List;
 
 import moze_intel.projecte.events.PlayerChecksEvent;
-import moze_intel.projecte.gameObjs.items.IItemModeChanger;
+import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemBase;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class Arcana extends ItemBase implements IItemModeChanger
+public class Arcana extends ItemBase implements IModeChanger
 {
 	private final String[] MODES = new String[] {"Zero", "Ignition", "Harvest", "SWRG"};
 	

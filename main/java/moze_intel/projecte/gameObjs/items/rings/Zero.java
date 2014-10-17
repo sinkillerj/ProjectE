@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import moze_intel.projecte.gameObjs.items.IItemModeChanger;
+import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Utils;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class Zero extends ItemCharge implements IItemModeChanger, IBauble
+public class Zero extends ItemCharge implements IModeChanger, IBauble
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
