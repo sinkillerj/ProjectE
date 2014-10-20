@@ -32,8 +32,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 
+<<<<<<< HEAD
 public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
+=======
+public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRevealer
+>>>>>>> origin/master
 {
 	public GemArmor(int armorType)
 	{
@@ -43,8 +49,23 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
 	}
-	
-	@Override
+
+    @Override
+    public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
+        if (itemstack != null && itemstack.getItem() == ObjHandler.gemHelmet)
+             return true;
+        return false;
+    }
+
+    @Override
+    public boolean showNodes(ItemStack itemstack, EntityLivingBase player)
+    {
+        if (itemstack != null && itemstack.getItem() == ObjHandler.gemHelmet)
+            return true;
+        return false;
+    }
+
+    @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
 	{
 		if (world.isRemote)
