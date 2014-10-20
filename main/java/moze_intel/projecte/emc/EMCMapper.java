@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import moze_intel.projecte.config.FileHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPKT;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -136,7 +136,7 @@ public final class EMCMapper
 		
 		failed.clear();
 		
-		TransmutationKnowledge.loadCompleteKnowledge();
+		Transmutation.loadCompleteKnowledge();
 		FuelMapper.loadMap();
 	}
 	

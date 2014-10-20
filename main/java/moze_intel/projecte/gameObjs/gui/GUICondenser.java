@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICondenser extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/condenser.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/condenser.png");
 	private CondenserTile tile;
 	
 	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)

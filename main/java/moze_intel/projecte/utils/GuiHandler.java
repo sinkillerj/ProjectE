@@ -1,48 +1,9 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.gameObjs.container.AlchChestContainer;
-import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
-import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
-import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
-import moze_intel.projecte.gameObjs.container.CondenserContainer;
-import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
-import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
-import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
-import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
-import moze_intel.projecte.gameObjs.container.RelayMK1Container;
-import moze_intel.projecte.gameObjs.container.RelayMK2Container;
-import moze_intel.projecte.gameObjs.container.RelayMK3Container;
-import moze_intel.projecte.gameObjs.container.TransmuteContainer;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
-import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
-import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK1;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK2;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK3;
-import moze_intel.projecte.gameObjs.gui.GUICondenser;
-import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
-import moze_intel.projecte.gameObjs.gui.GUIMercurialEye;
-import moze_intel.projecte.gameObjs.gui.GUIPhilosStone;
-import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
-import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
-import moze_intel.projecte.gameObjs.gui.GUIRelayMK2;
-import moze_intel.projecte.gameObjs.gui.GUIRelayMK3;
-import moze_intel.projecte.gameObjs.gui.GUITransmute;
-import moze_intel.projecte.gameObjs.gui.GUITransmuteTablet;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
+import moze_intel.projecte.gameObjs.container.*;
+import moze_intel.projecte.gameObjs.container.inventory.*;
+import moze_intel.projecte.gameObjs.gui.*;
+import moze_intel.projecte.gameObjs.tiles.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -109,7 +70,10 @@ public class GuiHandler implements IGuiHandler
 				return new PhilosStoneContainer(player.inventory);
 			case Constants.TRANSMUTE_TABLET_GUI:
 				return new TransmuteTabletContainer(player.inventory, new TransmuteTabletInventory(player.getHeldItem(), player));
+			case Constants.ETERNAL_DENSITY_GUI:
+				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
 		}
+		
 		return null;
 	}
 
@@ -172,6 +136,11 @@ public class GuiHandler implements IGuiHandler
 				return new GUIPhilosStone(player.inventory);
 			case Constants.TRANSMUTE_TABLET_GUI:
 				return new GUITransmuteTablet(player.inventory, new TransmuteTabletInventory(player.getHeldItem(), player));
+			case Constants.ETERNAL_DENSITY_GUI:
+				
+				player.getHeldItem();
+				
+				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
 		}
 		
 		return null;

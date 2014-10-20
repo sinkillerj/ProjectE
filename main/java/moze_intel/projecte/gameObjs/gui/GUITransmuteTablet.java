@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUITransmuteTablet extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/transmute.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	TransmuteTabletInventory table;
 
 	public GUITransmuteTablet(InventoryPlayer invPlayer, TransmuteTabletInventory inventory) 

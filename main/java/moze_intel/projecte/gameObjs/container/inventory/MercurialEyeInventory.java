@@ -16,8 +16,12 @@ public class MercurialEyeInventory implements IInventory
 	public MercurialEyeInventory(ItemStack stack)
 	{
 		invItem = stack;
+		
 		if (!invItem.hasTagCompound())
+		{
 			invItem.setTagCompound(new NBTTagCompound());
+		}
+		
 		readFromNBT(invItem.stackTagCompound);
 	}
 
@@ -47,6 +51,7 @@ public class MercurialEyeInventory implements IInventory
 	public ItemStack decrStackSize(int slot, int qty)
 	{
 		ItemStack stack = getStackInSlot(slot);
+		
 		if(stack != null)
 		{
 			if(stack.stackSize > qty)
@@ -55,7 +60,9 @@ public class MercurialEyeInventory implements IInventory
 				markDirty();
 			}
 			else
+			{
 				setInventorySlotContents(slot, null);
+			}
 		}
 		return stack;
 	}
@@ -64,8 +71,12 @@ public class MercurialEyeInventory implements IInventory
 	public ItemStack getStackInSlotOnClosing(int slot) 
 	{
 		ItemStack stack = getStackInSlot(slot);
+		
 		if(stack != null)
+		{
 			setInventorySlotContents(slot, null);
+		}
+		
 		return stack;
 	}
 
@@ -73,11 +84,18 @@ public class MercurialEyeInventory implements IInventory
 	public void setInventorySlotContents(int slot, ItemStack stack) 
 	{
 		if (slot == 0)
+		{
 			kleinStar = stack;
-		else target = stack;
+		}
+		else 
+		{
+			target = stack;
+		}
 
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
+		{
 			stack.stackSize = this.getInventoryStackLimit();
+		}
 
 		markDirty();
 	}
@@ -104,9 +122,14 @@ public class MercurialEyeInventory implements IInventory
 	public void markDirty() 
 	{
 		if (kleinStar != null && kleinStar.stackSize == 0)
+		{
 			kleinStar = null;
+		}
 		if (target != null && target.stackSize == 0)
+		{
 			target = null;
+		}
+		
 		writeToNBT(invItem.stackTagCompound);
 	}
 
@@ -140,6 +163,7 @@ public class MercurialEyeInventory implements IInventory
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		NBTTagList list = nbt.getTagList("Items", NBT.TAG_COMPOUND);
+		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
@@ -150,14 +174,20 @@ public class MercurialEyeInventory implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		NBTTagList list = new NBTTagList();
+		
 		for (int i = 0; i < 2; i++)
 		{
-			if (getStackInSlot(i) == null) continue;
+			if (getStackInSlot(i) == null)
+			{
+				continue;
+			}
+			
 			NBTTagCompound subNBT = new NBTTagCompound();
 			subNBT.setByte(("Slot"), (byte) i);
 			getStackInSlot(i).writeToNBT(subNBT);
 			list.appendTag(subNBT);
 		}
+		
 		nbt.setTag("Items", list);
 	}
 }

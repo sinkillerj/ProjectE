@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -22,7 +22,9 @@ public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyn
 	@Override
 	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
 	{
-		AlchemicalBagData.loadFromNBT(message.nbt);
+		AlchemicalBags.clear();
+		
+		AlchemicalBags.loadFromNBT(message.nbt);
 		
 		return null;
 	}

@@ -18,9 +18,9 @@ import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
 import moze_intel.projecte.network.commands.ReloadCfgCMD;
 import moze_intel.projecte.network.commands.RemoveEmcCMD;
 import moze_intel.projecte.network.commands.ResetEmcCMD;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.GuiHandler;
@@ -141,8 +141,8 @@ public class MozeCore
     @Mod.EventHandler
     public void serverQuit(FMLServerStoppedEvent event)
     {
-    	TransmutationKnowledge.clear();
-    	AlchemicalBagData.clear();
+    	Transmutation.clear();
+    	AlchemicalBags.clear();
     	PELogger.logInfo("Saved player data.");
     	
     	PlayerChecksEvent.clearLists();

@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public final class AlchemicalBagData 
+public final class AlchemicalBags 
 {
 	private static LinkedHashMap<String, LinkedHashMap<Byte, ItemStack[]>> MAP = new LinkedHashMap();
 	

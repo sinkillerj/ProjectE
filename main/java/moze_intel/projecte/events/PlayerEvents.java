@@ -3,7 +3,7 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientCheckUpdatePKT;
 import moze_intel.projecte.network.packets.ClientSyncPKT;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
@@ -31,19 +31,4 @@ public class PlayerEvents
 		PELogger.logInfo("Removing "+userName+" from scheduled checklists: Player disconnected.");
 		PlayerChecksEvent.removePlayerFromLists(userName);
 	}
-	
-	/*@SubscribeEvent
-	public void onItemCrafted(ItemCraftedEvent event)
-	{
-		if (!event.player.worldObj.isRemote)
-		{
-			Achievement achievement = AchievementHandler.getAchievementForItem(event.crafting);
-			
-			
-			if (achievement != null)
-			{
-				event.player.addStat(achievement, 1);
-			}
-		}
-	}*/
 }

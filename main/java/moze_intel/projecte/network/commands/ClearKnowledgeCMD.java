@@ -2,7 +2,7 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientKnowledgeClearPKT;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,7 +30,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 		{
 			if (sender instanceof EntityPlayerMP)
 			{
-				TransmutationKnowledge.clearKnowledge(sender.getCommandSenderName());
+				Transmutation.clearKnowledge(sender.getCommandSenderName());
 				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
 				sendSuccess(sender, "Cleared transmutation knowledge for: " + sender.getCommandSenderName());
 			}
@@ -47,7 +47,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 				
 				if (player.getCommandSenderName().equalsIgnoreCase(params[0]))
 				{
-					TransmutationKnowledge.clearKnowledge(player.getCommandSenderName());
+					Transmutation.clearKnowledge(player.getCommandSenderName());
 					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
 					sendSuccess(sender, "Cleared transmutation knowledge for: " + player.getCommandSenderName());
 					

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -31,7 +33,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class GemArmor extends ItemArmor implements ISpecialArmor
+public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
 	public GemArmor(int armorType)
 	{
@@ -78,7 +80,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
 					enableFlight(playerMP);
 				}
 				
-				if (isStepAssistEnabled(stack) && !PlayerChecksEvent.isPlayerCheckedForStep(playerMP))
+				if (isStepAssistEnabled(stack) && !PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName()))
 				{
 					PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
 					PlayerChecksEvent.addPlayerStepChecks(playerMP);
@@ -303,12 +305,20 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
 		{
 			if (stack.getItem() == ObjHandler.gemFeet)
 			{
-				list.add("Press " + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle step assist");
+				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				{
+					list.add("Press " + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle step assist");
+				}
+				
 				list.add("Step assist: " + (isStepAssistEnabled(stack) ? "enabled" : "disabled"));
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
-				list.add("Press Shift+" + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle night vision");
+				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				{
+					list.add("Press Shift+" + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle night vision");
+				}
+				
 				list.add("Night Vision: " + (isNightVisionEnabled(stack) ? "enabled" : "disabled"));
 			}
 		}
@@ -321,4 +331,16 @@ public class GemArmor extends ItemArmor implements ISpecialArmor
     	char index = this.armorType == 2 ? '2' : '1';
         return "projecte:textures/armor/gem_"+index+".png";
     }
+
+	@Override
+	public boolean showIngamePopups(ItemStack stack, EntityLivingBase player) 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean showNodes(ItemStack stack, EntityLivingBase player) 
+	{
+		return true;
+	}
 }

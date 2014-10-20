@@ -36,7 +36,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return;
 		}
 		
-		displayEmc = (int) this.getStoredEMC();
+		displayEmc = (int) this.getStoredEmc();
 		lock = getStackInSlot(0);
 		
 		if (lock == null)
@@ -56,7 +56,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				this.isRequestingEmc = true;
 			}
 			
-			if (this.getStoredEMC() > requiredEmc)
+			if (this.getStoredEmc() > requiredEmc)
 			{
 				handleMassCondense();
 			}
@@ -73,9 +73,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	
 	private void handleMassCondense()
 	{
-		while(hasSpace() && this.getStoredEMC() > requiredEmc)
+		while(hasSpace() && this.getStoredEmc() > requiredEmc)
 		{
-			double result = this.getStoredEMC() - requiredEmc;
+			double result = this.getStoredEmc() - requiredEmc;
 			pushStack();
 			this.setEmcValue(result);
 		}
@@ -97,9 +97,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			break;
 		}
 		
-		if (this.getStoredEMC() >= requiredEmc && this.hasSpace())
+		if (this.getStoredEmc() >= requiredEmc && this.hasSpace())
 		{
-			double result = this.getStoredEMC() - requiredEmc;
+			double result = this.getStoredEmc() - requiredEmc;
 			pushStack();
 			this.setEmcValue(result);
 		}
@@ -227,7 +227,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEmc());
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < 92; i++)
 		{

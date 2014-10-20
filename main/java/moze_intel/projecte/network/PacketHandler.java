@@ -30,6 +30,8 @@ public abstract class PacketHandler
     	HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
     	HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
     	HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
+    	HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
+    	HANDLER.registerMessage(ClientSyncTableEMCPKT.class, ClientSyncTableEMCPKT.class, 17, Side.CLIENT);
 	}
 	
 	/**

@@ -17,19 +17,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CondenserRenderer extends TileEntitySpecialRenderer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/models/condenser.png");
+	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/blocks/condenser.png");
 	private final ModelChest model = new ModelChest();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) 
 	{
-		if (!(tile instanceof CondenserTile)) return;
+		if (!(tile instanceof CondenserTile)) 
+		{
+			return;
+		}
 		
 		CondenserTile condenser = (CondenserTile) tile;
 		ForgeDirection direction = null;
 		
 		if (condenser.getWorldObj() != null)
+		{
             direction = condenser.getOrientation();
+		}
 		
 		this.bindTexture(texture);
 		GL11.glPushMatrix();
@@ -43,13 +48,21 @@ public class CondenserRenderer extends TileEntitySpecialRenderer
         if (direction != null)
         {
             if (direction == ForgeDirection.NORTH)
+            {
                 angle = 180;
+            }
             else if (direction == ForgeDirection.SOUTH)
+            {
                 angle = 0;
+            }
             else if (direction == ForgeDirection.WEST)
+            {
                 angle = 90;
+            }
             else if (direction == ForgeDirection.EAST)
+            {
                 angle = -90;
+            }
         }
 
         GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);

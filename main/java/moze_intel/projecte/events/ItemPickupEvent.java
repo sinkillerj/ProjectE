@@ -2,7 +2,7 @@ package moze_intel.projecte.events;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -56,7 +56,7 @@ public class ItemPickupEvent
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBagData.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
 			
 			if (Utils.hasSpace(inv, event.item.getEntityItem()))
 			{
@@ -73,8 +73,8 @@ public class ItemPickupEvent
 					event.item.setEntityItemStack(remain);
 				}
 				
-				AlchemicalBagData.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
-				AlchemicalBagData.sync(player);
+				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
+				AlchemicalBags.sync(player);
 				
 				event.setCanceled(true);
 			}
@@ -90,7 +90,7 @@ public class ItemPickupEvent
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

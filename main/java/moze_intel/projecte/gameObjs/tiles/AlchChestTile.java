@@ -249,25 +249,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
     		
     		if (gemDensity != null)
     		{
-    			GemEternalDensity gem = (GemEternalDensity) gemDensity.getItem(); 
-    			
-    			for (int i = 0; i < 104; i++)
-    			{
-    				ItemStack current = inventory[i];
-    				
-    				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
-    				{
-    					continue;
-    				}
-    						
-    				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
-    				{
-    					gem.consumeItem(gemDensity, current, this, i);
-    					break;
-    				}
-    			}
-    			
-    			gem.checkEmcBounds(gemDensity, this);
+    			GemEternalDensity.condense(gemDensity, inventory);
     		}
         }
     		

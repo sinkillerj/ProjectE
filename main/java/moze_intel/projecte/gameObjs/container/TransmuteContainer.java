@@ -94,7 +94,7 @@ public class TransmuteContainer extends Container
 			
 			int stackSize = 0;
 			
-			while (tile.getStoredEMC() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
+			while (tile.getStoredEmc() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
 			{
 				tile.removeEmc(emc);
 				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));

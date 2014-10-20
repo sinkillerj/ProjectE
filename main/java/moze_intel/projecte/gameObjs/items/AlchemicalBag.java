@@ -2,11 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
+import scala.actors.threadpool.Arrays;
 import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
@@ -61,7 +63,7 @@ public class AlchemicalBag extends ItemBase
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 		
 		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
@@ -142,29 +144,26 @@ public class AlchemicalBag extends ItemBase
 			}
 		}
 		
-		ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-		
-		if (gemDensity != null)
+		if (player.openContainer instanceof AlchBagContainer)
 		{
-			GemEternalDensity gem = (GemEternalDensity) gemDensity.getItem(); 
+			ItemStack gemDensity = Utils.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
-			for (int i = 0; i < inv.length; i++)
+			if (gemDensity != null)
 			{
-				ItemStack current = inv[i];
-				
-				if (current == null || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), gem.getItemStackTarget(gem.getTarget(gemDensity))))
-				{
-					continue;
-				}
-						
-				if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
-				{
-					gem.consumeItem(gemDensity, current, inv, i);
-					break;
-				}
+				GemEternalDensity.condense(gemDensity, ((AlchBagContainer) player.openContainer).inventory.getInventory());
 			}
+		}
+		else
+		{
+			ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
-			gem.checkEmcBounds(gemDensity, inv);
+			if (gemDensity != null)
+			{
+				GemEternalDensity.condense(gemDensity, inv); 
+		
+				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
+				AlchemicalBags.sync(player);
+			}
 		}
 	}
 	

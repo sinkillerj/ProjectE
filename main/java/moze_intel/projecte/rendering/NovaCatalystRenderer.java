@@ -40,10 +40,14 @@ public class NovaCatalystRenderer extends Render
             f2 = 1.0F - ((float) entity.fuse - par9 + 1.0F) / 10.0F;
 
             if (f2 < 0.0F)
+            {
                 f2 = 0.0F;
+            }
 
             if (f2 > 1.0F)
+            {
                 f2 = 1.0F;
+            }
 
             f2 *= f2;
             f2 *= f2;

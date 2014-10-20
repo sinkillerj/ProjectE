@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIDMFurnace extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
 	private DMFurnaceTile tile;
 
 	public GUIDMFurnace(InventoryPlayer invPlayer, DMFurnaceTile tile)

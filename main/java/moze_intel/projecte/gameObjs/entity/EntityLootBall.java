@@ -7,7 +7,7 @@ import java.util.List;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -200,7 +200,7 @@ public class EntityLootBall extends Entity
 			
 			if (bag != null)
 			{
-				ItemStack[] inv = AlchemicalBagData.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+				ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
 				
 				for (ItemStack stack : items)
 				{
@@ -242,8 +242,8 @@ public class EntityLootBall extends Entity
 				
 				if (playSound)
 				{
-					AlchemicalBagData.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
-					AlchemicalBagData.sync(player);
+					AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
+					AlchemicalBags.sync(player);
 				}
 			}
 			else
@@ -298,7 +298,7 @@ public class EntityLootBall extends Entity
 				continue;
 			}
 			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

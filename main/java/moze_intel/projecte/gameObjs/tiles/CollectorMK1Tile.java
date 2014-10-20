@@ -96,7 +96,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		updateEmc();
 		
-		displayEmc = (int) this.getStoredEMC();
+		displayEmc = (int) this.getStoredEmc();
 		displaySunLevel = getSunLevel();
 		displayKleinCharge = getKleinStarCharge();
 		
@@ -207,13 +207,13 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		this.checkSurroundingBlocks(false);
 		int numRequest = this.getNumRequesting();
 		
-		if (this.getStoredEMC() == 0)
+		if (this.getStoredEmc() == 0)
 		{
 			return;
 		}
 		else if (hasKleinStar)
 		{
-			double toSend = this.getStoredEMC() < emcGen ? this.getStoredEMC() : emcGen;
+			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
 			double starEmc = ItemBase.getEmc(inventory[0]);
 			int maxStarEmc = Utils.getKleinStarMaxEmc(inventory[0]);
@@ -232,7 +232,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			
 			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
 			
-			if (upgradeCost > 0 && this.getStoredEMC() >= upgradeCost)
+			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
 				ItemStack upgrade = inventory[upgradedSlot];
 
@@ -252,7 +252,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else if (numRequest > 0 && !this.isRequestingEmc)
 		{
-			double toSend = this.getStoredEMC() < emcGen ? this.getStoredEMC() : emcGen;
+			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendEmcToRequesting(toSend / numRequest);
 			this.sendRelayBonus();
 			this.removeEmc(toSend);
@@ -330,7 +330,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			reqEmc = Utils.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
 		}
 		
-		if (this.getStoredEMC() >= reqEmc)
+		if (this.getStoredEmc() >= reqEmc)
 		{
 			return i;
 		}
@@ -364,7 +364,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEmc());
 		nbt.setDouble("FuelEMC", storedFuelEmc);
 		
 		NBTTagList list = new NBTTagList();

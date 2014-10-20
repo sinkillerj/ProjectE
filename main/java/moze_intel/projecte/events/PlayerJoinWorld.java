@@ -6,8 +6,9 @@ import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientCheckUpdatePKT;
 import moze_intel.projecte.network.packets.ClientSyncPKT;
-import moze_intel.projecte.playerData.AlchemicalBagData;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
+import moze_intel.projecte.playerData.AlchemicalBags;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,8 +30,9 @@ public class PlayerJoinWorld
 	{
 		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
 		{
-			TransmutationKnowledge.sync((EntityPlayer) event.entity);
-			AlchemicalBagData.sync((EntityPlayer) event.entity);
+			Transmutation.sync((EntityPlayer) event.entity);
+			AlchemicalBags.sync((EntityPlayer) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(((EntityPlayer) event.entity).getCommandSenderName())), (EntityPlayerMP) event.entity);
 		}
 	}
 }

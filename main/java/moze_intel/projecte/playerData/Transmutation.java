@@ -12,15 +12,15 @@ import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public final class TransmutationKnowledge 
+public final class Transmutation 
 {
 	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap();
+	private static final LinkedHashMap<String, Double> EMC_STORAGE = new LinkedHashMap();
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList();
 	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = new LinkedList();
 	
@@ -33,7 +33,7 @@ public final class TransmutationKnowledge
 				ItemStack s = Utils.getStackFromSimpleStack(stack);
 				
 				//Apparently items can still not have EMC if they are in the EMC map.
-				if (Utils.doesItemHaveEmc(s))
+				if (Utils.doesItemHaveEmc(s) && !Utils.ContainsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{
 					CACHED_TOME_KNOWLEDGE.add(s);
 				}
@@ -126,6 +126,21 @@ public final class TransmutationKnowledge
 		}
 	}
 	
+	public static double getStoredEmc(String username)
+	{
+		if (EMC_STORAGE.containsKey(username))
+		{
+			return EMC_STORAGE.get(username);
+		}
+		
+		return 0;
+	}
+	
+	public static void setStoredEmc(String username, double emc)
+	{
+		EMC_STORAGE.put(username, emc);
+	}
+	
 	public static void sync(EntityPlayer player)
 	{
 		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
@@ -136,15 +151,20 @@ public final class TransmutationKnowledge
 		MAP.clear();
 		TOME_KNOWLEDGE.clear();
 		CACHED_TOME_KNOWLEDGE.clear();
+		EMC_STORAGE.clear();
 	}
 	
 	public static void loadFromNBT(NBTTagCompound playerKnowledge)
 	{
+		String player = playerKnowledge.getString("player");
+		
+		clearKnowledge(player);
+		
 		if (playerKnowledge.getBoolean("tome"))
 		{
 			loadCompleteKnowledge();
 			
-			setAllKnowledge(playerKnowledge.getString("player"));
+			setAllKnowledge(player);
 		}
 		else
 		{
@@ -162,7 +182,7 @@ public final class TransmutationKnowledge
 				}
 			}
 			
-			setKnowledge(playerKnowledge.getString("player"), itemList);
+			setKnowledge(player, itemList);
 		}
 	}
 	
@@ -231,6 +251,19 @@ public final class TransmutationKnowledge
 		}
 		
 		knowledge.setTag("knowledge", list);
+		
+		NBTTagList playerEMC = new NBTTagList();
+		
+		for (Entry<String, Double> entry : EMC_STORAGE.entrySet())
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setString("player", entry.getKey());
+			nbt.setDouble("emc", entry.getValue());
+			
+			playerEMC.appendTag(nbt);
+		}
+		
+		knowledge.setTag("playerEMC", playerEMC);
 		
 		return knowledge;
 	}

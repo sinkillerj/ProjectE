@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIMercurialEye extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
 	private MercurialEyeInventory inventory;
 	
 	public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) 

@@ -3,10 +3,13 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
+import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -14,22 +17,24 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import org.lwjgl.input.Keyboard;
+
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 {
 	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
-	private final int[] emcChain = new int[] {256, 2048, 8192, 139264, 466944};
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
@@ -50,36 +55,68 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || stack.getItemDamage() == 0)
+		if (world.isRemote || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
-		EntityPlayer player = (EntityPlayer) entity;
-		IInventory inv = player.inventory;
-		
-		for (int i = 0; i < 36; i++)
+		condense(stack, ((EntityPlayer) entity).inventory.mainInventory);
+	}
+	
+	public static void condense(ItemStack gem, ItemStack[] inv)
+	{
+		if (gem.getItemDamage() == 0 || ItemBase.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
-			if (i == slot)
+			return;
+		}
+		
+		boolean isWhitelist = isWhitelistMode(gem);
+		List<ItemStack> whitelist = getWhitelist(gem);
+		
+		ItemStack target = getTarget(gem);
+		
+		for (int i = 0; i < inv.length; i++)
+		{
+			ItemStack s = inv[i];
+			
+			if (s == null || !Utils.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || Utils.getEmcValue(s) >= Utils.getEmcValue(target))
 			{
 				continue;
 			}
 			
-			ItemStack current = inv.getStackInSlot(i);
-			
-			if (current == null || current.getItem() instanceof ItemFood || Utils.areItemStacksEqual(Utils.getNormalizedStack(current), getItemStackTarget(getTarget(stack))))
+			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
-				continue;
-			}
-					
-			if (Utils.doesItemHaveEmc(current) && current.getMaxStackSize() > 1)
-			{
-				consumeItem(stack, current, inv, i);
+				ItemStack copy = s.copy();
+				copy.stackSize = 1;
+				
+				addToList(gem, copy);
+				
+				inv[i].stackSize--;
+				
+				if (inv[i].stackSize <= 0)
+				{
+					inv[i] = null;
+				}
+				
+				ItemBase.addEmc(gem, Utils.getEmcValue(copy));
 				break;
 			}
 		}
 		
-		checkEmcBounds(stack, inv);
+		int value = Utils.getEmcValue(target);
+		
+		while (ItemBase.getEmc(gem) >= value)
+		{
+			ItemStack remain = Utils.pushStackInInv(inv, target);
+			
+			if (remain != null)
+			{
+				return;
+			}
+			
+			ItemBase.removeEmc(gem, value);
+			setItems(gem, new ArrayList());
+		}
 	}
 	
 	@Override
@@ -87,111 +124,60 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 	{
 		if (!world.isRemote)
 		{
-			if (stack.getItemDamage() == 0)
+			if (player.isSneaking())
 			{
-				stack.setItemDamage(1);
+				if (stack.getItemDamage() == 1)
+				{
+					List<ItemStack> items = getItems(stack);
+					
+					if (!items.isEmpty())
+					{
+						EntityLootBall loot = new EntityLootBall(world, items, player.posX, player.posY, player.posZ);
+						world.spawnEntityInWorld(loot);
+						
+						setItems(stack, new ArrayList());
+						this.setEmc(stack, 0);
+					}
+					
+					stack.setItemDamage(0);
+				}
+				else
+				{
+					stack.setItemDamage(1);
+				}
 			}
 			else
 			{
-				stack.setItemDamage(0);
-				onGemUncharge(player, stack);
+				player.openGui(MozeCore.instance, Constants.ETERNAL_DENSITY_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 			}
 		}
+		
 		return stack;
 	}
 	
-	private void onGemUncharge(EntityPlayer player, ItemStack stack)
+	private void changeTarget(ItemStack stack)
 	{
-		List<ItemStack> remaining = new ArrayList();
-		NBTTagList list = getTagList(stack);
+		byte oldMode = stack.stackTagCompound.getByte("Target");
 		
-		for (int i = 0; i < list.tagCount(); i++)
+		if (oldMode == 4)
 		{
-			ItemStack s = Utils.pushStackInInv(player.inventory, ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
-			
-			if (s != null)
-			{
-				remaining.add(s);
-			}
+			stack.stackTagCompound.setByte("Target", (byte) 0);
+		}
+		else
+		{
+			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1)); 
 		}
 		
-		if (!remaining.isEmpty())
-		{
-			World world = player.worldObj;
-			world.spawnEntityInWorld(new EntityLootBall(world, remaining, player.posX, player.posY, player.posZ));
-		}
-		
-		clearItemBuffer(stack);
-		this.setEmc(stack, 0);
 	}
 	
-	public void checkEmcBounds(ItemStack gem, IInventory inv)
+	private String getTargetDesciption(ItemStack stack)
 	{
-		int reqEmc = emcChain[this.getTarget(gem)];
-		
-		if (this.getEmc(gem) >= reqEmc)
-		{
-			ItemStack remain = Utils.pushStackInInv(inv, getItemStackTarget(gem));
-			
-			if (remain != null)
-			{
-				gem.setItemDamage(0);
-			}
-			
-			this.removeEmc(gem, reqEmc);
-			clearItemBuffer(gem);
-		}
+		return targets[stack.stackTagCompound.getByte("Target")];
 	}
 	
-	public void checkEmcBounds(ItemStack gem, ItemStack[] inv)
+	private static ItemStack getTarget(ItemStack stack)
 	{
-		int reqEmc = emcChain[this.getTarget(gem)];
-		
-		if (this.getEmc(gem) >= reqEmc)
-		{
-			ItemStack remain = Utils.pushStackInInv(inv, getItemStackTarget(gem));
-			
-			if (remain != null)
-			{
-				gem.setItemDamage(0);
-			}
-			
-			this.removeEmc(gem, reqEmc);
-			clearItemBuffer(gem);
-		}
-	}
-	
-	public void consumeItem(ItemStack gem, ItemStack stack, IInventory inv, int slotIndex)
-	{
-		int itemEmc = Utils.getEmcValue(stack);
-		inv.decrStackSize(slotIndex, 1);
-		this.addEmc(gem, itemEmc);
-		addStackToBuffer(gem, Utils.getNormalizedStack(stack));
-	}
-	
-	public void consumeItem(ItemStack gem, ItemStack stack, ItemStack[] inv, int slotIndex)
-	{
-		int itemEmc = Utils.getEmcValue(stack);
-		
-		inv[slotIndex].stackSize -= 1;
-		
-		if (inv[slotIndex].stackSize == 0)
-		{
-			inv[slotIndex] = null;
-		}
-		
-		this.addEmc(gem, itemEmc);
-		addStackToBuffer(gem, Utils.getNormalizedStack(stack));
-	} 
-	
-	private ItemStack getItemStackTarget(ItemStack stack)
-	{
-		return getItemStackTarget(getTarget(stack));
-	}
-	
-	public ItemStack getItemStackTarget(byte target)
-	{
-		switch (target)
+		switch (stack.stackTagCompound.getByte("Target"))
 		{
 			case 0:
 				return new ItemStack(Items.iron_ingot);
@@ -204,65 +190,133 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 			case 4:
 				return new ItemStack(ObjHandler.matter, 1, 1);
 			default:
+				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.stackTagCompound.getByte("Target"));
 				return null;
 		}
 	}
 	
-	private void clearItemBuffer(ItemStack stack)
+	private static void setItems(ItemStack stack, List<ItemStack> list)
 	{
-		stack.stackTagCompound.setTag("Item Buffer", new NBTTagList());
+		NBTTagList tList = new NBTTagList();
+		
+		for (ItemStack s : list)
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			s.writeToNBT(nbt);
+			tList.appendTag(nbt);
+		}
+		
+		stack.stackTagCompound.setTag("Consumed", tList);
 	}
 	
-	private void addStackToBuffer(ItemStack gem, ItemStack stack)
+	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		NBTTagList nbtList = getTagList(gem);
-		NBTTagCompound nbt = new NBTTagCompound();
-		stack.writeToNBT(nbt);
-		nbtList.appendTag(nbt);
-		gem.stackTagCompound.setTag("Item Buffer", nbtList);
+		List<ItemStack> list = new ArrayList();
+		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
+		
+		for (int i = 0; i < tList.tagCount(); i++)
+		{
+			list.add(ItemStack.loadItemStackFromNBT(tList.getCompoundTagAt(i)));
+		}
+		
+		return list;
 	}
 	
-	private NBTTagList getTagList(ItemStack stack)
+	private static void addToList(ItemStack gem, ItemStack stack)
 	{
-		return stack.stackTagCompound.getTagList("Item Buffer", NBT.TAG_COMPOUND);
+		List<ItemStack> list = getItems(gem);
+		
+		addToList(list, stack);
+		
+		setItems(gem, list);
+	}
+	
+	private static void addToList(List<ItemStack> list, ItemStack stack)
+	{
+		boolean hasFound = false;
+		
+		for (ItemStack s : list)
+		{
+			if (s.stackSize < s.getMaxStackSize() && Utils.areItemStacksEqual(s, stack))
+			{
+				int remain = s.getMaxStackSize() - s.stackSize;
+				
+				if (stack.stackSize <= remain)
+				{
+					s.stackSize += stack.stackSize;
+					hasFound = true;
+					break;
+				}
+				else
+				{
+					s.stackSize += remain;
+					stack.stackSize -= remain;
+				}
+			}
+		}
+		
+		if (!hasFound)
+		{
+			list.add(stack);
+		}
+	}
+	
+	private static boolean isWhitelistMode(ItemStack stack)
+	{
+		return stack.stackTagCompound.getBoolean("Whitelist");
+	}
+	
+	private static List<ItemStack> getWhitelist(ItemStack stack)
+	{
+		List<ItemStack> result = new ArrayList();
+		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			result.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
+		}
+		
+		return result;
+	}
+	
+	private static boolean listContains(List<ItemStack> list, ItemStack stack)
+	{
+		for (ItemStack s : list)
+		{
+			if (Utils.areItemStacksEqual(s, stack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
-	private void changeTarget(ItemStack stack)
-	{
-		byte current = stack.stackTagCompound.getByte("Target");
-		
-		if (current == 4)
-		{
-			stack.stackTagCompound.setByte("Target", (byte) 0);
-		}
-		else
-		{
-			stack.stackTagCompound.setByte("Target", (byte) (current + 1));
-		}
-	}
-	
-	public byte getTarget(ItemStack stack)
-	{
-		return stack.stackTagCompound.getByte("Target");
-	}
-	
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		changeTarget(stack);
-		player.addChatComponentMessage(new ChatComponentText("Set target to: "+targets[getTarget(stack)]));
+		player.addChatComponentMessage(new ChatComponentText("Set target to: " + getTargetDesciption(stack)));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
+		list.add("Condenses items on the go.");
+		
 		if (stack.hasTagCompound())
 		{
-			byte target = getTarget(stack);
-			list.add("Target: "+EnumChatFormatting.AQUA+targets[target]);
-			list.add("Required EMC: "+String.format("%,d",emcChain[target]));
+			list.add("Current target: " + getTargetDesciption(stack));
 		}
+		
+		if (KeyBinds.getModeKeyCode() >= 0 && KeyBinds.getModeKeyCode() < Keyboard.getKeyCount())
+		{
+			list.add("Press " + Keyboard.getKeyName(KeyBinds.getModeKeyCode()) + " to change target");
+		}
+		
+		list.add("Right click to set up the whitelist/blacklist");
+		list.add("Shift right click to activate/deactivate");
 	}
 	
 	@SideOnly(Side.CLIENT)

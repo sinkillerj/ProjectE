@@ -24,14 +24,19 @@ public class PlayerChecksEvent
 	private static LinkedList<EntityPlayerMP> flyChecks = new LinkedList();
 	private static LinkedList<EntityPlayerMP> fireChecks = new LinkedList();
 	private static LinkedList<EntityPlayerMP> stepChecks = new LinkedList();
-	
+	private static Iterator<EntityPlayerMP> iter;
+
 	@SubscribeEvent
 	public void tickEvent(WorldTickEvent event)
 	{
 		World world = event.world;
 		
-		for (EntityPlayerMP player : flyChecks)
+		iter = flyChecks.iterator();
+		
+		while (iter.hasNext())
 		{
+			EntityPlayerMP player = iter.next();
+			
 			if (!canPlayerFly(player))
 			{
 				if (player.capabilities.allowFlying)
@@ -39,12 +44,17 @@ public class PlayerChecksEvent
 					Utils.setPlayerFlight(player, false);
 				}
 				
-				removePlayerFlyChecks(player);
+				iter.remove();
+				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from flight checks.");
 			}
 		}
 		
-		for (EntityPlayerMP player : fireChecks)
+		iter = fireChecks.iterator();
+		
+		while (iter.hasNext())
 		{
+			EntityPlayerMP player = iter.next();
+			
 			if (!isPlayerFireImmune(player))
 			{
 				if (player.isImmuneToFire())
@@ -52,16 +62,23 @@ public class PlayerChecksEvent
 					Utils.setPlayerFireImmunity(player, false);
 				}
 				
-				removePlayerFireChecks(player);
+				iter.remove();
+				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from fire checks.");
 			}
 		}
 		
-		for (EntityPlayerMP player : stepChecks)
+		iter = stepChecks.iterator();
+		
+		while (iter.hasNext())
 		{
+			EntityPlayerMP player = iter.next();
+			
 			if (!canPlayerStep(player))
 			{
 				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
-				removePlayerStepChecks(player);
+				
+				iter.remove();
+				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from step checks.");
 			}
 		}
 	}
@@ -90,7 +107,7 @@ public class PlayerChecksEvent
 		if (!flyChecks.contains(player))
 		{
 			flyChecks.add(player);
-			PELogger.logInfo("Added "+player.getCommandSenderName()+" to flight checks.");
+			PELogger.logInfo("Added " + player.getCommandSenderName() + " to flight checks.");
 		}
 	}
 	
@@ -99,7 +116,7 @@ public class PlayerChecksEvent
 		if (!fireChecks.contains(player))
 		{
 			fireChecks.add(player);
-			PELogger.logInfo("Added "+player.getCommandSenderName()+" to fire checks.");
+			PELogger.logInfo("Added " + player.getCommandSenderName() + " to fire checks.");
 		}
 	}
 	
@@ -108,7 +125,7 @@ public class PlayerChecksEvent
 		if (!stepChecks.contains(player))
 		{
 			stepChecks.add(player);
-			PELogger.logInfo("Added "+player.getCommandSenderName()+" to step height checks.");
+			PELogger.logInfo("Added " + player.getCommandSenderName() + " to step height checks.");
 		}
 	}
 	
@@ -116,8 +133,17 @@ public class PlayerChecksEvent
 	{
 		if (flyChecks.contains(player))
 		{
-			flyChecks.remove();
-			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from flight checks.");
+			Iterator<EntityPlayerMP> iterator = flyChecks.iterator();
+			
+			while (iterator.hasNext())
+			{
+				if (iterator.next().equals(player))
+				{
+					iterator.remove();
+					PELogger.logInfo("Removed " + player.getCommandSenderName() + " from flight checks.");
+					return;
+				}
+			}
 		}
 	}
 	
@@ -125,8 +151,17 @@ public class PlayerChecksEvent
 	{
 		if (fireChecks.contains(player))
 		{
-			fireChecks.remove(player);
-			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from fire checks.");
+			Iterator<EntityPlayerMP> iterator = fireChecks.iterator();
+			
+			while (iterator.hasNext())
+			{
+				if (iterator.next().equals(player))
+				{
+					iterator.remove();
+					PELogger.logInfo("Removed " + player + " from fire checks.");
+					return;
+				}
+			}
 		}
 	}
 	
@@ -134,49 +169,67 @@ public class PlayerChecksEvent
 	{
 		if (stepChecks.contains(player))
 		{
-			stepChecks.remove(player);
-			PELogger.logInfo("Removed "+player.getCommandSenderName()+" from step height checks.");
+			Iterator<EntityPlayerMP> iterator = stepChecks.iterator();
+			
+			while (iterator.hasNext())
+			{
+				if (iterator.next().equals(player))
+				{
+					iterator.remove();
+					PELogger.logInfo("Removed " + player + " from step height checks.");
+					return;
+				}
+			}
 		}
 	}
 	
 	public static void removePlayerFromLists(String username)
 	{
-		for (EntityPlayerMP player : flyChecks)
+		Iterator<EntityPlayerMP> iterator = flyChecks.iterator();
+		
+		while (iterator.hasNext())
 		{
-			if (player.getCommandSenderName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
-				flyChecks.remove(player);
+				iterator.remove();
+				break;
 			}
 		}
 		
-		for (EntityPlayerMP player : fireChecks)
+		iterator = fireChecks.iterator();
+		
+		while (iterator.hasNext())
 		{
-			if (player.getCommandSenderName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
-				fireChecks.remove(player);
+				iterator.remove();
+				break;
 			}
 		}
 		
-		for (EntityPlayerMP player : stepChecks)
+		iterator = stepChecks.iterator();
+		
+		while (iterator.hasNext())
 		{
-			if (player.getCommandSenderName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
-				stepChecks.remove(player);
+				iterator.remove();
+				break;
 			}
 		}
 	}
 	
-	public static boolean isPlayerCheckedForFlight(EntityPlayerMP player)
+	public static boolean isPlayerCheckedForFlight(String player)
 	{
 		return flyChecks.contains(player);
 	}
 	
-	public static boolean isPlayerCheckedForFire(EntityPlayerMP player)
+	public static boolean isPlayerCheckedForFire(String player)
 	{
 		return fireChecks.contains(player);
 	}
 	
-	public static boolean isPlayerCheckedForStep(EntityPlayerMP player)
+	public static boolean isPlayerCheckedForStep(String player)
 	{
 		return stepChecks.contains(player);
 	}
@@ -250,7 +303,7 @@ public class PlayerChecksEvent
 		return false;
 	}
 	
-	public boolean canPlayerStep(EntityPlayerMP player)
+	public boolean canPlayerStep(EntityPlayer player)
 	{
 		ItemStack boots = player.getCurrentArmor(0);
 		

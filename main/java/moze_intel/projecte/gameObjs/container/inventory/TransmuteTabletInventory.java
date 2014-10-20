@@ -1,13 +1,20 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCComparators;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,9 +25,9 @@ public class TransmuteTabletInventory implements IInventory
 {
 	public double emc;
 	private EntityPlayer player = null;
-	private final int LOCK_INDEX = 8;
-	private final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
-	private final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
+	private static final int LOCK_INDEX = 8;
+	private static final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
+	private static final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
@@ -54,22 +61,22 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!hasKnowledge(stack) && !TransmutationKnowledge.hasFullKnowledge(player.getCommandSenderName()))
+		if (!hasKnowledge(stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				TransmutationKnowledge.setAllKnowledge(player.getCommandSenderName());
+				Transmutation.setAllKnowledge(player.getCommandSenderName());
 			}
 			else
 			{
-				TransmutationKnowledge.addToKnowledge(player.getCommandSenderName(), stack);
+				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
 			}
 			
 			if (!player.worldObj.isRemote)
 			{
-				TransmutationKnowledge.sync(player);
+				Transmutation.sync(player);
 			}
 		}
 		
@@ -91,166 +98,101 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) TransmutationKnowledge.getKnowledge(player.getCommandSenderName()).clone();
+		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
-		if (knowledge == null)
+		for (int i : MATTER_INDEXES)
 		{
-			return;
+			inventory[i] = null;
 		}
 		
-		ItemStack[] matter = new ItemStack[12];
-		ItemStack[] fuels = new ItemStack[4];
-		int currentIndex = 0;
+		for (int i : FUEL_INDEXES)
+		{
+			inventory[i] = null;
+		}
+		
 		ItemStack lock = inventory[LOCK_INDEX];
 		
 		if (lock != null)
 		{
-			if (FuelMapper.isStackFuel(lock))
+			int reqEmc = Utils.getEmcValue(lock);
+			
+			if (this.emc < reqEmc)
 			{
-				if (emc < Utils.getEmcValue(lock))
-				{
-					fuels[0] = null;
-				}
-				else
-				{
-					fuels[0] = getFromKnowledge(lock);
-				}
-				
-				matter[0] = getMaxEmc(0, matter, false, knowledge);
-				currentIndex++;
+				return;
 			}
-			else
+			
+			Iterator<ItemStack> iter = knowledge.iterator();
+			
+			while (iter.hasNext())
 			{
-				if (emc < Utils.getEmcValue(lock))
+				ItemStack stack = iter.next();
+				
+				if (Utils.getEmcValue(stack) > reqEmc)
 				{
-					matter[0] = null;
-				}
-				else
-				{
-					matter[0] = getFromKnowledge(lock);
+					iter.remove();
+					continue;
 				}
 				
-				fuels[0] = getMaxEmc(0, fuels, true, knowledge);
-				currentIndex++;
+				if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
+				{
+					iter.remove();
+					continue;
+				}
 			}
 		}
 		else
 		{
-			matter[0] = getMaxEmc(0, matter, false, knowledge);
-			fuels[0] = getMaxEmc(0, fuels, true, knowledge);
-			currentIndex++;
-		}
+			Iterator<ItemStack> iter = knowledge.iterator();
 			
-		while (currentIndex < 12)
-		{
-			if (currentIndex < 4)
+			while (iter.hasNext())
 			{
-				int prevEmc = Utils.getEmcValue(fuels[currentIndex - 1]);
-							
-				if (prevEmc != 0)
+				ItemStack stack = iter.next();
+				
+				if (emc < Utils.getEmcValue(stack))
 				{
-					fuels[currentIndex] = getMaxEmc(prevEmc, fuels, true, knowledge);
+					iter.remove();
+					continue;
+				}
+				
+				if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
+				{
+					iter.remove();
+					continue;
 				}
 			}
-					
-			int prevEmc = Utils.getEmcValue(matter[currentIndex - 1]);
-					
-			if (prevEmc == 0)
-			{
-				currentIndex++;
-				continue;
-			}
-				
-			matter[currentIndex] = getMaxEmc(prevEmc, matter, false, knowledge);
-			currentIndex++;
 		}
 		
-		for (int i = 0; i < 12; i++)
-		{
-			ItemStack m = matter[i];
-			inventory[MATTER_INDEXES[i]] = m;
-			
-			if (i < 4)
-			{
-				ItemStack f = fuels[i];
-				inventory[FUEL_INDEXES[i]] = f;
-			}
-		}
-	}
-	
-	private ItemStack getMaxEmc(int maxValue, ItemStack[] currentInv, boolean isFuel, LinkedList<ItemStack> knowledge)
-	{
-		ItemStack max = null;
-		int currentMax = 0;
+		Collections.sort(knowledge, EMCComparators.ITEMSTACK_DESCENDING);
+		
+		int matterCounter = 0;
+		int fuelCounter = 0;
 		
 		for (ItemStack stack : knowledge)
 		{
-			if (stack == null || stack.getItem() == null)
+			if (FuelMapper.isStackFuel(stack))
 			{
-				continue;
-			}
-			
-			boolean flag = FuelMapper.isStackFuel(stack);
-			
-			if (flag && !isFuel || !flag && isFuel)
-			{
-				continue;
-			}
-			
-			if (stack == null || stack.getDisplayName() == null)
-			{
-				continue;
-			}
-			
-			if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
-			{
-				continue;
-			}
-			
-			int emc = Utils.getEmcValue(stack);
-			
-			if (emc > this.emc)
-			{
-				continue;
-			}
-			
-			if (maxValue == 0)
-			{
-				if (emc >= currentMax)
+				if (fuelCounter < 4)
 				{
-					currentMax = emc;
-					max = stack;
+					inventory[FUEL_INDEXES[fuelCounter]] = stack;
+				
+					fuelCounter++;
 				}
 			}
 			else
 			{
-				if (emc <= maxValue && !arrayContains(currentInv, stack) && emc >= currentMax)
+				if (matterCounter < 12)
 				{
-					currentMax = emc;
-					max = stack;
-				}
+					inventory[MATTER_INDEXES[matterCounter]] = stack;
+					
+					matterCounter++;
+ 				}
 			}
 		}
-		
-		return max;
-	}
-	
-	private ItemStack getFromKnowledge(ItemStack stack)
-	{
-		for (ItemStack s : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
-		{
-			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
-			{
-				return s;
-			}
-		}
-		
-		return null;
 	}
 	
 	private boolean hasKnowledge(ItemStack stack)
 	{
-		for (ItemStack s : TransmutationKnowledge.getKnowledge(player.getCommandSenderName()))
+		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
 		{
 			if (s == null)
 			{
@@ -258,24 +200,6 @@ public class TransmuteTabletInventory implements IInventory
 			}
 			
 			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean arrayContains(ItemStack[] array, ItemStack stack)
-	{
-		for (ItemStack s : array)
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			if (s.getItem().equals(stack.getItem()) && s.getItemDamage() == stack.getItemDamage())
 			{
 				return true;
 			}
@@ -292,8 +216,6 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		emc = nbt.getDouble("EMC");
-		
 		NBTTagList list = nbt.getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
@@ -308,8 +230,6 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		nbt.setDouble("EMC", emc);
-		
 		NBTTagList list = new NBTTagList();
 		
 		for (int i = 0; i <= 8; i++)
@@ -414,16 +334,17 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public void openInventory() 
 	{
+		emc = Transmutation.getStoredEmc(player.getCommandSenderName());
+		
 		updateOutputs();
 	}
 
 	@Override
 	public void closeInventory() 
 	{
-		if (player.getHeldItem() != null)
-		{
-			writeToNBT(player.getHeldItem().stackTagCompound);
-		}
+		writeToNBT(player.getHeldItem().stackTagCompound);
+		
+		Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
 		
 		player = null;
 	}

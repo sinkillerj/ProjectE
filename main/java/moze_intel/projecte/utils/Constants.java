@@ -62,6 +62,7 @@ public final class Constants
 	public static final int MERCURIAL_GUI = 12;
 	public static final int PHILOS_STONE_GUI = 13;
 	public static final int TRANSMUTE_TABLET_GUI = 14;
+	public static final int ETERNAL_DENSITY_GUI = 15;
 	
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	

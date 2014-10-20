@@ -77,7 +77,7 @@ public final class IOHandler
 				
 				if (!username.isEmpty())
 				{
-					TransmutationKnowledge.setAllKnowledge(username);
+					Transmutation.setAllKnowledge(username);
 				}
 			}
 			
@@ -101,7 +101,16 @@ public final class IOHandler
 					}
 				}
 				
-				TransmutationKnowledge.setKnowledge(subTag.getString("player"), stackList);
+				Transmutation.setKnowledge(subTag.getString("player"), stackList);
+			}
+			
+			NBTTagList emc = knowledge.getTagList("playerEMC", NBT.TAG_COMPOUND);
+			
+			for (int i = 0; i < emc.tagCount(); i++)
+			{
+				NBTTagCompound tag = emc.getCompoundTagAt(i);
+				
+				Transmutation.setStoredEmc(tag.getString("player"), tag.getDouble("emc"));
 			}
 		}
 		
@@ -142,7 +151,7 @@ public final class IOHandler
 						inv[subNbt2.getByte("index")] = ItemStack.loadItemStackFromNBT(subNbt2);
 					}
 					
-					AlchemicalBagData.set(nbt.getString("player"), subNbt.getByte("color"), inv);
+					AlchemicalBags.set(nbt.getString("player"), subNbt.getByte("color"), inv);
 				}
 			}
 		}
@@ -152,7 +161,7 @@ public final class IOHandler
 	{
 		try
 		{
-			CompressedStreamTools.write(TransmutationKnowledge.getAsNBT(), knowledgeFile);
+			CompressedStreamTools.write(Transmutation.getAsNBT(), knowledgeFile);
 		}
 		catch (IOException e) 
 		{
@@ -161,7 +170,7 @@ public final class IOHandler
 		
 		try
 		{
-			CompressedStreamTools.write(AlchemicalBagData.getAsNBT(), bagDataFile);
+			CompressedStreamTools.write(AlchemicalBags.getAsNBT(), bagDataFile);
 		}
 		catch (IOException e)
 		{

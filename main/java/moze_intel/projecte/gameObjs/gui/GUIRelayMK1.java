@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIRelayMK1 extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/relay1.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/relay1.png");
 	private RelayMK1Tile tile;
 	
 	public GUIRelayMK1(InventoryPlayer invPlayer, RelayMK1Tile tile)

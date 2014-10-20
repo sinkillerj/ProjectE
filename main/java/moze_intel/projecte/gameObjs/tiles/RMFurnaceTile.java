@@ -67,7 +67,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     			}
     		}
     		
-    		if (this.getStoredEMC() >= EMC_CONSUMPTION)
+    		if (this.getStoredEmc() >= EMC_CONSUMPTION)
     		{
     			furnaceBurnTime = 1;
     			this.removeEmc(EMC_CONSUMPTION);
@@ -571,7 +571,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEmc());
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		

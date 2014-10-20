@@ -28,13 +28,8 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		this.emc = value <= maxAmount ? value : maxAmount;
 	}
-
-	@Override
-	public double getStoredEmc() 
-	{
-		return 0;
-	}
 	
+	@Override
 	public void addEmc(double amount)
 	{
 		emc += amount;
@@ -57,6 +52,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
 	}
 	
+	@Override
 	public void removeEmc(double amount)
 	{
 		emc -= amount;
@@ -86,7 +82,8 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		sendUpdatePKT();
 	}
 	
-	public double getStoredEMC()
+	@Override
+	public double getStoredEmc()
 	{
 		return emc;
 	}
@@ -96,6 +93,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		return maxAmount;
 	}
 	
+	@Override
 	public boolean hasMaxedEmc()
 	{
 		return emc >= maxAmount;

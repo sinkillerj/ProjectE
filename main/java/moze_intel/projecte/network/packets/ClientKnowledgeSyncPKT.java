@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -22,7 +22,9 @@ public class ClientKnowledgeSyncPKT implements IMessage, IMessageHandler<ClientK
 	@Override
 	public IMessage onMessage(ClientKnowledgeSyncPKT message, MessageContext ctx) 
 	{	
-		TransmutationKnowledge.loadFromNBT(message.nbt);
+		Transmutation.clear();
+		
+		Transmutation.loadFromNBT(message.nbt);
 		
 		return null;
 	}

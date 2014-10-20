@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -28,7 +28,7 @@ public class ClientSyncPKT implements IMessage, IMessageHandler<ClientSyncPKT, I
 		EMCMapper.emc.clear();
 		EMCMapper.emc = (LinkedHashMap<SimpleStack, Integer>) message.map;
 		
-		TransmutationKnowledge.loadCompleteKnowledge();
+		Transmutation.loadCompleteKnowledge();
 		FuelMapper.loadMap();
 		
 		return null;

@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -12,7 +14,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RMArmor extends ItemArmor implements ISpecialArmor
+public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
 	public RMArmor(int armorType)
 	{
@@ -87,4 +89,16 @@ public class RMArmor extends ItemArmor implements ISpecialArmor
     	char index = this.armorType == 2 ? '2' : '1';
         return "projecte:textures/armor/redmatter_"+index+".png";
     }
+
+	@Override
+	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
+	{
+		return true;
+	}
 }

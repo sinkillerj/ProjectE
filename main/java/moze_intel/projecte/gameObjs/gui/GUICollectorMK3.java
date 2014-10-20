@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICollectorMK3 extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/collector3.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/collector3.png");
 	private CollectorMK3Tile tile;
 	
 	public GUICollectorMK3(InventoryPlayer invPlayer, CollectorMK3Tile tile)

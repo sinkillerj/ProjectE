@@ -36,14 +36,14 @@ public class SlotTableInput extends Slot
 		{
 			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemBase.getEmc(stack));
 			
-			if (tile.getStoredEMC() >= remainingEmc)
+			if (tile.getStoredEmc() >= remainingEmc)
 			{
 				ItemBase.addEmc(stack, remainingEmc);
 				tile.removeEmcWithPKT(remainingEmc);
 			}
 			else
 			{
-				ItemBase.addEmc(stack, tile.getStoredEMC());
+				ItemBase.addEmc(stack, tile.getStoredEmc());
 				tile.setEmcValueWithPKT(0);
 			}
 		}

@@ -36,7 +36,7 @@ public class SlotTableLock extends Slot
 		
 		if (stack.getItem() == ObjHandler.kleinStars)
 		{
-			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEMC());
+			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEmc());
 			
 			if (ItemBase.getEmc(stack) >= remainEmc)
 			{

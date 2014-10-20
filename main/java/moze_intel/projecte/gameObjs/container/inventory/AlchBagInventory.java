@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
 import scala.actors.threadpool.Arrays;
-import moze_intel.projecte.playerData.AlchemicalBagData;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ public class AlchBagInventory implements IInventory
 	{
 		invItem = stack;
 		this.player = player;
-		inventory = AlchemicalBagData.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		inventory = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 	}
 
 	@Override
@@ -124,9 +124,14 @@ public class AlchBagInventory implements IInventory
 	{
 		if (!player.worldObj.isRemote)
 		{
-			AlchemicalBagData.set(player.getCommandSenderName(), (byte) invItem.getItemDamage(), inventory);
-			AlchemicalBagData.sync(player);
+			AlchemicalBags.set(player.getCommandSenderName(), (byte) invItem.getItemDamage(), inventory);
+			AlchemicalBags.sync(player);
 		}
+	}
+	
+	public ItemStack[] getInventory()
+	{
+		return inventory;
 	}
 
 	@Override

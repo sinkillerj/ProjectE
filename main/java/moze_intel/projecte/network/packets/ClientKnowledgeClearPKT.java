@@ -1,6 +1,6 @@
 package moze_intel.projecte.network.packets;
 
-import moze_intel.projecte.playerData.TransmutationKnowledge;
+import moze_intel.projecte.playerData.Transmutation;
 import io.netty.buffer.ByteBuf;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -21,7 +21,7 @@ public class ClientKnowledgeClearPKT implements IMessage, IMessageHandler<Client
 	@Override
 	public IMessage onMessage(ClientKnowledgeClearPKT pkt, MessageContext ctx) 
 	{
-		TransmutationKnowledge.clearKnowledge(pkt.username);
+		Transmutation.clearKnowledge(pkt.username);
 		
 		return null;
 	}

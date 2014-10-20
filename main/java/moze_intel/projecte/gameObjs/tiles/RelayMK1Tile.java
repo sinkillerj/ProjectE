@@ -65,7 +65,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 					emcVal = chargeRate;
 				}
 			
-				if (emcVal > 0 && this.getStoredEMC() + emcVal <= this.getMaxEmc())
+				if (emcVal > 0 && this.getStoredEmc() + emcVal <= this.getMaxEmc())
 				{
 					this.addEmc(emcVal);
 					ItemBase.removeEmc(stack, emcVal);
@@ -75,7 +75,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 			{
 				int emcVal = Utils.getEmcValue(stack);
 				
-				if (emcVal > 0 && (this.getStoredEMC() + emcVal) <= this.getMaxEmc())
+				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaxEmc())
 				{
 					this.addEmc(emcVal);
 					decrStackSize(0, 1);
@@ -85,12 +85,12 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		
 		ItemStack star = inventory[getSizeInventory() - 1]; 
 		
-		if (star != null && this.getStoredEMC() > 0 && star.getItem().equals(ObjHandler.kleinStars))
+		if (star != null && this.getStoredEmc() > 0 && star.getItem().equals(ObjHandler.kleinStars))
 		{
 			chargeKleinStars(star);
 		}
 		
-		displayEmc = (int) this.getStoredEMC();
+		displayEmc = (int) this.getStoredEmc();
 		displayKleinEmc = getKleinStarEmc();
 		displayRawEmc = getRawEmc();
 		
@@ -103,14 +103,14 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	
 	private void sendEmc()
 	{
-		if (this.getStoredEMC() == 0) return;
+		if (this.getStoredEmc() == 0) return;
 		
 		int numRequesting = this.getNumRequesting();
 		if (numRequesting == 0) return;
 		
-		if (this.getStoredEMC() <= chargeRate)
+		if (this.getStoredEmc() <= chargeRate)
 		{
-			this.sendEmcToRequesting(this.getStoredEMC() / numRequesting);
+			this.sendEmcToRequesting(this.getStoredEmc() / numRequesting);
 			this.setEmcValue(0);
 		}
 		else 
@@ -165,7 +165,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	{
 		double starEmc = ItemBase.getEmc(star);
 		int maxStarEmc = Utils.getKleinStarMaxEmc(star);
-		double toSend = this.getStoredEMC() < chargeRate ? this.getStoredEMC() : chargeRate;
+		double toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
 			
 		if ((starEmc + toSend) <= maxStarEmc)
 		{
@@ -258,7 +258,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEMC());
+		nbt.setDouble("EMC", this.getStoredEmc());
 		
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); i++)

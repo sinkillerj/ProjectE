@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIAlchChest extends GuiContainer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/alchchest.png");
+	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/alchchest.png");
 	
 	public GUIAlchChest(InventoryPlayer invPlayer, AlchChestTile tile) 
 	{
