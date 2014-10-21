@@ -35,11 +35,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
-<<<<<<< HEAD
-public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
-=======
+
 public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRevealer
->>>>>>> origin/master
 {
 	public GemArmor(int armorType)
 	{
@@ -352,16 +349,4 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRev
     	char index = this.armorType == 2 ? '2' : '1';
         return "projecte:textures/armor/gem_"+index+".png";
     }
-
-	@Override
-	public boolean showIngamePopups(ItemStack stack, EntityLivingBase player) 
-	{
-		return true;
-	}
-
-	@Override
-	public boolean showNodes(ItemStack stack, EntityLivingBase player) 
-	{
-		return true;
-	}
 }
