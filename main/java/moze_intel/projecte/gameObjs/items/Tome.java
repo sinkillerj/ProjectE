@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class Tome extends ItemBase
+public class Tome extends ItemPE
 {
     public Tome()
     {

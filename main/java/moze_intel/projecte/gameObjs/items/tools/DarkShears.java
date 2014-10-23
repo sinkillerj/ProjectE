@@ -23,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import cpw.mods.fml.relauncher.Side;
@@ -49,17 +50,22 @@ public class DarkShears extends ItemCharge
 	}
 	
 	@Override
-	public boolean func_150897_b(Block block)
+	public boolean canHarvestBlock(Block block, ItemStack stack) 
 	{
 		return block == Blocks.web || block == Blocks.redstone_wire || block == Blocks.tripwire;
 	}
-
-	@Override
-	public float func_150893_a(ItemStack stack, Block block)
-	{
-		return block != Blocks.web && block.getMaterial() != Material.leaves ? (block == Blocks.wool ? 5.0F : super.func_150893_a(stack, block)) : 15.0F;
-	}
 	
+	@Override
+	public float getDigSpeed(ItemStack stack, Block block, int metadata) 
+	{
+		if (canHarvestBlock(block, stack))
+		{
+			return 14.0f + (12.0f * this.getCharge(stack));
+		}
+		
+		return 1.0f;
+	}
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -100,17 +106,15 @@ public class DarkShears extends ItemCharge
 				{
 					ArrayList<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 					
-					if (entDrops.isEmpty())
+					if (!entDrops.isEmpty())
 					{
-						continue;
+						for (ItemStack drop : entDrops)
+						{
+							drop.stackSize = MathHelper.clamp_int(drop.stackSize + Utils.randomIntInRange(6, 3), 0, 64);
+						}
+						
+						drops.addAll(entDrops);
 					}
-					
-					for (ItemStack drop : entDrops)
-					{
-						drop.stackSize += Utils.randomIntInRange(6, 3);
-					}
-					
-					drops.addAll(entDrops);
 				}
 			}
 			

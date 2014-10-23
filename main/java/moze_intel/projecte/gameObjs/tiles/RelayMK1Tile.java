@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.RelaySyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -58,7 +58,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		{
 			if(stack.getItem().equals(ObjHandler.kleinStars))
 			{
-				double emcVal = ItemBase.getEmc(stack);
+				double emcVal = ItemPE.getEmc(stack);
 				
 				if (emcVal > chargeRate)
 				{
@@ -68,7 +68,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 				if (emcVal > 0 && this.getStoredEmc() + emcVal <= this.getMaxEmc())
 				{
 					this.addEmc(emcVal);
-					ItemBase.removeEmc(stack, emcVal);
+					ItemPE.removeEmc(stack, emcVal);
 				}
 			}
 			else
@@ -163,19 +163,19 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	
 	private void chargeKleinStars(ItemStack star)
 	{
-		double starEmc = ItemBase.getEmc(star);
+		double starEmc = ItemPE.getEmc(star);
 		int maxStarEmc = Utils.getKleinStarMaxEmc(star);
 		double toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
 			
 		if ((starEmc + toSend) <= maxStarEmc)
 		{
-			ItemBase.addEmc(star, toSend);
+			ItemPE.addEmc(star, toSend);
 			this.removeEmc(toSend);
 		}
 		else
 		{
 			toSend = maxStarEmc - starEmc;
-			ItemBase.addEmc(star, toSend);
+			ItemPE.addEmc(star, toSend);
 			this.removeEmc(toSend);
 		}
 	}
@@ -189,7 +189,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	{
 		if (inventory[getSizeInventory() - 1] != null)
 		{
-			return (int) ItemBase.getEmc(inventory[getSizeInventory() - 1]);
+			return (int) ItemPE.getEmc(inventory[getSizeInventory() - 1]);
 		}
 		
 		return 0;
@@ -214,7 +214,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 		
 		if (inventory[0].getItem() == ObjHandler.kleinStars)
 		{
-			return (int) ItemBase.getEmc(inventory[0]);
+			return (int) ItemPE.getEmc(inventory[0]);
 		}
 		
 		return Utils.getEmcValue(inventory[0]) * inventory[0].stackSize;

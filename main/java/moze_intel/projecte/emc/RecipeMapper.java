@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -26,7 +28,7 @@ public final class RecipeMapper
 	{
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
 		
-		while (iter.hasNext())
+		A: while (iter.hasNext())
 		{
 			IRecipe recipe = iter.next();
 			ItemStack output = recipe.getRecipeOutput();
@@ -45,7 +47,17 @@ public final class RecipeMapper
 			}
 			else if (recipe instanceof ShapelessRecipes)
 			{
-				inputs.addAll(((ShapelessRecipes) recipe).recipeItems);
+				List<ItemStack> inputList = ((ShapelessRecipes) recipe).recipeItems;
+				
+				for (ItemStack stack : inputList)
+				{
+					if (stack != null && stack.getItem() == ObjHandler.philosStone)
+					{
+						continue A;
+					}
+				}
+				
+				inputs.addAll(inputList);
 			}
 			else if (recipe instanceof ShapedOreRecipe)
 			{

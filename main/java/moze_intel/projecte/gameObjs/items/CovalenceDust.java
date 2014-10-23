@@ -11,7 +11,7 @@ import net.minecraft.util.MathHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class CovalenceDust extends ItemBase
+public class CovalenceDust extends ItemPE
 {
 	private final String[] names = new String[] {"low", "medium", "high"};
 	@SideOnly(Side.CLIENT)

@@ -89,10 +89,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					
 					if (mode == 0)
 					{
-						if (ItemBase.getEmc(klein) >= emcCost && block == Blocks.air)
+						if (ItemPE.getEmc(klein) >= emcCost && block == Blocks.air)
 						{
 							world.setBlock(x, y, z, targetBlock);
-							ItemBase.removeEmc(stack, emcCost);
+							ItemPE.removeEmc(stack, emcCost);
 						}
 					}
 					else
@@ -108,10 +108,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 						{
 							world.setBlock(x, y, z, targetBlock);
 						}
-						else if (ItemBase.getEmc(klein) >= emcDifference)
+						else if (ItemPE.getEmc(klein) >= emcDifference)
 						{
 							world.setBlock(x, y, z, targetBlock);
-							ItemBase.removeEmc(klein, emcDifference);
+							ItemPE.removeEmc(klein, emcDifference);
 						}
 					}
 				}

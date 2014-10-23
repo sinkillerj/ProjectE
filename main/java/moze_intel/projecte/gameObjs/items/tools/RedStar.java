@@ -12,6 +12,7 @@ import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -161,21 +163,24 @@ public class RedStar extends ItemCharge
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(Block block, ItemStack stack) 
 	{
-		if (block == Blocks.bedrock)
+		return block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock 
+		|| block.getMaterial() == Material.grass || block.getMaterial() == Material.ground || block.getMaterial() == Material.sand 
+		|| block.getMaterial() == Material.snow || block.getMaterial() == Material.wood || block.getMaterial() == Material.plants 
+		|| block.getMaterial() == Material.vine;
+	}
+	
+	@Override
+	public int getHarvestLevel(ItemStack stack, String toolClass)
+	{
+		if (toolClass.equals("pickaxe") || toolClass.equals("chisel") || toolClass.equals("shovel") || toolClass.equals("axe"))
 		{
-			return false;
+			//mine TiCon blocks as well
+			return 4;
 		}
 		
-		String harvest = block.getHarvestTool(0);
-		
-		if (harvest == null || harvest.equals("shovel") || harvest.equals("pickaxe") || harvest.equals("chisel"))
-		{
-			return true;
-		}
-		
-		return false;
+		return -1;
 	}
 	
 	@Override
@@ -186,7 +191,12 @@ public class RedStar extends ItemCharge
 			return 1200000.0F;
 		}
 		
-		return 48.0f;
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
+		{
+			return 48.0f;
+		}
+		
+		return 1.0f;
 	}
 	
 	@Override

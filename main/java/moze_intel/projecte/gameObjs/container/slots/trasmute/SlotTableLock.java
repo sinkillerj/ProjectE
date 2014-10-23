@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.trasmute;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,15 +38,15 @@ public class SlotTableLock extends Slot
 		{
 			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEmc());
 			
-			if (ItemBase.getEmc(stack) >= remainEmc)
+			if (ItemPE.getEmc(stack) >= remainEmc)
 			{
 				tile.addEmcWithPKT(remainEmc);
-				ItemBase.removeEmc(stack, remainEmc);
+				ItemPE.removeEmc(stack, remainEmc);
 			}
 			else
 			{
-				tile.addEmcWithPKT(ItemBase.getEmc(stack));
-				ItemBase.setEmc(stack, 0);
+				tile.addEmcWithPKT(ItemPE.getEmc(stack));
+				ItemPE.setEmc(stack, 0);
 			}
 			
 	        tile.handleKnowledge(stack.copy());

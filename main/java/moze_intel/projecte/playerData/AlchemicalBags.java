@@ -46,6 +46,8 @@ public final class AlchemicalBags
 			data.put(bagColour, inv);
 			MAP.put(player, data);
 		}
+		
+		IOHandler.markDirty();
 	}
 	
 	public static void sync(EntityPlayer player)

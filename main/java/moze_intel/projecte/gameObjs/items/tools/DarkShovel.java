@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,25 +35,24 @@ public class DarkShovel extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.bedrock)
+		return block.getMaterial() == Material.grass || block.getMaterial() == Material.ground || block.getMaterial() == Material.sand || block.getMaterial() == Material.snow;
+	}
+	
+	@Override
+	public int getHarvestLevel(ItemStack stack, String toolClass) 
+	{
+		if (toolClass.equals("shovel"))
 		{
-			return false;
+			return 4;
 		}
 		
-		String harvest = block.getHarvestTool(0);
-		
-		if (harvest == null || harvest.equals("shovel"))
-		{
-			return true;
-		}
-		
-		return false;
+		return -1;
 	}
 	
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if(block.getHarvestTool(metadata) != null && block.getHarvestTool(metadata).equals("shovel"))
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 		{
 			return 14.0f + (12.0f * this.getCharge(stack));
 		}

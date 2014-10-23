@@ -9,12 +9,14 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,29 +31,26 @@ public class RedAxe extends ItemCharge
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if (block == Blocks.bedrock)
+		return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
+	}
+	
+	@Override
+	public int getHarvestLevel(ItemStack stack, String toolClass) 
+	{
+		if (toolClass.equals("axe"))
 		{
-			return false;
+			return 4;
 		}
 		
-		String harvest = block.getHarvestTool(0);
-		
-		if (harvest == null || harvest.equals("axe"))
-		{
-			return true;
-		}
-		
-		return false;
+		return -1;
 	}
 	
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		String harvest = block.getHarvestTool(metadata);
-		
-		if (harvest == null || harvest.equals("axe"))
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 		{
-			return 18.0f + (14.0f * this.getCharge(stack));
+			return 16.0f + (14.0f * this.getCharge(stack));
 		}
 		
 		return 1.0F;

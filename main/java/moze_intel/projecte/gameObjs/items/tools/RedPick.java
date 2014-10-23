@@ -5,6 +5,7 @@ import java.util.List;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.items.IItemCharge;
 import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
@@ -14,17 +15,20 @@ import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -126,7 +130,7 @@ public class RedPick extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != Blocks.air && canHarvestBlock(b, stack))
+					if (b != Blocks.air && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -152,7 +156,7 @@ public class RedPick extends ItemMode
 					{
 						Block block = world.getBlock(x, y, z);
 						
-						if (Utils.isOre(block) && canHarvestBlock(block, stack))
+						if (Utils.isOre(block) && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 						{
 							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}
@@ -169,21 +173,21 @@ public class RedPick extends ItemMode
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(Block block, ItemStack stack) 
 	{
-		if (block == Blocks.bedrock)
+		return block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock;
+	}
+	
+	@Override
+	public int getHarvestLevel(ItemStack stack, String toolClass)
+	{
+		if (toolClass.equals("pickaxe"))
 		{
-			return false;
+			//mine TiCon blocks as well
+			return 4;
 		}
 		
-		String harvest = block.getHarvestTool(0);
-		
-		if (harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
-		{
-			return true;
-		}
-		
-		return false;
+		return -1;
 	}
 	
 	@Override
@@ -194,9 +198,7 @@ public class RedPick extends ItemMode
 			return 1200000.0F;
 		}
 		
-		String harvest = block.getHarvestTool(metadata);
-		
-		if(harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 		{
 			return 16.0f + (14.0F * this.getCharge(stack));
 		}

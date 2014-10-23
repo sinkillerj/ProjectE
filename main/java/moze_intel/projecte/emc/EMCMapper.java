@@ -71,7 +71,7 @@ public final class EMCMapper
 						
 						if (toMap)
 						{
-							totalEmc /= key.qnty;
+							totalEmc =  (int) Math.ceil(totalEmc / (double) key.qnty);
 							
 							if (totalEmc <= 0)
 							{
@@ -124,7 +124,7 @@ public final class EMCMapper
 				
 				if (emc > 0 && emc < minEmc)
 				{
-					minEmc = emc / entry.getKey().qnty;
+					minEmc = (int) Math.ceil(emc / (double) entry.getKey().qnty);
 				}
 			}
 			
@@ -415,10 +415,6 @@ public final class EMCMapper
 		addMapping("stone", 1);
 		addMapping("cobblestone", 1);
 		
-		//ingots
-		addMapping("ingotIron", 256);
-		addMapping("ingotGold", 2048);
-		
 		//gems and dusts
 		addMapping("gemDiamond", 8192);
 		addMapping("dustRedstone", 64);
@@ -428,22 +424,44 @@ public final class EMCMapper
 		addMapping("dustSulfur", 32);
 		
 		//Ingots (blocks will get auto-mapped)
+		/*Vanilla*/
+		addMapping("ingotIron", 256);
+		addMapping("ingotGold", 2048);
+		/*General*/
 		addMapping("ingotCopper", 128);
 		addMapping("ingotTin", 256);
 		addMapping("ingotBronze", 160);
 		addMapping("ingotSilver", 512);
 		addMapping("ingotLead", 512);
 		addMapping("ingotNickel", 1024);
+		/*TE*/
+		addMapping("ingotSignalum", 256);
+		addMapping("ingotLumium", 512);
 		addMapping("ingotInvar", 512);
 		addMapping("ingotElectrum", 1280);
-		addMapping("ingotSignalum", 160);
-		addMapping("ingotEnderium", 6144);
+		addMapping("ingotEnderium", 4096);
+		addMapping("ingotPlatinum", 4096);
+		/*TiCon*/
 		addMapping("ingotAluminum", 128);
 		addMapping("ingotAluminumBrass", 512);
 		addMapping("ingotArdite", 1024);
 		addMapping("ingotCobalt", 1024);
 		addMapping("ingotManyullyn", 2048);
 		addMapping("ingotAlumite", 1024);
+		/*TC*/
+		addMapping("ingotThaumium", 2048);
+		/*Ender IO*/
+		addMapping("itemSilicon", 32);
+		addMapping("ingotPhasedIron", 1280);
+		addMapping("ingotPhasedGold", 3520);
+		addMapping("ingotRedstoneAlloy", 96);
+		addMapping("ingotConductiveIron", 320);
+		addMapping("ingotEnergeticAlloy", 2496);
+		addMapping("ingotElectricalSteel", 352);
+		addMapping("ingotDarkSteel", 384);
+		addMapping("ingotSoularium", 2097);
+		/*Mekanism*/
+		addMapping("ingotOsmium", 2496);
 			
 		//AE2
 		addMapping("crystalCertusQuartz", 64);
@@ -460,9 +478,19 @@ public final class EMCMapper
 		//TE
 		addMapping("blockGlassHardened", 192);
 		
+		//IC2
+		addMapping("itemRubber", 32);
+		
+		//Thaumcraft
+		addMapping("shardAir", 64);
+		addMapping("shardFire", 64);
+		addMapping("shardWater", 64);
+		addMapping("shardEarth", 64);
+		addMapping("shardOrder", 64);
+		addMapping("shardEntropy", 64);
+		
 		//Vanilla 
 		addMapping("treeLeaves", 1);
-		addMapping("listAllfishraw", 64);
 		
 		
 		//Black-list all ores/dusts
@@ -470,7 +498,7 @@ public final class EMCMapper
 		{
 			if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed"))
 			{
-				for (ItemStack stack : getODItems(s))
+				for (ItemStack stack : Utils.getODItems(s))
 				{
 					if (stack == null)
 					{
@@ -481,12 +509,5 @@ public final class EMCMapper
 				}
 			}
 		}
-	}
-	
-	private static List<ItemStack> getODItems(String oreName)
-	{
-		List<ItemStack> list = new ArrayList();
-		list.addAll(OreDictionary.getOres(oreName));
-		return list;
 	}
 }

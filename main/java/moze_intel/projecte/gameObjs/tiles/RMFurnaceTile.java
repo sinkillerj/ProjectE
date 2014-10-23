@@ -220,6 +220,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     	
     	if (tile instanceof ISidedInventory)
     	{
+    		//The bottom side of the tile pulling from (ForgeDirection.DOWN)
     		final int side = 0;
     		ISidedInventory inv = (ISidedInventory) tile;
     		
@@ -401,7 +402,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     			
     			if (inv != null)
     	    	{
-    	    		int[] slots = inv.getAccessibleSlotsFromSide(Facing.oppositeSide[iSide]);
+    	    		int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[iSide]);
     	    		
     	    		if (slots.length > 0)
     	    		{

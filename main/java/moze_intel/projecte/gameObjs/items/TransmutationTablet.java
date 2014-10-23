@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TransmutationTablet extends ItemBase
+public class TransmutationTablet extends ItemPE
 {
 	public TransmutationTablet()
 	{

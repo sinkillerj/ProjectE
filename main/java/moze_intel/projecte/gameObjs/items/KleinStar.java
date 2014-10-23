@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class KleinStar extends ItemBase
+public class KleinStar extends ItemPE
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;

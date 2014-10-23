@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.container.slots.transmuteportable;
 import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Utils;

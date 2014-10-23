@@ -7,9 +7,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class ItemBase extends Item
+public abstract class ItemPE extends Item
 {
-	public ItemBase()
+	public ItemPE()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
 	}

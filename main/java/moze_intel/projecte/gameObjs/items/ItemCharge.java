@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class ItemCharge extends ItemBase implements IItemCharge
+public class ItemCharge extends ItemPE implements IItemCharge
 {
 	byte numCharges;
 	

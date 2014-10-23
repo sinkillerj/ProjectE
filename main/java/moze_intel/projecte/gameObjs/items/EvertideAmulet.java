@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EvertideAmulet extends ItemBase implements IProjectileShooter, IBauble
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
 {
 	public EvertideAmulet()
 	{

@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RepairTalisman extends ItemBase implements IBauble
+public class RepairTalisman extends ItemPE implements IBauble
 {
 	public RepairTalisman()
 	{

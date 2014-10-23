@@ -237,7 +237,11 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
-		if (meta == 0 && side == 3) return front;
+		if (meta == 0 && side == 3) 
+		{
+			return front;
+		}
+		
 		return side != meta ? this.blockIcon : front;
     }
 	

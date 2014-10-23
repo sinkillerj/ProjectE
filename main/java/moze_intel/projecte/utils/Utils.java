@@ -14,11 +14,14 @@ import java.util.Random;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoublePlant;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.IGrowable;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -59,7 +62,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase.FlowerEntry;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -591,11 +598,11 @@ public final class Utils
 			}
 			else if (stack.getItem() instanceof KleinStar)
 			{
-				double value = ItemBase.getEmc(stack);
+				double value = ItemPE.getEmc(stack);
 				
 				if (value >= minFuel)
 				{
-					ItemBase.removeEmc(stack, minFuel);
+					ItemPE.removeEmc(stack, minFuel);
 					player.inventoryContainer.detectAndSendChanges();
 					return minFuel;
 				}
@@ -719,10 +726,21 @@ public final class Utils
 				
 				for (int i = 1; i <= 128; i++)
 				{
-					copy.setItemDamage(i);
-					
-					if (copy == null || copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName))
+					try
 					{
+						copy.setItemDamage(i);
+					
+						if (copy == null || copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName))
+						{
+							result.addAll(list);
+							break;
+						}
+					}
+					catch (Exception e)
+					{
+						System.out.println("Couldn't retrieve OD items for: " + oreName);
+						e.printStackTrace();
+						
 						result.addAll(list);
 						break;
 					}
@@ -868,40 +886,6 @@ public final class Utils
 					if (world.rand.nextInt(128) == 0 && world.getBlock(x, y, z) == Blocks.air)
 					{
 						world.setBlock(x, y, z, Blocks.fire);
-					}
-				}
-	}
-	
-	public static void growNearbyRandomly(boolean isActive, World world, Entity player)
-	{
-		int chance = isActive ? 16 : 32;
-		
-		for (int x = (int) (player.posX - 5); x <= player.posX + 5; x++)
-			for (int y = (int) (player.posY - 3); y <= player.posY + 3; y++)
-				for (int z = (int) (player.posZ - 5); z <= player.posZ + 5; z++)
-				{
-					Block crop = world.getBlock(x, y, z);
-					
-					if (crop == Blocks.grass || crop == Blocks.double_plant)
-					{
-						continue;
-					}
-					else if (crop == Blocks.tallgrass)
-					{
-						world.func_147480_a(x, y, z, true);
-					}
-					else if (crop instanceof IGrowable)
-					{
-						IGrowable growable = (IGrowable) crop;
-						
-						if(isActive && !growable.func_149851_a(world, x, y, z, false))
-						{
-							world.func_147480_a(x, y, z, true);
-						}
-						else if (world.rand.nextInt(chance) == 0)
-						{
-							growable.func_149853_b(world, world.rand, x, y, z);
-						}
 					}
 				}
 	}

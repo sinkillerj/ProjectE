@@ -32,11 +32,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import thaumcraft.api.IGoggles;
-import thaumcraft.api.nodes.IRevealer;
 
-
-public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRevealer
+public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
 	public GemArmor(int armorType)
 	{
@@ -46,23 +43,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRev
 		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
 	}
-
-    @Override
-    public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
-        if (itemstack != null && itemstack.getItem() == ObjHandler.gemHelmet)
-             return true;
-        return false;
-    }
-
-    @Override
-    public boolean showNodes(ItemStack itemstack, EntityLivingBase player)
-    {
-        if (itemstack != null && itemstack.getItem() == ObjHandler.gemHelmet)
-            return true;
-        return false;
-    }
-
-    @Override
+	
+	@Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
 	{
 		if (world.isRemote)
@@ -349,4 +331,16 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IGoggles, IRev
     	char index = this.armorType == 2 ? '2' : '1';
         return "projecte:textures/armor/gem_"+index+".png";
     }
+
+	@Override
+	public boolean showIngamePopups(ItemStack stack, EntityLivingBase player) 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean showNodes(ItemStack stack, EntityLivingBase player) 
+	{
+		return true;
+	}
 }

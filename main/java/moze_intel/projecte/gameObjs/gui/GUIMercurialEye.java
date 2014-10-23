@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;

@@ -11,7 +11,7 @@ import net.minecraft.util.MathHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AlchemicalFuel extends ItemBase
+public class AlchemicalFuel extends ItemPE
 {
 	private final String[] names = new String[] {"alchemical_coal", "mobius", "aeternalis"};
 	@SideOnly(Side.CLIENT)

@@ -104,17 +104,37 @@ public class Collector extends BlockDirection
 	@SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
 	{
-		if (meta == 0 && side == 3) return front;
-		if (side == 1) return top;
+		if (meta == 0 && side == 3) 
+		{
+			return front;
+		}
+		
+		if (side == 1) 
+		{
+			return top;
+		}
+		
 		return side != meta ? this.blockIcon : front;
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
-		if (tier == 1) return new CollectorMK1Tile();
-		if (tier == 2) return new CollectorMK2Tile();
-		if (tier == 3) return new CollectorMK3Tile();
+		if (tier == 1) 
+		{
+			return new CollectorMK1Tile();
+		}
+		
+		if (tier == 2)
+		{
+			return new CollectorMK2Tile();
+		}
+		
+		if (tier == 3)
+		{
+			return new CollectorMK3Tile();
+		}
+		
 		return null;
 	}
 }

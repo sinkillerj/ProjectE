@@ -88,6 +88,8 @@ public final class Transmutation
 			list.add(stack);
 			MAP.put(username, list);
 		}
+		
+		IOHandler.markDirty();
 	}
 	
 	public static void setAllKnowledge(String username)
@@ -97,6 +99,8 @@ public final class Transmutation
 			TOME_KNOWLEDGE.add(username);
 			
 			MAP.remove(username);
+			
+			IOHandler.markDirty();
 		}
 	}
 	
@@ -105,6 +109,8 @@ public final class Transmutation
 		if (!TOME_KNOWLEDGE.contains(username))
 		{
 			MAP.put(username, list);
+			
+			IOHandler.markDirty();
 		}
 	}
 	
@@ -118,11 +124,15 @@ public final class Transmutation
 		if (TOME_KNOWLEDGE.contains(username))
 		{
 			TOME_KNOWLEDGE.remove(username);
+			
+			IOHandler.markDirty();
 		}
 		
 		if (MAP.containsKey(username))
 		{
 			MAP.remove(username);
+			
+			IOHandler.markDirty();
 		}
 	}
 	
@@ -139,6 +149,7 @@ public final class Transmutation
 	public static void setStoredEmc(String username, double emc)
 	{
 		EMC_STORAGE.put(username, emc);
+		IOHandler.markDirty();
 	}
 	
 	public static void sync(EntityPlayer player)

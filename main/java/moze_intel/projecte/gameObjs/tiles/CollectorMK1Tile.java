@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -182,7 +182,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		if (inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
-			if(ItemBase.getEmc(inventory[0]) != Utils.getKleinStarMaxEmc(inventory[0]))
+			if(ItemPE.getEmc(inventory[0]) != Utils.getKleinStarMaxEmc(inventory[0]))
 			{
 				hasKleinStar = true;
 				hasFuel = false;
@@ -215,7 +215,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
-			double starEmc = ItemBase.getEmc(inventory[0]);
+			double starEmc = ItemPE.getEmc(inventory[0]);
 			int maxStarEmc = Utils.getKleinStarMaxEmc(inventory[0]);
 			
 			if ((starEmc + toSend) > maxStarEmc)
@@ -223,7 +223,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 				toSend = maxStarEmc - starEmc;
 			}
 			
-			ItemBase.addEmc(inventory[0], toSend);
+			ItemPE.addEmc(inventory[0], toSend);
 			this.removeEmc(toSend);
 		}
 		else if (hasFuel)
@@ -268,7 +268,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
-			return (int) ItemBase.getEmc(inventory[0]);
+			return (int) ItemPE.getEmc(inventory[0]);
 		}
 		
 		return -1;

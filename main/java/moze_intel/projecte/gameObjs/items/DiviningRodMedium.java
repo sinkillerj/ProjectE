@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class DiviningRodMedium extends ItemBase implements IModeChanger
+public class DiviningRodMedium extends ItemPE implements IModeChanger
 {
 	protected String[] modes;
 	

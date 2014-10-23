@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class VolcaniteAmulet extends ItemBase implements IProjectileShooter, IBauble
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble
 {
 	public VolcaniteAmulet()
 	{

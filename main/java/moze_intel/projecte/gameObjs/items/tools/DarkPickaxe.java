@@ -13,6 +13,7 @@ import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +24,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -124,7 +126,7 @@ public class DarkPickaxe extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != Blocks.air && canHarvestBlock(b, stack))
+					if (b != Blocks.air && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -150,7 +152,7 @@ public class DarkPickaxe extends ItemMode
 					{
 						Block block = world.getBlock(x, y, z);
 						
-						if (Utils.isOre(block) && canHarvestBlock(block, stack))
+						if (Utils.isOre(block) && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 						{
 							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}
@@ -167,34 +169,32 @@ public class DarkPickaxe extends ItemMode
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(Block block, ItemStack stack) 
 	{
-		if (block == Blocks.bedrock)
+		return block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock;
+	}
+	
+	@Override
+	public int getHarvestLevel(ItemStack stack, String toolClass)
+	{
+		if (toolClass.equals("pickaxe") || toolClass.equals("chisel"))
 		{
-			return false;
+			//mine TiCon blocks as well
+			return 4;
 		}
 		
-		String harvest = block.getHarvestTool(0);
-		
-		if (harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
-		{
-			return true;
-		}
-		
-		return false;
+		return -1;
 	}
 	
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		String harvest = block.getHarvestTool(metadata);
-		
-		if(harvest == null || harvest.equals("pickaxe") || harvest.equals("chisel"))
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 		{
 			return 14.0f + (12.0F * this.getCharge(stack));
 		}

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.container.slots.transmuteportable;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.items.ItemBase;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,16 +37,16 @@ public class SlotTabletInput extends Slot
 		
 		if (stack.getItem() == ObjHandler.kleinStars)
 		{
-			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemBase.getEmc(stack));
+			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemPE.getEmc(stack));
 			
 			if (table.emc >= remainingEmc)
 			{
-				ItemBase.addEmc(stack, remainingEmc);
+				ItemPE.addEmc(stack, remainingEmc);
 				table.removeEmc(remainingEmc);
 			}
 			else
 			{
-				ItemBase.addEmc(stack, table.emc);
+				ItemPE.addEmc(stack, table.emc);
 				table.emc = 0;
 			}
 		}

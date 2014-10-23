@@ -14,11 +14,14 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public final class IOHandler
 {
+	public static boolean markedDirty;
 	private static File knowledgeFile;
 	private static File bagDataFile;
 	
 	public static void init(File knowledge, File bagData)
 	{
+		markedDirty = false;
+		
 		if (!knowledge.exists())
     	{
     		try 
@@ -175,6 +178,14 @@ public final class IOHandler
 		catch (IOException e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	public static void markDirty()
+	{
+		if (!markedDirty)
+		{
+			markedDirty = true;
 		}
 	}
 }

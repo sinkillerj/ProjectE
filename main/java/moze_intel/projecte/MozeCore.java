@@ -6,10 +6,9 @@ import moze_intel.projecte.config.FileHelper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
-import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerChecksEvent;
-import moze_intel.projecte.events.PlayerJoinWorld;
-import moze_intel.projecte.events.PlayerSaveData;
+import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -38,6 +37,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
@@ -49,7 +49,7 @@ public class MozeCore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2c";
+    public static final String VERSION = "Alpha 0.2d-dev2";
     
     public static File CONFIG_DIR;
     
@@ -75,12 +75,10 @@ public class MozeCore
     	PacketHandler.register();
     	
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
-    	MinecraftForge.EVENT_BUS.register(new moze_intel.projecte.events.ItemPickupEvent());
-    	MinecraftForge.EVENT_BUS.register(new PlayerJoinWorld());
-        MinecraftForge.EVENT_BUS.register(new PlayerSaveData());
+    	MinecraftForge.EVENT_BUS.register(new PlayerEvents());
     	
     	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
-    	FMLCommonHandler.instance().bus().register(new PlayerEvents());
+    	FMLCommonHandler.instance().bus().register(new ConnectionHandler());
     	
     	proxy.registerClientOnlyEvents();
     	
@@ -98,7 +96,13 @@ public class MozeCore
     	NeiHelper.init();
     	AchievementHandler.init();
     }
-
+    
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+    	ObjHandler.registerPhiloStoneSmelting();
+    }
+    
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {

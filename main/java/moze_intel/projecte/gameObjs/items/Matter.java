@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class Matter extends ItemBase 
+public class Matter extends ItemPE 
 {
 	private final String[] names = new String[] {"dark", "red"};
 	@SideOnly(Side.CLIENT)

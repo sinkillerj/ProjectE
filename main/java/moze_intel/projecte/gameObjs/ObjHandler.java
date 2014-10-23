@@ -1,5 +1,8 @@
 package moze_intel.projecte.gameObjs;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.blocks.*;
 import moze_intel.projecte.gameObjs.customRecipes.*;
@@ -18,9 +21,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -341,7 +342,7 @@ public class ObjHandler
 		
 		//Rings
 		GameRegistry.addRecipe(new ItemStack(ironBand), new Object[] {"III", "ILI", "III", 'I', Items.iron_ingot, 'L', Items.lava_bucket});
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), new Object[]{"SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', "flower", 'D', matter}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), new Object[]{"SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', Blocks.red_flower, 'F', Blocks.red_flower, 'D', matter}));
 		GameRegistry.addRecipe(new ItemStack(swrg), new Object[]{"DFD", "FIF", "DFD", 'I', ironBand, 'F', Items.feather, 'D', matter});
 		GameRegistry.addRecipe(new ItemStack(ignition), new Object[]{"FMF", "DID", "FMF", 'I', ironBand, 'F', new ItemStack(Items.flint_and_steel, 1, OreDictionary.WILDCARD_VALUE), 'D', matter, 'M', new ItemStack(fuels, 1, 1)});
 		GameRegistry.addRecipe(new ItemStack(bodyStone), new Object[]{"SSS", "RLR", "SSS", 'R', new ItemStack(matter, 1, 1), 'S', Items.sugar, 'L', new ItemStack(Items.dye, 1, 4)});
@@ -382,10 +383,13 @@ public class ObjHandler
 		
 		//Shapeless Recipes
 		//Philos Stone exchanges
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.ender_pearl), philosStone, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.iron_ingot, 8), philosStone, Items.gold_ingot);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_ingot), philosStone, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.diamond), philosStone, Items.gold_ingot, Items.gold_ingot, Items.gold_ingot, Items.gold_ingot);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_ingot, 4), philosStone, Items.diamond);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.emerald), philosStone, Items.diamond, Items.diamond);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.diamond, 2), philosStone, Items.emerald);
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 0), philosStone, Items.coal, Items.coal, Items.coal, Items.coal);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.coal, 4), philosStone, new ItemStack(fuels, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 1), philosStone, new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0));
@@ -423,8 +427,6 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 1), new ItemStack(fuelBlock, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
 		
-		
-		
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
@@ -435,6 +437,24 @@ public class ObjHandler
 		
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
+	}
+	
+	//Philosopher's stone smelting recipes, EE3 style
+	public static void registerPhiloStoneSmelting()
+	{
+		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))
+		{
+			if (entry.getKey() == null || entry.getValue() == null)
+			{
+				continue;
+			}
+			
+			ItemStack input = entry.getKey();
+			ItemStack output = entry.getValue().copy();
+			output.stackSize *= 7;
+			
+			GameRegistry.addShapelessRecipe(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
+		}
 	}
 	
 	public static class FuelHandler implements IFuelHandler

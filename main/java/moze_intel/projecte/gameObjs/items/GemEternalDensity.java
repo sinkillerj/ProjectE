@@ -32,7 +32,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 {
 	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
 	
@@ -65,7 +65,7 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 	
 	public static void condense(ItemStack gem, ItemStack[] inv)
 	{
-		if (gem.getItemDamage() == 0 || ItemBase.getEmc(gem) >= Constants.TILE_MAX_EMC)
+		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
 			return;
 		}
@@ -98,14 +98,14 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 					inv[i] = null;
 				}
 				
-				ItemBase.addEmc(gem, Utils.getEmcValue(copy));
+				ItemPE.addEmc(gem, Utils.getEmcValue(copy));
 				break;
 			}
 		}
 		
 		int value = Utils.getEmcValue(target);
 		
-		while (ItemBase.getEmc(gem) >= value)
+		while (ItemPE.getEmc(gem) >= value)
 		{
 			ItemStack remain = Utils.pushStackInInv(inv, target);
 			
@@ -114,7 +114,7 @@ public class GemEternalDensity extends ItemBase implements IModeChanger, IBauble
 				return;
 			}
 			
-			ItemBase.removeEmc(gem, value);
+			ItemPE.removeEmc(gem, value);
 			setItems(gem, new ArrayList());
 		}
 	}
