@@ -28,6 +28,9 @@ import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.NeiHelper;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -95,6 +98,8 @@ public class MozeCore
     	Utils.init();
     	NeiHelper.init();
     	AchievementHandler.init();
+
+        addDungeonLoot();
     }
     
     @EventHandler
@@ -165,5 +170,18 @@ public class MozeCore
     	{
     		IMCHandler.handleIMC(msg);
     	}
+    }
+
+    public static void addDungeonLoot()
+    {
+        ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CROSSING).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_DISPENSER).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
+        ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ObjHandler.tome),1,1,50));
     }
 }
