@@ -9,6 +9,7 @@ import moze_intel.projecte.emc.RecipeMapper;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.events.PlayerJoinWorld;
+import moze_intel.projecte.events.PlayerSaveData;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -76,6 +77,7 @@ public class MozeCore
     	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new moze_intel.projecte.events.ItemPickupEvent());
     	MinecraftForge.EVENT_BUS.register(new PlayerJoinWorld());
+        MinecraftForge.EVENT_BUS.register(new PlayerSaveData());
     	
     	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
     	FMLCommonHandler.instance().bus().register(new PlayerEvents());
