@@ -6,18 +6,18 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPKT;
 import net.minecraft.command.ICommandSender;
 
-public class RemoveEmcCMD extends ProjectEBaseCMD
+public class SetEmcCMD extends ProjectEBaseCMD
 {
 	@Override
 	public String getCommandName() 
 	{
-		return "projecte_removeEMC";
+		return "projecte_setEMC";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_removeEMC <unlocalized/ore-dictionary name> <metadata (optional)>";
+		return "/projecte_setEMC <unlocalized-name/ore dictionary name> <metadata (optional)> <EMC value>";
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		if (params.length < 1)
+		if (params.length < 2)
 		{
 			sendError(sender, "Error: command needs parameters!");
 			return;
@@ -37,8 +37,9 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
         String name = params[0];
         int meta = 0;
+        boolean isOD = !name.contains(":");
 
-        if (name.contains(":") && params.length > 1)
+        if (!isOD && params.length > 2)
         {
             try
             {
@@ -57,14 +58,58 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
             }
         }
 
-        if (FileParser.addToFile(name, meta, 0))
+        int emc = 0;
+
+        if (isOD)
+        {
+            try
+            {
+                emc = Integer.valueOf(params[1]);
+            }
+            catch (NumberFormatException e)
+            {
+                sendError(sender, "Error: the EMC passed (" + params[1] + ") is not a number!");
+                return;
+            }
+        }
+        else
+        {
+            String sEmc;
+
+            if (params.length > 2)
+            {
+                sEmc = params[2];
+            }
+            else
+            {
+                sEmc = params[1];
+            }
+
+            try
+            {
+                emc = Integer.valueOf(sEmc);
+            }
+            catch (NumberFormatException e)
+            {
+                sendError(sender, "Error: the EMC passed (" + sEmc + ") is not a number!");
+                return;
+            }
+        }
+
+        if (emc <= 0)
+        {
+            sendError(sender, "Error: the EMC value needs to be greater than 0!");
+            return;
+        }
+
+        if (FileParser.addToFile(name, meta, emc))
         {
             EMCMapper.clearMaps();
             FileParser.readUserData();
             EMCMapper.map();
             PacketHandler.sendToAll(new ClientSyncPKT());
 
-            sendSuccess(sender, "Removed EMC value for: " + name);
+            sendSuccess(sender, "Registered EMC value for: " + name + "(" + emc + ")");
         }
         else
         {

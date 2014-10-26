@@ -1,12 +1,14 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
@@ -36,15 +38,18 @@ public class DiviningRodHigh extends DiviningRodMedium
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-		if (world.isRemote) return stack;
+		if (world.isRemote) 
+		{
+			return stack;
+		}
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			long totalEmc = 0;
 			List<Integer> emcValues = new ArrayList();
+			long totalEmc = 0;
 			int numBlocks = 0;
 			
 			byte mode = getMode(stack);
@@ -77,13 +82,22 @@ public class DiviningRodHigh extends DiviningRodMedium
 							
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
-								if (entry.getKey().getItem().equals(drops.get(0).getItem()))
+								if (entry.getKey() == null)
+								{
+									continue;
+								}
+								
+								if (entry.getKey().getItem() == drops.get(0).getItem())
 								{
 									int currentValue = Utils.getEmcValue(entry.getValue());
 									
 									if (currentValue != 0)
 									{
-										emcValues.add(currentValue);
+										if (!emcValues.contains(currentValue))
+										{
+											emcValues.add(currentValue);
+										}
+										
 										totalEmc += currentValue;
 									}	
 								}
@@ -91,7 +105,11 @@ public class DiviningRodHigh extends DiviningRodMedium
 						}
 						else
 						{
-							emcValues.add(blockEmc);
+							if (!emcValues.contains(blockEmc))
+							{
+								emcValues.add(blockEmc);
+							}
+							
 							totalEmc += blockEmc;
 						}
 						
@@ -102,30 +120,18 @@ public class DiviningRodHigh extends DiviningRodMedium
 			int[] maxValues = new int[3];
 			
 			for (int i = 0; i < 3; i++)
-				for (Integer j : emcValues)
-				{
-					if (j > maxValues[i])
-					{
-						if (i == 0)
-							maxValues[i] = j;
-						else
-						{
-							
-							boolean alreadyFound = false;
-							
-							for (int k = 0; k < 3; k++)
-								if (maxValues[k] == j)
-								{
-									alreadyFound = true;
-									break;
-								}
-							
-							if (!alreadyFound)
-								maxValues[i] = j;
-									
-						}
-					}
-				}
+			{
+				maxValues[i] = 1;
+			}
+			
+			Collections.sort(emcValues, Comparators.INT_DESCENDING);
+			
+			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
+			
+			for (int i = 0; i < num; i++)
+			{
+				maxValues[i] = emcValues.get(i);
+			}
 			
 			player.addChatComponentMessage(new ChatComponentText(String.format("Average EMC for %d blocks: %,d", numBlocks, (totalEmc / numBlocks))));
 			player.addChatComponentMessage(new ChatComponentText(String.format("Max EMC: %,d", maxValues[0])));
@@ -150,7 +156,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 			stack.stackTagCompound.setByte("Mode", (byte) (mode + 1));
 		}
 		
-		player.addChatComponentMessage(new ChatComponentText("Changed mode to: "+modes[getMode(stack)]));
+		player.addChatComponentMessage(new ChatComponentText("Changed mode to: " + modes[getMode(stack)]));
 	}
 	
 	@Override

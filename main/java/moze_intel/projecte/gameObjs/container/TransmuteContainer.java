@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
+import invtweaks.api.container.IgnoreContainer;
+import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableConsume;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableInput;
@@ -135,9 +137,15 @@ public class TransmuteContainer extends Container
 	}
 	
 	@Override
-	public void onContainerClosed(EntityPlayer p_75134_1_)
+	public void onContainerClosed(EntityPlayer player)
     {
-		super.onContainerClosed(p_75134_1_);
+		super.onContainerClosed(player);
 		tile.closeInventory();
     }
+	
+	@Override
+	public boolean canDragIntoSlot(Slot slot) 
+	{
+		return false;
+	}
 }

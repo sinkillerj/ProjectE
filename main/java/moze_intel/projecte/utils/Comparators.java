@@ -6,7 +6,7 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.item.ItemStack;
 
-public final class EMCComparators
+public final class Comparators
 {
 	public static final Comparator<ItemStack> ITEMSTACK_DESCENDING = new Comparator<ItemStack>()
 	{
@@ -20,14 +20,13 @@ public final class EMCComparators
 			{
 				return 1;
 			}
-			else if (emc1 > emc2)
+			
+			if (emc1 > emc2)
 			{
 				return -1;
 			}
-			else
-			{
-				return 0;
-			}
+			
+			return 0;
 		}
 	};
 	
@@ -43,14 +42,32 @@ public final class EMCComparators
 			{
 				return -1;
 			}
-			else if (emc1 > emc2)
+			
+			if (emc1 > emc2)
 			{
 				return 1;
 			}
-			else
+			
+			return 0;
+		}
+	};
+	
+	public static final Comparator<Integer> INT_DESCENDING = new Comparator<Integer>()
+	{
+		@Override
+		public int compare(Integer i1, Integer i2)
+		{
+			if (i1 < i2)
 			{
-				return 0;
+				return 1;
 			}
+			
+			if (i1 > 2)
+			{
+				return -1;
+			}
+			
+			return 0;
 		}
 	};
 }

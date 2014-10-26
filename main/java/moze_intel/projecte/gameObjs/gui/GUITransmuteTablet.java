@@ -32,6 +32,7 @@ public class GUITransmuteTablet extends GuiContainer
 	public void initGui() 
 	{
 		table.setPlayer(Minecraft.getMinecraft().thePlayer);
+		NeiHelper.resetSearchBar();
 		super.initGui();
 	}
 
