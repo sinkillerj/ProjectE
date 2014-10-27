@@ -18,8 +18,8 @@ public final class ProjectEConfig
 		{
 			config.load();
 			
-			showUnlocalizedNames = config.getBoolean("Show unlocalized names in tool-tips", "Misc", false, "Set this to true to show item unlocalized names (usefull for custom EMC registration)");
-			showODNames = config.getBoolean("Show Ore-Dictionary names in tool-tips", "Misc", false, "Set this to true to show item Ore Dictionary names (usefull for custom EMC registration)");
+			showUnlocalizedNames = config.getBoolean("Show unlocalized names in tool-tips", "Misc", false, "Set this to true to show item unlocalized names (useful for custom EMC registration)");
+			showODNames = config.getBoolean("Show Ore-Dictionary names in tool-tips", "Misc", false, "Set this to true to show item Ore Dictionary names (useful for custom EMC registration)");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}
