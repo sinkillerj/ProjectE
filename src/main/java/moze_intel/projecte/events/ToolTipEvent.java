@@ -30,14 +30,14 @@ public class ToolTipEvent
 		
 		if (ProjectEConfig.showUnlocalizedNames)
 		{
-			event.toolTip.add("UN: "+Item.itemRegistry.getNameForObject(current.getItem()));
+			event.toolTip.add("UN: " + Item.itemRegistry.getNameForObject(current.getItem()));
 		}
 		
 		if (ProjectEConfig.showODNames)
 		{
 			for (int id : OreDictionary.getOreIDs(current))
 			{
-				event.toolTip.add("OD: "+OreDictionary.getOreName(id));
+				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
 			}
 		}
 		
@@ -49,7 +49,16 @@ public class ToolTipEvent
 			
 			if (current.stackSize > 1)
 			{
-				event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+				long total = value * current.stackSize;
+				
+				if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+				{
+					event.toolTip.add("Stack EMC: " + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
+				}
+				else
+				{
+					event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+				}
 			}
 		}
 		

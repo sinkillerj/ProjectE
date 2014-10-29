@@ -2,21 +2,19 @@ package moze_intel.projecte.emc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.EMCComparators;
+import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public final class FuelMapper 
 {
-	private static final List<SimpleStack> FUEL_MAP = new ArrayList(); 
+	private static final List<SimpleStack> FUEL_MAP = new ArrayList<SimpleStack>();
 	
 	public static void loadMap()
 	{
@@ -41,7 +39,7 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
-		Collections.sort(FUEL_MAP, EMCComparators.SIMPLESTACK_ASCENDING);
+		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
 	}
 	
 	private static void addToMap(ItemStack stack)

@@ -11,7 +11,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCComparators;
+import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -162,7 +162,7 @@ public class TransmuteTabletInventory implements IInventory
 			}
 		}
 		
-		Collections.sort(knowledge, EMCComparators.ITEMSTACK_DESCENDING);
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;

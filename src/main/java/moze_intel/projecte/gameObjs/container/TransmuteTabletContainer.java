@@ -149,4 +149,10 @@ public class TransmuteTabletContainer extends Container
 		
 		return super.slotClick(slot, button, flag, player);
 	}
+	
+	@Override
+	public boolean canDragIntoSlot(Slot slot) 
+	{
+		return false;
+	}
 }

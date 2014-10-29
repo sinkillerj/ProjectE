@@ -21,9 +21,9 @@ import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class PlayerChecksEvent
 {
-	private static LinkedList<EntityPlayerMP> flyChecks = new LinkedList();
-	private static LinkedList<EntityPlayerMP> fireChecks = new LinkedList();
-	private static LinkedList<EntityPlayerMP> stepChecks = new LinkedList();
+	private static LinkedList<EntityPlayerMP> flyChecks = new LinkedList<EntityPlayerMP>();
+	private static LinkedList<EntityPlayerMP> fireChecks = new LinkedList<EntityPlayerMP>();
+	private static LinkedList<EntityPlayerMP> stepChecks = new LinkedList<EntityPlayerMP>();
 	private static Iterator<EntityPlayerMP> iter;
 
 	@SubscribeEvent
@@ -218,20 +218,20 @@ public class PlayerChecksEvent
 			}
 		}
 	}
-	
-	public static boolean isPlayerCheckedForFlight(String player)
-	{
-		return flyChecks.contains(player);
-	}
-	
-	public static boolean isPlayerCheckedForFire(String player)
-	{
-		return fireChecks.contains(player);
-	}
-	
+
 	public static boolean isPlayerCheckedForStep(String player)
 	{
-		return stepChecks.contains(player);
+        Iterator<EntityPlayerMP> iter = stepChecks.iterator();
+
+        while (iter.hasNext())
+        {
+            if (iter.next().getCommandSenderName().equals(player))
+            {
+                return true;
+            }
+        }
+
+		return false;
 	}
 	
 	public static void clearLists()

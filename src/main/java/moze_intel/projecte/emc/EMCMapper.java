@@ -1,15 +1,10 @@
 package moze_intel.projecte.emc;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
 
-import moze_intel.projecte.config.FileHelper;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
@@ -20,10 +15,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class EMCMapper 
 {
-	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap();
-	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap();
-	public static LinkedList<SimpleStack> blackList = new LinkedList();
-	public static LinkedList<SimpleStack> failed = new LinkedList();
+	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
+	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap<SimpleStack, Integer>();
+	public static LinkedList<SimpleStack> blackList = new LinkedList<SimpleStack>();
+	public static LinkedList<SimpleStack> failed = new LinkedList<SimpleStack>();
 	
 	public static void map()
 	{
@@ -196,34 +191,6 @@ public final class EMCMapper
 		}
 	}
 	
-	public static boolean addCustomEntry(ItemStack stack, int value)
-	{
-		if (FileHelper.addToFile(stack, value))
-		{
-			clearMaps();
-			FileHelper.readUserData();
-			map();
-			PacketHandler.sendToAll(new ClientSyncPKT());
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static boolean addCustomEntry(String odName, int value)
-	{
-		if (FileHelper.addToFile(odName, value))
-		{
-			clearMaps();
-			FileHelper.readUserData();
-			map();
-			PacketHandler.sendToAll(new ClientSyncPKT());
-			return true;
-		}
-		
-		return false;
-	}
-	
 	public static void clearMaps()
 	{
 		emc.clear();
@@ -351,7 +318,7 @@ public final class EMCMapper
     	addMapping(new ItemStack(Items.ender_pearl), 1024);
     	addMapping(new ItemStack(Items.blaze_rod), 1536);
     	addMapping(new ItemStack(Items.ghast_tear), 4096);
-    	addMapping(new ItemStack(Blocks.dragon_egg), 139264);
+    	addMapping(new ItemStack(Blocks.dragon_egg), 262144);
     	addMapping(new ItemStack(Items.porkchop), 64);
     	addMapping(new ItemStack(Items.beef), 64);
     	addMapping(new ItemStack(Items.chicken), 64);
@@ -381,7 +348,7 @@ public final class EMCMapper
     	addMapping(new ItemStack(Items.enchanted_book), 2048);
     	addMapping(new ItemStack(Items.emerald), 16384);
     	
-    	addMapping(new ItemStack(Items.nether_star), 262144);
+    	addMapping(new ItemStack(Items.nether_star), 139264);
     	addMapping(new ItemStack(Items.iron_horse_armor), 1280);       
     	addMapping(new ItemStack(Items.golden_horse_armor), 1024);    
     	addMapping(new ItemStack(Items.diamond_horse_armor), 40960);  

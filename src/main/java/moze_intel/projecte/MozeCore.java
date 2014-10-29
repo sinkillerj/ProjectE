@@ -2,7 +2,7 @@ package moze_intel.projecte;
 
 import java.io.File;
 
-import moze_intel.projecte.config.FileHelper;
+import moze_intel.projecte.config.FileParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
@@ -12,12 +12,7 @@ import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.AddEmcCMD;
-import moze_intel.projecte.network.commands.ChangelogCMD;
-import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
-import moze_intel.projecte.network.commands.ReloadCfgCMD;
-import moze_intel.projecte.network.commands.RemoveEmcCMD;
-import moze_intel.projecte.network.commands.ResetEmcCMD;
+import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -70,7 +65,8 @@ public class MozeCore
     	}
     	
     	ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
-    	FileHelper.init();
+
+        FileParser.init();
     	
     	PacketHandler.register();
     	
@@ -107,8 +103,8 @@ public class MozeCore
     public void serverStarting(FMLServerStartingEvent event)
     {
     	event.registerServerCommand(new ChangelogCMD());
-    	event.registerServerCommand(new ReloadCfgCMD());
-    	event.registerServerCommand(new AddEmcCMD());
+    	event.registerServerCommand(new ReloadEmcCMD());
+    	event.registerServerCommand(new SetEmcCMD());
     	event.registerServerCommand(new RemoveEmcCMD());
     	event.registerServerCommand(new ResetEmcCMD());
     	event.registerServerCommand(new ClearKnowledgeCMD());
@@ -118,8 +114,8 @@ public class MozeCore
     		new ThreadCheckUpdate(true).start();
     	}
     	
-    	FileHelper.readUserData();
-    	
+        FileParser.readUserData();
+
     	PELogger.logInfo("Starting server-side EMC mapping.");
     	
     	RecipeMapper.map();
@@ -149,7 +145,7 @@ public class MozeCore
     {
     	Transmutation.clear();
     	AlchemicalBags.clear();
-    	PELogger.logInfo("Saved player data.");
+    	PELogger.logInfo("Cleared player data.");
     	
     	PlayerChecksEvent.clearLists();
     	PELogger.logInfo("Cleared player check-lists: server stopping.");

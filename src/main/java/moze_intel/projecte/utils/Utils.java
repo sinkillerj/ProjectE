@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -973,6 +975,22 @@ public final class Utils
 	{
 		return new ItemStack((Item) Item.itemRegistry.getObjectById(stack.id), 1, stack.damage);
 	}
+
+    public static void closeStream(Closeable c)
+    {
+        if (c != null)
+        {
+            try
+            {
+                c.close();
+            }
+            catch (IOException e)
+            {
+                PELogger.logFatal("IO Error: couldn't close stream!");
+                e.printStackTrace();
+            }
+        }
+    }
 	
 	public static int randomIntInRange(int max, int min)
 	{
