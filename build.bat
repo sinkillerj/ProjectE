@@ -1,1 +1,1 @@
-gradlew clean build setupDecompWorkspace
+gradlew clean setupDecompWorkspace build
