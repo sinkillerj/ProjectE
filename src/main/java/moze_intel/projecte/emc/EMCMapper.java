@@ -4,6 +4,7 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
@@ -55,6 +56,18 @@ public final class EMCMapper
 						{
 							if (emc.containsKey(stack))
 							{
+								ItemStack itemStack = stack.toItemStack();
+								
+								if(itemStack.getItem().doesContainerItemLeaveCraftingGrid(itemStack) && itemStack.getItem().hasContainerItem(itemStack))
+								{
+									SimpleStack containerStack = new SimpleStack(itemStack.getItem().getContainerItem(itemStack));
+									
+									if(emc.containsKey(containerStack))
+									{
+										totalEmc -= emc.get(containerStack);
+									}
+								}
+								
 								totalEmc += emc.get(stack);
 							}
 							else
