@@ -177,15 +177,13 @@ public class MercurialEyeInventory implements IInventory
 		
 		for (int i = 0; i < 2; i++)
 		{
-			if (getStackInSlot(i) == null)
+			if (getStackInSlot(i) != null)
 			{
-				continue;
+                NBTTagCompound subNBT = new NBTTagCompound();
+                subNBT.setByte(("Slot"), (byte) i);
+                getStackInSlot(i).writeToNBT(subNBT);
+                list.appendTag(subNBT);
 			}
-			
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte(("Slot"), (byte) i);
-			getStackInSlot(i).writeToNBT(subNBT);
-			list.appendTag(subNBT);
 		}
 		
 		nbt.setTag("Items", list);

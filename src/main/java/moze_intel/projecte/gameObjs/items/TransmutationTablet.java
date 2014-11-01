@@ -1,11 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -24,7 +23,7 @@ public class TransmutationTablet extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(MozeCore.instance, Constants.TRANSMUTE_TABLET_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.TRANSMUTE_TABLET_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 		
 		return stack;

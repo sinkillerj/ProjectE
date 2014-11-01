@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -60,7 +59,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 			
 			if (!world.isRemote)
 			{
-				player.openGui(MozeCore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
+				player.openGui(PECore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
 			}
 		}
 		else

@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.blocks.*;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -248,14 +248,14 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(TransmuteTile.class, "Transmutation Tablet Tile");
 		
 		//Entities
-		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLavaProjectile.class, "Lava Orb", 2, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLootBall.class, "Loot Ball", 3, MozeCore.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(EntityMobRandomizer.class, "Mob Randomizer", 4, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLensProjectile.class, "Explosive Lens Projectile", 5, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "Nova Catalyst", 6, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityNovaCataclysmPrimed.class, "Nova Cataclysm", 7, MozeCore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityHomingArrow.class, "Homing Arrow", 8, MozeCore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLavaProjectile.class, "Lava Orb", 2, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLootBall.class, "Loot Ball", 3, PECore.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(EntityMobRandomizer.class, "Mob Randomizer", 4, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLensProjectile.class, "Explosive Lens Projectile", 5, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "Nova Catalyst", 6, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityNovaCataclysmPrimed.class, "Nova Cataclysm", 7, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityHomingArrow.class, "Homing Arrow", 8, PECore.instance, 256, 10, true);
 	}
 	
 	public static void addRecipes()
@@ -384,6 +384,9 @@ public class ObjHandler
 				
 		//TransmutationTablet
 		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);
+
+        //Mercurial Eye
+        GameRegistry.addRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', Blocks.obsidian, 'B', Blocks.brick_block, 'R', new ItemStack(matter, 1, 1), 'D', Items.diamond);
 		
 		//Shapeless Recipes
 		//Philos Stone exchanges

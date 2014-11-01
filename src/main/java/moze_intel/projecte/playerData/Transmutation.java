@@ -35,8 +35,8 @@ public final class Transmutation
 
 			try
 			{
-				ItemStack s = Utils.getStackFromSimpleStack(stack);
-				
+				ItemStack s = stack.toItemStack();
+
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (Utils.doesItemHaveEmc(s) && !Utils.ContainsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{

@@ -126,7 +126,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	}
 	
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack)
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}

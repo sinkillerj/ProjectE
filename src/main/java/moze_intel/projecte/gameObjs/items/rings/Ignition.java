@@ -82,7 +82,7 @@ public class Ignition extends RingToggle implements IBauble
 	}
 	
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack)
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}

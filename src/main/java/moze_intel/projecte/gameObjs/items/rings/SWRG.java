@@ -299,7 +299,7 @@ public class SWRG extends ItemPE implements IBauble
 	}
 	
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack) 
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}

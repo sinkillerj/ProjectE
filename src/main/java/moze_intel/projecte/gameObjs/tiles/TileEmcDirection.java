@@ -1,12 +1,8 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;

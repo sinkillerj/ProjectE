@@ -36,6 +36,21 @@ public class SimpleStack
         return id != -1;
     }
 
+    public ItemStack toItemStack()
+    {
+        if (isValid())
+        {
+            Item item = Item.getItemById(id);
+
+            if (item != null)
+            {
+                return new ItemStack(Item.getItemById(id), qnty, damage);
+            }
+        }
+
+        return null;
+    }
+
 	@Override
 	public int hashCode() 
 	{

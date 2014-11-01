@@ -29,17 +29,17 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
 
-@Mod(modid = MozeCore.MODID, name = MozeCore.MODNAME, version = MozeCore.VERSION)
-public class MozeCore
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
+public class PECore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2d-dev4";
-    
+    public static final String VERSION = "Alpha 0.2d-dev5";
+
     public static File CONFIG_DIR;
-    
+
     @Instance(MODID)
-	public static MozeCore instance;
+	public static PECore instance;
     
     @SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
@@ -62,14 +62,14 @@ public class MozeCore
 
     	PacketHandler.register();
     	
-    	NetworkRegistry.INSTANCE.registerGuiHandler(MozeCore.instance, new GuiHandler());
+    	NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new PlayerEvents());
     	
     	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
     	FMLCommonHandler.instance().bus().register(new ConnectionHandler());
     	
     	proxy.registerClientOnlyEvents();
-    	
+
     	ObjHandler.register();
     	ObjHandler.addRecipes();
     }
@@ -102,7 +102,7 @@ public class MozeCore
     	event.registerServerCommand(new RemoveEmcCMD());
     	event.registerServerCommand(new ResetEmcCMD());
     	event.registerServerCommand(new ClearKnowledgeCMD());
-    	
+
     	if (!ThreadCheckUpdate.hasRunServer())
     	{
     		new ThreadCheckUpdate(true).start();

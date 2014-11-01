@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
@@ -46,7 +46,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	{
 		if (!world.isRemote) 
 		{
-			player.openGui(MozeCore.instance, Constants.CONDENSER_GUI, world, x, y, z);
+			player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, x, y, z);
 		}
 		
 		return true;

@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
@@ -9,11 +9,11 @@ public final class KeyBinds
 {
 	public static KeyBinding[] array = new KeyBinding[] 
 	{
-		new KeyBinding("Charge", Keyboard.KEY_V, MozeCore.MODNAME),
-		new KeyBinding("Mode", Keyboard.KEY_G, MozeCore.MODNAME),
-		new KeyBinding("Fire Projectile", Keyboard.KEY_R, MozeCore.MODNAME),
-		new KeyBinding("Extra Function", Keyboard.KEY_C, MozeCore.MODNAME),
-		new KeyBinding("Armor effects", Keyboard.KEY_F, MozeCore.MODNAME)
+		new KeyBinding("Charge", Keyboard.KEY_V, PECore.MODNAME),
+		new KeyBinding("Mode", Keyboard.KEY_G, PECore.MODNAME),
+		new KeyBinding("Fire Projectile", Keyboard.KEY_R, PECore.MODNAME),
+		new KeyBinding("Extra Function", Keyboard.KEY_C, PECore.MODNAME),
+		new KeyBinding("Armor effects", Keyboard.KEY_F, PECore.MODNAME)
 	};
 	
 	public static int getChargeKeyCode()

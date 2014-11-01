@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public class ThreadCheckUpdate extends Thread
 				}
 			}
 			
-			if (!MozeCore.VERSION.equals(latestVersion))
+			if (!PECore.VERSION.equals(latestVersion))
 			{
 				PELogger.logInfo("Mod is outdated! Check "+githubURL+" to get the latest version ("+latestVersion+").");
 				

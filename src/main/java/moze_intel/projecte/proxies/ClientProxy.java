@@ -1,9 +1,6 @@
 package moze_intel.projecte.proxies;
 
-import moze_intel.projecte.events.FovChangeEvent;
-import moze_intel.projecte.events.KeyPressEvent;
-import moze_intel.projecte.events.ToolTipEvent;
-import moze_intel.projecte.events.TransmutationRenderingEvent;
+import moze_intel.projecte.events.*;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;

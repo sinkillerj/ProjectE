@@ -51,11 +51,29 @@ public final class EMCMapper
 					{
 						toMap = true;
 						
-						B: for (SimpleStack stack : rInput)
+						B: for (SimpleStack simpleStack : rInput)
 						{
-							if (emc.containsKey(stack))
+							if (emc.containsKey(simpleStack))
 							{
-								totalEmc += emc.get(stack);
+                                ItemStack stack = simpleStack.toItemStack();
+
+                                if (stack == null)
+                                {
+                                    toMap = false;
+                                    break B;
+                                }
+
+                                if (stack.getItem().hasContainerItem(stack))
+                                {
+                                    SimpleStack container = new SimpleStack(stack.getItem().getContainerItem(stack));
+
+                                    if (emc.containsKey(container))
+                                    {
+                                        totalEmc -= emc.get(container);
+                                    }
+                                }
+
+								totalEmc += emc.get(simpleStack);
 							}
 							else
 							{
