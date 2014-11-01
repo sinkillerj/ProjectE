@@ -1,9 +1,7 @@
 package baubles.api;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
  * 
@@ -44,6 +42,4 @@ public interface IBauble {
 	 * Can this bauble be removed from a bauble slot
 	 */
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player);
-
-    void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player);
 }

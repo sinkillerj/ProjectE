@@ -154,7 +154,4 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	{
 		return true;
 	}
-
-	@Override
-	public void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player) {}
 }

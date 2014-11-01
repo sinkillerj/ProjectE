@@ -174,7 +174,4 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		return true;
 	}
-
-	@Override
-	public void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player) {}
 }

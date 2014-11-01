@@ -104,7 +104,4 @@ public class BodyStone extends RingToggle implements IBauble
 	{
 		return true;
 	}
-
-	@Override
-	public void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player) {}
 }

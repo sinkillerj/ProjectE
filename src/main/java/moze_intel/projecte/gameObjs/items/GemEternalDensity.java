@@ -362,7 +362,4 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	{
 		return true;
 	}
-
-	@Override
-	public void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player) {}
 }

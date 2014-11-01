@@ -130,7 +130,4 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		return true;
 	}
-
-	@Override
-	public void onWornTick(ItemStack stack, World world, Entity entity, EntityLivingBase player) {}
 }
