@@ -72,4 +72,9 @@ public class SimpleStack
 		
 		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
 	}
+	
+	public ItemStack toItemStack()
+	{
+		return new ItemStack(Item.getItemById(id), qnty, damage);
+	}
 }

@@ -919,4 +919,13 @@ public final class Utils
 		mobs.add(EntityWitch.class);
 		mobs.add(EntityBlaze.class);
 	}
+	
+	public static String[] copy(String[] src, int off, int len)
+	{
+		String[] result = new String[src.length - off];
+		
+		System.arraycopy(src, off, result, 0, len);
+		
+		return result;
+	}
 }

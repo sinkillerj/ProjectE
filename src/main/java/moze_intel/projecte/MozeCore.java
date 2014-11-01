@@ -96,12 +96,7 @@ public class MozeCore
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
-    	event.registerServerCommand(new ChangelogCMD());
-    	event.registerServerCommand(new ReloadEmcCMD());
-    	event.registerServerCommand(new SetEmcCMD());
-    	event.registerServerCommand(new RemoveEmcCMD());
-    	event.registerServerCommand(new ResetEmcCMD());
-    	event.registerServerCommand(new ClearKnowledgeCMD());
+    	event.registerServerCommand(new ProjectECMD());
     	
     	if (!ThreadCheckUpdate.hasRunServer())
     	{
