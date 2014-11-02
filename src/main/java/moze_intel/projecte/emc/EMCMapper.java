@@ -44,7 +44,7 @@ public final class EMCMapper
 						continue;
 					}
 					
-					int totalEmc = 0; 
+					double totalEmc = 0; 
 					boolean toMap = true;
 					
 					A: for (RecipeInput rInput : entry.getValue())
@@ -84,7 +84,7 @@ public final class EMCMapper
 						
 						if (toMap)
 						{
-							totalEmc =  (int) Math.ceil(totalEmc / (double) key.qnty);
+							totalEmc = Math.floor(totalEmc / (double) key.qnty);
 							
 							if (totalEmc <= 0)
 							{
@@ -92,7 +92,7 @@ public final class EMCMapper
 								continue;
 							}
 							
-							addMapping(key, totalEmc);
+							addMapping(key, (int) totalEmc);
 							canMap = true;
 							
 							break A;
