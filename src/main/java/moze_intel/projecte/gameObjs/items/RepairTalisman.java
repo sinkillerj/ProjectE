@@ -1,21 +1,17 @@
 package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class RepairTalisman extends ItemPE implements IBauble
 {
@@ -108,7 +104,7 @@ public class RepairTalisman extends ItemPE implements IBauble
 	}
 
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack) 
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}

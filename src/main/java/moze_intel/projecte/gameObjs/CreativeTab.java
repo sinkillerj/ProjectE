@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import cpw.mods.fml.relauncher.Side;
@@ -10,7 +10,7 @@ public class CreativeTab extends CreativeTabs
 {
 	public CreativeTab()
 	{
-		super(MozeCore.MODID);
+		super(PECore.MODID);
 	}
 
 	@Override

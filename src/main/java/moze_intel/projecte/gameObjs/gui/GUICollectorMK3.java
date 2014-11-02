@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICollectorMK3 extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/collector3.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector3.png");
 	private CollectorMK3Tile tile;
 	
 	public GUICollectorMK3(InventoryPlayer invPlayer, CollectorMK3Tile tile)

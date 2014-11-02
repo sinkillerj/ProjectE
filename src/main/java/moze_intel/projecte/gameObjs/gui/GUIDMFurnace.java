@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIDMFurnace extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
 	private DMFurnaceTile tile;
 
 	public GUIDMFurnace(InventoryPlayer invPlayer, DMFurnaceTile tile)

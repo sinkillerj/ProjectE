@@ -1,29 +1,21 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
-import moze_intel.projecte.MozeCore;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.KeyBinds;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -33,9 +25,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
@@ -183,12 +175,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	private void doWorldTransmutation(World world, Block pointed, Block result, Coordinates coords, int type, int side, int charge)
 	{
 		if (type == 0)
-			for (int i = coords.x - charge; i <= coords.x + charge; i++)
-				for (int j = coords.y - charge; j <= coords.y + charge; j++)
-					for (int k = coords.z - charge; k <= coords.z + charge; k++)
-					{
-						changeBlock(world, pointed, result, i, j, k);
-					}
+        {
+            for (int i = coords.x - charge; i <= coords.x + charge; i++)
+                for (int j = coords.y - charge; j <= coords.y + charge; j++)
+                    for (int k = coords.z - charge; k <= coords.z + charge; k++)
+                    {
+                        changeBlock(world, pointed, result, i, j, k);
+                    }
+        }
 		else if (type == 1)
 		{
 			if (side == 0)
@@ -272,7 +266,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.worldObj.isRemote)
 		{
-			player.openGui(MozeCore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 	}
 	

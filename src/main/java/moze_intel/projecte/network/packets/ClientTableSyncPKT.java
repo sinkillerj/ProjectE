@@ -1,7 +1,6 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PELogger;

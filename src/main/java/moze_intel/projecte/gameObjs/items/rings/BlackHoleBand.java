@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.List;
-
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -13,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class BlackHoleBand extends RingToggle implements IBauble
 {

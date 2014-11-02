@@ -1,7 +1,6 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.MozeCore;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;

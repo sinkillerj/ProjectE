@@ -617,6 +617,7 @@ public final class Utils
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)
 	{
 		List<TileEntity> list = new ArrayList<TileEntity>();
+
 		for (int i = (int) bBox.minX; i <= bBox.maxX; i++)
 			for (int j = (int) bBox.minY; j <= bBox.maxY; j++)
 				for (int k = (int) bBox.minZ; k <= bBox.maxZ; k++)
@@ -627,6 +628,7 @@ public final class Utils
 						list.add(tile);
 					}
 				}
+
 		return list;
 	}
 	
@@ -845,14 +847,6 @@ public final class Utils
 		return new ItemStack((Item) obj, 1, metaData);
 	}
 	
-	/**
-	 * @throws NullPointerException
-	 */
-	public static ItemStack getStackFromSimpleStack(SimpleStack stack)
-	{
-		return new ItemStack((Item) Item.itemRegistry.getObjectById(stack.id), 1, stack.damage);
-	}
-
     public static void closeStream(Closeable c)
     {
         if (c != null)
@@ -868,7 +862,7 @@ public final class Utils
             }
         }
     }
-	
+
 	public static int randomIntInRange(int max, int min)
 	{
 		Random rand = new Random();

@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 public final class PELogger 
 {
-	private static Logger logger = LogManager.getLogger(MozeCore.MODID);
+	private static Logger logger = LogManager.getLogger(PECore.MODID);
 
 	public static void log(Level level, String msg)
 	{

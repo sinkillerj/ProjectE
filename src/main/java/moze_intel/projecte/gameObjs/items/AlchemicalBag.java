@@ -2,8 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import scala.actors.threadpool.Arrays;
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -48,7 +47,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(MozeCore.instance, Constants.ALCH_BAG_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 		
 		return stack;

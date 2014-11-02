@@ -2,17 +2,15 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -59,7 +57,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	{
 		if (!world.isRemote) 
 		{
-			player.openGui(MozeCore.instance, Constants.ALCH_CHEST_GUI, world, x, y, z);
+			player.openGui(PECore.instance, Constants.ALCH_CHEST_GUI, world, x, y, z);
 		}
 		
 		return true;

@@ -13,10 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 {
@@ -29,21 +33,74 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	{
 		super("time_watch", (byte) 3);
 	}
-	
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    {
+        if (!world.isRemote)
+        {
+            if (!stack.hasTagCompound())
+            {
+                stack.stackTagCompound = new NBTTagCompound();
+            }
+
+            byte current = getTimeBoost(stack);
+
+            setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
+
+            player.addChatComponentMessage(new ChatComponentText("Change time control mode to: " + getTimeDescription(stack)));
+        }
+
+        return stack;
+    }
+
+    @Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
 	{
 		if (!stack.hasTagCompound())
-			stack.setTagCompound(new NBTTagCompound());
+        {
+            stack.setTagCompound(new NBTTagCompound());
+        }
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8 || stack.getItemDamage() == 0) 
+		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
 		}
-		
+
+        byte timeControl = getTimeBoost(stack);
+
+        if (timeControl == 1)
+        {
+            long newTime = world.getWorldTime() + ((getCharge(stack) + 1) * 4);
+
+            if (newTime > 24000)
+            {
+                newTime = 0;
+            }
+
+            world.setWorldTime(newTime);
+        }
+        else if (timeControl == 2)
+        {
+            long newTime = world.getWorldTime() - ((getCharge(stack) + 1) * 4);
+
+            if (newTime < 0)
+            {
+                newTime = 24000;
+            }
+
+            world.setWorldTime(newTime);
+        }
+
+        if (stack.getItemDamage() == 0)
+        {
+            return;
+        }
+
 		EntityPlayer player = (EntityPlayer) entity;
 		double reqEmc = getEmcPerTick(this.getCharge(stack));
 		
-		if (!this.consumeFuel(player, stack, reqEmc, true))
+		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
 		}
@@ -108,7 +165,34 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 			}
 		}
 	}
-	
+
+    private String getTimeDescription(ItemStack stack)
+    {
+        byte mode = getTimeBoost(stack);
+
+        switch (mode)
+        {
+            case 0:
+                return "Off";
+            case 1:
+                return "Fast-Forward";
+            case 2:
+                return "Rewind";
+            default:
+                return "ERROR_INVALID_MODE";
+        }
+    }
+
+    private byte getTimeBoost(ItemStack stack)
+    {
+        return stack.stackTagCompound.getByte("TimeMode");
+    }
+
+    private void setTimeBoost(ItemStack stack, byte time)
+    {
+        stack.stackTagCompound.setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
+    }
+
 	public double getEmcPerTick(int charge)
 	{
 		int actualCharge = charge + 1;
@@ -158,9 +242,22 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		ringOff = register.registerIcon(this.getTexture("rings", "time_watch_off"));
 		ringOn = register.registerIcon(this.getTexture("rings", "time_watch_on"));
 	}
-	
-	@Override
-	public BaubleType getBaubleType(ItemStack itemstack)
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
+    {
+        list.add("Become the master of time.");
+        list.add("Right click to change time control mode.");
+
+        if (stack.hasTagCompound())
+        {
+            list.add("Time control mode: " + getTimeDescription(stack));
+        }
+    }
+
+    @Override
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}

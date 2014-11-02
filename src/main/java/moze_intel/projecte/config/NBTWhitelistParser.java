@@ -1,6 +1,6 @@
 package moze_intel.projecte.config;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
@@ -16,7 +16,7 @@ public final class NBTWhitelistParser
 
     public static void init()
     {
-        CONFIG = new File(MozeCore.CONFIG_DIR, "nbt_whitelist.cfg");
+        CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
         loaded = false;
 
         if (!CONFIG.exists())

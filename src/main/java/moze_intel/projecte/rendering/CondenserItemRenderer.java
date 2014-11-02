@@ -1,6 +1,6 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CondenserItemRenderer implements IItemRenderer
 {
-	private final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/blocks/condenser.png");
+	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser.png");
     private final ModelChest model = new ModelChest();
 
     @Override

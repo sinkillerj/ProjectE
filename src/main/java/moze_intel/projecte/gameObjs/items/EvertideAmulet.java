@@ -102,7 +102,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 	
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack)
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}

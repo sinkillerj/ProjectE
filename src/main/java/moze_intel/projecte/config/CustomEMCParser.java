@@ -1,6 +1,6 @@
 package moze_intel.projecte.config;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
@@ -19,7 +19,7 @@ public final class CustomEMCParser
 
     public static void init()
     {
-        CONFIG = new File(MozeCore.CONFIG_DIR, "custom_emc.cfg");
+        CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.cfg");
         loaded = false;
 
         if (!CONFIG.exists())

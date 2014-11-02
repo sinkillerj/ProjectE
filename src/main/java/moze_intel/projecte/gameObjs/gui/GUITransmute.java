@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmuteContainer;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.network.PacketHandler;
@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUITransmute extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/transmute.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	private TransmuteTile tile;
 
 	public GUITransmute(InventoryPlayer invPlayer, TransmuteTile tile) 

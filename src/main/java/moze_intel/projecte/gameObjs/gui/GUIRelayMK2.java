@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.MozeCore;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIRelayMK2 extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(MozeCore.MODID.toLowerCase(), "textures/gui/relay2.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/relay2.png");
 	private RelayMK2Tile tile;
 	
 	public GUIRelayMK2(InventoryPlayer invPlayer, RelayMK2Tile tile)

@@ -74,6 +74,6 @@ public final class FuelMapper
 		
 		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
 		
-		return Utils.getStackFromSimpleStack(FUEL_MAP.get(nextIndex));
+		return FUEL_MAP.get(nextIndex).toItemStack();
 	}
 }
