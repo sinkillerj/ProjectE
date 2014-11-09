@@ -107,16 +107,23 @@ public class TransmuteTabletInventory implements IInventory
 			inventory[i] = null;
 		}
 		
-		ItemStack lock = inventory[LOCK_INDEX];
+		ItemStack lockCopy = null;
 		
-		if (lock != null)
+		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(lock);
+			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{
 				return;
 			}
+
+            lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+
+            if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+            {
+                lockCopy.setTagCompound(new NBTTagCompound());
+            }
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
 			
@@ -129,6 +136,12 @@ public class TransmuteTabletInventory implements IInventory
 					iter.remove();
 					continue;
 				}
+
+                if (Utils.basicAreStacksEqual(lockCopy, stack))
+                {
+                    iter.remove();
+                    continue;
+                }
 				
 				if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
 				{
@@ -161,6 +174,20 @@ public class TransmuteTabletInventory implements IInventory
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
+
+        if (lockCopy != null)
+        {
+            if (FuelMapper.isStackFuel(lockCopy))
+            {
+                inventory[FUEL_INDEXES[0]] = lockCopy;
+                fuelCounter++;
+            }
+            else
+            {
+                inventory[MATTER_INDEXES[0]] = lockCopy;
+                matterCounter++;
+            }
+        }
 		
 		for (ItemStack stack : knowledge)
 		{

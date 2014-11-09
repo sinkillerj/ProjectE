@@ -1,11 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
-import thaumcraft.api.IGoggles;
-import thaumcraft.api.nodes.IRevealer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -30,8 +26,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
+
+import java.util.List;
 
 public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
@@ -177,6 +176,11 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
 	{
+        if (source.isExplosion())
+        {
+            return new ArmorProperties(1, 1.0D, 750);
+        }
+
 		if (slot == 0 && source == DamageSource.fall)
 		{
 			return new ArmorProperties(1, 1.0D, 15);
@@ -184,10 +188,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		
 		if (slot == 0 || slot == 3)
 		{
-			return new ArmorProperties(0, 0.2D, 250);
+			return new ArmorProperties(0, 0.2D, 400);
 		}
 
-		return new ArmorProperties(0, 0.3D, 375);
+		return new ArmorProperties(0, 0.3D, 500);
 	}
 
 	@Override

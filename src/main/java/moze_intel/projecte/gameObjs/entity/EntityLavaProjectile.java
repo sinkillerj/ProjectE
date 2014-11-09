@@ -1,14 +1,16 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.Facing;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class EntityLavaProjectile extends EntityThrowable
 {
@@ -77,12 +79,26 @@ public class EntityLavaProjectile extends EntityThrowable
 	@Override
 	protected void onImpact(MovingObjectPosition mop) 
 	{
-		if (this.worldObj.isRemote || !mop.typeOfHit.equals(MovingObjectType.BLOCK))
+		if (this.worldObj.isRemote)
         {
             return;
         }
-			
-		this.worldObj.setBlock(mop.blockX + Facing.offsetsXForSide[mop.sideHit], mop.blockY + Facing.offsetsYForSide[mop.sideHit], mop.blockZ + Facing.offsetsZForSide[mop.sideHit], Blocks.flowing_lava);
-		this.setDead();
+
+        if (mop.typeOfHit == MovingObjectType.BLOCK)
+        {
+            ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
+
+            this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava);
+            this.setDead();
+        }
+        else if (mop.typeOfHit == MovingObjectType.ENTITY)
+        {
+            Entity ent = mop.entityHit;
+
+            ent.setFire(5);
+            ent.attackEntityFrom(DamageSource.inFire, 5);
+
+            this.setDead();
+        }
 	}
 }

@@ -10,11 +10,11 @@ public class SimpleStack
 	public int damage;
 	public int qnty;
 
-	public SimpleStack(int id, int damage, int qnty)
+	public SimpleStack(int id, int qnty, int damage)
 	{
 		this.id = id;
-        this.damage = damage;
 		this.qnty = qnty;
+        this.damage = damage;
 	}
 	
 	public SimpleStack(ItemStack stack)
@@ -51,6 +51,11 @@ public class SimpleStack
         return null;
     }
 
+    public SimpleStack copy()
+    {
+        return new SimpleStack(id, qnty, damage);
+    }
+
 	@Override
 	public int hashCode() 
 	{
@@ -65,11 +70,13 @@ public class SimpleStack
 			SimpleStack other = (SimpleStack) obj;
 			 
 			if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
-			{
-				return this.id == other.id;
-			}
-			
-			return this.id == other.id && this.damage == other.damage;
+            {
+                //return this.id == other.id;
+                return this.qnty == other.qnty && this.id == other.id;
+            }
+
+            //return this.id == other.id && this.damage == other.damage;
+            return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
 		}
 		
 		return false;
@@ -82,7 +89,7 @@ public class SimpleStack
 		
 		if (obj != null)
 		{
-			return Item.itemRegistry.getNameForObject(obj);
+			return Item.itemRegistry.getNameForObject(obj) + " " + qnty + " " + damage;
 		}
 		
 		return "id:" + id + " damage:" + damage + " qnty:" + qnty;

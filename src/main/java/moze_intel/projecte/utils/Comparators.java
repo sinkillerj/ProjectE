@@ -1,10 +1,10 @@
 package moze_intel.projecte.utils;
 
-import java.util.Comparator;
-
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.item.ItemStack;
+
+import java.util.Comparator;
 
 public final class Comparators
 {
@@ -35,8 +35,8 @@ public final class Comparators
 		@Override
 		public int compare(SimpleStack s1, SimpleStack s2)
 		{
-			int emc1 = EMCMapper.emc.get(s1);
-			int emc2 = EMCMapper.emc.get(s2);
+			int emc1 = EMCMapper.getEmcValue(s1);
+			int emc2 = EMCMapper.getEmcValue(s2);
 			
 			if (emc1 < emc2)
 			{

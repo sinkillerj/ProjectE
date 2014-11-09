@@ -11,7 +11,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.*;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
@@ -53,9 +51,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 		
-		Block block = (mop == null || mop.typeOfHit != MovingObjectType.BLOCK) ? null : world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-		
-		if (block != null)
+        MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+
+		if (mBlock.getBlock() != Blocks.air)
 		{
 			TileEntity tile = world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 			
@@ -67,21 +65,25 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					nbt.setBoolean("ProjectEBlock", true);
 					tile.writeToNBT(nbt);
 					
-					if (block == ObjHandler.dmFurnaceOn)
+					if (mBlock.getBlock() == ObjHandler.dmFurnaceOn)
 					{
-						block = ObjHandler.dmFurnaceOff;
+						mBlock.setBlock(ObjHandler.dmFurnaceOff);
 					}
-					else if (block == ObjHandler.rmFurnaceOn)
+					else if (mBlock.getBlock() == ObjHandler.rmFurnaceOn)
 					{
-						block = ObjHandler.rmFurnaceOff;
+						mBlock.setBlock(ObjHandler.rmFurnaceOff);
 					}
 					
-					ItemStack s = new ItemStack(block);
+					ItemStack s = mBlock.toItemStack();
 					
 					if (s.getHasSubtypes())
 					{
 						s.setItemDamage(world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
 					}
+                    else
+                    {
+                        s.setItemDamage(0);
+                    }
 					
 					s.setTagCompound(nbt);
 					
@@ -91,10 +93,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				}
 			}
 		}
-		
-		Block result = (block == null) ? null : Utils.getTransmutationResult(block, player.isSneaking());
-		
-		if (result != null)
+
+        MetaBlock result = WorldTransmutations.getWorldTransmutation(world, mop.blockX, mop.blockY, mop.blockZ, player.isSneaking());
+
+        if (result != null)
 		{
 			Coordinates pos = new Coordinates(mop);
 			int mode = this.getMode(stack);
@@ -103,15 +105,15 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			
 			if (mode == 0)
 			{
-				doWorldTransmutation(world, block, result, pos, 0, 0, charge);
+				doWorldTransmutation(world, mBlock, result, pos, 0, 0, charge);
 			}
 			else if (mode == 1)
 			{
-				getAxisOrientedPanel(direction, charge, block, result, pos, world);
+				getAxisOrientedPanel(direction, charge, mBlock, result, pos, world);
 			}
 			else 
 			{
-				getAxisOrientedLine(direction, charge, block, result, pos, world, player);
+				getAxisOrientedLine(direction, charge, mBlock, result, pos, world, player);
 			}
 			
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
@@ -120,7 +122,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return stack;
 	}
 	
-	private void getAxisOrientedPanel(ForgeDirection direction, int charge, Block pointed, Block result, Coordinates coords, World world)
+	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world)
 	{
 		int side;
 		
@@ -140,7 +142,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		doWorldTransmutation(world, pointed, result, coords, 1, side, charge);
 	}
 	
-	private void getAxisOrientedLine(ForgeDirection direction, int charge, Block pointed, Block result, Coordinates coords, World world, EntityPlayer player)
+	private void getAxisOrientedLine(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
 	{
 		int side;
 		
@@ -172,7 +174,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	/**
 	 * type 0 = cube, type 1 = panel, type 2 = line
 	 */
-	private void doWorldTransmutation(World world, Block pointed, Block result, Coordinates coords, int type, int side, int charge)
+	private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type, int side, int charge)
 	{
 		if (type == 0)
         {
@@ -229,12 +231,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		}
 	}
 	
-	private void changeBlock(World world, Block pointed, Block result, int x, int y, int z)
+	private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z)
 	{
-		if (world.getBlock(x, y, z) == pointed)
+        MetaBlock block = new MetaBlock(world, x, y, z);
+
+		if (block.equals(pointed))
 		{
-			world.setBlock(x, y, z, result);
-			
+            result.setInWorld(world, x, y, z);
+
 			if (world.rand.nextInt(8) == 0)
 			{
 				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));

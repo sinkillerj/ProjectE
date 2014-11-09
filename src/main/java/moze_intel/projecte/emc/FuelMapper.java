@@ -46,25 +46,25 @@ public final class FuelMapper
 	{
 		if (Utils.doesItemHaveEmc(stack))
 		{
-			FUEL_MAP.add(new SimpleStack(stack));
+			addToMap(new SimpleStack(stack));
 		}
 	}
 	
 	public static boolean isStackFuel(ItemStack stack)
 	{
-		return FUEL_MAP.contains(new SimpleStack(stack));
+		return mapContains(new SimpleStack(stack));
 	}
 	
 	public static boolean isStackMaxFuel(ItemStack stack)
 	{
-		return FUEL_MAP.indexOf(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
+		return indexInMap(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
 	}
 	
 	public static ItemStack getFuelUpgrade(ItemStack stack)
 	{
 		SimpleStack fuel = new SimpleStack(stack);
 
-		int index = FUEL_MAP.indexOf(fuel);
+		int index = indexInMap(fuel);
 		
 		if (index == -1)
 		{
@@ -76,4 +76,39 @@ public final class FuelMapper
 		
 		return FUEL_MAP.get(nextIndex).toItemStack();
 	}
+
+    private static void addToMap(SimpleStack stack)
+    {
+        if (stack.isValid())
+        {
+            SimpleStack copy = stack.copy();
+            copy.qnty = 1;
+
+            if (!FUEL_MAP.contains(copy))
+            {
+                FUEL_MAP.add(copy);
+            }
+        }
+    }
+
+    private static boolean mapContains(SimpleStack stack)
+    {
+        if (!stack.isValid())
+        {
+            return false;
+        }
+
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        return FUEL_MAP.contains(copy);
+    }
+
+    private static int indexInMap(SimpleStack stack)
+    {
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        return FUEL_MAP.indexOf(copy);
+    }
 }

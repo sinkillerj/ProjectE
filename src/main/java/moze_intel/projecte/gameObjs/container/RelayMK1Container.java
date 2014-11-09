@@ -19,7 +19,7 @@ public class RelayMK1Container extends Container
 		tile.openInventory();
 		
 		//Klein Star charge slot
-		this.addSlotToContainer(new SlotRelayKlein(tile, 0, 67, 43));
+		this.addSlotToContainer(new SlotRelayInput(tile, 0, 67, 43));
 		
 		//Main Relay inventory
         for (int i = 0; i <= 1; i++) 
@@ -27,7 +27,7 @@ public class RelayMK1Container extends Container
               this.addSlotToContainer(new SlotRelayInput(tile, i * 3 + j + 1, 27 + i * 18, 17 + j * 18));
         
         //Burning slot
-        this.addSlotToContainer(new SlotRelayInput(tile, 7, 127, 43));
+        this.addSlotToContainer(new SlotRelayKlein(tile, 7, 127, 43));
         
         //Player Inventory
         for (int i = 0; i < 3; i++)

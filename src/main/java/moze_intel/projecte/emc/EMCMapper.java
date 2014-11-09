@@ -4,10 +4,12 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -18,142 +20,200 @@ public final class EMCMapper
 	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
 	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap<SimpleStack, Integer>();
 	public static LinkedList<SimpleStack> blackList = new LinkedList<SimpleStack>();
-	public static LinkedList<SimpleStack> failed = new LinkedList<SimpleStack>();
-	
+
 	public static void map()
 	{
 		loadEmcFromIMC();
 		lazyInit();
 		loadEmcFromOD();
-		mapFromSmelting();
-		
-		for (int i = 0; i < 2; i++)
-		{
-			boolean canMap = false;
-			
-			do
-			{
-				canMap = false;
-				
-				for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
-				{
-					SimpleStack key = entry.getKey();
-					
-					if (emc.containsKey(key) || failed.contains(key) || blackList.contains(key))
-					{
-						continue;
-					}
-					
-					int totalEmc = 0; 
-					boolean toMap = true;
-					
-					A: for (RecipeInput rInput : entry.getValue())
-					{
-						toMap = true;
-						
-						B: for (SimpleStack simpleStack : rInput)
-						{
-							if (emc.containsKey(simpleStack))
-							{
-                                ItemStack stack = simpleStack.toItemStack();
+        mapFromSmelting();
 
-                                if (stack == null)
-                                {
-                                    toMap = false;
-                                    break B;
-                                }
-
-                                if (stack.getItem().hasContainerItem(stack))
-                                {
-                                    SimpleStack container = new SimpleStack(stack.getItem().getContainerItem(stack));
-
-                                    if (emc.containsKey(container))
-                                    {
-                                        totalEmc -= emc.get(container);
-                                    }
-                                }
-
-								totalEmc += emc.get(simpleStack);
-							}
-							else
-							{
-								toMap = false;
-								break B;
-							}
-						}
-						
-						if (toMap)
-						{
-							totalEmc =  (int) Math.ceil(totalEmc / (double) key.qnty);
-							
-							if (totalEmc <= 0)
-							{
-								failed.add(key);
-								continue;
-							}
-							
-							addMapping(key, totalEmc);
-							canMap = true;
-							
-							break A;
-						}
-					}
-				}
-				
-			}
-			while (canMap);
-			
-			mapFromSmelting();
-		}
+		mapFromRecipes(2);
+        lateEmcMapping();
+        FluidMapper.map();
+        mapFromRecipes(1);
 		
-		//Makes sure items from other mods have the lowest EMC possible
-		for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
-		{
-			if (!emc.containsKey(entry.getKey()) || entry.getKey().toString().startsWith("minecraft:") || entry.getValue().size() <= 1)
-			{
-				continue;
-			}
-			
-			int currentEmc = emc.get(entry.getKey());
-			int minEmc = currentEmc;
-			
-			for (RecipeInput input : entry.getValue())
-			{
-				int emc = 0;
-				
-				for (SimpleStack s : input.getInputs())
-				{
-					if (!EMCMapper.emc.containsKey(s))
-					{
-						emc = 0;
-						break;
-					}
-					
-					else 
-					{
-						emc += EMCMapper.emc.get(s);
-					}
-				}
-				
-				if (emc > 0 && emc < minEmc)
-				{
-					minEmc = (int) Math.ceil(emc / (double) entry.getKey().qnty);
-				}
-			}
-			
-			if (minEmc < currentEmc)
-			{
-				emc.put(entry.getKey(), minEmc);
-			}
-		}
-		
-		failed.clear();
-		
+        assertMinEmcValues();
+
 		Transmutation.loadCompleteKnowledge();
 		FuelMapper.loadMap();
 	}
-	
-	public static void mapFromSmelting()
+
+    private static void mapFromRecipes(int numRuns)
+    {
+        for (int i = 0; i < numRuns; i++)
+        {
+            boolean canMap = false;
+
+            do
+            {
+                canMap = false;
+
+                for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
+                {
+                    SimpleStack key = entry.getKey();
+
+                    if (mapContains(key) || blacklistContains(key))
+                    {
+                        continue;
+                    }
+
+                    double totalEmc = 0;
+                    boolean toMap = true;
+
+                    A: for (RecipeInput rInput : entry.getValue())
+                    {
+                        toMap = true;
+
+                        B: for (Object obj : rInput)
+                        {
+                            SimpleStack input = null;
+
+                            if (obj instanceof SimpleStack)
+                            {
+                                if (mapContains((SimpleStack) obj))
+                                {
+                                    input = (SimpleStack) obj;
+                                }
+                            }
+                            else
+                            {
+                                for (SimpleStack s : (ArrayList<SimpleStack>) obj)
+                                {
+                                    if (mapContains(s))
+                                    {
+                                        input = s;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (input == null)
+                            {
+                                toMap = false;
+                                break B;
+                            }
+
+                            ItemStack stack = input.toItemStack();
+
+                            if (stack == null)
+                            {
+                                toMap = false;
+                                break B;
+                            }
+
+                            if (stack.getItem().hasContainerItem(stack))
+                            {
+                                SimpleStack container = new SimpleStack(stack.getItem().getContainerItem(stack));
+
+                                if (mapContains(container))
+                                {
+                                    totalEmc -= getEmcValue(container);
+                                }
+                            }
+
+                            totalEmc += getEmcValue(input);
+                        }
+
+                        if (toMap)
+                        {
+                            totalEmc =  Math.ceil(totalEmc / (double) key.qnty);
+
+                            if (totalEmc > 0)
+                            {
+                                addMapping(key, (int) totalEmc);
+                                canMap = true;
+                                break A;
+                            }
+                            else
+                            {
+                                toMap = false;
+                            }
+                        }
+                    }
+                }
+
+            }
+            while (canMap);
+
+            mapFromSmelting();
+        }
+    }
+
+    private static void assertMinEmcValues()
+    {
+        for (Entry<SimpleStack, LinkedList<RecipeInput>> entry : RecipeMapper.getEntrySet())
+        {
+            if (!mapContains(entry.getKey()) || entry.getKey().toString().startsWith("minecraft:") || entry.getValue().size() <= 1)
+            {
+                continue;
+            }
+
+            int currentEmc = getEmcValue(entry.getKey());
+            double minEmc = currentEmc;
+
+            for (RecipeInput input : entry.getValue())
+            {
+                double recipeEmc = 0;
+
+                for (Object obj : input)
+                {
+                    SimpleStack stack = null;
+
+                    if (obj instanceof SimpleStack)
+                    {
+                        if (mapContains((SimpleStack) obj))
+                        {
+                            stack = (SimpleStack) obj;
+                        }
+                    }
+                    else
+                    {
+                        int itemEmc = -1;
+
+                        for (SimpleStack s : (ArrayList<SimpleStack>) obj)
+                        {
+                            if (mapContains(s))
+                            {
+                                if (itemEmc == -1 || getEmcValue(s) < itemEmc)
+                                {
+                                    stack = s;
+                                    itemEmc = getEmcValue(s);
+                                }
+                            }
+                        }
+                    }
+
+                    if (stack == null)
+                    {
+                        recipeEmc = 0;
+                        break;
+                    }
+                    else
+                    {
+                        recipeEmc += EMCMapper.getEmcValue(stack);
+                    }
+                }
+
+                if (recipeEmc > 0)
+                {
+                    recipeEmc = Math.ceil(recipeEmc / (double) entry.getKey().qnty);
+
+                    if (recipeEmc < minEmc)
+                    {
+                        minEmc = recipeEmc;
+                    }
+                }
+            }
+
+            if (minEmc < currentEmc)
+            {
+                addMappingWithOverwrite(entry.getKey(), (int) minEmc);
+            }
+        }
+    }
+
+	private static void mapFromSmelting()
 	{
 		HashMap<ItemStack, ItemStack> smelting = (HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList();
 		
@@ -166,7 +226,7 @@ public final class EMCMapper
 			{
 				continue;
 			}
-			
+
 			try
 			{
 				SimpleStack input = new SimpleStack(key);
@@ -177,55 +237,88 @@ public final class EMCMapper
                     continue;
                 }
 			
-				if (emc.containsKey(input) && !emc.containsKey(result))
+				if (mapContains(input) && !mapContains(result))
 				{
-					if (failed.contains(result) || blackList.contains(result))
+					if (blacklistContains(result))
 					{
 						continue;
 					}
 				
-					int totalEmc = emc.get(input) / result.qnty;
-				
-					if (totalEmc <= 0)
-					{
-						continue;
-					}
-				
+					int totalEmc = getEmcValue(input) / result.qnty;
+
 					addMapping(result, totalEmc);
 				}
-				else if (!emc.containsKey(input) && emc.containsKey(result))
+				else if (!mapContains(input) && mapContains(result))
 				{
-					if (failed.contains(input) || blackList.contains(input))
+					if (blacklistContains(input))
 					{
 						continue;
 					}
 				
-					int totalEmc = emc.get(result) * result.qnty;
-					
-					if (totalEmc <= 0)
-					{
-						continue;
-					}
-				
+					int totalEmc = getEmcValue(result) * result.qnty;
 					addMapping(input, totalEmc);
 				}
 			}
 			catch (Exception e) {}
 		}
 	}
-	
+
+    private static boolean blacklistContains(SimpleStack stack)
+    {
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        return blackList.contains(copy);
+    }
+
+    private static void addToBlacklist(SimpleStack stack)
+    {
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        if (!blackList.contains(copy))
+        {
+            blackList.add(copy);
+        }
+    }
+
+    public static boolean mapContains(SimpleStack key)
+    {
+        SimpleStack copy = key.copy();
+        copy.qnty = 1;
+
+        return emc.containsKey(copy);
+    }
+
+    public static int getEmcValue(SimpleStack stack)
+    {
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        return emc.get(copy);
+    }
+
 	public static void clearMaps()
 	{
 		emc.clear();
-		blackList.clear();
-		
+		//blackList.clear();
 	}
 	
 	public static void addMapping(ItemStack stack, int value)
 	{
 		addMapping(new SimpleStack(stack), value);
 	}
-	
+
+    public static void addMapping(String unlocalName, int meta, int value)
+    {
+        ItemStack stack = Utils.getStackFromString(unlocalName, meta);
+
+        if (stack != null)
+        {
+            addMapping(stack, value);
+        }
+    }
+
 	public static void addMapping(String odName, int value)
 	{
 		for (ItemStack stack : Utils.getODItems(odName))
@@ -233,6 +326,17 @@ public final class EMCMapper
 			addMapping(stack, value);
 		}
 	}
+
+    public static void addMapping(String modid, String name, int meta, int emc)
+    {
+
+        Item item = (Item) Item.itemRegistry.getObject(modid + ":" + name);
+
+        if (item != null)
+        {
+            addMapping(new SimpleStack(new ItemStack(item, 1, meta)), emc);
+        }
+    }
 	
 	public static boolean addIMCRegistration(ItemStack stack, int value)
 	{
@@ -249,20 +353,30 @@ public final class EMCMapper
 	
 	private static void addMapping(SimpleStack stack, int value)
 	{
-		if (emc.containsKey(stack))
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+		if (emc.containsKey(copy))
 		{
 			return;
 		}
 		
-		if (value <= 0)
+		if (value > 0)
 		{
-			blackList.add(stack);
-		}
-		else
-		{
-			emc.put(stack, value);
+			emc.put(copy, value);
 		}
 	}
+
+    private static void addMappingWithOverwrite(SimpleStack stack, int value)
+    {
+        SimpleStack copy = stack.copy();
+        copy.qnty = 1;
+
+        if (value > 0)
+        {
+            emc.put(copy, value);
+        }
+    }
 	
 	private static void lazyInit()
     {
@@ -315,9 +429,6 @@ public final class EMCMapper
     	addMapping(new ItemStack(Items.bone), 144);
     	addMapping(new ItemStack(Blocks.mossy_cobblestone), 145);
     	addMapping(new ItemStack(Items.saddle), 192);
-    	addMapping(new ItemStack(Items.water_bucket), 769);
-    	addMapping(new ItemStack(Items.lava_bucket), 832);
-    	addMapping(new ItemStack(Items.milk_bucket), 833);
     	addMapping(new ItemStack(Items.record_11), 2048);
     	addMapping(new ItemStack(Items.record_13), 2048);
     	addMapping(new ItemStack(Items.record_blocks), 2048);
@@ -381,6 +492,8 @@ public final class EMCMapper
     	addMapping(new ItemStack(Items.filled_map), 1472);
     	addMapping(new ItemStack(Items.blaze_powder), 768);
     	addMapping(new ItemStack(Items.dye, 1, 15), 48);
+
+        addMapping("appliedenergistics2:item.ItemMultiMaterial", 1, 256);
     }
 	
 	private static void loadEmcFromIMC()
@@ -467,9 +580,10 @@ public final class EMCMapper
 		
 		//TE
 		addMapping("blockGlassHardened", 192);
-		
+
 		//IC2
 		addMapping("itemRubber", 32);
+        addMapping("ingotUranium", 4096);
 		
 		//Thaumcraft
 		addMapping("shardAir", 64);
@@ -478,6 +592,9 @@ public final class EMCMapper
 		addMapping("shardEarth", 64);
 		addMapping("shardOrder", 64);
 		addMapping("shardEntropy", 64);
+
+        //Forbidden Magic
+        addMapping("shardNether", 64);
 		
 		//Vanilla 
 		addMapping("treeLeaves", 1);
@@ -488,6 +605,12 @@ public final class EMCMapper
 		{
 			if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed"))
 			{
+                //Some exceptions in the black-listing
+                if (s.equals("dustPlastic"))
+                {
+                    continue;
+                }
+
 				for (ItemStack stack : Utils.getODItems(s))
 				{
 					if (stack == null)
@@ -495,9 +618,64 @@ public final class EMCMapper
 						continue;
 					}
 					
-					failed.add(new SimpleStack(stack));
+					addToBlacklist(new SimpleStack(stack));
 				}
 			}
 		}
 	}
+
+    private static void addRelativeEmcValue(String toSearch, int meta , Object...args)
+    {
+        ItemStack stack = Utils.getStackFromString(toSearch, meta);
+
+        if (stack == null)
+        {
+            if (OreDictionary.getOres(toSearch).isEmpty())
+            {
+                return;
+            }
+        }
+
+        int totalEmc = 0;
+
+        for (int i = 0; i < args.length - 2; i += 3)
+        {
+            try
+            {
+                String currentName = (String) args[i];
+                int currentMeta = (Integer) args[i + 1];
+                int multiplier = (Integer) args[i + 2];
+
+                ItemStack current = Utils.getStackFromString(currentName, currentMeta);
+
+                if (current == null || !Utils.doesItemHaveEmc(current))
+                {
+                    return;
+                }
+
+                totalEmc += (Utils.getEmcValue(current) * multiplier);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        if (stack != null)
+        {
+            addMapping(stack, totalEmc);
+        }
+        else
+        {
+            addMapping(toSearch, totalEmc);
+        }
+    }
+
+    private static void lateEmcMapping()
+    {
+        addRelativeEmcValue("ThermalExpansion:Frame", 6, "ThermalExpansion:Frame", 5, 1, "minecraft:redstone", 0, 40);
+        addRelativeEmcValue("ThermalExpansion:Frame", 8, "ThermalExpansion:Frame", 7, 1, "minecraft:ender_pearl", 0, 4);
+        addRelativeEmcValue("ingotSteel", 0, "minecraft:iron_ingot", 0, 1, "minecraft:coal", 1, 4);
+    }
 }

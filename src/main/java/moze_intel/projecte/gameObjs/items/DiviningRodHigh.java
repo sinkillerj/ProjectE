@@ -1,11 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Comparators;
@@ -24,8 +20,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class DiviningRodHigh extends DiviningRodMedium
 {
@@ -48,7 +48,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			List<Integer> emcValues = new ArrayList();
+			List<Integer> emcValues = new ArrayList<Integer>();
 			long totalEmc = 0;
 			int numBlocks = 0;
 			

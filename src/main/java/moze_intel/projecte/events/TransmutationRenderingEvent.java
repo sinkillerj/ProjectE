@@ -1,15 +1,14 @@
 package moze_intel.projecte.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.CoordinateBox;
-import moze_intel.projecte.utils.Utils;
-import net.minecraft.block.Block;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,12 +22,10 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class TransmutationRenderingEvent 
@@ -38,7 +35,7 @@ public class TransmutationRenderingEvent
 	private double playerX;
 	private double playerY;
 	private double playerZ;
-	private Block transmutationResult;
+	private MetaBlock transmutationResult;
 	
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
@@ -47,7 +44,7 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				RenderItem.getInstance().renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), new ItemStack(transmutationResult), 0, 0);
+				RenderItem.getInstance().renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), transmutationResult.toItemStack(), 0, 0);
 			}
 		}
 	}
@@ -78,9 +75,9 @@ public class TransmutationRenderingEvent
         if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
         {
         	ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
-        	Block current = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-        	transmutationResult = Utils.getTransmutationResult(current, player.isSneaking());
-        	
+            MetaBlock current = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+        	transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+
         	if (transmutationResult != null)
         	{
         		byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
@@ -174,6 +171,7 @@ public class TransmutationRenderingEvent
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
+
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
 		
         Tessellator tessellator = Tessellator.instance;
@@ -232,9 +230,7 @@ public class TransmutationRenderingEvent
 	        tessellator.addVertex(b.maxX, b.minY, b.maxZ);
 	        tessellator.draw();
 		}
-		
-		
-		
+
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_LIGHTING);
@@ -242,11 +238,9 @@ public class TransmutationRenderingEvent
         GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	private void addBlockToRenderList(World world, Block current, int x, int y, int z)
+	private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z)
 	{
-		Block block = world.getBlock(x, y, z);
-		
-		if (block == current)
+		if (new MetaBlock(world, x, y, z).equals(current))
 		{
 			CoordinateBox box = new CoordinateBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
 			box.offset(-playerX, -playerY, -playerZ);

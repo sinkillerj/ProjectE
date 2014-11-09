@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 public class TransmuteTabletContainer extends Container
 {
 	public TransmuteTabletInventory table;
-	
+
 	public TransmuteTabletContainer(InventoryPlayer invPlayer, TransmuteTabletInventory inventory)
 	{
 		this.table = inventory;
@@ -146,7 +146,12 @@ public class TransmuteTabletContainer extends Container
 		{
 			return null;
 		}
-		
+
+        if (flag != 0)
+        {
+            return null;
+        }
+
 		return super.slotClick(slot, button, flag, player);
 	}
 	

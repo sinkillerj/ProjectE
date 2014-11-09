@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -9,8 +11,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class DMArmor extends ItemArmor implements ISpecialArmor
 {
@@ -26,11 +26,16 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
 	{
-		if (slot == 0 && source == DamageSource.fall) 
+        if (source.isExplosion())
+        {
+            return new ArmorProperties(1, 1.0D, 350);
+        }
+
+		if (slot == 0 && source == DamageSource.fall)
 		{
 			return new ArmorProperties(1, 1.0D, 5);
 		}
-		 
+
 		if (slot == 0 || slot == 3)
 		{
 			return new ArmorProperties(0, 0.2D, 100);

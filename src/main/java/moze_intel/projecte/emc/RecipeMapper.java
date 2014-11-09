@@ -6,13 +6,13 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.*;
-import java.util.Map.Entry;
 
-public final class RecipeMapper 
+public final class RecipeMapper
 {
 	private static LinkedHashMap<SimpleStack, LinkedList<RecipeInput>> recipes = new LinkedHashMap<SimpleStack, LinkedList<RecipeInput>>();
 	
@@ -37,7 +37,7 @@ public final class RecipeMapper
                 continue;
             }
 
-			List<ItemStack> inputs = new ArrayList<ItemStack>();
+			List<Object> inputs = new ArrayList<Object>();
 
 			if (recipe instanceof ShapedRecipes)
 			{
@@ -58,18 +58,11 @@ public final class RecipeMapper
 
 					if (obj instanceof ItemStack)
 					{
-						inputs.add((ItemStack) obj);
+                        inputs.add(obj);
 					}
 					else if (obj instanceof ArrayList)
 					{
-						ArrayList l = (ArrayList) obj;
-
-						if (l.isEmpty())
-						{
-							continue;
-						}
-
-						inputs.add((ItemStack) l.get(0));
+						inputs.add(obj);
 					}
 					else
 					{
@@ -79,9 +72,7 @@ public final class RecipeMapper
 			}
 			else if (recipe instanceof ShapelessOreRecipe)
 			{
-				ArrayList<Object> l = ((ShapelessOreRecipe) recipe).getInput();
-
-				for (Object obj : l)
+				for (Object obj : ((ShapelessOreRecipe) recipe).getInput())
 				{
 					if (obj == null)
 					{
@@ -90,18 +81,11 @@ public final class RecipeMapper
 
                     if (obj instanceof ItemStack)
 					{
-						inputs.add((ItemStack) obj);
+                        inputs.add(obj);
 					}
 					else if (obj instanceof ArrayList)
 					{
-						ArrayList l2 = (ArrayList) obj;
-
-						if (l2.isEmpty())
-						{
-							continue;
-						}
-
-						inputs.add((ItemStack) l2.get(0));
+                        inputs.add(obj);
 					}
 					else
 					{
@@ -114,17 +98,57 @@ public final class RecipeMapper
 			{
 				RecipeInput rInput = new RecipeInput();
 
-				for (ItemStack stack : inputs)
+				for (Object obj : inputs)
 				{
-					if (stack == null)
+					if (obj == null)
 					{
 						continue;
 					}
 
-					if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
-					{
-						rInput.addToInputs(stack);
-					}
+                    if (obj instanceof  ItemStack)
+                    {
+                        ItemStack stack = ((ItemStack) obj).copy();
+
+                        if (stack == null)
+                        {
+                            continue;
+                        }
+
+                        if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+                        {
+                            stack.setItemDamage(0);
+                        }
+
+                        if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+                        {
+                            rInput.addToInputs(stack);
+                        }
+                    }
+                    else
+                    {
+                        ArrayList<ItemStack> listCopy = new ArrayList<ItemStack>();
+
+                        for (ItemStack stack : (ArrayList<ItemStack>) obj)
+                        {
+                            if (stack == null)
+                            {
+                                continue;
+                            }
+
+                            if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+                            {
+                                ItemStack copy = stack.copy();
+                                copy.setItemDamage(0);
+                                listCopy.add(copy);
+                            }
+                            else
+                            {
+                                listCopy.add(stack);
+                            }
+                        }
+
+                        rInput.addToInput(listCopy);
+                    }
 				}
 
 				LinkedList<RecipeInput> currentInputs;
@@ -149,7 +173,7 @@ public final class RecipeMapper
 		}
 	}
 	
-	public static Set<Entry<SimpleStack, LinkedList<RecipeInput>>> getEntrySet()
+	public static Set<Map.Entry<SimpleStack, LinkedList<RecipeInput>>> getEntrySet()
 	{
 		return recipes.entrySet();
 	}

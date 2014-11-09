@@ -3,8 +3,8 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import net.minecraft.block.Block;
@@ -28,6 +28,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.Closeable;
@@ -39,13 +41,12 @@ import java.util.Map.Entry;
 
 public final class Utils 
 {	
-	private static HashMap<Block, Block[]> transmutations = new HashMap<Block, Block[]>();
 	private static List<Class> peacefuls = new ArrayList<Class>();
 	private static List<Class> mobs = new ArrayList<Class>();
 	
 	public static void init()
 	{
-		loadTransmutations();
+        WorldTransmutations.init();
 		loadEntityLists();
 	}
 	
@@ -62,15 +63,59 @@ public final class Utils
         {
             return false;
         }
-		
+
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
 			iStack.damage = 0;
 		}
-		
-		return EMCMapper.emc.containsKey(iStack) && !EMCMapper.blackList.contains(iStack);
+
+		return EMCMapper.mapContains(iStack);
 	}
-	
+
+    public static boolean doesItemHaveEmc(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        return doesItemHaveEmc(new ItemStack(item));
+    }
+
+    public static boolean doesBlockHaveEmc(Block block)
+    {
+        if (block == null)
+        {
+            return false;
+        }
+
+        return doesItemHaveEmc(new ItemStack(block));
+    }
+
+    public static int getEmcValue(Item item)
+    {
+        SimpleStack stack = new SimpleStack(new ItemStack(item));
+
+        if (stack.isValid() && EMCMapper.mapContains(stack))
+        {
+            return EMCMapper.getEmcValue(stack);
+        }
+
+        return 0;
+    }
+
+    public static int getEmcValue(Block Block)
+    {
+        SimpleStack stack = new SimpleStack(new ItemStack(Block));
+
+        if (stack.isValid() && EMCMapper.mapContains(stack))
+        {
+            return EMCMapper.getEmcValue(stack);
+        }
+
+        return 0;
+    }
+
 	public static int getEmcValue(ItemStack stack)
 	{
 		if (stack == null) 
@@ -84,38 +129,52 @@ public final class Utils
         {
             return 0;
         }
-		
+
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
 			iStack.damage = 0;
 			
-			if (EMCMapper.emc.containsKey(iStack))
+			if (EMCMapper.mapContains(iStack))
 			{
-				int emc = EMCMapper.emc.get(iStack);
+				int emc = EMCMapper.getEmcValue(iStack);
 				
-				int relDamage = stack.getMaxDamage() - stack.getItemDamage();
-				
-				if (relDamage == 0)
+				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
+
+				if (relDamage <= 0)
 				{
 					//Impossible?
 					return 0;
 				}
-				
-				int result = emc * relDamage / stack.getMaxDamage();
-				
-				if (result == 0)
+
+				long result = emc * relDamage;
+
+                if (result <= 0)
+                {
+                    //Congratulations, big number is big.
+                    return emc;
+                }
+
+                result /= stack.getMaxDamage();
+                result += getEnchantEmcBonus(stack);
+
+                if (result > Integer.MAX_VALUE)
+                {
+                    return emc;
+                }
+
+				if (result <= 0)
 				{
-					result = 1;
+					return 1;
 				}
-				
-				return result + getEnchantEmcBonus(stack);
+
+				return (int) result;
 			}
 		}
 		else
 		{
-			if (EMCMapper.emc.containsKey(iStack))
+			if (EMCMapper.mapContains(iStack))
 			{
-				return EMCMapper.emc.get(iStack) + getEnchantEmcBonus(stack);
+				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack);
 			}
 		}
 			
@@ -217,16 +276,6 @@ public final class Utils
 		return false;
 	}
 
-	public static Block getTransmutationResult(Block current, boolean isSneaking)
-	{
-		if (transmutations.containsKey(current))
-		{
-			return isSneaking ? transmutations.get(current)[0] : transmutations.get(current)[1];
-		}
-		
-		return null;
-	}
-	
 	public static boolean invContainsItem(IInventory inv, ItemStack toSearch)
 	{
 		for (int i = 0; i < inv.getSizeInventory(); i++)
@@ -537,13 +586,18 @@ public final class Utils
 	
 	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
 	{
+        if (player.capabilities.isCreativeMode)
+        {
+            return minFuel;
+        }
+
 		IInventory inv = player.inventory;
 		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
 		boolean metRequirement = false;
 		int decrement = 0;
 		int emcConsumed = 0;
 		
-		for (int i = 0; i < 36; i++)
+		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 			
@@ -551,11 +605,9 @@ public final class Utils
 			{
 				continue;
 			}
-			else if (stack.getItem() instanceof KleinStar)
+			else if (stack.getItem() == ObjHandler.kleinStars)
 			{
-				double value = ItemPE.getEmc(stack);
-				
-				if (value >= minFuel)
+				if (ItemPE.getEmc(stack) >= minFuel)
 				{
 					ItemPE.removeEmc(stack, minFuel);
 					player.inventoryContainer.detectAndSendChanges();
@@ -600,7 +652,7 @@ public final class Utils
 			player.inventoryContainer.detectAndSendChanges();
 			return emcConsumed;
 		}
-		
+
 		return -1;
 	}
 	
@@ -696,8 +748,8 @@ public final class Utils
 					catch (Exception e)
 					{
 						PELogger.logFatal("Couldn't retrieve OD items for: " + oreName);
-						e.printStackTrace();
-						
+                        PELogger.logFatal("Caused by: " + e.toString());
+
 						result.addAll(list);
 						break;
 					}
@@ -710,7 +762,6 @@ public final class Utils
 						result.add(copy);
 					}
 				}
-				
 			}
 			else
 			{
@@ -837,16 +888,50 @@ public final class Utils
 	 */
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
-		Object obj = Item.itemRegistry.getObject(internal);
+		Item item = (Item) Item.itemRegistry.getObject(internal);
 		
-		if (obj == null)
+		if (item == null)
 		{
 			return null;
 		}
 		
-		return new ItemStack((Item) obj, 1, metaData);
+		return new ItemStack(item, 1, metaData);
 	}
-	
+
+    public static boolean canFillTank(IFluidHandler tank, Fluid fluid, int side)
+    {
+        ForgeDirection dir = ForgeDirection.getOrientation(side);
+
+        if (tank.canFill(dir, fluid))
+        {
+            boolean canFill = false;
+
+            for (FluidTankInfo tankInfo : tank.getTankInfo(dir))
+            {
+                if (tankInfo.fluid == null)
+                {
+                    canFill = true;
+                    break;
+                }
+
+                if (tankInfo.fluid.getFluid() == fluid && tankInfo.fluid.amount < tankInfo.capacity)
+                {
+                    canFill = true;
+                    break;
+                }
+            }
+
+            return canFill;
+        }
+
+        return false;
+    }
+
+    public static void fillTank(IFluidHandler tank, Fluid fluid, int side, int quantity)
+    {
+        tank.fill(ForgeDirection.getOrientation(side), new FluidStack(fluid, quantity), true);
+    }
+
     public static void closeStream(Closeable c)
     {
         if (c != null)
@@ -868,23 +953,7 @@ public final class Utils
 		Random rand = new Random();
 	    return rand.nextInt((max - min) + 1) + min;
 	}
-	
-	private static void loadTransmutations()
-	{
-		transmutations.put(Blocks.stone, new Block[] {Blocks.cobblestone, Blocks.grass});
-		transmutations.put(Blocks.cobblestone, new Block[] {Blocks.stone, Blocks.grass});
-		transmutations.put(Blocks.grass, new Block[] {Blocks.sand, Blocks.cobblestone});
-		transmutations.put(Blocks.dirt, new Block[] {Blocks.sand, Blocks.cobblestone});
-		transmutations.put(Blocks.sand, new Block[] {Blocks.grass, Blocks.cobblestone});
-		transmutations.put(Blocks.gravel, new Block[] {Blocks.sandstone, Blocks.sand});
-		transmutations.put(Blocks.water, new Block[] {Blocks.ice, Blocks.ice});
-		transmutations.put(Blocks.ice, new Block[] {Blocks.water, Blocks.water});
-		transmutations.put(Blocks.lava, new Block[] {Blocks.obsidian, Blocks.obsidian});
-		transmutations.put(Blocks.obsidian, new Block[] {Blocks.lava, Blocks.lava});
-		transmutations.put(Blocks.melon_block, new Block[] {Blocks.pumpkin, Blocks.pumpkin});
-		transmutations.put(Blocks.pumpkin, new Block[] {Blocks.melon_block, Blocks.melon_block});
-	}
-	
+
 	private static void loadEntityLists()
 	{
 		//Peacefuls

@@ -1,19 +1,17 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.utils.Utils;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionHelper;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.utils.Utils;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 @SideOnly(Side.CLIENT)
 public class ToolTipEvent 
@@ -44,7 +42,7 @@ public class ToolTipEvent
 		if (Utils.doesItemHaveEmc(current))
 		{
 			int value = Utils.getEmcValue(current);
-			
+
 			event.toolTip.add(String.format("EMC: %,d", value));
 			
 			if (current.stackSize > 1)
@@ -83,5 +81,12 @@ public class ToolTipEvent
 				event.toolTip.add(String.format("Stored XP: %,d", current.stackTagCompound.getInteger("StoredXP")));
 			}
 		}
-	}
+
+        Block block = Block.getBlockFromItem(current.getItem());
+
+        if (block != null && FluidMapper.doesFluidHaveEMC(block))
+        {
+            event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
+        }
+    }
 }

@@ -2,11 +2,12 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -15,9 +16,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.IFluidHandler;
+import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble
 {
@@ -27,21 +32,35 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 	}
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (!world.isRemote)
-		{
-			if (shootProjectile(player, stack))
-			{
-				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			}
-		}
-		return stack;
-	}
-	
-	@Override
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+    {
+        if (!world.isRemote)
+        {
+            TileEntity tile = world.getTileEntity(x, y, z);
+
+            if (tile instanceof IFluidHandler)
+            {
+                IFluidHandler tank = (IFluidHandler) tile;
+
+                if (Utils.canFillTank(tank, FluidRegistry.LAVA, sideHit))
+                {
+                    int consumed = (int) Utils.consumePlayerFuel(player, 32);
+
+                    if (consumed != -1)
+                    {
+                        Utils.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000 * (consumed / 32));
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
@@ -90,17 +109,34 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
-		World world = player.worldObj;
-		world.spawnEntityInWorld(new EntityLavaProjectile(world, player));
-		return true;
+        if (Utils.consumePlayerFuel(player, 32) != -1)
+        {
+            player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
+            return true;
+        }
+
+        return false;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "volcanite_amulet"));
 	}
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+    {
+        if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+        {
+            list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a lava projectile");
+        }
+
+        list.add("Right-click to fill tanks.");
+        list.add("All operations cost 32 EMC!");
+    }
 	
 	@Override
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)

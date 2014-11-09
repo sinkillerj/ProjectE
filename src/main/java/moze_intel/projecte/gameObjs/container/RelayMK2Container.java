@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.container;
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -20,7 +19,7 @@ public class RelayMK2Container extends Container
 		tile.openInventory();
 		
 		//Burn slot
-        this.addSlotToContainer(new SlotRelayKlein(tile, 0, 84, 44));
+        this.addSlotToContainer(new SlotRelayInput(tile, 0, 84, 44));
         
         //Inventory buffer
         for (int i = 0; i <= 2; i++) 
@@ -28,7 +27,7 @@ public class RelayMK2Container extends Container
             this.addSlotToContainer(new SlotRelayInput(tile, i * 4 + j + 1, 26 + i * 18, 18 + j * 18));
         
         //Klein star slot
-        this.addSlotToContainer(new SlotRelayInput(tile, 13, 144, 44));
+        this.addSlotToContainer(new SlotRelayKlein(tile, 13, 144, 44));
         
         //Main player inventory
         for (int i = 0; i < 3; i++) 

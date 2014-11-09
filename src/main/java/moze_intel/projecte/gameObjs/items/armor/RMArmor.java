@@ -28,6 +28,11 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
 	{
+        if (source.isExplosion())
+        {
+            return new ArmorProperties(1, 1.0D, 500);
+        }
+
 		if (slot == 0 && source == DamageSource.fall) 
 		{
 			return new ArmorProperties(1, 1.0D, 10);
@@ -35,10 +40,10 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 		
 		if (slot == 0 || slot == 3)
 		{
-			return new ArmorProperties(0, 0.2D, 150);
+			return new ArmorProperties(0, 0.2D, 250);
 		}
 		
-		return new ArmorProperties(0, 0.3D, 225);
+		return new ArmorProperties(0, 0.3D, 350);
 	}
 
 	@Override

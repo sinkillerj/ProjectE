@@ -2,21 +2,25 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.IFluidHandler;
+import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
 {
@@ -25,19 +29,28 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		this.setUnlocalizedName("evertide_amulet");
 		this.setMaxStackSize(1);
 	}
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (!world.isRemote)
-		{
-			if (shootProjectile(player, stack))
-			{
-				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			}
-		}
-		return stack;
-	}
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+    {
+        if (!world.isRemote)
+        {
+            TileEntity tile = world.getTileEntity(x, y, z);
+
+            if (tile instanceof IFluidHandler)
+            {
+                IFluidHandler tank = (IFluidHandler) tile;
+
+                if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
+                {
+                    Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
@@ -85,12 +98,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
 		World world = player.worldObj;
+
 		if (!world.provider.isHellWorld)
 		{
 			world.spawnEntityInWorld(new EntityWaterProjectile(world, player));
-			world.playSoundAtEntity(player, "projecte:waterball", 0.6F, 1.0F);
 			return true;
 		}
+
 		return false;
 	}
 	
@@ -100,6 +114,19 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "evertide_amulet"));//"ee2:rings/evertide_amulet");
 	}
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+    {
+        if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+        {
+            list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
+        }
+
+        list.add("Right-click to fill tanks");
+        list.add("All operations are completely free!");
+    }
 	
 	@Override
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)

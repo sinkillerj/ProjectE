@@ -3,7 +3,6 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPKT;
 import net.minecraft.command.ICommandSender;
 
 public class RemoveEmcCMD extends ProjectEBaseCMD
@@ -62,7 +61,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
             EMCMapper.clearMaps();
             CustomEMCParser.readUserData();
             EMCMapper.map();
-            PacketHandler.sendToAll(new ClientSyncPKT());
+            PacketHandler.sendFragmentedEmcPacketToAll();
 
             sendSuccess(sender, "Removed EMC value for: " + name);
         }
