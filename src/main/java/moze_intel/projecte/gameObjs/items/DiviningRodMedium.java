@@ -96,7 +96,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 							
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
-								if (entry.getKey() == null)
+								if (entry == null || entry.getKey() == null)
 								{
 									continue;
 								}

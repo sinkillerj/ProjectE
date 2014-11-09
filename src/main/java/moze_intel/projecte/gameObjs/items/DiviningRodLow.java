@@ -83,7 +83,7 @@ public class DiviningRodLow extends ItemPE
 							
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
-								if (entry.getKey() == null)
+								if (entry == null || entry.getKey() == null)
 								{
 									continue;
 								}
