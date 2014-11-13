@@ -51,6 +51,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 		
+		if (mop == null)
+		{
+			return stack;
+		}
+		
         MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
 
 		if (mBlock.getBlock() != Blocks.air)

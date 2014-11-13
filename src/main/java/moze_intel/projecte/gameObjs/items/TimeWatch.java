@@ -71,25 +71,25 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 
         if (timeControl == 1)
         {
-            long newTime = world.getWorldTime() + ((getCharge(stack) + 1) * 4);
-
-            if (newTime > 24000)
+            if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
             {
-                newTime = 0;
+                world.setWorldTime(Long.MAX_VALUE);
             }
-
-            world.setWorldTime(newTime);
+            else
+            {
+                world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+            }
         }
         else if (timeControl == 2)
         {
-            long newTime = world.getWorldTime() - ((getCharge(stack) + 1) * 4);
-
-            if (newTime < 0)
+            if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
             {
-                newTime = 24000;
+                world.setWorldTime(0);
             }
-
-            world.setWorldTime(newTime);
+            else
+            {
+                world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+            }
         }
 
         if (stack.getItemDamage() == 0)
