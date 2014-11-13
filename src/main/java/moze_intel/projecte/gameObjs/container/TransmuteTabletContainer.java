@@ -147,11 +147,6 @@ public class TransmuteTabletContainer extends Container
 			return null;
 		}
 
-        if (flag != 0)
-        {
-            return null;
-        }
-
 		return super.slotClick(slot, button, flag, player);
 	}
 	
