@@ -20,7 +20,7 @@ public class NovaCatalyst extends BlockTNT
 	
 	public NovaCatalyst()
 	{
-		this.setBlockName("nova_catalyst");
+		this.setBlockName("pe_nova_catalyst");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	

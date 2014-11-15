@@ -19,13 +19,13 @@ public class ItemFuelBlock extends ItemBlock
 		switch (stack.getItemDamage())
 		{
 			case 0:
-				return "tile.fuel_block_0";
+				return "tile.pe_fuel_block_0";
 			case 1:
-				return "tile.fuel_block_1";
+				return "tile.pe_fuel_block_1";
 			case 2:
-				return "tile.fuel_block_2";
+				return "tile.pe_fuel_block_2";
 			default:
-				return "tile.fuel_block_null";
+				return "tile.pe_fuel_block_null";
 		}
     }
 	

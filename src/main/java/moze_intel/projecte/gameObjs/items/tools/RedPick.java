@@ -1,12 +1,9 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.IItemCharge;
-import moze_intel.projecte.gameObjs.items.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
@@ -21,17 +18,16 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedPick extends ItemMode
 {
@@ -130,7 +126,7 @@ public class RedPick extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != Blocks.air && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -148,7 +144,7 @@ public class RedPick extends ItemMode
 		{
 			int offset = this.getCharge(stack) + 3;
 			CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
-			List<ItemStack> drops = new ArrayList();
+			List<ItemStack> drops = new ArrayList<ItemStack>();
 			
 			for (int x = (int) box.minX; x <= box.maxX; x++)
 				for (int y = (int) box.minY; y <= box.maxY; y++)
@@ -156,7 +152,7 @@ public class RedPick extends ItemMode
 					{
 						Block block = world.getBlock(x, y, z);
 						
-						if (Utils.isOre(block) && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+						if (Utils.isOre(block) && block.getBlockHardness(world, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 						{
 							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}

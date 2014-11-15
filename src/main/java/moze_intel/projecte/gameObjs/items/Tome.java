@@ -49,7 +49,7 @@ public class Tome extends ItemPE
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
     {
-        list.add("Unlocks all items with an EMC value in the table.");
+        list.add("Unlocks all items with an EMC value in the tile.");
     }
 }
 

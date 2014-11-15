@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotCollectorLock extends Slot 
 {
-	public SlotCollectorLock(IInventory inventory, int slotIndex, int xPos, int yPos) 
+	public SlotCollectorLock(IInventory inventory, int slotIndex, int xPos, int yPos)
 	{
 		super(inventory, slotIndex, xPos, yPos);
 	}
-	
-	@Override
+
+    @Override
 	public boolean isItemValid(ItemStack stack)
     {
 		if (stack == null)

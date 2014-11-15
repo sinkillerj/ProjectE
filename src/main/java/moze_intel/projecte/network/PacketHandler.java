@@ -74,7 +74,7 @@ public final class PacketHandler
         }
 
         PELogger.logInfo("Sent EMC data packets to: " + player.getCommandSenderName());
-        PELogger.logInfo("Total packets: " + counter);
+        PELogger.logDebug("Total packets: " + counter);
     }
 
     public static void sendFragmentedEmcPacketToAll()
@@ -110,7 +110,7 @@ public final class PacketHandler
         }
 
         PELogger.logInfo("Sent EMC data packets to all players.");
-        PELogger.logInfo("Total packets: " + counter);
+        PELogger.logDebug("Total packets per player: " + counter);
     }
 
 	/**

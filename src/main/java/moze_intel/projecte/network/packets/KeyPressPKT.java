@@ -1,14 +1,11 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.IExtraFunction;
-import moze_intel.projecte.gameObjs.items.IItemCharge;
-import moze_intel.projecte.gameObjs.items.IModeChanger;
-import moze_intel.projecte.gameObjs.items.IProjectileShooter;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
-import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.api.IItemCharge;
+import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayerMP;

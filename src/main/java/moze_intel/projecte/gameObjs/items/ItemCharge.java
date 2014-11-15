@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.IItemCharge;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -18,7 +18,7 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 	{
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setUnlocalizedName("dm_armor_"+armorType);
+		this.setUnlocalizedName("pe_dm_armor_"+armorType);
 		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
 	}

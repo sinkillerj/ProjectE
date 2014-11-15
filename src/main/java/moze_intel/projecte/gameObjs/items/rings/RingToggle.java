@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import moze_intel.projecte.gameObjs.items.IModeChanger;
+import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -57,7 +57,14 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 		ringOn = register.registerIcon(this.getTexture("rings", name+"_on"));
 		ringOff = register.registerIcon(this.getTexture("rings", name+"_off"));
 	}
-	
+
+    @Override
+    public byte getMode(ItemStack stack)
+    {
+        return (byte) stack.getItemDamage();
+    }
+
+    @Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)

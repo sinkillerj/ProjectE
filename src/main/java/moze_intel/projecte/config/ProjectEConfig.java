@@ -9,6 +9,7 @@ public final class ProjectEConfig
 {
 	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
+    public static boolean enableDebugLog;
 	
 	public static void init(File configFile)
 	{
@@ -17,9 +18,10 @@ public final class ProjectEConfig
 		try
 		{
 			config.load();
-			
-			showUnlocalizedNames = config.getBoolean("Show unlocalized names in tool-tips", "Misc", false, "Set this to true to show item unlocalized names (useful for custom EMC registration)");
-			showODNames = config.getBoolean("Show Ore-Dictionary names in tool-tips", "Misc", false, "Set this to true to show item Ore Dictionary names (useful for custom EMC registration)");
+
+            enableDebugLog = config.getBoolean("debugLogging", "Misc", false, "Enable a more verbose debug logging");
+			showUnlocalizedNames = config.getBoolean("unToolTips", "Misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
+			showODNames = config.getBoolean("odToolTips", "Misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}

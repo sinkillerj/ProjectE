@@ -29,7 +29,7 @@ public class Collector extends BlockDirection
 	public Collector(int tier) 
 	{
 		super(Material.glass);
-		this.setBlockName("collector_MK"+Integer.toString(tier));
+		this.setBlockName("pe_collector_MK" + tier);
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(0.3f);
 		this.tier = tier;

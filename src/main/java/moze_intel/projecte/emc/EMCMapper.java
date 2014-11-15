@@ -58,7 +58,7 @@ public final class EMCMapper
                         continue;
                     }
 
-                    double totalEmc = 0;
+                    int totalEmc = 0;
                     boolean toMap = true;
 
                     A: for (RecipeInput rInput : entry.getValue())
@@ -117,11 +117,11 @@ public final class EMCMapper
 
                         if (toMap)
                         {
-                            totalEmc =  Math.ceil(totalEmc / (double) key.qnty);
+                            totalEmc =  totalEmc / key.qnty;
 
                             if (totalEmc > 0)
                             {
-                                addMapping(key, (int) totalEmc);
+                                addMapping(key, totalEmc);
                                 canMap = true;
                                 break A;
                             }
@@ -150,11 +150,11 @@ public final class EMCMapper
             }
 
             int currentEmc = getEmcValue(entry.getKey());
-            double minEmc = currentEmc;
+            int minEmc = currentEmc;
 
             for (RecipeInput input : entry.getValue())
             {
-                double recipeEmc = 0;
+                int recipeEmc = 0;
 
                 for (Object obj : input)
                 {
@@ -197,7 +197,7 @@ public final class EMCMapper
 
                 if (recipeEmc > 0)
                 {
-                    recipeEmc = Math.ceil(recipeEmc / (double) entry.getKey().qnty);
+                    recipeEmc = recipeEmc / entry.getKey().qnty;
 
                     if (recipeEmc < minEmc)
                     {
@@ -208,7 +208,7 @@ public final class EMCMapper
 
             if (minEmc < currentEmc)
             {
-                addMappingWithOverwrite(entry.getKey(), (int) minEmc);
+                addMappingWithOverwrite(entry.getKey(), minEmc);
             }
         }
     }
@@ -263,6 +263,24 @@ public final class EMCMapper
 		}
 	}
 
+    public static void addToBlackList(ItemStack stack)
+    {
+        SimpleStack s = new SimpleStack(stack);
+
+        if (s.isValid())
+        {
+            addToBlacklist(s);
+        }
+    }
+
+    public static void addToBlackList(String odName)
+    {
+        for (ItemStack stack : Utils.getODItems(odName))
+        {
+            addToBlackList(stack);
+        }
+    }
+
     private static boolean blacklistContains(SimpleStack stack)
     {
         SimpleStack copy = stack.copy();
@@ -301,7 +319,7 @@ public final class EMCMapper
 	public static void clearMaps()
 	{
 		emc.clear();
-		//blackList.clear();
+        blackList.clear();
 	}
 	
 	public static void addMapping(ItemStack stack, int value)
@@ -356,7 +374,7 @@ public final class EMCMapper
         SimpleStack copy = stack.copy();
         copy.qnty = 1;
 
-		if (emc.containsKey(copy))
+		if (emc.containsKey(copy) || blackList.contains(copy))
 		{
 			return;
 		}
@@ -500,7 +518,14 @@ public final class EMCMapper
 	{
 		for (Entry<SimpleStack, Integer> entry : IMCregistrations.entrySet())
 		{
-			addMapping(entry.getKey(), entry.getValue());
+            if (entry.getValue() <= 0)
+            {
+                addToBlacklist(entry.getKey());
+            }
+            else
+            {
+                addMapping(entry.getKey(), entry.getValue());
+            }
 		}
 	}
 	

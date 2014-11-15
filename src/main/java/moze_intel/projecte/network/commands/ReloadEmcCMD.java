@@ -3,6 +3,7 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.TileEntityHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
@@ -28,6 +29,7 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
+        TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
 		
 		sender.addChatMessage(new ChatComponentText("[ProjectE] Done! Sending updates to clients."));
         PacketHandler.sendFragmentedEmcPacketToAll();

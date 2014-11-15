@@ -2,7 +2,11 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.TileEntityHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class SetEmcCMD extends ProjectEBaseCMD
 {
@@ -27,77 +31,82 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		if (params.length < 2)
-		{
-			sendError(sender, "Error: command needs parameters!");
-			return;
-		}
-
-        String name = params[0];
-        int meta = 0;
-        boolean isOD = !name.contains(":");
-
-        if (!isOD && params.length > 2)
+        if (params.length < 1)
         {
-            try
-            {
-                meta = Integer.valueOf(params[1]);
-            }
-            catch (NumberFormatException e)
-            {
-                sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a number!");
-                return;
-            }
-
-            if (meta < 0)
-            {
-                sendError(sender, "Error: the metadata needs to be grater or equal to 0!");
-                return;
-            }
+            sendError(sender, "Error: command needs parameters!");
+            return;
         }
 
-        int emc = 0;
+        String name;
+        int meta;
+        int emc;
 
-        if (isOD)
+        if (params.length == 1)
         {
-            try
+            ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem();
+
+            if (heldItem == null)
             {
-                emc = Integer.valueOf(params[1]);
-            }
-            catch (NumberFormatException e)
-            {
-                sendError(sender, "Error: the EMC passed (" + params[1] + ") is not a number!");
+                sendError(sender, "Error: player isn't holding any item!");
                 return;
+            }
+
+            name = Item.itemRegistry.getNameForObject(heldItem.getItem());
+            meta = heldItem.getItemDamage();
+            emc = parseInteger(params[0]);
+
+            if (emc < 0)
+            {
+                sendError(sender, "Error: " + params[0] + " isn't a valid number!");
             }
         }
         else
         {
-            String sEmc;
+            name = params[0];
+            meta = 0;
+            boolean isOD = !name.contains(":");
 
-            if (params.length > 2)
+            if (!isOD)
             {
-                sEmc = params[2];
+                if (params.length > 2)
+                {
+                    meta = parseInteger(params[1]);
+
+                    if (meta < 0)
+                    {
+                        sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+                        return;
+                    }
+
+                    emc = parseInteger(params[2]);
+
+                    if (emc < 0)
+                    {
+                        sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+                        return;
+                    }
+                }
+                else
+                {
+                    emc = parseInteger(params[1]);
+
+                    if (emc < 0)
+                    {
+                        sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+                        return;
+                    }
+                }
             }
             else
             {
-                sEmc = params[1];
-            }
+                emc = parseInteger(params[1]);
 
-            try
-            {
-                emc = Integer.valueOf(sEmc);
+                if (emc < 0)
+                {
+                    sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+                    return;
+                }
             }
-            catch (NumberFormatException e)
-            {
-                sendError(sender, "Error: the EMC passed (" + sEmc + ") is not a number!");
-                return;
-            }
-        }
-
-        if (emc <= 0)
-        {
-            sendError(sender, "Error: the EMC value needs to be greater than 0!");
-            return;
         }
 
         if (CustomEMCParser.addToFile(name, meta, emc))
@@ -105,7 +114,9 @@ public class SetEmcCMD extends ProjectEBaseCMD
             EMCMapper.clearMaps();
             CustomEMCParser.readUserData();
             EMCMapper.map();
-            //PacketHandler.sendToAll(new ClientSyncPKT());
+            TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+
+            PacketHandler.sendFragmentedEmcPacketToAll();
 
             sendSuccess(sender, "Registered EMC value for: " + name + "(" + emc + ")");
         }

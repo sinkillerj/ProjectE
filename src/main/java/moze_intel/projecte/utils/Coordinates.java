@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 
 public class Coordinates
@@ -15,6 +16,13 @@ public class Coordinates
 		this.y = y;
 		this.z = z;
 	}
+
+    public Coordinates(TileEntity tile)
+    {
+        this.x = tile.xCoord;
+        this.y = tile.yCoord;
+        this.z = tile.zCoord;
+    }
 	
 	public Coordinates(Entity ent)
 	{
@@ -39,7 +47,7 @@ public class Coordinates
 	@Override
 	public String toString()
 	{
-		return x+":"+y+":"+z;
+		return x + ":" + y + ":" + z;
 	}
 	
 	@Override

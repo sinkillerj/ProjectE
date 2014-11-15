@@ -3,7 +3,10 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.TileEntityHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class RemoveEmcCMD extends ProjectEBaseCMD
 {
@@ -28,31 +31,35 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		if (params.length < 1)
-		{
-			sendError(sender, "Error: command needs parameters!");
-			return;
-		}
-
-        String name = params[0];
+        String name = "";
         int meta = 0;
 
-        if (name.contains(":") && params.length > 1)
+        if (params.length == 0)
         {
-            try
+            ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem();
+
+            if (heldItem == null)
             {
-                meta = Integer.valueOf(params[1]);
-            }
-            catch (NumberFormatException e)
-            {
-                sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a number!");
+                sendError(sender, "Error: player isn't holding any item!");
                 return;
             }
 
-            if (meta < 0)
+            name = Item.itemRegistry.getNameForObject(heldItem.getItem());
+            meta = heldItem.getItemDamage();
+        }
+        else
+        {
+            name = params[0];
+
+            if (params.length > 1)
             {
-                sendError(sender, "Error: the metadata needs to be grater or equal to 0!");
-                return;
+                meta = parseInteger(params[1]);
+
+                if (meta < 0)
+                {
+                    sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a valid number!");
+                    return;
+                }
             }
         }
 
@@ -61,6 +68,8 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
             EMCMapper.clearMaps();
             CustomEMCParser.readUserData();
             EMCMapper.map();
+            TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+
             PacketHandler.sendFragmentedEmcPacketToAll();
 
             sendSuccess(sender, "Removed EMC value for: " + name);

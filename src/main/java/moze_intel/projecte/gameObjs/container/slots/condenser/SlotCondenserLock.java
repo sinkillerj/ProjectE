@@ -1,24 +1,31 @@
 package moze_intel.projecte.gameObjs.container.slots.condenser;
 
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotCondenserLock extends Slot 
 {
-	private CondenserTile tile;
-	
-	public SlotCondenserLock(CondenserTile inventory, int slotIndex, int xPos, int yPos) 
+    private CondenserContainer container;
+
+	public SlotCondenserLock(CondenserContainer container, int slotIndex, int xPos, int yPos)
 	{
-		super(inventory, slotIndex, xPos, yPos);
-		tile = inventory;
+		super(container.tile, slotIndex, xPos, yPos);
+		this.container = container;
 	}
-	
+
 	@Override
 	public boolean isItemValid(ItemStack stack)
     {
-        return Utils.doesItemHaveEmc(stack);
+        if (stack != null && Utils.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
+        {
+            this.putStack(Utils.getNormalizedStack(stack));
+            container.tile.checkLockAndUpdate();
+            container.detectAndSendChanges();
+        }
+
+        return false;
     }
 	
 	@Override

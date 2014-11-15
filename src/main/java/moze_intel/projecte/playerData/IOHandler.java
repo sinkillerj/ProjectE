@@ -1,15 +1,15 @@
 package moze_intel.projecte.playerData;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
-
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
 
 public final class IOHandler
 {
@@ -89,7 +89,7 @@ public final class IOHandler
 			{
 				NBTTagCompound subTag = list.getCompoundTagAt(i);
 				
-				LinkedList<ItemStack> stackList = new LinkedList();
+				LinkedList<ItemStack> stackList = new LinkedList<ItemStack>();
 				
 				NBTTagList subList = subTag.getTagList("data", NBT.TAG_COMPOUND);
 				

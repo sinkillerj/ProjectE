@@ -21,11 +21,11 @@ public class ItemMatterBlock extends ItemBlock
     {
 		if (stack.getItemDamage() == 0)
 		{
-			return "tile.dm_block";
+			return "tile.pe_dm_block";
 		}
 		else
 		{
-			return "tile.rm_block";
+			return "tile.pe_rm_block";
 		}
     }
 	

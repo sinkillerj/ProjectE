@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
@@ -29,9 +29,9 @@ import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedKatar extends ItemMode
 {
@@ -145,7 +145,7 @@ public class RedKatar extends ItemMode
 			return;
 		}
 		
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (int x = (int) player.posX - (5 * charge); x <= player.posX + (5 * charge); x++)
 			for (int y = (int) player.posY - (10 * charge); y <= player.posY + (10 * charge); y++)
@@ -197,6 +197,7 @@ public class RedKatar extends ItemMode
 		else
 		{
 			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
+
 			if (MinecraftForge.EVENT_BUS.post(event))
 			{
 				return false;
@@ -272,7 +273,7 @@ public class RedKatar extends ItemMode
 			return;
 		}
 		
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (Entity ent : list)
 		{
@@ -331,7 +332,7 @@ public class RedKatar extends ItemMode
 			return;
 		}
 		
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (EntityLiving ent : list)
 		{

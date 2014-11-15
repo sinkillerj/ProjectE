@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
+import moze_intel.projecte.api.IModeChanger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;

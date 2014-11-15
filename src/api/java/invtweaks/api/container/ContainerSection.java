@@ -72,7 +72,7 @@ public enum ContainerSection {
      */
     FURNACE_FUEL,
     /**
-     * The enchantment table slot
+     * The enchantment tile slot
      */
     ENCHANTMENT,
     /**

@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -198,8 +199,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		int actualCharge = charge + 1;
 		return (10.0D * actualCharge) / 20.0D;
 	}
-	
-	@Override
+
+    @Override
+    public byte getMode(ItemStack stack)
+    {
+        return (byte) stack.getItemDamage();
+    }
+
+    @Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)

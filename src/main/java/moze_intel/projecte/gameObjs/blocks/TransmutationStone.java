@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
@@ -19,8 +19,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class TransmutationStone extends Block implements ITileEntityProvider
 {
@@ -31,7 +31,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	{
 		super(Material.rock);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("transmutation_stone");
+		this.setBlockName("pe_transmutation_stone");
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
 		this.setHardness(10.0f);
 	}

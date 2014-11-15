@@ -4,7 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.items.IModeChanger;
+import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.utils.CoordinateBox;
 import net.minecraft.block.Block;
@@ -104,8 +104,14 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	{
 		return false;
 	}
-	
-	@Override
+
+    @Override
+    public byte getMode(ItemStack stack)
+    {
+        return (byte) stack.getItemDamage();
+    }
+
+    @Override
 	public void changeMode(EntityPlayer player, ItemStack stack) 
 	{
 		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);

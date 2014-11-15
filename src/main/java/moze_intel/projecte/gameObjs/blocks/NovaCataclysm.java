@@ -20,7 +20,7 @@ public class NovaCataclysm extends BlockTNT
 	
 	public NovaCataclysm()
 	{
-		this.setBlockName("nova_cataclysm");
+		this.setBlockName("pe_nova_cataclysm");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	

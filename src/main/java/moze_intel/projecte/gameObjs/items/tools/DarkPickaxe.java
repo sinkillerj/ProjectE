@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemMode;
@@ -26,8 +25,9 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DarkPickaxe extends ItemMode
 {
@@ -126,7 +126,7 @@ public class DarkPickaxe extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != Blocks.air && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -152,7 +152,7 @@ public class DarkPickaxe extends ItemMode
 					{
 						Block block = world.getBlock(x, y, z);
 						
-						if (Utils.isOre(block) && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+						if (Utils.isOre(block) && block.getBlockHardness(world, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 						{
 							Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 						}

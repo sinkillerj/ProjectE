@@ -33,4 +33,20 @@ public abstract class ProjectEBaseCMD extends CommandBase
 	{
 		sender.addChatMessage(new ChatComponentText(message));
 	}
+
+    protected int parseInteger(String string)
+    {
+        int value;
+
+        try
+        {
+            value = Integer.parseInt(string);
+        }
+        catch (NumberFormatException e)
+        {
+            return -1;
+        }
+
+        return value;
+    }
 }

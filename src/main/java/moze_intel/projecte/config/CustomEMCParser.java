@@ -13,7 +13,7 @@ import java.util.List;
 
 public final class CustomEMCParser
 {
-    private static final String VERSION = "#0.1";
+    private static final String VERSION = "#0.2";
     private static File CONFIG;
     private static boolean loaded;
 
@@ -97,8 +97,16 @@ public final class CustomEMCParser
                         continue;
                     }
 
-                    EMCMapper.addMapping(stack, entry.emc);
-                    PELogger.logInfo("Registered custom emc for: " + entry.name + "(" + entry.emc + ")");
+                    if (entry.emc <= 0)
+                    {
+                        EMCMapper.addToBlackList(stack);
+                        PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
+                    }
+                    else
+                    {
+                        EMCMapper.addMapping(stack, entry.emc);
+                        PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
+                    }
                 }
                 else
                 {
@@ -109,8 +117,16 @@ public final class CustomEMCParser
                         continue;
                     }
 
-                    EMCMapper.addMapping(entry.name, entry.emc);
-                    PELogger.logInfo("Registered custom emc for: " + entry.name + "(" + entry.emc + ")");
+                    if (entry.emc <= 0)
+                    {
+                        EMCMapper.addToBlackList(entry.name);
+                        PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
+                    }
+                    else
+                    {
+                        EMCMapper.addMapping(entry.name, entry.emc);
+                        PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
+                    }
                 }
             }
         }
@@ -409,7 +425,7 @@ public final class CustomEMCParser
             writer.println(VERSION);
             writer.println("Custom EMC file");
             writer.println("This file is used for custom EMC registration: do NOT modify it manually.");
-            writer.println("Use the in-game commands (projecte_addEMC/removeEMC/resetEMC).");
+            writer.println("Use the in-game commands (projecte_setEMC/removeEMC/resetEMC).");
         }
         catch (IOException e)
         {

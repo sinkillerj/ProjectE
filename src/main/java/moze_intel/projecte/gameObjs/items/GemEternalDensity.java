@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.utils.Constants;
@@ -111,7 +112,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, new ArrayList());
+			setItems(gem, new ArrayList<ItemStack>());
 		}
 	}
 	
@@ -131,8 +132,8 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 						EntityLootBall loot = new EntityLootBall(world, items, player.posX, player.posY, player.posZ);
 						world.spawnEntityInWorld(loot);
 						
-						setItems(stack, new ArrayList());
-						this.setEmc(stack, 0);
+						setItems(stack, new ArrayList<ItemStack>());
+						ItemPE.setEmc(stack, 0);
 					}
 					
 					stack.setItemDamage(0);
@@ -149,21 +150,6 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		}
 		
 		return stack;
-	}
-	
-	private void changeTarget(ItemStack stack)
-	{
-		byte oldMode = stack.stackTagCompound.getByte("Target");
-		
-		if (oldMode == 4)
-		{
-			stack.stackTagCompound.setByte("Target", (byte) 0);
-		}
-		else
-		{
-			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1)); 
-		}
-		
 	}
 	
 	private String getTargetDesciption(ItemStack stack)
@@ -207,7 +193,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = new ArrayList<ItemStack>();
 		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
@@ -264,7 +250,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
-		List<ItemStack> result = new ArrayList();
+		List<ItemStack> result = new ArrayList<ItemStack>();
 		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
@@ -288,10 +274,31 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		return false;
 	}
 
-	@Override
+    @Override
+    public byte getMode(ItemStack stack)
+    {
+        if (stack.hasTagCompound())
+        {
+            return stack.stackTagCompound.getByte("Target");
+        }
+
+        return 0;
+    }
+
+    @Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		changeTarget(stack);
+        byte oldMode = getMode(stack);
+
+        if (oldMode == 4)
+        {
+            stack.stackTagCompound.setByte("Target", (byte) 0);
+        }
+        else
+        {
+            stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
+        }
+
 		player.addChatComponentMessage(new ChatComponentText("Set target to: " + getTargetDesciption(stack)));
 	}
 	

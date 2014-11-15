@@ -46,7 +46,7 @@ public final class Transmutation
 			}
 			catch (Exception e)
 			{
-				PELogger.logInfo("Failed to cache knowledge: " + e.toString());
+				PELogger.logInfo("Failed to cache knowledge for "+ stack + ": " + e.toString());
 			}
 		}
 	}

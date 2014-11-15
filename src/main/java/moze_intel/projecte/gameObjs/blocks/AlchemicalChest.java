@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -13,8 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class AlchemicalChest extends BlockDirection implements ITileEntityProvider
 {
@@ -23,7 +23,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	public AlchemicalChest() 
 	{
 		super(Material.rock);
-		this.setBlockName("alchemy_chest");
+		this.setBlockName("pe_alchemy_chest");
 		this.setBlockBounds(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
 		this.setHardness(10.0f);
 	}

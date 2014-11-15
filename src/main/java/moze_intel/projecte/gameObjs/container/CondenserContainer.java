@@ -12,15 +12,15 @@ import net.minecraft.item.ItemStack;
 
 public class CondenserContainer extends Container
 {	
-	private CondenserTile tile;
+	public CondenserTile tile;
 	
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
 		tile = condenser;
-		tile.openInventory();
+        tile.openInventory();
 		
 		//Item Lock Slot
-		this.addSlotToContainer(new SlotCondenserLock(tile, 0, 12, 6));
+		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
 		
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++) 
@@ -40,20 +40,27 @@ public class CondenserContainer extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
+        if (slotIndex == 0)
+        {
+            return null;
+        }
+
 		Slot slot = this.getSlot(slotIndex);
 		
-		if (slot == null || !slot.getHasStack()) 
+		if (slot == null || !slot.getHasStack())
 		{
 			return null;
 		}
 		
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
-		
+
 		if (slotIndex <= 91)
 		{
 			if (!this.mergeItemStack(stack, 92, 127, false))
-				return null;
+            {
+                return null;
+            }
 		}
 		else if (!Utils.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 91, false))
 		{
@@ -62,7 +69,7 @@ public class CondenserContainer extends Container
 		
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		
 		else slot.onSlotChanged();
@@ -82,4 +89,22 @@ public class CondenserContainer extends Container
 		super.onContainerClosed(player);
 		tile.closeInventory();
 	}
+
+    @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        if (slot == 0 && tile.getStackInSlot(slot) != null)
+        {
+            if (!player.worldObj.isRemote)
+            {
+                tile.setInventorySlotContents(slot, null);
+                tile.checkLockAndUpdate();
+                this.detectAndSendChanges();
+            }
+
+            return null;
+        }
+
+        return super.slotClick(slot, button, flag, player);
+    }
 }

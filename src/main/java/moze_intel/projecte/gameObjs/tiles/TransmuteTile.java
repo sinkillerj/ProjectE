@@ -135,11 +135,22 @@ public class TransmuteTile extends TileEmc implements IInventory
                     iter.remove();
                     continue;
                 }
-				
-				if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
-				{
-					iter.remove();
-				}
+
+                String displayName = "";
+
+                try
+                {
+                    displayName = stack.getDisplayName();
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
+
+                if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+                {
+                    iter.remove();
+                }
 			}
 		}
 		else
@@ -155,11 +166,22 @@ public class TransmuteTile extends TileEmc implements IInventory
 					iter.remove();
 					continue;
 				}
-				
-				if (filter.length() > 0 && !stack.getDisplayName().toLowerCase().contains(filter))
-				{
-					iter.remove();
-				}
+
+                String displayName = "";
+
+                try
+                {
+                    displayName = stack.getDisplayName();
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
+
+                if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+                {
+                    iter.remove();
+                }
 			}
 		}
 		

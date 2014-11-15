@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
@@ -24,8 +23,9 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedStar extends ItemCharge 
 {
@@ -52,15 +52,15 @@ public class RedStar extends ItemCharge
 		}
 		
 		CoordinateBox box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
 				for (int k = (int) box.minZ; k <= box.maxZ; k++)
 				{
 					Block b = world.getBlock(i, j, k);
-					
-					if (b != Blocks.air && canHarvestBlock(b, stack))
+
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && canHarvestBlock(b, stack))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -87,7 +87,7 @@ public class RedStar extends ItemCharge
 			{
 				int offset = this.getCharge(stack) + 3;
 				CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
-				List<ItemStack> drops = new ArrayList();
+				List<ItemStack> drops = new ArrayList<ItemStack>();
 				
 				for (int x = (int) box.minX; x <= box.maxX; x++)
 					for (int y = (int) box.minY; y <= box.maxY; y++)
@@ -95,8 +95,8 @@ public class RedStar extends ItemCharge
 						{
 							Block block = world.getBlock(x, y, z);
 							
-							if (Utils.isOre(block) && canHarvestBlock(block, stack))
-							{
+							if (Utils.isOre(block) && block.getBlockHardness(world, x, y, z) != -1 && canHarvestBlock(block, stack))
+                            {
 								Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 							}
 						}
@@ -111,7 +111,7 @@ public class RedStar extends ItemCharge
 			}
 			
 			Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			List<ItemStack> drops = new ArrayList();
+			List<ItemStack> drops = new ArrayList<ItemStack>();
 			
 			if (Utils.isOre(block) || block.equals(Blocks.gravel))
 			{
@@ -127,8 +127,8 @@ public class RedStar extends ItemCharge
 						for (int z = (int) box.minZ; z <= box.maxZ; z++)
 						{
 							Block b = world.getBlock(x, y, z);
-							
-							if (b != Blocks.air && canHarvestBlock(b, stack))
+
+							if (b != Blocks.air && b.getBlockHardness(world, x, y, z) != -1 && canHarvestBlock(b, stack))
 							{
 								drops.addAll(Utils.getBlockDrops(world, player, b, stack, x, y, z));
 								world.setBlockToAir(x, y, z);

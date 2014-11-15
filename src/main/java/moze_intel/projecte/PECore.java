@@ -34,7 +34,7 @@ public class PECore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2d-dev8";
+    public static final String VERSION = "Alpha 0.2d-dev9";
 
     public static File CONFIG_DIR;
 
@@ -137,12 +137,15 @@ public class PECore
     @Mod.EventHandler
     public void serverQuit(FMLServerStoppedEvent event)
     {
+        TileEntityHandler.clearAll();
+        PELogger.logDebug("Cleared tile entity maps.");
+
     	Transmutation.clear();
     	AlchemicalBags.clear();
-    	PELogger.logInfo("Cleared player data.");
+    	PELogger.logDebug("Cleared player data.");
     	
     	PlayerChecksEvent.clearLists();
-    	PELogger.logInfo("Cleared player check-lists: server stopping.");
+    	PELogger.logDebug("Cleared player check-lists: server stopping.");
     	
     	EMCMapper.clearMaps();
     	PELogger.logInfo("Completed server-stop actions.");

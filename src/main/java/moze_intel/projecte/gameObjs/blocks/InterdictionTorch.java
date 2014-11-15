@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockTorch;
@@ -9,15 +9,15 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 {
 	public InterdictionTorch()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("interdiction_torch");
+		this.setBlockName("pe_interdiction_torch");
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}

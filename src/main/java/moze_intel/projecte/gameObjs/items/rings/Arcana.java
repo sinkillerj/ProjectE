@@ -1,24 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.List;
-
-import moze_intel.projecte.events.PlayerChecksEvent;
-import moze_intel.projecte.gameObjs.items.IModeChanger;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.utils.Utils;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 //Need to finish implementation
 /*public class Arcana extends ItemPE implements IModeChanger
 {

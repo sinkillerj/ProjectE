@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
@@ -22,8 +22,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 {
@@ -42,7 +42,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		isActive = active;
 		isHighTier = isRM;
 		textureName = isHighTier ? "rm" : "dm";
-		this.setBlockName(textureName+"_furnace");
+		this.setBlockName("pe_" + textureName + "_furnace");
 		
 		if (isActive) 
 		{

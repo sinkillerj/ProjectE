@@ -14,7 +14,13 @@ public abstract class ItemPE extends Item
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 
-	public static double getEmc(ItemStack stack)
+    @Override
+    public Item setUnlocalizedName(String message)
+    {
+        return super.setUnlocalizedName("pe_" + message);
+    }
+
+    public static double getEmc(ItemStack stack)
 	{
 		if (stack.stackTagCompound == null)
 		{
@@ -110,11 +116,11 @@ public abstract class ItemPE extends Item
 	
 	public String getTexture(String name)
 	{
-		return ("projecte:"+name);
+		return ("projecte:" + name);
 	}
 	
 	public String getTexture(String folder, String name)
 	{
-		return ("projecte:"+folder+"/"+name);
+		return ("projecte:" + folder + "/" + name);
 	}
 }

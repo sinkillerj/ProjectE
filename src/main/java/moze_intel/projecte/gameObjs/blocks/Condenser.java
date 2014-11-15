@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -12,15 +12,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class Condenser extends AlchemicalChest implements ITileEntityProvider
 {
 	public Condenser() 
 	{
 		super();
-		this.setBlockName("condenser");
+		this.setBlockName("pe_condenser");
 	}
 	
 	@Override

@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
@@ -24,8 +23,9 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedHammer extends ItemCharge
 {
@@ -52,7 +52,7 @@ public class RedHammer extends ItemCharge
 		}
 		
 		CoordinateBox box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
@@ -60,7 +60,7 @@ public class RedHammer extends ItemCharge
 				{
 					Block b = world.getBlock(i, j, k);
 					
-					if (b != Blocks.air && canHarvestBlock(b, stack))
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, j) != -1 && canHarvestBlock(b, stack))
 					{
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
