@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.events.PlayerChecksEvent;
@@ -32,6 +34,7 @@ import thaumcraft.api.nodes.IRevealer;
 
 import java.util.List;
 
+@Optional.InterfaceList(value = {@Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
 public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
 	public GemArmor(int armorType)
@@ -337,12 +340,14 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
     }
 
 	@Override
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showNodes(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;
