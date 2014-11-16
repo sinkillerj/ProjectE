@@ -22,7 +22,7 @@ group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-con
 archivesBaseName = "ProjectE"
 
 minecraft {
-    version = "1.7.10-10.13.1.1219"
+    version = "1.7.10-10.13.2.1230"
     assetDir = "eclipse/assets"
 }
 
