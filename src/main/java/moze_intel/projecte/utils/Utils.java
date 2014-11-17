@@ -315,20 +315,6 @@ public final class Utils
 		return false;
 	}
 	
-	/**DOES NOT check if the map contains the element!**/
-	public static ItemStack getNextInMap(LinkedHashMap<SimpleStack, Integer> map, ItemStack start)
-	{
-		List<ItemStack> keys = new ArrayList(map.keySet());
-		int index = keys.indexOf(new SimpleStack(start));
-		
-		if (index == -1 || index >= (keys.size() - 1))
-		{
-			return null;
-		}
-		
-		return keys.get(index + 1);
-	}
-	
 	public static int getKleinStarMaxEmc(ItemStack stack)
 	{
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];

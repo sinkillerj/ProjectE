@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
@@ -29,6 +30,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 {
 	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
@@ -321,7 +323,8 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		list.add("Right click to set up the whitelist/blacklist");
 		list.add("Shift right click to activate/deactivate");
 	}
-	
+
+    @Override
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int dmg)
     {
@@ -337,30 +340,36 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	}
 	
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

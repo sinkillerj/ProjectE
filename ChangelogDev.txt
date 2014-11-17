@@ -1,3 +1,7 @@
+###Version Alpha 0.2d-dev10
+* NEW: Energy condenser MK2. Still needs textures
+* FIX: Crash with API conflicts
+
 ###Version Alpha 0.2d-dev9
 * NEW: Optimized energy condensers
 * NEW: Energy condenser lock slot is now a "ghost" slot

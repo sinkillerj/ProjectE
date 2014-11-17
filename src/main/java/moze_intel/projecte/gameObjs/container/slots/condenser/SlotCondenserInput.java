@@ -7,12 +7,9 @@ import net.minecraft.item.ItemStack;
 
 public class SlotCondenserInput extends Slot
 {
-	private CondenserTile tile;
-	
-	public SlotCondenserInput(CondenserTile inventory, int slotIndex, int xPos, int yPos) 
+	public SlotCondenserInput(CondenserTile inventory, int slotIndex, int xPos, int yPos)
 	{
 		super(inventory, slotIndex, xPos, yPos);
-		tile = inventory;
 	}
 	
 	@Override

@@ -41,6 +41,7 @@ public class ObjHandler
 	public static Block confuseTorch = new InterdictionTorch();
 	public static Block transmuteStone = new TransmutationStone();
 	public static Block condenser = new Condenser();
+    public static Block condenserMk2 = new CondenserMK2();
 	public static Block rmFurnaceOff = new MatterFurnace(false, true);
 	public static Block rmFurnaceOn = new MatterFurnace(true, true);
 	public static Block dmFurnaceOff = new MatterFurnace(false, false);
@@ -140,6 +141,7 @@ public class ObjHandler
 		GameRegistry.registerBlock(confuseTorch, "Interdiction Torch");
 		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "Transmutation Stone");
 		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "Condenser");
+        GameRegistry.registerBlock(condenserMk2, "Condenser MK2");
 		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "RM Furnace");
 		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
 		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
@@ -237,6 +239,7 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
 		GameRegistry.registerTileEntity(InterdictionTile.class, "Interdiction Torch Tile");
 		GameRegistry.registerTileEntity(CondenserTile.class, "Condenser Tile");
+        GameRegistry.registerTileEntity(CondenserMK2Tile.class, "Condenser MK2 Tile");
 		GameRegistry.registerTileEntity(RMFurnaceTile.class, "RM Furnace Tile");
 		GameRegistry.registerTileEntity(DMFurnaceTile.class, "DM Furnace Tile");
 		GameRegistry.registerTileEntity(CollectorMK1Tile.class, "Energy Collector MK1 Tile");
@@ -291,6 +294,9 @@ public class ObjHandler
 		
 		//Condenser
 		GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', new ItemStack(Items.diamond), 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
+
+        //Condenser MK2
+        GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
 		
 		//Transmutation Tablet
 		GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.stone, 'O', Blocks.obsidian, 'P', philosStone);

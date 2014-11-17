@@ -23,6 +23,12 @@ public class SlotGhost extends Slot
 		
 		return false;
     }
+
+    @Override
+    public boolean canTakeStack(EntityPlayer player)
+    {
+        return false;
+    }
 	
 	@Override
 	public int getSlotStackLimit() 

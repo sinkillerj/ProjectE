@@ -4,7 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -19,42 +19,42 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class Condenser extends AlchemicalChest implements ITileEntityProvider
+public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider
 {
-	public Condenser() 
-	{
-		super();
-		this.setBlockName("pe_condenser");
-	}
-	
-	@Override
-	public Item getItemDropped(int par1, Random random, int par2)
+    public CondenserMK2()
     {
-		return Item.getItemFromBlock(ObjHandler.condenser);
-    }
-	
-	@Override
-    public int getRenderType()
-    {
-        return Constants.CONDENSER_RENDER_ID;
+        super();
+        this.setBlockName("pe_condenser_mk2");
     }
 
-	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
-	{
-		return new CondenserTile();
-	}
-	
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
-		if (!world.isRemote) 
-		{
-			player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, x, y, z);
-		}
-		
-		return true;
-	}
+    @Override
+    public Item getItemDropped(int par1, Random random, int par2)
+    {
+        return Item.getItemFromBlock(ObjHandler.condenserMk2);
+    }
+
+    @Override
+    public int getRenderType()
+    {
+        return Constants.CONDENSER_MK2_RENDER_ID;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new CondenserMK2Tile();
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        if (!world.isRemote)
+        {
+            player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
+        }
+
+        return true;
+    }
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
@@ -81,11 +81,11 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
         world.func_147453_f(x, y, z, block);
         world.removeTileEntity(x, y, z);
     }
-	
-	@Override
-	@SideOnly(Side.CLIENT)
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register)
     {
-		this.blockIcon = register.registerIcon("obsidian");
+        this.blockIcon = register.registerIcon("obsidian");
     }
 }

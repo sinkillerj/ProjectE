@@ -34,7 +34,7 @@ public class PECore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2d-dev9";
+    public static final String VERSION = "Alpha 0.2d-dev10";
 
     public static File CONFIG_DIR;
 

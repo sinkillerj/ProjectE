@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
@@ -14,6 +15,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class BlackHoleBand extends RingToggle implements IBauble
 {
 	public BlackHoleBand()
@@ -80,30 +82,36 @@ public class BlackHoleBand extends RingToggle implements IBauble
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

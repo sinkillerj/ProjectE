@@ -93,6 +93,7 @@ tile.pe_alchemy_chest.name=Alchemical Chest
 tile.pe_interdiction_torch.name=Interdiction Torch
 tile.pe_transmutation_stone.name=Transmutation Table
 tile.pe_condenser.name=Energy Condenser
+tile.pe_condenser_mk2.name=Energy Condenser MK2
 tile.pe_rm_furnace.name=Red Matter Furnace
 tile.pe_dm_furnace.name=Dark Matter Furnace
 tile.pe_rm_block.name=Red Matter Block

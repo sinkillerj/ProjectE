@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.events.PlayerChecksEvent;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble
 {
 	@SideOnly(Side.CLIENT)
@@ -299,12 +301,14 @@ public class SWRG extends ItemPE implements IBauble
 	}
 	
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
 	{
 		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer))
@@ -380,9 +384,11 @@ public class SWRG extends ItemPE implements IBauble
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) 
 	{
 		if (player.worldObj.isRemote || !(player instanceof EntityPlayer))
@@ -394,12 +400,14 @@ public class SWRG extends ItemPE implements IBauble
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

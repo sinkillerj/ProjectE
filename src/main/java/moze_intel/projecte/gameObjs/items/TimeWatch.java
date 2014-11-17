@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -23,6 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 {
 	@SideOnly(Side.CLIENT)
@@ -264,30 +266,36 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

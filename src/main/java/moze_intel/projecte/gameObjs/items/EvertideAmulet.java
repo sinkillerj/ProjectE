@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IProjectileShooter;
@@ -23,6 +24,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
 {
 	public EvertideAmulet()
@@ -130,30 +132,36 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
     }
 	
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
+    @Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

@@ -17,11 +17,11 @@ import net.minecraft.nbt.NBTTagList;
 
 public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory
 {
-	private ItemStack[] inventory;
+	protected ItemStack[] inventory;
 	private ItemStack lock;
-    private boolean loadChecks;
+    protected boolean loadChecks;
+    protected boolean isRequestingEmc;
 	private int ticksSinceSync;
-	private boolean isRequestingEmc;
 	public int displayEmc;
 	public float lidAngle;
     public float prevLidAngle;
@@ -112,7 +112,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		}
 	}
 	
-	private void condense()
+	protected void condense()
 	{
 		for (int i = 1; i < 92; i++)
 		{
@@ -136,7 +136,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		}
 	}
 	
-	private void pushStack()
+	protected void pushStack()
 	{
 		int slot = getSlotForStack();
 		
@@ -161,9 +161,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		}
 	}
 	
-	private int getSlotForStack()
+	protected int getSlotForStack()
 	{
-		for (int i = 1; i < 92; i++)
+		for (int i = 1; i < inventory.length; i++)
 		{
 			ItemStack stack = inventory[i];
 
@@ -177,12 +177,13 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				return i;
 			}
 		}
+
 		return 0;
 	}
 	
-	private boolean hasSpace()
+	protected boolean hasSpace()
 	{
-		for (int i = 1; i < 92; i++)
+		for (int i = 1; i < inventory.length; i++)
 		{
 			ItemStack stack = inventory[i];
 			
@@ -196,10 +197,11 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				return true;
 			}
 		}
+
 		return false;
 	}
 	
-	private boolean isStackEqualToLock(ItemStack stack)
+	protected boolean isStackEqualToLock(ItemStack stack)
 	{
 		if (lock == null) 
 		{
@@ -254,7 +256,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 		this.setEmcValue(nbt.getDouble("EMC"));
 		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[92];
+		//inventory = new ItemStack[92];
 		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -271,7 +273,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		nbt.setDouble("EMC", this.getStoredEmc());
 		NBTTagList list = new NBTTagList();
 
-		for (int i = 0; i < 92; i++)
+		for (int i = 0; i < inventory.length; i++)
 		{
 			if (inventory[i] == null) 
 			{
@@ -290,7 +292,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public int getSizeInventory() 
 	{
-		return 92;
+		return inventory.length;
 	}
 
 	@Override
@@ -462,9 +464,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
-		int[] slots = new int[91];
+		int[] slots = new int[inventory.length - 1];
 		
-		for (int i = 1; i < 92; i++)
+		for (int i = 1; i < inventory.length; i++)
 		{
 			slots[i - 1] = i;
 		}

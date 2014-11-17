@@ -1,17 +1,5 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public final class Constants 
@@ -63,11 +51,13 @@ public final class Constants
 	public static final int PHILOS_STONE_GUI = 13;
 	public static final int TRANSMUTE_TABLET_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
+    public static final int CONDENSER_MK2_GUI = 16;
 	
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	
 	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+    public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	public static final int MAX_VEIN_SIZE = 250;
 	
