@@ -1,5 +1,7 @@
 ###Version Alpha 0.2d-dev10
+* WARNING: ALL ITEMS FROM PREVIOUS VERSIONS WILL BE LOST!
 * NEW: Energy condenser MK2. Still needs textures
+* FIX: Changed unlocalized names to avoid conflicts (this will cause the item reset)
 * FIX: Crash with API conflicts
 
 ###Version Alpha 0.2d-dev9
