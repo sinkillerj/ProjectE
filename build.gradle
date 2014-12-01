@@ -17,13 +17,13 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "dev"
+version = "1.7.10-0.2d-dev10"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
 minecraft {
     version = "1.7.10-10.13.2.1230"
-    assetDir = "eclipse/assets"
+    runDir = "eclipse"
 }
 
 dependencies {
