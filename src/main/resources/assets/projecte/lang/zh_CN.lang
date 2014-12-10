@@ -90,7 +90,7 @@ item.pe_tome.name=炼金术卷册
 item.pe_transmutation_tablet.name=便携式转换桌
 
 tile.pe_alchemy_chest.name=炼金术箱子
-tile.pe_interdiction_torch.name=禁令火把
+tile.pe_interdiction_torch.name=禁止火把
 tile.pe_transmutation_stone.name=转换桌
 tile.pe_condenser.name=能量凝聚器
 tile.pe_condenser_mk2.name=能量凝聚器 MK2
