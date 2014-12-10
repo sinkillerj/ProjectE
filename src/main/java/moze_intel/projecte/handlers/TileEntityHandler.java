@@ -1,6 +1,8 @@
-package moze_intel.projecte.utils;
+package moze_intel.projecte.handlers;
 
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 

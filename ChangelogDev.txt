@@ -1,3 +1,9 @@
+###Version Alpha 0.2d-dev11
+NEW: New system for item timing
+NEW: Relay Automation
+FIXED: Katar harvesting sheareable blocks
+FIXED: More than one repair talisman active in the player inventory
+
 ###Version Alpha 0.2d-dev10
 * WARNING: ALL ITEMS FROM PREVIOUS VERSIONS WILL BE LOST!
 * NEW: Energy condenser MK2. Still needs textures

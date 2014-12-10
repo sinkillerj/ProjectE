@@ -1,8 +1,5 @@
-package moze_intel.projecte.events;
+package moze_intel.projecte.handlers;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.network.PacketHandler;
@@ -12,100 +9,101 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
-public class PlayerChecksEvent
+public final class PlayerChecks
 {
-	private static LinkedList<EntityPlayerMP> flyChecks = new LinkedList<EntityPlayerMP>();
-	private static LinkedList<EntityPlayerMP> fireChecks = new LinkedList<EntityPlayerMP>();
-	private static LinkedList<EntityPlayerMP> stepChecks = new LinkedList<EntityPlayerMP>();
-	private static Iterator<EntityPlayerMP> iter;
+	private static List<EntityPlayerMP> flyChecks = new ArrayList<EntityPlayerMP>();
+	private static List<EntityPlayerMP> fireChecks = new ArrayList<EntityPlayerMP>();
+	private static List<EntityPlayerMP> stepChecks = new ArrayList<EntityPlayerMP>();
 
-	@SubscribeEvent
-	public void tickEvent(WorldTickEvent event)
-	{
-		World world = event.world;
-		
-		iter = flyChecks.iterator();
-		
-		while (iter.hasNext())
-		{
-			EntityPlayerMP player = iter.next();
-			
-			if (!canPlayerFly(player))
-			{
-				if (player.capabilities.allowFlying)
-				{
-					Utils.setPlayerFlight(player, false);
-				}
-				
-				iter.remove();
-				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from flight checks.");
-			}
-		}
-		
-		iter = fireChecks.iterator();
-		
-		while (iter.hasNext())
-		{
-			EntityPlayerMP player = iter.next();
-			
-			if (!isPlayerFireImmune(player))
-			{
-				if (player.isImmuneToFire())
-				{
-					Utils.setPlayerFireImmunity(player, false);
-				}
-				
-				iter.remove();
-				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from fire checks.");
-			}
-		}
-		
-		iter = stepChecks.iterator();
-		
-		while (iter.hasNext())
-		{
-			EntityPlayerMP player = iter.next();
-			
-			if (!canPlayerStep(player))
-			{
-				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
-				
-				iter.remove();
-				PELogger.logInfo("Removed " + player.getCommandSenderName() + " from step checks.");
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void playerChangeDimension(PlayerChangedDimensionEvent event)
-	{
-		if (canPlayerFly(event.player))
-		{
-			Utils.setPlayerFlight((EntityPlayerMP) event.player, true);
-		}
-		
-		if (isPlayerFireImmune(event.player))
-		{
-			Utils.setPlayerFireImmunity(event.player, true);
-		}
-		
-		if (canPlayerStep(event.player))
-		{
-			PacketHandler.sendTo(new StepHeightPKT(1.0f), (EntityPlayerMP) event.player);
-		}
-	}
-	
+    public static void update()
+    {
+        World world = MinecraftServer.getServer().getEntityWorld();
+
+        Iterator<EntityPlayerMP> iter = flyChecks.iterator();
+
+        while (iter.hasNext())
+        {
+            EntityPlayerMP player = iter.next();
+
+            if (!canPlayerFly(player))
+            {
+                if (player.capabilities.allowFlying)
+                {
+                    Utils.setPlayerFlight(player, false);
+                }
+
+                iter.remove();
+                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
+            }
+        }
+
+        iter = fireChecks.iterator();
+
+        while (iter.hasNext())
+        {
+            EntityPlayerMP player = iter.next();
+
+            if (!isPlayerFireImmune(player))
+            {
+                if (player.isImmuneToFire())
+                {
+                    Utils.setPlayerFireImmunity(player, false);
+                }
+
+                iter.remove();
+                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from fire checks.");
+            }
+        }
+
+        iter = stepChecks.iterator();
+
+        while (iter.hasNext())
+        {
+            EntityPlayerMP player = iter.next();
+
+            if (!canPlayerStep(player))
+            {
+                player.stepHeight = 0.5f;
+                PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
+
+                iter.remove();
+                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
+            }
+        }
+    }
+
+    public static void onPlayerChangeDimension(EntityPlayerMP playerMP)
+    {
+        if (canPlayerFly(playerMP))
+        {
+            Utils.setPlayerFlight(playerMP, true);
+        }
+
+        if (isPlayerFireImmune(playerMP))
+        {
+            Utils.setPlayerFireImmunity(playerMP, true);
+        }
+
+        if (canPlayerStep(playerMP))
+        {
+            playerMP.stepHeight = 1.0f;
+            PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+        }
+    }
+
 	public static void addPlayerFlyChecks(EntityPlayerMP player)
 	{
 		if (!flyChecks.contains(player))
 		{
 			flyChecks.add(player);
-			PELogger.logInfo("Added " + player.getCommandSenderName() + " to flight checks.");
+			PELogger.logDebug("Added " + player.getCommandSenderName() + " to flight checks.");
 		}
 	}
 	
@@ -114,7 +112,7 @@ public class PlayerChecksEvent
 		if (!fireChecks.contains(player))
 		{
 			fireChecks.add(player);
-			PELogger.logInfo("Added " + player.getCommandSenderName() + " to fire checks.");
+			PELogger.logDebug("Added " + player.getCommandSenderName() + " to fire checks.");
 		}
 	}
 	
@@ -123,10 +121,10 @@ public class PlayerChecksEvent
 		if (!stepChecks.contains(player))
 		{
 			stepChecks.add(player);
-			PELogger.logInfo("Added " + player.getCommandSenderName() + " to step height checks.");
+			PELogger.logDebug("Added " + player.getCommandSenderName() + " to step height checks.");
 		}
 	}
-	
+
 	public static void removePlayerFlyChecks(EntityPlayerMP player)
 	{
 		if (flyChecks.contains(player))
@@ -138,7 +136,7 @@ public class PlayerChecksEvent
 				if (iterator.next().equals(player))
 				{
 					iterator.remove();
-					PELogger.logInfo("Removed " + player.getCommandSenderName() + " from flight checks.");
+					PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
 					return;
 				}
 			}
@@ -156,7 +154,7 @@ public class PlayerChecksEvent
 				if (iterator.next().equals(player))
 				{
 					iterator.remove();
-					PELogger.logInfo("Removed " + player + " from fire checks.");
+					PELogger.logDebug("Removed " + player + " from fire checks.");
 					return;
 				}
 			}
@@ -174,7 +172,7 @@ public class PlayerChecksEvent
 				if (iterator.next().equals(player))
 				{
 					iterator.remove();
-					PELogger.logInfo("Removed " + player + " from step height checks.");
+					PELogger.logDebug("Removed " + player + " from step height checks.");
 					return;
 				}
 			}
@@ -239,7 +237,7 @@ public class PlayerChecksEvent
 		stepChecks.clear();
 	}
 	
-	private boolean canPlayerFly(EntityPlayer player)
+	private static boolean canPlayerFly(EntityPlayer player)
 	{
 		if (player.capabilities.isCreativeMode)
 		{
@@ -257,11 +255,7 @@ public class PlayerChecksEvent
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			
-			if (stack == null)
-			{
-				continue;
-			}
-			else if (stack.getItem() ==  ObjHandler.swrg /*|| stack.getItem() == ObjHandler.arcana*/)
+			if (stack != null && stack.getItem() ==  ObjHandler.swrg)
 			{
 				return true;
 			}
@@ -270,7 +264,7 @@ public class PlayerChecksEvent
 		return false;
 	}
 	
-	private boolean isPlayerFireImmune(EntityPlayer player)
+	private static boolean isPlayerFireImmune(EntityPlayer player)
 	{
 		if (player.capabilities.isCreativeMode)
 		{
@@ -288,11 +282,7 @@ public class PlayerChecksEvent
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			
-			if (stack == null)
-			{
-				continue;
-			}
-			else if (stack.getItem() == ObjHandler.volcanite /*|| stack.getItem() == ObjHandler.arcana*/)
+			if (stack != null && stack.getItem() == ObjHandler.volcanite)
 			{
 				return true;
 			}
@@ -301,7 +291,7 @@ public class PlayerChecksEvent
 		return false;
 	}
 	
-	public boolean canPlayerStep(EntityPlayer player)
+	private static boolean canPlayerStep(EntityPlayer player)
 	{
 		ItemStack boots = player.getCurrentArmor(0);
 		

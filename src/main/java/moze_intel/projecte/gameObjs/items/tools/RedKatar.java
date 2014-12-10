@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -32,6 +33,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RedKatar extends ItemMode
 {
@@ -42,15 +44,18 @@ public class RedKatar extends ItemMode
 	
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
-	{
-		if (this.getMode(stack) != 0)
-		{
-			return false;
-		}
-		
-		return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
-	}
-	
+    {
+        switch (this.getMode(stack))
+        {
+            case 0:
+                return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
+            case 2:
+                return block.getMaterial() == Material.web;
+            default:
+                return false;
+        }
+    }
+
 	@Override
 	public int getHarvestLevel(ItemStack stack, String toolClass) 
 	{
@@ -65,11 +70,11 @@ public class RedKatar extends ItemMode
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
-		if (this.getMode(stack) != 0)
+		/*if (this.getMode(stack) != 0 || this.getMode(stack) != 2)
 		{
 			return 1.0f;
-		}
-		
+		}*/
+
 		if(canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 		{
 			return 16.0f + (14.0f * this.getCharge(stack));
@@ -109,6 +114,44 @@ public class RedKatar extends ItemMode
 		}
 		
 		return tillSoil(world, stack, player, x, y, z, par7, this.getCharge(stack));
+    }
+
+    @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+    {
+        if (player.worldObj.isRemote)
+        {
+            return false;
+        }
+
+        Block block = player.worldObj.getBlock(x, y, z);
+
+        if (block instanceof IShearable)
+        {
+            IShearable target = (IShearable) block;
+
+            if (target.isShearable(itemstack, player.worldObj, x, y, z))
+            {
+                ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
+                Random rand = new Random();
+
+                for(ItemStack stack : drops)
+                {
+                    float f = 0.7F;
+                    double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+                    double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+                    double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+                    EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
+                    entityitem.delayBeforeCanPickup = 10;
+                    player.worldObj.spawnEntityInWorld(entityitem);
+                }
+
+                itemstack.damageItem(1, player);
+                player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
+            }
+        }
+
+        return false;
     }
 	
 	@Override

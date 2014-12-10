@@ -3,11 +3,12 @@ package moze_intel.projecte.gameObjs.items.armor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.events.PlayerChecksEvent;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -44,8 +45,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
 	}
-	
-	@Override
+
+    @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
 	{
 		if (world.isRemote)
@@ -80,11 +81,16 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				{
 					enableFlight(playerMP);
 				}
-				
-				if (isStepAssistEnabled(stack) && !PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName()))
+
+				if (isStepAssistEnabled(stack)/*PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName())*/)
 				{
-					PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
-					PlayerChecksEvent.addPlayerStepChecks(playerMP);
+                    if (playerMP.stepHeight != 1.0f)
+                    {
+                        playerMP.stepHeight = 1.0f;
+                        PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+
+                        PlayerChecks.addPlayerStepChecks(playerMP);
+                    }
 				}
 			}
 			else if (armor == ObjHandler.gemLegs)
@@ -98,46 +104,26 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			}
 			else if (armor == ObjHandler.gemChest)
 			{
-				if (!stack.hasTagCompound())
-				{
-					stack.stackTagCompound = new NBTTagCompound();
-				}
-				
-				byte coolDown = stack.stackTagCompound.getByte("Cooldown");
-				
-				if (coolDown > 0)
-				{
-					stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-				}
-				else if (player.getFoodStats().needFood())
+                PlayerTimers.activateFeed(playerMP);
+
+				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP))
 				{
 					player.getFoodStats().addStats(2, 10);
-					stack.stackTagCompound.setByte("Cooldown", (byte) 19);
 				}
 				
 				if (!player.isImmuneToFire())
 				{
 					Utils.setPlayerFireImmunity(player, true);
-					PlayerChecksEvent.addPlayerFireChecks(playerMP);
+					PlayerChecks.addPlayerFireChecks(playerMP);
 				}
 			}
 			else if (armor == ObjHandler.gemHelmet)
 			{
-				if (!stack.hasTagCompound())
-				{
-					stack.stackTagCompound = new NBTTagCompound();
-				}
-				
-				byte coolDown = stack.stackTagCompound.getByte("Cooldown");
-				
-				if (coolDown > 0)
-				{
-					stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-				}
-				else if (player.getHealth() < player.getMaxHealth())
+				PlayerTimers.activateHeal(playerMP);
+
+                if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(playerMP))
 				{
 					player.setHealth(player.getHealth() + 2);
-					stack.stackTagCompound.setByte("Cooldown", (byte) 19);
 				}
 				
 				if (isNightVisionEnabled(stack))
@@ -172,7 +158,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		}
 		
 		Utils.setPlayerFlight(playerMP, true);
-		PlayerChecksEvent.addPlayerFlyChecks(playerMP);
+		PlayerChecks.addPlayerFlyChecks(playerMP);
 	}
 	
 	@Override
@@ -285,23 +271,15 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
 	{
-		if (!boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist"))
-		{
-			return true;
-		}
-		
-		return boots.stackTagCompound.getBoolean("StepAssist");
-	}
+        return !boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist") || boots.stackTagCompound.getBoolean("StepAssist");
+
+    }
 	
 	public static boolean isNightVisionEnabled(ItemStack helm)
 	{
-		if (!helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision"))
-		{
-			return true;
-		}
-		
-		return helm.stackTagCompound.getBoolean("NightVision");
-	}
+        return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.handlers.PlayerTimers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,27 +32,20 @@ public class SoulStone extends RingToggle implements IBauble
 		
 		if (stack.getItemDamage() != 0)
 		{
-			if (this.getEmc(stack) < 128 && !this.consumeFuel(player, stack, 128, false))
+			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
 				stack.setItemDamage(0);
 			}
-			else if (player.getHealth() < player.getMaxHealth())
+			else
 			{
-				if (isReady(stack))
-				{
-					player.setHealth(player.getHealth() + 2);
-					this.removeEmc(stack, 128);
-					this.increaseTickCounter(stack);
-				}
-				else
-				{
-					this.increaseTickCounter(stack);
-				}
+                PlayerTimers.activateHeal(player);
+
+                if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
+                {
+                    player.setHealth(player.getHealth() + 2);
+                    removeEmc(stack, 64);
+                }
 			}
-		}
-		else if (this.getTickCount(stack) != 0)
-		{
-			this.setTickCounter(stack, (byte) 0);
 		}
 	}
 	
@@ -60,7 +54,7 @@ public class SoulStone extends RingToggle implements IBauble
 	{
 		if (stack.getItemDamage() == 0)
 		{
-			if (this.getEmc(stack) < 128 && !this.consumeFuel(player, stack, 128, false))
+			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
 				//NOOP (used to be sounds)
 			}

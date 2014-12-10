@@ -6,7 +6,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IProjectileShooter;
-import moze_intel.projecte.events.PlayerChecksEvent;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
@@ -96,10 +96,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			}
 		}
 		
-		if (!world.isRemote && !player.isImmuneToFire())
+		if (!world.isRemote)
 		{
-			Utils.setPlayerFireImmunity(player, true);
-			PlayerChecksEvent.addPlayerFireChecks((EntityPlayerMP) player);
+            if (!player.isImmuneToFire())
+            {
+                Utils.setPlayerFireImmunity(player, true);
+            }
+
+			PlayerChecks.addPlayerFireChecks((EntityPlayerMP) player);
 		}
 	}
 	
