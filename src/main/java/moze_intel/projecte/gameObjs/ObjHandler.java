@@ -26,6 +26,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -133,6 +134,7 @@ public class ObjHandler
 	public static Item lensExplosive = new LensExplosive();
 	
 	public static Item transmutationTablet = new TransmutationTablet();
+	public static Item devEmc = new DevEmc();
 	
 	public static void register()
 	{
@@ -234,6 +236,8 @@ public class ObjHandler
 		
 		GameRegistry.registerItem(tome, tome.getUnlocalizedName());
 		GameRegistry.registerItem(transmutationTablet, transmutationTablet.getUnlocalizedName());
+		GameRegistry.registerItem(devEmc,devEmc.getUnlocalizedName());
+		MinecraftForge.EVENT_BUS.register(devEmc);
 		
 		//Tile Entities
 		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
@@ -450,6 +454,7 @@ public class ObjHandler
 		
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
+
 	}
 	
 	//Philosopher's stone smelting recipes, EE3 style
