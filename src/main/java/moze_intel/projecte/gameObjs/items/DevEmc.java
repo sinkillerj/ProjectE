@@ -11,7 +11,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
@@ -91,14 +90,18 @@ public class DevEmc extends ItemPE {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!world.isRemote) {
-            double emc = ItemPE.getEmc(stack);
-            int selected = world.rand.nextInt(outputItems.size());
-            double emcSelected = EMCMapper.getEmcValue(outputItems.get(selected));
-            if (emcSelected <= emc && emcSelected > 0) {
-                ItemPE.removeEmc(stack, emcSelected);
-                player.dropItem(outputItems.get(selected).toItemStack().getItem(),1);
+        if (!player.isSneaking()) {
+            if (!world.isRemote) {
+                double emc = ItemPE.getEmc(stack);
+                int selected = world.rand.nextInt(outputItems.size());
+                double emcSelected = EMCMapper.getEmcValue(outputItems.get(selected));
+                if (emcSelected <= emc && emcSelected > 0) {
+                    ItemPE.removeEmc(stack, emcSelected);
+                    player.dropItem(outputItems.get(selected).toItemStack().getItem(), 1);
+                }
             }
+        }  else {
+            //TODO open GUI
         }
         return stack;
     }
