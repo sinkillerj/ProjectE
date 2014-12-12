@@ -26,10 +26,12 @@ public class DevEmc extends ItemPE {
         setUnlocalizedName("dev_emc");
         this.setMaxStackSize(1);
         this.setMaxDamage(0);
+        //TODO Maybe limit the contained item to items with a small number of emc, for balance reasons?
         containedStack = new ItemStack(Blocks.cobblestone);
         //containedStack = new ItemStack(Items.diamond);
 
         outputItems = new ArrayList<SimpleStack>();
+        //TODO Make this list configurable?
         for (Item i: new Item[] {Items.diamond, Items.emerald, Items.coal, Items.gold_ingot, Items.iron_ingot, Items.potato}) {
             ItemStack is = new ItemStack(i);
             outputItems.add(new SimpleStack(is));
