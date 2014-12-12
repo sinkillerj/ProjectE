@@ -115,6 +115,7 @@ public class PECore
     	PELogger.logInfo("Starting server-side EMC mapping.");
     	
     	RecipeMapper.map();
+		RecipeMapper.mapNEI();
     	EMCMapper.map();
     	
     	PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");

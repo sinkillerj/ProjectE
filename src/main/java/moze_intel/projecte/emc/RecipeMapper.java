@@ -1,5 +1,8 @@
 package moze_intel.projecte.emc;
 
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.IRecipeHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,7 +22,6 @@ public final class RecipeMapper
 	public static void map()
 	{
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
-
 		while (iter.hasNext())
 		{
 			IRecipe recipe = iter.next();
@@ -170,6 +172,44 @@ public final class RecipeMapper
 			{
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public static void mapNEI() {
+		try {
+			int recipeCountBefore = recipes.size();
+			for (IRecipeHandler recipeHandler: GuiCraftingRecipe.craftinghandlers) {
+				if (recipeHandler != null) {
+					try {
+						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
+							RecipeInput recipeInput = new RecipeInput();
+							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
+							for (int j = 0; j < ingredients.size(); j++) {
+								//TODO use the permutated items from NEI?
+								recipeInput.addToInputs(ingredients.get(j).item);
+							}
+							ItemStack outStack = recipeHandler.getResultStack(recipeNumber).item;
+
+							LinkedList<RecipeInput> currentInputs;
+							if (recipes.containsKey(outStack))
+							{
+								currentInputs = recipes.get(outStack);
+							}
+							else
+							{
+								currentInputs = new LinkedList<RecipeInput>();
+							}
+							currentInputs.add(recipeInput);
+							recipes.put(new SimpleStack(outStack),currentInputs);
+						}
+					} catch (Exception e) {
+						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
+					}
+				}
+			}
+			System.out.println("Loaded " + (recipes.size() - recipeCountBefore) + " Recipes from NEI");
+		} catch (Exception e) {
+			System.out.println("Could not load Recipes from NEI");
 		}
 	}
 	
