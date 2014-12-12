@@ -88,6 +88,7 @@ item.pe_arcana_ring.name=Ring of Arcana
 item.pe_zero_ring.name=Zero Ring
 item.pe_tome.name=Alchemical Tome
 item.pe_transmutation_tablet.name=Transmutation Tablet
+item.pe_dev_emc.name=/dev/emc
 
 tile.pe_alchemy_chest.name=Alchemical Chest
 tile.pe_interdiction_torch.name=Interdiction Torch

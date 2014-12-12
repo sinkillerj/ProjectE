@@ -58,20 +58,19 @@ public class DevEmc extends ItemPE {
                     }
                 }
             } else if (stack != null && stack.isItemEqual(pickedStack)) {
+                //Refill existing items in inventory.
                 if (stack.stackSize < stack.getMaxStackSize()) {
                     int remaining = stack.getMaxStackSize() - stack.stackSize;
                     if (remaining >= pickedStack.stackSize) {
+                        //We can place all the picked Items in the existing stack in Inventory
                         stack.stackSize = stack.stackSize + pickedStack.stackSize;
                         pickedStack.stackSize = 0;
                     } else {
-                        if (remaining >= pickedStack.stackSize) {
-                            stack.stackSize = stack.stackSize + pickedStack.stackSize;
-                            pickedStack.stackSize = 0;
-                        } else {
-                            stack.stackSize = stack.getMaxStackSize();
-                            pickedStack.stackSize -= remaining;
-                        }
+                        //We can only place a portion of the picked Items in the existing stack
+                        stack.stackSize = stack.getMaxStackSize();
+                        pickedStack.stackSize -= remaining;
                     }
+
                 }
             }
         }
@@ -85,6 +84,7 @@ public class DevEmc extends ItemPE {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
     {
+        //TODO Icon + Show contained Item
         this.itemIcon = register.registerIcon(this.getTexture("mercurial_eye"));
     }
 
