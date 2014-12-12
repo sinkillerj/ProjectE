@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
@@ -8,12 +9,12 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class RelayMK1Tile extends TileEmcProducer implements IInventory
+public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
 	private ItemStack[] inventory;
 	private int invBufferSize;
@@ -122,43 +123,40 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	
 	private void sortInventory()
 	{
-		for (int i = 1; i <= invBufferSize; i++)
-		{
-			ItemStack current = getStackInSlot(i);
-			
-			if (current == null)
-			{
-				continue;
-			}
-			
-			int nextIndex = i < invBufferSize ? i + 1 : 0;
-			
-			ItemStack following = inventory[nextIndex];
-			
-			if (following == null)
-			{
-				inventory[nextIndex] = current;
-				inventory[i] = null;
-				break;
-			}
-			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
-			{
-				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
-				
-				if (current.stackSize <= missingForFullStack)
-				{
-					inventory[nextIndex].stackSize += current.stackSize;
-					inventory[i] = null;
-				}
-				else
-				{
-					inventory[nextIndex].stackSize += missingForFullStack;
-					decrStackSize(i, missingForFullStack);
-				}
-				
-				break;
-			}
-		}
+        for (int i = 1; i <= invBufferSize; i++)
+        {
+            ItemStack current = getStackInSlot(i);
+
+            if (current == null)
+            {
+                continue;
+            }
+
+            int nextIndex = i < invBufferSize ? i + 1 : 0;
+
+            ItemStack following = inventory[nextIndex];
+
+            if (following == null)
+            {
+                inventory[nextIndex] = current;
+                decrStackSize(i, current.stackSize);
+            }
+            else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
+            {
+                int missingForFullStack = following.getMaxStackSize() - following.stackSize;
+
+                if (current.stackSize <= missingForFullStack)
+                {
+                    inventory[nextIndex].stackSize += current.stackSize;
+                    inventory[i] = null;
+                }
+                else
+                {
+                    inventory[nextIndex].stackSize += missingForFullStack;
+                    decrStackSize(i, missingForFullStack);
+                }
+            }
+        }
 	}
 	
 	private void chargeKleinStars(ItemStack star)
@@ -362,7 +360,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
-		return false;
+		return true;
 	}
 
 	@Override
@@ -370,4 +368,31 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory
 	{
 		return true;
 	}
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side)
+    {
+        int indexes[] = new int[inventory.length - 2];
+        byte counter = 0;
+
+        for (int i = 1; i < inventory.length - 1; i++)
+        {
+            indexes[counter] = i;
+            counter++;
+        }
+
+        return indexes;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack, int side)
+    {
+        return Utils.doesItemHaveEmc(stack);
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side)
+    {
+        return false;
+    }
 }

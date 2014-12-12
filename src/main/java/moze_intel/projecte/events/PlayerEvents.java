@@ -1,7 +1,10 @@
 package moze_intel.projecte.events;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
@@ -17,9 +20,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PlayerEvents 
+public class PlayerEvents
 {
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event)
@@ -31,7 +33,15 @@ public class PlayerEvents
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
 		}
 	}
-	
+
+    @SubscribeEvent
+    public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+    {
+        System.out.println(FMLCommonHandler.instance().getEffectiveSide());
+
+        PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
+    }
+
 	@SubscribeEvent
 	public void pickupItem(EntityItemPickupEvent event)
 	{

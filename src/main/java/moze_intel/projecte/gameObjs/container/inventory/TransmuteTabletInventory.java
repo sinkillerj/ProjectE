@@ -3,10 +3,7 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -386,9 +383,17 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public void closeInventory() 
 	{
-		writeToNBT(player.getHeldItem().stackTagCompound);
-		
-		Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+        if (player != null && player.getHeldItem() != null)
+        {
+            writeToNBT(player.getHeldItem().stackTagCompound);
+            Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+        }
+        else
+        {
+            PELogger.logFatal("Failed to write NBT data for transmutation tablet!");
+            PELogger.logFatal("Player: " + player);
+            PELogger.logFatal("Please report this to the developer!");
+        }
 		
 		player = null;
 	}

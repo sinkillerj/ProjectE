@@ -14,9 +14,11 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
 import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.PlayerChecksEvent;
+import moze_intel.projecte.events.TickEvents;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.*;
@@ -34,7 +36,7 @@ public class PECore
 {	
     public static final String MODID = "ProjectE";
     public static final String MODNAME = "ProjectE";
-    public static final String VERSION = "Alpha 0.2d-dev10";
+    public static final String VERSION = "Alpha 0.2d-dev11";
 
     public static File CONFIG_DIR;
 
@@ -65,7 +67,7 @@ public class PECore
     	NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
     	MinecraftForge.EVENT_BUS.register(new PlayerEvents());
     	
-    	FMLCommonHandler.instance().bus().register(new PlayerChecksEvent());
+    	FMLCommonHandler.instance().bus().register(new TickEvents());
     	FMLCommonHandler.instance().bus().register(new ConnectionHandler());
     	
     	proxy.registerClientOnlyEvents();
@@ -144,7 +146,7 @@ public class PECore
     	AlchemicalBags.clear();
     	PELogger.logDebug("Cleared player data.");
     	
-    	PlayerChecksEvent.clearLists();
+    	PlayerChecks.clearLists();
     	PELogger.logDebug("Cleared player check-lists: server stopping.");
     	
     	EMCMapper.clearMaps();

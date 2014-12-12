@@ -8,7 +8,6 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class SetFlyPKT implements IMessage, IMessageHandler<SetFlyPKT, IMessage>
 {
-	//Not actually the key code, the number of the keybind in the array!
 	private boolean flag;
 		
 	//Needs to have an empty constructor
