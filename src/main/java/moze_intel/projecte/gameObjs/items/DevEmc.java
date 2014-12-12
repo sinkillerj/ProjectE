@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
+//Inspired By OpenBlocks /dev/null - https://github.com/OpenMods/OpenBlocks/blob/fe4ae9e14add72b9bb12cb83e2b09fd23628e5b2/src/main/java/openblocks/common/item/ItemDevNull.java
 public class DevEmc extends ItemPE {
     List<SimpleStack> outputItems;
     Random r = new Random();
