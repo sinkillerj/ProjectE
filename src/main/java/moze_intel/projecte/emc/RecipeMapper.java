@@ -192,12 +192,7 @@ public final class RecipeMapper
 					try {
 						System.out.println(recipeHandler.numRecipes());
 						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
-							RecipeInput recipeInput = new RecipeInput();
 							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
-							for (int j = 0; j < ingredients.size(); j++) {
-								//TODO use the permutated items from NEI?
-								recipeInput.addToInputs(ingredients.get(j).item);
-							}
 							ItemStack outStack = recipeHandler.getResultStack(recipeNumber).item;
 
 							LinkedList<RecipeInput> currentInputs;
@@ -209,9 +204,10 @@ public final class RecipeMapper
 							{
 								currentInputs = new LinkedList<RecipeInput>();
 							}
-							currentInputs.add(recipeInput);
+							List<RecipeInput> recipeInputs = recursiveRecipeInput(ingredients);
+							currentInputs.addAll(recipeInputs);
 							recipes.put(new SimpleStack(outStack),currentInputs);
-							recipeCount++;
+							recipeCount+= recipeInputs.size();
 						}
 					} catch (Exception e) {
 						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
@@ -221,6 +217,27 @@ public final class RecipeMapper
 			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
 		} catch (Exception e) {
 			System.out.println("Could not load Recipes from NEI");
+		}
+	}
+	public static List<RecipeInput> recursiveRecipeInput(List<PositionedStack> ingredients) {
+		List<RecipeInput> out = new ArrayList<RecipeInput>();
+		recursiveRecipeInput(ingredients,0,out,new Stack<ItemStack>());
+		return out;
+	}
+	public static void recursiveRecipeInput(List<PositionedStack> ingredients, int index, List<RecipeInput> out, Stack<ItemStack> currentIngredients) {
+		if (index < ingredients.size()) {
+			PositionedStack thisStack = ingredients.get(index);
+			for (ItemStack is: thisStack.items) {
+				currentIngredients.push(is);
+				recursiveRecipeInput(ingredients,index + 1, out, currentIngredients);
+				currentIngredients.pop();
+			}
+		} else if (index == ingredients.size()) {
+			RecipeInput recipeInput = new RecipeInput();
+			for(ItemStack is: currentIngredients) {
+				recipeInput.addToInputs(is);
+			}
+			out.add(recipeInput);
 		}
 	}
 	
