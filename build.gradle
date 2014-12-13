@@ -26,6 +26,9 @@ minecraft {
     runDir = "eclipse"
 }
 
+runClient {
+    args  "--noCoreSearch"
+}
 repositories {
     maven {
         name = "chickenbones"
