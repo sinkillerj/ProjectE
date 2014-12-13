@@ -187,9 +187,9 @@ public final class RecipeMapper
 						System.out.println("Not TemplateRecipeHandler - ignoring");
 						continue;
 					}
-					TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
-					trh.loadCraftingRecipes(trh.getOverlayIdentifier());
 					try {
+						TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
+						trh.loadCraftingRecipes(trh.getOverlayIdentifier());
 						System.out.println(recipeHandler.numRecipes());
 						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
 							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
