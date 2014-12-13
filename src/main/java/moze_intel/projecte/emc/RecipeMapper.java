@@ -3,6 +3,7 @@ package moze_intel.projecte.emc;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.IRecipeHandler;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -177,10 +178,19 @@ public final class RecipeMapper
 
 	public static void mapNEI() {
 		try {
-			int recipeCountBefore = recipes.size();
+			int recipeCount = 0;
+			System.out.println("NEI has " + GuiCraftingRecipe.craftinghandlers.size() + " CraftingHandlers");
 			for (IRecipeHandler recipeHandler: GuiCraftingRecipe.craftinghandlers) {
+				System.out.println(recipeHandler);
 				if (recipeHandler != null) {
+					if (!(recipeHandler instanceof TemplateRecipeHandler)) {
+						System.out.println("Not TemplateRecipeHandler - ignoring");
+						continue;
+					}
+					TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
+					trh.loadCraftingRecipes(trh.getOverlayIdentifier());
 					try {
+						System.out.println(recipeHandler.numRecipes());
 						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
 							RecipeInput recipeInput = new RecipeInput();
 							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
@@ -201,13 +211,14 @@ public final class RecipeMapper
 							}
 							currentInputs.add(recipeInput);
 							recipes.put(new SimpleStack(outStack),currentInputs);
+							recipeCount++;
 						}
 					} catch (Exception e) {
 						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
 					}
 				}
 			}
-			System.out.println("Loaded " + (recipes.size() - recipeCountBefore) + " Recipes from NEI");
+			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
 		} catch (Exception e) {
 			System.out.println("Could not load Recipes from NEI");
 		}
