@@ -81,9 +81,13 @@ public class ToolTipEvent
 			{
 				event.toolTip.add(String.format("Stored XP: %,d", current.stackTagCompound.getInteger("StoredXP")));
 			}
-			if (current.stackTagCompound.hasKey(ItemMatterStorageCell.nbtTagBound))
-			{
-				event.toolTip.add(String.format("Bound to %s",  current.stackTagCompound.getString(ItemMatterStorageCell.nbtTagBound)));
+		}
+
+		if (current.getItem() instanceof ItemMatterStorageCell) {
+			if (current.hasTagCompound() && current.stackTagCompound.hasKey(ItemMatterStorageCell.nbtTagBound)) {
+				event.toolTip.add(String.format("Bound to %s", current.stackTagCompound.getString(ItemMatterStorageCell.nbtTagBound)));
+			} else  {
+				event.toolTip.add("Sneak-Right Click to bind this to your knowledge");
 			}
 		}
 
