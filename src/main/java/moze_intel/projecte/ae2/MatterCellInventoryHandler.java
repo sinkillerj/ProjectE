@@ -104,13 +104,14 @@ public class MatterCellInventoryHandler implements IMEInventoryHandler<IAEItemSt
 
     @Override
     public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src) {
-        if (canAccept(input)) {
+        if (canAccept(input)) { //=> isBound
             if (type == Actionable.SIMULATE) return null;
 
             String playerName = boundTo();
-            if (playerName != null) {
+            if (playerName != null) { //Being extra sure
                 ItemStack normalizedItemStack = Utils.getNormalizedStack(input.getItemStack());
                 if (!Utils.ContainsItemStack(Transmutation.getKnowledge(playerName), normalizedItemStack)) {
+                    //Player has not yet learned this.
                     Transmutation.addToKnowledge(playerName, normalizedItemStack);
                 }
                 if (type == Actionable.MODULATE) addEMC(input.getStackSize() * Utils.getEmcValue(input.getItemStack()));
@@ -129,9 +130,7 @@ public class MatterCellInventoryHandler implements IMEInventoryHandler<IAEItemSt
                 double itemEMC = Utils.getEmcValue(request.getItem());
                 double requestedEMC = itemEMC * request.getStackSize();
                 double storedEMC = getStoredEMC();
-                if (requestedEMC <= storedEMC) {
-
-                } else {
+                if (requestedEMC > storedEMC) {
                     double count = Math.floor(storedEMC/itemEMC);
                     requestedEMC = count * itemEMC ;
                     request.setStackSize((long) count);
