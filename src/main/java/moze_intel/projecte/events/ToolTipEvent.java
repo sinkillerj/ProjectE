@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.gameObjs.items.ItemMatterStorageCell;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -79,6 +80,14 @@ public class ToolTipEvent
 			else if (current.stackTagCompound.hasKey("StoredXP"))
 			{
 				event.toolTip.add(String.format("Stored XP: %,d", current.stackTagCompound.getInteger("StoredXP")));
+			}
+		}
+
+		if (current.getItem() instanceof ItemMatterStorageCell) {
+			if (current.hasTagCompound() && current.stackTagCompound.hasKey(ItemMatterStorageCell.nbtTagBound)) {
+				event.toolTip.add(String.format("Bound to %s", current.stackTagCompound.getString(ItemMatterStorageCell.nbtTagBound)));
+			} else  {
+				event.toolTip.add("Sneak-Right Click to bind this to your knowledge");
 			}
 		}
 

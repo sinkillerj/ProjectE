@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs;
 
+import appeng.api.AEApi;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.ae2.MatterCellHandler;
 import moze_intel.projecte.gameObjs.blocks.*;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -133,6 +135,8 @@ public class ObjHandler
 	public static Item lensExplosive = new LensExplosive();
 	
 	public static Item transmutationTablet = new TransmutationTablet();
+
+	public static Item ae2MatterStorageCell = new ItemMatterStorageCell();
 	
 	public static void register()
 	{
@@ -234,6 +238,11 @@ public class ObjHandler
 		
 		GameRegistry.registerItem(tome, tome.getUnlocalizedName());
 		GameRegistry.registerItem(transmutationTablet, transmutationTablet.getUnlocalizedName());
+
+		if (AEApi.instance() != null) {
+			GameRegistry.registerItem(ae2MatterStorageCell, ae2MatterStorageCell.getUnlocalizedName());
+			AEApi.instance().registries().cell().addCellHandler(new MatterCellHandler());
+		}
 		
 		//Tile Entities
 		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
