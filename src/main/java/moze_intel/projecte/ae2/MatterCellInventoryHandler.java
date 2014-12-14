@@ -15,7 +15,6 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 
-import javax.rmi.CORBA.Util;
 import java.util.List;
 
 public class MatterCellInventoryHandler implements IMEInventoryHandler<IAEItemStack> {
@@ -25,7 +24,7 @@ public class MatterCellInventoryHandler implements IMEInventoryHandler<IAEItemSt
         this.itemStack = itemStack;
     }
 
-    private boolean isBound() {
+    public boolean isBound() {
         return  itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey(ItemMatterStorageCell.nbtTagBound);
     }
     private String boundTo() {
@@ -116,6 +115,7 @@ public class MatterCellInventoryHandler implements IMEInventoryHandler<IAEItemSt
                 }
                 if (type == Actionable.MODULATE) addEMC(input.getStackSize() * Utils.getEmcValue(input.getItemStack()));
             }
+            //Consume all the Items
             return null;
         }
         return input;

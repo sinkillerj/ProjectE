@@ -44,7 +44,11 @@ public class MatterCellHandler implements ICellHandler {
 
     @Override
     public int getStatusForCell(ItemStack itemStack, IMEInventory imeInventory) {
-        return 2;
+        MatterCellInventoryHandler handler = (MatterCellInventoryHandler)imeInventory;
+        if (handler.isBound()) {
+            return 1; //Ok - green
+        }
+        return 3; //Full - red
     }
 
     @Override

@@ -32,7 +32,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import sun.security.krb5.internal.crypto.Aes256;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
