@@ -6,6 +6,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -50,7 +51,7 @@ public class RepairTalisman extends ItemPE implements IBauble
             {
                 ItemStack invStack = inv.getStackInSlot(i);
 
-                if (invStack == null || invStack.getItem() instanceof IModeChanger)
+                if (invStack == null || invStack.getItem() instanceof IModeChanger || ProjectEConfig.repairTalismanBlacklist.matchesAny(invStack))
                 {
                     continue;
                 }
