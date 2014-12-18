@@ -60,9 +60,91 @@ public class GraphMapper<T extends Comparable<T>> {
         } else {
             fixedValueConversion = new Conversion<T>(something);
             fixedValueFor.put(something,fixedValueConversion);
+            getConversionsFor(something).add(fixedValueConversion);
         }
         fixedValueConversion.value = value;
         fixedValueConversion.type = type;
+    }
+
+
+    public Map<T, Double> generateValues() {
+        Map<T, Double> valueFor = new HashMap<T, Double>();
+        List<Conversion<T>> solvableConversions = new LinkedList<Conversion<T>>();
+
+        for (Conversion<T> fixedValueConversion: fixedValueFor.values()) {
+            if (fixedValueConversion.type == FixedValue.FixAndInherit) {
+                solvableConversions.add(fixedValueConversion);
+            } else if (fixedValueConversion.type == FixedValue.FixAndDoNotInherit) {
+                //Thing has a fixed Value, that should not be inherited, so all Conversions using this are invalid
+                for (Conversion<T> use:getUsesFor(fixedValueConversion.output)) {
+                    use.markInvalid();
+                    solvableConversions.add(use);
+                }
+            }
+        }
+
+
+        List<Conversion<T>> nextSolvableConversions = new LinkedList<Conversion<T>>();
+        while(!solvableConversions.isEmpty()) {
+            for (Conversion<T> solvableConversion: solvableConversions) {
+                //conversion has a value and no ingredient dependency
+                assert solvableConversion.ingredientsWithAmount == null || solvableConversion.ingredientsWithAmount.size() == 0;
+                T thisOutput = solvableConversion.output;
+                if (solvableConversion.value > 0) {
+                    //Is valid conversion
+                    for (Conversion<T> use: getUsesFor(thisOutput)) {
+                        //use.ingredientsWithAmount can not be null, because our output 'isUsedIn' the conversion.
+                        assert use.ingredientsWithAmount != null;
+                        Integer amount = use.ingredientsWithAmount.get(thisOutput);
+                        assert amount != null && amount > 0;
+                        use.value += amount * solvableConversion.value;
+                        use.ingredientsWithAmount.remove(thisOutput);
+                        if (use.ingredientsWithAmount.size() == 0) {
+                            nextSolvableConversions.add(use);
+                        }
+                    }
+                    Collection<Conversion<T>> conversionsForThis = getConversionsFor(thisOutput);
+                    double maxValue = 0;
+                    for (Conversion<T> conversion: conversionsForThis) {
+                        if (conversion.isValid()) {
+                            if (conversion.value > maxValue) {
+                                maxValue = conversion.value;
+                            }
+                        } else {
+                            maxValue = 0;
+                            break;
+                        }
+                    }
+                    if (maxValue > 0) {
+                        //There are only valid Conversions for this Output => Choose Max
+                        valueFor.put(thisOutput, maxValue);
+                        conversionsFor.remove(thisOutput);
+                    }
+                } else {
+                    //Is invalid conversion
+                    for (Conversion<T> use: getUsesFor(thisOutput)) {
+                        use.markInvalid();
+                        nextSolvableConversions.add(use);
+                    }
+                    Collection<Conversion<T>> conversionsForThis = getConversionsFor(thisOutput);
+                    conversionsForThis.remove(solvableConversion);
+                    if (conversionsForThis.size() == 0) {
+                        //No valid Conversion left => No Value
+                        valueFor.put(thisOutput, (double) 0);
+                        conversionsFor.remove(thisOutput);
+                    }
+                }
+            }
+
+            {//Swap And Clear
+                solvableConversions.clear();
+                List<Conversion<T>> tmp = solvableConversions;
+                solvableConversions = nextSolvableConversions;
+                nextSolvableConversions = tmp;
+            }
+        }
+
+        return valueFor;
     }
 
     protected static class Conversion<T> {
@@ -89,7 +171,18 @@ public class GraphMapper<T extends Comparable<T>> {
             if (type != FixedValue.FixAfterInherit) {
                 this.value = setValue;
             }
+        }
+        
+        public boolean isValid() {
+            return this.value > 0 && (this.ingredientsWithAmount == null || this.ingredientsWithAmount.size() == 0);
+        }
 
+        public void markInvalid() {
+            if (this.ingredientsWithAmount != null) {
+                this.ingredientsWithAmount.clear();
+                this.ingredientsWithAmount = null;
+            }
+            this.value = 0;
         }
     }
 }
