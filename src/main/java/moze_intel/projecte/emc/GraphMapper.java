@@ -30,11 +30,11 @@ public class GraphMapper<T extends Comparable<T>> {
         return getOrCreateList(usedIn, something);
     }
 
-    public void addConversionMultiple(int outnumber, T output, Iterable<Map.Entry<T, Integer>> ingredientsWithAmount) {
+    public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
         List<Conversion<T>> conversionsForOutput = getConversionsFor(output);
         Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
         conversionsForOutput.add(conversion);
-        for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount) {
+        for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount.entrySet()) {
             List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
             usesForIngredient.add(conversion);
         }
@@ -50,7 +50,7 @@ public class GraphMapper<T extends Comparable<T>> {
                 ingredientsWithAmount.put(ingredient, 1);
             }
         }
-        this.addConversionMultiple(outnumber, output, ingredientsWithAmount.entrySet());
+        this.addConversionMultiple(outnumber, output, ingredientsWithAmount);
     }
     public void setValue(T something, double value, FixedValue type) {
         Conversion<T> fixedValueConversion;
@@ -72,11 +72,11 @@ public class GraphMapper<T extends Comparable<T>> {
 
         int outnumber = 1;
         double value = 0;
-        Iterable<Map.Entry<T, Integer>> ingredientsWithAmount;
+        Map<T, Integer> ingredientsWithAmount;
         protected Conversion(T output) {
             this.output = output;
         }
-        protected Conversion(T output, int outnumber, Iterable<Map.Entry<T,Integer>> ingredientsWithAmount) {
+        protected Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
             this(output);
             this.outnumber = outnumber;
             this.ingredientsWithAmount = ingredientsWithAmount;
