@@ -62,7 +62,10 @@ public class GraphMapper<T extends Comparable<T>> {
             fixedValueFor.put(something,fixedValueConversion);
             getConversionsFor(something).add(fixedValueConversion);
         }
-        fixedValueConversion.value = value;
+        fixedValueConversion.fixedValue = value;
+        if (type == FixedValue.SuggestionAndInherit || type == FixedValue.FixAndInherit || type == FixedValue.FixAndDoNotInherit) {
+            fixedValueConversion.value = value;
+        }
         fixedValueConversion.type = type;
     }
 
@@ -80,6 +83,8 @@ public class GraphMapper<T extends Comparable<T>> {
                     use.markInvalid();
                     solvableConversions.add(use);
                 }
+                getUsesFor(fixedValueConversion.output).clear();
+                solvableConversions.add(fixedValueConversion);
             }
         }
 
@@ -90,7 +95,7 @@ public class GraphMapper<T extends Comparable<T>> {
                 //conversion has a value and no ingredient dependency
                 assert solvableConversion.ingredientsWithAmount == null || solvableConversion.ingredientsWithAmount.size() == 0;
                 T thisOutput = solvableConversion.output;
-                if (solvableConversion.value > 0) {
+                if (solvableConversion.isValid()) {
                     //Is valid conversion
                     for (Conversion<T> use: getUsesFor(thisOutput)) {
                         //use.ingredientsWithAmount can not be null, because our output 'isUsedIn' the conversion.
@@ -143,7 +148,11 @@ public class GraphMapper<T extends Comparable<T>> {
                 nextSolvableConversions = tmp;
             }
         }
-
+        for (Conversion<T> fixedConversion: fixedValueFor.values()) {
+            if (fixedConversion.type == FixedValue.FixAfterInherit) {
+                valueFor.put(fixedConversion.output,fixedConversion.fixedValue);
+            }
+        }
         return valueFor;
     }
 
@@ -172,7 +181,7 @@ public class GraphMapper<T extends Comparable<T>> {
                 this.value = setValue;
             }
         }
-        
+
         public boolean isValid() {
             return this.value > 0 && (this.ingredientsWithAmount == null || this.ingredientsWithAmount.size() == 0);
         }
