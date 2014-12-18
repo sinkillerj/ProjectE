@@ -83,6 +83,21 @@ public class GraphMapperTest {
         assertEquals(0, getValue(values,"c4"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesSimpleSelectMinValue() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("b2",2, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "c", Arrays.asList("a1","a1"));
+        graphMapper.addConversion(1, "c", Arrays.asList("b2","b2"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(2, getValue(values,"b2"));
+        assertEquals(2, getValue(values,"c"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         assertNotNull(val);
