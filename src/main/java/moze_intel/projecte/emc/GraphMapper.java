@@ -83,6 +83,8 @@ public class GraphMapper<T extends Comparable<T>> {
                     use.markInvalid();
                     solvableConversions.add(use);
                 }
+                getConversionsFor(fixedValueConversion.output).clear();
+                getConversionsFor(fixedValueConversion.output).add(fixedValueConversion);
                 getUsesFor(fixedValueConversion.output).clear();
                 solvableConversions.add(fixedValueConversion);
             }
@@ -105,24 +107,25 @@ public class GraphMapper<T extends Comparable<T>> {
                         use.value += amount * solvableConversion.value;
                         use.ingredientsWithAmount.remove(thisOutput);
                         if (use.ingredientsWithAmount.size() == 0) {
+                            //Does not have any dependencys anymore: we can solve it in the next run.
                             nextSolvableConversions.add(use);
                         }
                     }
                     Collection<Conversion<T>> conversionsForThis = getConversionsFor(thisOutput);
-                    double maxValue = 0;
+                    double minValue = Double.POSITIVE_INFINITY;
                     for (Conversion<T> conversion: conversionsForThis) {
                         if (conversion.isValid()) {
-                            if (conversion.value > maxValue) {
-                                maxValue = conversion.value;
+                            if (conversion.value < minValue) {
+                                minValue = conversion.value;
                             }
                         } else {
-                            maxValue = 0;
+                            minValue = 0;
                             break;
                         }
                     }
-                    if (maxValue > 0) {
-                        //There are only valid Conversions for this Output => Choose Max
-                        valueFor.put(thisOutput, maxValue);
+                    if (0 < minValue && minValue < Double.POSITIVE_INFINITY) {
+                        //There are only valid Conversions for this Output => Choose Minimum
+                        valueFor.put(thisOutput, minValue);
                         conversionsFor.remove(thisOutput);
                     }
                 } else {
