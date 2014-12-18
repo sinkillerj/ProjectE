@@ -32,7 +32,7 @@ public class GraphMapper<T extends Comparable<T>> {
 
     public void addConversionMultiple(int outnumber, T output, Iterable<Map.Entry<T, Integer>> ingredientsWithAmount) {
         List<Conversion<T>> conversionsForOutput = getConversionsFor(output);
-        Conversion<T> conversion = new Conversion<T>(outnumber,ingredientsWithAmount);
+        Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
         conversionsForOutput.add(conversion);
         for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount) {
             List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
@@ -58,7 +58,7 @@ public class GraphMapper<T extends Comparable<T>> {
             fixedValueConversion = fixedValueFor.get(something);
             PELogger.logWarn("Fixed Value for " + something.toString() + " is overwritten!");
         } else {
-            fixedValueConversion = new Conversion<T>();
+            fixedValueConversion = new Conversion<T>(something);
             fixedValueFor.put(something,fixedValueConversion);
         }
         fixedValueConversion.value = value;
@@ -66,19 +66,23 @@ public class GraphMapper<T extends Comparable<T>> {
     }
 
     protected static class Conversion<T> {
-
+        T output;
         FixedValue type = FixedValue.SuggestionAndInherit;
         double fixedValue;
 
         int outnumber = 1;
         double value = 0;
         Iterable<Map.Entry<T, Integer>> ingredientsWithAmount;
-        protected Conversion() {}
-        protected Conversion(int outnumber, Iterable<Map.Entry<T,Integer>> ingredientsWithAmount) {
+        protected Conversion(T output) {
+            this.output = output;
+        }
+        protected Conversion(T output, int outnumber, Iterable<Map.Entry<T,Integer>> ingredientsWithAmount) {
+            this(output);
             this.outnumber = outnumber;
             this.ingredientsWithAmount = ingredientsWithAmount;
         }
-        public Conversion(double setValue, FixedValue type) {
+        public Conversion(T output, double setValue, FixedValue type) {
+            this(output);
             if (setValue < 0) setValue = 0;
             this.type = type;
             this.fixedValue = setValue;
