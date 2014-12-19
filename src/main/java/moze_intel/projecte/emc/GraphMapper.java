@@ -107,6 +107,7 @@ public class GraphMapper<T extends Comparable<T>> {
                         use.value += amount * solvableConversion.value;
                         use.ingredientsWithAmount.remove(thisOutput);
                         if (use.ingredientsWithAmount.size() == 0) {
+                            //FIXME there still might be other conversions for the output of 'use', so this is not solveable!
                             //Does not have any dependencys anymore: we can solve it in the next run.
                             nextSolvableConversions.add(use);
                         }
@@ -124,6 +125,7 @@ public class GraphMapper<T extends Comparable<T>> {
                         }
                     }
                     if (0 < minValue && minValue < Double.POSITIVE_INFINITY) {
+                        //FIXME this Value is not propagated properly!
                         //There are only valid Conversions for this Output => Choose Minimum
                         valueFor.put(thisOutput, minValue);
                         conversionsFor.remove(thisOutput);
