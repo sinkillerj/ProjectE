@@ -107,22 +107,27 @@ public final class RecipeMapper
 
 					if (obj instanceof ItemStack)
 					{
-						ItemStack stack = ((ItemStack) obj).copy();
+						try {
+							ItemStack stack = ((ItemStack) obj).copy();
 
-						if (stack == null)
-						{
-							continue;
+							if (stack == null)
+							{
+								continue;
+							}
+
+							if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+							{
+								stack.setItemDamage(0);
+							}
+
+							if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+							{
+								rInput.addToInputs(stack);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 
-						if (stack.getItemDamage() != null && stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-						{
-							stack.setItemDamage(0);
-						}
-
-						if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
-						{
-							rInput.addToInputs(stack);
-						}
 					}
 					else
 					{
