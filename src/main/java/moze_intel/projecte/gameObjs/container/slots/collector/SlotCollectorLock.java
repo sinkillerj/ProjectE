@@ -12,14 +12,14 @@ public class SlotCollectorLock extends Slot
 		super(inventory, slotIndex, xPos, yPos);
 	}
 
-    @Override
+	@Override
 	public boolean isItemValid(ItemStack stack)
-    {
+	{
 		if (stack == null)
 		{
 			return false;
 		}
 		
-        return FuelMapper.isStackFuel(stack);
-    }
+		return FuelMapper.isStackFuel(stack);
+	}
 }

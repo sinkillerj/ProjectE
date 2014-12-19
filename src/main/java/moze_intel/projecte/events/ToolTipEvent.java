@@ -82,11 +82,11 @@ public class ToolTipEvent
 			}
 		}
 
-        Block block = Block.getBlockFromItem(current.getItem());
+		Block block = Block.getBlockFromItem(current.getItem());
 
-        if (block != null && FluidMapper.doesFluidHaveEMC(block))
-        {
-            event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
-        }
-    }
+		if (block != null && FluidMapper.doesFluidHaveEMC(block))
+		{
+			event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
+		}
+	}
 }

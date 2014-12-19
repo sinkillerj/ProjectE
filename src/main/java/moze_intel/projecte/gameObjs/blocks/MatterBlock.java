@@ -45,7 +45,7 @@ public class MatterBlock extends Block
 	
 	@Override
 	public boolean canHarvestBlock(EntityPlayer player, int meta)
-    {
+	{
 		ItemStack stack = player.getHeldItem();
 		
 		if (stack != null)
@@ -60,18 +60,18 @@ public class MatterBlock extends Block
 			}
 		}
 		
-        return false;
-    }
+		return false;
+	}
 	
 	@Override
 	public int damageDropped(int meta)
-    {
-        return meta;
-    }
+	{
+		return meta;
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
@@ -89,7 +89,7 @@ public class MatterBlock extends Block
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		if (meta == 0) 
 		{

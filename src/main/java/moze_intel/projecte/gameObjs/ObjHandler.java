@@ -41,7 +41,7 @@ public class ObjHandler
 	public static Block confuseTorch = new InterdictionTorch();
 	public static Block transmuteStone = new TransmutationStone();
 	public static Block condenser = new Condenser();
-    public static Block condenserMk2 = new CondenserMK2();
+	public static Block condenserMk2 = new CondenserMK2();
 	public static Block rmFurnaceOff = new MatterFurnace(false, true);
 	public static Block rmFurnaceOn = new MatterFurnace(true, true);
 	public static Block dmFurnaceOff = new MatterFurnace(false, false);
@@ -54,8 +54,8 @@ public class ObjHandler
 	public static Block relay = new Relay(1);
 	public static Block relayMK2 = new Relay(2);
 	public static Block relayMK3 = new Relay(3);
-	public static Block novaCatalyst = new  NovaCatalyst();
-	public static Block novaCataclysm = new  NovaCataclysm();
+	public static Block novaCatalyst = new NovaCatalyst();
+	public static Block novaCataclysm = new NovaCataclysm();
 	
 	public static Item philosStone = new PhilosophersStone();
 	public static Item alchBag = new AlchemicalBag();
@@ -141,7 +141,7 @@ public class ObjHandler
 		GameRegistry.registerBlock(confuseTorch, "Interdiction Torch");
 		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "Transmutation Stone");
 		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "Condenser");
-        GameRegistry.registerBlock(condenserMk2, "Condenser MK2");
+		GameRegistry.registerBlock(condenserMk2, "Condenser MK2");
 		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "RM Furnace");
 		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
 		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
@@ -239,7 +239,7 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
 		GameRegistry.registerTileEntity(InterdictionTile.class, "Interdiction Torch Tile");
 		GameRegistry.registerTileEntity(CondenserTile.class, "Condenser Tile");
-        GameRegistry.registerTileEntity(CondenserMK2Tile.class, "Condenser MK2 Tile");
+		GameRegistry.registerTileEntity(CondenserMK2Tile.class, "Condenser MK2 Tile");
 		GameRegistry.registerTileEntity(RMFurnaceTile.class, "RM Furnace Tile");
 		GameRegistry.registerTileEntity(DMFurnaceTile.class, "DM Furnace Tile");
 		GameRegistry.registerTileEntity(CollectorMK1Tile.class, "Energy Collector MK1 Tile");
@@ -271,7 +271,7 @@ public class ObjHandler
 		
 		//Interdiction torch
 		if (ProjectEConfig.enableITorch)
-        {
+		{
 			GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.redstone_torch, 'G', Items.glowstone_dust, 'D', Items.diamond, 'P', philosStone);
 		}
 		
@@ -287,8 +287,8 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 1), "ADA", "ADA", "ADA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
 		
 		//Alchemical Chest
-        if (ProjectEConfig.enableAlcChest)
-        {
+		if (ProjectEConfig.enableAlcChest)
+		{
 			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', Items.diamond, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2),'S', Blocks.stone, 'I', Items.iron_ingot, 'C', Blocks.chest);
 		}
 		
@@ -299,20 +299,20 @@ public class ObjHandler
 		}
 		
 		//Condenser
-        if (ProjectEConfig.enableCondenser)
-        {
+		if (ProjectEConfig.enableCondenser)
+		{
 			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', new ItemStack(Items.diamond), 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
 		}
 
-        //Condenser MK2
-        if (ProjectEConfig.enableCondenser2)
-        {
-        	GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
+		//Condenser MK2
+		if (ProjectEConfig.enableCondenser2)
+		{
+			GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
 		}
 		
 		//Transmutation Table
 		if (ProjectEConfig.enableTransTable)
-        {
+		{
 			GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.stone, 'O', Blocks.obsidian, 'P', philosStone);
 		}
 		
@@ -322,39 +322,39 @@ public class ObjHandler
 		
 		//Matter Furnaces
 		if (ProjectEConfig.enableDarkFurnace)
-        {
+		{
 			GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.furnace);
 		}
 		if (ProjectEConfig.enableRedFurnace)
-        {
+		{
 			GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
 		}
 		
 		//Collectors
-        if (ProjectEConfig.enableCollector)
-        {
+		if (ProjectEConfig.enableCollector)
+		{
 			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', Blocks.diamond_block, 'T', Blocks.glass);
 		}
-        if (ProjectEConfig.enableCollector2)
-        {
+		if (ProjectEConfig.enableCollector2)
+		{
 			GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', energyCollector, 'D', matter);
 		}
-        if (ProjectEConfig.enableCollector3)
-        {
+		if (ProjectEConfig.enableCollector3)
+		{
 			GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
 		}
 		
 		//AM Relays
-        if (ProjectEConfig.enableRelay)
-        {
+		if (ProjectEConfig.enableRelay)
+		{
 			GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.glass, 'D', Blocks.diamond_block, 'O', Blocks.obsidian);
 		}
-        if (ProjectEConfig.enableRelay2)
-        {
+		if (ProjectEConfig.enableRelay2)
+		{
 			GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.obsidian);
 		}
-        if (ProjectEConfig.enableRelay3)
-        {
+		if (ProjectEConfig.enableRelay3)
+		{
 			GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.obsidian);
 		}
 		
@@ -430,8 +430,8 @@ public class ObjHandler
 		//TransmutationTablet
 		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);
 
-        //Mercurial Eye
-        GameRegistry.addRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', Blocks.obsidian, 'B', Blocks.brick_block, 'R', new ItemStack(matter, 1, 1), 'D', Items.diamond);
+		//Mercurial Eye
+		GameRegistry.addRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', Blocks.obsidian, 'B', Blocks.brick_block, 'R', new ItemStack(matter, 1, 1), 'D', Items.diamond);
 		
 		//Shapeless Recipes
 		//Philos Stone exchanges
@@ -455,7 +455,7 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 2), Items.diamond, Items.coal);
 		
 		//Klein Stars
-		for (int i = 1; i < 6;  i++)
+		for (int i = 1; i < 6; i++)
 		{
 			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
 		}

@@ -46,7 +46,7 @@ public final class Utils
 	
 	public static void init()
 	{
-        WorldTransmutations.init();
+		WorldTransmutations.init();
 		loadEntityLists();
 	}
 	
@@ -59,10 +59,10 @@ public final class Utils
 		
 		SimpleStack iStack = new SimpleStack(stack);
 
-        if (!iStack.isValid())
-        {
-            return false;
-        }
+		if (!iStack.isValid())
+		{
+			return false;
+		}
 
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
@@ -72,49 +72,49 @@ public final class Utils
 		return EMCMapper.mapContains(iStack);
 	}
 
-    public static boolean doesItemHaveEmc(Item item)
-    {
-        if (item == null)
-        {
-            return false;
-        }
+	public static boolean doesItemHaveEmc(Item item)
+	{
+		if (item == null)
+		{
+			return false;
+		}
 
-        return doesItemHaveEmc(new ItemStack(item));
-    }
+		return doesItemHaveEmc(new ItemStack(item));
+	}
 
-    public static boolean doesBlockHaveEmc(Block block)
-    {
-        if (block == null)
-        {
-            return false;
-        }
+	public static boolean doesBlockHaveEmc(Block block)
+	{
+		if (block == null)
+		{
+			return false;
+		}
 
-        return doesItemHaveEmc(new ItemStack(block));
-    }
+		return doesItemHaveEmc(new ItemStack(block));
+	}
 
-    public static int getEmcValue(Item item)
-    {
-        SimpleStack stack = new SimpleStack(new ItemStack(item));
+	public static int getEmcValue(Item item)
+	{
+		SimpleStack stack = new SimpleStack(new ItemStack(item));
 
-        if (stack.isValid() && EMCMapper.mapContains(stack))
-        {
-            return EMCMapper.getEmcValue(stack);
-        }
+		if (stack.isValid() && EMCMapper.mapContains(stack))
+		{
+			return EMCMapper.getEmcValue(stack);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    public static int getEmcValue(Block Block)
-    {
-        SimpleStack stack = new SimpleStack(new ItemStack(Block));
+	public static int getEmcValue(Block Block)
+	{
+		SimpleStack stack = new SimpleStack(new ItemStack(Block));
 
-        if (stack.isValid() && EMCMapper.mapContains(stack))
-        {
-            return EMCMapper.getEmcValue(stack);
-        }
+		if (stack.isValid() && EMCMapper.mapContains(stack))
+		{
+			return EMCMapper.getEmcValue(stack);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
 	public static int getEmcValue(ItemStack stack)
 	{
@@ -125,10 +125,10 @@ public final class Utils
 		
 		SimpleStack iStack = new SimpleStack(stack);
 
-        if (!iStack.isValid())
-        {
-            return 0;
-        }
+		if (!iStack.isValid())
+		{
+			return 0;
+		}
 
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
@@ -148,19 +148,19 @@ public final class Utils
 
 				long result = emc * relDamage;
 
-                if (result <= 0)
-                {
-                    //Congratulations, big number is big.
-                    return emc;
-                }
+				if (result <= 0)
+				{
+					//Congratulations, big number is big.
+					return emc;
+				}
 
-                result /= stack.getMaxDamage();
-                result += getEnchantEmcBonus(stack);
+				result /= stack.getMaxDamage();
+				result += getEnchantEmcBonus(stack);
 
-                if (result > Integer.MAX_VALUE)
-                {
-                    return emc;
-                }
+				if (result > Integer.MAX_VALUE)
+				{
+					return emc;
+				}
 
 				if (result <= 0)
 				{
@@ -220,10 +220,10 @@ public final class Utils
 
 		if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 		{
-            return true;
+			return true;
 		}
 
-        return stack1.getItemDamage() == stack2.getItemDamage();
+		return stack1.getItemDamage() == stack2.getItemDamage();
 	}
 	
 	
@@ -241,16 +241,16 @@ public final class Utils
 			ItemStack stack = iter.next();
 
 			if (stack == null)
-            {
-                continue;
-            }
+			{
+				continue;
+			}
 
 			if (stack.getItem().equals(toSearch.getItem()))
 			{
 				if( !stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
-                {
-                    return true;
-                }
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -261,16 +261,16 @@ public final class Utils
 		for (ItemStack stack : stacks)
 		{
 			if (stack == null)
-            {
-                continue;
-            }
+			{
+				continue;
+			}
 
 			if (stack.getItem() == toSearch.getItem())
 			{
 				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
-                {
-                    return true;
-                }
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -442,28 +442,28 @@ public final class Utils
 	public static void spawnEntityItem(World world, ItemStack stack, int x, int y, int z)
 	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
-        float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-        EntityItem entityitem;
-        
-        for (float f2 = world.rand.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
-        {
-            int j1 = world.rand.nextInt(21) + 10;
+		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
+		EntityItem entityitem;
+		
+		for (float f2 = world.rand.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
+		{
+			int j1 = world.rand.nextInt(21) + 10;
 
-            if (j1 > stack.stackSize)
-                j1 = stack.stackSize;
+			if (j1 > stack.stackSize)
+				j1 = stack.stackSize;
 
-            stack.stackSize -= j1;
-            entityitem = new EntityItem(world, (double)((float) x + f), (double)((float) y + f1), (double)((float) z + f2), new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
-            float f3 = 0.05F;
-            entityitem.motionX = (double)((float) world.rand.nextGaussian() * f3);
-            entityitem.motionY = (double)((float) world.rand.nextGaussian() * f3 + 0.2F);
-            entityitem.motionZ = (double)((float) world.rand.nextGaussian() * f3);
+			stack.stackSize -= j1;
+			entityitem = new EntityItem(world, (double)((float) x + f), (double)((float) y + f1), (double)((float) z + f2), new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
+			float f3 = 0.05F;
+			entityitem.motionX = (double)((float) world.rand.nextGaussian() * f3);
+			entityitem.motionY = (double)((float) world.rand.nextGaussian() * f3 + 0.2F);
+			entityitem.motionZ = (double)((float) world.rand.nextGaussian() * f3);
 
-            if (stack.hasTagCompound())
-            {
-                entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-            }
-        }	
+			if (stack.hasTagCompound())
+			{
+				entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+			}
+		}	
 		
 	}
 	
@@ -572,10 +572,10 @@ public final class Utils
 	
 	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
 	{
-        if (player.capabilities.isCreativeMode)
-        {
-            return minFuel;
-        }
+		if (player.capabilities.isCreativeMode)
+		{
+			return minFuel;
+		}
 
 		IInventory inv = player.inventory;
 		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
@@ -734,7 +734,7 @@ public final class Utils
 					catch (Exception e)
 					{
 						PELogger.logFatal("Couldn't retrieve OD items for: " + oreName);
-                        PELogger.logFatal("Caused by: " + e.toString());
+						PELogger.logFatal("Caused by: " + e.toString());
 
 						result.addAll(list);
 						break;
@@ -839,19 +839,19 @@ public final class Utils
 		for (Entity ent : list)
 		{
 			if (ent instanceof EntityPlayer)
-            {
-                continue;
-            }
+			{
+				continue;
+			}
 			
 			Vec3 p = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
-	        Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
-	        double distance = p.distanceTo(t) + 0.1D;
+			Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
+			double distance = p.distanceTo(t) + 0.1D;
 
-	        Vec3 r = Vec3.createVectorHelper(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
+			Vec3 r = Vec3.createVectorHelper(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
 
-	        ent.motionX += r.xCoord / 1.5D / distance;
-	        ent.motionY += r.yCoord / 1.5D / distance;
-	        ent.motionZ += r.zCoord / 1.5D / distance;
+			ent.motionX += r.xCoord / 1.5D / distance;
+			ent.motionY += r.yCoord / 1.5D / distance;
+			ent.motionZ += r.zCoord / 1.5D / distance;
 		}
 	}
 
@@ -884,60 +884,60 @@ public final class Utils
 		return new ItemStack(item, 1, metaData);
 	}
 
-    public static boolean canFillTank(IFluidHandler tank, Fluid fluid, int side)
-    {
-        ForgeDirection dir = ForgeDirection.getOrientation(side);
+	public static boolean canFillTank(IFluidHandler tank, Fluid fluid, int side)
+	{
+		ForgeDirection dir = ForgeDirection.getOrientation(side);
 
-        if (tank.canFill(dir, fluid))
-        {
-            boolean canFill = false;
+		if (tank.canFill(dir, fluid))
+		{
+			boolean canFill = false;
 
-            for (FluidTankInfo tankInfo : tank.getTankInfo(dir))
-            {
-                if (tankInfo.fluid == null)
-                {
-                    canFill = true;
-                    break;
-                }
+			for (FluidTankInfo tankInfo : tank.getTankInfo(dir))
+			{
+				if (tankInfo.fluid == null)
+				{
+					canFill = true;
+					break;
+				}
 
-                if (tankInfo.fluid.getFluid() == fluid && tankInfo.fluid.amount < tankInfo.capacity)
-                {
-                    canFill = true;
-                    break;
-                }
-            }
+				if (tankInfo.fluid.getFluid() == fluid && tankInfo.fluid.amount < tankInfo.capacity)
+				{
+					canFill = true;
+					break;
+				}
+			}
 
-            return canFill;
-        }
+			return canFill;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public static void fillTank(IFluidHandler tank, Fluid fluid, int side, int quantity)
-    {
-        tank.fill(ForgeDirection.getOrientation(side), new FluidStack(fluid, quantity), true);
-    }
+	public static void fillTank(IFluidHandler tank, Fluid fluid, int side, int quantity)
+	{
+		tank.fill(ForgeDirection.getOrientation(side), new FluidStack(fluid, quantity), true);
+	}
 
-    public static void closeStream(Closeable c)
-    {
-        if (c != null)
-        {
-            try
-            {
-                c.close();
-            }
-            catch (IOException e)
-            {
-                PELogger.logFatal("IO Error: couldn't close stream!");
-                e.printStackTrace();
-            }
-        }
-    }
+	public static void closeStream(Closeable c)
+	{
+		if (c != null)
+		{
+			try
+			{
+				c.close();
+			}
+			catch (IOException e)
+			{
+				PELogger.logFatal("IO Error: couldn't close stream!");
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public static int randomIntInRange(int max, int min)
 	{
 		Random rand = new Random();
-	    return rand.nextInt((max - min) + 1) + min;
+		return rand.nextInt((max - min) + 1) + min;
 	}
 
 	private static void loadEntityLists()

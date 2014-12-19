@@ -36,7 +36,7 @@ public class RedHammer extends ItemCharge
 	
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
-    {
+	{
 		if (world.isRemote || !(eLiving instanceof EntityPlayer) || this.getCharge(stack) == 0 || !canHarvestBlock(block, stack))
 		{
 			return false;
@@ -74,7 +74,7 @@ public class RedHammer extends ItemCharge
 		}
 		
 		return true;
-    }
+	}
 	
 	private CoordinateBox getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
 	{
@@ -128,14 +128,14 @@ public class RedHammer extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "hammer"));
 	}

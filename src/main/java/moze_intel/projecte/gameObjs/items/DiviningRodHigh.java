@@ -37,7 +37,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (world.isRemote) 
 		{
 			return stack;
@@ -140,7 +140,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 		}
 		
 		return stack;
-    }
+	}
 	
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
@@ -161,7 +161,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("divining3"));
 	}

@@ -72,8 +72,8 @@ public class GuiHandler implements IGuiHandler
 				return new TransmuteTabletContainer(player.inventory, new TransmuteTabletInventory(player.getHeldItem(), player));
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
-            case Constants.CONDENSER_MK2_GUI:
-                return new CondenserMK2Container(player.inventory, (CondenserMK2Tile) tile);
+			case Constants.CONDENSER_MK2_GUI:
+				return new CondenserMK2Container(player.inventory, (CondenserMK2Tile) tile);
 		}
 		
 		return null;
@@ -141,8 +141,8 @@ public class GuiHandler implements IGuiHandler
 			case Constants.ETERNAL_DENSITY_GUI:
 				player.getHeldItem();
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
-            case Constants.CONDENSER_MK2_GUI:
-                return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);
+			case Constants.CONDENSER_MK2_GUI:
+				return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);
 		}
 		
 		return null;

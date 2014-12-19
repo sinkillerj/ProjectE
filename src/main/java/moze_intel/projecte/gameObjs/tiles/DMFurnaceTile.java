@@ -28,10 +28,10 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 	}
 	
 	@SideOnly(Side.CLIENT)
-    public int getCookProgressScaled(int value)
-    {
-    	return furnaceCookTime * value / ticksBeforeSmelt;
-    }
+	public int getCookProgressScaled(int value)
+	{
+		return furnaceCookTime * value / ticksBeforeSmelt;
+	}
 	
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 

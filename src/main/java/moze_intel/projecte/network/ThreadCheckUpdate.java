@@ -19,7 +19,7 @@ public class ThreadCheckUpdate extends Thread
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
 	private final String changelogURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/Changelog.txt";
-    private final String changelogDevURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/ChangelogDev.txt";
+	private final String changelogDevURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/ChangelogDev.txt";
 	private final String githubURL = "https://github.com/MozeIntel/ProjectE";
 	private boolean isServerSide;
 	
@@ -37,14 +37,14 @@ public class ThreadCheckUpdate extends Thread
 		
 		try
 		{
-            if (PECore.VERSION.contains("dev"))
-            {
-                connection = (HttpURLConnection) new URL(changelogDevURL).openConnection();
-            }
-            else
-            {
-                connection = (HttpURLConnection) new URL(changelogURL).openConnection();
-            }
+			if (PECore.VERSION.contains("dev"))
+			{
+				connection = (HttpURLConnection) new URL(changelogDevURL).openConnection();
+			}
+			else
+			{
+				connection = (HttpURLConnection) new URL(changelogURL).openConnection();
+			}
 
 			connection.connect();
 			

@@ -47,7 +47,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		if (stack.hasTagCompound())
 		{

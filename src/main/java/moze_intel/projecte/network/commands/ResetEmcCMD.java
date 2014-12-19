@@ -31,52 +31,52 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-        String name = "";
-        int meta = 0;
+		String name = "";
+		int meta = 0;
 
-        if (params.length == 0)
-        {
-            ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem();
+		if (params.length == 0)
+		{
+			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem();
 
-            if (heldItem == null)
-            {
-                sendError(sender, "Error: player isn't holding any item!");
-                return;
-            }
+			if (heldItem == null)
+			{
+				sendError(sender, "Error: player isn't holding any item!");
+				return;
+			}
 
-            name = Item.itemRegistry.getNameForObject(heldItem.getItem());
-            meta = heldItem.getItemDamage();
-        }
-        else
-        {
-            name = params[0];
+			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
+			meta = heldItem.getItemDamage();
+		}
+		else
+		{
+			name = params[0];
 
-            if (params.length > 1)
-            {
-                meta = parseInteger(params[1]);
+			if (params.length > 1)
+			{
+				meta = parseInteger(params[1]);
 
-                if (meta < 0)
-                {
-                    sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a valid number!");
-                    return;
-                }
-            }
-        }
+				if (meta < 0)
+				{
+					sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a valid number!");
+					return;
+				}
+			}
+		}
 
-        if (CustomEMCParser.removeFromFile(name, meta))
-        {
-            EMCMapper.clearMaps();
-            CustomEMCParser.readUserData();
-            EMCMapper.map();
-            TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+		if (CustomEMCParser.removeFromFile(name, meta))
+		{
+			EMCMapper.clearMaps();
+			CustomEMCParser.readUserData();
+			EMCMapper.map();
+			TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
 
-            PacketHandler.sendFragmentedEmcPacketToAll();
+			PacketHandler.sendFragmentedEmcPacketToAll();
 
-            sendSuccess(sender, "Reset EMC value for: " + name);
-        }
-        else
-        {
-            sendError(sender, "The EMC for " + name + "," + meta + " has not been modified!");
-        }
+			sendSuccess(sender, "Reset EMC value for: " + name);
+		}
+		else
+		{
+			sendError(sender, "The EMC for " + name + "," + meta + " has not been modified!");
+		}
 	}
 }

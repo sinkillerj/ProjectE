@@ -45,7 +45,7 @@ public class MindStone extends RingToggle
 	
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
-    {
+	{
 		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
@@ -58,7 +58,7 @@ public class MindStone extends RingToggle
 		}
 		
 		return false;
-    }
+	}
 	
 	private void removeXP(EntityPlayer player, int amount)
 	{

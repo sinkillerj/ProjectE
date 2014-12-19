@@ -66,7 +66,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (!world.isRemote)
 		{
 			if (stack.stackTagCompound.getBoolean("Active"))
@@ -79,8 +79,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 			}
 		}
 		
-        return stack;
-    }
+		return stack;
+	}
 	
 
 	@Override
@@ -103,14 +103,14 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		return icons[MathHelper.clamp_int(dmg, 0, 4)];
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -120,7 +120,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		if (stack.hasTagCompound())
 		{

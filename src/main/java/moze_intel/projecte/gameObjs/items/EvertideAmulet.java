@@ -33,27 +33,27 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		this.setMaxStackSize(1);
 	}
 
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
-    {
-        if (!world.isRemote)
-        {
-            TileEntity tile = world.getTileEntity(x, y, z);
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+	{
+		if (!world.isRemote)
+		{
+			TileEntity tile = world.getTileEntity(x, y, z);
 
-            if (tile instanceof IFluidHandler)
-            {
-                IFluidHandler tank = (IFluidHandler) tile;
+			if (tile instanceof IFluidHandler)
+			{
+				IFluidHandler tank = (IFluidHandler) tile;
 
-                if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
-                {
-                    Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
-                    return true;
-                }
-            }
-        }
+				if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
+				{
+					Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+					return true;
+				}
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
@@ -113,55 +113,55 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "evertide_amulet"));//"ee2:rings/evertide_amulet");
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
-    {
-        if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
-        {
-            list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
-        }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+	{
+		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		{
+			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
+		}
 
-        list.add("Right-click to fill tanks");
-        list.add("All operations are completely free!");
-    }
+		list.add("Right-click to fill tanks");
+		list.add("All operations are completely free!");
+	}
 	
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

@@ -58,7 +58,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			return stack;
 		}
 		
-        MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+		MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
 
 		if (mBlock.getBlock() != Blocks.air)
 		{
@@ -87,10 +87,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					{
 						s.setItemDamage(world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
 					}
-                    else
-                    {
-                        s.setItemDamage(0);
-                    }
+					else
+					{
+						s.setItemDamage(0);
+					}
 					
 					s.setTagCompound(nbt);
 					
@@ -101,9 +101,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			}
 		}
 
-        MetaBlock result = WorldTransmutations.getWorldTransmutation(world, mop.blockX, mop.blockY, mop.blockZ, player.isSneaking());
+		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, mop.blockX, mop.blockY, mop.blockZ, player.isSneaking());
 
-        if (result != null)
+		if (result != null)
 		{
 			Coordinates pos = new Coordinates(mop);
 			int mode = this.getMode(stack);
@@ -184,14 +184,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type, int side, int charge)
 	{
 		if (type == 0)
-        {
-            for (int i = coords.x - charge; i <= coords.x + charge; i++)
-                for (int j = coords.y - charge; j <= coords.y + charge; j++)
-                    for (int k = coords.z - charge; k <= coords.z + charge; k++)
-                    {
-                        changeBlock(world, pointed, result, i, j, k);
-                    }
-        }
+		{
+			for (int i = coords.x - charge; i <= coords.x + charge; i++)
+				for (int j = coords.y - charge; j <= coords.y + charge; j++)
+					for (int k = coords.z - charge; k <= coords.z + charge; k++)
+					{
+						changeBlock(world, pointed, result, i, j, k);
+					}
+		}
 		else if (type == 1)
 		{
 			if (side == 0)
@@ -240,11 +240,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	
 	private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z)
 	{
-        MetaBlock block = new MetaBlock(world, x, y, z);
+		MetaBlock block = new MetaBlock(world, x, y, z);
 
 		if (block.equals(pointed))
 		{
-            result.setInWorld(world, x, y, z);
+			result.setInWorld(world, x, y, z);
 
 			if (world.rand.nextInt(8) == 0)
 			{
@@ -297,7 +297,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone"));
 	}

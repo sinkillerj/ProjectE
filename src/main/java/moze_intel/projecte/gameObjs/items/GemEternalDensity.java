@@ -276,37 +276,37 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		return false;
 	}
 
-    @Override
-    public byte getMode(ItemStack stack)
-    {
-        if (stack.hasTagCompound())
-        {
-            return stack.stackTagCompound.getByte("Target");
-        }
+	@Override
+	public byte getMode(ItemStack stack)
+	{
+		if (stack.hasTagCompound())
+		{
+			return stack.stackTagCompound.getByte("Target");
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    @Override
+	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-        byte oldMode = getMode(stack);
+		byte oldMode = getMode(stack);
 
-        if (oldMode == 4)
-        {
-            stack.stackTagCompound.setByte("Target", (byte) 0);
-        }
-        else
-        {
-            stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
-        }
+		if (oldMode == 4)
+		{
+			stack.stackTagCompound.setByte("Target", (byte) 0);
+		}
+		else
+		{
+			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
+		}
 
 		player.addChatComponentMessage(new ChatComponentText("Set target to: " + getTargetDesciption(stack)));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		list.add("Condenses items on the go.");
 		
@@ -324,52 +324,52 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		list.add("Shift right click to activate/deactivate");
 	}
 
-    @Override
+	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		return dmg == 0 ? gemOff : gemOn;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		gemOn = register.registerIcon(this.getTexture("dense_gem_on"));
 		gemOff = register.registerIcon(this.getTexture("dense_gem_off"));
 	}
 	
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

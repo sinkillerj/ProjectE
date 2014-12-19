@@ -22,30 +22,30 @@ public final class IOHandler
 		markedDirty = false;
 		
 		if (!knowledge.exists())
-    	{
-    		try 
-    		{
-    			knowledge.createNewFile();
+		{
+			try 
+			{
+				knowledge.createNewFile();
 			}
-    		catch (IOException e) 
-    		{
-    			PELogger.logFatal("Couldn't create transmutation knowledge file!");
+			catch (IOException e) 
+			{
+				PELogger.logFatal("Couldn't create transmutation knowledge file!");
 				e.printStackTrace();
 			}
-    	}
+		}
 		
 		if (!bagData.exists())
-    	{
-    		try 
-    		{
-    			bagData.createNewFile();
+		{
+			try 
+			{
+				bagData.createNewFile();
 			}
-    		catch (IOException e) 
-    		{
-    			PELogger.logFatal("Couldn't create alchemical bag data file!");
+			catch (IOException e) 
+			{
+				PELogger.logFatal("Couldn't create alchemical bag data file!");
 				e.printStackTrace();
 			}
-    	}
+		}
 		
 		knowledgeFile = knowledge;
 		bagDataFile = bagData;

@@ -13,21 +13,21 @@ import java.util.List;
 
 public class Tome extends ItemPE
 {
-    public Tome()
-    {
-        this.setUnlocalizedName("tome");
-        this.setCreativeTab(ObjHandler.cTab);
-        this.setMaxStackSize(1);
-        this.setMaxDamage(0);
-    }
+	public Tome()
+	{
+		this.setUnlocalizedName("tome");
+		this.setCreativeTab(ObjHandler.cTab);
+		this.setMaxStackSize(1);
+		this.setMaxDamage(0);
+	}
 
-    @Override
-    public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack)
-    {
-    	return false; 
-    }
+	@Override
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack)
+	{
+		return false; 
+	}
 
-    @Override
+	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
 		super.onCreated(stack, world, player);
@@ -38,19 +38,19 @@ public class Tome extends ItemPE
 		}
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
-    {
-        this.itemIcon = register.registerIcon(this.getTexture("tome"));
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister register)
+	{
+		this.itemIcon = register.registerIcon(this.getTexture("tome"));
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
-    {
-        list.add("Unlocks all items with an EMC value in the tile.");
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
+	{
+		list.add("Unlocks all items with an EMC value in the tile.");
+	}
 }
 
 

@@ -32,13 +32,13 @@ public class KleinStar extends ItemPE
 	
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
-    {
-        return stack.hasTagCompound();
-    }
+	{
+		return stack.hasTagCompound();
+	}
 	
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
-    {
+	{
 		double starEmc = this.getEmc(stack);
 		
 		if (starEmc == 0)
@@ -47,7 +47,7 @@ public class KleinStar extends ItemPE
 		}
 		
 		return 1.0D - starEmc / (double)Utils.getKleinStarMaxEmc(stack);
-    }
+	}
 
 	
 	@Override
@@ -104,23 +104,23 @@ public class KleinStar extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs cTab, List list)
-    {
-        for (int i = 0; i < 6; ++i)
-        {
-        	list.add(new ItemStack(item, 1, i));
-        }
-    }
+	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	{
+		for (int i = 0; i < 6; ++i)
+		{
+			list.add(new ItemStack(item, 1, i));
+		}
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1)
-    {
-        return icons[MathHelper.clamp_int(par1, 0, 6)];
-    }
+	public IIcon getIconFromDamage(int par1)
+	{
+		return icons[MathHelper.clamp_int(par1, 0, 6)];
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons = new IIcon[6];
 		

@@ -32,7 +32,7 @@ public class ArchangelSmite extends ItemPE
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "archangel_smite"));
 	}

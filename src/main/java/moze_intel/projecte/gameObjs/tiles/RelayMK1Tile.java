@@ -123,40 +123,40 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	
 	private void sortInventory()
 	{
-        for (int i = 1; i <= invBufferSize; i++)
-        {
-            ItemStack current = getStackInSlot(i);
+		for (int i = 1; i <= invBufferSize; i++)
+		{
+			ItemStack current = getStackInSlot(i);
 
-            if (current == null)
-            {
-                continue;
-            }
+			if (current == null)
+			{
+				continue;
+			}
 
-            int nextIndex = i < invBufferSize ? i + 1 : 0;
+			int nextIndex = i < invBufferSize ? i + 1 : 0;
 
-            ItemStack following = inventory[nextIndex];
+			ItemStack following = inventory[nextIndex];
 
-            if (following == null)
-            {
-                inventory[nextIndex] = current;
-                decrStackSize(i, current.stackSize);
-            }
-            else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
-            {
-                int missingForFullStack = following.getMaxStackSize() - following.stackSize;
+			if (following == null)
+			{
+				inventory[nextIndex] = current;
+				decrStackSize(i, current.stackSize);
+			}
+			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
+			{
+				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 
-                if (current.stackSize <= missingForFullStack)
-                {
-                    inventory[nextIndex].stackSize += current.stackSize;
-                    inventory[i] = null;
-                }
-                else
-                {
-                    inventory[nextIndex].stackSize += missingForFullStack;
-                    decrStackSize(i, missingForFullStack);
-                }
-            }
-        }
+				if (current.stackSize <= missingForFullStack)
+				{
+					inventory[nextIndex].stackSize += current.stackSize;
+					inventory[i] = null;
+				}
+				else
+				{
+					inventory[nextIndex].stackSize += missingForFullStack;
+					decrStackSize(i, missingForFullStack);
+				}
+			}
+		}
 	}
 	
 	private void chargeKleinStars(ItemStack star)
@@ -369,30 +369,30 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		return true;
 	}
 
-    @Override
-    public int[] getAccessibleSlotsFromSide(int side)
-    {
-        int indexes[] = new int[inventory.length - 2];
-        byte counter = 0;
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		int indexes[] = new int[inventory.length - 2];
+		byte counter = 0;
 
-        for (int i = 1; i < inventory.length - 1; i++)
-        {
-            indexes[counter] = i;
-            counter++;
-        }
+		for (int i = 1; i < inventory.length - 1; i++)
+		{
+			indexes[counter] = i;
+			counter++;
+		}
 
-        return indexes;
-    }
+		return indexes;
+	}
 
-    @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side)
-    {
-        return Utils.doesItemHaveEmc(stack);
-    }
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, int side)
+	{
+		return Utils.doesItemHaveEmc(stack);
+	}
 
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side)
-    {
-        return false;
-    }
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side)
+	{
+		return false;
+	}
 }

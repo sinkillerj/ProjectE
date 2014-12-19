@@ -37,68 +37,68 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		super("time_watch", (byte) 3);
 	}
 
-    @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
-        if (!world.isRemote)
-        {
-            if (!stack.hasTagCompound())
-            {
-                stack.stackTagCompound = new NBTTagCompound();
-            }
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (!world.isRemote)
+		{
+			if (!stack.hasTagCompound())
+			{
+				stack.stackTagCompound = new NBTTagCompound();
+			}
 
-            byte current = getTimeBoost(stack);
+			byte current = getTimeBoost(stack);
 
-            setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
+			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-            player.addChatComponentMessage(new ChatComponentText("Change time control mode to: " + getTimeDescription(stack)));
-        }
+			player.addChatComponentMessage(new ChatComponentText("Change time control mode to: " + getTimeDescription(stack)));
+		}
 
-        return stack;
-    }
+		return stack;
+	}
 
-    @Override
+	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
 	{
 		if (!stack.hasTagCompound())
-        {
-            stack.setTagCompound(new NBTTagCompound());
-        }
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
 		
 		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
 		}
 
-        byte timeControl = getTimeBoost(stack);
+		byte timeControl = getTimeBoost(stack);
 
-        if (timeControl == 1)
-        {
-            if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-            {
-                world.setWorldTime(Long.MAX_VALUE);
-            }
-            else
-            {
-                world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
-            }
-        }
-        else if (timeControl == 2)
-        {
-            if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
-            {
-                world.setWorldTime(0);
-            }
-            else
-            {
-                world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
-            }
-        }
+		if (timeControl == 1)
+		{
+			if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+			{
+				world.setWorldTime(Long.MAX_VALUE);
+			}
+			else
+			{
+				world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+			}
+		}
+		else if (timeControl == 2)
+		{
+			if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+			{
+				world.setWorldTime(0);
+			}
+			else
+			{
+				world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+			}
+		}
 
-        if (stack.getItemDamage() == 0)
-        {
-            return;
-        }
+		if (stack.getItemDamage() == 0)
+		{
+			return;
+		}
 
 		EntityPlayer player = (EntityPlayer) entity;
 		double reqEmc = getEmcPerTick(this.getCharge(stack));
@@ -169,32 +169,32 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		}
 	}
 
-    private String getTimeDescription(ItemStack stack)
-    {
-        byte mode = getTimeBoost(stack);
+	private String getTimeDescription(ItemStack stack)
+	{
+		byte mode = getTimeBoost(stack);
 
-        switch (mode)
-        {
-            case 0:
-                return "Off";
-            case 1:
-                return "Fast-Forward";
-            case 2:
-                return "Rewind";
-            default:
-                return "ERROR_INVALID_MODE";
-        }
-    }
+		switch (mode)
+		{
+			case 0:
+				return "Off";
+			case 1:
+				return "Fast-Forward";
+			case 2:
+				return "Rewind";
+			default:
+				return "ERROR_INVALID_MODE";
+		}
+	}
 
-    private byte getTimeBoost(ItemStack stack)
-    {
-        return stack.stackTagCompound.getByte("TimeMode");
-    }
+	private byte getTimeBoost(ItemStack stack)
+	{
+		return stack.stackTagCompound.getByte("TimeMode");
+	}
 
-    private void setTimeBoost(ItemStack stack, byte time)
-    {
-        stack.stackTagCompound.setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
-    }
+	private void setTimeBoost(ItemStack stack, byte time)
+	{
+		stack.stackTagCompound.setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
+	}
 
 	public double getEmcPerTick(int charge)
 	{
@@ -202,13 +202,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		return (10.0D * actualCharge) / 20.0D;
 	}
 
-    @Override
-    public byte getMode(ItemStack stack)
-    {
-        return (byte) stack.getItemDamage();
-    }
+	@Override
+	public byte getMode(ItemStack stack)
+	{
+		return (byte) stack.getItemDamage();
+	}
 
-    @Override
+	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)
@@ -234,68 +234,68 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	}
 
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		if (dmg == 0)
 		{
 			return ringOff;
 		}
 		
 		return ringOn;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		ringOff = register.registerIcon(this.getTexture("rings", "time_watch_off"));
 		ringOn = register.registerIcon(this.getTexture("rings", "time_watch_on"));
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
-    {
-        list.add("Become the master of time.");
-        list.add("Right click to change time control mode.");
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
+	{
+		list.add("Become the master of time.");
+		list.add("Right click to change time control mode.");
 
-        if (stack.hasTagCompound())
-        {
-            list.add("Time control mode: " + getTimeDescription(stack));
-        }
-    }
+		if (stack.hasTagCompound())
+		{
+			list.add("Time control mode: " + getTimeDescription(stack));
+		}
+	}
 
-    @Override
-    @Optional.Method(modid = "Baubles")
+	@Override
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

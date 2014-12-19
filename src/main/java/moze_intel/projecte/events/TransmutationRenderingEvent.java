@@ -68,97 +68,97 @@ public class TransmutationRenderingEvent
 		
 		playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.partialTicks;
 		playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.partialTicks;
-        playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.partialTicks;
-        
-        MovingObjectPosition mop = event.target;
-        
-        if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
-        {
-        	ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
-            MetaBlock current = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
-        	transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+		playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.partialTicks;
+		
+		MovingObjectPosition mop = event.target;
+		
+		if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
+		{
+			ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
+			MetaBlock current = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 
-        	if (transmutationResult != null)
-        	{
-        		byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
+			if (transmutationResult != null)
+			{
+				byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
 
-        		switch (((ItemMode) stack.getItem()).getMode(stack))
-        		{
-        			case 0:
-        			{
-        				for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-        					for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-        						for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
-        						{
-        							addBlockToRenderList(world, current, x, y, z);
-        						}
-        				
-        				break;
-        			}
-        			case 1:
-        			{
-        				int side = orientation.offsetY != 0 ? 0 : orientation.offsetX != 0 ? 1 : 2;  
-        				
-        				if (side == 0)
-        				{
-        					for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-        						for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
-        						{
-        							addBlockToRenderList(world, current, x, mop.blockY, z);
-        						}
-        				}
-        				else if (side == 1)
-        				{
-        					for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-        						for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
-        						{
-        							addBlockToRenderList(world, current, mop.blockX, y, z);
-        						}
-        				}
-        				else
-        				{
-        					for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-        						for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-        						{
-        							addBlockToRenderList(world, current, x, y, mop.blockZ);
-        						}
-        				}
-        				
-        				break;
-        			}
-        			case 2:
-        			{
-        				String dir = Direction.directions[MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
-        				int side = orientation.offsetX != 0 ? 0 : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
-        				
-        				if (side == 0)
-        				{
-        					for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
-        					{
-        						addBlockToRenderList(world, current, mop.blockX, mop.blockY, z);
-        					}
-        				}
-        				else 
-        				{
-        					for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-        					{
-        						addBlockToRenderList(world, current, x, mop.blockY, mop.blockZ);
-        					}
-        				}
-        				
-        				break;
-        			}
-        		}
-            	
-            	drawAll();
-            	renderList.clear();
-        	}
-        	else if (transmutationResult != null)
+				switch (((ItemMode) stack.getItem()).getMode(stack))
+				{
+					case 0:
+					{
+						for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
+								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+								{
+									addBlockToRenderList(world, current, x, y, z);
+								}
+						
+						break;
+					}
+					case 1:
+					{
+						int side = orientation.offsetY != 0 ? 0 : orientation.offsetX != 0 ? 1 : 2;
+						
+						if (side == 0)
+						{
+							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+								{
+									addBlockToRenderList(world, current, x, mop.blockY, z);
+								}
+						}
+						else if (side == 1)
+						{
+							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
+								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+								{
+									addBlockToRenderList(world, current, mop.blockX, y, z);
+								}
+						}
+						else
+						{
+							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+								for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
+								{
+									addBlockToRenderList(world, current, x, y, mop.blockZ);
+								}
+						}
+						
+						break;
+					}
+					case 2:
+					{
+						String dir = Direction.directions[MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
+						int side = orientation.offsetX != 0 ? 0 : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
+						
+						if (side == 0)
+						{
+							for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							{
+								addBlockToRenderList(world, current, mop.blockX, mop.blockY, z);
+							}
+						}
+						else 
+						{
+							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+							{
+								addBlockToRenderList(world, current, x, mop.blockY, mop.blockZ);
+							}
+						}
+						
+						break;
+					}
+				}
+				
+				drawAll();
+				renderList.clear();
+			}
+			else if (transmutationResult != null)
 			{
 				transmutationResult = null;
 			}
-        }
-        else if (transmutationResult != null)
+		}
+		else if (transmutationResult != null)
 		{
 			transmutationResult = null;
 		}
@@ -168,74 +168,74 @@ public class TransmutationRenderingEvent
 	{
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDepthMask(false);
 
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
 		
-        Tessellator tessellator = Tessellator.instance;
-        
-        float colorR = 1.0f;
-        float colorG = 1.0f;
-        float colorB = 1.0f;
-        
+		Tessellator tessellator = Tessellator.instance;
+		
+		float colorR = 1.0f;
+		float colorG = 1.0f;
+		float colorB = 1.0f;
+		
 		for (CoordinateBox b : renderList)
 		{
 			//Top
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.minX, b.maxY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-	        tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-	        tessellator.draw();
-	        
-	        //Bottom 
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.minX, b.minY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.minY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-	        tessellator.addVertex(b.minX, b.minY, b.maxZ);
-	        tessellator.draw();
-	        
-	        //Front
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-	        tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-	        tessellator.addVertex(b.minX, b.minY, b.maxZ);
-	        tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-	        tessellator.draw();
-	        
-	        //Back
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.maxX, b.minY, b.minZ);
-	        tessellator.addVertex(b.minX, b.minY, b.minZ);
-	        tessellator.addVertex(b.minX, b.maxY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-	        tessellator.draw();
-	        
-	        //Left
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-	        tessellator.addVertex(b.minX, b.maxY, b.minZ);
-	        tessellator.addVertex(b.minX, b.minY, b.minZ);
-	        tessellator.addVertex(b.minX, b.minY, b.maxZ);
-	        tessellator.draw();
-	        
-	        //Right
-	        tessellator.startDrawingQuads();
-	        tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-	        tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.minY, b.minZ);
-	        tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-	        tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.minX, b.maxY, b.minZ);
+			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+			tessellator.draw();
+			
+			//Bottom 
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.minX, b.minY, b.minZ);
+			tessellator.addVertex(b.maxX, b.minY, b.minZ);
+			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+			tessellator.addVertex(b.minX, b.minY, b.maxZ);
+			tessellator.draw();
+			
+			//Front
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+			tessellator.addVertex(b.minX, b.minY, b.maxZ);
+			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+			tessellator.draw();
+			
+			//Back
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.maxX, b.minY, b.minZ);
+			tessellator.addVertex(b.minX, b.minY, b.minZ);
+			tessellator.addVertex(b.minX, b.maxY, b.minZ);
+			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+			tessellator.draw();
+			
+			//Left
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+			tessellator.addVertex(b.minX, b.maxY, b.minZ);
+			tessellator.addVertex(b.minX, b.minY, b.minZ);
+			tessellator.addVertex(b.minX, b.minY, b.maxZ);
+			tessellator.draw();
+			
+			//Right
+			tessellator.startDrawingQuads();
+			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+			tessellator.addVertex(b.maxX, b.minY, b.minZ);
+			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+			tessellator.draw();
 		}
 
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
 	private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z)

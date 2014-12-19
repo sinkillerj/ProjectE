@@ -168,7 +168,7 @@ public class DarkShears extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shears"));
 	}

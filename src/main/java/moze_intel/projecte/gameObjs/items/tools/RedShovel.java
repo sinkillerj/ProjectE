@@ -118,14 +118,14 @@ public class RedShovel extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "shovel"));
 	}

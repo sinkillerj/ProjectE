@@ -17,20 +17,20 @@ public class CondenserContainer extends Container
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
 		tile = condenser;
-        tile.openInventory();
+		tile.openInventory();
 		
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
 		
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++) 
-		      for (int j = 0; j < 13; j++)
-		    	  this.addSlotToContainer(new SlotCondenserInput(tile, 1 + j + i * 13, 12 + j * 18, 26 + i * 18));
-		    	  
+			for (int j = 0; j < 13; j++)
+				this.addSlotToContainer(new SlotCondenserInput(tile, 1 + j + i * 13, 12 + j * 18, 26 + i * 18));
+
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
-			  for(int j = 0; j < 9; j++) 
-			        this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
+			for(int j = 0; j < 9; j++) 
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
 		
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
@@ -40,10 +40,10 @@ public class CondenserContainer extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
-        if (slotIndex == 0)
-        {
-            return null;
-        }
+		if (slotIndex == 0)
+		{
+			return null;
+		}
 
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -58,9 +58,9 @@ public class CondenserContainer extends Container
 		if (slotIndex <= 91)
 		{
 			if (!this.mergeItemStack(stack, 92, 127, false))
-            {
-                return null;
-            }
+			{
+				return null;
+			}
 		}
 		else if (!Utils.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 91, false))
 		{
@@ -90,21 +90,21 @@ public class CondenserContainer extends Container
 		tile.closeInventory();
 	}
 
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (slot == 0 && tile.getStackInSlot(slot) != null)
-        {
-            if (!player.worldObj.isRemote)
-            {
-                tile.setInventorySlotContents(slot, null);
-                tile.checkLockAndUpdate();
-                this.detectAndSendChanges();
-            }
+	@Override
+	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+	{
+		if (slot == 0 && tile.getStackInSlot(slot) != null)
+		{
+			if (!player.worldObj.isRemote)
+			{
+				tile.setInventorySlotContents(slot, null);
+				tile.checkLockAndUpdate();
+				this.detectAndSendChanges();
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        return super.slotClick(slot, button, flag, player);
-    }
+		return super.slotClick(slot, button, flag, player);
+	}
 }

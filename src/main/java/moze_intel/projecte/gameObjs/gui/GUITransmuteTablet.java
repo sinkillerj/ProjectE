@@ -53,14 +53,14 @@ public class GUITransmuteTablet extends GuiContainer
 		{
 			this.fontRendererObj.drawString("L", 98, 36, 4210752);
 			this.fontRendererObj.drawString("e", 99, 44, 4210752);
-		    this.fontRendererObj.drawString("a", 100, 52, 4210752);
-		    this.fontRendererObj.drawString("r", 101, 60, 4210752);
-		    this.fontRendererObj.drawString("n", 102, 68, 4210752);
-		    this.fontRendererObj.drawString("e", 103, 76, 4210752);
-		    this.fontRendererObj.drawString("d", 104, 84, 4210752);
-		    this.fontRendererObj.drawString("!", 107, 92, 4210752);
-		    
-		    table.learnFlag--;
+			this.fontRendererObj.drawString("a", 100, 52, 4210752);
+			this.fontRendererObj.drawString("r", 101, 60, 4210752);
+			this.fontRendererObj.drawString("n", 102, 68, 4210752);
+			this.fontRendererObj.drawString("e", 103, 76, 4210752);
+			this.fontRendererObj.drawString("d", 104, 84, 4210752);
+			this.fontRendererObj.drawString("!", 107, 92, 4210752);
+			
+			table.learnFlag--;
 		}
 	}
 	

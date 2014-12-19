@@ -36,7 +36,7 @@ public class RedStar extends ItemCharge
 	
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
-    {
+	{
 		if (world.isRemote || !(eLiving instanceof EntityPlayer) || !canHarvestBlock(block, stack) || this.getCharge(stack) == 0)
 		{
 			return false;
@@ -74,7 +74,7 @@ public class RedStar extends ItemCharge
 		}
 		
 		return true;
-    }
+	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -96,7 +96,7 @@ public class RedStar extends ItemCharge
 							Block block = world.getBlock(x, y, z);
 							
 							if (Utils.isOre(block) && block.getBlockHardness(world, x, y, z) != -1 && canHarvestBlock(block, stack))
-                            {
+							{
 								Utils.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 							}
 						}
@@ -201,14 +201,14 @@ public class RedStar extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "morning_star"));
 	}

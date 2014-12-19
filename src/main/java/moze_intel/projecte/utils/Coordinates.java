@@ -17,12 +17,12 @@ public class Coordinates
 		this.z = z;
 	}
 
-    public Coordinates(TileEntity tile)
-    {
-        this.x = tile.xCoord;
-        this.y = tile.yCoord;
-        this.z = tile.zCoord;
-    }
+	public Coordinates(TileEntity tile)
+	{
+		this.x = tile.xCoord;
+		this.y = tile.yCoord;
+		this.z = tile.zCoord;
+	}
 	
 	public Coordinates(Entity ent)
 	{

@@ -8,36 +8,36 @@ import net.minecraft.item.ItemStack;
 
 public class SlotCondenserMK2Lock extends Slot
 {
-    private CondenserMK2Container container;
+	private CondenserMK2Container container;
 
-    public SlotCondenserMK2Lock(CondenserMK2Container container, int slotIndex, int xPos, int yPos)
-    {
-        super(container.tile, slotIndex, xPos, yPos);
-        this.container = container;
-    }
+	public SlotCondenserMK2Lock(CondenserMK2Container container, int slotIndex, int xPos, int yPos)
+	{
+		super(container.tile, slotIndex, xPos, yPos);
+		this.container = container;
+	}
 
-    @Override
-    public boolean isItemValid(ItemStack stack)
-    {
-        if (stack != null && Utils.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
-        {
-            this.putStack(Utils.getNormalizedStack(stack));
-            container.tile.checkLockAndUpdate();
-            container.detectAndSendChanges();
-        }
+	@Override
+	public boolean isItemValid(ItemStack stack)
+	{
+		if (stack != null && Utils.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
+		{
+			this.putStack(Utils.getNormalizedStack(stack));
+			container.tile.checkLockAndUpdate();
+			container.detectAndSendChanges();
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean canTakeStack(EntityPlayer player)
-    {
-        return false;
-    }
+	@Override
+	public boolean canTakeStack(EntityPlayer player)
+	{
+		return false;
+	}
 
-    @Override
-    public int getSlotStackLimit()
-    {
-        return 1;
-    }
+	@Override
+	public int getSlotStackLimit()
+	{
+		return 1;
+	}
 }

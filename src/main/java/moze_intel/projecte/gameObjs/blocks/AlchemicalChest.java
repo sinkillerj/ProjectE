@@ -30,27 +30,27 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	
 	@Override
 	public Item getItemDropped(int par1, Random random, int par2)
-    {
+	{
 		return Item.getItemFromBlock(ObjHandler.alchChest);
-    }
+	}
 	
 	@Override
-    public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
 
-    @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
-    
-    @Override
-    public int getRenderType()
-    {
-        return Constants.CHEST_RENDER_ID;
-    }
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return Constants.CHEST_RENDER_ID;
+	}
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
@@ -71,8 +71,8 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register)
-    {
+	public void registerBlockIcons(IIconRegister register)
+	{
 		this.blockIcon = register.registerIcon("obsidian");
-    }
+	}
 }

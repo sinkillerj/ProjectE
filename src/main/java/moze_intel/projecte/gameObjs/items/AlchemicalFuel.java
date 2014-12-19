@@ -31,21 +31,21 @@ public class AlchemicalFuel extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs cTab, List list)
-    {
-        for (int i = 0; i < 3; ++i)
-        	list.add(new ItemStack(item, 1, i));
-    }
+	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	{
+		for (int i = 0; i < 3; ++i)
+			list.add(new ItemStack(item, 1, i));
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1)
-    {
-        return icons[MathHelper.clamp_int(par1, 0, 3)];
-    }
+	public IIcon getIconFromDamage(int par1)
+	{
+		return icons[MathHelper.clamp_int(par1, 0, 3)];
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons = new IIcon[3];
 		for (int i = 0; i < 3; i++)

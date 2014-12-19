@@ -44,17 +44,17 @@ public class RedKatar extends ItemMode
 	
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
-    {
-        switch (this.getMode(stack))
-        {
-            case 0:
-                return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
-            case 2:
-                return block.getMaterial() == Material.web;
-            default:
-                return false;
-        }
-    }
+	{
+		switch (this.getMode(stack))
+		{
+			case 0:
+				return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
+			case 2:
+				return block.getMaterial() == Material.web;
+			default:
+				return false;
+		}
+	}
 
 	@Override
 	public int getHarvestLevel(ItemStack stack, String toolClass) 
@@ -85,7 +85,7 @@ public class RedKatar extends ItemMode
 	
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
-    {
+	{
 		if (!(damager instanceof EntityPlayer) || this.getMode(stack) != 3)
 		{
 			return false;
@@ -103,56 +103,56 @@ public class RedKatar extends ItemMode
 		
 		damaged.attackEntityFrom(dmg, totalDmg);
 		return true;
-    }
+	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
-    {
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+	{
 		if (this.getMode(stack) != 1)
 		{
 			return false;
 		}
 		
 		return tillSoil(world, stack, player, x, y, z, par7, this.getCharge(stack));
-    }
+	}
 
-    @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
-    {
-        if (player.worldObj.isRemote)
-        {
-            return false;
-        }
+	@Override
+	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+	{
+		if (player.worldObj.isRemote)
+		{
+			return false;
+		}
 
-        Block block = player.worldObj.getBlock(x, y, z);
+		Block block = player.worldObj.getBlock(x, y, z);
 
-        if (block instanceof IShearable)
-        {
-            IShearable target = (IShearable) block;
+		if (block instanceof IShearable)
+		{
+			IShearable target = (IShearable) block;
 
-            if (target.isShearable(itemstack, player.worldObj, x, y, z))
-            {
-                ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
-                Random rand = new Random();
+			if (target.isShearable(itemstack, player.worldObj, x, y, z))
+			{
+				ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
+				Random rand = new Random();
 
-                for(ItemStack stack : drops)
-                {
-                    float f = 0.7F;
-                    double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
-                    entityitem.delayBeforeCanPickup = 10;
-                    player.worldObj.spawnEntityInWorld(entityitem);
-                }
+				for(ItemStack stack : drops)
+				{
+					float f = 0.7F;
+					double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
+					entityitem.delayBeforeCanPickup = 10;
+					player.worldObj.spawnEntityInWorld(entityitem);
+				}
 
-                itemstack.damageItem(1, player);
-                player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
-            }
-        }
+				itemstack.damageItem(1, player);
+				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -244,7 +244,7 @@ public class RedKatar extends ItemMode
 			if (MinecraftForge.EVENT_BUS.post(event))
 			{
 				return false;
-	        }
+			}
 
 			if (event.getResult() == Result.ALLOW)
 			{
@@ -253,7 +253,7 @@ public class RedKatar extends ItemMode
 
 			boolean hasAction = false;
 			boolean hasSoundPlayed = false;
-	            
+				
 			for (int i = x - charge; i <= x + charge; i++)
 				for (int j = z - charge; j <= z + charge; j++)
 				{
@@ -262,13 +262,13 @@ public class RedKatar extends ItemMode
 					if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
 					{
 						Block block1 = Blocks.farmland;
-	            			
+							
 						if (!hasSoundPlayed)
 						{
 							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
 							hasSoundPlayed = true;
 						}
-	                        
+							
 						if (world.isRemote)
 						{
 							return true;
@@ -418,14 +418,14 @@ public class RedKatar extends ItemMode
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "katar"));
 	}

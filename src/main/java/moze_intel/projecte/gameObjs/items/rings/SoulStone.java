@@ -38,13 +38,13 @@ public class SoulStone extends RingToggle implements IBauble
 			}
 			else
 			{
-                PlayerTimers.activateHeal(player);
+				PlayerTimers.activateHeal(player);
 
-                if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
-                {
-                    player.setHealth(player.getHealth() + 2);
-                    removeEmc(stack, 64);
-                }
+				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
+				{
+					player.setHealth(player.getHealth() + 2);
+					removeEmc(stack, 64);
+				}
 			}
 		}
 	}
@@ -70,36 +70,36 @@ public class SoulStone extends RingToggle implements IBauble
 	}
 	
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

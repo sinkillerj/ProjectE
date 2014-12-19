@@ -20,18 +20,18 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
-    {
-        return stack.hasTagCompound();
-    }
+	{
+		return stack.hasTagCompound();
+	}
 	
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
-    {
+	{
 		byte charge = getCharge(stack);
 		
 		//Must be beetween 0.0D - 1.0D
 		return charge == 0 ? 1.0D : 1.0D - (double) charge / (double) (numCharges - 1);
-    }
+	}
 	
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 

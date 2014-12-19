@@ -269,13 +269,13 @@ public class SWRG extends ItemPE implements IBauble
 	
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		if (dmg == 0)
 		{
 			return ringOff;
@@ -285,11 +285,11 @@ public class SWRG extends ItemPE implements IBauble
 		{
 			return ringOn[MathHelper.clamp_int(dmg - 1, 0, 2)];
 		}
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		ringOff = register.registerIcon(this.getTexture("rings", "swrg_off"));
 		ringOn = new IIcon[3];
@@ -301,14 +301,14 @@ public class SWRG extends ItemPE implements IBauble
 	}
 	
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
 	{
 		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer))
@@ -384,11 +384,11 @@ public class SWRG extends ItemPE implements IBauble
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) 
 	{
 		if (player.worldObj.isRemote || !(player instanceof EntityPlayer))
@@ -400,14 +400,14 @@ public class SWRG extends ItemPE implements IBauble
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

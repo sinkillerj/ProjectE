@@ -45,7 +45,7 @@ public class DiviningRodLow extends ItemPE
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (world.isRemote) return stack;
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
@@ -111,7 +111,7 @@ public class DiviningRodLow extends ItemPE
 		}
 		
 		return stack;
-    }
+	}
 	
 	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords)
 	{
@@ -139,7 +139,7 @@ public class DiviningRodLow extends ItemPE
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("divining1"));
 	}

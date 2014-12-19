@@ -9,76 +9,76 @@ import java.util.List;
 	
 public class RecipeInput implements Iterable<Object>
 {
-    private final List<Object> list;
+	private final List<Object> list;
 
-    public RecipeInput()
-    {
-        list = new ArrayList<Object>();
-    }
+	public RecipeInput()
+	{
+		list = new ArrayList<Object>();
+	}
 
-    public void addToInputs(ItemStack stack)
-    {
-        SimpleStack simpleStack = new SimpleStack(stack);
+	public void addToInputs(ItemStack stack)
+	{
+		SimpleStack simpleStack = new SimpleStack(stack);
 
-        if (simpleStack.isValid())
-        {
-            list.add(simpleStack);
-        }
-    }
+		if (simpleStack.isValid())
+		{
+			list.add(simpleStack);
+		}
+	}
 
-    public void addToInput(ArrayList<ItemStack> list)
-    {
-        ArrayList<SimpleStack> toAdd = new ArrayList<SimpleStack>();
+	public void addToInput(ArrayList<ItemStack> list)
+	{
+		ArrayList<SimpleStack> toAdd = new ArrayList<SimpleStack>();
 
-        for (ItemStack stack : list)
-        {
-            if (stack == null)
-            {
-                continue;
-            }
+		for (ItemStack stack : list)
+		{
+			if (stack == null)
+			{
+				continue;
+			}
 
-            SimpleStack s = new SimpleStack(stack);
+			SimpleStack s = new SimpleStack(stack);
 
-            if (s.isValid())
-            {
-                toAdd.add(s);
-            }
-        }
+			if (s.isValid())
+			{
+				toAdd.add(s);
+			}
+		}
 
-        if (!toAdd.isEmpty())
-        {
-            this.list.add(toAdd);
-        }
-    }
+		if (!toAdd.isEmpty())
+		{
+			this.list.add(toAdd);
+		}
+	}
 
-    @Override
-    public Iterator<Object> iterator()
-    {
-        return list.iterator();
-    }
+	@Override
+	public Iterator<Object> iterator()
+	{
+		return list.iterator();
+	}
 
-    @Override
-    public String toString()
-    {
-        return list.toString();
-    }
+	@Override
+	public String toString()
+	{
+		return list.toString();
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return list.hashCode();
-    }
+	@Override
+	public int hashCode()
+	{
+		return list.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof RecipeInput)
-        {
-            return list.equals(((RecipeInput) obj).list);
-        }
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof RecipeInput)
+		{
+			return list.equals(((RecipeInput) obj).list);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	/*private LinkedList<SimpleStack> list;
 		
@@ -109,12 +109,12 @@ public class RecipeInput implements Iterable<Object>
 		
 	public void addToInputs(ItemStack stack)
 	{
-        SimpleStack simpleStack = new SimpleStack(stack);
+		SimpleStack simpleStack = new SimpleStack(stack);
 
-        if (simpleStack.isValid())
-        {
-            list.add(new SimpleStack(stack));
-        }
+		if (simpleStack.isValid())
+		{
+			list.add(new SimpleStack(stack));
+		}
 	}
 		
 	public LinkedList<SimpleStack> getInputs()

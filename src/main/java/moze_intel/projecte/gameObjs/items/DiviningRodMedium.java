@@ -55,7 +55,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (world.isRemote) return stack;
 		
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
@@ -132,7 +132,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 		}
 		
 		return stack;
-    }
+	}
 	
 	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords, int range)
 	{
@@ -184,7 +184,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		if (stack.hasTagCompound())
 		{
@@ -194,7 +194,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("divining2"));
 	}

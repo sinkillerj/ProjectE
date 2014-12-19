@@ -40,31 +40,31 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		return dmg == 0 ? ringOff : ringOn;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		ringOn = register.registerIcon(this.getTexture("rings", name+"_on"));
 		ringOff = register.registerIcon(this.getTexture("rings", name+"_off"));
 	}
 
-    @Override
-    public byte getMode(ItemStack stack)
-    {
-        return (byte) stack.getItemDamage();
-    }
+	@Override
+	public byte getMode(ItemStack stack)
+	{
+		return (byte) stack.getItemDamage();
+	}
 
-    @Override
+	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)

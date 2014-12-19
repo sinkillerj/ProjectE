@@ -19,20 +19,20 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 {
 	protected ItemStack[] inventory;
 	private ItemStack lock;
-    protected boolean loadChecks;
-    protected boolean isRequestingEmc;
+	protected boolean loadChecks;
+	protected boolean isRequestingEmc;
 	private int ticksSinceSync;
 	public int displayEmc;
 	public float lidAngle;
-    public float prevLidAngle;
-    public int numPlayersUsing;
+	public float prevLidAngle;
+	public int numPlayersUsing;
 	public int requiredEmc;
 
-    public CondenserTile()
-    {
-        inventory = new ItemStack[92];
-        loadChecks = false;
-    }
+	public CondenserTile()
+	{
+		inventory = new ItemStack[92];
+		loadChecks = false;
+	}
 
 	@Override
 	public void updateEntity()
@@ -44,19 +44,19 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return;
 		}
 
-        if (!loadChecks)
-        {
-            TileEntityHandler.addCondenser(this);
-            checkLockAndUpdate();
-            loadChecks = true;
-        }
+		if (!loadChecks)
+		{
+			TileEntityHandler.addCondenser(this);
+			checkLockAndUpdate();
+			loadChecks = true;
+		}
 
 		displayEmc = (int) this.getStoredEmc();
 
-        if (lock != null && requiredEmc != 0)
-        {
-            condense();
-        }
+		if (lock != null && requiredEmc != 0)
+		{
+			condense();
+		}
 		
 		if (numPlayersUsing > 0)
 		{
@@ -65,43 +65,43 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		}
 	}
 
-    public void checkLockAndUpdate()
-    {
-        lock = inventory[0];
+	public void checkLockAndUpdate()
+	{
+		lock = inventory[0];
 
-        if (lock == null)
-        {
-            displayEmc = 0;
-            requiredEmc = 0;
-            this.isRequestingEmc = false;
-            return;
-        }
+		if (lock == null)
+		{
+			displayEmc = 0;
+			requiredEmc = 0;
+			this.isRequestingEmc = false;
+			return;
+		}
 
-        if (Utils.doesItemHaveEmc(lock))
-        {
-            int lockEmc = Utils.getEmcValue(lock);
+		if (Utils.doesItemHaveEmc(lock))
+		{
+			int lockEmc = Utils.getEmcValue(lock);
 
-            if (requiredEmc != lockEmc)
-            {
-                requiredEmc = lockEmc;
-                this.isRequestingEmc = true;
-            }
+			if (requiredEmc != lockEmc)
+			{
+				requiredEmc = lockEmc;
+				this.isRequestingEmc = true;
+			}
 
-            if (this.getStoredEmc() > requiredEmc)
-            {
-                handleMassCondense();
-            }
-        }
-        else
-        {
-            lock = null;
-            inventory[0] = null;
+			if (this.getStoredEmc() > requiredEmc)
+			{
+				handleMassCondense();
+			}
+		}
+		else
+		{
+			lock = null;
+			inventory[0] = null;
 
-            displayEmc = 0;
-            requiredEmc = 0;
-            this.isRequestingEmc = false;
-        }
-    }
+			displayEmc = 0;
+			requiredEmc = 0;
+			this.isRequestingEmc = false;
+		}
+	}
 
 	private void handleMassCondense()
 	{
@@ -144,7 +144,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		{
 			return;
 		}
-        if (inventory[slot] == null)
+		if (inventory[slot] == null)
 		{
 			ItemStack lockCopy = lock.copy();
 			
@@ -153,11 +153,11 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				lockCopy.setTagCompound(new NBTTagCompound());
 			}
 			
-            inventory[slot] = lockCopy;
+			inventory[slot] = lockCopy;
 		}
 		else
 		{
-            inventory[slot].stackSize += 1;
+			inventory[slot].stackSize += 1;
 		}
 	}
 	
@@ -208,12 +208,12 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return false;
 		}
 
-        if (NBTWhitelist.shouldDupeWithNBT(lock))
-        {
-            return Utils.areItemStacksEqual(lock, stack);
-        }
+		if (NBTWhitelist.shouldDupeWithNBT(lock))
+		{
+			return Utils.areItemStacksEqual(lock, stack);
+		}
 
-        return Utils.areItemStacksEqualIgnoreNBT(lock, stack);
+		return Utils.areItemStacksEqualIgnoreNBT(lock, stack);
 	}
 	
 	public int getProgressScaled()
@@ -232,24 +232,24 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 	
 	public void sendUpdate()
-    {
-    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
+	{
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
 
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
 
-        loadChecks = false;
+		loadChecks = false;
 
-        if (!this.worldObj.isRemote)
-        {
-            TileEntityHandler.removeCondenser(this);
-        }
-    }
+		if (!this.worldObj.isRemote)
+		{
+			TileEntityHandler.removeCondenser(this);
+		}
+	}
 
-    @Override
+	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
@@ -261,7 +261,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-            inventory[subNBT.getByte("Slot")] = ItemStack.loadItemStackFromNBT(subNBT);
+			inventory[subNBT.getByte("Slot")] = ItemStack.loadItemStackFromNBT(subNBT);
 		}
 	}
 	
@@ -376,79 +376,79 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	public void updateChest()
-    {
-        if (++ticksSinceSync % 20 * 4 == 0)
-        {
-            worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
-        }
+	{
+		if (++ticksSinceSync % 20 * 4 == 0)
+		{
+			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+		}
 
-        prevLidAngle = lidAngle;
-        float angleIncrement = 0.1F;
-        double adjustedXCoord, adjustedZCoord;
-        
-        if (numPlayersUsing > 0 && lidAngle == 0.0F)
-        {
-            adjustedXCoord = xCoord + 0.5D;
-            adjustedZCoord = zCoord + 0.5D;
-            worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-        }
+		prevLidAngle = lidAngle;
+		float angleIncrement = 0.1F;
+		double adjustedXCoord, adjustedZCoord;
+		
+		if (numPlayersUsing > 0 && lidAngle == 0.0F)
+		{
+			adjustedXCoord = xCoord + 0.5D;
+			adjustedZCoord = zCoord + 0.5D;
+			worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		}
 
-        if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
-        {
-            float var8 = lidAngle;
+		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
+		{
+			float var8 = lidAngle;
 
-            if (numPlayersUsing > 0)
-            {
-                lidAngle += angleIncrement;
-            }
-            else
-            {
-                lidAngle -= angleIncrement;
-            }
+			if (numPlayersUsing > 0)
+			{
+				lidAngle += angleIncrement;
+			}
+			else
+			{
+				lidAngle -= angleIncrement;
+			}
 
-            if (lidAngle > 1.0F)
-            {
-                lidAngle = 1.0F;
-            }
+			if (lidAngle > 1.0F)
+			{
+				lidAngle = 1.0F;
+			}
 
-            if (lidAngle < 0.5F && var8 >= 0.5F)
-            {
-                adjustedXCoord = xCoord + 0.5D;
-                adjustedZCoord = zCoord + 0.5D;
-                worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-            }
+			if (lidAngle < 0.5F && var8 >= 0.5F)
+			{
+				adjustedXCoord = xCoord + 0.5D;
+				adjustedZCoord = zCoord + 0.5D;
+				worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			}
 
-            if (lidAngle < 0.0F)
-            {
-                lidAngle = 0.0F;
-            }
-        }
-    }
+			if (lidAngle < 0.0F)
+			{
+				lidAngle = 0.0F;
+			}
+		}
+	}
 	
 	@Override
-    public boolean receiveClientEvent(int number, int arg)
-    {
-        if (number == 1)
-        {
-            numPlayersUsing = arg;
-            return true;
-        }
-        else return super.receiveClientEvent(number, arg);
-    }
+	public boolean receiveClientEvent(int number, int arg)
+	{
+		if (number == 1)
+		{
+			numPlayersUsing = arg;
+			return true;
+		}
+		else return super.receiveClientEvent(number, arg);
+	}
 	
 	@Override
-    public void openInventory()
-    {
-    	++numPlayersUsing;
-        worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
-    }
+	public void openInventory()
+	{
+		++numPlayersUsing;
+		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+	}
 	
 	@Override
-    public void closeInventory()
-    {
-    	--numPlayersUsing;
-    	worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
-    }
+	public void closeInventory()
+	{
+		--numPlayersUsing;
+		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 

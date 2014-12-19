@@ -36,7 +36,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (world.isRemote) return stack;
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
@@ -108,8 +108,8 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 			}
 		}
 			
-        return stack;
-    }
+		return stack;
+	}
 	
 	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
 	{
@@ -152,7 +152,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("catalitic_lens"));
 	}
