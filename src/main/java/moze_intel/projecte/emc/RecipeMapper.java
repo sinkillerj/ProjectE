@@ -1,5 +1,9 @@
 package moze_intel.projecte.emc;
 
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.IRecipeHandler;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,7 +23,6 @@ public final class RecipeMapper
 	public static void map()
 	{
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
-
 		while (iter.hasNext())
 		{
 			IRecipe recipe = iter.next();
@@ -170,6 +173,71 @@ public final class RecipeMapper
 			{
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public static void mapNEI() {
+		try {
+			int recipeCount = 0;
+			System.out.println("NEI has " + GuiCraftingRecipe.craftinghandlers.size() + " CraftingHandlers");
+			for (IRecipeHandler recipeHandler: GuiCraftingRecipe.craftinghandlers) {
+				System.out.println(recipeHandler);
+				if (recipeHandler != null) {
+					if (!(recipeHandler instanceof TemplateRecipeHandler)) {
+						System.out.println("Not TemplateRecipeHandler - ignoring");
+						continue;
+					}
+					try {
+						TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
+						trh.loadCraftingRecipes(trh.getOverlayIdentifier());
+						System.out.println(recipeHandler.numRecipes());
+						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
+							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
+							ItemStack outStack = recipeHandler.getResultStack(recipeNumber).item;
+
+							LinkedList<RecipeInput> currentInputs;
+							if (recipes.containsKey(outStack))
+							{
+								currentInputs = recipes.get(outStack);
+							}
+							else
+							{
+								currentInputs = new LinkedList<RecipeInput>();
+							}
+							List<RecipeInput> recipeInputs = recursiveRecipeInput(ingredients);
+							currentInputs.addAll(recipeInputs);
+							recipes.put(new SimpleStack(outStack),currentInputs);
+							recipeCount+= recipeInputs.size();
+						}
+					} catch (Exception e) {
+						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
+					}
+				}
+			}
+			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
+		} catch (Exception e) {
+			System.out.println("Could not load Recipes from NEI");
+		}
+	}
+	public static List<RecipeInput> recursiveRecipeInput(List<PositionedStack> ingredients) {
+		List<RecipeInput> out = new ArrayList<RecipeInput>();
+		recursiveRecipeInput(ingredients,0,out,new Stack<ItemStack>());
+		return out;
+	}
+	public static void recursiveRecipeInput(List<PositionedStack> ingredients, int index, List<RecipeInput> out, Stack<ItemStack> currentIngredients) {
+		if (index < ingredients.size()) {
+			PositionedStack thisStack = ingredients.get(index);
+			for (ItemStack is: thisStack.items) {
+				currentIngredients.push(is);
+				recursiveRecipeInput(ingredients,index + 1, out, currentIngredients);
+				currentIngredients.pop();
+			}
+		} else if (index == ingredients.size()) {
+			RecipeInput recipeInput = new RecipeInput();
+			for(ItemStack is: currentIngredients) {
+				recipeInput.addToInputs(is);
+			}
+			out.add(recipeInput);
 		}
 	}
 	
