@@ -98,9 +98,40 @@ public class GraphMapperTest {
         assertEquals(2, getValue(values,"c"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesSimpleSelectMinValueWithDependency() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("b2",2, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "c", Arrays.asList("a1","a1"));
+        graphMapper.addConversion(1, "c", Arrays.asList("b2","b2"));
+        graphMapper.addConversion(1, "d", Arrays.asList("c","c"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(2, getValue(values,"b2"));
+        assertEquals(2, getValue(values,"c"));
+        assertEquals(4, getValue(values,"d"));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesSimpleWoodToWorkBench() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("planks",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(4, "planks", Arrays.asList("wood"));
+        graphMapper.addConversion(1, "workbench", Arrays.asList("planks","planks","planks","planks"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(0,getValue(values,"wood"));
+        assertEquals(1, getValue(values,"planks"));
+        assertEquals(4, getValue(values,"workbench"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
-        assertNotNull(val);
+        if (val == null) return 0;
         return val.intValue();
     }
 }
