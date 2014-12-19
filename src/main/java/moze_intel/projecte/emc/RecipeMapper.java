@@ -114,7 +114,7 @@ public final class RecipeMapper
 							continue;
 						}
 
-						if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+						if (stack.getItemDamage() != null && stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 						{
 							stack.setItemDamage(0);
 						}
