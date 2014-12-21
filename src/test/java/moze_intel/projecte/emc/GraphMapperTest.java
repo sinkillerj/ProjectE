@@ -50,7 +50,7 @@ public class GraphMapperTest {
         Map<String,Double> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
-        assertEquals(4, getValue(values,"c4"));
+        assertEquals(2, getValue(values,"c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
     }
 
     @org.junit.Test

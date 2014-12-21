@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.*;
@@ -9,6 +8,7 @@ public class GraphMapper<T extends Comparable<T>> {
     protected Map<T,List<Conversion<T>>> conversionsFor = new HashMap<T, List<Conversion<T>>>();
     protected Map<T,List<Conversion<T>>> usedIn = new HashMap<T,List<Conversion<T>>>();
     protected Map<T,Conversion<T>> fixedValueFor = new HashMap<T, Conversion<T>>();
+    protected Map<T,Integer> noDependencyConversionCount = new HashMap<T, Integer>();
     public static enum FixedValue {
         SuggestionAndInherit,FixAndInherit, FixAfterInherit, FixAndDoNotInherit
     }
@@ -29,7 +29,14 @@ public class GraphMapper<T extends Comparable<T>> {
     protected List<Conversion<T>> getUsesFor(T something) {
         return getOrCreateList(usedIn, something);
     }
-
+    protected int getNoDependencyConversionCountFor(T something) {
+        Integer count = noDependencyConversionCount.get(something);
+        if (count == null) return 0;
+        else return count;
+    }
+    protected void increaseNoDependencyConversionCountFor(T something) {
+        noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
+    }
     public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
         List<Conversion<T>> conversionsForOutput = getConversionsFor(output);
         Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
@@ -72,85 +79,68 @@ public class GraphMapper<T extends Comparable<T>> {
 
     public Map<T, Double> generateValues() {
         Map<T, Double> valueFor = new HashMap<T, Double>();
-        List<Conversion<T>> solvableConversions = new LinkedList<Conversion<T>>();
+        Map<T,Double> solvableThings = new HashMap<T,Double>();
 
         for (Conversion<T> fixedValueConversion: fixedValueFor.values()) {
             if (fixedValueConversion.type == FixedValue.FixAndInherit) {
-                solvableConversions.add(fixedValueConversion);
+                solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
             } else if (fixedValueConversion.type == FixedValue.FixAndDoNotInherit) {
                 //Thing has a fixed Value, that should not be inherited, so all Conversions using this are invalid
                 for (Conversion<T> use:getUsesFor(fixedValueConversion.output)) {
                     use.markInvalid();
-                    solvableConversions.add(use);
                 }
                 getConversionsFor(fixedValueConversion.output).clear();
-                getConversionsFor(fixedValueConversion.output).add(fixedValueConversion);
                 getUsesFor(fixedValueConversion.output).clear();
-                solvableConversions.add(fixedValueConversion);
+                solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
             }
         }
 
 
-        List<Conversion<T>> nextSolvableConversions = new LinkedList<Conversion<T>>();
-        while(!solvableConversions.isEmpty()) {
-            for (Conversion<T> solvableConversion: solvableConversions) {
-                //conversion has a value and no ingredient dependency
-                assert solvableConversion.ingredientsWithAmount == null || solvableConversion.ingredientsWithAmount.size() == 0;
-                T thisOutput = solvableConversion.output;
-                if (solvableConversion.isValid()) {
-                    //Is valid conversion
-                    for (Conversion<T> use: getUsesFor(thisOutput)) {
-                        //use.ingredientsWithAmount can not be null, because our output 'isUsedIn' the conversion.
+        Map<T,Double> nextSolvableThings = new HashMap<T,Double>();
+        while(!solvableThings.isEmpty()) {
+            for (Map.Entry<T,Double> solvableThing: solvableThings.entrySet()) {
+                assert !valueFor.containsKey(solvableThing.getKey());
+                valueFor.put(solvableThing.getKey(),solvableThing.getValue());
+                if (solvableThing.getValue() > 0) {
+                    //Solvable Thing has a Value. Set it in all Conversions
+                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
                         assert use.ingredientsWithAmount != null;
-                        Integer amount = use.ingredientsWithAmount.get(thisOutput);
+                        Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
                         assert amount != null && amount > 0;
-                        use.value += amount * solvableConversion.value;
-                        use.ingredientsWithAmount.remove(thisOutput);
+                        use.value += amount * solvableThing.getValue();
+                        use.ingredientsWithAmount.remove(solvableThing.getKey());
                         if (use.ingredientsWithAmount.size() == 0) {
-                            //FIXME there still might be other conversions for the output of 'use', so this is not solveable!
-                            //Does not have any dependencys anymore: we can solve it in the next run.
-                            nextSolvableConversions.add(use);
-                        }
-                    }
-                    Collection<Conversion<T>> conversionsForThis = getConversionsFor(thisOutput);
-                    double minValue = Double.POSITIVE_INFINITY;
-                    for (Conversion<T> conversion: conversionsForThis) {
-                        if (conversion.isValid()) {
-                            if (conversion.value < minValue) {
-                                minValue = conversion.value;
+                            increaseNoDependencyConversionCountFor(use.output);
+                            if (getNoDependencyConversionCountFor(use.output) == getConversionsFor(use.output).size()) {
+                                //The output of this usage has only Conversions with a value left: Choose minimum value
+                                double minValue = Double.POSITIVE_INFINITY;
+                                for (Conversion<T> conversion: getConversionsFor(use.output)) {
+                                    assert conversion.isValid();
+                                    if (conversion.value / conversion.outnumber < minValue) {
+                                        minValue = conversion.value / conversion.outnumber;
+                                    }
+                                }
+                                assert 0 < minValue && minValue < Double.POSITIVE_INFINITY;
+                                assert !nextSolvableThings.containsKey(use.output);
+                                nextSolvableThings.put(use.output, minValue);
                             }
-                        } else {
-                            minValue = 0;
-                            break;
                         }
-                    }
-                    if (0 < minValue && minValue < Double.POSITIVE_INFINITY) {
-                        //FIXME this Value is not propagated properly!
-                        //There are only valid Conversions for this Output => Choose Minimum
-                        valueFor.put(thisOutput, minValue);
-                        conversionsFor.remove(thisOutput);
                     }
                 } else {
-                    //Is invalid conversion
-                    for (Conversion<T> use: getUsesFor(thisOutput)) {
+                    //Solvable thing has no Value - All Conversions using this are invalid
+                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
                         use.markInvalid();
-                        nextSolvableConversions.add(use);
-                    }
-                    Collection<Conversion<T>> conversionsForThis = getConversionsFor(thisOutput);
-                    conversionsForThis.remove(solvableConversion);
-                    if (conversionsForThis.size() == 0) {
-                        //No valid Conversion left => No Value
-                        valueFor.put(thisOutput, (double) 0);
-                        conversionsFor.remove(thisOutput);
+                        getConversionsFor(use.output).remove(use);
+                        //TODO need to Check if this is solvable
                     }
                 }
             }
 
-            {//Swap And Clear
-                solvableConversions.clear();
-                List<Conversion<T>> tmp = solvableConversions;
-                solvableConversions = nextSolvableConversions;
-                nextSolvableConversions = tmp;
+            {//Swap Ande Clear
+                solvableThings.clear();
+                Map<T,Double> tmp = solvableThings;
+                solvableThings = nextSolvableThings;
+                nextSolvableThings = tmp;
             }
         }
         for (Conversion<T> fixedConversion: fixedValueFor.values()) {
