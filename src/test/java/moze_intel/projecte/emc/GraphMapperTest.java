@@ -162,7 +162,7 @@ public class GraphMapperTest {
     }
 
     @org.junit.Test
-    public void testGenerateValuesMultiRecipeInvalid() throws Exception {
+    public void testGenerateValuesMultiRecipeDeepInvalid() throws Exception {
         GraphMapper<String> graphMapper = new GraphMapper<String>();
 
         graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
@@ -176,6 +176,21 @@ public class GraphMapperTest {
         assertEquals(2, getValue(values,"b2"));
         assertEquals(0, getValue(values,"invalid1"));
         assertEquals(0, getValue(values,"invalid2"));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesMultiRecipesInvalidIngredient() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
+        graphMapper.addConversion(1, "b2", Arrays.asList("invalid"));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(2, getValue(values,"b2"));
+        assertEquals(0, getValue(values,"invalid"));
     }
 
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
