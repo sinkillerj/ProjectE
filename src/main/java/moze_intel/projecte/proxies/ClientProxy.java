@@ -3,6 +3,9 @@ package moze_intel.projecte.proxies;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import modwarriors.notenoughkeys.api.Api;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -26,6 +29,9 @@ public class ClientProxy extends CommonProxy
 		for (int i = 0; i < KeyBinds.array.length; i++)
 		{
 			ClientRegistry.registerKeyBinding(KeyBinds.array[i]);
+		}
+		if (Loader.isModLoaded("notenoughkeys")) {
+			Api.registerMod(PECore.MODNAME, KeyBinds.nekKeyDescArray);
 		}
 	}
 
