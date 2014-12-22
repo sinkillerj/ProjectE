@@ -100,7 +100,6 @@ public class GraphMapper<T extends Comparable<T>> {
                     //TODO use might be solvable when Conversion has been removed?
                 }
                 //TODO? Why am i doing this?
-                getConversionsFor(fixedValueConversion.output).clear();
                 getUsesFor(fixedValueConversion.output).clear();
                 solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
             }
@@ -114,7 +113,7 @@ public class GraphMapper<T extends Comparable<T>> {
         }
 
 
-        Map<T,Double> nextSolvableThings = new HashMap<T,Double>();
+        Set<T> lookAt = new HashSet<T>();
         while(!solvableThings.isEmpty()) {
             for (Map.Entry<T,Double> solvableThing: solvableThings.entrySet()) {
                 assert !valueFor.containsKey(solvableThing.getKey());
@@ -129,19 +128,7 @@ public class GraphMapper<T extends Comparable<T>> {
                         use.ingredientsWithAmount.remove(solvableThing.getKey());
                         if (use.ingredientsWithAmount.size() == 0) {
                             increaseNoDependencyConversionCountFor(use.output);
-                            if (getNoDependencyConversionCountFor(use.output) == getConversionsFor(use.output).size()) {
-                                //The output of this usage has only Conversions with a value left: Choose minimum value
-                                double minValue = Double.POSITIVE_INFINITY;
-                                for (Conversion<T> conversion: getConversionsFor(use.output)) {
-                                    assert conversion.isValid();
-                                    if (conversion.value / conversion.outnumber < minValue) {
-                                        minValue = conversion.value / conversion.outnumber;
-                                    }
-                                }
-                                assert 0 < minValue && minValue < Double.POSITIVE_INFINITY;
-                                assert !nextSolvableThings.containsKey(use.output);
-                                nextSolvableThings.put(use.output, minValue);
-                            }
+                            lookAt.add(use.output);
                         }
                     }
                 } else {
@@ -149,17 +136,31 @@ public class GraphMapper<T extends Comparable<T>> {
                     for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
                         use.markInvalid();
                         getConversionsFor(use.output).remove(use);
-                        //TODO need to Check if this is solvable
+                        lookAt.add(use.output);
                     }
                 }
             }
 
-            {//Swap Ande Clear
-                solvableThings.clear();
-                Map<T,Double> tmp = solvableThings;
-                solvableThings = nextSolvableThings;
-                nextSolvableThings = tmp;
+            solvableThings.clear();
+            for (T something: lookAt) {
+                if (getConversionsFor(something).size() == 0) {
+                    solvableThings.put(something, 0.0);
+                }
+                else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
+                    //The output of this usage has only Conversions with a value left: Choose minimum value
+                    double minValue = Double.POSITIVE_INFINITY;
+                    for (Conversion<T> conversion: getConversionsFor(something)) {
+                        assert conversion.isValid();
+                        if (conversion.value / conversion.outnumber < minValue) {
+                            minValue = conversion.value / conversion.outnumber;
+                        }
+                    }
+                    assert 0 < minValue && minValue < Double.POSITIVE_INFINITY;
+                    assert !solvableThings.containsKey(something);
+                    solvableThings.put(something, minValue);
+                }
             }
+            lookAt.clear();
         }
         for (Conversion<T> fixedConversion: fixedValueFor.values()) {
             if (fixedConversion.type == FixedValue.FixAfterInherit || fixedConversion.type == FixedValue.FixAndDoNotInherit) {
