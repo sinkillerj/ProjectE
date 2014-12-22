@@ -38,9 +38,14 @@ public class GraphMapper<T extends Comparable<T>> {
         noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
     }
     public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-        List<Conversion<T>> conversionsForOutput = getConversionsFor(output);
+        addConversionMultiple(outnumber, output, ingredientsWithAmount, 0.0);
+    }
+    public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, double baseValueForConversion) {
+        //Add the Conversions to the conversionsFor and usedIn Maps:
         Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
-        conversionsForOutput.add(conversion);
+        conversion.value = baseValueForConversion;
+        getConversionsFor(output).add(conversion);
+
         for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount.entrySet()) {
             List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
             usesForIngredient.add(conversion);
@@ -48,6 +53,9 @@ public class GraphMapper<T extends Comparable<T>> {
     }
 
     public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
+        addConversion(outnumber,output,ingredients,0.0);
+    }
+    public void addConversion(int outnumber, T output, Iterable<T> ingredients, double baseValueForConversion) {
         Map<T,Integer> ingredientsWithAmount = new HashMap<T, Integer>();
         for (T ingredient: ingredients) {
             if (ingredientsWithAmount.containsKey(ingredient)) {
@@ -87,14 +95,17 @@ public class GraphMapper<T extends Comparable<T>> {
             } else if (fixedValueConversion.type == FixedValue.FixAndDoNotInherit) {
                 //Thing has a fixed Value, that should not be inherited, so all Conversions using this are invalid
                 for (Conversion<T> use:getUsesFor(fixedValueConversion.output)) {
-                    use.markInvalid();
+                    use.markInvalid();//TODO Remove Conversion from the 'conversionsFor'-Map for the Conversion output?
+                    //TODO use might be solvable when Conversion has been removed?
                 }
+                //TODO? Why am i doing this?
                 getConversionsFor(fixedValueConversion.output).clear();
                 getUsesFor(fixedValueConversion.output).clear();
                 solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
             }
         }
 
+        //Everything, that only appears in 'uses' and has no conversion itself has a value of 0.
         for (T someThing: usedIn.keySet()) {
             if (!conversionsFor.containsKey(someThing) || conversionsFor.get(someThing).size() == 0) {
                 solvableThings.put(someThing,0.0);
