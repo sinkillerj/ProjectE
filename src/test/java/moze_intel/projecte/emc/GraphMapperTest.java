@@ -129,6 +129,55 @@ public class GraphMapperTest {
         assertEquals(4, getValue(values,"workbench"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesDeepConversions() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "b1", Arrays.asList("a1"));
+        graphMapper.addConversion(1, "c1", Arrays.asList("b1"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(1, getValue(values,"b1"));
+        assertEquals(1, getValue(values,"c1"));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesDeepInvalidConversion() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "b", Arrays.asList("a1", "invalid1"));
+        graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
+        graphMapper.addConversion(1, "invalid2", Arrays.asList("a1", "invalid3"));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(0, getValue(values,"b"));
+        assertEquals(0, getValue(values,"invalid1"));
+        assertEquals(0, getValue(values,"invalid2"));
+        assertEquals(0, getValue(values,"invalid3"));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesMultiRecipeInvalid() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
+        graphMapper.addConversion(1, "b2", Arrays.asList("invalid1"));
+        graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(2, getValue(values,"b2"));
+        assertEquals(0, getValue(values,"invalid1"));
+        assertEquals(0, getValue(values,"invalid2"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;
