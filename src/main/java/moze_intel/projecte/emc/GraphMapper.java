@@ -95,6 +95,12 @@ public class GraphMapper<T extends Comparable<T>> {
             }
         }
 
+        for (T someThing: usedIn.keySet()) {
+            if (!conversionsFor.containsKey(someThing) || conversionsFor.get(someThing).size() == 0) {
+                solvableThings.put(someThing,0.0);
+            }
+        }
+
 
         Map<T,Double> nextSolvableThings = new HashMap<T,Double>();
         while(!solvableThings.isEmpty()) {
@@ -144,7 +150,7 @@ public class GraphMapper<T extends Comparable<T>> {
             }
         }
         for (Conversion<T> fixedConversion: fixedValueFor.values()) {
-            if (fixedConversion.type == FixedValue.FixAfterInherit) {
+            if (fixedConversion.type == FixedValue.FixAfterInherit || fixedConversion.type == FixedValue.FixAndDoNotInherit) {
                 valueFor.put(fixedConversion.output,fixedConversion.fixedValue);
             }
         }
