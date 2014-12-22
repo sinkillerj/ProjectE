@@ -82,6 +82,7 @@ public class GraphMapper<T extends Comparable<T>> {
             fixedValueConversion.value = value;
         }
         fixedValueConversion.type = type;
+        //TODO do i need to increase the noDependencyConversionCount for this here?
     }
 
 
