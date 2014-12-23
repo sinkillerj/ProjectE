@@ -8,6 +8,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -27,6 +28,7 @@ import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
 import moze_intel.projecte.utils.*;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
@@ -159,6 +161,22 @@ public class PECore
 		for (IMCMessage msg : event.getMessages())
 		{
 			IMCHandler.handleIMC(msg);
+		}
+	}
+
+	@Mod.EventHandler
+	public void remap(FMLMissingMappingsEvent event) {
+		for (FMLMissingMappingsEvent.MissingMapping mapping : event.getAll()) {
+			if (mapping.name.startsWith("ProjectE:")) {
+				try {
+					if (mapping.type == GameRegistry.Type.ITEM) {
+						Item remappedItem = GameRegistry.findItem("ProjectE", "item.pe_" + mapping.name.split(":")[1].substring(5));
+						if (remappedItem != null) mapping.remap(remappedItem);
+					}
+				} catch (Throwable t) {
+					// Yeah I know, silently skipping errors isn't good, but this really shouldn't fail, just adding a safety check ^_^
+				}
+        		}
 		}
 	}
 }
