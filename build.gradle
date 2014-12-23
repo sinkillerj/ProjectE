@@ -17,25 +17,13 @@ buildscript {
 
 apply plugin: 'forge'
 
-//Configuration File Reading
-ext.configFile = file "build.properties"
-configFile.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-//Mod Information
-version = config.projecte_version
+version = "1.7.10-0.2d-dev10"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = "1.7.10-10.13.2.1230"
     runDir = "eclipse"
-
-    replaceIn "PECore.java"
-    replace "@VERSION@", "${config.mod_version}"
 }
 
 dependencies {
@@ -65,7 +53,7 @@ processResources
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'mod_version': project.version, 'minecraft_version': project.config.minecraft_version
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
         
     // copy everything else, thats not the mcmod.info
