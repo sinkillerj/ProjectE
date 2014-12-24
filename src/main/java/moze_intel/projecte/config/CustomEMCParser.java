@@ -140,7 +140,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static boolean addToFile(String toAdd, int meta, int emc)
+	public static boolean addToFile(String toAdd, int meta, double emc)
 	{
 		if (!loaded)
 		{
@@ -375,12 +375,12 @@ public final class CustomEMCParser
 					continue;
 				}
 
-				int emc = 0;
+				double emc = 0;
 				int emcIndex = reader.getLineNumber();
 
 				try
 				{
-					emc = Integer.valueOf(line.substring(2));
+					emc = Double.valueOf(line.substring(2));
 				}
 				catch (NumberFormatException e)
 				{
@@ -441,12 +441,12 @@ public final class CustomEMCParser
 	{
 		public String name;
 		public int meta;
-		public int emc;
+		public double emc;
 		public int nameIndex;
 		public int metaIndex;
 		public int emcIndex;
 
-		public Entry(String name, int meta, int emc, int nameIndex, int metaIndex, int emcIndex)
+		public Entry(String name, int meta, double emc, int nameIndex, int metaIndex, int emcIndex)
 		{
 			this.name = name;
 			this.meta = meta;
