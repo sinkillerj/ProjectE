@@ -9,10 +9,13 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.text.DecimalFormat;
+
 public class GUICondenserMK2 extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser_mk2.png");
 	private CondenserMK2Tile tile;
+	private DecimalFormat EMCFormat = new DecimalFormat("###,###,###,###.###");
 
 	public GUICondenserMK2(InventoryPlayer invPlayer, CondenserMK2Tile tile)
 	{
@@ -41,6 +44,6 @@ public class GUICondenserMK2 extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		double toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
-		this.fontRendererObj.drawString(Double.toString(toDisplay), 140, 10, 4210752);
+		this.fontRendererObj.drawString(EMCFormat.format(toDisplay), 140, 10, 4210752);
 	}
 }

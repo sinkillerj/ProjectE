@@ -13,11 +13,14 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import java.text.DecimalFormat;
+
 
 public class GUITransmute extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	private TransmuteTile tile;
+	private DecimalFormat EMCFormat = new DecimalFormat("###,###,###,###.###");
 
 	public GUITransmute(InventoryPlayer invPlayer, TransmuteTile tile) 
 	{
@@ -49,7 +52,7 @@ public class GUITransmute extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString("Transmutation", 24, 10, 4210752);
-		String emc = String.format("EMC: %,f", tile.getStoredEmc());
+		String emc = String.format("EMC: %s", EMCFormat.format(tile.getStoredEmc()));
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 96, 4210752);
 		
 		if (tile.learnFlag > 0)
