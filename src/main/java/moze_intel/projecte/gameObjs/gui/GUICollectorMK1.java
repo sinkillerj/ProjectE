@@ -24,13 +24,13 @@ public class GUICollectorMK1 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 60, 32, 4210752);
+		this.fontRendererObj.drawString(Double.toString(tile.displayEmc), 60, 32, 4210752);
 		
-		int kleinCharge = tile.displayKleinCharge;
+		double kleinCharge = tile.displayKleinCharge;
 		
 		if (kleinCharge != -1)
 		{
-			this.fontRendererObj.drawString(Integer.toString(kleinCharge), 60, 44, 4210752);
+			this.fontRendererObj.drawString(Double.toString(kleinCharge), 60, 44, 4210752);
 		}
 	}
 
@@ -46,18 +46,18 @@ public class GUICollectorMK1 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
-		int progress = tile.getSunLevelScaled(12);
-		this.drawTexturedModalRect(x + 126, y + 49 - progress, 177, 13 - progress, 12, progress);
+		double progress = tile.getSunLevelScaled(12);
+		this.drawTexturedModalRect(x + 126, y + 49 - (int)progress, 177, 13 - (int)progress, 12, (int)progress);
 		
 		//EMC storage. Max is 48
-		this.drawTexturedModalRect(x + 64, y + 18, 0, 166, tile.getEmcScaled(48), 10);
+		this.drawTexturedModalRect(x + 64, y + 18, 0, 166, (int)tile.getEmcScaled(48), 10);
 		
 		//Klein Star Charge Progress. Max is 48
 		progress = tile.getKleinStarChargeScaled(48);
-		this.drawTexturedModalRect(x + 64, y + 58, 0, 166, progress, 10);
+		this.drawTexturedModalRect(x + 64, y + 58, 0, 166, (int)progress, 10);
 		
 		//Fuel Progress. Max is 24.
 		progress = tile.getFuelProgressScaled(24);
-		this.drawTexturedModalRect(x + 138, y + 55 - progress, 176, 38 - progress, 10, progress + 1);
+		this.drawTexturedModalRect(x + 138, y + 55 - (int)progress, 176, 38 - (int)progress, 10, (int)progress + 1);
 	}
 }

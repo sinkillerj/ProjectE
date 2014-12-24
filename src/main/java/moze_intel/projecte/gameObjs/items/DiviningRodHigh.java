@@ -21,10 +21,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class DiviningRodHigh extends DiviningRodMedium
@@ -48,7 +45,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			List<Integer> emcValues = new ArrayList<Integer>();
+			List<Double> emcValues = new ArrayList<Double>();
 			long totalEmc = 0;
 			int numBlocks = 0;
 			
@@ -73,8 +70,8 @@ public class DiviningRodHigh extends DiviningRodMedium
 						{
 							continue;
 						}
-						
-						int blockEmc = Utils.getEmcValue(drops.get(0));
+
+						double blockEmc = Utils.getEmcValue(drops.get(0));
 						
 						if (blockEmc == 0)
 						{
@@ -89,7 +86,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 								
 								if (entry.getKey().getItem() == drops.get(0).getItem())
 								{
-									int currentValue = Utils.getEmcValue(entry.getValue());
+									double currentValue = Utils.getEmcValue(entry.getValue());
 									
 									if (currentValue != 0)
 									{
@@ -117,14 +114,14 @@ public class DiviningRodHigh extends DiviningRodMedium
 					}
 			
 			
-			int[] maxValues = new int[3];
+			double[] maxValues = new double[3];
 			
 			for (int i = 0; i < 3; i++)
 			{
 				maxValues[i] = 1;
 			}
 			
-			Collections.sort(emcValues, Comparators.INT_DESCENDING);
+			Collections.sort(emcValues, Comparators.DOUBLE_DESCENDING);
 			
 			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 			

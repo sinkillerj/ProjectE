@@ -46,7 +46,7 @@ public class GUITransmuteTablet extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString("Transmutation", 28, 6, 4210752);
-		String emc = String.format("EMC: %,d", (int) table.emc); 
+		String emc = String.format("EMC: %,f", table.emc);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 96, 4210752);
 		
 		if (table.learnFlag > 0)

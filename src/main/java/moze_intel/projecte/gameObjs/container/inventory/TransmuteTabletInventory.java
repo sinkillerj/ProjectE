@@ -79,10 +79,10 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
-		
-		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
+		double matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		double fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+
+		double maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
 		if (maxEmc > emc)
 		{
@@ -108,7 +108,7 @@ public class TransmuteTabletInventory implements IInventory
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			double reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{

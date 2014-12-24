@@ -11,15 +11,15 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSyncPKT, IMessage>
 {
-	private int displayEmc;
-	private int requiredEmc;
+	private double displayEmc;
+	private double requiredEmc;
 	private int x;
 	private int y;
 	private int z;
 	
 	public CondenserSyncPKT() {}
 	
-	public CondenserSyncPKT(int displayEmc, int requiredEmc, int x, int y, int z) 
+	public CondenserSyncPKT(double displayEmc, double requiredEmc, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.requiredEmc = requiredEmc;
@@ -50,8 +50,8 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		displayEmc = buf.readInt();
-		requiredEmc = buf.readInt();
+		displayEmc = buf.readDouble();
+		requiredEmc = buf.readDouble();
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -60,8 +60,8 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(displayEmc);
-		buf.writeInt(requiredEmc);
+		buf.writeDouble(displayEmc);
+		buf.writeDouble(requiredEmc);
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);

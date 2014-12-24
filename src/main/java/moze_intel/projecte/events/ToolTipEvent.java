@@ -41,13 +41,13 @@ public class ToolTipEvent
 		
 		if (Utils.doesItemHaveEmc(current))
 		{
-			int value = Utils.getEmcValue(current);
+			double value = Utils.getEmcValue(current);
 
-			event.toolTip.add(String.format("EMC: %,d", value));
+			event.toolTip.add(String.format("EMC: %,f", value));
 			
 			if (current.stackSize > 1)
 			{
-				long total = value * current.stackSize;
+				double total = value * current.stackSize;
 				
 				if (total < 0 || total <= value || total > Integer.MAX_VALUE)
 				{
@@ -55,7 +55,7 @@ public class ToolTipEvent
 				}
 				else
 				{
-					event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+					event.toolTip.add(String.format("Stack EMC: %,f", value * current.stackSize));
 				}
 			}
 		}
@@ -68,13 +68,13 @@ public class ToolTipEvent
 				
 				if (current.stackTagCompound.getDouble("EMC") > 0)
 				{
-					event.toolTip.add(String.format("Stored EMC: %,d", (int) current.stackTagCompound.getDouble("EMC")));
+					event.toolTip.add(String.format("Stored EMC: %,f", current.stackTagCompound.getDouble("EMC")));
 				}
 			}
 			
 			if (current.stackTagCompound.hasKey("StoredEMC"))
 			{
-				event.toolTip.add(String.format("Stored EMC: %,d", (int) current.stackTagCompound.getDouble("StoredEMC")));
+				event.toolTip.add(String.format("Stored EMC: %,f", current.stackTagCompound.getDouble("StoredEMC")));
 			}
 			else if (current.stackTagCompound.hasKey("StoredXP"))
 			{
@@ -86,7 +86,7 @@ public class ToolTipEvent
 
 		if (block != null && FluidMapper.doesFluidHaveEMC(block))
 		{
-			event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
+			event.toolTip.add(String.format("EMC: %,f", FluidMapper.getFluidEMC(block)));
 		}
 	}
 }

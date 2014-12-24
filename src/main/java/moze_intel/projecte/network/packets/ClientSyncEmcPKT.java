@@ -20,7 +20,7 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 
 	public ClientSyncEmcPKT() {}
 
-	public ClientSyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
+	public ClientSyncEmcPKT(int packetNum, ArrayList<Double[]> arrayList)
 	{
 		this.packetNum = packetNum;
 		data = arrayList.toArray();
@@ -34,14 +34,14 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 			PELogger.logInfo("Receiving EMC data from server.");
 
 			EMCMapper.emc.clear();
-			EMCMapper.emc = new LinkedHashMap<SimpleStack, Integer>();
+			EMCMapper.emc = new LinkedHashMap<SimpleStack, Double>();
 		}
 
 		for (Object obj : pkt.data)
 		{
-			Integer[] array = (Integer[]) obj;
+			Double[] array = (Double[]) obj;
 
-			SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+			SimpleStack stack = new SimpleStack((int)Math.floor(array[0]), (int)Math.floor(array[1]), (int)Math.floor(array[2]));
 
 			if (stack.isValid())
 			{
@@ -69,11 +69,11 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 
 		for (int i = 0; i < size; i++)
 		{
-			Integer[] array = new Integer[4];
+			Double[] array = new Double[4];
 
 			for (int j = 0; j < 4; j++)
 			{
-				array[j] = buf.readInt();
+				array[j] = buf.readDouble();
 			}
 
 			data[i] = array;
@@ -88,11 +88,11 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 
 		for (Object obj : data)
 		{
-			Integer[] array = (Integer[]) obj;
+			Double[] array = (Double[]) obj;
 
 			for (int i = 0; i < 4; i++)
 			{
-				buf.writeInt(array[i]);
+				buf.writeDouble(array[i]);
 			}
 		}
 	}

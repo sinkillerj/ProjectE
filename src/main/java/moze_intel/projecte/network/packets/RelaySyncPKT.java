@@ -11,16 +11,16 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMessage>
 {
-	private int displayEmc;
-	private int displayKleinEmc;
-	private int displayRawEmc;
+	private double displayEmc;
+	private double displayKleinEmc;
+	private double displayRawEmc;
 	private int x;
 	private int y;
 	private int z;
 	
 	public RelaySyncPKT() {}
 	
-	public RelaySyncPKT(int displayEmc, int displayKleinEmc, int displayRawEmc, int x, int y, int z) 
+	public RelaySyncPKT(double displayEmc, double displayKleinEmc, double displayRawEmc, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinEmc = displayKleinEmc;
@@ -53,9 +53,9 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		displayEmc = buf.readInt();
-		displayKleinEmc = buf.readInt();
-		displayRawEmc = buf.readInt();
+		displayEmc = buf.readDouble();
+		displayKleinEmc = buf.readDouble();
+		displayRawEmc = buf.readDouble();
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -64,9 +64,9 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(displayEmc);
-		buf.writeInt(displayKleinEmc);
-		buf.writeInt(displayRawEmc);
+		buf.writeDouble(displayEmc);
+		buf.writeDouble(displayKleinEmc);
+		buf.writeDouble(displayRawEmc);
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);

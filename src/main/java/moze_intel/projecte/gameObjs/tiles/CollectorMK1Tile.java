@@ -27,9 +27,9 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	private boolean hasFuel;
 	private boolean isRequestingEmc;
 	public double storedFuelEmc;
-	public int displayEmc;
+	public double displayEmc;
 	public int displaySunLevel;
-	public int displayKleinCharge;
+	public double displayKleinCharge;
 	private int numUsing;
 	
 	public CollectorMK1Tile()
@@ -230,7 +230,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
-			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
+			double upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
@@ -264,7 +264,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return (float) getSunLevel() * emc / 16;
 	}
 	
-	public int getKleinStarCharge()
+	public double getKleinStarCharge()
 	{
 		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
@@ -274,7 +274,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return -1;
 	}
 	
-	public int getKleinStarChargeScaled(int i)
+	public double getKleinStarChargeScaled(int i)
 	{
 		if (inventory[0] == null || displayKleinCharge <= 0)
 		{
@@ -293,7 +293,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
 	}
 	
-	public int getEmcScaled(int i)
+	public double getEmcScaled(int i)
 	{
 		if (displayEmc == 0) 
 		{
@@ -307,14 +307,14 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return displaySunLevel * i / 16;
 	}
 	
-	public int getFuelProgressScaled(int i)
+	public double getFuelProgressScaled(int i)
 	{
 		if (inventory[0] == null || !FuelMapper.isStackFuel(inventory[0]))
 		{
 			return 0;
 		}
 		
-		int reqEmc = 0;
+		double reqEmc = 0;
 		
 		if (inventory[lockSlot] != null)
 		{

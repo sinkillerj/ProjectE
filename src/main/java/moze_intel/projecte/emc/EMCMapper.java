@@ -17,8 +17,8 @@ import java.util.Map.Entry;
 
 public final class EMCMapper 
 {
-	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
-	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap<SimpleStack, Integer>();
+	public static LinkedHashMap<SimpleStack, Double> emc = new LinkedHashMap<SimpleStack, Double>();
+	public static LinkedHashMap<SimpleStack, Double> IMCregistrations = new LinkedHashMap<SimpleStack, Double>();
 	public static LinkedList<SimpleStack> blackList = new LinkedList<SimpleStack>();
 
 	public static void map()
@@ -58,7 +58,7 @@ public final class EMCMapper
 						continue;
 					}
 
-					int totalEmc = 0;
+					double totalEmc = 0;
 					boolean toMap = true;
 
 					A: for (RecipeInput rInput : entry.getValue())
@@ -149,8 +149,8 @@ public final class EMCMapper
 				continue;
 			}
 
-			int currentEmc = getEmcValue(entry.getKey());
-			int minEmc = currentEmc;
+			double currentEmc = getEmcValue(entry.getKey());
+			double minEmc = currentEmc;
 
 			for (RecipeInput input : entry.getValue())
 			{
@@ -169,7 +169,7 @@ public final class EMCMapper
 					}
 					else
 					{
-						int itemEmc = -1;
+						double itemEmc = -1;
 
 						for (SimpleStack s : (ArrayList<SimpleStack>) obj)
 						{
@@ -243,8 +243,8 @@ public final class EMCMapper
 					{
 						continue;
 					}
-				
-					int totalEmc = getEmcValue(input) / result.qnty;
+
+					double totalEmc = getEmcValue(input) / result.qnty;
 
 					addMapping(result, totalEmc);
 				}
@@ -254,8 +254,8 @@ public final class EMCMapper
 					{
 						continue;
 					}
-				
-					int totalEmc = getEmcValue(result) * result.qnty;
+
+					double totalEmc = getEmcValue(result) * result.qnty;
 					addMapping(input, totalEmc);
 				}
 			}
@@ -308,7 +308,7 @@ public final class EMCMapper
 		return emc.containsKey(copy);
 	}
 
-	public static int getEmcValue(SimpleStack stack)
+	public static double getEmcValue(SimpleStack stack)
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
@@ -322,12 +322,12 @@ public final class EMCMapper
 		blackList.clear();
 	}
 	
-	public static void addMapping(ItemStack stack, int value)
+	public static void addMapping(ItemStack stack, double value)
 	{
 		addMapping(new SimpleStack(stack), value);
 	}
 
-	public static void addMapping(String unlocalName, int meta, int value)
+	public static void addMapping(String unlocalName, int meta, double value)
 	{
 		ItemStack stack = Utils.getStackFromString(unlocalName, meta);
 
@@ -337,7 +337,7 @@ public final class EMCMapper
 		}
 	}
 
-	public static void addMapping(String odName, int value)
+	public static void addMapping(String odName, double value)
 	{
 		for (ItemStack stack : Utils.getODItems(odName))
 		{
@@ -345,7 +345,7 @@ public final class EMCMapper
 		}
 	}
 
-	public static void addMapping(String modid, String name, int meta, int emc)
+	public static void addMapping(String modid, String name, int meta, double emc)
 	{
 
 		Item item = (Item) Item.itemRegistry.getObject(modid + ":" + name);
@@ -356,7 +356,7 @@ public final class EMCMapper
 		}
 	}
 	
-	public static boolean addIMCRegistration(ItemStack stack, int value)
+	public static boolean addIMCRegistration(ItemStack stack, double value)
 	{
 		SimpleStack simpleStack = new SimpleStack(stack);
 		
@@ -369,7 +369,7 @@ public final class EMCMapper
 		return false;
 	}
 	
-	private static void addMapping(SimpleStack stack, int value)
+	private static void addMapping(SimpleStack stack, double value)
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
@@ -385,7 +385,7 @@ public final class EMCMapper
 		}
 	}
 
-	private static void addMappingWithOverwrite(SimpleStack stack, int value)
+	private static void addMappingWithOverwrite(SimpleStack stack, double value)
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
@@ -516,7 +516,7 @@ public final class EMCMapper
 	
 	private static void loadEmcFromIMC()
 	{
-		for (Entry<SimpleStack, Integer> entry : IMCregistrations.entrySet())
+		for (Entry<SimpleStack, Double> entry : IMCregistrations.entrySet())
 		{
 			if (entry.getValue() <= 0)
 			{
@@ -661,7 +661,7 @@ public final class EMCMapper
 			}
 		}
 
-		int totalEmc = 0;
+		double totalEmc = 0;
 
 		for (int i = 0; i < args.length - 2; i += 3)
 		{
@@ -669,7 +669,7 @@ public final class EMCMapper
 			{
 				String currentName = (String) args[i];
 				int currentMeta = (Integer) args[i + 1];
-				int multiplier = (Integer) args[i + 2];
+				double multiplier = (Double) args[i + 2];
 
 				ItemStack current = Utils.getStackFromString(currentName, currentMeta);
 
