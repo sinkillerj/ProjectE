@@ -669,7 +669,7 @@ public final class EMCMapper
 			{
 				String currentName = (String) args[i];
 				int currentMeta = (Integer) args[i + 1];
-				double multiplier = (Double) args[i + 2];
+				int multiplier = (Integer) args[i + 2];
 
 				ItemStack current = Utils.getStackFromString(currentName, currentMeta);
 
