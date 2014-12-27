@@ -13,6 +13,6 @@ http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 #The Team
 SinKillerJ - Current developer: https://twitter.com/sinkillerj
 
-MozeIntel - Original developerr: https://twitter.com/Moze_Intel
+MozeIntel - Original developer: https://twitter.com/Moze_Intel
 
 Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
