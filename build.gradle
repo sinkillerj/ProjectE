@@ -71,5 +71,5 @@ curse {
     projectId = project.projecte_curseid
     apiKey = project.apiKey
     changelog = ""
-    releaseType = "beta"
+    releaseType = "alpha"
 }
