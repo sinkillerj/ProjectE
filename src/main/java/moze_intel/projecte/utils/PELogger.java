@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
 import moze_intel.projecte.PECore;
-
 import moze_intel.projecte.config.ProjectEConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

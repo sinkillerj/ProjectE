@@ -24,6 +24,8 @@ public final class ProjectEConfig
 	public static boolean enableTransTable;
 	public static boolean enableRedFurnace;
 	public static boolean enableDarkFurnace;
+
+	public static int AMOUNT_OF_DECIMAL_NUMBERS;
 	
 	public static void init(File configFile)
 	{
@@ -36,6 +38,7 @@ public final class ProjectEConfig
 			enableDebugLog = config.getBoolean("debugLogging", "misc", false, "Enable a more verbose debug logging");
 			showUnlocalizedNames = config.getBoolean("unToolTips", "misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
+			AMOUNT_OF_DECIMAL_NUMBERS = config.getInt("amountDecimals", "misc", 3, 0, 3, "Specifies the amount of Decimals behind the separator.");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe.");
 

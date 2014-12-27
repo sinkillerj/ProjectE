@@ -1,9 +1,5 @@
 package moze_intel.projecte.playerData;
 
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,8 +7,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 public final class AlchemicalBags 
 {

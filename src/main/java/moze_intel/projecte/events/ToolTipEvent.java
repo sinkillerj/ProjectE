@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -13,12 +14,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.text.DecimalFormat;
-
 @SideOnly(Side.CLIENT)
 public class ToolTipEvent 
 {
-	private DecimalFormat TooltipFormat = new DecimalFormat("###,###,###,###.###");
 
 	@SubscribeEvent
 	public void tTipEvent(ItemTooltipEvent event)
@@ -49,7 +47,7 @@ public class ToolTipEvent
 
 
 
-			event.toolTip.add(String.format("EMC: %s", TooltipFormat.format(value)));
+			event.toolTip.add(String.format("EMC: %s", Constants.EMC_COUNTER_FORMAT.format(value)));
 			
 			if (current.stackSize > 1)
 			{
@@ -61,7 +59,7 @@ public class ToolTipEvent
 				}
 				else
 				{
-					event.toolTip.add(String.format("Stack EMC: %s", TooltipFormat.format(value * current.stackSize)));
+					event.toolTip.add(String.format("Stack EMC: %s", Constants.EMC_COUNTER_FORMAT.format(value * current.stackSize)));
 				}
 			}
 		}
@@ -74,13 +72,13 @@ public class ToolTipEvent
 				
 				if (current.stackTagCompound.getDouble("EMC") > 0)
 				{
-					event.toolTip.add(String.format("Stored EMC: %s", TooltipFormat.format(current.stackTagCompound.getDouble("EMC"))));
+					event.toolTip.add(String.format("Stored EMC: %s", Constants.EMC_COUNTER_FORMAT.format(current.stackTagCompound.getDouble("EMC"))));
 				}
 			}
 			
 			if (current.stackTagCompound.hasKey("StoredEMC"))
 			{
-				event.toolTip.add(String.format("Stored EMC: %s", TooltipFormat.format(current.stackTagCompound.getDouble("StoredEMC"))));
+				event.toolTip.add(String.format("Stored EMC: %s", Constants.EMC_COUNTER_FORMAT.format(current.stackTagCompound.getDouble("StoredEMC"))));
 			}
 			else if (current.stackTagCompound.hasKey("StoredXP"))
 			{
@@ -92,7 +90,7 @@ public class ToolTipEvent
 
 		if (block != null && FluidMapper.doesFluidHaveEMC(block))
 		{
-			event.toolTip.add(String.format("EMC: %s", TooltipFormat.format(FluidMapper.getFluidEMC(block))));
+			event.toolTip.add(String.format("EMC: %s", Constants.EMC_COUNTER_FORMAT.format(FluidMapper.getFluidEMC(block))));
 		}
 	}
 }

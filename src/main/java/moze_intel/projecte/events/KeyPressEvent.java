@@ -1,12 +1,12 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.KeyPressPKT;
-import moze_intel.projecte.utils.KeyBinds;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.KeyPressPKT;
+import moze_intel.projecte.utils.KeyBinds;
 
 @SideOnly(Side.CLIENT)
 public class KeyPressEvent 

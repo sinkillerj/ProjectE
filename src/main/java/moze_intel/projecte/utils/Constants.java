@@ -2,6 +2,8 @@ package moze_intel.projecte.utils;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
+import java.text.DecimalFormat;
+
 public final class Constants 
 {
 	public static final float PLAYER_WALK_SPEED = 0.1F;
@@ -62,4 +64,6 @@ public final class Constants
 	public static final int MAX_VEIN_SIZE = 250;
 	
 	public static final int ENCH_EMC_BONUS = 5000;
+
+	public static final DecimalFormat EMC_COUNTER_FORMAT = new DecimalFormat("###,###,###,###.###");
 }

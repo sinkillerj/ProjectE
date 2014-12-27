@@ -5,22 +5,19 @@ import moze_intel.projecte.gameObjs.container.TransmuteContainer;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.NeiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import java.text.DecimalFormat;
 
 
 public class GUITransmute extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	private TransmuteTile tile;
-	private DecimalFormat EMCFormat = new DecimalFormat("###,###,###,###.###");
 
 	public GUITransmute(InventoryPlayer invPlayer, TransmuteTile tile) 
 	{
@@ -52,7 +49,7 @@ public class GUITransmute extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString("Transmutation", 24, 10, 4210752);
-		String emc = String.format("EMC: %s", EMCFormat.format(tile.getStoredEmc()));
+		String emc = String.format("EMC: %s", Constants.EMC_COUNTER_FORMAT.format(tile.getStoredEmc()));
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 96, 4210752);
 		
 		if (tile.learnFlag > 0)
