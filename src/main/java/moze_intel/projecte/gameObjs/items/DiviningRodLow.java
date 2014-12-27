@@ -75,7 +75,7 @@ public class DiviningRodLow extends ItemPE
 							continue;
 						}
 						
-						int blockEmc = Utils.getEmcValue(drops.get(0));
+						double blockEmc = Utils.getEmcValue(drops.get(0));
 						
 						if (blockEmc == 0)
 						{
@@ -90,7 +90,7 @@ public class DiviningRodLow extends ItemPE
 								
 								if (entry.getKey().getItem() == drops.get(0).getItem())
 								{
-									int currentValue = Utils.getEmcValue(entry.getValue());
+									double currentValue = Utils.getEmcValue(entry.getValue());
 									
 									if (currentValue != 0)
 									{

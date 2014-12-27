@@ -43,10 +43,10 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Double[]> list = new ArrayList<Double[]>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<SimpleStack, Double> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
 
@@ -55,7 +55,7 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			Double[] data = new Double[] {(double)stack.id, (double)stack.qnty, (double)stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)
@@ -79,10 +79,10 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Double[]> list = new ArrayList<Double[]>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<SimpleStack, Double> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
 
@@ -91,7 +91,7 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			Double[] data = new Double[] {(double)stack.id, (double)stack.qnty, (double)stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)

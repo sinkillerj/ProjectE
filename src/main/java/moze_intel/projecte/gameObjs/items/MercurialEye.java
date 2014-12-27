@@ -55,7 +55,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = Utils.getEmcValue(inventory[1]);
+			double reqEmc = Utils.getEmcValue(inventory[1]);
 
 			byte charge = getCharge(stack);
 			byte mode = this.getMode(stack);
@@ -161,11 +161,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 								continue;
 							}
 
-							int emc = Utils.getEmcValue(new ItemStack(b));
+							double emc = Utils.getEmcValue(new ItemStack(b));
 
 							if (emc > reqEmc)
 							{
-								int difference = emc - reqEmc;
+								double difference = emc - reqEmc;
 
 								kleinEmc += MathHelper.clamp_double(kleinEmc, 0, Utils.getKleinStarMaxEmc(inventory[0]));
 								addKleinEMC(stack, difference);
@@ -173,7 +173,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							}
 							else if (emc < reqEmc)
 							{
-								int difference = reqEmc - emc;
+								double difference = reqEmc - emc;
 
 								if (kleinEmc >= difference)
 								{
@@ -195,7 +195,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return stack;
 	}
 
-	private void addKleinEMC(ItemStack eye, int amount)
+	private void addKleinEMC(ItemStack eye, double amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
@@ -217,7 +217,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 	}
 
-	private void removeKleinEMC(ItemStack eye, int amount)
+	private void removeKleinEMC(ItemStack eye, double amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 

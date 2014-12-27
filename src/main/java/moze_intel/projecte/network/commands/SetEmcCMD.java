@@ -2,8 +2,8 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		String name;
 		int meta;
-		int emc;
+		double emc;
 
 		if (params.length == 1)
 		{
@@ -53,7 +53,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
 			meta = heldItem.getItemDamage();
-			emc = parseInteger(params[0]);
+			emc = parseDouble(params[0]);
 
 			if (emc < 0)
 			{
@@ -78,7 +78,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 						return;
 					}
 
-					emc = parseInteger(params[2]);
+					emc = parseDouble(params[2]);
 
 					if (emc < 0)
 					{
@@ -88,7 +88,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 				}
 				else
 				{
-					emc = parseInteger(params[1]);
+					emc = parseDouble(params[1]);
 
 					if (emc < 0)
 					{
@@ -99,7 +99,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 			}
 			else
 			{
-				emc = parseInteger(params[1]);
+				emc = parseDouble(params[1]);
 
 				if (emc < 0)
 				{

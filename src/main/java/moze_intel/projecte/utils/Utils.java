@@ -29,7 +29,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.Closeable;
@@ -92,7 +95,7 @@ public final class Utils
 		return doesItemHaveEmc(new ItemStack(block));
 	}
 
-	public static int getEmcValue(Item item)
+	public static double getEmcValue(Item item)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(item));
 
@@ -104,7 +107,7 @@ public final class Utils
 		return 0;
 	}
 
-	public static int getEmcValue(Block Block)
+	public static double getEmcValue(Block Block)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(Block));
 
@@ -116,7 +119,7 @@ public final class Utils
 		return 0;
 	}
 
-	public static int getEmcValue(ItemStack stack)
+	public static double getEmcValue(ItemStack stack)
 	{
 		if (stack == null) 
 		{
@@ -136,7 +139,7 @@ public final class Utils
 			
 			if (EMCMapper.mapContains(iStack))
 			{
-				int emc = EMCMapper.getEmcValue(iStack);
+				double emc = EMCMapper.getEmcValue(iStack);
 				
 				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
 
@@ -146,7 +149,7 @@ public final class Utils
 					return 0;
 				}
 
-				long result = emc * relDamage;
+				double result = emc * relDamage;
 
 				if (result <= 0)
 				{
@@ -167,7 +170,7 @@ public final class Utils
 					return 1;
 				}
 
-				return (int) result;
+				return result;
 			}
 		}
 		else
@@ -604,7 +607,7 @@ public final class Utils
 			{
 				if(FuelMapper.isStackFuel(stack))
 				{
-					int emc = Utils.getEmcValue(stack);
+					double emc = Utils.getEmcValue(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 					
 					if (stack.stackSize >= toRemove)

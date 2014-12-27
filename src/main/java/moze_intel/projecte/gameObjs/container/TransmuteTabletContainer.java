@@ -86,8 +86,8 @@ public class TransmuteTabletContainer extends Container
 			return null;
 		}
 		else if (slotIndex >= 10 && slotIndex <= 25)
-		{	
-			int emc = Utils.getEmcValue(newStack);
+		{
+			double emc = Utils.getEmcValue(newStack);
 			
 			int stackSize = 0;
 			
@@ -102,7 +102,7 @@ public class TransmuteTabletContainer extends Container
 		}
 		else if (slotIndex >= 26)
 		{
-			int emc = Utils.getEmcValue(stack);
+			double emc = Utils.getEmcValue(stack);
 			
 			if (emc == 0)
 			{

@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 public class GUIRelayMK1 extends GuiContainer
@@ -27,7 +26,7 @@ public class GUIRelayMK1 extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		this.fontRendererObj.drawString("Relay", 30, 6, 4210752);
-		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 88, 24, 4210752);
+		this.fontRendererObj.drawString(Double.toString(tile.displayEmc), 88, 24, 4210752);
 	}
 
 	@Override
@@ -42,15 +41,15 @@ public class GUIRelayMK1 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Emc bar progress. Max is 102.
-		int progress = tile.getEmcScaled(102);
-		this.drawTexturedModalRect(x + 64, y + 6, 30, 177, progress, 10);
+		double progress = tile.getEmcScaled(102);
+		this.drawTexturedModalRect(x + 64, y + 6, 30, 177, (int)progress, 10);
 		
 		//Klein start bar progress. Max is 30.
 		progress = tile.getKleinEmcScaled(30);
-		this.drawTexturedModalRect(x + 116, y + 67, 0, 177, progress, 10);
+		this.drawTexturedModalRect(x + 116, y + 67, 0, 177, (int)progress, 10);
 		
 		//Burn Slot bar progress. Max is 30.
 		progress = tile.getRawEmcScaled(30);
-		drawTexturedModalRect(x + 64, y + 67, 0, 177, progress, 10);
+		drawTexturedModalRect(x + 64, y + 67, 0, 177, (int)progress, 10);
 	}
 }

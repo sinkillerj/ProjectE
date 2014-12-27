@@ -2,7 +2,6 @@ package moze_intel.projecte.utils;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.client.settings.KeyBinding;
-
 import org.lwjgl.input.Keyboard;
 
 public final class KeyBinds 

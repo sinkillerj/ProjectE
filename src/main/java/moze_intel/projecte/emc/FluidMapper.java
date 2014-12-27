@@ -15,7 +15,7 @@ import java.util.List;
 public final class FluidMapper
 {
 	//Will use later for fluid transmutation.
-	private static final LinkedHashMap<Fluid, Integer> MAP = new LinkedHashMap<Fluid, Integer>();
+	private static final LinkedHashMap<Fluid, Double> MAP = new LinkedHashMap<Fluid, Double>();
 
 	public static void map()
 	{
@@ -43,7 +43,7 @@ public final class FluidMapper
 
 			List<ItemStack> odItems = getODEntriesForFluid(handleFluidName(data.fluid.getFluid()));
 
-			int minEmc = -1;
+			double minEmc = -1;
 
 			for (ItemStack stack : odItems)
 			{
@@ -52,7 +52,7 @@ public final class FluidMapper
 					continue;
 				}
 
-				int emc = Utils.getEmcValue(stack);
+				double emc = Utils.getEmcValue(stack);
 
 				if (minEmc == -1 || emc < minEmc)
 				{
@@ -81,12 +81,12 @@ public final class FluidMapper
 	}
 
 	//Should always check if the block has EMC before-hand, or will cause an NPE
-	public static int getFluidEMC(Block block)
+	public static double getFluidEMC(Block block)
 	{
 		return MAP.get(FluidRegistry.lookupFluidForBlock(block));
 	}
 
-	public static void addFluidEMC(Fluid fluid, int emcValue)
+	public static void addFluidEMC(Fluid fluid, double emcValue)
 	{
 		if (!MAP.containsKey(fluid) && emcValue > 0)
 		{
@@ -96,8 +96,8 @@ public final class FluidMapper
 
 	private static void lazyInit()
 	{
-		MAP.put(FluidRegistry.WATER, 0);
-		MAP.put(FluidRegistry.LAVA, 64);
+		MAP.put(FluidRegistry.WATER, (double)0);
+		MAP.put(FluidRegistry.LAVA, (double)64);
 
 		addManualRegistration("milk", 16);
 
@@ -117,7 +117,7 @@ public final class FluidMapper
 		}
 	}
 
-	private static void addManualRegistration(String fluidName, int emcValue)
+	private static void addManualRegistration(String fluidName, double emcValue)
 	{
 		Fluid fluid = FluidRegistry.getFluid(fluidName);
 

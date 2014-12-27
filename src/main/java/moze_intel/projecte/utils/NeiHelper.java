@@ -3,8 +3,6 @@ package moze_intel.projecte.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import scala.actors.threadpool.Arrays;
-
 public final class NeiHelper 
 {
 	public static boolean haveNei = false;

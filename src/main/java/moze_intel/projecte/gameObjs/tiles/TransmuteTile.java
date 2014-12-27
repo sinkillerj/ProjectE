@@ -75,10 +75,10 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		double matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		double fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
-		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
+		double maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
 		if (maxEmc > this.getStoredEmc())
 		{
@@ -104,7 +104,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			double reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.getStoredEmc() < reqEmc)
 			{

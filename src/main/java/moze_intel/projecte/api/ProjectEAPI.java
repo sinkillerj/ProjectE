@@ -1,7 +1,6 @@
 package moze_intel.projecte.api;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -18,11 +17,11 @@ public final class ProjectEAPI
 	 * Users can still modify inter-mod EMC registration via command/configuration file.<br>
 	 * Can be called during pre-init, init or post-init.
 	 */
-	public static void registerCustomEMC(ItemStack stack, int emcValue)
+	public static void registerCustomEMC(ItemStack stack, double emcValue)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		stack.writeToNBT(nbt);
-		nbt.setInteger("EMC", emcValue);
+		nbt.setDouble("EMC", emcValue);
 		
 		FMLInterModComms.sendMessage("ProjectE", "registeremc", nbt);
 	}

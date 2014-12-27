@@ -64,8 +64,8 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			long totalEmc = 0;
-			int max = 0;
+			double totalEmc = 0;
+			double max = 0;
 			int numBlocks = 0;
 			
 			int range = getMode(stack) == 1 ? 16 : 3; 
@@ -89,7 +89,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 							continue;
 						}
 						
-						int blockEmc = Utils.getEmcValue(drops.get(0));
+						double blockEmc = Utils.getEmcValue(drops.get(0));
 						
 						if (blockEmc == 0)
 						{
@@ -104,7 +104,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 								
 								if (entry.getKey().getItem() == drops.get(0).getItem())
 								{
-									int currentValue = Utils.getEmcValue(entry.getValue());
+									double currentValue = Utils.getEmcValue(entry.getValue());
 									
 									if (currentValue != 0)
 									{

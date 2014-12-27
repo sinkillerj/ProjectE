@@ -2,11 +2,11 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -22,11 +22,11 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	protected boolean loadChecks;
 	protected boolean isRequestingEmc;
 	private int ticksSinceSync;
-	public int displayEmc;
+	public double displayEmc;
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
-	public int requiredEmc;
+	public double requiredEmc;
 
 	public CondenserTile()
 	{
@@ -79,7 +79,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 		if (Utils.doesItemHaveEmc(lock))
 		{
-			int lockEmc = Utils.getEmcValue(lock);
+			double lockEmc = Utils.getEmcValue(lock);
 
 			if (requiredEmc != lockEmc)
 			{
@@ -216,7 +216,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		return Utils.areItemStacksEqualIgnoreNBT(lock, stack);
 	}
 	
-	public int getProgressScaled()
+	public double getProgressScaled()
 	{
 		if (requiredEmc == 0) 
 		{

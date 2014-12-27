@@ -15,10 +15,10 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.RecipeMapper;
 import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.TickEvents;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -59,6 +59,8 @@ public class PECore
 		}
 		
 		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
+
+		Constants.EMC_COUNTER_FORMAT.setMaximumFractionDigits(ProjectEConfig.AMOUNT_OF_DECIMAL_NUMBERS);
 
 		CustomEMCParser.init();
 

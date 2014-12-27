@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 public class GUICollectorMK2 extends GuiContainer
@@ -26,11 +25,11 @@ public class GUICollectorMK2 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 75, 32, 4210752);
+		this.fontRendererObj.drawString(Double.toString(tile.displayEmc), 75, 32, 4210752);
 		
-		int kleinCharge = tile.displayKleinCharge;
+		double kleinCharge = tile.displayKleinCharge;
 		if (kleinCharge != -1)
-			this.fontRendererObj.drawString(Integer.toString(kleinCharge), 75, 44, 4210752);
+			this.fontRendererObj.drawString(Double.toString(kleinCharge), 75, 44, 4210752);
 	}
 
 	@Override
@@ -45,19 +44,19 @@ public class GUICollectorMK2 extends GuiContainer
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
-		int progress = tile.getSunLevelScaled(12);
-		this.drawTexturedModalRect(x + 142, y + 49 - progress, 202, 13 - progress, 12, progress);
+		double progress = tile.getSunLevelScaled(12);
+		this.drawTexturedModalRect(x + 142, y + 49 - (int)progress, 202, 13 - (int)progress, 12, (int)progress);
 				
 		//EMC storage. Max is 48
 		progress = tile.getEmcScaled(48);
-		this.drawTexturedModalRect(x + 80, y + 18, 0, 166, progress, 10);
+		this.drawTexturedModalRect(x + 80, y + 18, 0, 166, (int)progress, 10);
 				
 		//Klein Star Charge Progress. Max is 48
 		progress = tile.getKleinStarChargeScaled(48);
-		this.drawTexturedModalRect(x + 80, y + 58, 0, 166, progress, 10);
+		this.drawTexturedModalRect(x + 80, y + 58, 0, 166, (int)progress, 10);
 		
 		//Fuel Progress. Max is 24.
 		progress = tile.getFuelProgressScaled(24);
-		this.drawTexturedModalRect(x + 154, y + 55 - progress, 201, 38 - progress, 10, progress + 1);
+		this.drawTexturedModalRect(x + 154, y + 55 - (int)progress, 201, 38 - (int)progress, 10, (int)progress + 1);
 	}
 }

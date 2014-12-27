@@ -19,9 +19,9 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	private ItemStack[] inventory;
 	private int invBufferSize;
 	private final int chargeRate;
-	public int displayEmc;
-	public int displayKleinEmc;
-	public int displayRawEmc;
+	public double displayEmc;
+	public double displayKleinEmc;
+	public double displayRawEmc;
 	private int numUsing;
 	
 	public RelayMK1Tile()
@@ -74,7 +74,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 			}
 			else
 			{
-				int emcVal = Utils.getEmcValue(stack);
+				double emcVal = Utils.getEmcValue(stack);
 				
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaxEmc())
 				{
@@ -178,12 +178,12 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		}
 	}
 	
-	public int getEmcScaled(int i)
+	public double getEmcScaled(int i)
 	{
 		return displayEmc * i / this.getMaxEmc();
 	}
 	
-	private int getKleinStarEmc()
+	private double getKleinStarEmc()
 	{
 		if (inventory[getSizeInventory() - 1] != null)
 		{
@@ -193,7 +193,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		return 0;
 	}
 	
-	public int getKleinEmcScaled(int i)
+	public double getKleinEmcScaled(int i)
 	{
 		if (inventory[getSizeInventory() - 1] != null)
 		{
@@ -203,7 +203,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		return 0;
 	}
 	
-	private int getRawEmc()
+	private double getRawEmc()
 	{
 		if (inventory[0] == null)
 		{
@@ -218,7 +218,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		return Utils.getEmcValue(inventory[0]) * inventory[0].stackSize;
 	}
 	
-	public int getRawEmcScaled(int i)
+	public double getRawEmcScaled(int i)
 	{
 		if (inventory[0] == null)
 		{
@@ -230,7 +230,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 			return displayRawEmc * i / Utils.getKleinStarMaxEmc(inventory[0]);
 		}
 		
-		int emc = Utils.getEmcValue(inventory[0]);
+		double emc = Utils.getEmcValue(inventory[0]);
 		
 		return displayRawEmc * i / (emc * inventory[0].getMaxStackSize());
 	}

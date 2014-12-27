@@ -102,7 +102,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			}
 		}
 		
-		int value = Utils.getEmcValue(target);
+		double value = Utils.getEmcValue(target);
 		
 		while (ItemPE.getEmc(gem) >= value)
 		{

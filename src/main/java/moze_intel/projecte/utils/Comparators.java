@@ -13,8 +13,8 @@ public final class Comparators
 		@Override
 		public int compare(ItemStack s1, ItemStack s2) 
 		{
-			int emc1 = Utils.getEmcValue(s1);
-			int emc2 = Utils.getEmcValue(s2);
+			double emc1 = Utils.getEmcValue(s1);
+			double emc2 = Utils.getEmcValue(s2);
 			
 			if (emc1 < emc2)
 			{
@@ -35,8 +35,8 @@ public final class Comparators
 		@Override
 		public int compare(SimpleStack s1, SimpleStack s2)
 		{
-			int emc1 = EMCMapper.getEmcValue(s1);
-			int emc2 = EMCMapper.getEmcValue(s2);
+			double emc1 = EMCMapper.getEmcValue(s1);
+			double emc2 = EMCMapper.getEmcValue(s2);
 			
 			if (emc1 < emc2)
 			{
@@ -52,10 +52,10 @@ public final class Comparators
 		}
 	};
 	
-	public static final Comparator<Integer> INT_DESCENDING = new Comparator<Integer>()
+	public static final Comparator<Double> DOUBLE_DESCENDING = new Comparator<Double>()
 	{
 		@Override
-		public int compare(Integer i1, Integer i2)
+		public int compare(Double i1, Double i2)
 		{
 			if (i1 < i2)
 			{

@@ -3,18 +3,18 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 public class GUICondenser extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png");
 	private CondenserTile tile;
-	
+
 	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)
 	{
 		super(new CondenserContainer(invPlayer, tile));
@@ -34,14 +34,14 @@ public class GUICondenser extends GuiContainer
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
-		int progress = tile.getProgressScaled();
-		this.drawTexturedModalRect(x + 33, y + 10, 0, 235, progress, 10);
+		double progress = tile.getProgressScaled();
+		this.drawTexturedModalRect(x + 33, y + 10, 0, 235, (int)progress, 10);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		int toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
-		this.fontRendererObj.drawString(Integer.toString(toDisplay), 140, 10, 4210752);
+		double toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
+		this.fontRendererObj.drawString(Constants.EMC_COUNTER_FORMAT.format(toDisplay), 140, 10, 4210752);
 	}
 }
