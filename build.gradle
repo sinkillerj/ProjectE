@@ -16,6 +16,7 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'curseforge'
 
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -63,4 +64,12 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+curse {
+    dependsOn 'reobf'
+    projectId = project.projecte_curseid
+    apiKey = project.apiKey
+    changelog = ""
+    releaseType = "beta"
 }
