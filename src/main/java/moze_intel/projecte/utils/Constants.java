@@ -18,7 +18,7 @@ public final class Constants
 	public static final int COLLECTOR_MK1_MAX = 10000;
 	public static final int COLLECTOR_MK2_MAX = 30000;
 	public static final int COLLECTOR_MK3_MAX = 60000;
-	public static final int  COLLECTOR_MK1_GEN = 4;
+	public static final int COLLECTOR_MK1_GEN = 4;
 	public static final int COLLECTOR_MK2_GEN = 12;
 	public static final int COLLECTOR_MK3_GEN = 40;
 	
