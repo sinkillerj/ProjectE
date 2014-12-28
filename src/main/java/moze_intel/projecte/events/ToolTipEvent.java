@@ -5,6 +5,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -20,7 +22,9 @@ public class ToolTipEvent
 	public void tTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack current = event.itemStack;
-		
+		Item currentItem = current.getItem();
+		Block currentBlock = Block.getBlockFromItem(currentItem);
+
 		if (current == null)
 		{
 			return;
@@ -38,28 +42,52 @@ public class ToolTipEvent
 				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
 			}
 		}
-		
-		if (Utils.doesItemHaveEmc(current))
-		{
-			int value = Utils.getEmcValue(current);
 
-			event.toolTip.add(String.format("EMC: %,d", value));
-			
-			if (current.stackSize > 1)
+		if (ProjectEConfig.showEMCTooltip)
+		{
+			if (Utils.doesItemHaveEmc(current))
 			{
-				long total = value * current.stackSize;
-				
-				if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+				int value = Utils.getEmcValue(current);
+
+				event.toolTip.add(String.format("EMC: %,d", value));
+
+				if (current.stackSize > 1)
 				{
-					event.toolTip.add("Stack EMC: " + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
-				}
-				else
-				{
-					event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+					long total = value * current.stackSize;
+
+					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+					{
+						event.toolTip.add("Stack EMC: " + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
+					}
+					else
+					{
+						event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+					}
 				}
 			}
 		}
-		
+
+		if (ProjectEConfig.showCollectorGen)
+		{
+			if (currentBlock == ObjHandler.energyCollector)
+			{
+				event.toolTip.add("Generates: 4 EMC");
+				event.toolTip.add("Max Storage: 10000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.collectorMK2)
+			{
+				event.toolTip.add("Generates: 12 EMC");
+				event.toolTip.add("Max Storage: 30000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.collectorMK3)
+			{
+				event.toolTip.add("Generates: 40 EMC");
+				event.toolTip.add("Max Storage: 60000 EMC");
+			}
+		}
+
 		if (current.hasTagCompound())
 		{
 			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
