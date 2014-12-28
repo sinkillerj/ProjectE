@@ -71,19 +71,19 @@ public class ToolTipEvent
 		{
 			if (currentBlock == ObjHandler.energyCollector)
 			{
-				event.toolTip.add("Max Generation Rate: 4 EMC/t");
+				event.toolTip.add("Max Generation Rate: 4 EMC/s");
 				event.toolTip.add("Max Storage: 10000 EMC");
 			}
 
 			if (currentBlock == ObjHandler.collectorMK2)
 			{
-				event.toolTip.add("Max Generation Rate: 12 EMC/t");
+				event.toolTip.add("Max Generation Rate: 12 EMC/s");
 				event.toolTip.add("Max Storage: 30000 EMC");
 			}
 
 			if (currentBlock == ObjHandler.collectorMK3)
 			{
-				event.toolTip.add("Max Generation Rate: 40 EMC/t");
+				event.toolTip.add("Max Generation Rate: 40 EMC/s");
 				event.toolTip.add("Max Storage: 60000 EMC");
 			}
 		}
