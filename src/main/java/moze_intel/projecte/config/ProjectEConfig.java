@@ -11,7 +11,7 @@ public final class ProjectEConfig
 	public static boolean showODNames;
 	public static boolean enableDebugLog;
 	public static boolean showEMCTooltip;
-	public static boolean showCollectorGen;
+	public static boolean showStatTooltip;
 
 	public static boolean enableAlcChest;
 	public static boolean enableITorch;
@@ -39,7 +39,7 @@ public final class ProjectEConfig
 			showUnlocalizedNames = config.getBoolean("unToolTips", "misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
-			showCollectorGen = config.getBoolean("collectorGenToolTips", "misc", true, "Show how much Collectors generate and at maximum store as a tooltip");
+			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe.");
 
