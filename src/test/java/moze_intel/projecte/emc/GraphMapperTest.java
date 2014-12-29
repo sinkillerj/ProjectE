@@ -193,6 +193,44 @@ public class GraphMapperTest {
         assertEquals(0, getValue(values,"invalid"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesCycleRecipe() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
+        graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
+        graphMapper.addConversion(1, "cycle-1", Arrays.asList("cycle-2"));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(1, getValue(values,"cycle-1"));
+        assertEquals(1, getValue(values,"cycle-2"));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesBigCycleRecipe() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
+        graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
+        graphMapper.addConversion(1, "cycle-3", Arrays.asList("cycle-2"));
+        graphMapper.addConversion(1, "cycle-4", Arrays.asList("cycle-3"));
+        graphMapper.addConversion(1, "cycle-5", Arrays.asList("cycle-4"));
+        graphMapper.addConversion(1, "cycle-1", Arrays.asList("cycle-5"));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(1, getValue(values,"cycle-1"));
+        assertEquals(1, getValue(values,"cycle-2"));
+        assertEquals(1, getValue(values,"cycle-3"));
+        assertEquals(1, getValue(values,"cycle-4"));
+        assertEquals(1, getValue(values,"cycle-5"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;
