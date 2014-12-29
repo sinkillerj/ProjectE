@@ -69,6 +69,9 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showStatTooltip)
 		{
+			/**
+			 * Collector ToolTips
+			 */
 			if (currentBlock == ObjHandler.energyCollector)
 			{
 				event.toolTip.add("Max Generation Rate: 4 EMC/s");
@@ -85,6 +88,27 @@ public class ToolTipEvent
 			{
 				event.toolTip.add("Max Generation Rate: 40 EMC/s");
 				event.toolTip.add("Max Storage: 60000 EMC");
+			}
+
+			/**
+			 * Relay ToolTips
+			 */
+			if (currentBlock == ObjHandler.relay)
+			{
+				event.toolTip.add("Max Output Rate: 64 EMC/s");
+				event.toolTip.add("Max Storage: 100000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.relayMK2)
+			{
+				event.toolTip.add("Max Output Rate: 192 EMC/s");
+				event.toolTip.add("Max Storage: 1000000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.relayMK3)
+			{
+				event.toolTip.add("Max Output Rate: 640 EMC/s");
+				event.toolTip.add("Max Storage: 10000000 EMC");
 			}
 		}
 
