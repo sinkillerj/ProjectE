@@ -50,7 +50,7 @@ public class RepairTalisman extends ItemPE implements IBauble
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 
-				if (invStack == null || invStack.getItem() instanceof IModeChanger)
+				if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}
