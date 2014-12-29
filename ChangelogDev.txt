@@ -1,4 +1,4 @@
-###Version Alpha 0.2d-dev12
+###Version 1.7.10-0.2d-dev12
 * NEW: More tooltips
 * NEW: More config options
 * FIXED: Items from versions prior to dev10 will no longer be lost
