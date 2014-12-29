@@ -18,9 +18,9 @@ public class ThreadCheckUpdate extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private final String changelogURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/Changelog.txt";
-	private final String changelogDevURL = "https://raw.githubusercontent.com/MozeIntel/ProjectE/master/ChangelogDev.txt";
-	private final String githubURL = "https://github.com/MozeIntel/ProjectE";
+	private final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/Changelog.txt";
+	private final String changelogDevURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogDev.txt";
+	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
 	private boolean isServerSide;
 	
 	public ThreadCheckUpdate(boolean isServer) 

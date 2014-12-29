@@ -34,9 +34,13 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		emc += amount;
 		
-		if (emc > maxAmount || emc < 0)
+		if (emc > maxAmount)
 		{
 			emc = maxAmount;
+		}
+		else if (emc < 0)
+		{
+			emc = 0;
 		}
 	}
 	
