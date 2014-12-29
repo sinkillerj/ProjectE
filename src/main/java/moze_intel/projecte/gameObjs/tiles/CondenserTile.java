@@ -477,12 +477,22 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public boolean canInsertItem(int slot, ItemStack item, int side) 
 	{
+		if (slot == 0) 
+		{
+			return false;
+		}
+
 		return isItemValidForSlot(slot, item);
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack item, int side) 
 	{
+		if (slot == 0) 
+		{
+			return false;
+		}
+
 		return isStackEqualToLock(item);
 	}
 
