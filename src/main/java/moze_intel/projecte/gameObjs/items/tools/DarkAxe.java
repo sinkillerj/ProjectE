@@ -29,6 +29,13 @@ public class DarkAxe extends ItemCharge
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean isFull3D()
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
 		return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
