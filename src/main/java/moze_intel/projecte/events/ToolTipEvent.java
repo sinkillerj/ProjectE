@@ -95,19 +95,19 @@ public class ToolTipEvent
 			 */
 			if (currentBlock == ObjHandler.relay)
 			{
-				event.toolTip.add("Max Output: 64 EMC/s");
+				event.toolTip.add("Max Output Rate: 64 EMC/s");
 				event.toolTip.add("Max Storage: 100000 EMC");
 			}
 
 			if (currentBlock == ObjHandler.relayMK2)
 			{
-				event.toolTip.add("Max Output: 192 EMC/s");
+				event.toolTip.add("Max Output Rate: 192 EMC/s");
 				event.toolTip.add("Max Storage: 1000000 EMC");
 			}
 
 			if (currentBlock == ObjHandler.relayMK3)
 			{
-				event.toolTip.add("Max Output: 640 EMC/s");
+				event.toolTip.add("Max Output Rate: 640 EMC/s");
 				event.toolTip.add("Max Storage: 10000000 EMC");
 			}
 		}
