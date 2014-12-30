@@ -46,8 +46,8 @@ public final class AlchemicalBags
 			MAP.put(player, data);
 		}
 		if (data == null) {
-			data = new LinkedHashMap()
-			MAP.put(player, data)
+			data = new LinkedHashMap();
+			MAP.put(player, data);
 		}
 		data.put(bagColour, inv);
 		
