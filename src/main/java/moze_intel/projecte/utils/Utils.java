@@ -157,6 +157,8 @@ public final class Utils
 				result /= stack.getMaxDamage();
 				result += getEnchantEmcBonus(stack);
 
+				result += getStoredEMCBonus(stack);
+
 				if (result > Integer.MAX_VALUE)
 				{
 					return emc;
@@ -174,7 +176,7 @@ public final class Utils
 		{
 			if (EMCMapper.mapContains(iStack))
 			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack);
+				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (int)getStoredEMCBonus(stack);
 			}
 		}
 			
@@ -203,6 +205,13 @@ public final class Utils
 		}
 		
 		return result;
+	}
+
+	public static double getStoredEMCBonus(ItemStack stack) {
+		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
+			return stack.stackTagCompound.getDouble("StoredEMC");
+		}
+		return 0;
 	}
 	
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
