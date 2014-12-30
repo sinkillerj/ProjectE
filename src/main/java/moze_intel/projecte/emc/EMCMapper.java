@@ -446,6 +446,10 @@ public final class EMCMapper
 		addMapping(new ItemStack(Blocks.pumpkin), 144);
 		addMapping(new ItemStack(Items.bone), 144);
 		addMapping(new ItemStack(Blocks.mossy_cobblestone), 145);
+        addMapping(new ItemStack(Items.stone_shovel), 7);
+        addMapping(new ItemStack(Items.stone_sword), 6);
+        addMapping(new ItemStack(Items.stone_axe), 11);
+        addMapping(new ItemStack(Items.stone_hoe), 10);
 		addMapping(new ItemStack(Items.saddle), 192);
 		addMapping(new ItemStack(Items.record_11), 2048);
 		addMapping(new ItemStack(Items.record_13), 2048);
