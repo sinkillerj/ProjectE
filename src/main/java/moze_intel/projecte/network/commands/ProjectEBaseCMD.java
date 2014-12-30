@@ -49,4 +49,14 @@ public abstract class ProjectEBaseCMD extends CommandBase
 
 		return value;
 	}
+
+	protected void parseRange(String range, int[] rangeOut) {
+		if (range.indexOf('-') >= 0) {
+			String[] splits = range.split("\\-",2);
+			rangeOut[0] = parseInteger(splits[0]);
+			rangeOut[1] = parseInteger(splits[1]);
+		} else {
+			rangeOut[0] = rangeOut[1] = parseInteger(range);
+		}
+	}
 }
