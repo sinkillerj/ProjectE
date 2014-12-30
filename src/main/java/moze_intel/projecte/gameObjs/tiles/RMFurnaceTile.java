@@ -376,10 +376,9 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	
 	private void pushToInventories()
 	{
-		int iSide = 0;
-		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
+			//Only push to Inventories on the same level as the RMFurnace.
 			if (dir.offsetY > 0)
 			{
 				continue;
@@ -402,7 +401,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				
 				if (inv != null)
 				{
-					int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[iSide]);
+					int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[dir.ordinal()]);
 					
 					if (slots.length > 0)
 					{
@@ -417,7 +416,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 							
 							for (int k : slots)
 							{
-								if (inv.canInsertItem(k, stack, Facing.oppositeSide[iSide]))
+								if (inv.canInsertItem(k, stack, Facing.oppositeSide[dir.ordinal()]))
 								{
 									ItemStack otherStack = inv.getStackInSlot(k);
 									
