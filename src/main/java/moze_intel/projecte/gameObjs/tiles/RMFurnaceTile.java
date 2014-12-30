@@ -378,7 +378,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	{
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			//Only push to Inventories on the same level as the RMFurnace.
+			//Only push to Inventories on the same level or below the RMFurnace.
 			if (dir.offsetY > 0)
 			{
 				continue;
