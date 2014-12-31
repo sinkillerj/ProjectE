@@ -32,6 +32,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 	public CataliticLens() 
 	{
 		super("catalitic_lens", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

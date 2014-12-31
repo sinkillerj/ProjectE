@@ -31,6 +31,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		this.setUnlocalizedName("evertide_amulet");
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 
 	@Override

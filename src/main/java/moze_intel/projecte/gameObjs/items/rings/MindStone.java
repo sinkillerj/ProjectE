@@ -12,6 +12,7 @@ public class MindStone extends RingToggle
 	public MindStone() 
 	{
 		super("mind_stone");
+		this.setNoRepair();
 	}
 
 	@Override

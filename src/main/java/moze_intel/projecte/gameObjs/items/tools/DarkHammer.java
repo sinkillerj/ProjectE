@@ -32,6 +32,7 @@ public class DarkHammer extends ItemCharge
 	public DarkHammer() 
 	{
 		super("dm_hammer", (byte) 3);
+		this.setNoRepair();
 	}
 	
 	@Override

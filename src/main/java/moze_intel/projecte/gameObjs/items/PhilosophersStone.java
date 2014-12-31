@@ -35,6 +35,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		super("philosophers_stone", (byte) 4, new String[] {"Cube", "Panel", "Line"});
 		this.setContainerItem(this);
+		this.setNoRepair();
 	}
 	
 	@Override

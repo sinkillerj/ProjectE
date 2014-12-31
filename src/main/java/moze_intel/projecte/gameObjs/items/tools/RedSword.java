@@ -19,6 +19,7 @@ public class RedSword extends ItemCharge
 	public RedSword() 
 	{
 		super("rm_sword", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

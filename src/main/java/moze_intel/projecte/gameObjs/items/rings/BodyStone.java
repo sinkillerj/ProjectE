@@ -16,6 +16,7 @@ public class BodyStone extends RingToggle implements IBauble
 	public BodyStone() 
 	{
 		super("body_stone");
+		this.setNoRepair();
 	}
 	
 	@Override

@@ -28,6 +28,7 @@ public class KleinStar extends ItemPE
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 	
 	@Override

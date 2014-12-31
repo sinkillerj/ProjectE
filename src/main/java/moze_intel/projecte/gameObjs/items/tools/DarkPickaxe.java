@@ -34,6 +34,7 @@ public class DarkPickaxe extends ItemMode
 	public DarkPickaxe() 
 	{
 		super("dm_pick", (byte) 3, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
+		this.setNoRepair();
 	}
 	
 	@Override

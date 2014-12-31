@@ -32,6 +32,7 @@ public class RedStar extends ItemCharge
 	public RedStar() 
 	{
 		super("rm_morning_star", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

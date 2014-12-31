@@ -19,6 +19,7 @@ public class DarkSword extends ItemCharge
 	public DarkSword() 
 	{
 		super("dm_sword", (byte) 3);
+		this.setNoRepair();
 	}
 	
 	@Override

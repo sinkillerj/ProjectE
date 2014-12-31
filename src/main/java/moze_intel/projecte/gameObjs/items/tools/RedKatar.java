@@ -40,6 +40,7 @@ public class RedKatar extends ItemMode
 	public RedKatar() 
 	{
 		super("rm_katar", (byte) 4, new String[] {"De-Foresting", "Hoe", "Shear", "Attack"});
+		this.setNoRepair();
 	}
 	
 	@Override

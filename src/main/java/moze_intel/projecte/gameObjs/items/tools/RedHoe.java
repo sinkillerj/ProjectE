@@ -18,6 +18,7 @@ public class RedHoe extends ItemCharge
 	public RedHoe() 
 	{
 		super("rm_hoe", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

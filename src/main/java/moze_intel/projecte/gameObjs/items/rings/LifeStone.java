@@ -16,6 +16,7 @@ public class LifeStone extends RingToggle implements IBauble
 	public LifeStone() 
 	{
 		super("life_stone");
+		this.setNoRepair();
 	}
 	
 

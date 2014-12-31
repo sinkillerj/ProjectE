@@ -21,6 +21,7 @@ public class BlackHoleBand extends RingToggle implements IBauble
 	public BlackHoleBand()
 	{
 		super("black_hole");
+		this.setNoRepair();
 	}
 	
 	@Override

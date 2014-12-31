@@ -26,6 +26,7 @@ public class RedAxe extends ItemCharge
 	public RedAxe()
 	{
 		super("rm_axe", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

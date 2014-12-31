@@ -1,7 +1,25 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-//Need to finish implementation
-/*public class Arcana extends ItemPE implements IModeChanger
+/*import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.Utils;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+
+import java.util.List;
+
+//Need to finish implementation. Very WIP
+public class Arcana extends ItemPE implements IModeChanger
 {
 	private final String[] MODES = new String[] {"Zero", "Ignition", "Harvest", "SWRG"};
 	
@@ -15,7 +33,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int slotIndex, boolean isHeld) 
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slotIndex, boolean isHeld)
 	{
 		if (stack.stackTagCompound == null)
 		{
@@ -120,7 +138,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
 		if (stack.hasTagCompound())
 		{
