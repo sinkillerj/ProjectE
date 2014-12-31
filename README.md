@@ -15,4 +15,6 @@ SinKillerJ - Current developer: https://twitter.com/sinkillerj
 
 MozeIntel - Original developer: https://twitter.com/Moze_Intel
 
+Kolatra - Assistant developer, project collaborator: https://twitter.com/ItsKolatra
+
 Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
