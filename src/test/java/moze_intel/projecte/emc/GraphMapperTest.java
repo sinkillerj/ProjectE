@@ -145,6 +145,38 @@ public class GraphMapperTest {
     }
 
     @org.junit.Test
+    public void testGenerateValuesWood() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        for (char i: "ABCD".toCharArray()) {
+            graphMapper.setValue("wood" + i, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.addConversion(4, "planks"+i, Arrays.asList("wood"+i));
+        }
+
+        for (char i: "ABCD".toCharArray()) {
+            graphMapper.addConversion(4, "planks"+i, Arrays.asList("wood"));
+        }
+
+        for (char i: "ABCD".toCharArray())
+            for (char j: "ABCD".toCharArray())
+                graphMapper.addConversion(4,"stick",Arrays.asList("planks"+i,"planks"+j));
+        graphMapper.addConversion(1, "crafting_table", Arrays.asList("planksA","planksA","planksA","planksA"));
+        for (char i: "ABCD".toCharArray())
+            for (char j: "ABCD".toCharArray())
+                    graphMapper.addConversion(1,"wooden_hoe",Arrays.asList("stick","stick","planks"+i,"planks"+j));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        for (char i: "ABCD".toCharArray())
+            assertEquals(32,getValue(values,"wood"+i));
+        for (char i: "ABCD".toCharArray())
+            assertEquals(8, getValue(values,"planks"+i));
+        assertEquals(4, getValue(values,"stick"));
+        assertEquals(32, getValue(values,"crafting_table"));
+        assertEquals(24, getValue(values,"wooden_hoe"));
+
+    }
+
+    @org.junit.Test
     public void testGenerateValuesDeepConversions() throws Exception {
         GraphMapper<String> graphMapper = new GraphMapper<String>();
 
