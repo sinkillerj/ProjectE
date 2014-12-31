@@ -1,13 +1,13 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.utils.PELogger;
 
 import java.util.*;
 
 public class GraphMapper<T extends Comparable<T>> {
     protected Map<T,List<Conversion<T>>> conversionsFor = new HashMap<T, List<Conversion<T>>>();
     protected Map<T,List<Conversion<T>>> usedIn = new HashMap<T,List<Conversion<T>>>();
-    protected Map<T,Conversion<T>> fixedValueFor = new HashMap<T, Conversion<T>>();
+    protected Map<T,Double> fixValueBeforeInherit = new HashMap<T, Double>();
+    protected Map<T,Double> fixValueAfterInherit = new HashMap<T, Double>();
     protected Map<T,Integer> noDependencyConversionCount = new HashMap<T, Integer>();
     public static enum FixedValue {
         SuggestionAndInherit,FixAndInherit, FixAfterInherit, FixAndDoNotInherit
@@ -45,6 +45,7 @@ public class GraphMapper<T extends Comparable<T>> {
         Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
         conversion.value = baseValueForConversion;
         getConversionsFor(output).add(conversion);
+        if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
 
         for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount.entrySet()) {
             List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
@@ -68,42 +69,29 @@ public class GraphMapper<T extends Comparable<T>> {
         this.addConversionMultiple(outnumber, output, ingredientsWithAmount);
     }
     public void setValue(T something, double value, FixedValue type) {
-        Conversion<T> fixedValueConversion;
-        if (fixedValueFor.containsKey(something)) {
-            fixedValueConversion = fixedValueFor.get(something);
-            PELogger.logWarn("Fixed Value for " + something.toString() + " is overwritten!");
-        } else {
-            fixedValueConversion = new Conversion<T>(something);
-            fixedValueFor.put(something,fixedValueConversion);
-            getConversionsFor(something).add(fixedValueConversion);
+        switch(type) {
+            case FixAndInherit:
+                fixValueBeforeInherit.put(something,value);
+                fixValueAfterInherit.remove(something);
+                break;
+            case FixAndDoNotInherit:
+                fixValueBeforeInherit.put(something,0.0);
+                fixValueAfterInherit.put(something,value);
+                break;
+            case FixAfterInherit:
+                fixValueBeforeInherit.remove(something);
+                fixValueAfterInherit.put(something,value);
+                break;
+            case SuggestionAndInherit:
+                this.addConversionMultiple(1, something, new HashMap<T, Integer>(), value);
+                break;
         }
-        fixedValueConversion.fixedValue = value;
-        if (type == FixedValue.SuggestionAndInherit || type == FixedValue.FixAndInherit || type == FixedValue.FixAndDoNotInherit) {
-            fixedValueConversion.value = value;
-        }
-        fixedValueConversion.type = type;
-        //TODO do i need to increase the noDependencyConversionCount for this here?
     }
 
 
     public Map<T, Double> generateValues() {
         Map<T, Double> valueFor = new HashMap<T, Double>();
         Map<T,Double> solvableThings = new HashMap<T,Double>();
-
-        for (Conversion<T> fixedValueConversion: fixedValueFor.values()) {
-            if (fixedValueConversion.type == FixedValue.FixAndInherit) {
-                solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
-            } else if (fixedValueConversion.type == FixedValue.FixAndDoNotInherit) {
-                //Thing has a fixed Value, that should not be inherited, so all Conversions using this are invalid
-                for (Conversion<T> use:getUsesFor(fixedValueConversion.output)) {
-                    use.markInvalid();//TODO Remove Conversion from the 'conversionsFor'-Map for the Conversion output?
-                    //TODO use might be solvable when Conversion has been removed?
-                }
-                //TODO? Why am i doing this?
-                getUsesFor(fixedValueConversion.output).clear();
-                solvableThings.put(fixedValueConversion.output,fixedValueConversion.fixedValue);
-            }
-        }
 
         //Everything, that only appears in 'uses' and has no conversion itself has a value of 0.
         for (T someThing: usedIn.keySet()) {
@@ -112,36 +100,11 @@ public class GraphMapper<T extends Comparable<T>> {
             }
         }
 
+        solvableThings.putAll(fixValueBeforeInherit);
 
-        Set<T> lookAt = new HashSet<T>();
-        while(!solvableThings.isEmpty()) {
-            for (Map.Entry<T,Double> solvableThing: solvableThings.entrySet()) {
-                assert !valueFor.containsKey(solvableThing.getKey());
-                valueFor.put(solvableThing.getKey(),solvableThing.getValue());
-                if (solvableThing.getValue() > 0) {
-                    //Solvable Thing has a Value. Set it in all Conversions
-                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
-                        assert use.ingredientsWithAmount != null;
-                        Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
-                        assert amount != null && amount > 0;
-                        use.value += amount * solvableThing.getValue();
-                        use.ingredientsWithAmount.remove(solvableThing.getKey());
-                        if (use.ingredientsWithAmount.size() == 0) {
-                            increaseNoDependencyConversionCountFor(use.output);
-                            lookAt.add(use.output);
-                        }
-                    }
-                } else {
-                    //Solvable thing has no Value - All Conversions using this are invalid
-                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
-                        use.markInvalid();
-                        getConversionsFor(use.output).remove(use);
-                        lookAt.add(use.output);
-                    }
-                }
-            }
 
-            solvableThings.clear();
+        Set<T> lookAt = new HashSet<T>(conversionsFor.keySet());
+        while(true) {
             for (T something: lookAt) {
                 if (getConversionsFor(something).size() == 0) {
                     solvableThings.put(something, 0.0);
@@ -161,11 +124,42 @@ public class GraphMapper<T extends Comparable<T>> {
                 }
             }
             lookAt.clear();
-        }
-        for (Conversion<T> fixedConversion: fixedValueFor.values()) {
-            if (fixedConversion.type == FixedValue.FixAfterInherit || fixedConversion.type == FixedValue.FixAndDoNotInherit) {
-                valueFor.put(fixedConversion.output,fixedConversion.fixedValue);
+            if (solvableThings.isEmpty()) break;
+
+            for (Map.Entry<T,Double> solvableThing: solvableThings.entrySet()) {
+                if (valueFor.containsKey(solvableThing.getKey())) continue;
+                valueFor.put(solvableThing.getKey(), solvableThing.getValue());
+                if (solvableThing.getValue() > 0) {
+                    //Solvable Thing has a Value. Set it in all Conversions
+                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
+                        assert use.ingredientsWithAmount != null;
+                        Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
+                        assert amount != null && amount > 0;
+                        use.value += amount * solvableThing.getValue();
+                        use.ingredientsWithAmount.remove(solvableThing.getKey());
+                        if (use.ingredientsWithAmount.size() == 0) {
+                            increaseNoDependencyConversionCountFor(use.output);
+                            lookAt.add(use.output);
+                        }
+                    }
+                } else {
+                    //Solvable thing has no Value - All Conversions using this are invalid
+                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
+                        for (T ingredient: use.ingredientsWithAmount.keySet()) {
+                            if (!ingredient.equals(solvableThing.getKey())) {
+                                getUsesFor(ingredient).remove(use);
+                            }
+                        }
+                        use.markInvalid();
+                        getConversionsFor(use.output).remove(use);
+                        lookAt.add(use.output);
+                    }
+                }
             }
+            solvableThings.clear();
+        }
+        for (Map.Entry<T,Double> fixedValueAfterInherit: fixValueAfterInherit.entrySet()) {
+            valueFor.put(fixedValueAfterInherit.getKey(),fixedValueAfterInherit.getValue());
         }
         return valueFor;
     }
