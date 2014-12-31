@@ -41,6 +41,7 @@ public class GraphMapper<T extends Comparable<T>> {
         addConversionMultiple(outnumber, output, ingredientsWithAmount, 0.0);
     }
     public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, double baseValueForConversion) {
+        ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
         //Add the Conversions to the conversionsFor and usedIn Maps:
         Conversion<T> conversion = new Conversion<T>(output, outnumber,ingredientsWithAmount);
         conversion.value = baseValueForConversion;
