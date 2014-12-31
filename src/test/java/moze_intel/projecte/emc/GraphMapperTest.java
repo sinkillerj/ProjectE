@@ -84,6 +84,21 @@ public class GraphMapperTest {
     }
 
     @org.junit.Test
+    public void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "c",  Arrays.asList("a1", "a1"));
+        graphMapper.addConversion(1, "c",  Arrays.asList("a1", "b"));
+        graphMapper.setValue("b", 20, GraphMapper.FixedValue.FixAndDoNotInherit);
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(20, getValue(values,"b"));
+        assertEquals(2, getValue(values,"c"));
+    }
+
+    @org.junit.Test
     public void testGenerateValuesSimpleSelectMinValue() throws Exception {
         GraphMapper<String> graphMapper = new GraphMapper<String>();
 
