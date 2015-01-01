@@ -55,6 +55,11 @@ public class RepairTalisman extends ItemPE implements IBauble
 					continue;
 				}
 
+				if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress) {
+					//Don't repair item that is currently used by the player.
+					continue;
+				}
+
 				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 				{
 					invStack.setItemDamage(invStack.getItemDamage() - 1);
