@@ -13,7 +13,7 @@ public class ProjectEConfigGui extends GuiConfig
      */
     public ProjectEConfigGui(GuiScreen guiScreen)
     {
-        super(guiScreen, new ConfigElement(ProjectEConfig.config.getCategory(ProjectEConfig.MISC_CATEGORY)).getChildElements(), PECore.MODID, false, false, GuiConfig.getAbridgedConfigPath(ProjectEConfig.config.toString()));
+        super(guiScreen, new ConfigElement(ProjectEConfig.config.getCategory(ProjectEConfig.MISC_CATEGORY)), PECore.MODID, false, false, GuiConfig.getAbridgedConfigPath(ProjectEConfig.config.toString()));
         this.configElements.add(new ConfigElement(ProjectEConfig.config.getCategory(ProjectEConfig.BLOCKS_CATEGORY)));
     }
 }
