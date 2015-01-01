@@ -9,29 +9,32 @@ public interface ITileEmc
 {
 	/**
 	 * Set the EMC value of the tile entity.<br>
-	 * Gets called only server-side. 
+	 * Only called on the server-side.
+	 * @param value
 	 */
 	public void setEmc(double value);
-	
+
 	/**
 	 * Add EMC to the tile entity.<br>
-	 * Gets called only server-side. 
+	 * Only called on the server-side.
+	 * @param value
 	 */
 	public void addEmc(double value);
-	
+
 	/**
 	 * Remove EMC from the tile entity.<br>
-	 * Gets called only server-side. 
+	 * Only called on the server-side.
+	 * @param value
 	 */
 	public void removeEmc(double value);
-	
+
 	/**
-	 * Should return the amount of stored EMC. 
+	 * @return The amount of EMC stored in the tile entity.
 	 */
 	public double getStoredEmc();
-	
+
 	/**
-	 * Returns whether or not the EMC buffer is full.  
+	 * @return Whether the EMC buffer is full or not.
 	 */
 	public boolean hasMaxedEmc();
 	

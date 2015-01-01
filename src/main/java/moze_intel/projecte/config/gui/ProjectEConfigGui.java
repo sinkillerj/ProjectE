@@ -8,6 +8,9 @@ import net.minecraftforge.common.config.ConfigElement;
 
 public class ProjectEConfigGui extends GuiConfig
 {
+    /**
+     * Setting up the actual Gui Screen.
+     */
     public ProjectEConfigGui(GuiScreen guiScreen)
     {
         super(guiScreen, new ConfigElement(ProjectEConfig.config.getCategory(ProjectEConfig.MISC_CATEGORY)).getChildElements(), PECore.MODID, false, false, GuiConfig.getAbridgedConfigPath(ProjectEConfig.config.toString()));
