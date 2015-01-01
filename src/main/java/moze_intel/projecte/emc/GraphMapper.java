@@ -112,14 +112,16 @@ public class GraphMapper<T extends Comparable<T>> {
                 }
                 else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
                     //The output of this usage has only Conversions with a value left: Choose minimum value
-                    double minValue = Double.POSITIVE_INFINITY;
+                    double minValue = 0;
                     for (Conversion<T> conversion: getConversionsFor(something)) {
-                        assert conversion.isValid();
-                        if (conversion.value / conversion.outnumber < minValue) {
+                        assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
+                        double thisValue = conversion.value / conversion.outnumber;
+                        assert thisValue >= 0;
+                        if (minValue == 0 || (0 < thisValue &&  thisValue < minValue)) {
                             minValue = conversion.value / conversion.outnumber;
                         }
                     }
-                    assert 0 < minValue && minValue < Double.POSITIVE_INFINITY;
+                    assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
                     assert !solvableThings.containsKey(something);
                     solvableThings.put(something, minValue);
                 }
