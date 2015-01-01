@@ -33,12 +33,13 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, guiFactory = PECore.GUIFACTORY)
 public class PECore
 {	
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
+	public static final String GUIFACTORY = "moze_intel.projecte.config.gui.ConfigGuiFactory";
 
 	public static File CONFIG_DIR;
 
