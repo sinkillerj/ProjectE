@@ -59,12 +59,14 @@ public final class EMCMapper
 					}
 
 					int totalEmc = 0;
+					int minTotalEMC = Integer.MAX_VALUE;
 					boolean toMap = true;
-
+					//Iterate over all Recipes for 'entry.getKey()'
 					A: for (RecipeInput rInput : entry.getValue())
 					{
+						totalEmc = 0;
 						toMap = true;
-
+						//Try to sum all ingredients for the current Recipe
 						B: for (Object obj : rInput)
 						{
 							SimpleStack input = null;
@@ -78,12 +80,13 @@ public final class EMCMapper
 							}
 							else
 							{
+								int minEMC = Integer.MAX_VALUE;
 								for (SimpleStack s : (ArrayList<SimpleStack>) obj)
 								{
-									if (mapContains(s))
+									if (mapContains(s) && getEmcValue(s) < minEMC)
 									{
+										minEMC = getEmcValue(s);
 										input = s;
-										break;
 									}
 								}
 							}
@@ -119,20 +122,17 @@ public final class EMCMapper
 						{
 							totalEmc = totalEmc / key.qnty;
 
-							if (totalEmc > 0)
+							if (totalEmc > 0 && totalEmc < minTotalEMC)
 							{
-								addMapping(key, totalEmc);
-								canMap = true;
-								break A;
-							}
-							else
-							{
-								toMap = false;
+								minTotalEMC = totalEmc;
 							}
 						}
 					}
+					if (minTotalEMC > 0 && minTotalEMC < Integer.MAX_VALUE) {
+						addMapping(key, minTotalEMC);
+						canMap = true;
+					}
 				}
-
 			}
 			while (canMap);
 
