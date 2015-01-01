@@ -2,10 +2,7 @@ package moze_intel.projecte.emc;
 
 import scala.Int;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -28,12 +25,12 @@ public class GraphMapperTest {
 
         graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
-        graphMapper.addConversion(1, "b2", Arrays.asList("a1","a1"));
+        graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
         Map<String,Double> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
-        assertEquals(4, getValue(values,"c4"));
+        assertEquals(4, getValue(values, "c4"));
 
     }
 
@@ -51,6 +48,22 @@ public class GraphMapperTest {
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(2, getValue(values,"c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesSimpleMultiRecipeWithEmptyAlternative() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        //2 Recipes for c4
+        graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
+        graphMapper.addConversion(1, "c4", new LinkedList<String>());
+        graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(2, getValue(values,"b2"));
+        assertEquals(4, getValue(values,"c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
     }
 
     @org.junit.Test
@@ -103,9 +116,9 @@ public class GraphMapperTest {
         GraphMapper<String> graphMapper = new GraphMapper<String>();
 
         graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("b2",2, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("b2", 2, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c", Arrays.asList("a1","a1"));
-        graphMapper.addConversion(1, "c", Arrays.asList("b2","b2"));
+        graphMapper.addConversion(1, "c", Arrays.asList("b2", "b2"));
 
         Map<String,Double> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
