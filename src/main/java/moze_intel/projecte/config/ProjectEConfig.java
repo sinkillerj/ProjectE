@@ -7,6 +7,14 @@ import java.io.File;
 
 public final class ProjectEConfig 
 {
+	/**
+	 * Control Config Variable
+	 */
+	public static Configuration config;
+
+	/**
+	 * Configurable Variables
+	 */
 	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
 	public static boolean enableDebugLog;
@@ -26,40 +34,46 @@ public final class ProjectEConfig
 	public static boolean enableTransTable;
 	public static boolean enableRedFurnace;
 	public static boolean enableDarkFurnace;
+
+	/**
+	 * Categories
+	 */
+	public static final String MISC_CATEGORY = "misc";
+	public static final String BLOCKS_CATEGORY = "blocks";
 	
 	public static void init(File configFile)
 	{
-		Configuration config = new Configuration(configFile);
+		config = new Configuration(configFile);
 		
 		try
 		{
 			config.load();
 
-			enableDebugLog = config.getBoolean("debugLogging", "misc", false, "Enable a more verbose debug logging");
-			showUnlocalizedNames = config.getBoolean("unToolTips", "misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
-			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
-			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
-			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
+			enableDebugLog = config.getBoolean("debugLogging", MISC_CATEGORY, false, "Enable a more verbose debug logging");
+			showUnlocalizedNames = config.getBoolean("unToolTips", MISC_CATEGORY, false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
+			showODNames = config.getBoolean("odToolTips", MISC_CATEGORY, false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
+			showEMCTooltip = config.getBoolean("emcToolTips", MISC_CATEGORY, true, "Show the EMC value as a tooltip on items and blocks");
+			showStatTooltip = config.getBoolean("statToolTips", MISC_CATEGORY, true, "Show stats as tooltips for various ProjectE blocks");
 
-			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe.");
+			enableAlcChest = config.getBoolean("enableAlcChest", BLOCKS_CATEGORY, true, "Enable Alchemical Chest recipe.");
 
-			enableITorch = config.getBoolean("enableITorch", "blocks", true, "Enable Interdiction Torch recipe.");
+			enableITorch = config.getBoolean("enableITorch", BLOCKS_CATEGORY, true, "Enable Interdiction Torch recipe.");
 
-			enableCollector = config.getBoolean("enableCollector", "blocks", true, "Enable Energy Collector MK1 recipe.");
-			enableCollector2 = config.getBoolean("enableCollector2", "blocks", true, "Enable Energy Collector MK2 recipe.");
-			enableCollector3 = config.getBoolean("enableCollector3", "blocks", true, "Enable Energy Collector MK3 recipe.");
+			enableCollector = config.getBoolean("enableCollector", BLOCKS_CATEGORY, true, "Enable Energy Collector MK1 recipe.");
+			enableCollector2 = config.getBoolean("enableCollector2", BLOCKS_CATEGORY, true, "Enable Energy Collector MK2 recipe.");
+			enableCollector3 = config.getBoolean("enableCollector3", BLOCKS_CATEGORY, true, "Enable Energy Collector MK3 recipe.");
 
-			enableCondenser = config.getBoolean("enableCondenser", "blocks", true, "Enable Energy Condenser recipe.");
-			enableCondenser2 = config.getBoolean("enableCondenser2", "blocks", true, "Enable Energy Condenser MK2 recipe.");
+			enableCondenser = config.getBoolean("enableCondenser", BLOCKS_CATEGORY, true, "Enable Energy Condenser recipe.");
+			enableCondenser2 = config.getBoolean("enableCondenser2", BLOCKS_CATEGORY, true, "Enable Energy Condenser MK2 recipe.");
 
-			enableRelay = config.getBoolean("enableRelay", "blocks", true, "Enable AntiMatter Relay MK1 recipe.");
-			enableRelay2 = config.getBoolean("enableRelay2", "blocks", true, "Enable AntiMatter Relay MK2 recipe.");
-			enableRelay3 = config.getBoolean("enableRelay3", "blocks", true, "Enable AntiMatter Relay MK3 recipe.");
+			enableRelay = config.getBoolean("enableRelay", BLOCKS_CATEGORY, true, "Enable AntiMatter Relay MK1 recipe.");
+			enableRelay2 = config.getBoolean("enableRelay2", BLOCKS_CATEGORY, true, "Enable AntiMatter Relay MK2 recipe.");
+			enableRelay3 = config.getBoolean("enableRelay3", BLOCKS_CATEGORY, true, "Enable AntiMatter Relay MK3 recipe.");
 
-			enableTransTable = config.getBoolean("enableTransTable", "blocks", true, "Enable Transmutation Table recipe.");
+			enableTransTable = config.getBoolean("enableTransTable", BLOCKS_CATEGORY, true, "Enable Transmutation Table recipe.");
 
-			enableRedFurnace = config.getBoolean("enableRedFurnace", "blocks", true, "Enable Red Matter Furnace recipe.");
-			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe.");
+			enableRedFurnace = config.getBoolean("enableRedFurnace", BLOCKS_CATEGORY, true, "Enable Red Matter Furnace recipe.");
+			enableDarkFurnace = config.getBoolean("enableDarkFurnace", BLOCKS_CATEGORY, true, "Enable Dark Matter Furnace recipe.");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}

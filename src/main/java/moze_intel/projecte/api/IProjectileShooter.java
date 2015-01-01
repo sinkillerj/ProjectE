@@ -10,7 +10,9 @@ public interface IProjectileShooter
 {
 	/**
 	 * Called when the player presses the 'R' button.
-	 * @return If the projectile was actually fired
+	 * @param player
+	 * @param stack
+	 * @return If the projectile was fired
 	 */
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack);
 }

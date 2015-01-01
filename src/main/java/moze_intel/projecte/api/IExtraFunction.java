@@ -8,6 +8,10 @@ import net.minecraft.item.ItemStack;
  */
 public interface IExtraFunction 
 {
-	//Called when the player presses the 'G' button
+	/**
+	 * Called when the player presses the 'G' button
+	 * @param stack
+	 * @param player
+	 */
 	public void doExtraFunction(ItemStack stack, EntityPlayer player);
 }
