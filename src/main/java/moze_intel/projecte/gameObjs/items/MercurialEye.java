@@ -26,6 +26,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	public MercurialEye()
 	{
 		super("mercurial_eye", (byte) 4, new String[] {"Normal", "Transmutation"});
+		this.setNoRepair();
 	}
 	
 	@Override

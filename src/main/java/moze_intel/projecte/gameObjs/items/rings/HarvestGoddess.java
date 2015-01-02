@@ -22,6 +22,7 @@ public class HarvestGoddess extends RingToggle
 	public HarvestGoddess() 
 	{
 		super("harvest_god");
+		this.setNoRepair();
 	}
 	
 	@Override

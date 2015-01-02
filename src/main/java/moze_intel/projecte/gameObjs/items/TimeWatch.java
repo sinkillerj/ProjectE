@@ -35,6 +35,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	public TimeWatch() 
 	{
 		super("time_watch", (byte) 3);
+		this.setNoRepair();
 	}
 
 	@Override

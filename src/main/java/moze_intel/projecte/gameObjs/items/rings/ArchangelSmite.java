@@ -15,6 +15,7 @@ public class ArchangelSmite extends ItemPE
 	{
 		this.setUnlocalizedName("archangel_smite");
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 	
 	@Override

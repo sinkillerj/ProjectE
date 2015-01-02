@@ -34,6 +34,7 @@ public class RedShears extends ItemCharge
 	public RedShears()
 	{
 		super("rm_shears", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

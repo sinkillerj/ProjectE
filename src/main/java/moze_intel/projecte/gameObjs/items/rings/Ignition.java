@@ -16,6 +16,7 @@ public class Ignition extends RingToggle implements IBauble
 	public Ignition()
 	{
 		super("ignition");
+		this.setNoRepair();
 	}
 	
 	@Override

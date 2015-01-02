@@ -30,6 +30,7 @@ public class RedShovel extends ItemCharge
 	public RedShovel() 
 	{
 		super("rm_shovel", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

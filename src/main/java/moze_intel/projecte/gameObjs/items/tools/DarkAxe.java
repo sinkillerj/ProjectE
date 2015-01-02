@@ -26,6 +26,7 @@ public class DarkAxe extends ItemCharge
 	public DarkAxe()
 	{
 		super("dm_axe", (byte) 3);
+		this.setNoRepair();
 	}
 	
 	@Override

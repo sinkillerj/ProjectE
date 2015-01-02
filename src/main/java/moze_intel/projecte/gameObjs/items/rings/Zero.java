@@ -31,6 +31,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	{
 		super("zero_ring", (byte) 4);
 		this.setContainerItem(this);
+		this.setNoRepair();
 	}
 	
 	@Override

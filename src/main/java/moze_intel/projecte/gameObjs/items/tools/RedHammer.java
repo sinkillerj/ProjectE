@@ -32,6 +32,7 @@ public class RedHammer extends ItemCharge
 	public RedHammer() 
 	{
 		super("rm_hammer", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override

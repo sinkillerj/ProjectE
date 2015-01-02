@@ -32,8 +32,9 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	public CataliticLens() 
 	{
 		super("catalitic_lens",new int[]{1,16,32,64});
+		this.setNoRepair();
 	}
-	
+
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
 	{

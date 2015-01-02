@@ -34,6 +34,7 @@ public class DestructionCatalyst extends ItemCharge
 	protected DestructionCatalyst(String unlocalName, int[] numRowsForCharge) {
 		super(unlocalName, (byte)numRowsForCharge.length);
 		this.numRowsForCharge = numRowsForCharge;
+		this.setNoRepair();
 	}
 	
 	@Override
