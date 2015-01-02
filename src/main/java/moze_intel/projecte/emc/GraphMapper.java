@@ -105,61 +105,63 @@ public class GraphMapper<T extends Comparable<T>> {
 
 
         Set<T> lookAt = new HashSet<T>(conversionsFor.keySet());
-        while(true) {
-            for (T something: lookAt) {
-                if (getConversionsFor(something).size() == 0) {
-                    solvableThings.put(something, 0.0);
-                }
-                else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
-                    //The output of this usage has only Conversions with a value left: Choose minimum value
-                    double minValue = 0;
-                    for (Conversion<T> conversion: getConversionsFor(something)) {
-                        assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
-                        double thisValue = conversion.value / conversion.outnumber;
-                        assert thisValue >= 0;
-                        if (minValue == 0 || (0 < thisValue &&  thisValue < minValue)) {
-                            minValue = conversion.value / conversion.outnumber;
+        while(!solvableThings.isEmpty() || !lookAt.isEmpty()) {
+            while (true) {
+                for (T something : lookAt) {
+                    if (getConversionsFor(something).size() == 0) {
+                        solvableThings.put(something, 0.0);
+                    } else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
+                        //The output of this usage has only Conversions with a value left: Choose minimum value
+                        double minValue = 0;
+                        for (Conversion<T> conversion : getConversionsFor(something)) {
+                            assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
+                            double thisValue = conversion.value / conversion.outnumber;
+                            assert thisValue >= 0;
+                            if (minValue == 0 || (0 < thisValue && thisValue < minValue)) {
+                                minValue = conversion.value / conversion.outnumber;
+                            }
                         }
+                        assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
+                        assert !solvableThings.containsKey(something);
+                        solvableThings.put(something, minValue);
                     }
-                    assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
-                    assert !solvableThings.containsKey(something);
-                    solvableThings.put(something, minValue);
                 }
-            }
-            lookAt.clear();
-            if (solvableThings.isEmpty()) break;
+                lookAt.clear();
+                if (solvableThings.isEmpty()) break;
 
-            for (Map.Entry<T,Double> solvableThing: solvableThings.entrySet()) {
-                if (valueFor.containsKey(solvableThing.getKey())) continue;
-                valueFor.put(solvableThing.getKey(), solvableThing.getValue());
-                if (solvableThing.getValue() > 0) {
-                    //Solvable Thing has a Value. Set it in all Conversions
-                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
-                        assert use.ingredientsWithAmount != null;
-                        Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
-                        assert amount != null && amount > 0;
-                        use.value += amount * solvableThing.getValue();
-                        use.ingredientsWithAmount.remove(solvableThing.getKey());
-                        if (use.ingredientsWithAmount.size() == 0) {
-                            increaseNoDependencyConversionCountFor(use.output);
+                for (Map.Entry<T, Double> solvableThing : solvableThings.entrySet()) {
+                    if (valueFor.containsKey(solvableThing.getKey())) continue;
+                    valueFor.put(solvableThing.getKey(), solvableThing.getValue());
+                    if (solvableThing.getValue() > 0) {
+                        //Solvable Thing has a Value. Set it in all Conversions
+                        for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
+                            assert use.ingredientsWithAmount != null;
+                            Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
+                            assert amount != null && amount > 0;
+                            use.value += amount * solvableThing.getValue();
+                            use.ingredientsWithAmount.remove(solvableThing.getKey());
+                            if (use.ingredientsWithAmount.size() == 0) {
+                                increaseNoDependencyConversionCountFor(use.output);
+                                lookAt.add(use.output);
+                            }
+                        }
+                    } else {
+                        //Solvable thing has no Value - All Conversions using this are invalid
+                        for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
+                            for (T ingredient : use.ingredientsWithAmount.keySet()) {
+                                if (!ingredient.equals(solvableThing.getKey())) {
+                                    getUsesFor(ingredient).remove(use);
+                                }
+                            }
+                            use.markInvalid();
+                            getConversionsFor(use.output).remove(use);
                             lookAt.add(use.output);
                         }
                     }
-                } else {
-                    //Solvable thing has no Value - All Conversions using this are invalid
-                    for (Conversion<T> use: getUsesFor(solvableThing.getKey())) {
-                        for (T ingredient: use.ingredientsWithAmount.keySet()) {
-                            if (!ingredient.equals(solvableThing.getKey())) {
-                                getUsesFor(ingredient).remove(use);
-                            }
-                        }
-                        use.markInvalid();
-                        getConversionsFor(use.output).remove(use);
-                        lookAt.add(use.output);
-                    }
                 }
+                solvableThings.clear();
             }
-            solvableThings.clear();
+            //TODO add to solvableThings and lookat for Cycle Recipes.
         }
         for (Map.Entry<T,Double> fixedValueAfterInherit: fixValueAfterInherit.entrySet()) {
             valueFor.put(fixedValueAfterInherit.getKey(),fixedValueAfterInherit.getValue());
