@@ -161,7 +161,23 @@ public class GraphMapper<T extends Comparable<T>> {
                 }
                 solvableThings.clear();
             }
-            //TODO add to solvableThings and lookat for Cycle Recipes.
+            //Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion
+            for (Map.Entry<T,List<Conversion<T>>> entry:conversionsFor.entrySet()) {
+                if (getNoDependencyConversionCountFor(entry.getKey()) == 0) {
+                    //Thing has no noDepencencyConversion => ignore this
+                    continue;
+                }
+                //=> noDependencyConversionCount > 0
+                Iterator<Conversion<T>> iterator = entry.getValue().iterator();
+                while (iterator.hasNext()) {
+                    Conversion<T> conversion = iterator.next();
+                    if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
+                        //Conversion has ingredients left and there are other conversions without ingredients
+                        iterator.remove();
+                        lookAt.add(entry.getKey());
+                    }
+                }
+            }
         }
         for (Map.Entry<T,Double> fixedValueAfterInherit: fixValueAfterInherit.entrySet()) {
             valueFor.put(fixedValueAfterInherit.getKey(),fixedValueAfterInherit.getValue());
