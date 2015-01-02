@@ -169,8 +169,6 @@ public class GraphMapper<T extends Comparable<T>> {
 
     protected static class Conversion<T> {
         T output;
-        FixedValue type = FixedValue.SuggestionAndInherit;
-        double fixedValue;
 
         int outnumber = 1;
         double value = 0;
@@ -182,19 +180,6 @@ public class GraphMapper<T extends Comparable<T>> {
             this(output);
             this.outnumber = outnumber;
             this.ingredientsWithAmount = ingredientsWithAmount;
-        }
-        public Conversion(T output, double setValue, FixedValue type) {
-            this(output);
-            if (setValue < 0) setValue = 0;
-            this.type = type;
-            this.fixedValue = setValue;
-            if (type != FixedValue.FixAfterInherit) {
-                this.value = setValue;
-            }
-        }
-
-        public boolean isValid() {
-            return this.value > 0 && (this.ingredientsWithAmount == null || this.ingredientsWithAmount.size() == 0);
         }
 
         public void markInvalid() {
