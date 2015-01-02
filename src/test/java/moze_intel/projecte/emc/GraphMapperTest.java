@@ -291,6 +291,107 @@ public class GraphMapperTest {
         assertEquals(1, getValue(values,"cycle-5"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesFuelAndMatter() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        final String coal = "coal";
+        final String aCoal = "alchemicalCoal";
+        final String aCoalBlock = "alchemicalCoalBlock";
+        final String mFuel = "mobiusFuel";
+        final String mFuelBlock = "mobiusFuelBlock";
+        final String aFuel = "aeternalisFuel";
+        final String aFuelBlock = "aeternalisFuelBlock";
+        String repeat;
+
+        graphMapper.setValue(coal, 128, GraphMapper.FixedValue.FixAndInherit);
+
+        graphMapper.addConversion(1, aCoal, Arrays.asList(coal, coal, coal, coal));
+        graphMapper.addConversion(4, aCoal , Arrays.asList(mFuel));
+        graphMapper.addConversion(9, aCoal, Arrays.asList(aCoalBlock));
+         repeat=aCoal;
+        graphMapper.addConversion(1, aCoalBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
+
+        graphMapper.addConversion(1, mFuel, Arrays.asList(aCoal, aCoal, aCoal, aCoal));
+        graphMapper.addConversion(4, mFuel , Arrays.asList(aFuel));
+        graphMapper.addConversion(9, mFuel, Arrays.asList(mFuelBlock));
+        repeat=mFuel;
+        graphMapper.addConversion(1, mFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
+
+        graphMapper.addConversion(1, aFuel, Arrays.asList(mFuel, mFuel, mFuel, mFuel));
+        graphMapper.addConversion(9, aFuel, Arrays.asList(aFuelBlock));
+        repeat=aFuel;
+        graphMapper.addConversion(1, aFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
+
+        graphMapper.setValue("diamondBlock", 73728, GraphMapper.FixedValue.FixAndInherit);
+        final String dMatter = "darkMatter";
+        final String dMatterBlock = "darkMatterBlock";
+
+        graphMapper.addConversion(1, dMatter, Arrays.asList(aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, "diamondBlock"));
+        graphMapper.addConversion(1, dMatter, Arrays.asList(dMatterBlock));
+        graphMapper.addConversion(4, dMatterBlock, Arrays.asList(dMatter, dMatter, dMatter, dMatter));
+
+        final String rMatter = "redMatter";
+        final String rMatterBlock = "redMatterBlock";
+        graphMapper.addConversion(1, rMatter, Arrays.asList(aFuel, aFuel, aFuel, dMatter, dMatter, dMatter, aFuel, aFuel, aFuel));
+        graphMapper.addConversion(1, rMatter, Arrays.asList(rMatterBlock));
+        graphMapper.addConversion(4, rMatterBlock, Arrays.asList(rMatter, rMatter, rMatter, rMatter));
+
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(128, getValue(values,coal));
+        assertEquals(512, getValue(values,aCoal));
+        assertEquals(4608, getValue(values,aCoalBlock));
+        assertEquals(2048, getValue(values,mFuel));
+        assertEquals(18432, getValue(values,mFuelBlock));
+        assertEquals(8192, getValue(values,aFuel));
+        assertEquals(73728, getValue(values,aFuelBlock));
+        assertEquals(73728, getValue(values,"diaondBlock"));
+        assertEquals(139264, getValue(values, dMatter));
+        assertEquals(139264, getValue(values, dMatterBlock));
+        assertEquals(466944, getValue(values, rMatter));
+        assertEquals(466944, getValue(values, rMatterBlock));
+    }
+
+    @org.junit.Test
+    public void testGenerateValuesWool() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+
+        final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
+        final int[] dyeValue = new int[] {864, 176, 48, 16};
+        for (int i = 0; i < dyes.length; i++) {
+            graphMapper.setValue("dye"+dyes[i], dyeValue[i], GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.addConversion(1, "wool" + dyes[i], Arrays.asList("woolWhite", "dye"+dyes[i]));
+        }
+        graphMapper.setValue("string", 12, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "woolWhite", Arrays.asList("string", "string", "string", "string"));
+
+        graphMapper.setValue("stick", 4, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("plank", 8, GraphMapper.FixedValue.FixAndInherit);
+        for (String dye: dyes) {
+            graphMapper.addConversion(1,"bed", Arrays.asList("plank","plank","plank", "wool"+dye,"wool"+dye,"wool"+dye));
+            graphMapper.addConversion(3,"carpet"+dye, Arrays.asList("wool"+dye,"wool"+dye));
+            graphMapper.addConversion(1,"painting", Arrays.asList("wool"+dye, "stick","stick","stick","stick","stick","stick","stick","stick"));
+        }
+
+        Map<String,Double> values = graphMapper.generateValues();
+        for (int i = 0; i < dyes.length; i++) {
+            assertEquals(dyeValue[i], getValue(values,"dye"+dyes[i]));
+        }
+        assertEquals(12, getValue(values,"string"));
+        assertEquals(48, getValue(values,"woolWhite"));
+        assertEquals(176, getValue(values,"woolBrown"));
+        assertEquals(912, getValue(values,"woolBlue"));
+        assertEquals(64, getValue(values,"woolOther"));
+
+        assertEquals(32, getValue(values,"carpetWhite"));
+        assertEquals(117, getValue(values,"carpetBrown"));
+        assertEquals(608, getValue(values,"carpetBlue"));
+        assertEquals(42, getValue(values,"carpetOther"));
+
+        assertEquals(168, getValue(values,"bed"));
+        assertEquals(80, getValue(values,"painting"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;
