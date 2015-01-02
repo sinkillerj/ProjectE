@@ -38,9 +38,9 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	
 	@Override
 	public Item getItemDropped(int par1, Random random, int par2)
-    {
+	{
 		return Item.getItemFromBlock(ObjHandler.transmuteStone);
-    }
+	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
@@ -74,20 +74,20 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	
 	@Override
 	public boolean isOpaqueCube()
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 	
 	@Override
 	public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
 	{
-        TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		
 		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
@@ -101,7 +101,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		if (side < 2)
 		{
@@ -112,12 +112,12 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register)
-    {
+	public void registerBlockIcons(IIconRegister register)
+	{
 		icon = new IIcon[3];
 		icon[0] = register.registerIcon("projecte:transmutation_stone/bottom");
 		icon[1] = register.registerIcon("projecte:transmutation_stone/top");
 		icon[2] = register.registerIcon("projecte:transmutation_stone/side");
-    }
+	}
 
 }

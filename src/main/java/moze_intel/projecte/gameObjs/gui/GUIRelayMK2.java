@@ -20,7 +20,7 @@ public class GUIRelayMK2 extends GuiContainer
 		super(new RelayMK2Container(invPlayer, tile));
 		this.tile = tile;
 		this.xSize = 193;
-	    this.ySize = 182;
+		this.ySize = 182;
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class GUIRelayMK2 extends GuiContainer
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		
 		int x = (width - xSize) / 2;
-	    int y = (height - ySize) / 2;
+		int y = (height - ySize) / 2;
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

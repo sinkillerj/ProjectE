@@ -15,12 +15,12 @@ public class SlotCollectorInv extends Slot
 	
 	@Override
 	public boolean isItemValid(ItemStack stack)
-    {
+	{
 		if (stack == null)
 		{
 			return false;
 		}
 		
-        return stack.getItem().equals(ObjHandler.kleinStars) || (FuelMapper.isStackFuel(stack) && !FuelMapper.isStackMaxFuel(stack));
-    }
+		return stack.getItem().equals(ObjHandler.kleinStars) || (FuelMapper.isStackFuel(stack) && !FuelMapper.isStackMaxFuel(stack));
+	}
 }

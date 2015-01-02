@@ -58,14 +58,14 @@ public class EntityLensProjectile extends EntityThrowable
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)
-    {
+	{
 		super.writeEntityToNBT(nbt);
 		nbt.setByte("Charge", charge);
-    }
+	}
 	
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
-    	super.readEntityFromNBT(nbt);
-    	charge = nbt.getByte("Charge");
-    }
+	public void readEntityFromNBT(NBTTagCompound nbt)
+	{
+		super.readEntityFromNBT(nbt);
+		charge = nbt.getByte("Charge");
+	}
 }

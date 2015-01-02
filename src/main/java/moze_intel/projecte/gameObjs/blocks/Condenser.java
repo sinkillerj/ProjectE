@@ -29,15 +29,15 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	
 	@Override
 	public Item getItemDropped(int par1, Random random, int par2)
-    {
+	{
 		return Item.getItemFromBlock(ObjHandler.condenser);
-    }
+	}
 	
 	@Override
-    public int getRenderType()
-    {
-        return Constants.CONDENSER_RENDER_ID;
-    }
+	public int getRenderType()
+	{
+		return Constants.CONDENSER_RENDER_ID;
+	}
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
@@ -56,36 +56,36 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 		return true;
 	}
 
-    @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
-    {
-        IInventory tile = (IInventory) world.getTileEntity(x, y, z);
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	{
+		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
 
-        if (tile == null)
-        {
-            return;
-        }
+		if (tile == null)
+		{
+			return;
+		}
 
-        for (int i = 1; i < tile.getSizeInventory(); i++)
-        {
-            ItemStack stack = tile.getStackInSlot(i);
+		for (int i = 1; i < tile.getSizeInventory(); i++)
+		{
+			ItemStack stack = tile.getStackInSlot(i);
 
-            if (stack == null)
-            {
-                continue;
-            }
+			if (stack == null)
+			{
+				continue;
+			}
 
-            Utils.spawnEntityItem(world, stack, x, y, z);
-        }
+			Utils.spawnEntityItem(world, stack, x, y, z);
+		}
 
-        world.func_147453_f(x, y, z, block);
-        world.removeTileEntity(x, y, z);
-    }
+		world.func_147453_f(x, y, z, block);
+		world.removeTileEntity(x, y, z);
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register)
-    {
+	public void registerBlockIcons(IIconRegister register)
+	{
 		this.blockIcon = register.registerIcon("obsidian");
-    }
+	}
 }

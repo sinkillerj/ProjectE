@@ -41,7 +41,7 @@ public class GUICollectorMK1 extends GuiContainer
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		
 		int x = (width - xSize) / 2;
-	    int y = (height - ySize) / 2;
+		int y = (height - ySize) / 2;
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

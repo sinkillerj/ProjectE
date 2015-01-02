@@ -25,8 +25,8 @@ public class AlchChestContainer extends Container
 		
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
-			  for(int j = 0; j < 9; j++)
-			        this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 152 + i * 18));
+			for(int j = 0; j < 9; j++)
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 152 + i * 18));
 		
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)

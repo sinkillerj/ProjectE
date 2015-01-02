@@ -80,25 +80,25 @@ public class EntityLavaProjectile extends EntityThrowable
 	protected void onImpact(MovingObjectPosition mop) 
 	{
 		if (this.worldObj.isRemote)
-        {
-            return;
-        }
+		{
+			return;
+		}
 
-        if (mop.typeOfHit == MovingObjectType.BLOCK)
-        {
-            ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
+		if (mop.typeOfHit == MovingObjectType.BLOCK)
+		{
+			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 
-            this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava);
-            this.setDead();
-        }
-        else if (mop.typeOfHit == MovingObjectType.ENTITY)
-        {
-            Entity ent = mop.entityHit;
+			this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava);
+			this.setDead();
+		}
+		else if (mop.typeOfHit == MovingObjectType.ENTITY)
+		{
+			Entity ent = mop.entityHit;
 
-            ent.setFire(5);
-            ent.attackEntityFrom(DamageSource.inFire, 5);
+			ent.setFire(5);
+			ent.attackEntityFrom(DamageSource.inFire, 5);
 
-            this.setDead();
-        }
+			this.setDead();
+		}
 	}
 }

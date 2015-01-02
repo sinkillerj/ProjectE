@@ -16,9 +16,9 @@ public class SlotMercurialTarget extends Slot
 	
 	@Override
 	public int getSlotStackLimit()
-    {
-        return 1;
-    }
+	{
+		return 1;
+	}
 	
 	@Override
 	public boolean isItemValid(ItemStack stack)

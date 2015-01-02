@@ -55,31 +55,31 @@ public class Collector extends BlockDirection
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
 	{
 		int orientation = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		
 		if (orientation == 0)
 		{
-            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		}
 
-        if (orientation == 1)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-        }
+		if (orientation == 1)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		}
 
-        if (orientation == 2)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-        }
+		if (orientation == 2)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		}
 
-        if (orientation == 3)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-        }
-        
-        TileEntity tile = world.getTileEntity(x, y, z);
+		if (orientation == 3)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		}
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
 		
 		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
@@ -102,7 +102,7 @@ public class Collector extends BlockDirection
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		if (meta == 0 && side == 3) 
 		{

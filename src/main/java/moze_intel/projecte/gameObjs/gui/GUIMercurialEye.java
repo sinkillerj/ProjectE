@@ -19,8 +19,8 @@ public class GUIMercurialEye extends GuiContainer
 	{
 		super(new MercurialEyeContainer(invPlayer, inventory));
 		this.xSize = 171;
-	    this.ySize = 134;
-	    this.inventory = inventory;
+		this.ySize = 134;
+		this.inventory = inventory;
 	}
 	
 	@Override

@@ -32,9 +32,9 @@ public class RecipesCovalenceRepair implements IRecipe
 			ItemStack input = inv.getStackInSlot(i);
 			
 			if (input == null)
-            {
-                continue;
-            }
+			{
+				continue;
+			}
 			
 			if (isItemRepairable(input))
 			{
@@ -44,9 +44,9 @@ public class RecipesCovalenceRepair implements IRecipe
 					foundItem = true;
 				}
 				else
-                {
-                    return false;
-                }
+				{
+					return false;
+				}
 			}
 			else if (input.getItem() == ObjHandler.covalence)
 			{
@@ -56,21 +56,21 @@ public class RecipesCovalenceRepair implements IRecipe
 					dustCounter++;
 				}
 				else
-                {
-                    return false;
-                }
+				{
+					return false;
+				}
 			}
 		}
 		
 		if (tool == null || !foundItem || dustCounter == 0)
-        {
-            return false;
-        }
+		{
+			return false;
+		}
 
 		if (dustCounter < 3)
-        {
-            return false;
-        }
+		{
+			return false;
+		}
 		
 		int dustDamage = getDustType(tool);
 		
@@ -79,14 +79,14 @@ public class RecipesCovalenceRepair implements IRecipe
 			ItemStack stack = dust[i];
 
 			if (stack == null)
-            {
-                return false;
-            }
+			{
+				return false;
+			}
 
 			if (stack.getItemDamage() < dustDamage)
-            {
-                return false;
-            }
+			{
+				return false;
+			}
 		}
 		
 		output = tool.copy();
@@ -98,21 +98,21 @@ public class RecipesCovalenceRepair implements IRecipe
 	private boolean isItemRepairable(ItemStack stack)
 	{
 		if (stack.getHasSubtypes())
-        {
-            return false;
-        }
+		{
+			return false;
+		}
 
 		if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0)
-        {
-            return false;
-        }
+		{
+			return false;
+		}
 		
 		Item item = stack.getItem();
 
 		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel || item instanceof ItemFishingRod || item instanceof ItemBow)
-        {
-            return true;
-        }
+		{
+			return true;
+		}
 
 		return (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor);
 	}
@@ -122,45 +122,45 @@ public class RecipesCovalenceRepair implements IRecipe
 		Item item = stack.getItem();
 		
 		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel)
-        {
-            return 1;
-        }
+		{
+			return 1;
+		}
 
 		if (item instanceof ItemBow || item instanceof ItemFishingRod)
-        {
-            return 0;
-        }
+		{
+			return 0;
+		}
 		
 		String name = "";
 		
 		if (item instanceof ItemTool)
-        {
-            name = ((ItemTool) item).getToolMaterialName();
-        }
+		{
+			name = ((ItemTool) item).getToolMaterialName();
+		}
 		else if (item instanceof ItemSword)
-        {
-            name = ((ItemSword) item).getToolMaterialName();
-        }
+		{
+			name = ((ItemSword) item).getToolMaterialName();
+		}
 		else if (item instanceof ItemHoe)
-        {
-            name = ((ItemHoe) item).getToolMaterialName();
-        }
+		{
+			name = ((ItemHoe) item).getToolMaterialName();
+		}
 		else if (item instanceof ItemArmor)
-        {
-            name = ((ItemArmor) item).getArmorMaterial().toString();
-        }
+		{
+			name = ((ItemArmor) item).getArmorMaterial().toString();
+		}
 		
 		if (name.equals("WOOD") || name.equals("STONE") || name.equals("CLOTH"))
-        {
-            return 0;
-        }
+		{
+			return 0;
+		}
 
 		if (name.equals("IRON") || name.equals("GOLD") || name.equals("CHAIN"))
-        {
-            return 1;
-        }
+		{
+			return 1;
+		}
 
-        return 2;
+		return 2;
 	}
 	
 	@Override

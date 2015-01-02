@@ -32,10 +32,10 @@ public final class RecipeMapper
 
 			SimpleStack outStack = new SimpleStack(output);
 
-            if (!outStack.isValid())
-            {
-                continue;
-            }
+			if (!outStack.isValid())
+			{
+				continue;
+			}
 
 			List<Object> inputs = new ArrayList<Object>();
 
@@ -58,7 +58,7 @@ public final class RecipeMapper
 
 					if (obj instanceof ItemStack)
 					{
-                        inputs.add(obj);
+						inputs.add(obj);
 					}
 					else if (obj instanceof ArrayList)
 					{
@@ -79,13 +79,13 @@ public final class RecipeMapper
 						continue;
 					}
 
-                    if (obj instanceof ItemStack)
+					if (obj instanceof ItemStack)
 					{
-                        inputs.add(obj);
+						inputs.add(obj);
 					}
 					else if (obj instanceof ArrayList)
 					{
-                        inputs.add(obj);
+						inputs.add(obj);
 					}
 					else
 					{
@@ -105,50 +105,55 @@ public final class RecipeMapper
 						continue;
 					}
 
-                    if (obj instanceof  ItemStack)
-                    {
-                        ItemStack stack = ((ItemStack) obj).copy();
+					if (obj instanceof ItemStack)
+					{
+						try {
+							ItemStack stack = ((ItemStack) obj).copy();
 
-                        if (stack == null)
-                        {
-                            continue;
-                        }
+							if (stack == null)
+							{
+								continue;
+							}
 
-                        if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-                        {
-                            stack.setItemDamage(0);
-                        }
+							if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+							{
+								stack.setItemDamage(0);
+							}
 
-                        if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
-                        {
-                            rInput.addToInputs(stack);
-                        }
-                    }
-                    else
-                    {
-                        ArrayList<ItemStack> listCopy = new ArrayList<ItemStack>();
+							if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+							{
+								rInput.addToInputs(stack);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-                        for (ItemStack stack : (ArrayList<ItemStack>) obj)
-                        {
-                            if (stack == null)
-                            {
-                                continue;
-                            }
+					}
+					else
+					{
+						ArrayList<ItemStack> listCopy = new ArrayList<ItemStack>();
 
-                            if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-                            {
-                                ItemStack copy = stack.copy();
-                                copy.setItemDamage(0);
-                                listCopy.add(copy);
-                            }
-                            else
-                            {
-                                listCopy.add(stack);
-                            }
-                        }
+						for (ItemStack stack : (ArrayList<ItemStack>) obj)
+						{
+							if (stack == null)
+							{
+								continue;
+							}
 
-                        rInput.addToInput(listCopy);
-                    }
+							if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+							{
+								ItemStack copy = stack.copy();
+								copy.setItemDamage(0);
+								listCopy.add(copy);
+							}
+							else
+							{
+								listCopy.add(stack);
+							}
+						}
+
+						rInput.addToInput(listCopy);
+					}
 				}
 
 				LinkedList<RecipeInput> currentInputs;

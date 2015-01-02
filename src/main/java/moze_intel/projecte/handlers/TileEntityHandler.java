@@ -12,68 +12,68 @@ import java.util.List;
 
 public class TileEntityHandler
 {
-    private static final List<Coordinates> CONDENSERS = new ArrayList<Coordinates>();
+	private static final List<Coordinates> CONDENSERS = new ArrayList<Coordinates>();
 
-    public static void addCondenser(CondenserTile tile)
-    {
-        Coordinates coords = new Coordinates(tile);
+	public static void addCondenser(CondenserTile tile)
+	{
+		Coordinates coords = new Coordinates(tile);
 
-        if (!CONDENSERS.contains(coords))
-        {
-            PELogger.logDebug("Added condenser at coords: " + coords);
-            CONDENSERS.add(coords);
-        }
-    }
+		if (!CONDENSERS.contains(coords))
+		{
+			PELogger.logDebug("Added condenser at coords: " + coords);
+			CONDENSERS.add(coords);
+		}
+	}
 
-    public static void removeCondenser(CondenserTile tile)
-    {
-        Coordinates coords = new Coordinates(tile);
+	public static void removeCondenser(CondenserTile tile)
+	{
+		Coordinates coords = new Coordinates(tile);
 
-        if (CONDENSERS.contains(coords))
-        {
-            Iterator<Coordinates> iter = CONDENSERS.iterator();
+		if (CONDENSERS.contains(coords))
+		{
+			Iterator<Coordinates> iter = CONDENSERS.iterator();
 
-            while (iter.hasNext())
-            {
-                if (iter.next().equals(coords))
-                {
-                    iter.remove();
-                    PELogger.logDebug("Condenser at " + coords + " has been removed.");
-                    return;
-                }
-            }
-        }
-        else
-        {
-            PELogger.logFatal("Condenser at coordinates: " + coords + " hasn't been mapped!");
-        }
-    }
+			while (iter.hasNext())
+			{
+				if (iter.next().equals(coords))
+				{
+					iter.remove();
+					PELogger.logDebug("Condenser at " + coords + " has been removed.");
+					return;
+				}
+			}
+		}
+		else
+		{
+			PELogger.logFatal("Condenser at coordinates: " + coords + " hasn't been mapped!");
+		}
+	}
 
-    public static void checkAllCondensers(World world)
-    {
-        Iterator<Coordinates> iter = CONDENSERS.iterator();
+	public static void checkAllCondensers(World world)
+	{
+		Iterator<Coordinates> iter = CONDENSERS.iterator();
 
-        while (iter.hasNext())
-        {
-            Coordinates coords = iter.next();
+		while (iter.hasNext())
+		{
+			Coordinates coords = iter.next();
 
-            TileEntity tile = world.getTileEntity(coords.x, coords.y, coords.z);
+			TileEntity tile = world.getTileEntity(coords.x, coords.y, coords.z);
 
-            if (tile instanceof CondenserTile)
-            {
-                ((CondenserTile) tile).checkLockAndUpdate();
-            }
-            else
-            {
-                PELogger.logFatal("Condenser not found at coordinates: " + coords);
-                iter.remove();
-            }
-        }
-    }
+			if (tile instanceof CondenserTile)
+			{
+				((CondenserTile) tile).checkLockAndUpdate();
+			}
+			else
+			{
+				PELogger.logFatal("Condenser not found at coordinates: " + coords);
+				iter.remove();
+			}
+		}
+	}
 
-    public static void clearAll()
-    {
-        CONDENSERS.clear();
-    }
+	public static void clearAll()
+	{
+		CONDENSERS.clear();
+	}
 }
 

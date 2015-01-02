@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
  */
 public interface IModeChanger 
 {
-    public byte getMode(ItemStack stack);
+	public byte getMode(ItemStack stack);
 
-    //Called when the player presses the 'M' buton
+	//Called when the player presses the 'M' buton
 	public void changeMode(EntityPlayer player, ItemStack stack);
 }

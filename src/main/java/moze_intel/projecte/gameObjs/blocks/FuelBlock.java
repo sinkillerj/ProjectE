@@ -29,13 +29,13 @@ public class FuelBlock extends Block
 	
 	@Override
 	public int damageDropped(int meta)
-    {
-        return meta;
-    }
+	{
+		return meta;
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 3; i++)
 		{
@@ -57,7 +57,7 @@ public class FuelBlock extends Block
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		return icons[MathHelper.clamp_int(meta, 0, 2)];
 	}

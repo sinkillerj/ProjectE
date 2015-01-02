@@ -30,10 +30,10 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
 	{
-        if (source.isExplosion())
-        {
-            return new ArmorProperties(1, 1.0D, 500);
-        }
+		if (source.isExplosion())
+		{
+			return new ArmorProperties(1, 1.0D, 500);
+		}
 
 		if (slot == 0 && source == DamageSource.fall) 
 		{
@@ -53,7 +53,7 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	{
 		if (slot == 0 || slot == 3)
 		{
-	      	return 4;
+			return 4;
 		}
 		
 		return 6;
@@ -66,8 +66,8 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons (IIconRegister par1IconRegister)
-    {
+	public void registerIcons (IIconRegister par1IconRegister)
+	{
 		String type = null;
 		
 		switch (this.armorType)
@@ -86,26 +86,26 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 				break;
 		}
 		
-        this.itemIcon = par1IconRegister.registerIcon("projecte:rm_armor/"+type);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public String getArmorTexture (ItemStack stack, Entity entity, int slot, String type)
-    {
-    	char index = this.armorType == 2 ? '2' : '1';
-        return "projecte:textures/armor/redmatter_"+index+".png";
-    }
+		this.itemIcon = par1IconRegister.registerIcon("projecte:rm_armor/"+type);
+	}
 
 	@Override
-    @Optional.Method(modid = "Thaumcraft")
+	@SideOnly(Side.CLIENT)
+	public String getArmorTexture (ItemStack stack, Entity entity, int slot, String type)
+	{
+		char index = this.armorType == 2 ? '2' : '1';
+		return "projecte:textures/armor/redmatter_"+index+".png";
+	}
+
+	@Override
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Thaumcraft")
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

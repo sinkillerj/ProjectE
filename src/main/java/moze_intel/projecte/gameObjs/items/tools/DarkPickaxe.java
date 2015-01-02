@@ -34,11 +34,12 @@ public class DarkPickaxe extends ItemMode
 	public DarkPickaxe() 
 	{
 		super("dm_pick", (byte) 3, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
+		this.setNoRepair();
 	}
 	
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
-    {
+	{
 		if (world.isRemote || !(eLiving instanceof EntityPlayer))
 		{
 			return false;
@@ -134,8 +135,8 @@ public class DarkPickaxe extends ItemMode
 				}
 			
 		world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
-        return false;
-    }
+		return false;
+	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -215,14 +216,14 @@ public class DarkPickaxe extends ItemMode
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "pick"));//Constants.dmToolTextures+"pick");
 	}

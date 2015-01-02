@@ -20,7 +20,7 @@ public class GUICondenser extends GuiContainer
 		super(new CondenserContainer(invPlayer, tile));
 		this.tile = tile;
 		this.xSize = 255;
-	    this.ySize = 233;
+		this.ySize = 233;
 	}
 	
 	@Override

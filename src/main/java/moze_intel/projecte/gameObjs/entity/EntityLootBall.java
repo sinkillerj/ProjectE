@@ -30,8 +30,8 @@ public class EntityLootBall extends Entity
 	{
 		super(world);
 		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
-        this.setSize(0.25F, 0.25F);
-        this.yOffset = this.height / 2.0F;
+		this.setSize(0.25F, 0.25F);
+		this.yOffset = this.height / 2.0F;
 	}
 	
 	public EntityLootBall(World world, ItemStack[] drops, double x, double y, double z)
@@ -44,8 +44,8 @@ public class EntityLootBall extends Entity
 		this.setPosition(x, y, z);
 		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
-        this.motionY = 0.20000000298023224D;
-        this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		this.motionY = 0.20000000298023224D;
+		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 	}
 	
 	public EntityLootBall(World world, List<ItemStack> drops, double x, double y, double z)
@@ -58,8 +58,8 @@ public class EntityLootBall extends Entity
 		this.setPosition(x, y, z);
 		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
-        this.motionY = 0.20000000298023224D;
-        this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		this.motionY = 0.20000000298023224D;
+		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 	}
 	
 	public List<ItemStack> getItemList()
@@ -73,38 +73,38 @@ public class EntityLootBall extends Entity
 		super.onUpdate();
 		
 		this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        this.motionY -= 0.03999999910593033D;
-        this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
-        
-         
-        if (flag || this.ticksExisted % 25 == 0)
-        {
-            if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava)
-            {
-                this.motionY = 0.20000000298023224D;
-                this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-                this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-                this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
-            }
-        }
-         
-        float f = 0.98F;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
+		this.motionY -= 0.03999999910593033D;
+		this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
+		
+		 
+		if (flag || this.ticksExisted % 25 == 0)
+		{
+			if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava)
+			{
+				this.motionY = 0.20000000298023224D;
+				this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+				this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+				this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+			}
+		}
+		 
+		float f = 0.98F;
 
-        if (this.onGround)
-            f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+		if (this.onGround)
+			f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
 
-        this.motionX *= (double)f;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= (double)f;
+		this.motionX *= (double)f;
+		this.motionY *= 0.9800000190734863D;
+		this.motionZ *= (double)f;
 
-        if (this.onGround)
-            this.motionY *= -0.5D;
+		if (this.onGround)
+			this.motionY *= -0.5D;
 
-        ++this.age;
+		++this.age;
 
 		
 		if (!this.worldObj.isRemote)
@@ -308,9 +308,9 @@ public class EntityLootBall extends Entity
 	
 	@Override
 	public boolean handleWaterMovement()
-    {
-        return this.worldObj.handleMaterialAcceleration(this.boundingBox, Material.water, this);
-    }
+	{
+		return this.worldObj.handleMaterialAcceleration(this.boundingBox, Material.water, this);
+	}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbt) 
@@ -333,12 +333,12 @@ public class EntityLootBall extends Entity
 		
 		NBTTagList list = new NBTTagList();
 
-        for (ItemStack item : items)
-        {
-            NBTTagCompound subNBT = new NBTTagCompound();
-            item.writeToNBT(subNBT);
-            list.appendTag(subNBT);
-        }
+		for (ItemStack item : items)
+		{
+			NBTTagCompound subNBT = new NBTTagCompound();
+			item.writeToNBT(subNBT);
+			list.appendTag(subNBT);
+		}
 
 		nbt.setTag("Items", list);
 	}

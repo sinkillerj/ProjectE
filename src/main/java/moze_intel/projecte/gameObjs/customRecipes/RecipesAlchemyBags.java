@@ -24,16 +24,16 @@ public class RecipesAlchemyBags implements IRecipe
 			ItemStack input = inv.getStackInSlot(i);
 
 			if (input == null)
-            {
-                continue;
-            }
+			{
+				continue;
+			}
 
 			if (input.getItem() == ObjHandler.alchBag)
 			{
 				if (foundBag)
-                {
-                    return false;
-                }
+				{
+					return false;
+				}
 
 				bag = input;
 				foundBag = true;
@@ -41,9 +41,9 @@ public class RecipesAlchemyBags implements IRecipe
 			if (input.getItem() == Items.dye)
 			{
 				if (foundDye)
-                {
-                    return false;
-                }
+				{
+					return false;
+				}
 
 				dye = input;
 				foundDye = true;
@@ -57,9 +57,9 @@ public class RecipesAlchemyBags implements IRecipe
 				output = new ItemStack(ObjHandler.alchBag, 1, 0);
 
 				if (bag.hasTagCompound())
-                {
-                    output.stackTagCompound = bag.stackTagCompound;
-                }
+				{
+					output.stackTagCompound = bag.stackTagCompound;
+				}
 
 				return true;
 			}
@@ -68,16 +68,16 @@ public class RecipesAlchemyBags implements IRecipe
 				output = new ItemStack(ObjHandler.alchBag, 1, 15 - dye.getItemDamage());
 
 				if (bag.hasTagCompound())
-                {
-                    output.stackTagCompound = bag.stackTagCompound;
-                }
+				{
+					output.stackTagCompound = bag.stackTagCompound;
+				}
 
 				return true;
 			}
 			else
-            {
-                return false;
-            }
+			{
+				return false;
+			}
 		}
 		return false;
 	}

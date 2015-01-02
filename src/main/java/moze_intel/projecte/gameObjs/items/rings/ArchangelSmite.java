@@ -15,6 +15,7 @@ public class ArchangelSmite extends ItemPE
 	{
 		this.setUnlocalizedName("archangel_smite");
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -32,7 +33,7 @@ public class ArchangelSmite extends ItemPE
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "archangel_smite"));
 	}

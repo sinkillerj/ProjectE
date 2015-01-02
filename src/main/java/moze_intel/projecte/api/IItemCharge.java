@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
  */
 public interface IItemCharge 
 {
-    //Return the charge the ItemStack currently has
+	//Return the charge the ItemStack currently has
 	public byte getCharge(ItemStack stack);
 
-    //Called whenever the item needs to change it's charge (the 'V' button is pressed)
+	//Called whenever the item needs to change it's charge (the 'V' button is pressed)
 	public void changeCharge(EntityPlayer player, ItemStack stack);
 }

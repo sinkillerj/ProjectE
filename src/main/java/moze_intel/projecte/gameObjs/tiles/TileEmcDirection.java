@@ -20,70 +20,70 @@ public abstract class TileEmcDirection extends TileEmc
 	}
 	
 	public ForgeDirection getOrientation()
-    {
-        return orientation;
-    }
+	{
+		return orientation;
+	}
 
-    public void setOrientation(ForgeDirection orientation)
-    {
-        this.orientation = orientation;
-    }
+	public void setOrientation(ForgeDirection orientation)
+	{
+		this.orientation = orientation;
+	}
 
-    public void setOrientation(int orientation)
-    {
-        this.orientation = ForgeDirection.getOrientation(orientation);
-    }
-    
-    public void setRelativeOrientation(EntityLivingBase ent, boolean sendPacket)
+	public void setOrientation(int orientation)
+	{
+		this.orientation = ForgeDirection.getOrientation(orientation);
+	}
+	
+	public void setRelativeOrientation(EntityLivingBase ent, boolean sendPacket)
 	{
 		int direction = 0;
-        int facing = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+		int facing = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
-        if (facing == 0)
-        {
-            direction = ForgeDirection.NORTH.ordinal();
-        }
-        else if (facing == 1)
-        {
-            direction = ForgeDirection.EAST.ordinal();
-        }
-        else if (facing == 2)
-        {
-            direction = ForgeDirection.SOUTH.ordinal();
-        }
-        else if (facing == 3)
-        {
-            direction = ForgeDirection.WEST.ordinal();
-        }
-        
-        setOrientation(direction);
-        
-        if (sendPacket)
-        {
-        	PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction));
-        }
+		if (facing == 0)
+		{
+			direction = ForgeDirection.NORTH.ordinal();
+		}
+		else if (facing == 1)
+		{
+			direction = ForgeDirection.EAST.ordinal();
+		}
+		else if (facing == 2)
+		{
+			direction = ForgeDirection.SOUTH.ordinal();
+		}
+		else if (facing == 3)
+		{
+			direction = ForgeDirection.WEST.ordinal();
+		}
+		
+		setOrientation(direction);
+		
+		if (sendPacket)
+		{
+			PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction));
+		}
 	}
-    
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        super.readFromNBT(nbtTagCompound);
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTagCompound)
+	{
+		super.readFromNBT(nbtTagCompound);
 
-        if (nbtTagCompound.hasKey("Direction"))
-        {
-            this.orientation = ForgeDirection.getOrientation(nbtTagCompound.getByte("Direction"));
-        }
-    }
+		if (nbtTagCompound.hasKey("Direction"))
+		{
+			this.orientation = ForgeDirection.getOrientation(nbtTagCompound.getByte("Direction"));
+		}
+	}
 
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
-    {
-        super.writeToNBT(nbtTagCompound);
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTagCompound)
+	{
+		super.writeToNBT(nbtTagCompound);
 
-        nbtTagCompound.setByte("Direction", (byte) orientation.ordinal());
-    }
-    
-    @Override
+		nbtTagCompound.setByte("Direction", (byte) orientation.ordinal());
+	}
+	
+	@Override
 	public Packet getDescriptionPacket() 
 	{
 		NBTTagCompound tag = new NBTTagCompound();
