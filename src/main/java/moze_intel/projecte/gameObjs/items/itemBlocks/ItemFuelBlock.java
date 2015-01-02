@@ -14,8 +14,8 @@ public class ItemFuelBlock extends ItemBlock
 	}
 	
 	@Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
+	public String getUnlocalizedName(ItemStack stack)
+	{
 		switch (stack.getItemDamage())
 		{
 			case 0:
@@ -27,11 +27,11 @@ public class ItemFuelBlock extends ItemBlock
 			default:
 				return "tile.pe_fuel_block_null";
 		}
-    }
+	}
 	
 	@Override
-    public int getMetadata(int meta)
-    {
-        return meta;
-    }
+	public int getMetadata(int meta)
+	{
+		return meta;
+	}
 }

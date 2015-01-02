@@ -51,13 +51,13 @@ public final class Constants
 	public static final int PHILOS_STONE_GUI = 13;
 	public static final int TRANSMUTE_TABLET_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
-    public static final int CONDENSER_MK2_GUI = 16;
+	public static final int CONDENSER_MK2_GUI = 16;
 	
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	
 	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-    public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	public static final int MAX_VEIN_SIZE = 250;
 	

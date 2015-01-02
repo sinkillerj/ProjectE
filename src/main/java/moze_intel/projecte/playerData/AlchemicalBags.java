@@ -35,17 +35,21 @@ public final class AlchemicalBags
 	
 	public static void set(String player, byte bagColour, ItemStack[] inv)
 	{
+		LinkedHashMap<Byte, ItemStack[]> data;
 		if (MAP.containsKey(player))
 		{
-			LinkedHashMap<Byte, ItemStack[]> data = MAP.get(player);
-			data.put(bagColour, inv);
+			data = MAP.get(player);
 		}
 		else
 		{
-			LinkedHashMap<Byte, ItemStack[]> data = new LinkedHashMap();
-			data.put(bagColour, inv);
+			data = new LinkedHashMap();
 			MAP.put(player, data);
 		}
+		if (data == null) {
+			data = new LinkedHashMap();
+			MAP.put(player, data);
+		}
+		data.put(bagColour, inv);
 		
 		IOHandler.markDirty();
 	}

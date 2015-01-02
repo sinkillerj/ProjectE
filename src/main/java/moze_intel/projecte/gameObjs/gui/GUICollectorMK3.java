@@ -20,7 +20,7 @@ public class GUICollectorMK3 extends GuiContainer
 		super(new CollectorMK3Container(invPlayer, tile));
 		this.tile = tile;
 		this.xSize = 218;
-	    this.ySize = 165;
+		this.ySize = 165;
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class GUICollectorMK3 extends GuiContainer
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		
 		int x = (width - xSize) / 2;
-	    int y = (height - ySize) / 2;
+		int y = (height - ySize) / 2;
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

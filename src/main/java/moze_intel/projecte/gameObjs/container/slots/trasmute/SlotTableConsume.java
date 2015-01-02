@@ -20,7 +20,7 @@ public class SlotTableConsume extends Slot
 	
 	@Override
 	public void putStack(ItemStack stack)
-    {
+	{
 		if (stack == null)
 		{
 			return;
@@ -42,9 +42,9 @@ public class SlotTableConsume extends Slot
 		}
 		
 		tile.addEmcWithPKT(toAdd);
-        this.onSlotChanged();
-        tile.handleKnowledge(cache);
-    }
+		this.onSlotChanged();
+		tile.handleKnowledge(cache);
+	}
 	
 	@Override
 	public boolean isItemValid(ItemStack stack)

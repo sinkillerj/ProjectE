@@ -16,6 +16,7 @@ public class LifeStone extends RingToggle implements IBauble
 	public LifeStone() 
 	{
 		super("life_stone");
+		this.setNoRepair();
 	}
 	
 
@@ -39,23 +40,23 @@ public class LifeStone extends RingToggle implements IBauble
 			{
 				stack.setItemDamage(0);
 			}
-            else
-            {
-                PlayerTimers.activateFeed(player);
-                PlayerTimers.activateHeal(player);
+			else
+			{
+				PlayerTimers.activateFeed(player);
+				PlayerTimers.activateHeal(player);
 
-                if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
-                {
-                    player.setHealth(player.getHealth() + 2);
-                    removeEmc(stack, 64);
-                }
+				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
+				{
+					player.setHealth(player.getHealth() + 2);
+					removeEmc(stack, 64);
+				}
 
-                if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
-                {
-                    player.getFoodStats().addStats(2, 10);
-                    removeEmc(stack, 64);
-                }
-            }
+				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
+				{
+					player.getFoodStats().addStats(2, 10);
+					removeEmc(stack, 64);
+				}
+			}
 		}
 	}
 	
@@ -80,36 +81,36 @@ public class LifeStone extends RingToggle implements IBauble
 	}
 	
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

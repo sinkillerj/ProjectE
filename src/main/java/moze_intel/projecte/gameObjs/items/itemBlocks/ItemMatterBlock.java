@@ -17,8 +17,8 @@ public class ItemMatterBlock extends ItemBlock
 	}
 	
 	@Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
+	public String getUnlocalizedName(ItemStack stack)
+	{
 		if (stack.getItemDamage() == 0)
 		{
 			return "tile.pe_dm_block";
@@ -27,13 +27,13 @@ public class ItemMatterBlock extends ItemBlock
 		{
 			return "tile.pe_rm_block";
 		}
-    }
+	}
 	
 	@Override
-    public int getMetadata(int meta)
-    {
-        return meta;
-    }
+	public int getMetadata(int meta)
+	{
+		return meta;
+	}
 	
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 

@@ -34,9 +34,9 @@ public class SlotTableOutput extends Slot
 	
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack)
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 	
 	@Override
 	public boolean canTakeStack(EntityPlayer player)

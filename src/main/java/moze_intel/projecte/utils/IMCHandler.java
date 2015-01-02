@@ -86,23 +86,23 @@ public final class IMCHandler
 				}
 			}
 		}
-        else if (msg.key.equalsIgnoreCase("nbtwhitelist"))
-        {
-            if (msg.isItemStackMessage())
-            {
-                ItemStack stack = msg.getItemStackValue();
+		else if (msg.key.equalsIgnoreCase("nbtwhitelist"))
+		{
+			if (msg.isItemStackMessage())
+			{
+				ItemStack stack = msg.getItemStackValue();
 
-                if (stack == null)
-                {
-                    PELogger.logFatal("Parsed null ItemStack in NBT whitelist IMC message from mod: " + msg.getSender());
-                    return;
-                }
+				if (stack == null)
+				{
+					PELogger.logFatal("Parsed null ItemStack in NBT whitelist IMC message from mod: " + msg.getSender());
+					return;
+				}
 
-                NBTWhitelist.register(stack);
+				NBTWhitelist.register(stack);
 
-                PELogger.logInfo("Mod " + msg.getSender() + " registered NBT whitelist for ItemStack: " + stack.getUnlocalizedName());
-            }
-        }
+				PELogger.logInfo("Mod " + msg.getSender() + " registered NBT whitelist for ItemStack: " + stack.getUnlocalizedName());
+			}
+		}
 		else
 		{
 			PELogger.logFatal("Incorrect IMC message key from mod " + msg.getSender() + ": " + msg.key);

@@ -16,102 +16,102 @@ import java.util.Map;
 
 public final class PacketHandler
 {
-    private static final int MAX_PKT_SIZE = 256;
+	private static final int MAX_PKT_SIZE = 256;
 	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("projecte");
 	
 	public static void register()
 	{
-        HANDLER.registerMessage(ClientSyncEmcPKT.class, ClientSyncEmcPKT.class, 0, Side.CLIENT);
-    	HANDLER.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
-    	HANDLER.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
-    	HANDLER.registerMessage(SwingItemPKT.class, SwingItemPKT.class, 3, Side.CLIENT);
-    	HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
-    	HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
-    	HANDLER.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
-    	HANDLER.registerMessage(ClientTableSyncPKT.class, ClientTableSyncPKT.class, 7, Side.CLIENT);
-    	HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
-    	HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
-    	HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
-    	HANDLER.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
-    	HANDLER.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
-    	HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
-    	HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
-    	HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
-    	HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
-    	HANDLER.registerMessage(ClientSyncTableEMCPKT.class, ClientSyncTableEMCPKT.class, 17, Side.CLIENT);
+		HANDLER.registerMessage(ClientSyncEmcPKT.class, ClientSyncEmcPKT.class, 0, Side.CLIENT);
+		HANDLER.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
+		HANDLER.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
+		HANDLER.registerMessage(SwingItemPKT.class, SwingItemPKT.class, 3, Side.CLIENT);
+		HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
+		HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
+		HANDLER.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
+		HANDLER.registerMessage(ClientTableSyncPKT.class, ClientTableSyncPKT.class, 7, Side.CLIENT);
+		HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
+		HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
+		HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
+		HANDLER.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
+		HANDLER.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
+		HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
+		HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
+		HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
+		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
+		HANDLER.registerMessage(ClientSyncTableEMCPKT.class, ClientSyncTableEMCPKT.class, 17, Side.CLIENT);
 	}
 
-    public static void sendFragmentedEmcPacket(EntityPlayerMP player)
-    {
-        ArrayList<Integer[]> list = new ArrayList<Integer[]>();
-        int counter = 0;
+	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
+	{
+		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		int counter = 0;
 
-        for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
-        {
-            SimpleStack stack = entry.getKey();
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		{
+			SimpleStack stack = entry.getKey();
 
-            if (stack == null)
-            {
-                continue;
-            }
+			if (stack == null)
+			{
+				continue;
+			}
 
-            Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
-            list.add(data);
+			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			list.add(data);
 
-            if (list.size() >= MAX_PKT_SIZE)
-            {
-                PacketHandler.sendTo(new ClientSyncEmcPKT(counter, list), player);
-                list.clear();
-                counter++;
-            }
-        }
+			if (list.size() >= MAX_PKT_SIZE)
+			{
+				PacketHandler.sendTo(new ClientSyncEmcPKT(counter, list), player);
+				list.clear();
+				counter++;
+			}
+		}
 
-        if (list.size() > 0)
-        {
-            PacketHandler.sendTo(new ClientSyncEmcPKT(-1, list), player);
-            list.clear();
-            counter++;
-        }
+		if (list.size() > 0)
+		{
+			PacketHandler.sendTo(new ClientSyncEmcPKT(-1, list), player);
+			list.clear();
+			counter++;
+		}
 
-        PELogger.logInfo("Sent EMC data packets to: " + player.getCommandSenderName());
-        PELogger.logDebug("Total packets: " + counter);
-    }
+		PELogger.logInfo("Sent EMC data packets to: " + player.getCommandSenderName());
+		PELogger.logDebug("Total packets: " + counter);
+	}
 
-    public static void sendFragmentedEmcPacketToAll()
-    {
-        ArrayList<Integer[]> list = new ArrayList<Integer[]>();
-        int counter = 0;
+	public static void sendFragmentedEmcPacketToAll()
+	{
+		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		int counter = 0;
 
-        for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
-        {
-            SimpleStack stack = entry.getKey();
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		{
+			SimpleStack stack = entry.getKey();
 
-            if (stack == null)
-            {
-                continue;
-            }
+			if (stack == null)
+			{
+				continue;
+			}
 
-            Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
-            list.add(data);
+			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			list.add(data);
 
-            if (list.size() >= MAX_PKT_SIZE)
-            {
-                PacketHandler.sendToAll(new ClientSyncEmcPKT(counter, list));
-                list.clear();
-                counter++;
-            }
-        }
+			if (list.size() >= MAX_PKT_SIZE)
+			{
+				PacketHandler.sendToAll(new ClientSyncEmcPKT(counter, list));
+				list.clear();
+				counter++;
+			}
+		}
 
-        if (list.size() > 0)
-        {
-            PacketHandler.sendToAll(new ClientSyncEmcPKT(-1, list));
-            list.clear();
-            counter++;
-        }
+		if (list.size() > 0)
+		{
+			PacketHandler.sendToAll(new ClientSyncEmcPKT(-1, list));
+			list.clear();
+			counter++;
+		}
 
-        PELogger.logInfo("Sent EMC data packets to all players.");
-        PELogger.logDebug("Total packets per player: " + counter);
-    }
+		PELogger.logInfo("Sent EMC data packets to all players.");
+		PELogger.logDebug("Total packets per player: " + counter);
+	}
 
 	/**
 	 * Sends a packet to the server.<br>

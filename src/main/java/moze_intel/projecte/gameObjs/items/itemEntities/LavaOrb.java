@@ -15,7 +15,7 @@ public class LavaOrb extends ItemPE
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("entities", "lava_orb"));
 	}

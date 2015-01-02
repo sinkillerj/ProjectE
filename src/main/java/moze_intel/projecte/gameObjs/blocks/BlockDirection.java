@@ -31,8 +31,8 @@ public abstract class BlockDirection extends BlockContainer
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack stack)
-    {
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack stack)
+	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
 		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
@@ -45,10 +45,10 @@ public abstract class BlockDirection extends BlockContainer
 		}
 		
 		if (tile instanceof TileEmcDirection)
-        {
-            ((TileEmcDirection) tile).setRelativeOrientation(entityLiving, false);
-        }
-    }
+		{
+			((TileEmcDirection) tile).setRelativeOrientation(entityLiving, false);
+		}
+	}
 	
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
@@ -100,23 +100,23 @@ public abstract class BlockDirection extends BlockContainer
 				
 				if (orientation == 0)
 				{
-		            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+					world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 				}
 
-		        if (orientation == 1)
-		        {
-		            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		        }
+				if (orientation == 1)
+				{
+					world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+				}
 
-		        if (orientation == 2)
-		        {
-		            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		        }
+				if (orientation == 2)
+				{
+					world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+				}
 
-		        if (orientation == 3)
-		        {
-		            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		        }
+				if (orientation == 3)
+				{
+					world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+				}
 			}
 		}
 	}

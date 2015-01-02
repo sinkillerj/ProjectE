@@ -75,13 +75,13 @@ public class AlchemicalBag extends ItemPE
 				double d1 = (player.posX - item.posX);
 				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
 				double d3 = (player.posZ - item.posZ);
-	            double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
 
-	            item.motionX += d1 / d4 * 0.1D;
-	            item.motionY += d2 / d4 * 0.1D;
-	            item.motionZ += d3 / d4 * 0.1D;
-	                
-	            item.moveEntity(item.motionX, item.motionY, item.motionZ);
+				item.motionX += d1 / d4 * 0.1D;
+				item.motionY += d2 / d4 * 0.1D;
+				item.motionZ += d3 / d4 * 0.1D;
+					
+				item.moveEntity(item.motionX, item.motionY, item.motionZ);
 			}
 			
 			List<EntityLootBall> lootBallList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
@@ -91,13 +91,13 @@ public class AlchemicalBag extends ItemPE
 				double d1 = (player.posX - ball.posX);
 				double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
 				double d3 = (player.posZ - ball.posZ);
-	            double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
 
-	            ball.motionX += d1 / d4 * 0.1D;
-	            ball.motionY += d2 / d4 * 0.1D;
-	            ball.motionZ += d3 / d4 * 0.1D;
-	                
-	            ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
+				ball.motionX += d1 / d4 * 0.1D;
+				ball.motionY += d2 / d4 * 0.1D;
+				ball.motionZ += d3 / d4 * 0.1D;
+					
+				ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
 			}
 		}
 		
@@ -179,12 +179,12 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	public String getItemStackDisplayName(ItemStack stack)
-    {
+	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
 		String color = " ("+"\u00a7"+colorCodes[i]+localizedColors[i]+"\u00a7"+colorCodes[0]+")";
 		return name + color;
-    }
+	}
 	
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
@@ -198,21 +198,21 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs cTab, List list)
-    {
-        for (int i = 0; i < 16; ++i)
-        	list.add(new ItemStack(item, 1, i));
-    }
+	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	{
+		for (int i = 0; i < 16; ++i)
+			list.add(new ItemStack(item, 1, i));
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1)
-    {
-        return icons[MathHelper.clamp_int(par1, 0, 15)];
-    }
+	public IIcon getIconFromDamage(int par1)
+	{
+		return icons[MathHelper.clamp_int(par1, 0, 15)];
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons = new IIcon[16];
 		

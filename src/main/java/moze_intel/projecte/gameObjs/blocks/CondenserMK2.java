@@ -21,71 +21,71 @@ import java.util.Random;
 
 public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider
 {
-    public CondenserMK2()
-    {
-        super();
-        this.setBlockName("pe_condenser_mk2");
-    }
+	public CondenserMK2()
+	{
+		super();
+		this.setBlockName("pe_condenser_mk2");
+	}
 
-    @Override
-    public Item getItemDropped(int par1, Random random, int par2)
-    {
-        return Item.getItemFromBlock(ObjHandler.condenserMk2);
-    }
+	@Override
+	public Item getItemDropped(int par1, Random random, int par2)
+	{
+		return Item.getItemFromBlock(ObjHandler.condenserMk2);
+	}
 
-    @Override
-    public int getRenderType()
-    {
-        return Constants.CONDENSER_MK2_RENDER_ID;
-    }
+	@Override
+	public int getRenderType()
+	{
+		return Constants.CONDENSER_MK2_RENDER_ID;
+	}
 
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new CondenserMK2Tile();
-    }
+	@Override
+	public TileEntity createNewTileEntity(World var1, int var2)
+	{
+		return new CondenserMK2Tile();
+	}
 
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-    {
-        if (!world.isRemote)
-        {
-            player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
-        }
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	{
+		if (!world.isRemote)
+		{
+			player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
-    {
-        IInventory tile = (IInventory) world.getTileEntity(x, y, z);
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	{
+		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
 
-        if (tile == null)
-        {
-            return;
-        }
+		if (tile == null)
+		{
+			return;
+		}
 
-        for (int i = 1; i < tile.getSizeInventory(); i++)
-        {
-            ItemStack stack = tile.getStackInSlot(i);
+		for (int i = 1; i < tile.getSizeInventory(); i++)
+		{
+			ItemStack stack = tile.getStackInSlot(i);
 
-            if (stack == null)
-            {
-                continue;
-            }
+			if (stack == null)
+			{
+				continue;
+			}
 
-            Utils.spawnEntityItem(world, stack, x, y, z);
-        }
+			Utils.spawnEntityItem(world, stack, x, y, z);
+		}
 
-        world.func_147453_f(x, y, z, block);
-        world.removeTileEntity(x, y, z);
-    }
+		world.func_147453_f(x, y, z, block);
+		world.removeTileEntity(x, y, z);
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register)
-    {
-        this.blockIcon = register.registerIcon("obsidian");
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister register)
+	{
+		this.blockIcon = register.registerIcon("obsidian");
+	}
 }

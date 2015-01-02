@@ -30,6 +30,7 @@ public class DarkShovel extends ItemCharge
 	public DarkShovel() 
 	{
 		super("dm_shovel", (byte) 3);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -123,14 +124,14 @@ public class DarkShovel extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+	public boolean isFull3D()
+	{
 		return true;
-    }
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shovel"));
 	}

@@ -40,67 +40,72 @@ public class RepairTalisman extends ItemPE implements IBauble
 		
 		EntityPlayer player = (EntityPlayer) entity;
 
-        PlayerTimers.activateRepair(player);
+		PlayerTimers.activateRepair(player);
 
-        if (PlayerTimers.canRepair(player))
-        {
-            IInventory inv = player.inventory;
+		if (PlayerTimers.canRepair(player))
+		{
+			IInventory inv = player.inventory;
 
-            for (int i = 0; i < 40; i++)
-            {
-                ItemStack invStack = inv.getStackInSlot(i);
+			for (int i = 0; i < 40; i++)
+			{
+				ItemStack invStack = inv.getStackInSlot(i);
 
-                if (invStack == null || invStack.getItem() instanceof IModeChanger)
-                {
-                    continue;
-                }
+				if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
+				{
+					continue;
+				}
 
-                if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-                {
-                    invStack.setItemDamage(invStack.getItemDamage() - 1);
-                }
-            }
-        }
+				if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress) {
+					//Don't repair item that is currently used by the player.
+					continue;
+				}
+
+				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				{
+					invStack.setItemDamage(invStack.getItemDamage() - 1);
+				}
+			}
+		}
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("repair_talisman"));
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;

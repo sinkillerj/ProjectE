@@ -22,81 +22,81 @@ public final class PlayerChecks
 	private static List<EntityPlayerMP> fireChecks = new ArrayList<EntityPlayerMP>();
 	private static List<EntityPlayerMP> stepChecks = new ArrayList<EntityPlayerMP>();
 
-    public static void update()
-    {
-        World world = MinecraftServer.getServer().getEntityWorld();
+	public static void update()
+	{
+		World world = MinecraftServer.getServer().getEntityWorld();
 
-        Iterator<EntityPlayerMP> iter = flyChecks.iterator();
+		Iterator<EntityPlayerMP> iter = flyChecks.iterator();
 
-        while (iter.hasNext())
-        {
-            EntityPlayerMP player = iter.next();
+		while (iter.hasNext())
+		{
+			EntityPlayerMP player = iter.next();
 
-            if (!canPlayerFly(player))
-            {
-                if (player.capabilities.allowFlying)
-                {
-                    Utils.setPlayerFlight(player, false);
-                }
+			if (!canPlayerFly(player))
+			{
+				if (player.capabilities.allowFlying)
+				{
+					Utils.setPlayerFlight(player, false);
+				}
 
-                iter.remove();
-                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
-            }
-        }
+				iter.remove();
+				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
+			}
+		}
 
-        iter = fireChecks.iterator();
+		iter = fireChecks.iterator();
 
-        while (iter.hasNext())
-        {
-            EntityPlayerMP player = iter.next();
+		while (iter.hasNext())
+		{
+			EntityPlayerMP player = iter.next();
 
-            if (!isPlayerFireImmune(player))
-            {
-                if (player.isImmuneToFire())
-                {
-                    Utils.setPlayerFireImmunity(player, false);
-                }
+			if (!isPlayerFireImmune(player))
+			{
+				if (player.isImmuneToFire())
+				{
+					Utils.setPlayerFireImmunity(player, false);
+				}
 
-                iter.remove();
-                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from fire checks.");
-            }
-        }
+				iter.remove();
+				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from fire checks.");
+			}
+		}
 
-        iter = stepChecks.iterator();
+		iter = stepChecks.iterator();
 
-        while (iter.hasNext())
-        {
-            EntityPlayerMP player = iter.next();
+		while (iter.hasNext())
+		{
+			EntityPlayerMP player = iter.next();
 
-            if (!canPlayerStep(player))
-            {
-                player.stepHeight = 0.5f;
-                PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
+			if (!canPlayerStep(player))
+			{
+				player.stepHeight = 0.5f;
+				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
 
-                iter.remove();
-                PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
-            }
-        }
-    }
+				iter.remove();
+				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
+			}
+		}
+	}
 
-    public static void onPlayerChangeDimension(EntityPlayerMP playerMP)
-    {
-        if (canPlayerFly(playerMP))
-        {
-            Utils.setPlayerFlight(playerMP, true);
-        }
+	public static void onPlayerChangeDimension(EntityPlayerMP playerMP)
+	{
+		if (canPlayerFly(playerMP))
+		{
+			Utils.setPlayerFlight(playerMP, true);
+		}
 
-        if (isPlayerFireImmune(playerMP))
-        {
-            Utils.setPlayerFireImmunity(playerMP, true);
-        }
+		if (isPlayerFireImmune(playerMP))
+		{
+			Utils.setPlayerFireImmunity(playerMP, true);
+		}
 
-        if (canPlayerStep(playerMP))
-        {
-            playerMP.stepHeight = 1.0f;
-            PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
-        }
-    }
+		if (canPlayerStep(playerMP))
+		{
+			playerMP.stepHeight = 1.0f;
+			PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+		}
+	}
 
 	public static void addPlayerFlyChecks(EntityPlayerMP player)
 	{
@@ -217,15 +217,15 @@ public final class PlayerChecks
 
 	public static boolean isPlayerCheckedForStep(String player)
 	{
-        Iterator<EntityPlayerMP> iter = stepChecks.iterator();
+		Iterator<EntityPlayerMP> iter = stepChecks.iterator();
 
-        while (iter.hasNext())
-        {
-            if (iter.next().getCommandSenderName().equals(player))
-            {
-                return true;
-            }
-        }
+		while (iter.hasNext())
+		{
+			if (iter.next().getCommandSenderName().equals(player))
+			{
+				return true;
+			}
+		}
 
 		return false;
 	}
@@ -255,7 +255,7 @@ public final class PlayerChecks
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			
-			if (stack != null && stack.getItem() ==  ObjHandler.swrg)
+			if (stack != null && stack.getItem() == ObjHandler.swrg)
 			{
 				return true;
 			}

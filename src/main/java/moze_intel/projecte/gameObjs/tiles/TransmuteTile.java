@@ -56,10 +56,10 @@ public class TransmuteTile extends TileEmc implements IInventory
 			}
 			else
 			{
-                if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
-                {
-                    stack.stackTagCompound = null;
-                }
+				if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
+				{
+					stack.stackTagCompound = null;
+				}
 
 				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
 			}
@@ -100,7 +100,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 			inventory[i] = null;
 		}
 		
-        ItemStack lockCopy = null;
+		ItemStack lockCopy = null;
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
@@ -111,12 +111,12 @@ public class TransmuteTile extends TileEmc implements IInventory
 				return;
 			}
 
-            lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+			lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
 
-            if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
-            {
-                lockCopy.setTagCompound(new NBTTagCompound());
-            }
+			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+			{
+				lockCopy.setTagCompound(new NBTTagCompound());
+			}
 
 			Iterator<ItemStack> iter = knowledge.iterator();
 			
@@ -126,31 +126,31 @@ public class TransmuteTile extends TileEmc implements IInventory
 				
 				if (Utils.getEmcValue(stack) > reqEmc)
 				{
-                    iter.remove();
-                    continue;
+					iter.remove();
+					continue;
 				}
 
-                if (Utils.basicAreStacksEqual(lockCopy, stack))
-                {
-                    iter.remove();
-                    continue;
-                }
+				if (Utils.basicAreStacksEqual(lockCopy, stack))
+				{
+					iter.remove();
+					continue;
+				}
 
-                String displayName = "";
+				String displayName = "";
 
-                try
-                {
-                    displayName = stack.getDisplayName();
-                }
-                catch (Exception e)
-                {
-                    continue;
-                }
+				try
+				{
+					displayName = stack.getDisplayName();
+				}
+				catch (Exception e)
+				{
+					continue;
+				}
 
-                if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-                {
-                    iter.remove();
-                }
+				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				{
+					iter.remove();
+				}
 			}
 		}
 		else
@@ -167,21 +167,21 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-                String displayName = "";
+				String displayName = "";
 
-                try
-                {
-                    displayName = stack.getDisplayName();
-                }
-                catch (Exception e)
-                {
-                    continue;
-                }
+				try
+				{
+					displayName = stack.getDisplayName();
+				}
+				catch (Exception e)
+				{
+					continue;
+				}
 
-                if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-                {
-                    iter.remove();
-                }
+				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				{
+					iter.remove();
+				}
 			}
 		}
 		
@@ -190,19 +190,19 @@ public class TransmuteTile extends TileEmc implements IInventory
 		int matterCounter = 0;
 		int fuelCounter = 0;
 
-        if (lockCopy != null)
-        {
-            if (FuelMapper.isStackFuel(lockCopy))
-            {
-                inventory[FUEL_INDEXES[0]] = lockCopy;
-                fuelCounter++;
-            }
-            else
-            {
-                inventory[MATTER_INDEXES[0]] = lockCopy;
-                matterCounter++;
-            }
-        }
+		if (lockCopy != null)
+		{
+			if (FuelMapper.isStackFuel(lockCopy))
+			{
+				inventory[FUEL_INDEXES[0]] = lockCopy;
+				fuelCounter++;
+			}
+			else
+			{
+				inventory[MATTER_INDEXES[0]] = lockCopy;
+				matterCounter++;
+			}
+		}
 
 		for (ItemStack stack : knowledge)
 		{

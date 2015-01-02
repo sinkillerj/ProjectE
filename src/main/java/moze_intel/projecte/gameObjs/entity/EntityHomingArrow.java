@@ -40,11 +40,11 @@ public class EntityHomingArrow extends EntityArrow
 			EntityLiving target = list.get(0);
 			
 			double d5 = target.posX - this.posX;
-            double d6 = target.boundingBox.minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
-            double d7 = target.posZ - this.posZ;
-            
-            this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
-            this.setVelocity(d5, d6, d7);
+			double d6 = target.boundingBox.minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
+			double d7 = target.posZ - this.posZ;
+			
+			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
+			this.setVelocity(d5, d6, d7);
 		}
 	}
 	

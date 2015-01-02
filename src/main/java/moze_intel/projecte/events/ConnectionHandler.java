@@ -16,21 +16,21 @@ public class ConnectionHandler
 	public void playerConnect(PlayerLoggedInEvent event)
 	{
 		//PacketHandler.sendTo(new ClientSyncPKT(), (EntityPlayerMP) event.player);
-        PacketHandler.sendFragmentedEmcPacket((EntityPlayerMP) event.player);
+		PacketHandler.sendFragmentedEmcPacket((EntityPlayerMP) event.player);
 		PacketHandler.sendTo(new ClientCheckUpdatePKT(), (EntityPlayerMP) event.player);
 
-        PlayerTimers.registerPlayer(event.player);
+		PlayerTimers.registerPlayer(event.player);
 
 	}
 
-    @SubscribeEvent
-    public void playerDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
-    {
-        PlayerTimers.removePlayer(event.player);
+	@SubscribeEvent
+	public void playerDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
+	{
+		PlayerTimers.removePlayer(event.player);
 
-        PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled checklists: Player disconnected.");
-        PlayerChecks.removePlayerFromLists(event.player.getCommandSenderName());
-    }
+		PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled checklists: Player disconnected.");
+		PlayerChecks.removePlayerFromLists(event.player.getCommandSenderName());
+	}
 		
 	
 	/*@SubscribeEvent

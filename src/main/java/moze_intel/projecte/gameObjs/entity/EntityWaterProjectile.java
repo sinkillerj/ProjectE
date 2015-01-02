@@ -43,25 +43,25 @@ public class EntityWaterProjectile extends EntityThrowable
 						boolean flag = false;
 						
 						if (block == Blocks.lava)
-                        {
-                            this.worldObj.setBlock(x, y, z, Blocks.obsidian);
-                        }
+						{
+							this.worldObj.setBlock(x, y, z, Blocks.obsidian);
+						}
 						else if (block == Blocks.flowing_lava)
-                        {
-                            this.worldObj.setBlock(x, y, z, Blocks.cobblestone);
-                        }
+						{
+							this.worldObj.setBlock(x, y, z, Blocks.cobblestone);
+						}
 						else
-                        {
-                            continue;
-                        }
+						{
+							continue;
+						}
 						
 						this.worldObj.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
 					}
 			
 			if (this.isInWater())
-            {
-                this.setDead();
-            }
+			{
+				this.setDead();
+			}
 			
 			if (this.posY > 128)
 			{
@@ -74,36 +74,36 @@ public class EntityWaterProjectile extends EntityThrowable
 
 	@Override
 	protected float getGravityVelocity()
-    {
-        return 0;
-    }
+	{
+		return 0;
+	}
 	
 	@Override
 	protected void onImpact(MovingObjectPosition mop) 
 	{
 		if (this.worldObj.isRemote)
-        {
-            return;
-        }
+		{
+			return;
+		}
 
-        if (mop.typeOfHit == MovingObjectType.BLOCK)
-        {
-            ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
+		if (mop.typeOfHit == MovingObjectType.BLOCK)
+		{
+			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 
-            this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
-            this.setDead();
-        }
-        else if (mop.typeOfHit == MovingObjectType.ENTITY)
-        {
-            Entity ent = mop.entityHit;
+			this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+			this.setDead();
+		}
+		else if (mop.typeOfHit == MovingObjectType.ENTITY)
+		{
+			Entity ent = mop.entityHit;
 
-            if (ent.isBurning())
-            {
-                ent.extinguish();
-            }
+			if (ent.isBurning())
+			{
+				ent.extinguish();
+			}
 
-            ent.addVelocity(this.motionX * 2, this.motionY * 2, this.motionZ * 2);
-            this.setDead();
-        }
+			ent.addVelocity(this.motionX * 2, this.motionY * 2, this.motionZ * 2);
+			this.setDead();
+		}
 	}
 }

@@ -34,6 +34,7 @@ public class RedShears extends ItemCharge
 	public RedShears()
 	{
 		super("rm_shears", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -171,7 +172,7 @@ public class RedShears extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "shears"));
 	}

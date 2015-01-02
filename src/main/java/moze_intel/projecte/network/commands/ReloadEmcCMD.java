@@ -29,11 +29,11 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
-        TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+		TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
 		
 		sender.addChatMessage(new ChatComponentText("[ProjectE] Done! Sending updates to clients."));
-        PacketHandler.sendFragmentedEmcPacketToAll();
-    }
+		PacketHandler.sendFragmentedEmcPacketToAll();
+	}
 
 	@Override
 	public int getRequiredPermissionLevel() 

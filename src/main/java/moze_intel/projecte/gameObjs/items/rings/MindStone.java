@@ -12,6 +12,7 @@ public class MindStone extends RingToggle
 	public MindStone() 
 	{
 		super("mind_stone");
+		this.setNoRepair();
 	}
 
 	@Override
@@ -34,9 +35,9 @@ public class MindStone extends RingToggle
 				return;
 			}
 			
-			if (player.experienceTotal > 0)
+			if (getXP(player) > 0)
 			{
-				int toAdd = player.experienceTotal >= TRANSFER_RATE ? TRANSFER_RATE : player.experienceTotal;
+				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
 				addStoredXP(stack, toAdd);
 				removeXP(player, TRANSFER_RATE);
 			}
@@ -45,33 +46,50 @@ public class MindStone extends RingToggle
 	
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
-    {
+	{
 		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			
 			if (toAdd > 0)
 			{
-				player.addExperience(toAdd);
+				addXP(player, toAdd);
 				return true;
 			}
 		}
 		
 		return false;
-    }
+	}
 	
 	private void removeXP(EntityPlayer player, int amount)
 	{
-		player.experienceTotal -= amount;
-		player.experienceLevel = getLvlForXP(player.experienceTotal);
-		player.experience = (player.experienceTotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
+		int experiencetotal = getXP(player) - amount;
 		
-		if (player.experienceTotal < 0)
+		if (experiencetotal < 0)
 		{
 			player.experienceTotal = 0;
 			player.experienceLevel = 0;
 			player.experience = 0;
 		}
+		else
+		{
+			player.experienceTotal = experiencetotal;
+			player.experienceLevel = getLvlForXP(experiencetotal);
+			player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+		}
+	}
+
+	private void addXP(EntityPlayer player, int amount)
+	{
+		int experiencetotal = getXP(player) + amount;
+		player.experienceTotal = experiencetotal;
+		player.experienceLevel = getLvlForXP(experiencetotal);
+		player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+	}
+
+	private int getXP(EntityPlayer player)
+	{
+		return (int)(getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
 	}
 
 	// Math referenced from the MC wiki

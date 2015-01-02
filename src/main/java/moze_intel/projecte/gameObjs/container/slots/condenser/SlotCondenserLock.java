@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class SlotCondenserLock extends Slot 
 {
-    private CondenserContainer container;
+	private CondenserContainer container;
 
 	public SlotCondenserLock(CondenserContainer container, int slotIndex, int xPos, int yPos)
 	{
@@ -18,24 +18,24 @@ public class SlotCondenserLock extends Slot
 
 	@Override
 	public boolean isItemValid(ItemStack stack)
-    {
-        if (stack != null && Utils.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
-        {
-            this.putStack(Utils.getNormalizedStack(stack));
-            container.tile.checkLockAndUpdate();
-            container.detectAndSendChanges();
-        }
+	{
+		if (stack != null && Utils.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
+		{
+			this.putStack(Utils.getNormalizedStack(stack));
+			container.tile.checkLockAndUpdate();
+			container.detectAndSendChanges();
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean canTakeStack(EntityPlayer player)
-    {
-        return false;
-    }
+	@Override
+	public boolean canTakeStack(EntityPlayer player)
+	{
+		return false;
+	}
 
-    @Override
+	@Override
 	public int getSlotStackLimit()
 	{
 		return 1;

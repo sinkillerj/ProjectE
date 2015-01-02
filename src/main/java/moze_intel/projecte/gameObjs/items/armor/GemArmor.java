@@ -46,8 +46,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		this.setMaxDamage(0);
 	}
 
-    @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
+	@Override
+	public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
 	{
 		if (world.isRemote)
 		{
@@ -84,13 +84,13 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 
 				if (isStepAssistEnabled(stack)/*PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName())*/)
 				{
-                    if (playerMP.stepHeight != 1.0f)
-                    {
-                        playerMP.stepHeight = 1.0f;
-                        PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+					if (playerMP.stepHeight != 1.0f)
+					{
+						playerMP.stepHeight = 1.0f;
+						PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
 
-                        PlayerChecks.addPlayerStepChecks(playerMP);
-                    }
+						PlayerChecks.addPlayerStepChecks(playerMP);
+					}
 				}
 			}
 			else if (armor == ObjHandler.gemLegs)
@@ -104,7 +104,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			}
 			else if (armor == ObjHandler.gemChest)
 			{
-                PlayerTimers.activateFeed(playerMP);
+				PlayerTimers.activateFeed(playerMP);
 
 				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP))
 				{
@@ -121,7 +121,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			{
 				PlayerTimers.activateHeal(playerMP);
 
-                if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(playerMP))
+				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(playerMP))
 				{
 					player.setHealth(player.getHealth() + 2);
 				}
@@ -164,10 +164,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
 	{
-        if (source.isExplosion())
-        {
-            return new ArmorProperties(1, 1.0D, 750);
-        }
+		if (source.isExplosion())
+		{
+			return new ArmorProperties(1, 1.0D, 750);
+		}
 
 		if (slot == 0 && source == DamageSource.fall)
 		{
@@ -187,7 +187,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	{
 		if (slot == 0 || slot == 3)
 		{
-	      	return 4;
+			return 4;
 		}
 		
 		return 6;
@@ -200,8 +200,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons (IIconRegister par1IconRegister)
-    {
+	public void registerIcons (IIconRegister par1IconRegister)
+	{
 		String type = null;
 		
 		switch (this.armorType)
@@ -220,8 +220,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				break;
 		}
 		
-        this.itemIcon = par1IconRegister.registerIcon("projecte:gem_armor/"+type);
-    }
+		this.itemIcon = par1IconRegister.registerIcon("projecte:gem_armor/"+type);
+	}
 	
 	public static void toggleStepAssist(ItemStack boots, EntityPlayer player)
 	{
@@ -271,15 +271,15 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
 	{
-        return !boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist") || boots.stackTagCompound.getBoolean("StepAssist");
+		return !boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist") || boots.stackTagCompound.getBoolean("StepAssist");
 
-    }
+	}
 	
 	public static boolean isNightVisionEnabled(ItemStack helm)
 	{
-        return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+		return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
 
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -308,23 +308,23 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		}
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public String getArmorTexture (ItemStack stack, Entity entity, int slot, String type)
-    {
-    	char index = this.armorType == 2 ? '2' : '1';
-        return "projecte:textures/armor/gem_"+index+".png";
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getArmorTexture (ItemStack stack, Entity entity, int slot, String type)
+	{
+		char index = this.armorType == 2 ? '2' : '1';
+		return "projecte:textures/armor/gem_"+index+".png";
+	}
 
 	@Override
-    @Optional.Method(modid = "Thaumcraft")
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-    @Optional.Method(modid = "Thaumcraft")
+	@Optional.Method(modid = "Thaumcraft")
 	public boolean showNodes(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;

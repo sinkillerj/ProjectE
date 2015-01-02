@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class DMFurnaceContainer  extends Container
+public class DMFurnaceContainer extends Container
 {
 	private DMFurnaceTile tile;
 	private int lastCookTime;
@@ -32,7 +32,7 @@ public class DMFurnaceContainer  extends Container
 		
 		//Input Storage
 		for (int i = 0; i < 2; i++)
-			for (int j  = 0; j < 4; j++)
+			for (int j = 0; j < 4; j++)
 				this.addSlotToContainer(new Slot(tile, i * 4 + j + 2, 13 + i * 18, 8 + j * 18));
 		
 		//Output
@@ -61,54 +61,54 @@ public class DMFurnaceContainer  extends Container
 	
 	@Override
 	public void addCraftingToCrafters(ICrafting par1ICrafting)
-    {
-        super.addCraftingToCrafters(par1ICrafting);
-        par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
-        par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
-        par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
-    }
+	{
+		super.addCraftingToCrafters(par1ICrafting);
+		par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+		par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+		par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+	}
 	
 	@Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
+	public void detectAndSendChanges()
+	{
+		super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); ++i)
-        {
-            ICrafting icrafting = (ICrafting)this.crafters.get(i);
+		for (int i = 0; i < this.crafters.size(); ++i)
+		{
+			ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-            if (lastCookTime != tile.furnaceCookTime)
-                icrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+			if (lastCookTime != tile.furnaceCookTime)
+				icrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
 
-            if (lastBurnTime != tile.furnaceBurnTime)
-                icrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+			if (lastBurnTime != tile.furnaceBurnTime)
+				icrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
 
-            if (lastItemBurnTime != tile.currentItemBurnTime)
-                icrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
-        }
+			if (lastItemBurnTime != tile.currentItemBurnTime)
+				icrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+		}
 
-        lastCookTime = tile.furnaceCookTime;
-        lastBurnTime = tile.furnaceBurnTime;
-        lastItemBurnTime = tile.currentItemBurnTime;
-    }
+		lastCookTime = tile.furnaceCookTime;
+		lastBurnTime = tile.furnaceBurnTime;
+		lastItemBurnTime = tile.currentItemBurnTime;
+	}
 
-    @SideOnly(Side.CLIENT)
-    public void updateProgressBar(int par1, int par2)
-    {
-        if (par1 == 0)
-            tile.furnaceCookTime = par2;
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int par1, int par2)
+	{
+		if (par1 == 0)
+			tile.furnaceCookTime = par2;
 
-        if (par1 == 1)
-            tile.furnaceBurnTime = par2;
+		if (par1 == 1)
+			tile.furnaceBurnTime = par2;
 
-        if (par1 == 2)
-            tile.currentItemBurnTime = par2;
-    }
-    
-    @Override
+		if (par1 == 2)
+			tile.currentItemBurnTime = par2;
+	}
+	
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
-    {
-    	Slot slot = this.getSlot(slotIndex);
+	{
+		Slot slot = this.getSlot(slotIndex);
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
@@ -158,5 +158,5 @@ public class DMFurnaceContainer  extends Container
 		}
 		
 		return newStack;
-    }
+	}
 }

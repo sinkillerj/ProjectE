@@ -49,34 +49,34 @@ public class CollectorMK1Container extends Container
 	
 	@Override
 	public void addCraftingToCrafters(ICrafting par1ICrafting)
-    {
-        super.addCraftingToCrafters(par1ICrafting);
-        par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
-    }
+	{
+		super.addCraftingToCrafters(par1ICrafting);
+		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
+	}
 	
 	@Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-        
-        for (int i = 0; i < this.crafters.size(); ++i)
-        {
-            ICrafting icrafting = (ICrafting)this.crafters.get(i);
+	public void detectAndSendChanges()
+	{
+		super.detectAndSendChanges();
+		
+		for (int i = 0; i < this.crafters.size(); ++i)
+		{
+			ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-            if(sunLevel != tile.getSunLevel())
-            {
-            	icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
-            }
-        }
-        
-        sunLevel = tile.getSunLevel();
-    }
+			if(sunLevel != tile.getSunLevel())
+			{
+				icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
+			}
+		}
+		
+		sunLevel = tile.getSunLevel();
+	}
 	
 	@SideOnly(Side.CLIENT)
-    public void updateProgressBar(int par1, int par2)
-    {
-        tile.displaySunLevel = par2;
-    }
+	public void updateProgressBar(int par1, int par2)
+	{
+		tile.displaySunLevel = par2;
+	}
 	
 	@Override
 	public void onContainerClosed(EntityPlayer player)
@@ -87,7 +87,7 @@ public class CollectorMK1Container extends Container
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
-    {
+	{
 		Slot slot = this.getSlot(slotIndex);
 		
 		if (slot == null || !slot.getHasStack()) 
@@ -128,7 +128,7 @@ public class CollectorMK1Container extends Container
 		
 		slot.onPickupFromSlot(player, stack);
 		return newStack;
-    }
+	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer var1) 

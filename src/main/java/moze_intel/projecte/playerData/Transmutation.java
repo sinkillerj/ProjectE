@@ -21,22 +21,22 @@ public final class Transmutation
 {
 	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap<String, LinkedList<ItemStack>>();
 	private static final LinkedHashMap<String, Double> EMC_STORAGE = new LinkedHashMap<String, Double>();
-    private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
+	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
 	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = new LinkedList<ItemStack>();
 	
 	public static void loadCompleteKnowledge()
 	{
 		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
-            if (!stack.isValid())
-            {
-                continue;
-            }
+			if (!stack.isValid())
+			{
+				continue;
+			}
 
 			try
 			{
 				ItemStack s = stack.toItemStack();
-                s.stackSize = 1;
+				s.stackSize = 1;
 
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (Utils.doesItemHaveEmc(s) && Utils.getEmcValue(s) > 0 && !Utils.ContainsItemStack(CACHED_TOME_KNOWLEDGE, s))

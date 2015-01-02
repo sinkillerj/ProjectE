@@ -36,12 +36,12 @@ public final class ProjectEAPI
 		FMLInterModComms.sendMessage("ProjectE", "interdictionblacklist", entityClass.getCanonicalName());
 	}
 
-    /**
-     * Make an ItemStack keep it's NBT data when condensed.<br>
-     * Can be called during pre-init, init or post-init.
-     */
-    public static void registerCondenserNBTException(ItemStack stack)
-    {
-        FMLInterModComms.sendMessage("ProjectE", "condensernbtcopy", stack);
-    }
+	/**
+	 * Make an ItemStack keep it's NBT data when condensed.<br>
+	 * Can be called during pre-init, init or post-init.
+	 */
+	public static void registerCondenserNBTException(ItemStack stack)
+	{
+		FMLInterModComms.sendMessage("ProjectE", "condensernbtcopy", stack);
+	}
 }

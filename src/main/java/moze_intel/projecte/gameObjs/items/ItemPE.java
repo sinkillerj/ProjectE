@@ -14,13 +14,13 @@ public abstract class ItemPE extends Item
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 
-    @Override
-    public Item setUnlocalizedName(String message)
-    {
-        return super.setUnlocalizedName("pe_" + message);
-    }
+	@Override
+	public Item setUnlocalizedName(String message)
+	{
+		return super.setUnlocalizedName("pe_" + message);
+	}
 
-    public static double getEmc(ItemStack stack)
+	public static double getEmc(ItemStack stack)
 	{
 		if (stack.stackTagCompound == null)
 		{

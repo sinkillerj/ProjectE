@@ -29,11 +29,12 @@ public class DestructionCatalyst extends ItemCharge
 	public DestructionCatalyst() 
 	{
 		super("destruction_catalyst", (byte) 4);
+		this.setNoRepair();
 	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (world.isRemote) return stack;
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
@@ -113,8 +114,8 @@ public class DestructionCatalyst extends ItemCharge
 			}
 		}
 			
-        return stack;
-    }
+		return stack;
+	}
 	
 	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
 	{
@@ -142,7 +143,7 @@ public class DestructionCatalyst extends ItemCharge
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("destruction_catalyst"));
 	}

@@ -15,12 +15,12 @@ public class SlotRelayKlein extends Slot
 	
 	@Override
 	public boolean isItemValid(ItemStack stack)
-    {
+	{
 		if (stack == null)
 		{
 			return false;
 		}
 		
 		return stack.getItem() == ObjHandler.kleinStars;
-    }
+	}
 }

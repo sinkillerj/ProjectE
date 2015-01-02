@@ -43,9 +43,9 @@ public class EntityMobRandomizer extends EntityThrowable
 	
 	@Override
 	protected float getGravityVelocity()
-    {
-        return 0.0F;
-    }
+	{
+		return 0.0F;
+	}
 
 	@Override
 	protected void onImpact(MovingObjectPosition mop) 

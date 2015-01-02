@@ -5,6 +5,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -20,7 +22,9 @@ public class ToolTipEvent
 	public void tTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack current = event.itemStack;
-		
+		Item currentItem = current.getItem();
+		Block currentBlock = Block.getBlockFromItem(currentItem);
+
 		if (current == null)
 		{
 			return;
@@ -38,28 +42,76 @@ public class ToolTipEvent
 				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
 			}
 		}
-		
-		if (Utils.doesItemHaveEmc(current))
-		{
-			int value = Utils.getEmcValue(current);
 
-			event.toolTip.add(String.format("EMC: %,d", value));
-			
-			if (current.stackSize > 1)
+		if (ProjectEConfig.showEMCTooltip)
+		{
+			if (Utils.doesItemHaveEmc(current))
 			{
-				long total = value * current.stackSize;
-				
-				if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+				int value = Utils.getEmcValue(current);
+
+				event.toolTip.add(String.format("EMC: %,d", value));
+
+				if (current.stackSize > 1)
 				{
-					event.toolTip.add("Stack EMC: " + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
-				}
-				else
-				{
-					event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+					long total = value * current.stackSize;
+
+					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+					{
+						event.toolTip.add("Stack EMC: " + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
+					}
+					else
+					{
+						event.toolTip.add(String.format("Stack EMC: %,d", value * current.stackSize));
+					}
 				}
 			}
 		}
-		
+
+		if (ProjectEConfig.showStatTooltip)
+		{
+			/**
+			 * Collector ToolTips
+			 */
+			if (currentBlock == ObjHandler.energyCollector)
+			{
+				event.toolTip.add("Max Generation Rate: 4 EMC/s");
+				event.toolTip.add("Max Storage: 10000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.collectorMK2)
+			{
+				event.toolTip.add("Max Generation Rate: 12 EMC/s");
+				event.toolTip.add("Max Storage: 30000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.collectorMK3)
+			{
+				event.toolTip.add("Max Generation Rate: 40 EMC/s");
+				event.toolTip.add("Max Storage: 60000 EMC");
+			}
+
+			/**
+			 * Relay ToolTips
+			 */
+			if (currentBlock == ObjHandler.relay)
+			{
+				event.toolTip.add("Max Output Rate: 64 EMC/s");
+				event.toolTip.add("Max Storage: 100000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.relayMK2)
+			{
+				event.toolTip.add("Max Output Rate: 192 EMC/s");
+				event.toolTip.add("Max Storage: 1000000 EMC");
+			}
+
+			if (currentBlock == ObjHandler.relayMK3)
+			{
+				event.toolTip.add("Max Output Rate: 640 EMC/s");
+				event.toolTip.add("Max Storage: 10000000 EMC");
+			}
+		}
+
 		if (current.hasTagCompound())
 		{
 			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
@@ -82,11 +134,11 @@ public class ToolTipEvent
 			}
 		}
 
-        Block block = Block.getBlockFromItem(current.getItem());
+		Block block = Block.getBlockFromItem(current.getItem());
 
-        if (block != null && FluidMapper.doesFluidHaveEMC(block))
-        {
-            event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
-        }
-    }
+		if (block != null && FluidMapper.doesFluidHaveEMC(block))
+		{
+			event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
+		}
+	}
 }

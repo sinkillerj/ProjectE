@@ -50,8 +50,8 @@ public class SlotTabletLock extends Slot
 				ItemPE.setEmc(stack, 0);
 			}
 			
-	        table.handleKnowledge(stack.copy());
-	        return;
+			table.handleKnowledge(stack.copy());
+			return;
 		}
 		
 		if (stack.getItem() != ObjHandler.tome)
@@ -74,7 +74,7 @@ public class SlotTabletLock extends Slot
 	
 	@Override
 	public int getSlotStackLimit()
-    {
+	{
 		return 1;
-    }
+	}
 }

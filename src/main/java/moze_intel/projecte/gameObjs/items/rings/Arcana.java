@@ -1,7 +1,25 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-//Need to finish implementation
-/*public class Arcana extends ItemPE implements IModeChanger
+/*import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.Utils;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+
+import java.util.List;
+
+//Need to finish implementation. Very WIP
+public class Arcana extends ItemPE implements IModeChanger
 {
 	private final String[] MODES = new String[] {"Zero", "Ignition", "Harvest", "SWRG"};
 	
@@ -15,7 +33,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int slotIndex, boolean isHeld) 
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slotIndex, boolean isHeld)
 	{
 		if (stack.stackTagCompound == null)
 		{
@@ -66,7 +84,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (!world.isRemote)
 		{
 			if (stack.stackTagCompound.getBoolean("Active"))
@@ -79,8 +97,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 			}
 		}
 		
-        return stack;
-    }
+		return stack;
+	}
 	
 
 	@Override
@@ -103,14 +121,14 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int dmg)
-    {
+	public IIcon getIconFromDamage(int dmg)
+	{
 		return icons[MathHelper.clamp_int(dmg, 0, 4)];
-    }
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -120,7 +138,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
 		if (stack.hasTagCompound())
 		{

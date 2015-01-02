@@ -28,7 +28,7 @@ public class RelayMK3Container extends Container
 
 		//Klein star charge
 		this.addSlotToContainer(new SlotRelayKlein(tile, 21, 164, 58));
-		    
+			
 		//Main player inventory
 		for (int i = 0; i < 3; i++) 
 			for (int j = 0; j < 9; j++) 

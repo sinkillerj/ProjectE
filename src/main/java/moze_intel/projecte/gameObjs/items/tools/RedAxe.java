@@ -26,6 +26,14 @@ public class RedAxe extends ItemCharge
 	public RedAxe()
 	{
 		super("rm_axe", (byte) 4);
+		this.setNoRepair();
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean isFull3D()
+	{
+		return true;
 	}
 	
 	@Override
@@ -58,7 +66,7 @@ public class RedAxe extends ItemCharge
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if (!world.isRemote)
 		{
 			byte charge = this.getCharge(stack);
@@ -111,12 +119,12 @@ public class RedAxe extends ItemCharge
 			}
 		}
 		
-        return stack;
-    }
+		return stack;
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "axe"));
 	} 
