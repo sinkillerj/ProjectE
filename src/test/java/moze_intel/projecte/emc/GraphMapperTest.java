@@ -345,7 +345,7 @@ public class GraphMapperTest {
         assertEquals(18432, getValue(values,mFuelBlock));
         assertEquals(8192, getValue(values,aFuel));
         assertEquals(73728, getValue(values,aFuelBlock));
-        assertEquals(73728, getValue(values,"diaondBlock"));
+        assertEquals(73728, getValue(values,"diamondBlock"));
         assertEquals(139264, getValue(values, dMatter));
         assertEquals(139264, getValue(values, dMatterBlock));
         assertEquals(466944, getValue(values, rMatter));
@@ -379,12 +379,12 @@ public class GraphMapperTest {
         }
         assertEquals(12, getValue(values,"string"));
         assertEquals(48, getValue(values,"woolWhite"));
-        assertEquals(176, getValue(values,"woolBrown"));
+        assertEquals(224, getValue(values,"woolBrown"));
         assertEquals(912, getValue(values,"woolBlue"));
         assertEquals(64, getValue(values,"woolOther"));
 
         assertEquals(32, getValue(values,"carpetWhite"));
-        assertEquals(117, getValue(values,"carpetBrown"));
+        assertEquals(149, getValue(values,"carpetBrown"));
         assertEquals(608, getValue(values,"carpetBlue"));
         assertEquals(42, getValue(values,"carpetOther"));
 
