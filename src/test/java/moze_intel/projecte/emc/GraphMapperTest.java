@@ -416,6 +416,30 @@ public class GraphMapperTest {
 
     }
 
+    @org.junit.Test
+    public void testGenerateValuesWaterBucketRecipe() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        graphMapper.setValue("somethingElse", 9, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("container", 23, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("fluid", Double.NaN, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
+
+        //Recipe that only consumes fluid:
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("container", -1);
+        map.put("filledContainer", 1);
+        map.put("somethingElse", 2);
+        graphMapper.addConversionMultiple(1, "fluidCraft", map);
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(9, getValue(values,"somethingElse"));
+        assertEquals(23, getValue(values,"container"));
+        assertEquals(0, getValue(values,"fluid"));
+        assertEquals(23, getValue(values,"filledContainer"));
+        assertEquals(2*9, getValue(values,"fluidCraft"));
+
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;

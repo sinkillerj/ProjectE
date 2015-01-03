@@ -69,6 +69,14 @@ public class GraphMapper<T extends Comparable<T>> {
         }
         this.addConversionMultiple(outnumber, output, ingredientsWithAmount);
     }
+
+    /**
+     * Set a Value for something. value has to be >= 0 or Double.NaN, which indicates that 'something' can be used in
+     * Conversions, but does not add anything to the value of the Conversion-result.
+     * @param something
+     * @param value  >= 0 or Double.NaN
+     * @param type
+     */
     public void setValue(T something, double value, FixedValue type) {
         switch(type) {
             case FixAndInherit:
@@ -131,14 +139,18 @@ public class GraphMapper<T extends Comparable<T>> {
 
                 for (Map.Entry<T, Double> solvableThing : solvableThings.entrySet()) {
                     if (valueFor.containsKey(solvableThing.getKey())) continue;
-                    valueFor.put(solvableThing.getKey(), solvableThing.getValue());
-                    if (solvableThing.getValue() > 0) {
+                    if (!solvableThing.getValue().isNaN()) {
+                        valueFor.put(solvableThing.getKey(), solvableThing.getValue());
+                    }
+                    if (solvableThing.getValue() > 0 || solvableThing.getValue().isNaN()) {
                         //Solvable Thing has a Value. Set it in all Conversions
                         for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
                             assert use.ingredientsWithAmount != null;
                             Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
                             assert amount != null && amount != 0;
-                            use.value += amount * solvableThing.getValue();
+                            if (!solvableThing.getValue().isNaN()) {
+                                use.value += amount * solvableThing.getValue();
+                            }
                             use.ingredientsWithAmount.remove(solvableThing.getKey());
                             if (use.ingredientsWithAmount.size() == 0) {
                                 increaseNoDependencyConversionCountFor(use.output);
