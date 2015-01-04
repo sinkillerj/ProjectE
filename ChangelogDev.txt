@@ -1,3 +1,16 @@
+###Version 1.7.10-0.2d-dev13
+* NEW: Even more tooltips
+* NEW: A logo has been added to the mod info screen
+* FIXED: EMC mapper now selects the cheapest recipe (Fixes overpriced tools etc)
+* FIXED: A mod interaction dupe bug with condensers
+* FIXED: Mind Stone XP dupe bug
+* FIXED: Items that use the StoredEMC tag no longer loose that EMC upon transmutation
+* FIXED: Repair talisman now respects noRepair on items
+* FIXED: noRepair has been set on items that cant be broken
+* FIXED: A targeting issue on the Philosophers Stone
+* FIXED: Stray pixel on gem armor helm
+* FIXED: Various crashes
+
 ###Version 1.7.10-0.2d-dev12
 * NEW: More tooltips
 * NEW: More config options
