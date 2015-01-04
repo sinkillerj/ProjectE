@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc;
 
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 import scala.Int;
 
 import java.util.*;
@@ -7,6 +9,9 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class GraphMapperTest {
+
+    @Rule
+    public Timeout timeout = new Timeout(3000);
 
     @org.junit.Test
     public void testGetOrCreateList() throws Exception {
@@ -16,7 +21,6 @@ public class GraphMapperTest {
         assertTrue(map.containsKey("abc"));
         List<Integer> l2 = GraphMapper.getOrCreateList(map, "abc");
         assertSame(l1, l2);
-
     }
 
     @org.junit.Test
