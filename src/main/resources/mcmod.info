@@ -2,14 +2,15 @@
 {
   "modid": "ProjectE",
   "name": "ProjectE",
-  "description": "A complete remake of EE2.",
+  "description": "A complete rewrite of EE2 for modern Minecraft versions.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "https://github.com/sinkillerj/ProjectE",
-  "authors": ["Moze_Intel"],
-  "credits": "Magic Banana, for making all the textures, and everyone that has contributed to the project.",
-  "logoFile": "",
+  "logoFile": "assets/projecte/logo.png",
+  "url": "http://minecraft.curseforge.com/mc-mods/226410-projecte",
+  "updateUrl": "",
+  "authorList": [ "sinkillerj", "Moze_Intel", "Kolatra", "Magic_Banana"],
+  "credits": "",
+  "parent": "",
   "screenshots": [],
   "dependencies": []
 }
