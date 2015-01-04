@@ -440,6 +440,24 @@ public class GraphMapperTest {
 
     }
 
+    @org.junit.Test
+    public void testGenerateValuesCycleRecipeExploit() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        //Exploitable Cycle Recype
+        graphMapper.addConversion(1, "exploitable", Arrays.asList("a1"));
+        graphMapper.addConversion(2, "exploitable", Arrays.asList("exploitable"));
+
+        //Not-exploitable Cycle Recype
+        graphMapper.addConversion(1, "notExploitable", Arrays.asList("a1"));
+        graphMapper.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        assertEquals(1, getValue(values,"a1"));
+        assertEquals(0, getValue(values,"exploitable"));
+        assertEquals(1, getValue(values,"notExploitable"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;

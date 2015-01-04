@@ -185,8 +185,11 @@ public class GraphMapper<T extends Comparable<T>> {
                     Conversion<T> conversion = iterator.next();
                     if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
                         //Conversion has ingredients left and there are other conversions without ingredients
-                        iterator.remove();
-                        lookAt.add(entry.getKey());
+                        int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
+                        if (count >= conversion.outnumber || count == 0) {
+                            iterator.remove();
+                            lookAt.add(entry.getKey());
+                        }
                     }
                 }
             }
@@ -195,6 +198,31 @@ public class GraphMapper<T extends Comparable<T>> {
             valueFor.put(fixedValueAfterInherit.getKey(),fixedValueAfterInherit.getValue());
         }
         return valueFor;
+    }
+
+    protected int findDeepIngredientCountForConversion(Conversion<T> conversion, T something, Set<T> visited) {
+        int count = 0;
+        if (conversion.ingredientsWithAmount != null) {
+            for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+                if (something.equals(ingredient)) {
+                    Integer i = conversion.ingredientsWithAmount.get(ingredient);
+                    if (i != null && i > 0)
+                        count += i;
+                } else if (visited.contains(ingredient)) {
+                    return 0;
+                } else {
+                    int minCount = Integer.MAX_VALUE;
+                    visited.add(ingredient);
+                    for (Conversion<T> ingredientConversion: getConversionsFor(ingredient)) {
+                        int ingredientConversionCount = findDeepIngredientCountForConversion(ingredientConversion, something, visited);
+                        if (ingredientConversionCount < minCount) minCount = ingredientConversionCount;
+                    }
+                    count += minCount;
+                    visited.remove(ingredient);
+                }
+            }
+        }
+        return count;
     }
 
     protected static class Conversion<T> {
