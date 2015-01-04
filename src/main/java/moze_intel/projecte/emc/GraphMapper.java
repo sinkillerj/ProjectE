@@ -3,15 +3,13 @@ package moze_intel.projecte.emc;
 
 import java.util.*;
 
-public class GraphMapper<T extends Comparable<T>> {
+public class GraphMapper<T> implements IMappingCollector<T> {
     protected Map<T,List<Conversion<T>>> conversionsFor = new HashMap<T, List<Conversion<T>>>();
     protected Map<T,List<Conversion<T>>> usedIn = new HashMap<T,List<Conversion<T>>>();
     protected Map<T,Double> fixValueBeforeInherit = new HashMap<T, Double>();
     protected Map<T,Double> fixValueAfterInherit = new HashMap<T, Double>();
     protected Map<T,Integer> noDependencyConversionCount = new HashMap<T, Integer>();
-    public static enum FixedValue {
-        SuggestionAndInherit,FixAndInherit, FixAfterInherit, FixAndDoNotInherit
-    }
+
     protected static <K,V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
         List<V> list;
         if (map.containsKey(key)) {
