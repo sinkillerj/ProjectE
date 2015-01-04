@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.emc.mappers.*;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
@@ -8,11 +9,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
+import scala.Int;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.Map.Entry;
 
 public final class EMCMapper 
@@ -23,6 +22,12 @@ public final class EMCMapper
 
 	public static void map()
 	{
+		List<IEMCMapper<NormalizedSimpleStack>> emcMappers = Arrays.asList(new LazyMapper(), new OreDictionaryMapper(), new CraftingMapper(), new SmeltingMapper());
+		GraphMapper<NormalizedSimpleStack> graphMapper = new GraphMapper<NormalizedSimpleStack>();
+		for (IEMCMapper<NormalizedSimpleStack> emcMapper: emcMappers) {
+			emcMapper.addMappings(graphMapper);
+		}
+		Map<NormalizedSimpleStack, Double> graphMapperValues =  graphMapper.generateValues();
 		loadEmcFromIMC();
 		lazyInit();
 		loadEmcFromOD();
@@ -37,6 +42,27 @@ public final class EMCMapper
 
 		Transmutation.loadCompleteKnowledge();
 		FuelMapper.loadMap();
+
+		Set<NormalizedSimpleStack> allItems = new HashSet<NormalizedSimpleStack>();
+		allItems.addAll(graphMapperValues.keySet());
+
+		Map<NormalizedSimpleStack,Integer> left = new HashMap<NormalizedSimpleStack, Integer>();
+		Map<NormalizedSimpleStack,Integer> right = new HashMap<NormalizedSimpleStack, Integer>();
+		for (SimpleStack stack: emc.keySet()) {
+			allItems.add(new NormalizedSimpleStack(stack.toItemStack()));
+			left.put(new NormalizedSimpleStack(stack.toItemStack()), emc.get(stack));
+		}
+		for (Entry<NormalizedSimpleStack,Double> entry: graphMapperValues.entrySet())
+			right.put(entry.getKey(),(int)(double)entry.getValue());
+		for (NormalizedSimpleStack stack: allItems) {
+			int leftValue = left.containsKey(stack) ? left.get(stack) : 0;
+			char leftChar = left.containsKey(stack) ? '!' : ' ';
+			int rightValue = right.containsKey(stack) ? right.get(stack) : 0;;
+			char rightChar = right.containsKey(stack) ? '!' : ' ';
+			if (leftValue != rightValue) {
+				System.out.format("%50s: %c%10d != %10d%c\n", stack.toString(),leftChar,leftValue, rightValue,rightChar);
+			}
+		}
 	}
 
 	private static void mapFromRecipes(int numRuns)

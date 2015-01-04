@@ -41,7 +41,7 @@ public class NormalizedSimpleStack {
     @Override
     public int hashCode()
     {
-        return id + 255*damage;
+        return id;
     }
 
     @Override
@@ -69,9 +69,9 @@ public class NormalizedSimpleStack {
 
         if (obj != null)
         {
-            return  "NormalizedSimpleStack " + Item.itemRegistry.getNameForObject(obj) + " " + damage;
+            return  "" + Item.itemRegistry.getNameForObject(obj) + " " + damage;
         }
 
-        return "NormalizedSimpleStack id:" + id + " damage:" + damage;
+        return "id:" + id + " damage:" + damage;
     }
 }

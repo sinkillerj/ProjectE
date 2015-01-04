@@ -4,7 +4,6 @@ import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -17,7 +16,7 @@ import java.util.*;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
 
-    List<IRecipeMapper> recipeMappers = new LinkedList<IRecipeMapper>();
+    List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper());
     Set<Class> canNotMap = new HashSet<Class>();
 
     @Override
@@ -127,6 +126,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
             {
                 recipeItems = ((ShapelessOreRecipe) recipe).getInput();
             }
+            if (recipeItems == null) return null;
             ArrayList<Iterable<NormalizedSimpleStack>> variableInputs = new ArrayList<Iterable<NormalizedSimpleStack>>();
             ArrayList<NormalizedSimpleStack> fixedInputs = new ArrayList<NormalizedSimpleStack>();
             for (Object recipeItem: recipeItems) {
@@ -144,13 +144,13 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
                     }
                     variableInputs.add(recipeItemOptions);
                 }
-                for (Iterable<NormalizedSimpleStack> recipeIngredients: recursiveRecipeInput(fixedInputs, variableInputs)) {
-                    IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
-                    for (NormalizedSimpleStack i: recipeIngredients) {
-                        ingredientMap.addIngredient(i, 1);
-                    }
-                    inputs.add(ingredientMap);
+            }
+            for (Iterable<NormalizedSimpleStack> recipeIngredients: recursiveRecipeInput(fixedInputs, variableInputs)) {
+                IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
+                for (NormalizedSimpleStack i: recipeIngredients) {
+                    ingredientMap.addIngredient(i, 1);
                 }
+                inputs.add(ingredientMap);
             }
             return inputs;
         }
