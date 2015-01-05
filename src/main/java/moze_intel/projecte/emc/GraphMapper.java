@@ -160,7 +160,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                                 throw new RuntimeException("F u!");
                             assert amount != null && amount != 0;
                             if (!solvableThing.getValue().isNaN()) {
-                                use.value += amount * solvableThing.getValue();
+                                use.value += amount * Math.floor(solvableThing.getValue());
                             }
                             use.ingredientsWithAmount.remove(solvableThing.getKey());
                             if (use.ingredientsWithAmount.size() == 0) {
