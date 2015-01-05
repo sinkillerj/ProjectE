@@ -16,4 +16,8 @@ public class IngredientMap<T> {
     public Map<T, Integer> getMap() {
         return new HashMap<T,Integer>(ingredientsWithAmount);
     }
+
+    public String toString() {
+        return ingredientsWithAmount.toString();
+    }
 }

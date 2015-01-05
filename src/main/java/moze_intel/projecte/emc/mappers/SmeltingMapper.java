@@ -5,6 +5,7 @@ import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
 
@@ -18,11 +19,10 @@ public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack> {
             if (input == null || output == null) {
                 continue;
             }
-            NormalizedSimpleStack normInput = new NormalizedSimpleStack(input);
-            NormalizedSimpleStack normOutput = new NormalizedSimpleStack(output);
             IngredientMap<NormalizedSimpleStack> map = new IngredientMap<NormalizedSimpleStack>();
-            map.addIngredient(normInput, input.stackSize);
-            mapper.addConversionMultiple(output.stackSize, normOutput, map.getMap());
+            map.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(input), input.stackSize);
+            mapper.addConversionMultiple(output.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(output), map.getMap());
+
         }
     }
 }

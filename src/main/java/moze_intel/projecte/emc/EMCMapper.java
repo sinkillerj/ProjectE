@@ -22,11 +22,12 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack>> emcMappers = Arrays.asList(new LazyMapper(), new OreDictionaryMapper(), new CraftingMapper(), new SmeltingMapper());
+		List<IEMCMapper<NormalizedSimpleStack>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CraftingMapper(), new SmeltingMapper());
 		GraphMapper<NormalizedSimpleStack> graphMapper = new GraphMapper<NormalizedSimpleStack>();
 		for (IEMCMapper<NormalizedSimpleStack> emcMapper: emcMappers) {
 			emcMapper.addMappings(graphMapper);
 		}
+		NormalizedSimpleStack.addMappings(graphMapper);
 		Map<NormalizedSimpleStack, Double> graphMapperValues =  graphMapper.generateValues();
 		loadEmcFromIMC();
 		lazyInit();
@@ -49,11 +50,15 @@ public final class EMCMapper
 		Map<NormalizedSimpleStack,Integer> left = new HashMap<NormalizedSimpleStack, Integer>();
 		Map<NormalizedSimpleStack,Integer> right = new HashMap<NormalizedSimpleStack, Integer>();
 		for (SimpleStack stack: emc.keySet()) {
-			allItems.add(new NormalizedSimpleStack(stack.toItemStack()));
-			left.put(new NormalizedSimpleStack(stack.toItemStack()), emc.get(stack));
+			NormalizedSimpleStack normStack =NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.toItemStack());
+			allItems.add(normStack);
+			left.put(normStack, emc.get(stack));
 		}
-		for (Entry<NormalizedSimpleStack,Double> entry: graphMapperValues.entrySet())
-			right.put(entry.getKey(),(int)(double)entry.getValue());
+		for (Entry<NormalizedSimpleStack,Double> entry: graphMapperValues.entrySet()) {
+			if (entry.getKey().damage != OreDictionary.WILDCARD_VALUE) {
+				right.put(entry.getKey(), (int) (double) entry.getValue());
+			}
+		}
 		for (NormalizedSimpleStack stack: allItems) {
 			int leftValue = left.containsKey(stack) ? left.get(stack) : 0;
 			char leftChar = left.containsKey(stack) ? '!' : ' ';

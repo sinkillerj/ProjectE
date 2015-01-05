@@ -1,14 +1,43 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.omg.CORBA.ORB;
+import scala.Int;
+import scala.actors.threadpool.Arrays;
+
+import java.util.*;
 
 public class NormalizedSimpleStack {
     public int id;
     public int damage;
+    public static Map<Integer, Set<Integer>> idWithUsedMetaData = new HashMap<Integer, Set<Integer>>();
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
+        NormalizedSimpleStack normStack = new NormalizedSimpleStack(stack);
+        Set<Integer> usedMetadata;
+        if (!idWithUsedMetaData.containsKey(normStack.id)) {
+            usedMetadata = new HashSet<Integer>();
+            idWithUsedMetaData.put(normStack.id,usedMetadata);
+        } else {
+            usedMetadata = idWithUsedMetaData.get(normStack.id);
+        }
+        usedMetadata.add(normStack.damage);
+        return normStack;
+    }
+    public static void addMappings(IMappingCollector<NormalizedSimpleStack> mapper) {
+        for(Map.Entry<Integer,Set<Integer>> entry: idWithUsedMetaData.entrySet()) {
+            entry.getValue().remove(OreDictionary.WILDCARD_VALUE);
+            entry.getValue().add(0);
+            NormalizedSimpleStack stackWildcard = new NormalizedSimpleStack(entry.getKey(), OreDictionary.WILDCARD_VALUE);
+            for (int metadata: entry.getValue()) {
+                mapper.addConversion(1, stackWildcard, Arrays.asList(new Object[]{new NormalizedSimpleStack(entry.getKey(), metadata)}));
+            }
+        }
+    }
 
-    public NormalizedSimpleStack(int id, int damage)
+    private NormalizedSimpleStack(int id, int damage)
     {
         this.id = id;
         if (this.id == -1) {
@@ -17,7 +46,7 @@ public class NormalizedSimpleStack {
         this.damage = damage;
     }
 
-    public NormalizedSimpleStack(ItemStack stack)
+    private NormalizedSimpleStack(ItemStack stack)
     {
         this (Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage());
     }
@@ -51,11 +80,6 @@ public class NormalizedSimpleStack {
         {
             NormalizedSimpleStack other = (NormalizedSimpleStack) obj;
 
-            if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
-            {
-                return this.id == other.id;
-            }
-
             return this.id == other.id && this.damage == other.damage;
         }
 
@@ -69,9 +93,9 @@ public class NormalizedSimpleStack {
 
         if (obj != null)
         {
-            return  "" + Item.itemRegistry.getNameForObject(obj) + " " + damage;
+            return  "" + Item.itemRegistry.getNameForObject(obj) + " " + (damage == OreDictionary.WILDCARD_VALUE ? "*"  : damage);
         }
 
-        return "id:" + id + " damage:" + damage;
+        return "id:" + id + " damage:" + (damage == OreDictionary.WILDCARD_VALUE ? "*"  : damage);
     }
 }

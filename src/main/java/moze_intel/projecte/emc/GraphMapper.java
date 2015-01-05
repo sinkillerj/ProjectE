@@ -1,6 +1,8 @@
 package moze_intel.projecte.emc;
 
 
+import moze_intel.projecte.utils.PELogger;
+
 import java.util.*;
 
 public class GraphMapper<T> implements IMappingCollector<T> {
@@ -48,6 +50,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 
         for (Map.Entry<T,Integer> ingredient:ingredientsWithAmount.entrySet()) {
             List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
+            if (ingredient.getValue() == null) throw new IllegalArgumentException("ingredient amount value has to be != null");
             usesForIngredient.add(conversion);
         }
     }
@@ -78,15 +81,21 @@ public class GraphMapper<T> implements IMappingCollector<T> {
     public void setValue(T something, double value, FixedValue type) {
         switch(type) {
             case FixAndInherit:
+                if (fixValueBeforeInherit.containsKey(something)) PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something +":" + fixValueBeforeInherit.get(something) + " to " + value);
                 fixValueBeforeInherit.put(something,value);
+                if (fixValueAfterInherit.containsKey(something)) PELogger.logWarn("Removign fixValueAfterInherit for " + something +" before: " + fixValueAfterInherit.get(something));
                 fixValueAfterInherit.remove(something);
                 break;
             case FixAndDoNotInherit:
+                if (fixValueBeforeInherit.containsKey(something)) PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something +":" + fixValueBeforeInherit.get(something) + " to " + 0.0);
                 fixValueBeforeInherit.put(something,0.0);
+                if (fixValueAfterInherit.containsKey(something)) PELogger.logWarn("Overwriting fixValueAfterInherit for " + something +":" + fixValueAfterInherit.get(something) + " to " + value);
                 fixValueAfterInherit.put(something,value);
                 break;
             case FixAfterInherit:
+                if (fixValueBeforeInherit.containsKey(something)) PELogger.logWarn("Removing fixValueBeforeInherit for " + something +" before: " + fixValueBeforeInherit.get(something));
                 fixValueBeforeInherit.remove(something);
+                if (fixValueAfterInherit.containsKey(something)) PELogger.logWarn("Overwriting fixValueAfterInherit for " + something +":" + fixValueAfterInherit.get(something) + " to " + value);
                 fixValueAfterInherit.put(something,value);
                 break;
             case SuggestionAndInherit:
@@ -116,6 +125,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                 for (T something : lookAt) {
                     if (getConversionsFor(something).size() == 0) {
                         solvableThings.put(something, 0.0);
+                        System.out.format("Set value for %s to %f because 0 conversions left\n",something.toString(), 0.0);
                     } else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
                         //The output of this usage has only Conversions with a value left: Choose minimum value
                         double minValue = 0;
@@ -130,6 +140,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
                         assert !solvableThings.containsKey(something);
                         solvableThings.put(something, minValue);
+                        System.out.format("Set value for %s to %f because %d/%d Conversions solved\n",something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
                     }
                 }
                 lookAt.clear();
@@ -145,6 +156,8 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
                             assert use.ingredientsWithAmount != null;
                             Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
+                            if (amount == null)
+                                throw new RuntimeException("F u!");
                             assert amount != null && amount != 0;
                             if (!solvableThing.getValue().isNaN()) {
                                 use.value += amount * solvableThing.getValue();
@@ -169,6 +182,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         }
                     }
                 }
+                System.out.println("Finished solvableThings...");
                 solvableThings.clear();
             }
             //Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion

@@ -11,6 +11,28 @@ public class OreDictionaryMapper extends LazyMapper {
     @Override
     public void addMappings(IMappingCollector<NormalizedSimpleStack> mapper) {
         this.mapper = mapper;
+        //Black-list all ores/dusts
+        for (String s : OreDictionary.getOreNames())
+        {
+            if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed"))
+            {
+                //Some exceptions in the black-listing
+                if (s.equals("dustPlastic"))
+                {
+                    continue;
+                }
+
+                for (ItemStack stack : Utils.getODItems(s))
+                {
+                    if (stack == null)
+                    {
+                        continue;
+                    }
+
+                    mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
+                }
+            }
+        }
         //trees
         addMapping("logWood", 32);
         addMapping("plankWood", 8);
@@ -105,28 +127,7 @@ public class OreDictionaryMapper extends LazyMapper {
         addMapping("treeLeaves", 1);
 
 
-        //Black-list all ores/dusts
-        for (String s : OreDictionary.getOreNames())
-        {
-            if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed"))
-            {
-                //Some exceptions in the black-listing
-                if (s.equals("dustPlastic"))
-                {
-                    continue;
-                }
 
-                for (ItemStack stack : Utils.getODItems(s))
-                {
-                    if (stack == null)
-                    {
-                        continue;
-                    }
-
-                    mapper.setValue(new NormalizedSimpleStack(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
-                }
-            }
-        }
     }
 
     protected void addMapping(String odName, int value) {

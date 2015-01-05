@@ -138,7 +138,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack> {
     }
 
     protected void addMapping(ItemStack itemStack, int value) {
-        this.mapper.setValue(new NormalizedSimpleStack(itemStack), value, IMappingCollector.FixedValue.FixAndInherit);
+        this.mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), value, IMappingCollector.FixedValue.FixAndInherit);
     }
 
     protected void addMapping(String unlocalName, int meta, int value)
