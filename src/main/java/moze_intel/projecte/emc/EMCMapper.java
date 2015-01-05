@@ -22,7 +22,7 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CraftingMapper(), new SmeltingMapper());
+		List<IEMCMapper<NormalizedSimpleStack>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
 		GraphMapper<NormalizedSimpleStack> graphMapper = new GraphMapper<NormalizedSimpleStack>();
 		for (IEMCMapper<NormalizedSimpleStack> emcMapper: emcMappers) {
 			emcMapper.addMappings(graphMapper);

@@ -27,14 +27,27 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
             boolean handled = false;
             ItemStack recipeOutput = recipe.getRecipeOutput();
             if (recipeOutput == null) continue;
+            NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput);
             for (IRecipeMapper recipeMapper: recipeMappers) {
                 if (recipeMapper.canHandle(recipe)) {
                     handled = true;
-                    Iterable<IngredientMap<NormalizedSimpleStack>> ingredientMaps = recipeMapper.getIngredientsFor(recipe);
-                    if (ingredientMaps != null) {
-                        for (IngredientMap<NormalizedSimpleStack> ingredientMap: ingredientMaps) {
-                            mapper.addConversionMultiple(recipeOutput.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput), ingredientMap.getMap());
+                    Iterable<Iterable<ItemStack>> ingredientMultipleVariantions = recipeMapper.getIngredientsFor(recipe);
+                    if (ingredientMultipleVariantions != null) {
+                        for (Iterable<ItemStack> variation: ingredientMultipleVariantions) {
+                            IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
+                            for (ItemStack stack: variation) {
+                                if (stack == null || stack.getItem() == null) continue;
+                                if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
+                                    if (stack.getItem().hasContainerItem(stack)) {
+                                        ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
+                                    }
+                                    ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+                                }
+                            }
+                            mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm , ingredientMap.getMap());
                         }
+                    } else {
+                        PELogger.logWarn("RecipeMapper " + recipeMapper + " failed to map Recipe" + recipe);
                     }
                     break;
                 }
@@ -51,7 +64,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
 
     protected static interface IRecipeMapper {
         public boolean canHandle(IRecipe recipe);
-        public Iterable<IngredientMap<NormalizedSimpleStack>> getIngredientsFor(IRecipe recipe);
+        public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe);
     }
 
     //TODO implement IRecipeMapper for ShapedRecipes, ShapelessRecipes, ShapedOreRecipe, ShapelessOreRecipe
@@ -63,7 +76,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
         }
 
         @Override
-        public Iterable<IngredientMap<NormalizedSimpleStack>> getIngredientsFor(IRecipe recipe) {
+        public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe) {
             Iterable recipeItems = null;
             if (recipe instanceof ShapedRecipes)
             {
@@ -73,26 +86,17 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
             {
                 recipeItems = ((ShapelessRecipes) recipe).recipeItems;
             }
-            List<Iterable<NormalizedSimpleStack>> inputCombinations = new LinkedList<Iterable<NormalizedSimpleStack>>();
-            List<NormalizedSimpleStack> fixedInputs = new LinkedList<NormalizedSimpleStack>();
+            List<ItemStack> inputs = new LinkedList<ItemStack>();
             for (Object o: recipeItems) {
                 if (o == null) continue;
                 if (o instanceof ItemStack) {
                     ItemStack recipeItem = (ItemStack)o;
-                    if (recipeItem.getItem().doesContainerItemLeaveCraftingGrid(recipeItem)) {
-                        fixedInputs.add(NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeItem));
-                    }
+                    inputs.add(recipeItem);
                 } else {
                     PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
                 }
             }
-            List<IngredientMap<NormalizedSimpleStack>> allVariations = new LinkedList<IngredientMap<NormalizedSimpleStack>>();
-            IngredientMap<NormalizedSimpleStack> inputs = new IngredientMap<NormalizedSimpleStack>();
-            for (NormalizedSimpleStack ingredient: fixedInputs) {
-                inputs.addIngredient(ingredient, 1);
-            }
-            allVariations.add(inputs);
-            return allVariations;
+            return Arrays.asList((Iterable<ItemStack>)inputs);
         }
 
     }
@@ -130,28 +134,28 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
         }
 
         @Override
-        public Iterable<IngredientMap<NormalizedSimpleStack>> getIngredientsFor(IRecipe recipe) {
-            List<IngredientMap<NormalizedSimpleStack>> inputs = new LinkedList<IngredientMap<NormalizedSimpleStack>>();
+        public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe) {
+            List<IngredientMap<ItemStack>> inputs = new LinkedList<IngredientMap<ItemStack>>();
             Iterable<Object> recipeItems = null;
             if (recipe instanceof ShapedOreRecipe)
             {
                 recipeItems = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
             }
-            else if (recipe instanceof ShapelessRecipes)
+            else if (recipe instanceof ShapelessOreRecipe)
             {
                 recipeItems = ((ShapelessOreRecipe) recipe).getInput();
             }
             if (recipeItems == null) return null;
-            ArrayList<Iterable<NormalizedSimpleStack>> variableInputs = new ArrayList<Iterable<NormalizedSimpleStack>>();
-            ArrayList<NormalizedSimpleStack> fixedInputs = new ArrayList<NormalizedSimpleStack>();
+            ArrayList<Iterable<ItemStack>> variableInputs = new ArrayList<Iterable<ItemStack>>();
+            ArrayList<ItemStack> fixedInputs = new ArrayList<ItemStack>();
             for (Object recipeItem: recipeItems) {
                 if (recipeItem instanceof ItemStack) {
-                    fixedInputs.add(NormalizedSimpleStack.getNormalizedSimpleStackFor((ItemStack)recipeItem));
+                    fixedInputs.add((ItemStack)recipeItem);
                 } else if (recipeItem instanceof Iterable) {
-                    List<NormalizedSimpleStack> recipeItemOptions = new LinkedList<NormalizedSimpleStack>();
+                    List<ItemStack> recipeItemOptions = new LinkedList<ItemStack>();
                     for (Object option: (Iterable)recipeItem) {
                         if (option instanceof ItemStack) {
-                            recipeItemOptions.add(NormalizedSimpleStack.getNormalizedSimpleStackFor((ItemStack)option));
+                            recipeItemOptions.add((ItemStack)option);
                         } else {
                             PELogger.logWarn("Can not map recipe " + recipe + " because found " + option.toString() + " instead of ItemStack");
                             return null;
@@ -160,14 +164,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack> {
                     variableInputs.add(recipeItemOptions);
                 }
             }
-            for (Iterable<NormalizedSimpleStack> recipeIngredients: recursiveRecipeInput(fixedInputs, variableInputs)) {
-                IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
-                for (NormalizedSimpleStack i: recipeIngredients) {
-                    ingredientMap.addIngredient(i, 1);
-                }
-                inputs.add(ingredientMap);
-            }
-            return inputs;
+            return recursiveRecipeInput(fixedInputs, variableInputs);
         }
     }
 }

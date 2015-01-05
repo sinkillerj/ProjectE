@@ -1,8 +1,10 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.utils.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 import org.omg.CORBA.ORB;
 import scala.Int;
@@ -14,8 +16,8 @@ public class NormalizedSimpleStack {
     public int id;
     public int damage;
     public static Map<Integer, Set<Integer>> idWithUsedMetaData = new HashMap<Integer, Set<Integer>>();
-    public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
-        NormalizedSimpleStack normStack = new NormalizedSimpleStack(stack);
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(int id, int damage) {
+        NormalizedSimpleStack normStack = new NormalizedSimpleStack(id,damage);
         Set<Integer> usedMetadata;
         if (!idWithUsedMetaData.containsKey(normStack.id)) {
             usedMetadata = new HashSet<Integer>();
@@ -26,6 +28,22 @@ public class NormalizedSimpleStack {
         usedMetadata.add(normStack.damage);
         return normStack;
     }
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(Block block) {
+        return getNormalizedSimpleStackFor(new ItemStack(block));
+    }
+
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(Item item) {
+        return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(item), 0);
+    }
+
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
+        return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage());
+    }
+
+    public static NormalizedSimpleStack getNormalizedSimpleStackFor(Fluid fluid) {
+        return getNormalizedSimpleStackFor(fluid.getBlock());
+    }
+
     public static void addMappings(IMappingCollector<NormalizedSimpleStack> mapper) {
         for(Map.Entry<Integer,Set<Integer>> entry: idWithUsedMetaData.entrySet()) {
             entry.getValue().remove(OreDictionary.WILDCARD_VALUE);
@@ -44,11 +62,6 @@ public class NormalizedSimpleStack {
             throw new IllegalArgumentException("Invalid Item with getIDForObject() == -1");
         }
         this.damage = damage;
-    }
-
-    private NormalizedSimpleStack(ItemStack stack)
-    {
-        this (Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage());
     }
 
     public ItemStack toItemStack()
