@@ -462,6 +462,71 @@ public class GraphMapperTest {
         assertEquals(1, getValue(values,"notExploitable"));
     }
 
+    @org.junit.Test
+    public void testGenerateValuesCoalToFireChargeWithWildcard() throws Exception {
+        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        String[] logTypes = new String[]{"logA", "logB", "logC"};
+        String[] log2Types = new String[]{"log2A", "log2B", "log2C"};
+        String[] coalTypes = new String[]{"coal0", "coal1"};
+
+        graphMapper.setValue("coalore", 0, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("coal0", 128, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("gunpowder", 192, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("blazepowder", 768, GraphMapper.FixedValue.FixAndInherit);
+
+        for (String logType: logTypes) {
+            graphMapper.setValue(logType, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.addConversion(1, "log*", Arrays.asList(logType));
+        }
+        for (String log2Type: log2Types) {
+            graphMapper.setValue(log2Type, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.addConversion(1, "log2*", Arrays.asList(log2Type));
+        }
+        graphMapper.addConversion(1, "coal1", Arrays.asList("log*"));
+        for (String coalType: coalTypes) {
+            graphMapper.addConversion(1, "coal*", Arrays.asList(coalType));
+            graphMapper.addConversion(3, "firecharge", Arrays.asList(coalType, "gunpowder", "blazepowder"));
+        }
+        graphMapper.addConversion(1, "firecharge*", Arrays.asList("firecharge"));
+        Map<String, Integer> m = new HashMap<String, Integer>();
+        m.put("coal0", 9);
+        graphMapper.addConversionMultiple(1, "coalblock", m);
+
+        m.clear();
+        //Philosophers stone smelting 7xCoalOre -> 7xCoal
+        m.put("coalore", 7);
+        m.put("coal*", 1);
+        graphMapper.addConversionMultiple(7, "coal0", m);
+
+        m.clear();
+        //Philosophers stone smelting logs
+        m.put("log*", 7);
+        m.put("coal*", 1);
+        graphMapper.addConversionMultiple(7, "coal1", m);
+
+        m.clear();
+        //Philosophers stone smelting log2s
+        m.put("log2*", 7);
+        m.put("coal*", 1);
+        graphMapper.addConversionMultiple(7, "coal1", m);
+
+
+        //Smelting single coal ore
+        graphMapper.addConversion(1, "coal0", Arrays.asList("coalore"));
+        //Coal Block
+        graphMapper.addConversion(9, "coal0", Arrays.asList("coalblock"));
+
+        Map<String,Double> values = graphMapper.generateValues();
+        for (String logType: logTypes) {
+            assertEquals(32, getValue(values, logType));
+        }
+        assertEquals(32, getValue(values,"log*"));
+        assertEquals(128, getValue(values,"coal0"));
+        assertEquals(32, getValue(values,"coal1"));
+        assertEquals(32, getValue(values,"coal*"));
+        assertEquals(330, getValue(values,"firecharge"));
+    }
+
     private static <T,V extends Number> int getValue(Map<T,V> map, T key) {
         V val = map.get(key);
         if (val == null) return 0;
