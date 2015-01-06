@@ -68,7 +68,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                 ingredientsWithAmount.put(ingredient, 1);
             }
         }
-        this.addConversionMultiple(outnumber, output, ingredientsWithAmount);
+        this.addConversionMultiple(outnumber, output, ingredientsWithAmount, baseValueForConversion);
     }
 
     /**
