@@ -185,7 +185,9 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                 System.out.println("Finished solvableThings...");
                 solvableThings.clear();
             }
+            System.out.println("No Solvables left... Trying to remove Conversions");
             //Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion
+            List<Conversion<T>> toRemove = new LinkedList<Conversion<T>>();
             for (Map.Entry<T,List<Conversion<T>>> entry:conversionsFor.entrySet()) {
                 if (getNoDependencyConversionCountFor(entry.getKey()) == 0) {
                     //Thing has no noDepencencyConversion => ignore this
@@ -199,11 +201,22 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         //Conversion has ingredients left and there are other conversions without ingredients
                         int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
                         if (count >= conversion.outnumber || count == 0) {
-                            iterator.remove();
-                            lookAt.add(entry.getKey());
+                            System.out.format("Removing %s. Count: %s: %d -> %d; %d/%d\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size());
+                            for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
+                                System.out.format("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
+                            }
+                            toRemove.add(conversion);
                         }
                     }
                 }
+            }
+
+            for (Conversion<T> conversion: toRemove) {
+                getConversionsFor(conversion.output).remove(conversion);
+                for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+                    getUsesFor(ingredient).remove(conversion);
+                }
+                lookAt.add(conversion.output);
             }
         }
         for (Map.Entry<T,Double> fixedValueAfterInherit: fixValueAfterInherit.entrySet()) {
