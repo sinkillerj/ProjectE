@@ -188,12 +188,34 @@ public class GraphMapper<T> implements IMappingCollector<T> {
             System.out.println("No Solvables left... Trying to remove Conversions");
             //Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion
             List<Conversion<T>> toRemove = new LinkedList<Conversion<T>>();
+            boolean foundMinSolve = false;
             for (Map.Entry<T,List<Conversion<T>>> entry:conversionsFor.entrySet()) {
-                if (getNoDependencyConversionCountFor(entry.getKey()) == 0) {
+                System.out.format("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
+                if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size()) {
                     //Thing has no noDepencencyConversion => ignore this
                     continue;
                 }
                 //=> noDependencyConversionCount > 0
+                double minValue = Double.POSITIVE_INFINITY;
+                double minValueAll = Double.POSITIVE_INFINITY;
+                for (Conversion<T> conversion: entry.getValue()) {
+                    double conversionValue = conversion.value / conversion.outnumber;
+                    if (conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0) {
+                        if (0 < conversionValue && conversionValue < minValue) {
+                            minValue = conversionValue;
+                        }
+                    }
+                    if (conversionValue < minValueAll) {
+                        minValueAll = conversionValue;
+                    }
+                }
+                System.out.format("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
+                if (minValue == Double.POSITIVE_INFINITY) continue;
+                if (minValue <= minValueAll) {
+                    solvableThings.put(entry.getKey(), minValue);
+                    foundMinSolve = true;
+                    continue;
+                }
                 Iterator<Conversion<T>> iterator = entry.getValue().iterator();
                 while (iterator.hasNext()) {
                     Conversion<T> conversion = iterator.next();
@@ -201,22 +223,27 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         //Conversion has ingredients left and there are other conversions without ingredients
                         int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
                         if (count >= conversion.outnumber || count == 0) {
-                            System.out.format("Removing %s. Count: %s: %d -> %d; %d/%d\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size());
+                            System.out.format("Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value/conversion.outnumber);
                             for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
                                 System.out.format("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
                             }
                             toRemove.add(conversion);
+                        } else {
+                            System.out.format("NOT Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value/conversion.outnumber);
                         }
+                    } else {
+                        System.out.format("Skipping %s\n", conversion);
                     }
                 }
             }
-
-            for (Conversion<T> conversion: toRemove) {
-                getConversionsFor(conversion.output).remove(conversion);
-                for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
-                    getUsesFor(ingredient).remove(conversion);
+            if (!foundMinSolve) {
+                for (Conversion<T> conversion : toRemove) {
+                    getConversionsFor(conversion.output).remove(conversion);
+                    for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+                        getUsesFor(ingredient).remove(conversion);
+                    }
+                    lookAt.add(conversion.output);
                 }
-                lookAt.add(conversion.output);
             }
         }
         for (Map.Entry<T,Double> fixedValueAfterInherit: fixValueAfterInherit.entrySet()) {
