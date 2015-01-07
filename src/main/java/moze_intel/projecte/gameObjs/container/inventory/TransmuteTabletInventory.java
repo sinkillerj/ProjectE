@@ -105,7 +105,7 @@ public class TransmuteTabletInventory implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
-		
+		NeiHelper.getItemFilter();
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
@@ -140,18 +140,7 @@ public class TransmuteTabletInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (!NeiHelper.itemFilterMatches(stack))
 				{
 					iter.remove();
 				}
@@ -171,18 +160,7 @@ public class TransmuteTabletInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (!NeiHelper.itemFilterMatches(stack))
 				{
 					iter.remove();
 				}
