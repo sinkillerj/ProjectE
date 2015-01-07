@@ -6,6 +6,15 @@ import moze_intel.projecte.utils.PELogger;
 import java.util.*;
 
 public class GraphMapper<T> implements IMappingCollector<T> {
+    private static final boolean DEBUG_GRAPHMAPPER = false;
+    private static void debugFormat(String format, Object ... args){
+        if (DEBUG_GRAPHMAPPER)
+            System.out.format(format, args);
+    }
+    private static void debugPrintln(String s) {
+        debugFormat("%s\n", s);
+    }
+
     protected Map<T,List<Conversion<T>>> conversionsFor = new HashMap<T, List<Conversion<T>>>();
     protected Map<T,List<Conversion<T>>> usedIn = new HashMap<T,List<Conversion<T>>>();
     protected Map<T,Double> fixValueBeforeInherit = new HashMap<T, Double>();
@@ -125,7 +134,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                 for (T something : lookAt) {
                     if (getConversionsFor(something).size() == 0) {
                         solvableThings.put(something, 0.0);
-                        System.out.format("Set value for %s to %f because 0 conversions left\n",something.toString(), 0.0);
+                        debugFormat("Set value for %s to %f because 0 conversions left\n", something.toString(), 0.0);
                     } else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
                         //The output of this usage has only Conversions with a value left: Choose minimum value
                         double minValue = 0;
@@ -140,7 +149,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
                         assert !solvableThings.containsKey(something);
                         solvableThings.put(something, minValue);
-                        System.out.format("Set value for %s to %f because %d/%d Conversions solved\n",something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
+                        debugFormat("Set value for %s to %f because %d/%d Conversions solved\n", something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
                     }
                 }
                 lookAt.clear();
@@ -182,15 +191,15 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         }
                     }
                 }
-                System.out.println("Finished solvableThings...");
+                debugPrintln("Finished solvableThings...");
                 solvableThings.clear();
             }
-            System.out.println("No Solvables left... Trying to remove Conversions");
+            debugPrintln("No Solvables left... Trying to remove Conversions");
             //Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion
             List<Conversion<T>> toRemove = new LinkedList<Conversion<T>>();
             boolean foundMinSolve = false;
             for (Map.Entry<T,List<Conversion<T>>> entry:conversionsFor.entrySet()) {
-                System.out.format("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
+                debugFormat("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
                 if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size()) {
                     //Thing has no noDepencencyConversion => ignore this
                     continue;
@@ -209,7 +218,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         minValueAll = conversionValue;
                     }
                 }
-                System.out.format("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
+                debugFormat("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
                 if (minValue == Double.POSITIVE_INFINITY) continue;
                 if (minValue <= minValueAll) {
                     solvableThings.put(entry.getKey(), minValue);
@@ -223,16 +232,16 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         //Conversion has ingredients left and there are other conversions without ingredients
                         int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
                         if (count >= conversion.outnumber || count == 0) {
-                            System.out.format("Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value/conversion.outnumber);
+                            debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
                             for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
-                                System.out.format("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
+                                debugFormat("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
                             }
                             toRemove.add(conversion);
                         } else {
-                            System.out.format("NOT Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value/conversion.outnumber);
+                            debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
                         }
                     } else {
-                        System.out.format("Skipping %s\n", conversion);
+                        debugFormat("Skipping %s\n", conversion);
                     }
                 }
             }
@@ -304,4 +313,5 @@ public class GraphMapper<T> implements IMappingCollector<T> {
             return "" + value + " + " + this.ingredientsWithAmount + " => " + outnumber + "x" + output;
         }
     }
+
 }
