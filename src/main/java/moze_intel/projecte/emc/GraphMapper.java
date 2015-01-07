@@ -219,7 +219,6 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                     }
                 }
                 debugFormat("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
-                if (minValue == Double.POSITIVE_INFINITY) continue;
                 if (minValue <= minValueAll) {
                     solvableThings.put(entry.getKey(), minValue);
                     foundMinSolve = true;
@@ -231,7 +230,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                     if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
                         //Conversion has ingredients left and there are other conversions without ingredients
                         int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
-                        if (count >= conversion.outnumber || count == 0) {
+                        if (count >= conversion.outnumber) {
                             debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
                             for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
                                 debugFormat("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
