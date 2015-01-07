@@ -220,10 +220,12 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                 }
                 debugFormat("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
                 if (minValue <= minValueAll) {
+                    //There is a valid Conversion, that has the smallest value => we can set this value right away
                     solvableThings.put(entry.getKey(), minValue);
                     foundMinSolve = true;
                     continue;
                 }
+                if (foundMinSolve) continue; //We already have a solution by selecting minimum => Don't need to think about removing conversions.
                 Iterator<Conversion<T>> iterator = entry.getValue().iterator();
                 while (iterator.hasNext()) {
                     Conversion<T> conversion = iterator.next();
@@ -231,13 +233,13 @@ public class GraphMapper<T> implements IMappingCollector<T> {
                         //Conversion has ingredients left and there are other conversions without ingredients
                         int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
                         if (count >= conversion.outnumber) {
-                            debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
+                            debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, min: %f this: %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
                             for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
                                 debugFormat("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
                             }
                             toRemove.add(conversion);
                         } else {
-                            debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, %f < %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
+                            debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, min: %f this: %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
                         }
                     } else {
                         debugFormat("Skipping %s\n", conversion);
