@@ -272,5 +272,9 @@ public class GraphMapper<T> implements IMappingCollector<T> {
             }
             this.value = 0;
         }
+
+        public String toString() {
+            return "" + value + " + " + this.ingredientsWithAmount + " => " + outnumber + "x" + output;
+        }
     }
 }
