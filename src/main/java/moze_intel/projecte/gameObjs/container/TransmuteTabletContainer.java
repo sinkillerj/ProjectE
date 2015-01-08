@@ -116,12 +116,7 @@ public class TransmuteTabletContainer extends Container
 			}
 			
 			table.handleKnowledge(newStack);
-			
-			if (stack.getItem() == ObjHandler.kleinStars)
-			{
-				table.addEmc(KleinStar.getEmc(stack));
-			}
-			
+
 			if (stack.stackSize == 0)
 			{
 				slot.putStack(null);
