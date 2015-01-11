@@ -44,7 +44,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
 								}
 							}
-							mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
+							if (recipeOutput.stackSize > 0) {
+								mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
+							} else {
+								PELogger.logWarn("Ignoring Recipe because outnumber <= 0: " + ingredientMap.getMap().toString() + " -> " + recipeOutput);
+							}
 						}
 					} else {
 						PELogger.logWarn("RecipeMapper " + recipeMapper + " failed to map Recipe" + recipe);

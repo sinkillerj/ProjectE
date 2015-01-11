@@ -63,6 +63,8 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
+		if (outnumber <= 0)
+			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
 		conversion.value = baseValueForConversion;
