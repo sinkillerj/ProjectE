@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.emc.arithmetics.LongArithmetic;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import scala.Int;
@@ -25,13 +26,13 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimple() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
         graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(4, getValue(values, "c4"));
@@ -40,15 +41,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleMultiRecipe() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         //2 Recipes for c4
         graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
         graphMapper.addConversion(2, "c4", Arrays.asList("b2","b2"));
         graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(2, getValue(values,"c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
@@ -56,15 +57,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleMultiRecipeWithEmptyAlternative() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         //2 Recipes for c4
         graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
         graphMapper.addConversion(1, "c4", new LinkedList<String>());
         graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(4, getValue(values,"c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
@@ -72,14 +73,14 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleFixedAfterInherit() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
         graphMapper.addConversion(1, "b2", Arrays.asList("a1","a1"));
-        graphMapper.setValue("b2", 20, GraphMapper.FixedValue.FixAfterInherit);
+        graphMapper.setValue("b2", 20L, GraphMapper.FixedValue.FixAfterInherit);
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(20, getValue(values,"b2"));
         assertEquals(4, getValue(values,"c4"));
@@ -87,14 +88,14 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleFixedDoNotInherit() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "b2", Arrays.asList("a1","a1"));
         graphMapper.addConversion(1, "c4", Arrays.asList("b2","b2"));
-        graphMapper.setValue("b2", 20, GraphMapper.FixedValue.FixAndDoNotInherit);
+        graphMapper.setValue("b2", 20L, GraphMapper.FixedValue.FixAndDoNotInherit);
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(20, getValue(values,"b2"));
         assertEquals(0, getValue(values,"c4"));
@@ -102,14 +103,14 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c",  Arrays.asList("a1", "a1"));
         graphMapper.addConversion(1, "c",  Arrays.asList("a1", "b"));
-        graphMapper.setValue("b", 20, GraphMapper.FixedValue.FixAndDoNotInherit);
+        graphMapper.setValue("b", 20L, GraphMapper.FixedValue.FixAndDoNotInherit);
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(20, getValue(values,"b"));
         assertEquals(2, getValue(values,"c"));
@@ -117,14 +118,14 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleSelectMinValue() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("b2", 2, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("b2", 2L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c", Arrays.asList("a1","a1"));
         graphMapper.addConversion(1, "c", Arrays.asList("b2", "b2"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(2, getValue(values,"c"));
@@ -132,15 +133,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleSelectMinValueWithDependency() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("b2",2, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("b2",2L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "c", Arrays.asList("a1","a1"));
         graphMapper.addConversion(1, "c", Arrays.asList("b2","b2"));
         graphMapper.addConversion(1, "d", Arrays.asList("c","c"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(2, getValue(values,"c"));
@@ -149,13 +150,13 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesSimpleWoodToWorkBench() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("planks",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("planks",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(4, "planks", Arrays.asList("wood"));
         graphMapper.addConversion(1, "workbench", Arrays.asList("planks","planks","planks","planks"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(0,getValue(values,"wood"));
         assertEquals(1, getValue(values,"planks"));
         assertEquals(4, getValue(values,"workbench"));
@@ -163,10 +164,10 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesWood() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
         for (char i: "ABCD".toCharArray()) {
-            graphMapper.setValue("wood" + i, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.setValue("wood" + i, 32L, GraphMapper.FixedValue.FixAndInherit);
             graphMapper.addConversion(4, "planks"+i, Arrays.asList("wood"+i));
         }
 
@@ -182,7 +183,7 @@ public class GraphMapperTest {
             for (char j: "ABCD".toCharArray())
                     graphMapper.addConversion(1,"wooden_hoe",Arrays.asList("stick","stick","planks"+i,"planks"+j));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         for (char i: "ABCD".toCharArray())
             assertEquals(32,getValue(values,"wood"+i));
         for (char i: "ABCD".toCharArray())
@@ -195,13 +196,13 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesDeepConversions() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1",1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1",1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "b1", Arrays.asList("a1"));
         graphMapper.addConversion(1, "c1", Arrays.asList("b1"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(1, getValue(values,"b1"));
         assertEquals(1, getValue(values,"c1"));
@@ -209,15 +210,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesDeepInvalidConversion() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "b", Arrays.asList("a1", "invalid1"));
         graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
         graphMapper.addConversion(1, "invalid2", Arrays.asList("a1", "invalid3"));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(0, getValue(values,"b"));
         assertEquals(0, getValue(values,"invalid1"));
@@ -227,15 +228,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesMultiRecipeDeepInvalid() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
         graphMapper.addConversion(1, "b2", Arrays.asList("invalid1"));
         graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(0, getValue(values,"invalid1"));
@@ -244,14 +245,14 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesMultiRecipesInvalidIngredient() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
         graphMapper.addConversion(1, "b2", Arrays.asList("invalid"));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(2, getValue(values,"b2"));
         assertEquals(0, getValue(values,"invalid"));
@@ -259,15 +260,15 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesCycleRecipe() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
         graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
         graphMapper.addConversion(1, "cycle-1", Arrays.asList("cycle-2"));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(1, getValue(values,"cycle-1"));
         assertEquals(1, getValue(values,"cycle-2"));
@@ -275,9 +276,9 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesBigCycleRecipe() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
         graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
         graphMapper.addConversion(1, "cycle-3", Arrays.asList("cycle-2"));
@@ -286,7 +287,7 @@ public class GraphMapperTest {
         graphMapper.addConversion(1, "cycle-1", Arrays.asList("cycle-5"));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(1, getValue(values,"cycle-1"));
         assertEquals(1, getValue(values,"cycle-2"));
@@ -297,7 +298,7 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesFuelAndMatter() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
         final String coal = "coal";
         final String aCoal = "alchemicalCoal";
         final String aCoalBlock = "alchemicalCoalBlock";
@@ -307,7 +308,7 @@ public class GraphMapperTest {
         final String aFuelBlock = "aeternalisFuelBlock";
         String repeat;
 
-        graphMapper.setValue(coal, 128, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue(coal, 128L, GraphMapper.FixedValue.FixAndInherit);
 
         graphMapper.addConversion(1, aCoal, Arrays.asList(coal, coal, coal, coal));
         graphMapper.addConversion(4, aCoal , Arrays.asList(mFuel));
@@ -326,7 +327,7 @@ public class GraphMapperTest {
         repeat=aFuel;
         graphMapper.addConversion(1, aFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
 
-        graphMapper.setValue("diamondBlock", 73728, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("diamondBlock", 73728L, GraphMapper.FixedValue.FixAndInherit);
         final String dMatter = "darkMatter";
         final String dMatterBlock = "darkMatterBlock";
 
@@ -341,7 +342,7 @@ public class GraphMapperTest {
         graphMapper.addConversion(4, rMatterBlock, Arrays.asList(rMatter, rMatter, rMatter, rMatter));
 
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(128, getValue(values,coal));
         assertEquals(512, getValue(values,aCoal));
         assertEquals(4608, getValue(values,aCoalBlock));
@@ -358,26 +359,26 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesWool() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
 
         final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
-        final int[] dyeValue = new int[] {864, 176, 48, 16};
+        final long[] dyeValue = new long[] {864L, 176L, 48L, 16L};
         for (int i = 0; i < dyes.length; i++) {
             graphMapper.setValue("dye"+dyes[i], dyeValue[i], GraphMapper.FixedValue.FixAndInherit);
             graphMapper.addConversion(1, "wool" + dyes[i], Arrays.asList("woolWhite", "dye"+dyes[i]));
         }
-        graphMapper.setValue("string", 12, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("string", 12L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "woolWhite", Arrays.asList("string", "string", "string", "string"));
 
-        graphMapper.setValue("stick", 4, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("plank", 8, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("stick", 4L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("plank", 8L, GraphMapper.FixedValue.FixAndInherit);
         for (String dye: dyes) {
             graphMapper.addConversion(1,"bed", Arrays.asList("plank","plank","plank", "wool"+dye,"wool"+dye,"wool"+dye));
             graphMapper.addConversion(3,"carpet"+dye, Arrays.asList("wool"+dye,"wool"+dye));
             graphMapper.addConversion(1,"painting", Arrays.asList("wool"+dye, "stick","stick","stick","stick","stick","stick","stick","stick"));
         }
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         for (int i = 0; i < dyes.length; i++) {
             assertEquals(dyeValue[i], getValue(values,"dye"+dyes[i]));
         }
@@ -398,10 +399,10 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesBucketRecipe() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
-        graphMapper.setValue("somethingElse", 9, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("container", 23, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("fluid", 17, GraphMapper.FixedValue.FixAndInherit);
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
+        graphMapper.setValue("somethingElse", 9L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("container", 23L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("fluid", 17L, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
         //Recipe that only consumes fluid:
@@ -411,7 +412,7 @@ public class GraphMapperTest {
         map.put("somethingElse", 2);
         graphMapper.addConversionMultiple(1, "fluidCraft", map);
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(9, getValue(values,"somethingElse"));
         assertEquals(23, getValue(values,"container"));
         assertEquals(17, getValue(values,"fluid"));
@@ -422,10 +423,10 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesWaterBucketRecipe() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
-        graphMapper.setValue("somethingElse", 9, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("container", 23, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("fluid", Double.NaN, GraphMapper.FixedValue.FixAndInherit);
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
+        graphMapper.setValue("somethingElse", 9L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("container", 23L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("fluid", Long.MIN_VALUE, GraphMapper.FixedValue.FixAndInherit);
         graphMapper.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
         //Recipe that only consumes fluid:
@@ -435,7 +436,7 @@ public class GraphMapperTest {
         map.put("somethingElse", 2);
         graphMapper.addConversionMultiple(1, "fluidCraft", map);
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(9, getValue(values,"somethingElse"));
         assertEquals(23, getValue(values,"container"));
         assertEquals(0, getValue(values,"fluid"));
@@ -446,8 +447,8 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesCycleRecipeExploit() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
-        graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
+        graphMapper.setValue("a1", 1L, GraphMapper.FixedValue.FixAndInherit);
         //Exploitable Cycle Recype
         graphMapper.addConversion(1, "exploitable", Arrays.asList("a1"));
         graphMapper.addConversion(2, "exploitable", Arrays.asList("exploitable"));
@@ -456,7 +457,7 @@ public class GraphMapperTest {
         graphMapper.addConversion(1, "notExploitable", Arrays.asList("a1"));
         graphMapper.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         assertEquals(1, getValue(values,"a1"));
         assertEquals(0, getValue(values,"exploitable"));
         assertEquals(1, getValue(values,"notExploitable"));
@@ -464,22 +465,22 @@ public class GraphMapperTest {
 
     @org.junit.Test
     public void testGenerateValuesCoalToFireChargeWithWildcard() throws Exception {
-        GraphMapper<String> graphMapper = new GraphMapper<String>();
+        GraphMapper<String, Long> graphMapper = new GraphMapper<String, Long>(new LongArithmetic());;
         String[] logTypes = new String[]{"logA", "logB", "logC"};
         String[] log2Types = new String[]{"log2A", "log2B", "log2C"};
         String[] coalTypes = new String[]{"coal0", "coal1"};
 
-        graphMapper.setValue("coalore", 0, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("coal0", 128, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("gunpowder", 192, GraphMapper.FixedValue.FixAndInherit);
-        graphMapper.setValue("blazepowder", 768, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("coalore", 0L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("coal0", 128L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("gunpowder", 192L, GraphMapper.FixedValue.FixAndInherit);
+        graphMapper.setValue("blazepowder", 768L, GraphMapper.FixedValue.FixAndInherit);
 
         for (String logType: logTypes) {
-            graphMapper.setValue(logType, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.setValue(logType, 32L, GraphMapper.FixedValue.FixAndInherit);
             graphMapper.addConversion(1, "log*", Arrays.asList(logType));
         }
         for (String log2Type: log2Types) {
-            graphMapper.setValue(log2Type, 32, GraphMapper.FixedValue.FixAndInherit);
+            graphMapper.setValue(log2Type, 32L, GraphMapper.FixedValue.FixAndInherit);
             graphMapper.addConversion(1, "log2*", Arrays.asList(log2Type));
         }
         graphMapper.addConversion(1, "coal1", Arrays.asList("log*"));
@@ -516,7 +517,7 @@ public class GraphMapperTest {
         //Coal Block
         graphMapper.addConversion(9, "coal0", Arrays.asList("coalblock"));
 
-        Map<String,Double> values = graphMapper.generateValues();
+        Map<String,Long> values = graphMapper.generateValues();
         for (String logType: logTypes) {
             assertEquals(32, getValue(values, logType));
         }

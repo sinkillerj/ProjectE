@@ -46,7 +46,7 @@ public class NormalizedSimpleStack {
 		return getNormalizedSimpleStackFor(fluid.getBlock());
 	}
 
-	public static void addMappings(IMappingCollector<NormalizedSimpleStack> mapper) {
+	public static void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
 		for (Map.Entry<Integer, Set<Integer>> entry : idWithUsedMetaData.entrySet()) {
 			entry.getValue().remove(OreDictionary.WILDCARD_VALUE);
 			entry.getValue().add(0);
