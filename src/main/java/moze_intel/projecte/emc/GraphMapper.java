@@ -5,7 +5,7 @@ import moze_intel.projecte.utils.PELogger;
 
 import java.util.*;
 
-public class GraphMapper<T> implements IMappingCollector<T> {
+public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollector<T, V> {
 	private static final boolean DEBUG_GRAPHMAPPER = false;
 
 	private static void debugFormat(String format, Object... args) {
@@ -19,9 +19,14 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 
 	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();
 	protected Map<T, List<Conversion>> usedIn = new HashMap<T, List<Conversion>>();
-	protected Map<T, Double> fixValueBeforeInherit = new HashMap<T, Double>();
-	protected Map<T, Double> fixValueAfterInherit = new HashMap<T, Double>();
+	protected Map<T, V> fixValueBeforeInherit = new HashMap<T, V>();
+	protected Map<T, V> fixValueAfterInherit = new HashMap<T, V>();
 	protected Map<T, Integer> noDependencyConversionCount = new HashMap<T, Integer>();
+
+	IValueArithmetic<V> arithmetic;
+	public GraphMapper(IValueArithmetic<V> arithmetic) {
+		this.arithmetic = arithmetic;
+	}
 
 	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
 		List<V> list;
@@ -53,10 +58,10 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 	}
 
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		addConversionMultiple(outnumber, output, ingredientsWithAmount, 0.0);
+		addConversionMultiple(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
 	}
 
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, double baseValueForConversion) {
+	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
@@ -73,10 +78,10 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 	}
 
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
-		addConversion(outnumber, output, ingredients, 0.0);
+		addConversion(outnumber, output, ingredients, arithmetic.getZero());
 	}
 
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, double baseValueForConversion) {
+	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
 		Map<T, Integer> ingredientsWithAmount = new HashMap<T, Integer>();
 		for (T ingredient : ingredients) {
 			if (ingredientsWithAmount.containsKey(ingredient)) {
@@ -90,14 +95,14 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 	}
 
 	/**
-	 * Set a Value for something. value has to be >= 0 or Double.NaN, which indicates that 'something' can be used in
+	 * Set a Value for something. value has to be >= 0 or Free, which indicates that 'something' can be used in
 	 * Conversions, but does not add anything to the value of the Conversion-result.
 	 *
 	 * @param something
-	 * @param value     >= 0 or Double.NaN
+	 * @param value
 	 * @param type
 	 */
-	public void setValue(T something, double value, FixedValue type) {
+	public void setValue(T something, V value, FixedValue type) {
 		switch (type) {
 			case FixAndInherit:
 				if (fixValueBeforeInherit.containsKey(something))
@@ -110,7 +115,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 			case FixAndDoNotInherit:
 				if (fixValueBeforeInherit.containsKey(something))
 					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + 0.0);
-				fixValueBeforeInherit.put(something, 0.0);
+				fixValueBeforeInherit.put(something, arithmetic.getZero());
 				if (fixValueAfterInherit.containsKey(something))
 					PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
 				fixValueAfterInherit.put(something, value);
@@ -130,14 +135,14 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 	}
 
 
-	public Map<T, Double> generateValues() {
-		Map<T, Double> valueFor = new HashMap<T, Double>();
-		Map<T, Double> solvableThings = new HashMap<T, Double>();
+	public Map<T, V> generateValues() {
+		Map<T, V> valueFor = new HashMap<T, V>();
+		Map<T, V> solvableThings = new HashMap<T, V>();
 
 		//Everything, that only appears in 'uses' and has no conversion itself has a value of 0.
 		for (T someThing : usedIn.keySet()) {
 			if (!conversionsFor.containsKey(someThing) || conversionsFor.get(someThing).size() == 0) {
-				solvableThings.put(someThing, 0.0);
+				solvableThings.put(someThing, arithmetic.getZero());
 			}
 		}
 
@@ -149,20 +154,20 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 			while (true) {
 				for (T something : lookAt) {
 					if (getConversionsFor(something).size() == 0) {
-						solvableThings.put(something, 0.0);
+						solvableThings.put(something, arithmetic.getZero());
 						debugFormat("Set value for %s to %f because 0 conversions left\n", something.toString(), 0.0);
 					} else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
 						//The output of this usage has only Conversions with a value left: Choose minimum value
-						double minValue = 0;
+						V minValue = arithmetic.getZero();
 						for (Conversion conversion : getConversionsFor(something)) {
 							assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
-							double thisValue = conversion.value / conversion.outnumber;
-							assert thisValue >= 0;
-							if (minValue == 0 || (0 < thisValue && thisValue < minValue)) {
-								minValue = conversion.value / conversion.outnumber;
+							V thisValue = arithmetic.div(conversion.value,  conversion.outnumber);
+							assert thisValue.compareTo(arithmetic.getZero()) >= 0;
+							if (arithmetic.isZero(minValue) || (thisValue.compareTo(arithmetic.getZero()) > 0 && thisValue.compareTo(minValue) < 0)) {
+								minValue = thisValue;
 							}
 						}
-						assert 0 <= minValue && minValue < Double.POSITIVE_INFINITY;
+						assert minValue.compareTo(arithmetic.getZero()) >= 0;
 						assert !solvableThings.containsKey(something);
 						solvableThings.put(something, minValue);
 						debugFormat("Set value for %s to %f because %d/%d Conversions solved\n", something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
@@ -171,12 +176,12 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				lookAt.clear();
 				if (solvableThings.isEmpty()) break;
 
-				for (Map.Entry<T, Double> solvableThing : solvableThings.entrySet()) {
+				for (Map.Entry<T, V> solvableThing : solvableThings.entrySet()) {
 					if (valueFor.containsKey(solvableThing.getKey())) continue;
-					if (!solvableThing.getValue().isNaN()) {
+					if (!arithmetic.isFree(solvableThing.getValue())) {
 						valueFor.put(solvableThing.getKey(), solvableThing.getValue());
 					}
-					if (solvableThing.getValue() > 0 || solvableThing.getValue().isNaN()) {
+					if (solvableThing.getValue().compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(solvableThing.getValue())) {
 						//Solvable Thing has a Value. Set it in all Conversions
 						for (Conversion use : getUsesFor(solvableThing.getKey())) {
 							assert use.ingredientsWithAmount != null;
@@ -184,8 +189,8 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 							if (amount == null)
 								throw new RuntimeException("F u!");
 							assert amount != null && amount != 0;
-							if (!solvableThing.getValue().isNaN()) {
-								use.value += amount * Math.floor(solvableThing.getValue());
+							if (!arithmetic.isFree(solvableThing.getValue())) {
+								use.value = arithmetic.add(arithmetic.mul(amount, solvableThing.getValue()), use.value);
 							}
 							use.ingredientsWithAmount.remove(solvableThing.getKey());
 							if (use.ingredientsWithAmount.size() == 0) {
@@ -221,21 +226,21 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 					continue;
 				}
 				//=> noDependencyConversionCount > 0
-				double minValue = Double.POSITIVE_INFINITY;
-				double minValueAll = Double.POSITIVE_INFINITY;
-					double conversionValue = conversion.value / conversion.outnumber;
+				V minValue = null;
+				V minValueAll = null;
 				for (Conversion conversion : entry.getValue()) {
+					V conversionValue = arithmetic.div(conversion.value, conversion.outnumber);
 					if (conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0) {
-						if (0 < conversionValue && conversionValue < minValue) {
+						if (conversionValue.compareTo(arithmetic.getZero()) > 0 && (minValue == null || conversionValue.compareTo(minValue) < 0)) {
 							minValue = conversionValue;
 						}
 					}
-					if (conversionValue < minValueAll) {
+					if (minValueAll == null || conversionValue.compareTo(minValueAll) < 0) {
 						minValueAll = conversionValue;
 					}
 				}
 				debugFormat("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
-				if (minValue <= minValueAll) {
+				if (minValue != null && minValue.compareTo(minValueAll) <= 0) {
 					//There is a valid Conversion, that has the smallest value => we can set this value right away
 					solvableThings.put(entry.getKey(), minValue);
 					foundMinSolve = true;
@@ -250,13 +255,13 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 						//Conversion has ingredients left and there are other conversions without ingredients
 						int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
 						if (count >= conversion.outnumber) {
-							debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, min: %f this: %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
+							debugFormat("Removing %s. Count: %s: %d -> %d; %d/%d, min: %s this: %s\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, arithmetic.div(conversion.value, conversion.outnumber));
 							for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
 								debugFormat("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
 							}
 							toRemove.add(conversion);
 						} else {
-							debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, min: %f this: %f\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, conversion.value / conversion.outnumber);
+							debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, min: %s this: %s\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, arithmetic.div(conversion.value, conversion.outnumber));
 						}
 					} else {
 						debugFormat("Skipping %s\n", conversion);
@@ -273,7 +278,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				}
 			}
 		}
-		for (Map.Entry<T, Double> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
+		for (Map.Entry<T, V> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
 			valueFor.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
 		}
 		return valueFor;
@@ -308,7 +313,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 		T output;
 
 		int outnumber = 1;
-		double value = 0;
+		V value;
 		Map<T, Integer> ingredientsWithAmount;
 
 		protected Conversion(T output) {
@@ -326,7 +331,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				this.ingredientsWithAmount.clear();
 				this.ingredientsWithAmount = null;
 			}
-			this.value = 0;
+			this.value = arithmetic.getZero();
 		}
 
 		public String toString() {
