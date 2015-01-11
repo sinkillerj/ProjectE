@@ -17,8 +17,8 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 		debugFormat("%s\n", s);
 	}
 
-	protected Map<T, List<Conversion<T>>> conversionsFor = new HashMap<T, List<Conversion<T>>>();
-	protected Map<T, List<Conversion<T>>> usedIn = new HashMap<T, List<Conversion<T>>>();
+	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();
+	protected Map<T, List<Conversion>> usedIn = new HashMap<T, List<Conversion>>();
 	protected Map<T, Double> fixValueBeforeInherit = new HashMap<T, Double>();
 	protected Map<T, Double> fixValueAfterInherit = new HashMap<T, Double>();
 	protected Map<T, Integer> noDependencyConversionCount = new HashMap<T, Integer>();
@@ -34,11 +34,11 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 		return list;
 	}
 
-	protected List<Conversion<T>> getConversionsFor(T something) {
+	protected List<Conversion> getConversionsFor(T something) {
 		return getOrCreateList(conversionsFor, something);
 	}
 
-	protected List<Conversion<T>> getUsesFor(T something) {
+	protected List<Conversion> getUsesFor(T something) {
 		return getOrCreateList(usedIn, something);
 	}
 
@@ -59,13 +59,13 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, double baseValueForConversion) {
 		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
 		//Add the Conversions to the conversionsFor and usedIn Maps:
-		Conversion<T> conversion = new Conversion<T>(output, outnumber, ingredientsWithAmount);
+		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
 		conversion.value = baseValueForConversion;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
 
 		for (Map.Entry<T, Integer> ingredient : ingredientsWithAmount.entrySet()) {
-			List<Conversion<T>> usesForIngredient = getUsesFor(ingredient.getKey());
+			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
 			if (ingredient.getValue() == null)
 				throw new IllegalArgumentException("ingredient amount value has to be != null");
 			usesForIngredient.add(conversion);
@@ -154,7 +154,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 					} else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
 						//The output of this usage has only Conversions with a value left: Choose minimum value
 						double minValue = 0;
-						for (Conversion<T> conversion : getConversionsFor(something)) {
+						for (Conversion conversion : getConversionsFor(something)) {
 							assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
 							double thisValue = conversion.value / conversion.outnumber;
 							assert thisValue >= 0;
@@ -178,7 +178,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 					}
 					if (solvableThing.getValue() > 0 || solvableThing.getValue().isNaN()) {
 						//Solvable Thing has a Value. Set it in all Conversions
-						for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
+						for (Conversion use : getUsesFor(solvableThing.getKey())) {
 							assert use.ingredientsWithAmount != null;
 							Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
 							if (amount == null)
@@ -195,7 +195,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 						}
 					} else {
 						//Solvable thing has no Value - All Conversions using this are invalid
-						for (Conversion<T> use : getUsesFor(solvableThing.getKey())) {
+						for (Conversion use : getUsesFor(solvableThing.getKey())) {
 							for (T ingredient : use.ingredientsWithAmount.keySet()) {
 								if (!ingredient.equals(solvableThing.getKey())) {
 									getUsesFor(ingredient).remove(use);
@@ -212,9 +212,9 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 			}
 			debugPrintln("No Solvables left... Trying to remove Conversions");
 			//Remove all Conversions, that have ingredients left for things that have a noDepencencyConversion
-			List<Conversion<T>> toRemove = new LinkedList<Conversion<T>>();
+			List<Conversion> toRemove = new LinkedList<Conversion>();
 			boolean foundMinSolve = false;
-			for (Map.Entry<T, List<Conversion<T>>> entry : conversionsFor.entrySet()) {
+			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
 				debugFormat("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
 				if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size()) {
 					//Thing has no noDepencencyConversion => ignore this
@@ -223,8 +223,8 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				//=> noDependencyConversionCount > 0
 				double minValue = Double.POSITIVE_INFINITY;
 				double minValueAll = Double.POSITIVE_INFINITY;
-				for (Conversion<T> conversion : entry.getValue()) {
 					double conversionValue = conversion.value / conversion.outnumber;
+				for (Conversion conversion : entry.getValue()) {
 					if (conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0) {
 						if (0 < conversionValue && conversionValue < minValue) {
 							minValue = conversionValue;
@@ -243,9 +243,9 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				}
 				if (foundMinSolve)
 					continue; //We already have a solution by selecting minimum => Don't need to think about removing conversions.
-				Iterator<Conversion<T>> iterator = entry.getValue().iterator();
+				Iterator<Conversion> iterator = entry.getValue().iterator();
 				while (iterator.hasNext()) {
-					Conversion<T> conversion = iterator.next();
+					Conversion conversion = iterator.next();
 					if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
 						//Conversion has ingredients left and there are other conversions without ingredients
 						int count = findDeepIngredientCountForConversion(conversion, conversion.output, new HashSet<T>());
@@ -264,7 +264,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				}
 			}
 			if (!foundMinSolve) {
-				for (Conversion<T> conversion : toRemove) {
+				for (Conversion conversion : toRemove) {
 					getConversionsFor(conversion.output).remove(conversion);
 					for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
 						getUsesFor(ingredient).remove(conversion);
@@ -279,7 +279,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 		return valueFor;
 	}
 
-	protected int findDeepIngredientCountForConversion(Conversion<T> conversion, T something, Set<T> visited) {
+	protected int findDeepIngredientCountForConversion(Conversion conversion, T something, Set<T> visited) {
 		int count = 0;
 		if (conversion.ingredientsWithAmount != null) {
 			for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
@@ -292,7 +292,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 				} else {
 					int minCount = Integer.MAX_VALUE;
 					visited.add(ingredient);
-					for (Conversion<T> ingredientConversion : getConversionsFor(ingredient)) {
+					for (Conversion ingredientConversion : getConversionsFor(ingredient)) {
 						int ingredientConversionCount = findDeepIngredientCountForConversion(ingredientConversion, something, visited);
 						if (ingredientConversionCount < minCount) minCount = ingredientConversionCount;
 					}
@@ -304,7 +304,7 @@ public class GraphMapper<T> implements IMappingCollector<T> {
 		return count;
 	}
 
-	protected static class Conversion<T> {
+	protected class Conversion {
 		T output;
 
 		int outnumber = 1;
