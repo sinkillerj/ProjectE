@@ -117,12 +117,7 @@ public class TransmuteContainer extends Container
 			}
 			
 			tile.handleKnowledge(newStack);
-			
-			if (stack.getItem() == ObjHandler.kleinStars)
-			{
-				tile.addEmc(KleinStar.getEmc(stack));
-			}
-			
+
 			if (stack.stackSize == 0)
 			{
 				slot.putStack(null);
