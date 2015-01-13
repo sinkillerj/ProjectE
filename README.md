@@ -8,7 +8,10 @@ If you have a bug to report, open an issue. Please try the latest dev build befo
 #Downloads
 http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 
-(Dev builds may be unstable, use them at your own risk)
+#Join the Conversation
+IRC Client: \#ProjectE on irc.esper.net
+
+Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
 #The Team
 SinKillerJ - Current developer: https://twitter.com/sinkillerj
