@@ -26,6 +26,8 @@ public final class ProjectEConfig
 	public static boolean enableTransTable;
 	public static boolean enableRedFurnace;
 	public static boolean enableDarkFurnace;
+
+	public static boolean enableTimeWatch;
 	
 	public static void init(File configFile)
 	{
@@ -60,6 +62,8 @@ public final class ProjectEConfig
 
 			enableRedFurnace = config.getBoolean("enableRedFurnace", "blocks", true, "Enable Red Matter Furnace recipe.");
 			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe.");
+
+			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time.");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}
