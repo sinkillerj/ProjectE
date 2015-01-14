@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
@@ -9,6 +10,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,13 +26,22 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (world.isRemote) return stack;
-		
-		if (shootProjectile(player, stack))
+		if (!ProjectEConfig.enableDestructionCatalyst)
 		{
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			player.addChatComponentMessage(new ChatComponentText("Item disabled by server admin."));
+			return stack;
 		}
-		
+
+		if (ProjectEConfig.enableDestructionCatalyst)
+		{
+			if (world.isRemote) return stack;
+
+			if (shootProjectile(player, stack))
+			{
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			}
+		}
+
 		return stack;
 	}
 	

@@ -28,6 +28,7 @@ public final class ProjectEConfig
 	public static boolean enableDarkFurnace;
 
 	public static boolean enableTimeWatch;
+	public static boolean enableDestructionCatalyst;
 	
 	public static void init(File configFile)
 	{
@@ -64,7 +65,9 @@ public final class ProjectEConfig
 			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe.");
 
 			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time.");
-			
+
+			enableDestructionCatalyst = config.getBoolean("enableCatalystLens", "items", true, "Enable Destruction Catalyst, Catalytic Lens and Hyper Kinetic Lens.");
+
 			PELogger.logInfo("Loaded configuration file.");
 		}
 		catch (Exception e)
