@@ -37,10 +37,13 @@ public class DestructionCatalyst extends ItemCharge
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (!ProjectEConfig.enableDestructionCatalyst)
+		if (world.isRemote)
 		{
-			player.addChatComponentMessage(new ChatComponentText("Item disabled by server admin."));
-			return stack;
+			if (!ProjectEConfig.enableDestructionCatalyst)
+			{
+				player.addChatComponentMessage(new ChatComponentText("Item disabled by server admin."));
+				return stack;
+			}
 		}
 
 		if (ProjectEConfig.enableDestructionCatalyst)
