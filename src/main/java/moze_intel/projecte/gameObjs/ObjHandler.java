@@ -449,9 +449,6 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 4, 0), philosStone, new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 2), philosStone, new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 4, 1), philosStone, new ItemStack(fuels, 1, 2));
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.glass_pane, 8), philosStone, Blocks.glass, Blocks.glass, Blocks.glass, Blocks.glass);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.obsidian), philosStone, Blocks.log, Blocks.log);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.log, 2), philosStone, Blocks.obsidian);
 		
 		//Covalence dust
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 0), Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, new ItemStack(Items.coal, 1, 1));
