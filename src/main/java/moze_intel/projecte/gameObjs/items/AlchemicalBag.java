@@ -29,7 +29,6 @@ public class AlchemicalBag extends ItemPE
 {
 	private final String[] colors = new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"};
 	private final String[] localizedColors = new String[] {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Silver", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
-	private final char[] colorCodes = new char[] {'f', '6', 'd', '9', 'e', 'a', 'c', '8', '7', 'b', '5', '1', '6', '2', '4', '0'}; 
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -182,7 +181,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
-		String color = " ("+"\u00a7"+colorCodes[i]+localizedColors[i]+"\u00a7"+colorCodes[0]+")";
+		String color = " ("+localizedColors[i]+")";
 		return name + color;
 	}
 	
