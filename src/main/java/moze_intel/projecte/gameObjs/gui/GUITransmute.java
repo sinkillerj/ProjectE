@@ -13,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-
 public class GUITransmute extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
@@ -24,7 +23,7 @@ public class GUITransmute extends GuiContainer
 		super(new TransmuteContainer(invPlayer, tile));
 		this.tile = tile;
 		this.xSize = 228;
-		this.ySize = 202;
+		this.ySize = 196;
 	}
 	
 	@Override
@@ -48,20 +47,20 @@ public class GUITransmute extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString("Transmutation", 24, 10, 4210752);
+		this.fontRendererObj.drawString("Transmutation", 16, 8, 4210752);
 		String emc = String.format("EMC: %,d", (int) tile.getStoredEmc());
-		this.fontRendererObj.drawString(emc, 6, this.ySize - 96, 4210752);
+		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 		
 		if (tile.learnFlag > 0)
 		{
-			this.fontRendererObj.drawString("L", 98, 36, 4210752);
-			this.fontRendererObj.drawString("e", 99, 44, 4210752);
-			this.fontRendererObj.drawString("a", 100, 52, 4210752);
-			this.fontRendererObj.drawString("r", 101, 60, 4210752);
-			this.fontRendererObj.drawString("n", 102, 68, 4210752);
-			this.fontRendererObj.drawString("e", 103, 76, 4210752);
-			this.fontRendererObj.drawString("d", 104, 84, 4210752);
-			this.fontRendererObj.drawString("!", 107, 92, 4210752);
+			this.fontRendererObj.drawString("L", 98, 30, 4210752);
+			this.fontRendererObj.drawString("e", 99, 38, 4210752);
+			this.fontRendererObj.drawString("a", 100, 46, 4210752);
+			this.fontRendererObj.drawString("r", 101, 54, 4210752);
+			this.fontRendererObj.drawString("n", 102, 62, 4210752);
+			this.fontRendererObj.drawString("e", 103, 70, 4210752);
+			this.fontRendererObj.drawString("d", 104, 78, 4210752);
+			this.fontRendererObj.drawString("!", 107, 86, 4210752);
 			
 			tile.learnFlag--;
 		}

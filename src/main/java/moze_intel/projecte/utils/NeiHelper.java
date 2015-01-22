@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import net.minecraft.item.ItemStack;
 import scala.actors.threadpool.Arrays;
 
+import moze_intel.projecte.config.ProjectEConfig;
+
 public final class NeiHelper 
 {
 	public static boolean haveNei = false;
@@ -16,22 +18,25 @@ public final class NeiHelper
 
 	public static void init() 
 	{
-		try 
+		if (ProjectEConfig.enableNEI)
 		{
-			Class<?> clsLayoutManager = Class.forName("codechicken.nei.LayoutManager");
-			Class<?> clsTextField = Class.forName("codechicken.nei.TextField");
-			Class<?> clsSearchField = Class.forName("codechicken.nei.SearchField");
-			fldSearchField = clsLayoutManager.getField("searchField");
-			mtdText = clsTextField.getMethod("text");
-			mtdSetText = clsTextField.getMethod("setText", String.class);
-			mtdGetFilter = clsSearchField.getMethod("getFilter");
-			haveNei = true;
-			PELogger.logInfo("NEI helper loaded!");
+			try 
+			{
+				Class<?> clsLayoutManager = Class.forName("codechicken.nei.LayoutManager");
+				Class<?> clsTextField = Class.forName("codechicken.nei.TextField");
+				Class<?> clsSearchField = Class.forName("codechicken.nei.SearchField");
+				fldSearchField = clsLayoutManager.getField("searchField");
+				mtdText = clsTextField.getMethod("text");
+				mtdSetText = clsTextField.getMethod("setText", String.class);
+				mtdGetFilter = clsSearchField.getMethod("getFilter");
+				haveNei = true;
+				PELogger.logInfo("NEI helper loaded!");
 			
-		}
-		catch (Exception e) 
-		{
-			PELogger.logWarn("NEI failed to load: " + e.toString());
+			}
+			catch (Exception e) 
+			{
+				PELogger.logWarn("NEI failed to load: " + e.toString());
+			}
 		}
 	}
 
@@ -82,7 +87,7 @@ public final class NeiHelper
 	
 	public static void resetSearchBar()
 	{
-		if (haveNei)
+		if (haveNei && ProjectEConfig.clearNEI)
 		{
 			try
 			{

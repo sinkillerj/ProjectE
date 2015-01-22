@@ -23,41 +23,41 @@ public class TransmuteTabletContainer extends Container
 		this.table = inventory;
 		
 		//Tablet Inventory
-		this.addSlotToContainer(new SlotTabletInput(table, 0, 43, 29));
-		this.addSlotToContainer(new SlotTabletInput(table, 1, 34, 47));
-		this.addSlotToContainer(new SlotTabletInput(table, 2, 52, 47));
-		this.addSlotToContainer(new SlotTabletInput(table, 3, 16, 56));
-		this.addSlotToContainer(new SlotTabletInput(table, 4, 70, 56));
-		this.addSlotToContainer(new SlotTabletInput(table, 5, 34, 65));
-		this.addSlotToContainer(new SlotTabletInput(table, 6, 52, 65));
-		this.addSlotToContainer(new SlotTabletInput(table, 7, 43, 83));
-		this.addSlotToContainer(new SlotTabletLock(table, 8, 158, 56));
-		this.addSlotToContainer(new SlotTabletConsume(table, 9, 107, 103));
-		this.addSlotToContainer(new SlotTabletOutput(table, 10, 123, 36));
-		this.addSlotToContainer(new SlotTabletOutput(table, 11, 140, 19));
-		this.addSlotToContainer(new SlotTabletOutput(table, 12, 158, 15));
-		this.addSlotToContainer(new SlotTabletOutput(table, 13, 176, 19));
-		this.addSlotToContainer(new SlotTabletOutput(table, 14, 193, 36));
-		this.addSlotToContainer(new SlotTabletOutput(table, 15, 199, 56));
-		this.addSlotToContainer(new SlotTabletOutput(table, 16, 193, 76));
-		this.addSlotToContainer(new SlotTabletOutput(table, 17, 176, 93));
-		this.addSlotToContainer(new SlotTabletOutput(table, 18, 158, 97));
-		this.addSlotToContainer(new SlotTabletOutput(table, 19, 140, 93));
-		this.addSlotToContainer(new SlotTabletOutput(table, 20, 123, 76));
-		this.addSlotToContainer(new SlotTabletOutput(table, 21, 116, 56));
-		this.addSlotToContainer(new SlotTabletOutput(table, 22, 158, 37));
-		this.addSlotToContainer(new SlotTabletOutput(table, 23, 139, 56));
-		this.addSlotToContainer(new SlotTabletOutput(table, 24, 177, 56));
-		this.addSlotToContainer(new SlotTabletOutput(table, 25, 158, 75));
+		this.addSlotToContainer(new SlotTabletInput(table, 0, 43, 23));
+		this.addSlotToContainer(new SlotTabletInput(table, 1, 34, 41));
+		this.addSlotToContainer(new SlotTabletInput(table, 2, 52, 41));
+		this.addSlotToContainer(new SlotTabletInput(table, 3, 16, 50));
+		this.addSlotToContainer(new SlotTabletInput(table, 4, 70, 50));
+		this.addSlotToContainer(new SlotTabletInput(table, 5, 34, 59));
+		this.addSlotToContainer(new SlotTabletInput(table, 6, 52, 59));
+		this.addSlotToContainer(new SlotTabletInput(table, 7, 43, 77));
+		this.addSlotToContainer(new SlotTabletLock(table, 8, 158, 50));
+		this.addSlotToContainer(new SlotTabletConsume(table, 9, 107, 97));
+		this.addSlotToContainer(new SlotTabletOutput(table, 10, 123, 30));
+		this.addSlotToContainer(new SlotTabletOutput(table, 11, 140, 13));
+		this.addSlotToContainer(new SlotTabletOutput(table, 12, 158, 9));
+		this.addSlotToContainer(new SlotTabletOutput(table, 13, 176, 13));
+		this.addSlotToContainer(new SlotTabletOutput(table, 14, 193, 30));
+		this.addSlotToContainer(new SlotTabletOutput(table, 15, 199, 50));
+		this.addSlotToContainer(new SlotTabletOutput(table, 16, 193, 70));
+		this.addSlotToContainer(new SlotTabletOutput(table, 17, 176, 87));
+		this.addSlotToContainer(new SlotTabletOutput(table, 18, 158, 91));
+		this.addSlotToContainer(new SlotTabletOutput(table, 19, 140, 87));
+		this.addSlotToContainer(new SlotTabletOutput(table, 20, 123, 70));
+		this.addSlotToContainer(new SlotTabletOutput(table, 21, 116, 50));
+		this.addSlotToContainer(new SlotTabletOutput(table, 22, 158, 31));
+		this.addSlotToContainer(new SlotTabletOutput(table, 23, 139, 50));
+		this.addSlotToContainer(new SlotTabletOutput(table, 24, 177, 50));
+		this.addSlotToContainer(new SlotTabletOutput(table, 25, 158, 69));
 		
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++) 
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 123 + i * 18));
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 117 + i * 18));
 		
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 181));
+			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
 		
 		table.openInventory();
 	}
