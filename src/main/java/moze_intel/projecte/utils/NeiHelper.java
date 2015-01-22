@@ -49,7 +49,7 @@ public final class NeiHelper
 		}
 	}
 	public static boolean itemFilterMatches(ItemStack stack) {
-		if (neiItemFilter == null || neiItemFilterMatchesMethod == null) return false;
+		if (neiItemFilter == null || neiItemFilterMatchesMethod == null) return true;
 		try {
 			Object result = neiItemFilterMatchesMethod.invoke(neiItemFilter, stack);
 			if (result instanceof Boolean)
