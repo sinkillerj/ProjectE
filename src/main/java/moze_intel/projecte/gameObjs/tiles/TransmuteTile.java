@@ -7,6 +7,7 @@ import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.NeiHelper;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -101,7 +102,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
-		
+		NeiHelper.getItemFilter();
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
@@ -136,18 +137,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (!NeiHelper.itemFilterMatches(stack))
 				{
 					iter.remove();
 				}
@@ -167,18 +157,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (!NeiHelper.itemFilterMatches(stack))
 				{
 					iter.remove();
 				}
