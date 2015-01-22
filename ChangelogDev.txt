@@ -1,3 +1,14 @@
+###Version 1.7.10-0.2d-dev14
+* NEW: Russian language file
+* NEW: Watch of Flowing Time can be disabled
+* NEW: Transmutation GUI uses NEI search filters
+* NEW: Config options for NEI integration and search clearing
+* FIXED: Transmutation GUI resized to allow NEI search bar in default MC window size
+* FIXED: A EMC dupe bug with Klein Stars
+* FIXED: A EMC dupe bug with Swiftwolfs Rending Gale
+* FIXED: Collectors making more than they should when a target is set
+* FIXED: Font color removed from Alchemical Bag item names due to visibility issues
+
 ###Version 1.7.10-0.2d-dev13
 * NEW: Even more tooltips
 * NEW: A logo has been added to the mod info screen
