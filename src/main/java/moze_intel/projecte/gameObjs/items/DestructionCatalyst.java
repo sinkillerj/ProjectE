@@ -26,9 +26,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class DestructionCatalyst extends ItemCharge
 {
+	protected int[] numRowsForCharge;
 	public DestructionCatalyst() 
 	{
-		super("destruction_catalyst", (byte) 4);
+		this("destruction_catalyst",new int[]{1,4,9,16});
+	}
+	protected DestructionCatalyst(String unlocalName, int[] numRowsForCharge) {
+		super(unlocalName, (byte)numRowsForCharge.length);
+		this.numRowsForCharge = numRowsForCharge;
 		this.setNoRepair();
 	}
 	
@@ -45,22 +50,7 @@ public class DestructionCatalyst extends ItemCharge
 			int numRows;
 			boolean hasAction = false;
 			
-			if (charge == 0)
-			{
-				numRows = 1;
-			}
-			else if (charge == 1)
-			{
-				numRows = 4;
-			}
-			else if (charge == 2)
-			{
-				numRows = 9;
-			}
-			else 
-			{
-				numRows = 16;
-			}
+			numRows = numRowsForCharge[charge];
 			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
@@ -110,6 +100,7 @@ public class DestructionCatalyst extends ItemCharge
 			
 			if (hasAction)
 			{
+				world.playSoundAtEntity(player, "projecte:destruct", 0.5F, 1.0F);
 				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
 			}
 		}
