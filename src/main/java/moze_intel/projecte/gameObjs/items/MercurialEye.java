@@ -112,6 +112,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					else
 						box.expand(0, charge * 2, charge).offset(0, -charge, 0);
 
+					break;
+
 				case EAST:
 					box.expand(0, charge, charge);
 					dX = 1;
