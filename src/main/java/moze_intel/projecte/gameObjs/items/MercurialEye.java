@@ -29,6 +29,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		this.setNoRepair();
 	}
 	
+	final private int NORMAL_MODE = 0;
+	final private int TRANSMUTATION_MODE = 1;
+
+	final private double WALL_MODE = Math.sin(Math.toRadians(45));
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -65,128 +70,121 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 			Vec3 look = player.getLookVec();
 
-			CoordinateBox box = null;
+			CoordinateBox box = new CoordinateBox(
+				mop.blockX,
+				mop.blockY,
+				mop.blockZ,
+				mop.blockX,
+				mop.blockY,
+				mop.blockZ
+			);
 
-			if (dir == ForgeDirection.UP)
-			{
-				if (look.yCoord >= -1 && look.yCoord <= -0.8)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY + 1, mop.blockZ - charge, mop.blockX + charge, mop.blockY + 1, mop.blockZ + charge);
-				}
-				else if (facing == 0 || facing == 2)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY + 1, mop.blockZ, mop.blockX + charge, mop.blockY + (charge * 2), mop.blockZ);
-				}
-				else
-				{
-					box = new CoordinateBox(mop.blockX, mop.blockY + 1, mop.blockZ - charge, mop.blockX, mop.blockY + (charge * 2), mop.blockZ + charge);
-				}
+			int dX = 0, dY = 0, dZ = 0;
+
+			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
+			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
+
+			boolean lookingAlongZ = facing == 0 || facing == 2;
+
+			switch (dir) {
+				case UP:
+					if (lookingDown)
+					{
+						box.expand(charge, 0, charge);
+						dY = 1;
+					}
+					else if (lookingAlongZ)
+						box.expand(charge, charge * 2, 0).offset(0, charge, 0);
+					else
+						box.expand(0, charge * 2, charge).offset(0, charge, 0);
+
+					break;
+
+				case DOWN:
+					if (lookingUp)
+					{
+						box.expand(charge, 0, charge);
+						dY = 1;
+
+					}
+					else if (lookingAlongZ)
+						box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
+					else
+						box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+
+				case EAST:
+					box.expand(0, charge, charge);
+					dX = 1;
+					break;
+
+				case WEST:
+					box.expand(0, charge, charge);
+					dX = -1;
+					break;
+
+				case SOUTH:
+					box.expand(charge, charge, 0);
+					dZ = 1;
+					break;
+
+				case NORTH:
+					box.expand(charge, charge, 0);
+					dZ = -1;
+					break;
 			}
-			else if (dir == ForgeDirection.DOWN)
-			{
-				if (look.yCoord >= 0.8 && look.yCoord <= 1)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY - 1, mop.blockZ - charge, mop.blockX + charge, mop.blockY - 1, mop.blockZ + charge);
-				}
-				else if (facing == 0 || facing == 2)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY - (charge * 2), mop.blockZ, mop.blockX + charge, mop.blockY - 1, mop.blockZ);
-				}
-				else
-				{
-					box = new CoordinateBox(mop.blockX, mop.blockY - (charge * 2), mop.blockZ - charge, mop.blockX, mop.blockY - 1, mop.blockZ + charge);
-				}
-			}
-			else if (dir == ForgeDirection.EAST)
-			{
-				box = new CoordinateBox(mop.blockX + 1, mop.blockY - charge, mop.blockZ - charge, mop.blockX + 1, mop.blockY + charge, mop.blockZ + charge);
-			}
-			else if (dir == ForgeDirection.WEST)
-			{
-				box = new CoordinateBox(mop.blockX - 1, mop.blockY - charge, mop.blockZ - charge, mop.blockX - 1, mop.blockY + charge, mop.blockZ + charge);
-			}
-			else if (dir == ForgeDirection.SOUTH)
-			{
-				box = new CoordinateBox(mop.blockX - charge, mop.blockY - charge, mop.blockZ + 1, mop.blockX + charge, mop.blockY + charge, mop.blockZ + 1);
-			}
-			else if (dir == ForgeDirection.NORTH)
-			{
-				box = new CoordinateBox(mop.blockX - charge, mop.blockY - charge, mop.blockZ - 1, mop.blockX + charge, mop.blockY + charge, mop.blockZ - 1);
-			}
+
+			if (NORMAL_MODE == mode)
+				box.offset(dX, dY, dZ);
 
 			if (box != null)
 			{
-				for (double x = box.minX; x <= box.maxX; x++)
-				for (double y = box.minY; y <= box.maxY; y++)
-				for (double z = box.minZ; z <= box.maxZ; z++)
+				for (int x = (int) box.minX; x <= (int) box.maxX; x++)
+				for (int y = (int) box.minY; y <= (int) box.maxY; y++)
+				for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 				{
-					Block b = world.getBlock((int) x, (int) y, (int) z);
+					Block b = world.getBlock(x, y, z);
 
-					if (mode == 0)
+					if (b == Blocks.air)
 					{
-						if (b != Blocks.air)
+						if (kleinEmc < reqEmc)
+							break;
+
+						world.setBlock(x, y, z, toSet);
+						removeKleinEMC(stack, reqEmc);
+						kleinEmc -= reqEmc;
+					}
+					else if (mode == TRANSMUTATION_MODE)
+					{
+						if (b == toSet || !Utils.doesItemHaveEmc(new ItemStack(b)))
 						{
 							continue;
 						}
 
-						if (kleinEmc >= reqEmc)
+						int emc = Utils.getEmcValue(new ItemStack(b));
+
+						if (emc > reqEmc)
 						{
-							world.setBlock((int) x, (int) y, (int) z, toSet);
-							removeKleinEMC(stack, reqEmc);
-							kleinEmc -= reqEmc;
+							int difference = emc - reqEmc;
+
+							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, Utils.getKleinStarMaxEmc(inventory[0]));
+
+							addKleinEMC(stack, difference);
+							world.setBlock(x, y, z, toSet);
 						}
-						else
+						else if (emc < reqEmc)
 						{
-							break;
-						}
-					}
-					else
-					{
-						if (b == Blocks.air)
-						{
-							if (kleinEmc >= reqEmc)
+							int difference = reqEmc - emc;
+
+							if (kleinEmc >= difference)
 							{
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-								removeKleinEMC(stack, reqEmc);
-								kleinEmc -= reqEmc;
-							}
-							else
-							{
-								break;
+								kleinEmc -= difference;
+								removeKleinEMC(stack, difference);
+								world.setBlock(x, y, z, toSet);
 							}
 						}
 						else
 						{
-							if (b == toSet || !Utils.doesItemHaveEmc(new ItemStack(b)))
-							{
-								continue;
-							}
-
-							int emc = Utils.getEmcValue(new ItemStack(b));
-
-							if (emc > reqEmc)
-							{
-								int difference = emc - reqEmc;
-
-								kleinEmc += MathHelper.clamp_double(kleinEmc, 0, Utils.getKleinStarMaxEmc(inventory[0]));
-								addKleinEMC(stack, difference);
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-							}
-							else if (emc < reqEmc)
-							{
-								int difference = reqEmc - emc;
-
-								if (kleinEmc >= difference)
-								{
-									kleinEmc -= difference;
-									removeKleinEMC(stack, difference);
-									world.setBlock((int) x, (int) y, (int) z, toSet);
-								}
-							}
-							else
-							{
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-							}
+							world.setBlock(x, y, z, toSet);
 						}
 					}
 				}
