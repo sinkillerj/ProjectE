@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Random;
 
 public class EntityHomingArrow extends EntityArrow
 {
@@ -41,7 +40,7 @@ public class EntityHomingArrow extends EntityArrow
 
 		AxisAlignedBB box = this.boundingBox;
 		
-		if (target == null)
+		if (target == null && !isInGround())
 		{
 			AxisAlignedBB bBox = box.expand(8, 8, 8);
 			List<EntityLiving> list = this.worldObj.getEntitiesWithinAABB(EntityLiving.class, bBox);
