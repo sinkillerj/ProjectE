@@ -16,7 +16,6 @@ public class EntityHomingArrow extends EntityArrow
 
 	private void init(World world)
 	{
-		rng = new Random();
 		this.world = world;
 	}
 
@@ -71,7 +70,19 @@ public class EntityHomingArrow extends EntityArrow
 		}
 		else if (!isInGround())
 		{
+			if (target.getHealth() == 0) 
+			{
+				target = null;
+				return;
+			}
+
 			world.spawnParticle("flame", box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
+
+			double d5 = target.posX - this.posX;
+			double d6 = target.boundingBox.minY + target.height - this.posY;
+			double d7 = target.posZ - this.posZ;
+			
+			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
 		}
 	}
 
