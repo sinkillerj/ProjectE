@@ -31,7 +31,7 @@ public class RedStar extends ItemCharge
 {
 	public RedStar() 
 	{
-		super("rm_morning_star", (byte) 4);
+		super("rm_morning_star", (byte)4);
 		this.setNoRepair();
 	}
 	
@@ -80,13 +80,13 @@ public class RedStar extends ItemCharge
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && this.getCharge(stack) != 0)
 		{
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			
 			if (mop == null || !mop.typeOfHit.equals(MovingObjectType.BLOCK))
 			{
-				int offset = this.getCharge(stack) + 3;
+				int offset = (this.getCharge(stack) - 1) + 3;
 				CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
 				List<ItemStack> drops = new ArrayList<ItemStack>();
 				
@@ -120,7 +120,7 @@ public class RedStar extends ItemCharge
 			}
 			else if (block.getHarvestTool(0) == null || block.getHarvestTool(0).equals("shovel"))
 			{
-				CoordinateBox box = getRelativeBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack) + 1);
+				CoordinateBox box = getRelativeBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), (this.getCharge(stack) - 1) + 1);
 				byte charge = this.getCharge(stack);
 
 				for (int x = (int) box.minX; x <= box.maxX; x++)

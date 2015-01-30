@@ -28,7 +28,7 @@ public class DestructionCatalyst extends ItemCharge
 {
 	public DestructionCatalyst() 
 	{
-		super("destruction_catalyst", (byte) 4);
+		super("destruction_catalyst", (byte)3);
 		this.setNoRepair();
 	}
 	

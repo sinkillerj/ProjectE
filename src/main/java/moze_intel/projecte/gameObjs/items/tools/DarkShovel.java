@@ -29,7 +29,7 @@ public class DarkShovel extends ItemCharge
 {
 	public DarkShovel() 
 	{
-		super("dm_shovel", (byte) 3);
+		super("dm_shovel", (byte)1);
 		this.setNoRepair();
 	}
 	

@@ -33,7 +33,7 @@ public class RedPick extends ItemMode
 {
 	public RedPick()
 	{
-		super("rm_pick", (byte) 4, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
+		super("rm_pick", (byte)3, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
 		this.setNoRepair();
 	}
 	

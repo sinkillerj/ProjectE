@@ -31,7 +31,7 @@ public class DarkHammer extends ItemCharge
 {
 	public DarkHammer() 
 	{
-		super("dm_hammer", (byte) 3);
+		super("dm_hammer", (byte)2);
 		this.setNoRepair();
 	}
 	

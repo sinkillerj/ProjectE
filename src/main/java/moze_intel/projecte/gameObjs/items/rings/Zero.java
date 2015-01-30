@@ -29,7 +29,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	
 	public Zero() 
 	{
-		super("zero_ring", (byte) 4);
+		super("zero_ring", (byte)4);
 		this.setContainerItem(this);
 		this.setNoRepair();
 	}
@@ -74,7 +74,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 		if (!world.isRemote)
 		{
 			CoordinateBox box = new CoordinateBox(player.boundingBox);
-			int offset = 4 + this.getCharge(stack);
+			int offset = 3 + this.getCharge(stack);
 			box.expand(offset, offset, offset);
 			
 			for (int x = (int) box.minX; x <= box.maxX; x++)

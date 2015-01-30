@@ -31,7 +31,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 {
 	public CataliticLens() 
 	{
-		super("catalitic_lens", (byte) 4);
+		super("catalitic_lens", (byte)7);
 		this.setNoRepair();
 	}
 	
@@ -53,7 +53,15 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 			else if (charge == 1)
 				numRows = 16;
 			else if (charge == 2)
+				numRows = 24;
+			else if (charge == 3)
 				numRows = 32;
+			else if (charge == 4)
+				numRows = 40;
+			else if (charge == 5)
+				numRows = 48;
+			else if (charge == 6)
+				numRows = 56;
 			else numRows = 64;
 			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);

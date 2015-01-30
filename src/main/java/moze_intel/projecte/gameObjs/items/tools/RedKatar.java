@@ -39,7 +39,7 @@ public class RedKatar extends ItemMode
 {
 	public RedKatar() 
 	{
-		super("rm_katar", (byte) 4, new String[] {"De-Foresting", "Hoe", "Shear", "Attack"});
+		super("rm_katar", (byte)4, new String[] {"De-Foresting", "Hoe", "Shear", "Attack"});
 		this.setNoRepair();
 	}
 	
@@ -307,6 +307,9 @@ public class RedKatar extends ItemMode
 			case 3:
 				offset = 32;
 				break;
+			case 4:
+				offset = 40;
+				break;
 		}
 		
 		AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
@@ -365,6 +368,9 @@ public class RedKatar extends ItemMode
 				break;
 			case 3:
 				offset = 7;
+				break;
+			case 4:
+				offset = 8;
 				break;
 		}
 		

@@ -29,7 +29,7 @@ public class RedShovel extends ItemCharge
 {
 	public RedShovel() 
 	{
-		super("rm_shovel", (byte) 4);
+		super("rm_shovel", (byte)3);
 		this.setNoRepair();
 	}
 	
