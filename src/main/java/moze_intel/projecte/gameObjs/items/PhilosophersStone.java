@@ -116,6 +116,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			{
 				getAxisOrientedLine(direction, charge, mBlock, result, pos, world, player);
 			}
+
+			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 			
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}

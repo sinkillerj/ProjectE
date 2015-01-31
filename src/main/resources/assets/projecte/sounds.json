@@ -14,5 +14,13 @@
         [
             "item/peuncharge"
         ]
+    },
+    "item.petransmute":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/petransmute"
+        ]
     }
 }
