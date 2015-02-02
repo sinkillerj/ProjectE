@@ -18,7 +18,7 @@ public final class ProjectEAPI
 	 * Users can still modify inter-mod EMC registration via command/configuration file.<br>
 	 * Can be called during pre-init, init or post-init.
 	 *
-	 * @param stack The ItemStack
+	 * @param stack The {@link ItemStack}
 	 * @param emcValue The EMC value
 	 */
 	public static void registerCustomEMC(ItemStack stack, int emcValue)

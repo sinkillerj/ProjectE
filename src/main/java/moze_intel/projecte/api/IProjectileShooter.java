@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 public interface IProjectileShooter
 {
 	/**
-	 * Called when the player presses the 'R' button.
+	 * Called when the {@link EntityPlayer} presses the 'R' button.
 	 *
 	 * @return true if the projectile was actually fired
 	 */
