@@ -110,7 +110,7 @@ tile.pe_fuel_block_0.name=Блок алхимического угля
 tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
 
-itemGroup.ProjectE=Project Exchange
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=Лучший друг алхимиков!
 achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень

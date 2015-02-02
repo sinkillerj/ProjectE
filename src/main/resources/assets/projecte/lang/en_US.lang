@@ -110,7 +110,7 @@ tile.pe_fuel_block_0.name=Alchemical Coal Block
 tile.pe_fuel_block_1.name=Mobius Fuel Block
 tile.pe_fuel_block_2.name=Aeternalis Fuel Block
 
-itemGroup.ProjectE=Project Exchange
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=An alchemist's best friend!
 achievement.phil_stone.desc=Let's get things started! Craft a philosopher's stone

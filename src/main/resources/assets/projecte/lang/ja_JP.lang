@@ -109,7 +109,7 @@ tile.pe_fuel_block_0.name=錬金炭ブロック
 tile.pe_fuel_block_1.name=メビウス燃料ブロック
 tile.pe_fuel_block_2.name=エターナリス燃料ブロック
 
-itemGroup.ProjectE=Project Exchange
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=錬金術士の右手！
 achievement.phil_stone.desc=さあ始めよう！ 賢者の石を作る

@@ -110,7 +110,7 @@ tile.pe_fuel_block_0.name=炼金煤炭块
 tile.pe_fuel_block_1.name=莫比乌斯燃料块
 tile.pe_fuel_block_2.name=永恒燃料块
 
-itemGroup.ProjectE=等价交换重制版
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=炼金术师的挚友
 achievement.phil_stone.desc=用贤者之石开启你的炼金之旅!
