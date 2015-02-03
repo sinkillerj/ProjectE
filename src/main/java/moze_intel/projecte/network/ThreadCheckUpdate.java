@@ -37,14 +37,14 @@ public class ThreadCheckUpdate extends Thread
 		
 		try
 		{
-			if (PECore.VERSION.contains("dev"))
-			{
-				connection = (HttpURLConnection) new URL(changelogDevURL).openConnection();
-			}
-			else
-			{
+			//if (PECore.VERSION.contains("dev"))
+			//{
+			//	connection = (HttpURLConnection) new URL(changelogDevURL).openConnection();
+			//}
+			//else
+			//{
 				connection = (HttpURLConnection) new URL(changelogURL).openConnection();
-			}
+			//}
 
 			connection.connect();
 			
