@@ -33,7 +33,7 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 			
 			if (pkt.search != null)
 			{
-				tile.filter = pkt.search.toLowerCase();
+				tile.filter = pkt.search;
 			}
 			else
 			{
@@ -48,7 +48,7 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 			
 			if (pkt.search != null)
 			{
-				inv.filter = pkt.search.toLowerCase();
+				inv.filter = pkt.search;
 			}
 			else
 			{
