@@ -30,4 +30,4 @@ Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
 #Thanks To
 x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x
 
-MidnightLightning - EE2 GUI Textures
+MidnightLightning - EE2 GUI Textures: https://github.com/MidnightLightning
