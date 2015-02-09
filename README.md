@@ -17,17 +17,17 @@ IRC Client: \#ProjectE on irc.esper.net
 Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
 #The Team
-SinKillerJ - Current developer: https://twitter.com/sinkillerj
+[SinKillerJ](https://twitter.com/sinkillerj) - Current developer
 
-MozeIntel - Original developer: https://twitter.com/Moze_Intel
+[MozeIntel](https://twitter.com/Moze_Intel) - Original developer
 
 MaPePeR - Assistant developer
 
-Kolatra - Assistant developer: https://twitter.com/ItsKolatra
+[Kolatra](https://twitter.com/ItsKolatra) - Assistant developer
 
-Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
+[Magic Banana](https://twitter.com/Magic_Banana_) - Texture artist
 
 #Thanks To
-x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x
+[x3n0ph0b3](https://twitter.com/x3n0ph0b3x) - EE2 creator, Allowed use of EE2 assets
 
 [MidnightLightning](https://github.com/MidnightLightning) - EE2 GUI Textures
