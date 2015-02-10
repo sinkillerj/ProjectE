@@ -18,7 +18,7 @@ public class DarkSword extends ItemCharge
 {
 	public DarkSword() 
 	{
-		super("dm_sword", (byte) 3);
+		super("dm_sword", (byte)2);
 		this.setNoRepair();
 	}
 	
@@ -32,7 +32,7 @@ public class DarkSword extends ItemCharge
 		
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
 		byte charge = this.getCharge(stack);
-		float totalDmg = 10.0f;
+		float totalDmg = 12.0f;
 		
 		if (charge > 0)
 		{

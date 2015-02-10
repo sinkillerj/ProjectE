@@ -25,7 +25,7 @@ public class RedAxe extends ItemCharge
 {
 	public RedAxe()
 	{
-		super("rm_axe", (byte) 4);
+		super("rm_axe", (byte)3);
 		this.setNoRepair();
 	}
 	

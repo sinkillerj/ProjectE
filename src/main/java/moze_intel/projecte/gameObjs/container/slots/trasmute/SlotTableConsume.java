@@ -35,12 +35,7 @@ public class SlotTableConsume extends Slot
 			toAdd += Utils.getEmcValue(stack);
 			stack.stackSize--;
 		}
-		
-		if (cache.getItem() == ObjHandler.kleinStars)
-		{
-			toAdd += KleinStar.getEmc(cache);
-		}
-		
+
 		tile.addEmcWithPKT(toAdd);
 		this.onSlotChanged();
 		tile.handleKnowledge(cache);

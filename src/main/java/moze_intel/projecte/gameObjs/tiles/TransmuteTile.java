@@ -147,7 +147,11 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
+				{
+					iter.remove();
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
 				}
@@ -178,7 +182,11 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
+				{
+					iter.remove();
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
 				}

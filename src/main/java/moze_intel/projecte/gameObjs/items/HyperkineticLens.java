@@ -17,7 +17,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 {
 	public HyperkineticLens() 
 	{
-		super("hyperkinetic_lens", (byte) 4);
+		super("hyperkinetic_lens", (byte)3);
 		this.setNoRepair();
 	}
 	

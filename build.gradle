@@ -29,6 +29,17 @@ minecraft {
     replaceIn "PECore.java"
 }
 
+repositories {
+    maven { //Waila Repo
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
+    maven { //NEI Repo
+        name 'CB Repo'
+        url "http://chickenbones.net/maven/"
+    }
+}
+ 
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
     // you may put jars on which you depend on in ./libs
@@ -43,7 +54,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compile "mcp.mobius.waila:Waila:1.5.8a_1.7.10"
 }
 
 processResources

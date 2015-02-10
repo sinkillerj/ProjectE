@@ -18,7 +18,7 @@ public class RedSword extends ItemCharge
 {
 	public RedSword() 
 	{
-		super("rm_sword", (byte) 4);
+		super("rm_sword", (byte)3);
 		this.setNoRepair();
 	}
 	
@@ -32,7 +32,7 @@ public class RedSword extends ItemCharge
 		
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
 		byte charge = this.getCharge(stack);
-		float totalDmg = 15.0f;
+		float totalDmg = 14.0f;
 		
 		if (charge > 0)
 		{

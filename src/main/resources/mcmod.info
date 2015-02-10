@@ -8,8 +8,8 @@
   "logoFile": "assets/projecte/logo.png",
   "url": "http://minecraft.curseforge.com/mc-mods/226410-projecte",
   "updateUrl": "",
-  "authorList": [ "sinkillerj", "Moze_Intel", "Kolatra", "Magic_Banana"],
-  "credits": "",
+  "authorList": [ "sinkillerj", "Moze_Intel" ],
+  "credits": "Thanks to:\nx3n0ph0b3 - EE2 creator. Allowed use of EE2 assets.\nMidnightLightning - EE2 GUI Textures.\nMagic Banana - Original ProjectE textures.\nKolatra - Assistant developer.\nMaPePeR - Assistant developer.",
   "parent": "",
   "screenshots": [],
   "dependencies": []

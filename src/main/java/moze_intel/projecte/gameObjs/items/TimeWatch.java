@@ -22,6 +22,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import moze_intel.projecte.config.ProjectEConfig;
+
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -34,7 +36,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	
 	public TimeWatch() 
 	{
-		super("time_watch", (byte) 3);
+		super("time_watch", (byte)2);
 		this.setNoRepair();
 	}
 
@@ -43,6 +45,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	{
 		if (!world.isRemote)
 		{
+			if (!ProjectEConfig.enableTimeWatch)
+			{
+				player.addChatComponentMessage(new ChatComponentText("Item disabled by server admin."));
+				return stack;
+			}
+
 			if (!stack.hasTagCompound())
 			{
 				stack.stackTagCompound = new NBTTagCompound();
@@ -67,6 +75,11 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		}
 		
 		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8)
+		{
+			return;
+		}
+
+		if (!ProjectEConfig.enableTimeWatch)
 		{
 			return;
 		}

@@ -17,7 +17,7 @@ public class DarkHoe extends ItemCharge
 {
 	public DarkHoe() 
 	{
-		super("dm_hoe", (byte) 3);
+		super("dm_hoe", (byte)2);
 		this.setNoRepair();
 	}
 	

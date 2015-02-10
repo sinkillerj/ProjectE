@@ -38,11 +38,6 @@ public class SlotTabletConsume extends Slot
 			stack.stackSize--;
 		}
 		
-		if (cache.getItem() == ObjHandler.kleinStars)
-		{
-			toAdd += KleinStar.getEmc(cache);
-		}
-		
 		table.addEmc(toAdd);
 		this.onSlotChanged();
 		table.handleKnowledge(cache);

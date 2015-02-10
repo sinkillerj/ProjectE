@@ -33,7 +33,7 @@ public class DarkShears extends ItemCharge
 {
 	public DarkShears()
 	{
-		super("dm_shears", (byte) 3);
+		super("dm_shears", (byte)2);
 		this.setNoRepair();
 	}
 	

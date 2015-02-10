@@ -85,7 +85,6 @@ public class PECore
 		proxy.registerRenderers();
 		
 		Utils.init();
-		NeiHelper.init();
 		AchievementHandler.init();
 	}
 	

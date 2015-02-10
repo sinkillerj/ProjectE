@@ -33,7 +33,7 @@ public class RedShears extends ItemCharge
 {
 	public RedShears()
 	{
-		super("rm_shears", (byte) 4);
+		super("rm_shears", (byte)3);
 		this.setNoRepair();
 	}
 	

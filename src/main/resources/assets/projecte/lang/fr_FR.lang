@@ -109,7 +109,7 @@ tile.pe_fuel_block_0.name=Bloc de charbon alchimique
 tile.pe_fuel_block_1.name=Bloc de combustible de Mœbius
 tile.pe_fuel_block_2.name=Bloc de combustible d'Æternalis
 
-itemGroup.ProjectE=Project Exchange
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=Le meilleur ami des alchimistes !
 achievement.phil_stone.desc=Commençons donc ! Fabriquons une pierre philosophale...

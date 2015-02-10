@@ -8,13 +8,26 @@ If you have a bug to report, open an issue. Please try the latest dev build befo
 #Downloads
 http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 
-(Dev builds may be unstable, use them at your own risk)
+#Classic Textures
+The ProjectE mod now uses EE2 textures. If you prefer the classic ProjectE textures by Magic Banana they can be found here: http://minecraft.curseforge.com/texture-packs/227513-projecte-classic-textures
+
+#Join the Conversation
+IRC Client: \#ProjectE on irc.esper.net
+
+Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
 #The Team
 SinKillerJ - Current developer: https://twitter.com/sinkillerj
 
 MozeIntel - Original developer: https://twitter.com/Moze_Intel
 
-Kolatra - Assistant developer, project collaborator: https://twitter.com/ItsKolatra
+MaPePeR - Assistant developer
+
+Kolatra - Assistant developer: https://twitter.com/ItsKolatra
 
 Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
+
+#Thanks To
+x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x
+
+MidnightLightning - EE2 GUI Textures: https://github.com/MidnightLightning

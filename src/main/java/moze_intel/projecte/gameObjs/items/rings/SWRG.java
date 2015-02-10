@@ -31,7 +31,7 @@ public class SWRG extends ItemPE implements IBauble
 	{
 		this.setUnlocalizedName("swrg");
 		this.setMaxStackSize(1);
-		this.setMaxDamage(3);
+		this.setMaxDamage(0);
 		this.setNoRepair();
 	}
 	

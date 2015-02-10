@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 public class ItemCharge extends ItemPE implements IItemCharge
 {
 	byte numCharges;
-	
+
 	public ItemCharge(String unlocalName, byte numCharges)
 	{
 		this.numCharges = numCharges;
@@ -30,7 +30,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 		byte charge = getCharge(stack);
 		
 		//Must be beetween 0.0D - 1.0D
-		return charge == 0 ? 1.0D : 1.0D - (double) charge / (double) (numCharges - 1);
+		return charge == 0 ? 1.0D : 1.0D - (double) charge / (double) (numCharges);
 	}
 	
 	@Override
@@ -61,16 +61,18 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	public void changeCharge(EntityPlayer player, ItemStack stack)
 	{
 		byte currentCharge = getCharge(stack);
-		
+
 		if (player.isSneaking())
 		{
 			if (currentCharge > 0)
 			{
+				player.worldObj.playSoundAtEntity(player, "projecte:item.peuncharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 				stack.stackTagCompound.setByte("Charge", (byte) (currentCharge - 1));
 			}
 		}
-		else if (currentCharge < numCharges - 1)
+		else if (currentCharge < numCharges)
 		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 			stack.stackTagCompound.setByte("Charge", (byte) (currentCharge + 1));
 		}
 	}
