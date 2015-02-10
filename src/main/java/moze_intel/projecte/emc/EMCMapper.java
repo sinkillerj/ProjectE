@@ -62,6 +62,7 @@ public final class EMCMapper
 			}
 		}
 		for (NormalizedSimpleStack stack: allItems) {
+			if (stack == null) continue;
 			int leftValue = left.containsKey(stack) ? left.get(stack) : 0;
 			char leftChar = left.containsKey(stack) ? '!' : ' ';
 			int rightValue = right.containsKey(stack) ? right.get(stack) : 0;;

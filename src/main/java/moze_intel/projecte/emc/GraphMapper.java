@@ -63,11 +63,13 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
+		if (output == null || ingredientsWithAmount.containsKey(null)) return;
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
 		conversion.value = baseValueForConversion;
+		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
 
@@ -338,6 +340,21 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 
 		public String toString() {
 			return "" + value + " + " + this.ingredientsWithAmount + " => " + outnumber + "x" + output;
+		}
+
+		public boolean equals(Conversion other) {
+			if (output.equals(other.output) && value.equals(other.value)) {
+				if (ingredientsWithAmount == null && (other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0)) {
+					return true;
+				} else if (ingredientsWithAmount!=null) {
+					if (this.ingredientsWithAmount.size() == 0) {
+						return (other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0);
+					} else {
+						return ingredientsWithAmount.equals(other.ingredientsWithAmount);
+					}
+				}
+			}
+			return false;
 		}
 	}
 

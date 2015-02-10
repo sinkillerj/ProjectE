@@ -6,9 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
-import org.omg.CORBA.ORB;
-import scala.Int;
-import scala.actors.threadpool.Arrays;
 
 import java.util.*;
 
@@ -39,6 +36,7 @@ public class NormalizedSimpleStack {
 	}
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
+		if (stack == null || stack.getItem() == null) return null;
 		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage());
 	}
 
@@ -52,7 +50,7 @@ public class NormalizedSimpleStack {
 			entry.getValue().add(0);
 			NormalizedSimpleStack stackWildcard = new NormalizedSimpleStack(entry.getKey(), OreDictionary.WILDCARD_VALUE);
 			for (int metadata : entry.getValue()) {
-				mapper.addConversion(1, stackWildcard, Arrays.asList(new Object[]{new NormalizedSimpleStack(entry.getKey(), metadata)}));
+				mapper.addConversion(1, stackWildcard, Arrays.asList(new NormalizedSimpleStack(entry.getKey(), metadata)));
 			}
 		}
 	}
