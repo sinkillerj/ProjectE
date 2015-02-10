@@ -159,7 +159,7 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 				for (T something : lookAt) {
 					if (getConversionsFor(something).size() == 0) {
 						solvableThings.put(something, arithmetic.getZero());
-						debugFormat("Set value for %s to %f because 0 conversions left\n", something.toString(), 0.0);
+						debugFormat("Set value for %s to %s because 0 conversions left\n", something.toString(), 0);
 					} else if (getNoDependencyConversionCountFor(something) == getConversionsFor(something).size()) {
 						//The output of this usage has only Conversions with a value left: Choose minimum value
 						V minValue = arithmetic.getZero();
@@ -174,12 +174,12 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 						assert minValue.compareTo(arithmetic.getZero()) >= 0;
 						assert !solvableThings.containsKey(something);
 						solvableThings.put(something, minValue);
-						debugFormat("Set value for %s to %f because %d/%d Conversions solved\n", something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
+						debugFormat("Set value for %s to %d because %d/%d Conversions solved\n", something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
 					}
 				}
+				System.out.format("lookat: %d solvable: %d\n", lookAt.size(), solvableThings.size());
 				lookAt.clear();
 				if (solvableThings.isEmpty()) break;
-
 				for (Map.Entry<T, V> solvableThing : solvableThings.entrySet()) {
 					if (valueFor.containsKey(solvableThing.getKey())) continue;
 					if (!arithmetic.isFree(solvableThing.getValue())) {
@@ -243,7 +243,7 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 						minValueAll = conversionValue;
 					}
 				}
-				debugFormat("minValue for %s: %f ALL: %f\n", entry.getKey().toString(), minValue, minValueAll);
+				debugFormat("minValue for %s: %d ALL: %s\n", entry.getKey().toString(), minValue, minValueAll);
 				if (minValue != null && minValue.compareTo(minValueAll) <= 0) {
 					//There is a valid Conversion, that has the smallest value => we can set this value right away
 					solvableThings.put(entry.getKey(), minValue);
