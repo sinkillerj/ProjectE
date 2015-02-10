@@ -28,7 +28,8 @@ public final class ProjectEConfig
 	public static boolean enableDarkFurnace;
 
 	public static boolean enableTimeWatch;
-	
+	public static boolean enableDarkPedestal;
+
 	public static void init(File configFile)
 	{
 		Configuration config = new Configuration(configFile);
@@ -63,6 +64,7 @@ public final class ProjectEConfig
 			enableRedFurnace = config.getBoolean("enableRedFurnace", "blocks", true, "Enable Red Matter Furnace recipe");
 			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe");
 
+			enableDarkPedestal = config.getBoolean("enableDarkPedestal", "blocks", true, "Enable DM Pedestal recipe");
 			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
 			
 			PELogger.logInfo("Loaded configuration file.");
