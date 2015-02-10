@@ -60,14 +60,6 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Blocks.pumpkin), 144);
 		addMapping(new ItemStack(Items.bone), 144);
 		addMapping(new ItemStack(Blocks.mossy_cobblestone), 145);
-		addMapping(new ItemStack(Items.wooden_sword), 20);
-		addMapping(new ItemStack(Items.wooden_hoe), 24);
-		addMapping(new ItemStack(Items.wooden_axe), 32);
-		addMapping(new ItemStack(Items.wooden_shovel), 16);
-		addMapping(new ItemStack(Items.stone_shovel), 7);
-		addMapping(new ItemStack(Items.stone_sword), 6);
-		addMapping(new ItemStack(Items.stone_axe), 11);
-		addMapping(new ItemStack(Items.stone_hoe), 10);
 		addMapping(new ItemStack(Items.saddle), 192);
 		addMapping(new ItemStack(Items.record_11), 2048);
 		addMapping(new ItemStack(Items.record_13), 2048);
