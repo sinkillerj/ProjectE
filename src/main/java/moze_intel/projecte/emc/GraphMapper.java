@@ -225,7 +225,7 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 			boolean foundMinSolve = false;
 			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
 				debugFormat("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
-				if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size()) {
+				if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size() || valueFor.containsKey(entry.getKey()))  {
 					//Thing has no noDepencencyConversion => ignore this
 					continue;
 				}
