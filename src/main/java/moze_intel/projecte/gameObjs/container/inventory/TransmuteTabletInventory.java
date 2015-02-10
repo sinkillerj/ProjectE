@@ -151,7 +151,11 @@ public class TransmuteTabletInventory implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
+				{
+					iter.remove();
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
 				}
@@ -182,7 +186,11 @@ public class TransmuteTabletInventory implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
+				{
+					iter.remove();
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
 				}
