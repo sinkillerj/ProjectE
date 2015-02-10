@@ -15,16 +15,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private IMappingCollector<NormalizedSimpleStack, Long> mapper;
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.WATER), Long.MIN_VALUE/*=Free. TODO: Use LongArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.LAVA), 64L, IMappingCollector.FixedValue.FixAndInherit);
-		Map<String, Long> fixValue = new HashMap<String, Long>();
-		fixValue.put("milk", 16L);
-		for (Map.Entry<String, Long> entry : fixValue.entrySet()) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
+		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.LAVA), 64, IMappingCollector.FixedValue.FixAndInherit);
+		Map<String, Integer> fixValue = new HashMap<String, Integer>();
+		fixValue.put("milk", 16);
+		for (Map.Entry<String, Integer> entry : fixValue.entrySet()) {
 			Fluid f = FluidRegistry.getFluid(entry.getKey());
 			if (f != null) {
 				mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(f), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);

@@ -9,9 +9,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
 
-public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.smelting().getSmeltingList();
 		for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
 			ItemStack input = entry.getKey();

@@ -7,12 +7,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	IMappingCollector<NormalizedSimpleStack, Long> mapper;
+	IMappingCollector<NormalizedSimpleStack, Integer> mapper;
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		this.mapper = mapper;
 		addMapping(new ItemStack(Blocks.cobblestone), 1);
 		addMapping(new ItemStack(Blocks.stone), 1);
@@ -135,7 +135,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	protected void addMapping(ItemStack itemStack, int value) {
-		this.mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), (long)value, IMappingCollector.FixedValue.FixAndInherit);
+		this.mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), value, IMappingCollector.FixedValue.FixAndInherit);
 	}
 
 	protected void addMapping(String unlocalName, int meta, int value) {

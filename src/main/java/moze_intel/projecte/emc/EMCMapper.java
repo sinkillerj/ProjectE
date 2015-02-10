@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.emc.arithmetics.IntArithmetic;
 import moze_intel.projecte.emc.arithmetics.LongArithmetic;
 import moze_intel.projecte.emc.mappers.*;
 import moze_intel.projecte.playerData.Transmutation;
@@ -23,13 +24,13 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
-		GraphMapper<NormalizedSimpleStack, Long> graphMapper = new GraphMapper<NormalizedSimpleStack, Long>(new LongArithmetic());
-		for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper: emcMappers) {
+		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
+		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new GraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+		for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper: emcMappers) {
 			emcMapper.addMappings(graphMapper);
 		}
 		NormalizedSimpleStack.addMappings(graphMapper);
-		Map<NormalizedSimpleStack, Long> graphMapperValues =  graphMapper.generateValues();
+		Map<NormalizedSimpleStack, Integer> graphMapperValues =  graphMapper.generateValues();
 		loadEmcFromIMC();
 		lazyInit();
 		loadEmcFromOD();
@@ -55,9 +56,9 @@ public final class EMCMapper
 			allItems.add(normStack);
 			left.put(normStack, emc.get(stack));
 		}
-		for (Entry<NormalizedSimpleStack,Long> entry: graphMapperValues.entrySet()) {
+		for (Entry<NormalizedSimpleStack,Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey().damage != OreDictionary.WILDCARD_VALUE) {
-				right.put(entry.getKey(), (int)(long) entry.getValue());
+				right.put(entry.getKey(), entry.getValue());
 			}
 		}
 		for (NormalizedSimpleStack stack: allItems) {

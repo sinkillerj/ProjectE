@@ -14,13 +14,13 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.*;
 
-public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper());
 	Set<Class> canNotMap = new HashSet<Class>();
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
 		while (iter.hasNext()) {
 			IRecipe recipe = iter.next();

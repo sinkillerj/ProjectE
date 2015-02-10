@@ -9,7 +9,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class OreDictionaryMapper extends LazyMapper {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		this.mapper = mapper;
 		//Black-list all ores/dusts
 		for (String s : OreDictionary.getOreNames()) {
@@ -24,7 +24,7 @@ public class OreDictionaryMapper extends LazyMapper {
 						continue;
 					}
 
-					mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0L, IMappingCollector.FixedValue.FixAndDoNotInherit);
+					mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
 				}
 			}
 		}
