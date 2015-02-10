@@ -4,6 +4,7 @@ import moze_intel.projecte.emc.arithmetics.IntArithmetic;
 import moze_intel.projecte.emc.arithmetics.LongArithmetic;
 import moze_intel.projecte.emc.mappers.*;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -26,11 +27,15 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
 		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new GraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+		PELogger.logInfo("Starting to collect Mappings...");
 		for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper: emcMappers) {
 			emcMapper.addMappings(graphMapper);
+			PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
 		}
 		NormalizedSimpleStack.addMappings(graphMapper);
+		PELogger.logInfo("Starting to generate Values:");
 		Map<NormalizedSimpleStack, Integer> graphMapperValues =  graphMapper.generateValues();
+		PELogger.logInfo("Generated Values...");
 		loadEmcFromIMC();
 		lazyInit();
 		loadEmcFromOD();
