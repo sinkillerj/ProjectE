@@ -330,7 +330,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			reqEmc = Utils.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
 		}
 		
-		if (this.getStoredEmc() >= reqEmc)
+		if (displayEmc >= reqEmc)
 		{
 			return i;
 		}
