@@ -31,11 +31,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
-					Iterable<Iterable<ItemStack>> ingredientMultipleVariantions = recipeMapper.getIngredientsFor(recipe);
-					if (ingredientMultipleVariantions != null) {
-						for (Iterable<ItemStack> variation : ingredientMultipleVariantions) {
+					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
+					if (craftingIngredientIterable != null) {
+						for (CraftingIngredients variation : craftingIngredientIterable) {
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
-							for (ItemStack stack : variation) {
+							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
 								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 									if (stack.getItem().hasContainerItem(stack)) {
@@ -43,6 +43,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 									}
 									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
 								}
+							}
+							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
+								//XXX: ContainerItems??
+								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
+								ingredientMap.addIngredient(normalizedSimpleStack,1);
 							}
 							if (recipeOutput.stackSize > 0) {
 								mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
@@ -69,10 +74,18 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	protected static interface IRecipeMapper {
 		public boolean canHandle(IRecipe recipe);
 
-		public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe);
+		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
 	}
 
-	//TODO implement IRecipeMapper for ShapedRecipes, ShapelessRecipes, ShapedOreRecipe, ShapelessOreRecipe
+	public static class CraftingIngredients {
+		public Iterable<ItemStack> fixedIngredients;
+		public Iterable<Iterable<ItemStack>> multiIngredients;
+		public CraftingIngredients( Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
+			this.fixedIngredients = fixedIngredients;
+			this.multiIngredients = multiIngredients;
+		}
+	}
+
 	protected static class VanillaRecipeMapper implements IRecipeMapper {
 
 		@Override
@@ -81,7 +94,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		}
 
 		@Override
-		public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe) {
+		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable recipeItems = null;
 			if (recipe instanceof ShapedRecipes) {
 				recipeItems = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
@@ -98,35 +111,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
 			}
-			return Arrays.asList((Iterable<ItemStack>) inputs);
+			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList()));
 		}
 
-	}
-
-	public static <T> Iterable<Iterable<T>> recursiveRecipeInput(Iterable<T> recipeInputFixed, List<Iterable<T>> recipeInputsWithOptions) {
-		List<Iterable<T>> out = new ArrayList<Iterable<T>>();
-		Stack s = new Stack<T>();
-		for (T fixedInput : recipeInputFixed)
-			s.add(fixedInput);
-		recursiveRecipeInput(recipeInputsWithOptions, 0, out, s);
-		return out;
-	}
-
-	public static <T> void recursiveRecipeInput(List<Iterable<T>> objects, int index, List<Iterable<T>> out, Stack<T> currentIngredients) {
-		if (index < objects.size()) {
-			Iterable<T> next = objects.get(index);
-			for (T o : next) {
-				currentIngredients.push(o);
-				recursiveRecipeInput(objects, index + 1, out, currentIngredients);
-				currentIngredients.pop();
-			}
-		} else if (index == objects.size()) {
-			List recipeInput = new LinkedList();
-			for (T is : currentIngredients) {
-				recipeInput.add(is);
-			}
-			out.add(recipeInput);
-		}
 	}
 
 	protected static class VanillaOreRecipeMapper implements IRecipeMapper {
@@ -137,7 +124,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		}
 
 		@Override
-		public Iterable<Iterable<ItemStack>> getIngredientsFor(IRecipe recipe) {
+		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			List<IngredientMap<ItemStack>> inputs = new LinkedList<IngredientMap<ItemStack>>();
 			Iterable<Object> recipeItems = null;
 			if (recipe instanceof ShapedOreRecipe) {
@@ -164,7 +151,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					variableInputs.add(recipeItemOptions);
 				}
 			}
-			return recursiveRecipeInput(fixedInputs, variableInputs);
+			return Arrays.asList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
 	}
 }

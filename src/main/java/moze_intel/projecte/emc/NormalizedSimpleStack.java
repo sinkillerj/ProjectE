@@ -53,6 +53,16 @@ public class NormalizedSimpleStack {
 				mapper.addConversion(1, stackWildcard, Arrays.asList(new NormalizedSimpleStack(entry.getKey(), metadata)));
 			}
 		}
+
+		for (Map.Entry<Map<NormalizedSimpleStack, Integer>, Group> entry: groups.entrySet()) {
+			for (NormalizedSimpleStack normStack: entry.getKey().keySet()) {
+				mapper.addConversion(1, entry.getValue(), Arrays.asList(normStack));
+			}
+		}
+	}
+
+	private NormalizedSimpleStack() {
+
 	}
 
 	private NormalizedSimpleStack(int id, int damage) {
@@ -101,5 +111,48 @@ public class NormalizedSimpleStack {
 		}
 
 		return "id:" + id + " damage:" + (damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+	}
+
+	public static Map<Map<NormalizedSimpleStack,Integer>,Group> groups = new HashMap<Map<NormalizedSimpleStack,Integer>,Group> ();
+	public static NormalizedSimpleStack createGroup(Iterable<ItemStack> i) {
+		IngredientMap<NormalizedSimpleStack> groupMap = new IngredientMap<NormalizedSimpleStack>();
+		for (ItemStack itemStack:i) {
+			NormalizedSimpleStack normStack = getNormalizedSimpleStackFor(itemStack);
+			if (normStack == null) return null;
+			groupMap.addIngredient(normStack, itemStack.stackSize);
+		}
+		Map<NormalizedSimpleStack,Integer> map = groupMap.getMap();
+		Group g;
+		if (groups.containsKey(map)) {
+			g = groups.get(map);;
+			map.clear();
+		} else {
+			g = new Group(map);
+			groups.put(map, g);
+		}
+		return g;
+  	}
+
+	public static class Group extends NormalizedSimpleStack {
+		Map<NormalizedSimpleStack, Integer> group;
+		public Group(Map<NormalizedSimpleStack,Integer> g) {
+			group = g;
+		}
+
+		public boolean equals(Object o) {
+			if (o instanceof Group) {
+				return group.equals(((Group)o).group);
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return this.group.hashCode();
+		}
+
+		@Override
+		public String toString() {
+			return this.group.keySet().toString();
+		}
 	}
 }
