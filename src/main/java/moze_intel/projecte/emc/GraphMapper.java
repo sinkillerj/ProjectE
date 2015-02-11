@@ -306,7 +306,7 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 						if (ingredientConversionCount < minCount) minCount = ingredientConversionCount;
 					}
 					count += minCount;
-					visited.remove(ingredient);
+					//visited.remove(ingredient);
 				}
 			}
 		}
