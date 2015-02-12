@@ -264,7 +264,12 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 								debugFormat("%s %d/%d\n", ingredient.toString(), getNoDependencyConversionCountFor(ingredient), getConversionsFor(ingredient).size());
 							}
 							toRemove.add(conversion);
-						} else {
+						} else if (count == 0) {
+							if (!hasSolvedDependency(conversion)) {
+								debugFormat("Removing %s because it has no other solved dependencys\n", conversion);
+								toRemove.add(conversion);
+							}
+						} else  {
 							debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, min: %s this: %s\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, arithmetic.div(conversion.value, conversion.outnumber));
 						}
 					} else {
@@ -286,6 +291,29 @@ public class GraphMapper<T, V extends Comparable<V>> implements IMappingCollecto
 			valueFor.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
 		}
 		return valueFor;
+	}
+	protected boolean hasSolvedDependency(Conversion conversion) {
+		if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
+			for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
+				if (hasSolvedConversionDependency(ingredient, new HashSet<T>(Arrays.asList(conversion.output)))) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+
+	protected boolean hasSolvedConversionDependency(T something, Set<T> visited) {
+		if (visited.contains(something)) return false;
+		visited.add(something);
+		for (Conversion conversion: getConversionsFor(something)) {
+			if (conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0) return true;
+			for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
+				if (hasSolvedConversionDependency(ingredient, visited)) return true;
+			}
+		}
+		return false;
 	}
 
 	protected int findDeepIngredientCountForConversion(Conversion conversion, T something, Set<T> visited) {
