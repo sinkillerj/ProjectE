@@ -737,7 +737,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
-		return slot != 0;
+		return slot >= outputStorage[0];
 	}
 
 	@Override
