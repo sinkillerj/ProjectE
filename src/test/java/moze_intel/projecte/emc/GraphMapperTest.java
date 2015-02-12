@@ -580,7 +580,7 @@ public class GraphMapperTest {
 		for (int i = 0; i < dyes.length; i++) {
 			assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
 			if (!dyes[i].equals("White"))
-				assertEquals(dyeValue[i] + ((8 + 384)/8), getValue(values, "antiblock" + dyes[i]));
+				assertEquals((dyeValue[i] + ((8 + 384)/8)*8)/8, getValue(values, "antiblock" + dyes[i]));
 		}
 	}
 
