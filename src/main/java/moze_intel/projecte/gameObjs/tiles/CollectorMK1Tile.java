@@ -115,30 +115,30 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 					&& inventory[upgradedSlot].getItem() == inventory[lockSlot].getItem()
 					&& inventory[upgradedSlot].stackSize < inventory[upgradedSlot].getMaxStackSize())) {
 				for (int i = 1; i < invBufferSize; i++)
-                {
-                    if (inventory[i] == null)
-                    {
-                        inventory[i] = inventory[upgradedSlot];
-                        inventory[upgradedSlot] = null;
-                        break;
-                    }
-                    else if (Utils.areItemStacksEqual(inventory[i], inventory[upgradedSlot]))
-                    {
-                        int remain = inventory[i].getMaxStackSize() - inventory[i].stackSize;
+				{
+					if (inventory[i] == null)
+					{
+						inventory[i] = inventory[upgradedSlot];
+						inventory[upgradedSlot] = null;
+						break;
+					}
+					else if (Utils.areItemStacksEqual(inventory[i], inventory[upgradedSlot]))
+					{
+						int remain = inventory[i].getMaxStackSize() - inventory[i].stackSize;
 
-                        if (remain >= inventory[upgradedSlot].stackSize)
-                        {
-                            inventory[i].stackSize += inventory[upgradedSlot].stackSize;
-                            inventory[upgradedSlot] = null;
-                            break;
-                        }
-                        else
-                        {
-                            inventory[i].stackSize += remain;
-                            inventory[upgradedSlot].stackSize -= remain;
-                        }
-                    }
-                }
+						if (remain >= inventory[upgradedSlot].stackSize)
+						{
+							inventory[i].stackSize += inventory[upgradedSlot].stackSize;
+							inventory[upgradedSlot] = null;
+							break;
+						}
+						else
+						{
+							inventory[i].stackSize += remain;
+							inventory[upgradedSlot].stackSize -= remain;
+						}
+					}
+				}
 			}
 		}
 		
