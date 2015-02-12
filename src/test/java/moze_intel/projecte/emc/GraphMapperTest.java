@@ -550,6 +550,40 @@ public class GraphMapperTest {
 		assertEquals(330, getValue(values, "firecharge"));
 	}
 
+	@org.junit.Test
+	public void testGenerateValuesChisel2AntiBlock() throws Exception {
+		GraphMapper<String, Integer> graphMapper = new GraphMapper<String, Integer>(new IntArithmetic());
+		final String gDust = "glowstone dust";
+		final String stone = "stone";
+
+		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
+		final int[] dyeValue = new int[]{864, 176, 48, 16};
+		for (int i = 0; i < dyes.length; i++) {
+			graphMapper.setValue("dye" + dyes[i], dyeValue[i], GraphMapper.FixedValue.FixAndInherit);
+			graphMapper.addConversion(8, "antiblock" + dyes[i], Arrays.asList(
+					"antiblock_all", "antiblock_all", "antiblock_all",
+					"antiblock_all", "dye" + dyes[i], "antiblock_all",
+					"antiblock_all", "antiblock_all", "antiblock_all"
+			));
+			graphMapper.addConversion(1, "antiblock_all", Arrays.asList("antiblock" + dyes[i]));
+		}
+
+		graphMapper.setValue(gDust, 384, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue(stone, 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(8, "antiblockWhite", Arrays.asList(
+				stone,stone,stone,
+				stone,gDust,stone,
+				stone,stone,stone));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
+		for (int i = 0; i < dyes.length; i++) {
+			assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
+			if (!dyes[i].equals("White"))
+				assertEquals(dyeValue[i] + ((8 + 384)/8), getValue(values, "antiblock" + dyes[i]));
+		}
+	}
+
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
