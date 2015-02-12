@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -9,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ArchangelSmite extends ItemPE
+public class ArchangelSmite extends ItemPE implements IPedestalItem
 {
 	public ArchangelSmite()
 	{
@@ -36,5 +37,11 @@ public class ArchangelSmite extends ItemPE
 	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "archangel_smite"));
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }

@@ -4,6 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -27,7 +28,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
+public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
@@ -313,5 +314,11 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }

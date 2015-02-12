@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
@@ -20,7 +21,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble
+public class SWRG extends ItemPE implements IBauble, IPedestalItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
@@ -412,5 +413,11 @@ public class SWRG extends ItemPE implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }

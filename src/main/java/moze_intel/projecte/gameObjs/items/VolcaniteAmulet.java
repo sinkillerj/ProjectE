@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -27,7 +28,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
 	public VolcaniteAmulet()
 	{
@@ -222,5 +223,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		world.getWorldInfo().setRainTime(0);
+		world.getWorldInfo().setThunderTime(0);
+		world.getWorldInfo().setRaining(false);
+		world.getWorldInfo().setThundering(false);
 	}
 }

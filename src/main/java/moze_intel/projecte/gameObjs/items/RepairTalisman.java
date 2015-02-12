@@ -6,6 +6,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.handlers.PlayerTimers;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -17,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IBauble
+public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 {
 	public RepairTalisman()
 	{
@@ -109,5 +110,11 @@ public class RepairTalisman extends ItemPE implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }

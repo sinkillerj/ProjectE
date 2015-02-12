@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Ignition extends RingToggle implements IBauble
+public class Ignition extends RingToggle implements IBauble, IPedestalItem
 {
 	public Ignition()
 	{
@@ -118,5 +119,11 @@ public class Ignition extends RingToggle implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 
+import moze_intel.projecte.api.IPedestalItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.IGrowable;
@@ -17,7 +18,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class HarvestGoddess extends RingToggle
+public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
 	public HarvestGoddess() 
 	{
@@ -353,7 +354,13 @@ public class HarvestGoddess extends RingToggle
 			stack.setItemDamage(0);
 		}
 	}
-	
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
+	}
+
 	private class StackWithSlot
 	{
 		public final int slot;

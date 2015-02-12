@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BlackHoleBand extends RingToggle implements IBauble
+public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 {
 	public BlackHoleBand()
 	{
@@ -116,5 +117,11 @@ public class BlackHoleBand extends RingToggle implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+
 	}
 }
