@@ -60,6 +60,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return stack;
 			}
 
+			int toSetMeta = inventory[1].getItemDamage();
+
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
 			int reqEmc = Utils.getEmcValue(inventory[1]);
 
@@ -88,7 +90,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			switch (dir) {
 				case UP:
-					if (lookingDown)
+					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
 						box.expand(charge, 0, charge);
 						dY = 1;
@@ -101,7 +103,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					break;
 
 				case DOWN:
-					if (lookingUp)
+					if (lookingUp || mode == TRANSMUTATION_MODE)
 					{
 						box.expand(charge, 0, charge);
 						dY = 1;
@@ -146,18 +148,19 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				{
 					Block b = world.getBlock(x, y, z);
 
-					if (b == Blocks.air)
+					if (mode == NORMAL_MODE && b == Blocks.air)
 					{
 						if (kleinEmc < reqEmc)
 							break;
 
 						world.setBlock(x, y, z, toSet);
+						world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
 						removeKleinEMC(stack, reqEmc);
 						kleinEmc -= reqEmc;
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						if (b == toSet || !Utils.doesItemHaveEmc(new ItemStack(b)))
+						if (b == toSet || b == Blocks.air || world.getTileEntity(x, y, z) != null || !Utils.doesItemHaveEmc(new ItemStack(b)))
 						{
 							continue;
 						}
@@ -172,6 +175,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 							addKleinEMC(stack, difference);
 							world.setBlock(x, y, z, toSet);
+							world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
 						}
 						else if (emc < reqEmc)
 						{
@@ -182,11 +186,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 								kleinEmc -= difference;
 								removeKleinEMC(stack, difference);
 								world.setBlock(x, y, z, toSet);
+								world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
 							}
 						}
 						else
 						{
 							world.setBlock(x, y, z, toSet);
+							world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
 						}
 					}
 				}
