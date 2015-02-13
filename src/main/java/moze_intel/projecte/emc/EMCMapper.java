@@ -26,7 +26,7 @@ public final class EMCMapper
 	public static void map()
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
-		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new ComplexGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
 		PELogger.logInfo("Starting to collect Mappings...");
 		for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper: emcMappers) {
 			emcMapper.addMappings(graphMapper);

@@ -25,7 +25,7 @@ public class GraphMapperTest {
 	}*/
 	@Before
 	public void setup() {
-		graphMapper = new ComplexGraphMapper<String, Integer>(new IntArithmetic());
+		graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 	}
 
 	@Rule
