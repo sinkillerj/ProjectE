@@ -5,13 +5,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 public class ArchangelSmite extends ItemPE implements IPedestalItem
 {
+	private int arrowCooldown;
+
 	public ArchangelSmite()
 	{
 		this.setUnlocalizedName("archangel_smite");
@@ -42,6 +47,20 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-
+		if (!world.isRemote)
+		{
+			if (arrowCooldown == 0)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					world.spawnEntityInWorld(new EntityHomingArrow(world, FakePlayerFactory.getMinecraft(((WorldServer) world)), 2.0F));
+				}
+				arrowCooldown = 100;
+			}
+			else
+			{
+				arrowCooldown--;
+			}
+		}
 	}
 }

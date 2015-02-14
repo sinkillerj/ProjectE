@@ -3,9 +3,6 @@ package moze_intel.projecte.rendering;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-/**
- * Created by Vincent on 2/12/2015.
- */
 public class PedestalItemRenderer implements IItemRenderer
 {
 	@Override

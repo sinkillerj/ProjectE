@@ -6,10 +6,6 @@ import moze_intel.projecte.utils.Constants;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
-/**
- * Created by Vincent on 2/11/2015.
- */
-
 @SideOnly(Side.CLIENT)
 public class ModelPedestal
 {

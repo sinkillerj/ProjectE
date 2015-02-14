@@ -261,22 +261,22 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		return null;
 	}
-	
-	private void growNearbyRandomly(boolean harvest, World world, Entity player)
+
+	private void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord)
 	{
 		int chance = harvest ? 16 : 32;
-		
-		for (int x = (int) (player.posX - 5); x <= player.posX + 5; x++)
-			for (int y = (int) (player.posY - 3); y <= player.posY + 3; y++)
-				for (int z = (int) (player.posZ - 5); z <= player.posZ + 5; z++)
+
+		for (int x = (int) (xCoord - 5); x <= xCoord + 5; x++)
+			for (int y = (int) (yCoord - 3); y <= yCoord + 3; y++)
+				for (int z = (int) (zCoord - 5); z <= zCoord + 5; z++)
 				{
 					Block crop = world.getBlock(x, y, z);
-					
+
 					if (crop instanceof BlockGrass)
 					{
 						continue;
 					}
-					
+
 					if (crop instanceof IShearable)
 					{
 						if (harvest)
@@ -287,7 +287,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					else if (crop instanceof IGrowable)
 					{
 						IGrowable growable = (IGrowable) crop;
-						
+
 						if(harvest && !growable.func_149851_a(world, x, y, z, false))
 						{
 							world.func_147480_a(x, y, z, true);
@@ -306,13 +306,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 								crop.updateTick(world, x, y, z, world.rand);
 							}
 						}
-						
+
 						if (harvest)
 						{
 							if (crop == Blocks.reeds || crop == Blocks.cactus)
 							{
 								boolean shouldHarvest = true;
-								
+
 								for (int i = 1; i < 3; i++)
 								{
 									if (world.getBlock(x, y + i, z) != crop)
@@ -321,7 +321,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 										break;
 									}
 								}
-								
+
 								if (shouldHarvest)
 								{
 									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
@@ -333,6 +333,11 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 						}
 					}
 				}
+	}
+
+	private void growNearbyRandomly(boolean harvest, World world, Entity player)
+	{
+		growNearbyRandomly(harvest, world, player.posX, player.posY, player.posZ);
 	}
 	
 	@Override
@@ -358,7 +363,10 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-
+		if (!world.isRemote)
+		{
+			growNearbyRandomly(true, world, x, y, z);
+		}
 	}
 
 	private class StackWithSlot

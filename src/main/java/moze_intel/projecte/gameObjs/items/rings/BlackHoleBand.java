@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -122,6 +123,37 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, tile.getEffectBounds());
+		for (EntityItem item : list)
+		{
+			// Adapted from openBlocks and vanilla
+			double dX = (x + 0.5 - item.posX);
+			double dY = (y + 0.5 - item.posY);
+			double dZ = (z + 0.5 - item.posZ);
+			double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
 
+			if (dist < 1.1 && !world.isRemote)
+			{
+				suckDumpItem(item, tile);
+			}
+
+			double vel = 1.0 - dist / 15.0;
+			if (vel > 0.0D)
+			{
+				vel *= vel;
+				item.motionX += dX / dist * vel * 0.05;
+				item.motionY += dY / dist * vel * 0.2;
+				item.motionZ += dZ / dist * vel * 0.05;
+				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+			}
+
+
+		}
+	}
+
+	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
+	{
+		// TODO
 	}
 }

@@ -1,48 +1,63 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 
 public class DMPedestalTile extends TileEntity implements IInventory
 {
 	public boolean isActive = false;
-	private ItemStack[] inventory;
+	private ItemStack[] inventory = new ItemStack[1];
+	private AxisAlignedBB effectBounds;
 
 	@Override
 	public void updateEntity()
 	{
-		if (inventory == null || inventory[0] == null || (hasWorldObj() && worldObj.isRemote))
+		double centeredX = xCoord + 0.5;
+		double centeredY = yCoord + 0.5;
+		double centeredZ = zCoord + 0.5;
+
+		if (effectBounds == null)
 		{
-			return;
-		} else if (isActive)
+			effectBounds = AxisAlignedBB.getBoundingBox(centeredX - 9, centeredY - 9, centeredZ - 9, centeredX + 9, centeredY + 9, centeredZ + 9);
+		}
+
+
+		if (inventory[0] != null && isActive)
 		{
+			if (worldObj.isRemote)
+			{
+				System.out.println("wat");
+			}
 			Item item = inventory[0].getItem();
 			if (item instanceof IPedestalItem)
 			{
+				if (worldObj.isRemote) {
+					System.out.println("Client? :(");
+				}
 				((IPedestalItem) item).updateInPedestal(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 	}
 
-	public void toggleState()
+	public ItemStack getItemStack()
 	{
-		if (inventory[0] != null)
-		{
-			isActive = !isActive;
-		}
+		return getStackInSlot(0);
 	}
 
-	public ItemStack getItem()
+	public AxisAlignedBB getEffectBounds()
 	{
-		return getStackInSlot(1);
+		return effectBounds;
 	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
@@ -59,6 +74,8 @@ public class DMPedestalTile extends TileEntity implements IInventory
 				inventory[slot] = ItemStack.loadItemStackFromNBT(compound);
 			}
 		}
+
+		isActive = tag.getBoolean("isActive");
 	}
 
 	@Override
@@ -80,6 +97,7 @@ public class DMPedestalTile extends TileEntity implements IInventory
 		}
 
 		tag.setTag("Items", tagList);
+		tag.setBoolean("isActive", isActive);
 	}
 
 	@Override
@@ -156,7 +174,7 @@ public class DMPedestalTile extends TileEntity implements IInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
 	{
-		return false;
+		return true;
 	}
 
 	@Override
@@ -167,11 +185,18 @@ public class DMPedestalTile extends TileEntity implements IInventory
 	@Override
 	public void closeInventory()
 	{
+
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
 	{
 		return true;
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		return PacketHandler.getMCPacket(new ClientSyncPedestalPKT(this));
 	}
 }

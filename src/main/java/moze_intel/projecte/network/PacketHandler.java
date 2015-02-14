@@ -10,6 +10,7 @@ import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.Packet;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -39,6 +40,12 @@ public final class PacketHandler
 		HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
 		HANDLER.registerMessage(ClientSyncTableEMCPKT.class, ClientSyncTableEMCPKT.class, 17, Side.CLIENT);
+		HANDLER.registerMessage(ClientSyncPedestalPKT.class, ClientSyncPedestalPKT.class, 18, Side.CLIENT);
+	}
+
+	public static Packet getMCPacket(IMessage message)
+	{
+		return HANDLER.getPacketFrom(message);
 	}
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)

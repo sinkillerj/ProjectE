@@ -172,9 +172,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		int i = (300 + world.rand.nextInt(600)) * 20;
-		world.getWorldInfo().setRainTime(i);
-		world.getWorldInfo().setThunderTime(i);
-		world.getWorldInfo().setRaining(true);
+		if (!world.isRemote && world.getWorldTime() % 20 == 0)
+		{
+			int i = (300 + world.rand.nextInt(600)) * 20;
+			world.getWorldInfo().setRainTime(i);
+			world.getWorldInfo().setThunderTime(i);
+			world.getWorldInfo().setRaining(true);
+		}
 	}
 }

@@ -6,12 +6,15 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -20,6 +23,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem
 {
@@ -27,6 +32,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] ringOn;
+	private int lightningCooldown;
 
 	public SWRG()
 	{
@@ -418,6 +424,23 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-
+		if (!world.isRemote)
+		{
+			if (lightningCooldown == 0)
+			{
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				List<EntityCreature> list = world.getEntitiesWithinAABB(EntityCreature.class, tile.getEffectBounds());
+				for (EntityCreature creature : list)
+				{
+					world.addWeatherEffect(new EntityLightningBolt(world, creature.posX, creature.posY, creature.posZ));
+					world.addWeatherEffect(new EntityLightningBolt(world, creature.posX, creature.posY, creature.posZ));
+				}
+				lightningCooldown = 65;
+			}
+			else
+			{
+				lightningCooldown--;
+			}
+		}
 	}
 }

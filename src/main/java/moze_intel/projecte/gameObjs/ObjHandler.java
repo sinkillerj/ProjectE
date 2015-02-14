@@ -252,6 +252,7 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(RelayMK2Tile.class, "AM Relay MK2 Tile");
 		GameRegistry.registerTileEntity(RelayMK3Tile.class, "AM Relay MK3 Tile");
 		GameRegistry.registerTileEntity(TransmuteTile.class, "Transmutation Tablet Tile");
+		GameRegistry.registerTileEntity(DMPedestalTile.class, "DM Pedestal Tile");
 		
 		//Entities
 		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, PECore.instance, 256, 10, true);

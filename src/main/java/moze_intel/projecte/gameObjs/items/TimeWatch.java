@@ -5,6 +5,8 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -144,7 +146,32 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		}
 			
 		AxisAlignedBB bBox = player.boundingBox.expand(8, 8, 8);
-		
+
+		speedUpTileEntities(world, bonusTicks, bBox);
+		speedUpRandomTicks(world, bonusTicks, bBox);
+		slowMobs(world, bBox, mobSlowdown);
+	}
+
+	private void slowMobs(World world, AxisAlignedBB bBox, float mobSlowdown)
+	{
+		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
+		{
+			Entity ent = (Entity) obj;
+
+			if (ent.motionX != 0)
+			{
+				ent.motionX *= mobSlowdown;
+			}
+
+			if (ent.motionZ != 0)
+			{
+				ent.motionZ *= mobSlowdown;
+			}
+		}
+	}
+
+	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
+	{
 		for (TileEntity tile : Utils.getTileEntitiesWithinAABB(world, bBox))
 		{
 			for (int i = 0; i < bonusTicks; i++)
@@ -152,13 +179,18 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 				tile.updateEntity();
 			}
 		}
-		
+	}
+
+	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
+	{
 		for (int x = (int) bBox.minX; x <= bBox.maxX; x++)
+		{
 			for (int y = (int) bBox.minY; y <= bBox.maxY; y++)
+			{
 				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
 				{
 					Block block = world.getBlock(x, y, z);
-					
+
 					if (block.getTickRandomly())
 					{
 						for (int i = 0; i < bonusTicks; i++)
@@ -167,20 +199,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 						}
 					}
 				}
-		
-		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
-		{
-			Entity ent = (Entity) obj;
-			
-			if (ent.motionX != 0)
-			{
-				ent.motionX *= mobSlowdown;
 			}
-			
-			if (ent.motionZ != 0)
-			{
-				ent.motionZ *= mobSlowdown;
-			}
+
 		}
 	}
 
@@ -319,6 +339,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-
+//		AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+//		speedUpTileEntities(world, 3, Constants.GLOBAL_AABB);
+//		speed
 	}
 }

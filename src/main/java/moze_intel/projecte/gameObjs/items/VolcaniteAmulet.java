@@ -228,9 +228,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		world.getWorldInfo().setRainTime(0);
-		world.getWorldInfo().setThunderTime(0);
-		world.getWorldInfo().setRaining(false);
-		world.getWorldInfo().setThundering(false);
+		if (!world.isRemote && world.getWorldTime() % 20 == 0)
+		{
+			world.getWorldInfo().setRainTime(0);
+			world.getWorldInfo().setThunderTime(0);
+			world.getWorldInfo().setRaining(false);
+			world.getWorldInfo().setThundering(false);
+		}
 	}
 }

@@ -47,7 +47,8 @@ public class PECore
 	
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
-	
+
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{

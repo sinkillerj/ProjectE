@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import moze_intel.projecte.PECore;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 
 public final class Constants 
@@ -54,16 +55,21 @@ public final class Constants
 	public static final int TRANSMUTE_TABLET_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
 	public static final int CONDENSER_MK2_GUI = 16;
-	
+	public static final int DMPEDESTAL_GUI = 17;
+
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	
 	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int PEDESTAL_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static final ResourceLocation PEDESTAL_MODEL_LOCATION = new ResourceLocation(PECore.MODID.toLowerCase(), "assets/projecte/models/dmpedestal.obj");
+	public static final ResourceLocation PEDESTAL_MODEL_LOCATION = new ResourceLocation(PECore.MODID.toLowerCase(), "models/dmpedestal.obj");
+	public static final ResourceLocation PEDESTAL_MODELTEX_LOCATION = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/models/dmpedestal.png");
 
 	public static final int MAX_VEIN_SIZE = 250;
 	
 	public static final int ENCH_EMC_BONUS = 5000;
+
+	private static double i = Double.MIN_VALUE;
+	public static final AxisAlignedBB GLOBAL_AABB = AxisAlignedBB.getBoundingBox(i, i, i, i, i, i);
 }
