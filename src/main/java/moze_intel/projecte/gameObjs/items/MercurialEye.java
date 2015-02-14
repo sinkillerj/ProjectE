@@ -106,7 +106,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					if (lookingUp || mode == TRANSMUTATION_MODE)
 					{
 						box.expand(charge, 0, charge);
-						dY = 1;
+						dY = -1;
 
 					}
 					else if (lookingAlongZ)
