@@ -28,6 +28,9 @@ public final class ProjectEConfig
 	public static boolean enableDarkFurnace;
 
 	public static boolean enableTimeWatch;
+
+	public static boolean craftableTome;
+	public static boolean altCraftingMat;
 	
 	public static void init(File configFile)
 	{
@@ -66,6 +69,7 @@ public final class ProjectEConfig
 			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
+			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}
