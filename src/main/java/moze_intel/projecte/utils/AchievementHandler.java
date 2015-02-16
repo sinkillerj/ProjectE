@@ -32,7 +32,6 @@ public final class AchievementHandler
 	public final static Achievement RM_PICK = new Achievement("rm_pick", "rm_pick", 2, 4, ObjHandler.rmPick, DM_PICK).setSpecial().registerStat();
 	public final static Achievement KLEIN_BASIC = new Achievement("klein", "klein", 0, 4, new ItemStack(ObjHandler.kleinStars, 1, 0), PHIL_STONE).registerStat();
 	public final static Achievement KLEIN_MASTER = new Achievement("klein_big", "klein_big", -2, 4, new ItemStack(ObjHandler.kleinStars, 1, 5), KLEIN_BASIC).setSpecial().registerStat();
-	public final static Achievement TOME = new Achievement("tome", "tome", -4, 2, ObjHandler.tome, KLEIN_MASTER).setSpecial().registerStat();
 	
 	
 	public static void init()
@@ -57,7 +56,6 @@ public final class AchievementHandler
 		list.add(RM_PICK);
 		list.add(KLEIN_BASIC);
 		list.add(KLEIN_MASTER);
-		list.add(TOME);
 		
 		AchievementPage.registerAchievementPage(new AchievementPage("ProjectE", list.toArray(new Achievement[list.size()])));
 	}

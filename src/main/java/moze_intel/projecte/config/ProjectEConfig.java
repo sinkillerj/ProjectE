@@ -64,6 +64,8 @@ public final class ProjectEConfig
 			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe");
 
 			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
+
+			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			
 			PELogger.logInfo("Loaded configuration file.");
 		}
