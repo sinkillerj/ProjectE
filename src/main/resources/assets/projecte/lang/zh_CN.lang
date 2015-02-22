@@ -109,6 +109,7 @@ tile.pe_nova_cataclysm.name=灾难新星
 tile.pe_fuel_block_0.name=炼金煤炭块
 tile.pe_fuel_block_1.name=莫比乌斯燃料块
 tile.pe_fuel_block_2.name=永恒燃料块
+tile.pe_dmPedestal.name=暗物质台座
 
 itemGroup.ProjectE=ProjectE
 

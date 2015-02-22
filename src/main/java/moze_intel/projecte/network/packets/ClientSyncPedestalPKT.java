@@ -25,7 +25,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 		x = tile.xCoord;
 		y = tile.yCoord;
 		z = tile.zCoord;
-		isActive = tile.isActive;
+		isActive = tile.getActive();
 		itemStack = tile.getItemStack();
 	}
 
@@ -57,9 +57,9 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 		if (te instanceof DMPedestalTile)
 		{
 			DMPedestalTile pedestal = ((DMPedestalTile) te);
-			pedestal.isActive = message.isActive;
+			pedestal.setActive(message.isActive);
 			pedestal.setInventorySlotContents(0, message.itemStack);
-			PELogger.logDebug("CLIENT RECEIVED PEDESTAL PKT");
+			PELogger.logInfo("CLIENT RECEIVED PEDESTAL PKT");
 		}
 
 		return null;

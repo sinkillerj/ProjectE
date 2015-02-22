@@ -109,6 +109,7 @@ tile.pe_nova_cataclysm.name=Nova Cataclysm
 tile.pe_fuel_block_0.name=Alchemical Coal Block
 tile.pe_fuel_block_1.name=Mobius Fuel Block
 tile.pe_fuel_block_2.name=Aeternalis Fuel Block
+tile.pe_dmPedestal.name=Dark Matter Pedestal
 
 itemGroup.ProjectE=ProjectE
 

@@ -6,7 +6,9 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.CoordinateBox;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,12 +17,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Zero extends ItemCharge implements IModeChanger, IBauble
+public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
@@ -45,9 +48,16 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 		}
 
 		CoordinateBox box = new CoordinateBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+		freezeInCoordinateBox(world, box);
 
+	}
+
+	public void freezeInCoordinateBox(World world, CoordinateBox box)
+	{
 		for (int x = (int) box.minX; x <= box.maxX; x++)
+		{
 			for (int y = (int) box.minY; y <= box.maxY; y++)
+			{
 				for (int z = (int) box.minZ; z <= box.maxZ; z++)
 				{
 					Block b = world.getBlock(x, y, z);
@@ -66,8 +76,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 						}
 					}
 				}
+			}
+		}
 	}
-	 
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -76,27 +88,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 			CoordinateBox box = new CoordinateBox(player.boundingBox);
 			int offset = 3 + this.getCharge(stack);
 			box.expand(offset, offset, offset);
-			
-			for (int x = (int) box.minX; x <= box.maxX; x++)
-				for (int y = (int) box.minY; y <= box.maxY; y++)
-					for (int z = (int) box.minZ; z <= box.maxZ; z++)
-					{
-						Block b = world.getBlock(x, y, z);
-						
-						if (b == Blocks.water || b == Blocks.flowing_water)
-						{
-							world.setBlock(x, y, z, Blocks.ice);
-						}
-						else if (b.isSideSolid(world, x, y, z, ForgeDirection.UP))
-						{
-							Block b2 = world.getBlock(x, y + 1, z);
-							
-							if (b2 == Blocks.air)
-							{
-								world.setBlock(x, y + 1, z, Blocks.snow_layer);
-							}
-						}
-					}
+			freezeInCoordinateBox(world, box);
 		}
 		
 		return stack;
@@ -168,5 +160,15 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote)
+		{
+			TileEntity tile = world.getTileEntity(x, y, z);
+			freezeInCoordinateBox(world, CoordinateBox.fromAABB(((DMPedestalTile) tile).getEffectBounds()));
+		}
 	}
 }

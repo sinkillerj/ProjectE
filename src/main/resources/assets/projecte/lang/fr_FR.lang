@@ -108,6 +108,7 @@ tile.pe_nova_cataclysm.name=Cataclysme nova
 tile.pe_fuel_block_0.name=Bloc de charbon alchimique
 tile.pe_fuel_block_1.name=Bloc de combustible de Mœbius
 tile.pe_fuel_block_2.name=Bloc de combustible d'Æternalis
+tile.pe_dmPedestal.name=Piédestal de matière noire
 
 itemGroup.ProjectE=ProjectE
 

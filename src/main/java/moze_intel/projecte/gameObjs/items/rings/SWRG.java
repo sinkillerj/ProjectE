@@ -433,7 +433,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 				for (EntityCreature creature : list)
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, creature.posX, creature.posY, creature.posZ));
-					world.addWeatherEffect(new EntityLightningBolt(world, creature.posX, creature.posY, creature.posZ));
 				}
 				lightningCooldown = 65;
 			}

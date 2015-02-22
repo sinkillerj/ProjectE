@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
@@ -27,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import moze_intel.projecte.config.ProjectEConfig;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -172,8 +174,15 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
 	{
-		for (TileEntity tile : Utils.getTileEntitiesWithinAABB(world, bBox))
+		Iterator<TileEntity> iter = Utils.getTileEntitiesWithinAABB(world, bBox).iterator();
+		while (iter.hasNext())
 		{
+			TileEntity tile = iter.next();
+			if (tile instanceof DMPedestalTile)
+			{
+				iter.remove(); // Don't speed up other pedestals because of exploits and infinite recursion
+				continue;
+			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
 				tile.updateEntity();
@@ -339,8 +348,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-//		AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
-//		speedUpTileEntities(world, 3, Constants.GLOBAL_AABB);
-//		speed
+		/* Change from old EE2 behaviour (universally increased tickrate) for safety reasons.
+		Now the same as activated watch in hand but more powerful. */
+		if (!world.isRemote)
+		{
+			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+			speedUpTileEntities(world, 18, bBox);
+			speedUpRandomTicks(world, 18, bBox);
+			slowMobs(world, bBox, 0.10F);
+		}
 	}
 }

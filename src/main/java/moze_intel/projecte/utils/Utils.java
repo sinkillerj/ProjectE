@@ -49,7 +49,26 @@ public final class Utils
 		WorldTransmutations.init();
 		loadEntityLists();
 	}
-	
+
+	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
+	{
+		int x = tile.xCoord;
+		int y = tile.yCoord;
+		int z = tile.zCoord;
+
+		List<TileEntity> list = new ArrayList<>();
+		for (int i = 0; i <= 5; i++)
+		{
+			ForgeDirection direction = ForgeDirection.getOrientation(i);
+			TileEntity te = world.getTileEntity(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
+			if (te != null)
+			{
+				list.add(te);
+			}
+		}
+		return list;
+	}
+
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
 		if (stack == null) 

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -14,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -25,6 +25,8 @@ public class Pedestal extends Block implements ITileEntityProvider {
         super(Material.rock);
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
+        this.setBlockBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 0.75F, 0.8125F);
+        this.setBlockTextureName(PECore.MODID.toLowerCase() + ":dm");
         setBlockName("pe_dmPedestal");
     }
 
@@ -46,17 +48,17 @@ public class Pedestal extends Block implements ITileEntityProvider {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
             if (player.isSneaking())
             {
-                player.openGui(PECore.instance, Constants.DMPEDESTAL_GUI, world, x, y, z);
+                player.openGui(PECore.instance, Constants.PEDESTAL_GUI, world, x, y, z);
             }
             else
             {
-                if (tile.getItemStack().getItem() instanceof IPedestalItem)
+                if (tile.getItemStack() != null && tile.getItemStack().getItem() instanceof IPedestalItem)
                 {
-                    tile.isActive = !tile.isActive;
+                    tile.setActive(!tile.getActive());
                 }
-                PELogger.logDebug("Pedestal: " + (tile.isActive ? "ON" : "OFF"));
+                PELogger.logInfo("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
-            PacketHandler.sendTo(new ClientSyncPedestalPKT(tile), ((EntityPlayerMP) player));
+            PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
         }
         return true;
     }
