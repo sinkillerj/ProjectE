@@ -1,9 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.arithmetics.IntArithmetic;
-import moze_intel.projecte.emc.arithmetics.LongArithmetic;
 import moze_intel.projecte.emc.mappers.*;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
@@ -16,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
-import scala.Int;
 
 import java.io.File;
 import java.util.*;

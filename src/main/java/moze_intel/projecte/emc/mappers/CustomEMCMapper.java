@@ -4,9 +4,7 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
-import org.lwjgl.util.glu.Project;
 
 import java.util.Map;
 

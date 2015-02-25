@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

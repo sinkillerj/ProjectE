@@ -3,7 +3,10 @@ package moze_intel.projecte.emc;
 
 import moze_intel.projecte.utils.PELogger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappingCollector<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
