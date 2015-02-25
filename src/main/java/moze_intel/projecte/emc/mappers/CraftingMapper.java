@@ -116,7 +116,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public String getDescription() {
-			return "Maps `IRecipe` crafting recipes for `ShapedRecipes` or `ShapelessRecipes`";
+			return "Maps `IRecipe` crafting recipes that extend `ShapedRecipes` or `ShapelessRecipes`";
 		}
 
 		@Override
@@ -156,12 +156,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public String getDescription() {
-			return "Maps `IRecipe` crafting recipes for `ShapedOreRecipe` or `ShapelessOreRecipe`. These include OreDictionary ingredients.";
+			return "Maps `IRecipe` crafting recipes that extend `ShapedOreRecipe` or `ShapelessOreRecipe`. This includes CraftingRecipes that use OreDictionary ingredients.";
 		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
+			return recipe instanceof  ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
 		}
 
 		@Override
