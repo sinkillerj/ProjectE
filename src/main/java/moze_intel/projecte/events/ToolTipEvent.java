@@ -4,7 +4,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FluidMapper;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
@@ -66,7 +68,11 @@ public class ToolTipEvent
 				}
 			}
 		}
-
+		NormalizedSimpleStack normStack = NormalizedSimpleStack.getNormalizedSimpleStackFor(current);
+		if (EMCMapper.graphMapperValues.containsKey(normStack)) {
+			Integer value = EMCMapper.graphMapperValues.get(normStack);
+			event.toolTip.add(String.format("New  EMC: %,d",value ));
+		}
 		if (ProjectEConfig.showStatTooltip)
 		{
 			/**

@@ -24,6 +24,7 @@ public final class EMCMapper
 	public static LinkedHashMap<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
 	public static LinkedHashMap<SimpleStack, Integer> IMCregistrations = new LinkedHashMap<SimpleStack, Integer>();
 	public static LinkedList<SimpleStack> blackList = new LinkedList<SimpleStack>();
+	public static Map<NormalizedSimpleStack, Integer> graphMapperValues;
 
 	public static void map()
 	{
@@ -44,7 +45,7 @@ public final class EMCMapper
 		PELogger.logInfo("Starting to generate Values:");
 		config.save();
 
-		Map<NormalizedSimpleStack, Integer> graphMapperValues =  graphMapper.generateValues();
+		graphMapperValues =  graphMapper.generateValues();
 		PELogger.logInfo("Generated Values...");
 		loadEmcFromIMC();
 		lazyInit();
@@ -83,7 +84,7 @@ public final class EMCMapper
 			int rightValue = right.containsKey(stack) ? right.get(stack) : 0;;
 			char rightChar = right.containsKey(stack) ? '!' : ' ';
 			if (leftValue != rightValue) {
-				System.out.format("%50s: %c%10d != %10d%c\n", stack.toString(),leftChar,leftValue, rightValue,rightChar);
+				PELogger.logInfo(String.format("%-50s: %c%10d != %10d%c", stack.toString(), leftChar, leftValue, rightValue, rightChar));
 			}
 		}
 	}
