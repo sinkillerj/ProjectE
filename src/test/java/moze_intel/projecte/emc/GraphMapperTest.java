@@ -565,6 +565,45 @@ public class GraphMapperTest {
 		assertEquals(0, getValue(values, "c2"));
 	}
 
+
+	@org.junit.Test
+	public void testGenerateValuesFreeAlternatives() throws Exception {
+		graphMapper.setValue("freeWater", Integer.MIN_VALUE/* = 'Free' */, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("waterBottle", 0, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(1, "waterGroup", Arrays.asList("freeWater"));
+		graphMapper.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
+		graphMapper.setValue("a", 3, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(3, getValue(values, "a"));
+		assertEquals(0, getValue(values, "freeWater"));
+		assertEquals(0, getValue(values, "waterBottle"));
+		assertEquals(0, getValue(values, "waterGroup"));
+		assertEquals(3, getValue(values, "result"));
+	}
+
+	@org.junit.Test
+	public void testGenerateValuesFreeAlternativesWithNegativeIngredients() throws Exception {
+		graphMapper.setValue("bucket", 768, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("waterBucket", 768, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("waterBottle", 0, IMappingCollector.FixedValue.FixAndInherit);
+		Map<String, Integer> m = new HashMap<String, Integer>();
+		m.put("waterBucket", 1);
+		m.put("bucket", -1);
+		graphMapper.addConversionMultiple(1, "waterGroup", m);
+		graphMapper.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
+		graphMapper.setValue("a", 3, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(3, getValue(values, "a"));
+		assertEquals(768, getValue(values, "bucket"));
+		assertEquals(768, getValue(values, "waterBucket"));
+		assertEquals(0, getValue(values, "waterGroup"));
+		assertEquals(3, getValue(values, "result"));
+	}
+
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
