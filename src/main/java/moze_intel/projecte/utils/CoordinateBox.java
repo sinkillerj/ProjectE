@@ -24,7 +24,7 @@ public class CoordinateBox
 		this.maxY = maxY;
 		this.maxZ = maxZ;
 	}
-	
+
 	public CoordinateBox(AxisAlignedBB box)
 	{
 		minX = box.minX;
@@ -35,7 +35,7 @@ public class CoordinateBox
 		maxZ = box.maxZ;
 	}
 	
-	public void expand(double x, double y, double z)
+	public CoordinateBox expand(double x, double y, double z)
 	{
 		this.minX -= x;
 		this.minY -= y;
@@ -43,9 +43,11 @@ public class CoordinateBox
 		this.maxX += x;
 		this.maxY += y;
 		this.maxZ += z;
+
+		return this;
 	}
 	
-	public void offset(double x, double y, double z)
+	public CoordinateBox offset(double x, double y, double z)
 	{
 		this.minX += x;
 		this.maxX += x;
@@ -53,6 +55,8 @@ public class CoordinateBox
 		this.minY += y;
 		this.minZ += z;
 		this.maxZ += z;
+
+		return this;
 	}
 	
 	@Override

@@ -86,7 +86,7 @@ item.pe_gem_armor_2.name=Gem Leggings
 item.pe_gem_armor_3.name=Gem Boots
 item.pe_arcana_ring.name=Ring of Arcana
 item.pe_zero_ring.name=Zero Ring
-item.pe_tome.name=Alchemical Tome
+item.pe_tome.name=Tome of Knowledge
 item.pe_transmutation_tablet.name=Transmutation Tablet
 
 tile.pe_alchemy_chest.name=Alchemical Chest
@@ -148,5 +148,3 @@ achievement.klein=EMC Batteries
 achievement.klein.desc=Storing EMC for a rainy day.
 achievement.klein_big=BIG EMC Batteries
 achievement.klein_big.desc=Holding the universe in your pocket.
-achievement.tome=Alchemy Master
-achievement.tome.desc=Your knowledge is... impressive.

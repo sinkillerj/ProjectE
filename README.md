@@ -1,4 +1,5 @@
-#ProjectE
+![](/src/main/resources/assets/projecte/logo.png?raw=true)
+
 Repository for ProjectE, a complete rewrite of EE2 (Equivilant Exchange 2) for modern Minecraft versions.
 
 This mod may only be redistributed as part of a modpack, both public and private modpacks are allowed. Beware of download locations which are not listed on this page as they are often fake updates which could contain malware.
@@ -10,6 +11,9 @@ http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 
 #Classic Textures
 The ProjectE mod now uses EE2 textures. If you prefer the classic ProjectE textures by Magic Banana they can be found here: http://minecraft.curseforge.com/texture-packs/227513-projecte-classic-textures
+
+#Support Development
+[![](/patreon.png?raw=true)](https://www.patreon.com/sinkillerj)
 
 #Join the Conversation
 IRC Client: \#ProjectE on irc.esper.net
