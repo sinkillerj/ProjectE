@@ -175,14 +175,10 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 
 		public boolean equals(Conversion other) {
 			if (output.equals(other.output) && value.equals(other.value)) {
-				if (ingredientsWithAmount == null && (other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0)) {
-					return true;
-				} else if (ingredientsWithAmount!=null) {
-					if (this.ingredientsWithAmount.size() == 0) {
-						return (other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0);
-					} else {
-						return ingredientsWithAmount.equals(other.ingredientsWithAmount);
-					}
+				if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
+					return other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0;
+				} else {
+					return ingredientsWithAmount.equals(other.ingredientsWithAmount);
 				}
 			}
 			return false;
