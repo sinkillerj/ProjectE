@@ -1,19 +1,24 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.arithmetics.IntArithmetic;
 import moze_intel.projecte.emc.arithmetics.LongArithmetic;
 import moze_intel.projecte.emc.mappers.*;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.PrefixConfiguration;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import scala.Int;
 
+import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -27,13 +32,21 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
 		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+
+		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
+		config.load();
+
 		PELogger.logInfo("Starting to collect Mappings...");
 		for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper: emcMappers) {
-			emcMapper.addMappings(graphMapper);
-			PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+			if (config.getBoolean(emcMapper.getName(), "enabledMappers",emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable()) {
+				emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+				PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+			}
 		}
 		NormalizedSimpleStack.addMappings(graphMapper);
 		PELogger.logInfo("Starting to generate Values:");
+		config.save();
+
 		Map<NormalizedSimpleStack, Integer> graphMapperValues =  graphMapper.generateValues();
 		PELogger.logInfo("Generated Values...");
 		loadEmcFromIMC();

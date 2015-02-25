@@ -6,13 +6,14 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 
 public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	IMappingCollector<NormalizedSimpleStack, Integer> mapper;
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		this.mapper = mapper;
 		addMapping(new ItemStack(Blocks.cobblestone), 1);
 		addMapping(new ItemStack(Blocks.stone), 1);
@@ -138,4 +139,18 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "LazyMapper";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Default values for Items";
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return true;
+	}
 }

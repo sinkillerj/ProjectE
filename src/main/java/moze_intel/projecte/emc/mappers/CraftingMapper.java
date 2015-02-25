@@ -9,6 +9,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -20,7 +21,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	Set<Class> canNotMap = new HashSet<Class>();
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
 		while (iter.hasNext()) {
 			IRecipe recipe = iter.next();
@@ -29,6 +30,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			if (recipeOutput == null) continue;
 			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
+				if (!config.getBoolean("enable" + recipeMapper.getName(),"", true, recipeMapper.getDescription())) continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
@@ -70,8 +72,24 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "CraftingMapper";
+	}
 
-	protected static interface IRecipeMapper {
+	@Override
+	public String getDescription() {
+		return "Add Conversions for Crafting Recipes gathered from net.minecraft.item.crafting.CraftingManager";
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return true;
+	}
+
+	public static interface IRecipeMapper {
+		public String getName();
+		public String getDescription();
 		public boolean canHandle(IRecipe recipe);
 
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
@@ -87,6 +105,16 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	}
 
 	protected static class VanillaRecipeMapper implements IRecipeMapper {
+
+		@Override
+		public String getName() {
+			return "VanillaRecipeMapper";
+		}
+
+		@Override
+		public String getDescription() {
+			return "Maps `IRecipe` crafting recipes for `ShapedRecipes` or `ShapelessRecipes`";
+		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
@@ -117,6 +145,16 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	}
 
 	protected static class VanillaOreRecipeMapper implements IRecipeMapper {
+
+		@Override
+		public String getName() {
+			return "VanillaOreRecipeMapper";
+		}
+
+		@Override
+		public String getDescription() {
+			return "Maps `IRecipe` crafting recipes for `ShapedOreRecipe` or `ShapelessOreRecipe`. These include OreDictionary ingredients.";
+		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {

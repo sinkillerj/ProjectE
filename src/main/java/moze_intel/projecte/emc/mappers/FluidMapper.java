@@ -2,11 +2,9 @@ package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.arithmetics.LongArithmetic;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -19,7 +17,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private IMappingCollector<NormalizedSimpleStack, Long> mapper;
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.LAVA), 64, IMappingCollector.FixedValue.FixAndInherit);
 		Map<String, Integer> fixValue = new HashMap<String, Integer>();
@@ -47,5 +45,20 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			Fluid fluid = data.fluid.getFluid();
 			mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(data.filledContainer), Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(data.emptyContainer), NormalizedSimpleStack.getNormalizedSimpleStackFor(fluid)));
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "FluidMapper";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Adds Conversions for fluid container items and fluids.";
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return true;
 	}
 }

@@ -4,27 +4,30 @@ import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class OreDictionaryMapper extends LazyMapper {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		this.mapper = mapper;
-		//Black-list all ores/dusts
-		for (String s : OreDictionary.getOreNames()) {
-			if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed")) {
-				//Some exceptions in the black-listing
-				if (s.equals("dustPlastic")) {
-					continue;
-				}
-
-				for (ItemStack stack : Utils.getODItems(s)) {
-					if (stack == null) {
+		if (config.getBoolean("blacklistOresAndDusts", "", true, "Set EMC=0 for everything that has an OD Name that starts with `ore`, `dust` or `crushed` besides `dustPlastic`")) {
+			//Black-list all ores/dusts
+			for (String s : OreDictionary.getOreNames()) {
+				if (s.startsWith("ore") || s.startsWith("dust") || s.startsWith("crushed")) {
+					//Some exceptions in the black-listing
+					if (s.equals("dustPlastic")) {
 						continue;
 					}
 
-					mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
+					for (ItemStack stack : Utils.getODItems(s)) {
+						if (stack == null) {
+							continue;
+						}
+
+						mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
+					}
 				}
 			}
 		}
@@ -128,5 +131,21 @@ public class OreDictionaryMapper extends LazyMapper {
 		for (ItemStack stack : Utils.getODItems(odName)) {
 			addMapping(stack, value);
 		}
+	}
+
+
+	@Override
+	public String getName() {
+		return "OreDictionaryMapper";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Default values for a lot of Mod - OreDictionary Names.";
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return true;
 	}
 }
