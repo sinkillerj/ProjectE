@@ -541,6 +541,30 @@ public class GraphMapperTest {
 		}
 	}
 
+	@org.junit.Test
+	public void testGenerateValuesZeroCountIngredientDependency() throws Exception {
+		graphMapper.setValue("a", 2, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("b", 3, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("notConsume1", 1, IMappingCollector.FixedValue.FixAndInherit);
+		HashMap<String, Integer> ingredients = new HashMap<String, Integer>();
+		ingredients.put("a", 1);
+		ingredients.put("b", 1);
+		ingredients.put("notConsume1", 0);
+		graphMapper.addConversionMultiple(1, "c1", ingredients);
+		ingredients.remove("notConsume1");
+		ingredients.put("notConsume2", 0);
+		graphMapper.addConversionMultiple(1, "c2", ingredients);
+
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(2, getValue(values, "a"));
+		assertEquals(3, getValue(values, "b"));
+		assertEquals(1, getValue(values, "notConsume1"));
+		assertEquals(0, getValue(values, "notConsume2"));
+		assertEquals(5, getValue(values, "c1"));
+		assertEquals(0, getValue(values, "c2"));
+	}
+
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;

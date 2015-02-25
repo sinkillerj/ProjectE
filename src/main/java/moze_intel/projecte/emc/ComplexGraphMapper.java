@@ -61,7 +61,6 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 							Integer amount = use.ingredientsWithAmount.get(solvableThing.getKey());
 							if (amount == null)
 								throw new RuntimeException("F u!");
-							assert amount != null && amount != 0;
 							if (!arithmetic.isFree(solvableThing.getValue())) {
 								use.value = arithmetic.add(arithmetic.mul(amount, solvableThing.getValue()), use.value);
 							}
