@@ -52,12 +52,6 @@ public class NormalizedSimpleStack {
 				mapper.addConversion(1, stackWildcard, Arrays.asList(new NormalizedSimpleStack(entry.getKey(), metadata)));
 			}
 		}
-
-		for (Map.Entry<Map<NormalizedSimpleStack, Integer>, Group> entry: groups.entrySet()) {
-			for (NormalizedSimpleStack normStack: entry.getKey().keySet()) {
-				mapper.addConversion(1, entry.getValue(), Arrays.asList(normStack));
-			}
-		}
 	}
 
 	private NormalizedSimpleStack() {

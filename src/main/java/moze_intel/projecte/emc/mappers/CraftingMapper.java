@@ -50,9 +50,19 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
-								//XXX: ContainerItems??
 								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
 								ingredientMap.addIngredient(normalizedSimpleStack,1);
+								for (ItemStack stack: multiIngredient) {
+									if (stack == null || stack.getItem() == null) continue;
+									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
+										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
+										if (stack.getItem().hasContainerItem(stack)) {
+											groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
+										}
+										groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+										mapper.addConversionMultiple(1, normalizedSimpleStack, groupIngredientMap.getMap());
+									}
+								}
 							}
 							if (recipeOutput.stackSize > 0) {
 								mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
