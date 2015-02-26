@@ -38,12 +38,6 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		Map<T, V> newValueFor = new HashMap<T, V>();
 		Map<T, V> nextValueFor = new HashMap<T, V>();
 
-		//Everything, that only appears in 'uses' and has no conversion itself has a value of 0.
-		for (T someThing : usedIn.keySet()) {
-			if (!conversionsFor.containsKey(someThing) || conversionsFor.get(someThing).size() == 0) {
-				newValueFor.put(someThing, arithmetic.getZero());
-			}
-		}
 
 		newValueFor.putAll(fixValueBeforeInherit);
 		while (!newValueFor.isEmpty()) {
