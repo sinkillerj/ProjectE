@@ -70,7 +70,9 @@ public final class EMCMapper
 		for (SimpleStack stack: emc.keySet()) {
 			NormalizedSimpleStack normStack =NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.toItemStack());
 			allItems.add(normStack);
-			left.put(normStack, emc.get(stack));
+			if (normStack.damage != OreDictionary.WILDCARD_VALUE & !(normStack instanceof NormalizedSimpleStack.Group)) {
+				left.put(normStack, emc.get(stack));
+			}
 		}
 		for (Entry<NormalizedSimpleStack,Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey().damage != OreDictionary.WILDCARD_VALUE & !(entry.getKey() instanceof NormalizedSimpleStack.Group)) {
