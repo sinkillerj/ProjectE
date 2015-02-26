@@ -13,11 +13,11 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 
 	protected static void debugFormat(String format, Object... args) {
 		if (DEBUG_GRAPHMAPPER)
-			System.out.format(format, args);
+			PELogger.logInfo(String.format(format, args));
 	}
 
 	protected static void debugPrintln(String s) {
-		debugFormat("%s\n", s);
+		debugFormat("%s", s);
 	}
 
 	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();

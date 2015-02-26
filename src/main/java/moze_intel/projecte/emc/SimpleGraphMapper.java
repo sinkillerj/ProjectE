@@ -37,20 +37,26 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		Map<T, V> values = new HashMap<T, V>();
 		Map<T, V> newValueFor = new HashMap<T, V>();
 		Map<T, V> nextValueFor = new HashMap<T, V>();
+		Map<T,Object> reasonForChange = new HashMap<T, Object>();
 
 
-		newValueFor.putAll(fixValueBeforeInherit);
+		for (Map.Entry<T,V> entry: fixValueBeforeInherit.entrySet()) {
+			newValueFor.put(entry.getKey(),entry.getValue());
+			reasonForChange.put(entry.getKey(), "fixValueBefore");
+		}
 		while (!newValueFor.isEmpty()) {
 			while (!newValueFor.isEmpty()) {
 				debugPrintln("Loop");
 				for (Map.Entry<T, V> entry : newValueFor.entrySet()) {
 					if (canOverride(entry.getKey(),entry.getValue()) && updateMapWithMinimum(values, entry.getKey(), entry.getValue())) {
-						debugFormat("Set Value for %s to %s\n", entry.getKey(), entry.getValue());
+						debugFormat("Set Value for %s to %s because %s", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
 						for (Conversion conversion : getUsesFor(entry.getKey())) {
 							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
 							if (conversionValue.compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(conversionValue)) {
 								if (!hasSmaller(values, conversion.output, conversionValue)) {
-									updateMapWithMinimum(nextValueFor, conversion.output, conversionValue);
+									if (updateMapWithMinimum(nextValueFor, conversion.output, conversionValue)) {
+										reasonForChange.put(conversion.output, entry.getKey());
+									}
 								}
 							}
 						}
@@ -70,8 +76,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					V conversionValue = valueForConversion(values, conversion);
 					V resultValue = values.containsKey(entry.getKey()) ? arithmetic.mul(conversion.outnumber, values.get(entry.getKey())) : arithmetic.getZero();
 					if (canOverride(entry.getKey(),arithmetic.getZero()) && arithmetic.getZero().compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
-						debugFormat("Setting %s to 0 because %s > %s = %s\n", entry.getKey(), resultValue, conversionValue, conversion);
+						debugFormat("Setting %s to 0 because %s > %s = %s", entry.getKey(), resultValue, conversionValue, conversion);
 						newValueFor.put(conversion.output, arithmetic.getZero());
+						reasonForChange.put(conversion.output, "exploit recype");
 					}
 				}
 			}
