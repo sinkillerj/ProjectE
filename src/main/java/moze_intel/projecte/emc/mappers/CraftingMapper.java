@@ -189,9 +189,20 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			for (Object recipeItem : recipeItems) {
 				if (recipeItem instanceof ItemStack) {
 					fixedInputs.add((ItemStack) recipeItem);
-				} else if (recipeItem instanceof Iterable) {
+				} else if (recipeItem instanceof Collection) {
 					List<ItemStack> recipeItemOptions = new LinkedList<ItemStack>();
-					for (Object option : (Iterable) recipeItem) {
+					Collection recipeItemCollection = ((Collection) recipeItem);
+					if (recipeItemCollection.size() == 1) {
+						Object element = recipeItemCollection.iterator().next();
+						if (element instanceof ItemStack) {
+							fixedInputs.add((ItemStack)element);
+						} else {
+							PELogger.logWarn("Can not map recipe " + recipe + " because found " + element.toString() + " instead of ItemStack");
+							return null;
+						}
+						continue;
+					}
+					for (Object option : recipeItemCollection) {
 						if (option instanceof ItemStack) {
 							recipeItemOptions.add((ItemStack) option);
 						} else {
