@@ -54,7 +54,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 						debugFormat("Set Value for %s to %s\n", entry.getKey(), entry.getValue());
 						for (Conversion conversion : getUsesFor(entry.getKey())) {
 							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
-							if (conversionValue.compareTo(arithmetic.getZero()) > 0) {
+							if (conversionValue.compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(conversionValue)) {
 								if (!hasSmaller(values, conversion.output, conversionValue)) {
 									updateMapWithMinimum(nextValueFor, conversion.output, conversionValue);
 								}
@@ -97,6 +97,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 
 	protected V valueForConversion(Map<T, V> values, Conversion conversion) {
 		V value = conversion.value;
+		boolean allIngredientsAreFree = true;
+		boolean hasPositiveIngredientValues = false;
 		for (Map.Entry<T, Integer> entry:conversion.ingredientsWithAmount.entrySet()) {
 			if (values.containsKey(entry.getKey())) {
 				//value = value + amount * ingredientcost
@@ -104,6 +106,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 				if (ingredientValue.compareTo(arithmetic.getZero()) != 0) {
 					if (!arithmetic.isFree(ingredientValue)) {
 						value = arithmetic.add(value, arithmetic.mul(entry.getValue(), ingredientValue));
+						if (ingredientValue.compareTo(arithmetic.getZero()) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
+						allIngredientsAreFree = false;
 					}
 				} else {
 					return arithmetic.getZero();
@@ -112,6 +116,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 				return arithmetic.getZero();
 			}
 		}
+		if (allIngredientsAreFree || (hasPositiveIngredientValues && value.compareTo(arithmetic.getZero()) <= 0)) return arithmetic.getFree();
 		return value;
 	}
 }

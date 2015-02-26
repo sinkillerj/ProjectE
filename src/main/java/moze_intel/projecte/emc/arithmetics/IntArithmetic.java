@@ -20,11 +20,13 @@ public class IntArithmetic implements IValueArithmetic<Integer>{
 
 	@Override
 	public Integer mul(int a, Integer b) {
+		if (this.isFree(b)) return getFree();
 		return a * b;
 	}
 
 	@Override
 	public Integer div(Integer a, int b) {
+		if (this.isFree(a)) return getFree();
 		return a / b;
 	}
 
