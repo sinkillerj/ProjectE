@@ -445,6 +445,25 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
+	public void testGenerateValuesCycleRecipeExploit2() throws Exception {
+		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		//Exploitable Cycle Recype
+		graphMapper.addConversion(1, "exploitable", Arrays.asList("a1"));
+		graphMapper.addConversion(2, "exploitable", Arrays.asList("exploitable"));
+		graphMapper.addConversion(1, "b", Arrays.asList("exploitable"));
+
+		//Not-exploitable Cycle Recype
+		graphMapper.addConversion(1, "notExploitable", Arrays.asList("a1"));
+		graphMapper.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a1"));
+		assertEquals(0, getValue(values, "exploitable"));
+		assertEquals(1, getValue(values, "notExploitable"));
+		assertEquals(0, getValue(values, "b"));
+	}
+
+	@org.junit.Test
 	public void testGenerateValuesCoalToFireChargeWithWildcard() throws Exception {
 		String[] logTypes = new String[]{"logA", "logB", "logC"};
 		String[] log2Types = new String[]{"log2A", "log2B", "log2C"};
