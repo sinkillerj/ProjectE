@@ -71,14 +71,28 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 				}
 			}
 			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
+				V minConversionValue = null;
 				for (Conversion conversion : entry.getValue()) {
 					//entry.getKey() == conversion.output
 					V conversionValue = valueForConversion(values, conversion);
+					V conversionValueSingle = arithmetic.div(conversionValue, conversion.outnumber);;
 					V resultValue = values.containsKey(entry.getKey()) ? arithmetic.mul(conversion.outnumber, values.get(entry.getKey())) : arithmetic.getZero();
+					if (conversionValueSingle.compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(conversionValueSingle)) {
+						if (minConversionValue == null || minConversionValue.compareTo(conversionValueSingle) > 0) {
+							minConversionValue = conversionValueSingle;
+						}
+					}
 					if (canOverride(entry.getKey(),arithmetic.getZero()) && arithmetic.getZero().compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
-						debugFormat("Setting %s to 0 because %s > %s = %s", entry.getKey(), resultValue, conversionValue, conversion);
+						debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValue, conversionValue, conversion);
 						newValueFor.put(conversion.output, arithmetic.getZero());
-						reasonForChange.put(conversion.output, "exploit recype");
+						reasonForChange.put(conversion.output, "exploit recipe");
+					}
+				}
+				if (minConversionValue == null || minConversionValue.equals(arithmetic.getZero())) {
+					if (canOverride(entry.getKey(), arithmetic.getZero()) && !hasSmaller(values, entry.getKey(), arithmetic.getZero())) {
+						debugFormat("Removing Value for %s because it does not have any nonzero-conversions anymore.", entry.getKey());
+						newValueFor.put(entry.getKey(), arithmetic.getZero());
+						reasonForChange.put(entry.getKey(), "all conversions dead");
 					}
 				}
 			}
