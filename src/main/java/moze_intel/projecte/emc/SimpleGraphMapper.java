@@ -89,7 +89,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					}
 				}
 				if (minConversionValue == null || minConversionValue.equals(arithmetic.getZero())) {
-					if (canOverride(entry.getKey(), arithmetic.getZero()) && !hasSmaller(values, entry.getKey(), arithmetic.getZero())) {
+					if (values.containsKey(entry.getKey()) && !values.get(entry.getKey()).equals(arithmetic.getZero()) && canOverride(entry.getKey(), arithmetic.getZero()) && !hasSmaller(values, entry.getKey(), arithmetic.getZero())) {
 						debugFormat("Removing Value for %s because it does not have any nonzero-conversions anymore.", entry.getKey());
 						newValueFor.put(entry.getKey(), arithmetic.getZero());
 						reasonForChange.put(entry.getKey(), "all conversions dead");
