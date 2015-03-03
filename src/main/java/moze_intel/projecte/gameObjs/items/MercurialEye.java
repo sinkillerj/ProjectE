@@ -147,6 +147,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 				{
 					Block b = world.getBlock(x, y, z);
+					int meta = world.getBlockMetadata(x, y, z);
 
 					if (mode == NORMAL_MODE && b == Blocks.air)
 					{
@@ -160,12 +161,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						if (b == toSet || b == Blocks.air || world.getTileEntity(x, y, z) != null || !Utils.doesItemHaveEmc(new ItemStack(b)))
+						if ((b == toSet && meta == toSetMeta) || b == Blocks.air || world.getTileEntity(x, y, z) != null || !Utils.doesItemHaveEmc(new ItemStack(b, 1, toSetMeta)))
 						{
 							continue;
 						}
 
-						int emc = Utils.getEmcValue(new ItemStack(b));
+						int emc = Utils.getEmcValue(new ItemStack(b, 1, toSetMeta));
 
 						if (emc > reqEmc)
 						{
