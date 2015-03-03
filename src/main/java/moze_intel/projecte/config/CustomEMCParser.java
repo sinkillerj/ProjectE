@@ -104,12 +104,10 @@ public final class CustomEMCParser
 
 					if (entry.emc <= 0)
 					{
-						EMCMapper.addToBlackList(stack);
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
 					}
 					else
 					{
-						EMCMapper.addMapping(stack, entry.emc);
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
 					userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
@@ -125,12 +123,10 @@ public final class CustomEMCParser
 
 					if (entry.emc <= 0)
 					{
-						EMCMapper.addToBlackList(entry.name);
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
 					}
 					else
 					{
-						EMCMapper.addMapping(entry.name, entry.emc);
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
 					for (ItemStack stack : Utils.getODItems(entry.name))
