@@ -53,14 +53,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return stack;
 			}
 
-			Block toSet = Block.getBlockFromItem(inventory[1].getItem());
+			Block newBlock = Block.getBlockFromItem(inventory[1].getItem());
 
-			if (toSet == Blocks.air)
+			if (newBlock == Blocks.air)
 			{
 				return stack;
 			}
 
-			int toSetMeta = inventory[1].getItemDamage();
+			int newMeta = inventory[1].getItemDamage();
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
 			int reqEmc = Utils.getEmcValue(inventory[1]);
@@ -146,26 +146,26 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				for (int y = (int) box.minY; y <= (int) box.maxY; y++)
 				for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 				{
-					Block b = world.getBlock(x, y, z);
+					Block oldBlock = world.getBlock(x, y, z);
+					int oldMeta = oldBlock.getDamageValue(world, x, y, z);
 
-					if (mode == NORMAL_MODE && b == Blocks.air)
+					if (mode == NORMAL_MODE && oldBlock == Blocks.air)
 					{
 						if (kleinEmc < reqEmc)
 							break;
 
-						world.setBlock(x, y, z, toSet);
-						world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
+						world.setBlock(x, y, z, newBlock, newMeta, 3);
 						removeKleinEMC(stack, reqEmc);
 						kleinEmc -= reqEmc;
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						if (b == toSet || b == Blocks.air || world.getTileEntity(x, y, z) != null || !Utils.doesItemHaveEmc(new ItemStack(b)))
+						if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !Utils.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
 						{
 							continue;
 						}
 
-						int emc = Utils.getEmcValue(new ItemStack(b));
+						int emc = Utils.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
 
 						if (emc > reqEmc)
 						{
@@ -174,8 +174,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, Utils.getKleinStarMaxEmc(inventory[0]));
 
 							addKleinEMC(stack, difference);
-							world.setBlock(x, y, z, toSet);
-							world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
+							world.setBlock(x, y, z, newBlock, newMeta, 3);
 						}
 						else if (emc < reqEmc)
 						{
@@ -185,14 +184,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							{
 								kleinEmc -= difference;
 								removeKleinEMC(stack, difference);
-								world.setBlock(x, y, z, toSet);
-								world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
+								world.setBlock(x, y, z, newBlock, newMeta, 3);
 							}
 						}
 						else
 						{
-							world.setBlock(x, y, z, toSet);
-							world.setBlockMetadataWithNotify(x, y, z, toSetMeta, 3);
+							world.setBlock(x, y, z, newBlock, newMeta, 3);
 						}
 					}
 				}
