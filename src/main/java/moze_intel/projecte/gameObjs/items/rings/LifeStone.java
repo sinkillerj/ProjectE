@@ -12,6 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 {
@@ -123,5 +126,14 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	{
 		((IPedestalItem) ObjHandler.bodyStone).updateInPedestal(world, x, y, z);
 		((IPedestalItem) ObjHandler.soulStone).updateInPedestal(world, x, y, z);
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.addAll(((IPedestalItem) ObjHandler.soulStone).getPedestalDescription());
+		list.addAll(((IPedestalItem) ObjHandler.bodyStone).getPedestalDescription());
+		return list;
 	}
 }

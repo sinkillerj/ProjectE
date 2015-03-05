@@ -369,6 +369,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		}
 	}
 
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Grows and harvests nearby crops");
+		list.add("Taste that OP-ness...");
+		return list;
+	}
+
 	private class StackWithSlot
 	{
 		public final int slot;

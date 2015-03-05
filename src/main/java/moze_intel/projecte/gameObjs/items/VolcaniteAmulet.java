@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -284,5 +285,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			world.getWorldInfo().setRaining(false);
 			world.getWorldInfo().setThundering(false);
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Rainstopper 2015");
+		return list;
 	}
 }

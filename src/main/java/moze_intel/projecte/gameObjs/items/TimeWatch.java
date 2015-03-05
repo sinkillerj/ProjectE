@@ -28,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraftforge.fluids.BlockFluidBase;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -375,5 +376,15 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			speedUpRandomTicks(world, 18, bBox);
 			slowMobs(world, bBox, 0.10F);
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Speeds up machines");
+		list.add("Speeds up random updates");
+		list.add("Slows down mobs");
+		return list;
 	}
 }

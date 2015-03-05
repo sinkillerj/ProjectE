@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -175,4 +176,14 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 			}
 		}
 	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Sucks items");
+		list.add("Dumps in adjacent inventories");
+		return list;
+	}
+
 }

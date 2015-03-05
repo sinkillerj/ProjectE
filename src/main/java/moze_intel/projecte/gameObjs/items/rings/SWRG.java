@@ -24,6 +24,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -427,7 +428,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	{
 		if (!world.isRemote)
 		{
-			if (lightningCooldown == 0)
+			if (lightningCooldown <= 0)
 			{
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
@@ -435,12 +436,21 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				lightningCooldown = 65;
+				lightningCooldown = 70;
 			}
 			else
 			{
 				lightningCooldown--;
 			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Shoots lightning at mobs");
+		list.add("Triggers every 3.5 secs");
+		return list;
 	}
 }

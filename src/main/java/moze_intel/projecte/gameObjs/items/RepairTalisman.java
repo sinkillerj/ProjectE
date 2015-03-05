@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -143,5 +144,14 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 				repairCooldown--;
 			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Repairs nearby player items");
+		list.add("1 durability / sec");
+		return list;
 	}
 }

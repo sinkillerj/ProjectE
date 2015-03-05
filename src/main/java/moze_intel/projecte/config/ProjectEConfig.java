@@ -33,6 +33,7 @@ public final class ProjectEConfig
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
+	private static boolean showPedestalTooltip;
 
 	public static void init(File configFile)
 	{
@@ -47,6 +48,7 @@ public final class ProjectEConfig
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
 			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
+			showPedestalTooltip = config.getBoolean("pedestalToolTips", "misc", true, "Show pedestal functions for items in the pedestal gui.");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 

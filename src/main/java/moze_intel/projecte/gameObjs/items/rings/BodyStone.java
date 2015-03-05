@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -136,5 +137,14 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 				healCooldown--;
 			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Restores hunger");
+		list.add("2 shanks / sec");
+		return list;
 	}
 }

@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -248,5 +249,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			world.getWorldInfo().setThunderTime(i);
 			world.getWorldInfo().setRaining(true);
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Rainmaker 2015");
+		return list;
 	}
 }

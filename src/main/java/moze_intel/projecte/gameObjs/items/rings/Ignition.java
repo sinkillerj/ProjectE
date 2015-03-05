@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -150,5 +151,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 				torchCooldown--;
 			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Nearby mobs combust");
+		list.add("Activates every 2 seconds");
+		return list;
 	}
 }

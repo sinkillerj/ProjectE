@@ -14,6 +14,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArchangelSmite extends ItemPE implements IPedestalItem
 {
 	private int arrowCooldown;
@@ -71,5 +74,14 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 				arrowCooldown--;
 			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Fires homing arrows");
+		list.add("Kills drop XP");
+		return list;
 	}
 }

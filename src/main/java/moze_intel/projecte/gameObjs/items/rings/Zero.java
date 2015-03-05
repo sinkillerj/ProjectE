@@ -18,9 +18,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
@@ -168,7 +172,25 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		if (!world.isRemote)
 		{
 			TileEntity tile = world.getTileEntity(x, y, z);
-			freezeInCoordinateBox(world, CoordinateBox.fromAABB(((DMPedestalTile) tile).getEffectBounds()));
+			AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
+			freezeInCoordinateBox(world, CoordinateBox.fromAABB(aabb));
+			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
+			for (Entity ent : list)
+			{
+				if (ent.isBurning())
+				{
+					ent.extinguish();
+				}
+			}
 		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<>();
+		list.add("Extinguishes nearby entities");
+		list.add("Freezes surroundings");
+		return list;
 	}
 }
