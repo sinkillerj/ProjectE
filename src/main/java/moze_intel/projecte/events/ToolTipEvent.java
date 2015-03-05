@@ -33,7 +33,9 @@ public class ToolTipEvent
 			return;
 		}
 
-		if (currentItem instanceof IPedestalItem && Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
+		if (ProjectEConfig.showPedestalTooltip
+			&& currentItem instanceof IPedestalItem 
+			&& Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
 		{
 			event.toolTip.addAll(1, ((IPedestalItem) currentItem).getPedestalDescription());
 		}

@@ -33,7 +33,7 @@ public final class ProjectEConfig
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
-	private static boolean showPedestalTooltip;
+	public static boolean showPedestalTooltip;
 
 	public static void init(File configFile)
 	{
