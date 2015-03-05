@@ -6,6 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import moze_intel.projecte.utils.Constants;
@@ -14,7 +15,9 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -63,7 +66,22 @@ public class Pedestal extends Block implements ITileEntityProvider {
         return true;
     }
 
-    @Override
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase ent, ItemStack stack)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
+		{
+			stack.stackTagCompound.setInteger("x", x);
+			stack.stackTagCompound.setInteger("y", y);
+			stack.stackTagCompound.setInteger("z", z);
+
+			tile.readFromNBT(stack.stackTagCompound);
+		}
+	}
+
+
+	@Override
     public boolean renderAsNormalBlock()
     {
         return false;

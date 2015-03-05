@@ -14,7 +14,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class DMPedestalTile extends TileEntity implements IInventory
+public class DMPedestalTile extends TileEmc implements IInventory
 {
 	private boolean isActive = false;
 	private ItemStack[] inventory = new ItemStack[1];
@@ -276,5 +276,17 @@ public class DMPedestalTile extends TileEntity implements IInventory
 			}
 		}
 		this.isActive = newState;
+	}
+
+	@Override
+	public double getStoredEmc()
+	{
+		return 0.0;
+	}
+
+	@Override
+	public boolean isRequestingEmc()
+	{
+		return false;
 	}
 }
