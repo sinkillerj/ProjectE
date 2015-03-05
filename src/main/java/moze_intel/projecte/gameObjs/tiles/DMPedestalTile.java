@@ -223,9 +223,7 @@ public class DMPedestalTile extends TileEntity implements IInventory
 	}
 
 	@Override
-	public void openInventory()
-	{
-	}
+	public void openInventory() { }
 
 	@Override
 	public void closeInventory()

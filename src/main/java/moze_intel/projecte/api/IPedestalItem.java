@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public interface IPedestalItem {
 
 	/***
-	 * Called each time an active DMPedestalTile ticks with this item inside.
+	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside.
 	 * @param world
 	 * @param x
 	 * @param y
