@@ -1,3 +1,17 @@
+###Version 1.7.10-PE1.3.0
+* NEW: Patreon donors and code contributors are now announced as high alchemists
+* NEW: Bucket functionality for fluid amulets
+* FIXED: Some siding issues on collectors and matter furnaces
+* FIXED: Mercurial Eye should now behave properly
+* FIXED: Assorted Archangel's Smite crashes and issues
+
+###Version 1.7.10-PE1.2.0
+* NEW: Config option for using nether stars instead of diamonds in some recipes
+* NEW: Alchemical Tome renamed to Tome of Knowledge to better represent its use
+* NEW: Tome of Knowledge crafting must be enabled via config
+* NEW: German language file updates
+* FIXED: Possible fix for transmutation GUI NullPointerException
+
 ###Version 1.7.10-PE1.1.0
 * NEW: EE2 textures are now implemented per community vote and permission from x3n0ph0b3
 * NEW: Classic ProjectE textures are now a separate download

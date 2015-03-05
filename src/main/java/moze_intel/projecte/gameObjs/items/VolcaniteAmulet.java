@@ -12,6 +12,7 @@ import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.Utils;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -62,6 +64,53 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 
 		return false;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (!world.isRemote)
+		{
+			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			{
+				int i = mop.blockX;
+				int j = mop.blockY;
+				int k = mop.blockZ;
+				if (!(world.getTileEntity(i, j, k) instanceof IFluidHandler))
+				{
+					switch(mop.sideHit) // Ripped from vanilla ItemBucket and simplified
+					{
+						case 0: --j; break;
+						case 1: ++j; break;
+						case 2: --k; break;
+						case 3: ++k; break;
+						case 4: --i; break;
+						case 5: ++i; break;
+						default: break;
+					}
+
+					int consumed = (int) Utils.consumePlayerFuel(player, 32);
+					if (consumed != -1)
+					{
+						placeLava(world, i, j, k);
+					}
+				}
+			}
+		}
+
+		return stack;
+	}
+
+
+	private void placeLava(World world, int i, int j, int k)
+	{
+		Material material = world.getBlock(i, j, k).getMaterial();
+		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
+		{
+			world.func_147480_a(i, j, k, true);
+		}
+		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
 	}
 
 	@Override
@@ -141,8 +190,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		{
 			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a lava projectile");
 		}
-
-		list.add("Right-click to fill tanks.");
+		list.add("Acts as refilling lava bucket");
+		list.add("Right-click to fill tanks");
 		list.add("All operations cost 32 EMC!");
 	}
 	

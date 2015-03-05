@@ -1,0 +1,8 @@
+###UUID list for patreon users and code contributors. Code contributors please see issue 338.
+5f86012c-ca4b-451a-989c-8fab167af647
+0fa44114-eff7-44d9-ab06-249b49520509
+99c5c737-f1ab-45a4-9757-1e80425643f2
+1d5e02e0-7e54-4e9e-8d9c-548b22c02daf
+8527ba19-65f0-4a96-ba9c-efe6defb6c73
+f692ea1d-ec62-4c25-8ff9-0155cff2b27c
+a794cc8b-8237-4e75-aac7-842af7c16fd8
