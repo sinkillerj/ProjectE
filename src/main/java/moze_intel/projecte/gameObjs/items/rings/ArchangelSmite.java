@@ -5,8 +5,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import net.minecraft.client.multiplayer.WorldClient;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -51,9 +52,17 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 		{
 			if (arrowCooldown == 0)
 			{
-				for (int i = 0; i < 5; i++)
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
 				{
-					world.spawnEntityInWorld(new EntityHomingArrow(world, FakePlayerFactory.getMinecraft(((WorldServer) world)), 2.0F));
+					for (int i = 0; i < 3; i++)
+					{
+						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.getMinecraft(((WorldServer) world)), 2.0F);
+						arrow.posX = tile.centeredX;
+						arrow.posY = tile.centeredY + 2;
+						arrow.posZ = tile.centeredZ;
+						world.spawnEntityInWorld(arrow);
+					}
 				}
 				arrowCooldown = 100;
 			}

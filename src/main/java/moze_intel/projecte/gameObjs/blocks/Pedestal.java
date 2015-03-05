@@ -56,7 +56,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
                 {
                     tile.setActive(!tile.getActive());
                 }
-                PELogger.logInfo("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
+                PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
             PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
         }

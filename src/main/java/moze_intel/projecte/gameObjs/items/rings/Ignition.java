@@ -6,11 +6,9 @@ import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -138,11 +136,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 			if (torchCooldown == 0)
 			{
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
-				List<EntityCreature> list = world.getEntitiesWithinAABB(EntityCreature.class, tile.getEffectBounds());
-				for (EntityCreature creature : list)
+				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
+				for (EntityLiving living : list)
 				{
-					creature.attackEntityFrom(DamageSource.inFire, 3.0F);
-					creature.setFire(8);
+					living.attackEntityFrom(DamageSource.inFire, 3.0F);
+					living.setFire(8);
 				}
 
 				torchCooldown = 40;

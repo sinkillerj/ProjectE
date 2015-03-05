@@ -19,7 +19,7 @@ public class DMPedestalTile extends TileEntity implements IInventory
 	private boolean isActive = false;
 	private ItemStack[] inventory = new ItemStack[1];
 	private AxisAlignedBB effectBounds;
-	private int particleCooldown = 20;
+	private int particleCooldown = 10;
 	public double centeredX, centeredY, centeredZ;
 
 	public DMPedestalTile()
@@ -48,12 +48,45 @@ public class DMPedestalTile extends TileEntity implements IInventory
 				{
 					((IPedestalItem) item).updateInPedestal(worldObj, xCoord, yCoord, zCoord);
 				}
-
+				if (particleCooldown <= 0)
+				{
+					spawnParticles();
+					particleCooldown = 10;
+				}
+				else
+				{
+					particleCooldown--;
+				}
 			}
 			else
 			{
 				setActive(false);
 			}
+		}
+	}
+
+	private void spawnParticles()
+	{
+		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.5, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.5, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.5, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.5, 0, 0, 0);
+		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
+		for (int l = 0; l < 3; ++l) // Ripped from vanilla enderchest
+		{
+			double d1 = (double)((float)yCoord + worldObj.rand.nextFloat());
+			double d3, d4, d5;
+			int i1 = worldObj.rand.nextInt(2) * 2 - 1;
+			int j1 = worldObj.rand.nextInt(2) * 2 - 1;
+			d4 = ((double)worldObj.rand.nextFloat() - 0.5D) * 0.125D;
+			double d2 = (double)zCoord + 0.5D + 0.25D * (double)j1;
+			d5 = (double)(worldObj.rand.nextFloat() * 1.0F * (float)j1);
+			double d0 = (double)xCoord + 0.5D + 0.25D * (double)i1;
+			d3 = (double)(worldObj.rand.nextFloat() * 1.0F * (float)i1);
+			worldObj.spawnParticle("portal", d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -64,6 +97,10 @@ public class DMPedestalTile extends TileEntity implements IInventory
 
 	public AxisAlignedBB getEffectBounds()
 	{
+		if (effectBounds == null)
+		{
+			PELogger.logWarn("Returned null effectbounds for pedestal!");
+		}
 		return effectBounds;
 	}
 
@@ -217,17 +254,27 @@ public class DMPedestalTile extends TileEntity implements IInventory
 	{
 		if (newState != this.getActive() && worldObj != null)
 		{
-			if (newState)  // Turning on
+			if (newState)
 			{
 				worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.pecharge", 1.0F, 1.0F);
-				if (worldObj.isRemote) // Particles are clientside but sounds are serverside...
+				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
 				{
-					worldObj.spawnParticle("flame", centeredX, yCoord, centeredZ, 0, 0.005, 0);
+					this.worldObj.spawnParticle("witchMagic", centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							0.0D, 0.0D, 0.0D);
 				}
 			}
-			else // Turning off
+			else
 			{
 				worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.peuncharge", 1.0F, 1.0F);
+				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
+				{
+					this.worldObj.spawnParticle("smoke", centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							0.0D, 0.0D, 0.0D);
+				}
 			}
 		}
 		this.isActive = newState;

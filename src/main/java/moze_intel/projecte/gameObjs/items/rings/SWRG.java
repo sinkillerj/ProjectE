@@ -13,6 +13,7 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -429,10 +430,10 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			if (lightningCooldown == 0)
 			{
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
-				List<EntityCreature> list = world.getEntitiesWithinAABB(EntityCreature.class, tile.getEffectBounds());
-				for (EntityCreature creature : list)
+				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
+				for (EntityLiving living : list)
 				{
-					world.addWeatherEffect(new EntityLightningBolt(world, creature.posX, creature.posY, creature.posZ));
+					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
 				lightningCooldown = 65;
 			}
