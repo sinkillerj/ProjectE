@@ -10,6 +10,7 @@ import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ChatComponentText;
+
+import java.util.List;
 
 public class PlayerEvents
 {
@@ -31,6 +36,16 @@ public class PlayerEvents
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
+
+			if (PECore.uuids.contains(((EntityPlayer)event.entity).getUniqueID().toString()))
+			{
+				ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + "High alchemist " + EnumChatFormatting.GOLD + ((EntityPlayer)event.entity).getDisplayName() + EnumChatFormatting.BLUE + " has joined the server." + EnumChatFormatting.RESET);
+
+				for (EntityPlayer player : (List<EntityPlayer>) event.entity.worldObj.playerEntities)
+				{
+					player.addChatComponentMessage(joinMsg);
+				}
+			}
 		}
 	}
 

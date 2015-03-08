@@ -22,6 +22,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
+import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
@@ -32,6 +33,8 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
@@ -47,6 +50,8 @@ public class PECore
 	
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
+
+	public static final List<String> uuids = new ArrayList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -109,6 +114,11 @@ public class PECore
 		if (!ThreadCheckUpdate.hasRunServer())
 		{
 			new ThreadCheckUpdate(true).start();
+		}
+
+		if (!ThreadCheckUUID.hasRunServer())
+		{
+			new ThreadCheckUUID(true).start();
 		}
 		
 		CustomEMCParser.readUserData();
