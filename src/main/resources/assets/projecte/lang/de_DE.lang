@@ -109,6 +109,7 @@ tile.pe_nova_cataclysm.name=Nova-Katastrophe
 tile.pe_fuel_block_0.name=Block aus Alchemiekohle
 tile.pe_fuel_block_1.name=Block aus Mobiuskraftstoff
 tile.pe_fuel_block_2.name=Block aus Aeternaliskraftstoff
+tile.pe_dmPedestal.name=Dunkler Materien Podest
 
 itemGroup.ProjectE=ProjectE
 

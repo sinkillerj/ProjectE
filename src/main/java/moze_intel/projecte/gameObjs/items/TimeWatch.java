@@ -4,8 +4,11 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -23,11 +26,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import moze_intel.projecte.config.ProjectEConfig;
+import net.minecraftforge.fluids.BlockFluidBase;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
+public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
@@ -143,22 +149,75 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 		}
 			
 		AxisAlignedBB bBox = player.boundingBox.expand(8, 8, 8);
-		
-		for (TileEntity tile : Utils.getTileEntitiesWithinAABB(world, bBox))
+
+		speedUpTileEntities(world, bonusTicks, bBox);
+		speedUpRandomTicks(world, bonusTicks, bBox);
+		slowMobs(world, bBox, mobSlowdown);
+	}
+
+	private void slowMobs(World world, AxisAlignedBB bBox, float mobSlowdown)
+	{
+		if (bBox == null) // Sanity check for chunk unload weirdness
 		{
+			return;
+		}
+		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
+		{
+			Entity ent = (Entity) obj;
+
+			if (ent.motionX != 0)
+			{
+				ent.motionX *= mobSlowdown;
+			}
+
+			if (ent.motionZ != 0)
+			{
+				ent.motionZ *= mobSlowdown;
+			}
+		}
+	}
+
+	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
+	{
+		if (bBox == null) // Sanity check for chunk unload weirdness
+		{
+			return;
+		}
+		Iterator<TileEntity> iter = Utils.getTileEntitiesWithinAABB(world, bBox).iterator();
+		while (iter.hasNext())
+		{
+			TileEntity tile = iter.next();
+			if (tile instanceof DMPedestalTile)
+			{
+				iter.remove(); // Don't speed up other pedestals because of exploits and infinite recursion
+				continue;
+			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
 				tile.updateEntity();
 			}
 		}
-		
+	}
+
+	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
+	{
+		if (bBox == null) // Sanity check for chunk unload weirdness
+		{
+			return;
+		}
 		for (int x = (int) bBox.minX; x <= bBox.maxX; x++)
+		{
 			for (int y = (int) bBox.minY; y <= bBox.maxY; y++)
+			{
 				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
 				{
 					Block block = world.getBlock(x, y, z);
-					
-					if (block.getTickRandomly())
+
+					if (block.getTickRandomly()
+							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
+							&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
+
+						)
 					{
 						for (int i = 0; i < bonusTicks; i++)
 						{
@@ -166,20 +225,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 						}
 					}
 				}
-		
-		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
-		{
-			Entity ent = (Entity) obj;
-			
-			if (ent.motionX != 0)
-			{
-				ent.motionX *= mobSlowdown;
 			}
-			
-			if (ent.motionZ != 0)
-			{
-				ent.motionZ *= mobSlowdown;
-			}
+
 		}
 	}
 
@@ -313,5 +360,31 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		/* Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
+		Now the same as activated watch in hand but more powerful.
+		Can be changed at sinkillerj's discretion. */
+
+		if (!world.isRemote)
+		{
+			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+			speedUpTileEntities(world, 18, bBox);
+			speedUpRandomTicks(world, 18, bBox);
+			slowMobs(world, bBox, 0.10F);
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<String>();
+		list.add("Speeds up machines");
+		list.add("Speeds up random updates");
+		list.add("Slows down mobs");
+		return list;
 	}
 }

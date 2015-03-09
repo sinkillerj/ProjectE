@@ -12,6 +12,7 @@ public final class ProjectEConfig
 	public static boolean enableDebugLog;
 	public static boolean showEMCTooltip;
 	public static boolean showStatTooltip;
+	public static boolean showPedestalTooltip;
 
 	public static boolean enableAlcChest;
 	public static boolean enableITorch;
@@ -29,6 +30,8 @@ public final class ProjectEConfig
 
 	public static boolean enableTimeWatch;
 
+	public static boolean enableDarkPedestal;
+
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
 	
@@ -45,6 +48,7 @@ public final class ProjectEConfig
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
 			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
+			showPedestalTooltip = config.getBoolean("pedestalToolTips", "misc", true, "Show pedestal functions for items in the pedestal gui.");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 
@@ -66,6 +70,7 @@ public final class ProjectEConfig
 			enableRedFurnace = config.getBoolean("enableRedFurnace", "blocks", true, "Enable Red Matter Furnace recipe");
 			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe");
 
+			enableDarkPedestal = config.getBoolean("enableDarkPedestal", "blocks", true, "Enable DM Pedestal recipe");
 			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");

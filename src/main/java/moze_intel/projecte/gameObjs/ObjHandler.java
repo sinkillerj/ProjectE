@@ -47,6 +47,7 @@ public class ObjHandler
 	public static Block rmFurnaceOn = new MatterFurnace(true, true);
 	public static Block dmFurnaceOff = new MatterFurnace(false, false);
 	public static Block dmFurnaceOn = new MatterFurnace(true, false);
+	public static Block dmPedestal = new Pedestal();
 	public static Block matterBlock = new MatterBlock();
 	public static Block fuelBlock = new FuelBlock();
 	public static Block energyCollector = new Collector(1);
@@ -147,6 +148,7 @@ public class ObjHandler
 		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
 		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
 		GameRegistry.registerBlock(dmFurnaceOn, "DM Furnace Lit");
+		GameRegistry.registerBlock(dmPedestal, "DM Pedestal");
 		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "Matter Block");
 		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "Fuel Block");
 		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "Collector MK1");
@@ -250,6 +252,7 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(RelayMK2Tile.class, "AM Relay MK2 Tile");
 		GameRegistry.registerTileEntity(RelayMK3Tile.class, "AM Relay MK3 Tile");
 		GameRegistry.registerTileEntity(TransmuteTile.class, "Transmutation Tablet Tile");
+		GameRegistry.registerTileEntity(DMPedestalTile.class, "DM Pedestal Tile");
 		
 		//Entities
 		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, PECore.instance, 256, 10, true);
@@ -339,7 +342,13 @@ public class ObjHandler
 		{
 			GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
 		}
-		
+
+		// DM Pedestal
+		if (ProjectEConfig.enableDarkPedestal)
+		{
+			GameRegistry.addRecipe(new ItemStack(dmPedestal), "RDR", "RDR", "DDD", 'R', new ItemStack(matter, 1, 1), 'D', new ItemStack(matterBlock, 1, 0));
+		}
+
 		//Collectors
 		if (ProjectEConfig.enableCollector)
 		{

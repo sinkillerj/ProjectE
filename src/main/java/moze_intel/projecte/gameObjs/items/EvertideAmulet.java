@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
@@ -26,10 +27,11 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
 	public EvertideAmulet()
 	{
@@ -235,5 +237,25 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && world.getWorldTime() % 20 == 0)
+		{
+			int i = (300 + world.rand.nextInt(600)) * 20;
+			world.getWorldInfo().setRainTime(i);
+			world.getWorldInfo().setThunderTime(i);
+			world.getWorldInfo().setRaining(true);
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<String>();
+		list.add("Rainmaker 2015");
+		return list;
 	}
 }
