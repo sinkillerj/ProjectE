@@ -3,12 +3,15 @@ package moze_intel.projecte.events;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FluidMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIPedestal;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -29,7 +32,14 @@ public class ToolTipEvent
 		{
 			return;
 		}
-		
+
+		if (ProjectEConfig.showPedestalTooltip
+			&& currentItem instanceof IPedestalItem 
+			&& Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
+		{
+			event.toolTip.addAll(1, ((IPedestalItem) currentItem).getPedestalDescription());
+		}
+
 		if (ProjectEConfig.showUnlocalizedNames)
 		{
 			event.toolTip.add("UN: " + Item.itemRegistry.getNameForObject(current.getItem()));
