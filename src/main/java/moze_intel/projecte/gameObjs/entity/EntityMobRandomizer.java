@@ -50,6 +50,15 @@ public class EntityMobRandomizer extends EntityThrowable
 	@Override
 	protected void onImpact(MovingObjectPosition mop) 
 	{
+		if (!this.worldObj.isRemote)
+		{
+			if (this.isInWater() || shooter == null)
+			{
+				this.setDead();
+				return;
+			}
+		}
+
 		if (this.worldObj.isRemote || mop.typeOfHit != MovingObjectType.ENTITY)
 		{
 			return;
