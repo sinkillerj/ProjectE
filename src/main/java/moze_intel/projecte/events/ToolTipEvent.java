@@ -4,9 +4,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.FluidMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -132,13 +130,6 @@ public class ToolTipEvent
 			{
 				event.toolTip.add(String.format("Stored XP: %,d", current.stackTagCompound.getInteger("StoredXP")));
 			}
-		}
-
-		Block block = Block.getBlockFromItem(current.getItem());
-
-		if (block != null && FluidMapper.doesFluidHaveEMC(block))
-		{
-			event.toolTip.add(String.format("EMC: %,d", FluidMapper.getFluidEMC(block)));
 		}
 	}
 }
