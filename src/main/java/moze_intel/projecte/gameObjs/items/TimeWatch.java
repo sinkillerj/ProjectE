@@ -382,9 +382,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Speeds up machines");
-		list.add("Speeds up random updates");
-		list.add("Slows down mobs");
+		list.add("Speeds up nearby blocks");
+		list.add("Slows down nearby mobs");
 		return list;
 	}
 }

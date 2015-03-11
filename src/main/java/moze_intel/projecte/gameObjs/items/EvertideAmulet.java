@@ -255,7 +255,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Rainmaker 2015");
+		list.add("Creates rain/snow storms");
 		return list;
 	}
 }

@@ -151,7 +151,7 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 	{
 		List<String> list = new ArrayList<String>();
 		list.add("Repairs nearby player items");
-		list.add("1 durability / sec");
+		list.add("1 durability/s");
 		return list;
 	}
 }

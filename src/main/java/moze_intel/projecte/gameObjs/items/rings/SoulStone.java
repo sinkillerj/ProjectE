@@ -142,7 +142,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	{
 		List<String> list = new ArrayList<String>();
 		list.add("Heals nearby players");
-		list.add("0.5 heart / sec");
+		list.add("0.5 hearts/s");
 		return list;
 	}
 }

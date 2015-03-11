@@ -32,10 +32,22 @@ public class ToolTipEvent
 		}
 
 		if (ProjectEConfig.showPedestalTooltip
-			&& currentItem instanceof IPedestalItem 
-			&& Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
+			&& currentItem instanceof IPedestalItem)
 		{
-			event.toolTip.addAll(1, ((IPedestalItem) currentItem).getPedestalDescription());
+			if (ProjectEConfig.showPedestalTooltipInGUI)
+			{
+				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
+				{
+					event.toolTip.add("On Pedestal:");
+					event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+				}
+			}
+			else
+			{
+				event.toolTip.add("On Pedestal:");
+				event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+			}
+			
 		}
 
 		if (ProjectEConfig.showUnlocalizedNames)

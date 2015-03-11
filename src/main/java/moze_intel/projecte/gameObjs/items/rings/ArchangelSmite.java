@@ -80,8 +80,8 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Fires homing arrows");
-		list.add("Kills drop XP");
+		list.add("Fires arrows at nearby mobs");
+		list.add("Triggers every 5 seconds");
 		return list;
 	}
 }

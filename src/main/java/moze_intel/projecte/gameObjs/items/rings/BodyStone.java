@@ -144,7 +144,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	{
 		List<String> list = new ArrayList<String>();
 		list.add("Restores hunger");
-		list.add("2 shanks / sec");
+		list.add("2 shanks/s");
 		return list;
 	}
 }

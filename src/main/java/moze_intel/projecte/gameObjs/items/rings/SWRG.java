@@ -449,8 +449,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Shoots lightning at mobs");
-		list.add("Triggers every 3.5 secs");
+		list.add("Shoots lightning at nearby mobs");
+		list.add("Triggers every 3.5 seconds");
 		return list;
 	}
 }

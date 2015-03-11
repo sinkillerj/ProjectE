@@ -13,6 +13,7 @@ public final class ProjectEConfig
 	public static boolean showEMCTooltip;
 	public static boolean showStatTooltip;
 	public static boolean showPedestalTooltip;
+	public static boolean showPedestalTooltipInGUI;
 
 	public static boolean enableAlcChest;
 	public static boolean enableITorch;
@@ -48,7 +49,8 @@ public final class ProjectEConfig
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
 			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
-			showPedestalTooltip = config.getBoolean("pedestalToolTips", "misc", true, "Show pedestal functions for items in the pedestal gui.");
+			showPedestalTooltip = config.getBoolean("pedestalToolTips", "misc", true, "Show DM pedestal functions in item tooltips");
+			showPedestalTooltipInGUI = config.getBoolean("pedestalToolTipsInGUI", "misc", false, "Show pedestal function tooltips only in pedestal GUI");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 

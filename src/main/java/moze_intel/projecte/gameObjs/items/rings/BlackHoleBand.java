@@ -181,7 +181,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Sucks items");
+		list.add("Sucks in nearby item drops");
 		list.add("Dumps in adjacent inventories");
 		return list;
 	}

@@ -291,7 +291,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Rainstopper 2015");
+		list.add("Prevents rain/snow storms");
 		return list;
 	}
 }
