@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,8 +142,8 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Heals nearby players");
-		list.add("0.5 hearts/s");
+		list.add(EnumChatFormatting.BLUE + "Heals nearby players");
+		list.add(EnumChatFormatting.BLUE + "0.5 hearts/s");
 		return list;
 	}
 }

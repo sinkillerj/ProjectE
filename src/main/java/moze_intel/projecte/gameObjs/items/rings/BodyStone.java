@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,8 +144,8 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Restores hunger");
-		list.add("2 shanks/s");
+		list.add(EnumChatFormatting.BLUE + "Restores hunger");
+		list.add(EnumChatFormatting.BLUE + "2 shanks/s");
 		return list;
 	}
 }

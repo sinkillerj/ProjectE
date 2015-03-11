@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -189,8 +190,8 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Extinguishes nearby entities");
-		list.add("Freezes surroundings");
+		list.add(EnumChatFormatting.BLUE + "Extinguishes nearby entities");
+		list.add(EnumChatFormatting.BLUE + "Freezes surroundings");
 		return list;
 	}
 }

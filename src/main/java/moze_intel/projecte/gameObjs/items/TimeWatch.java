@@ -22,6 +22,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -382,8 +383,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Speeds up nearby blocks");
-		list.add("Slows down nearby mobs");
+		list.add(EnumChatFormatting.BLUE + "Speeds up nearby blocks");
+		list.add(EnumChatFormatting.BLUE + "Slows down nearby mobs");
 		return list;
 	}
 }

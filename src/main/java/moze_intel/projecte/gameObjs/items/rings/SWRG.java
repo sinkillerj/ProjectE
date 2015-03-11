@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -449,8 +450,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Shoots lightning at nearby mobs");
-		list.add("Triggers every 3.5 seconds");
+		list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
+		list.add(EnumChatFormatting.BLUE + "Triggers every 3.5 seconds");
 		return list;
 	}
 }

@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
@@ -291,7 +292,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Prevents rain/snow storms");
+		list.add(EnumChatFormatting.BLUE + "Prevents rain/snow storms");
 		return list;
 	}
 }

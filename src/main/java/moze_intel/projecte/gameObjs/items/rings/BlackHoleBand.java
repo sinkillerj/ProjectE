@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,8 +182,8 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Sucks in nearby item drops");
-		list.add("Dumps in adjacent inventories");
+		list.add(EnumChatFormatting.BLUE + "Sucks in nearby item drops");
+		list.add(EnumChatFormatting.BLUE + "Dumps in adjacent inventories");
 		return list;
 	}
 

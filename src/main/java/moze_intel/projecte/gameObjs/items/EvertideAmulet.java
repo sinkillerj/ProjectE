@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
@@ -255,7 +256,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Creates rain/snow storms");
+		list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
 		return list;
 	}
 }

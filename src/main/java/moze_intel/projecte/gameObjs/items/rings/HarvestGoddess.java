@@ -14,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -373,8 +374,8 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Accelerates growth of nearby crops");
-		list.add("Harvests nearby grown crops");
+		list.add(EnumChatFormatting.BLUE + "Accelerates growth of nearby crops");
+		list.add(EnumChatFormatting.BLUE + "Harvests nearby grown crops");
 		return list;
 	}
 

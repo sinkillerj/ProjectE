@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,8 +158,8 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Nearby mobs combust");
-		list.add("Activates every 2 seconds");
+		list.add(EnumChatFormatting.BLUE + "Nearby mobs combust");
+		list.add(EnumChatFormatting.BLUE + "Activates every 2 seconds");
 		return list;
 	}
 }

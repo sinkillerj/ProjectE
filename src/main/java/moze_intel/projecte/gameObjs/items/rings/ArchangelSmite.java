@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.ArrayList;
@@ -80,8 +81,8 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add("Fires arrows at nearby mobs");
-		list.add("Triggers every 5 seconds");
+		list.add(EnumChatFormatting.BLUE + "Fires arrows at nearby mobs");
+		list.add(EnumChatFormatting.BLUE + "Triggers every 5 seconds");
 		return list;
 	}
 }
