@@ -66,7 +66,10 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
-		if (output == null || ingredientsWithAmount.containsKey(null)) return;
+		if (output == null || ingredientsWithAmount.containsKey(null)) {
+			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
+			return;
+		}
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:

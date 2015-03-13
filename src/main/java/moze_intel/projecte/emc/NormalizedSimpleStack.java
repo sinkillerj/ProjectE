@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ public class NormalizedSimpleStack {
 	public static Map<Integer, Set<Integer>> idWithUsedMetaData = new HashMap<Integer, Set<Integer>>();
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(int id, int damage) {
+		if (id < 0) return null;
 		NormalizedSimpleStack normStack = new NormalizedSimpleStack(id, damage);
 		Set<Integer> usedMetadata;
 		if (!idWithUsedMetaData.containsKey(normStack.id)) {
@@ -36,7 +38,12 @@ public class NormalizedSimpleStack {
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return null;
-		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(stack.getItem()), stack.getItemDamage());
+		int id = Item.itemRegistry.getIDForObject(stack.getItem());
+		if (id < 0) {
+			PELogger.logWarn(String.format("Could not get id for stack %s with item %s (Class: %s)", stack, stack.getItem(), stack.getItem().getClass()));
+			return null;
+		}
+		return getNormalizedSimpleStackFor(id, stack.getItemDamage());
 	}
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(Fluid fluid) {
