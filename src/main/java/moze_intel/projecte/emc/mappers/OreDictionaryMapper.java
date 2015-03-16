@@ -89,7 +89,7 @@ public class OreDictionaryMapper extends LazyMapper {
 		addMapping("ingotDarkSteel", 384);
 		addMapping("ingotSoularium", 2097);
 		/*Mekanism*/
-		addMapping("ingotOsmium", 2496);
+		addMapping("ingotOsmium", 512);
 
 		//AE2
 		addMapping("crystalCertusQuartz", 64);

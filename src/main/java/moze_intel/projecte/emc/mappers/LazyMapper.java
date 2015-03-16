@@ -17,10 +17,12 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		this.mapper = mapper;
 		addMapping(new ItemStack(Blocks.cobblestone), 1);
 		addMapping(new ItemStack(Blocks.stone), 1);
+		addMapping(new ItemStack(Blocks.end_stone), 1);
 		addMapping(new ItemStack(Blocks.netherrack), 1);
 		addMapping(new ItemStack(Blocks.dirt), 1);
-		addMapping(new ItemStack(Blocks.grass), 1);
-		addMapping(new ItemStack(Blocks.mycelium), 1);
+		addMapping(new ItemStack(Blocks.dirt, 1, 2), 2);
+		addMapping(new ItemStack(Blocks.grass), 2);
+		addMapping(new ItemStack(Blocks.mycelium), 2);
 		addMapping(new ItemStack(Blocks.leaves), 1);
 		addMapping(new ItemStack(Blocks.leaves2), 1);
 		addMapping(new ItemStack(Blocks.sand, 1, 0), 1);
@@ -42,6 +44,14 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			addMapping(new ItemStack(Blocks.red_flower, 1, i), 16);
 		}
 
+		for (int i = 0; i <= 5; i++) {
+			if (i == 2 || i == 3) {
+				continue;
+			}
+
+			addMapping(new ItemStack(Blocks.double_plant, 1, i), 16);
+		}
+
 		addMapping(new ItemStack(Blocks.yellow_flower), 16);
 		addMapping(new ItemStack(Items.wheat), 24);
 		addMapping(new ItemStack(Items.nether_wart), 24);
@@ -60,7 +70,10 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.dye, 1, 3), 128);
 		addMapping(new ItemStack(Blocks.pumpkin), 144);
 		addMapping(new ItemStack(Items.bone), 144);
-		addMapping(new ItemStack(Blocks.mossy_cobblestone), 145);
+		addMapping(new ItemStack(Blocks.mossy_cobblestone), 2);
+		addMapping(new ItemStack(Blocks.stonebrick, 1, 1), 2);
+		addMapping(new ItemStack(Blocks.stonebrick, 1, 2), 1);
+		addMapping(new ItemStack(Blocks.stonebrick, 1, 3), 1);
 		addMapping(new ItemStack(Items.saddle), 192);
 		addMapping(new ItemStack(Items.record_11), 2048);
 		addMapping(new ItemStack(Items.record_13), 2048);
@@ -89,9 +102,14 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.porkchop), 64);
 		addMapping(new ItemStack(Items.beef), 64);
 		addMapping(new ItemStack(Items.chicken), 64);
-		addMapping(new ItemStack(Items.fish), 64);
+
+		for (int i = 0; i < 4; i++) {
+			addMapping(new ItemStack(Items.fish, 1, i), 64);
+		}
+
 		addMapping(new ItemStack(Items.carrot), 64);
 		addMapping(new ItemStack(Items.potato), 64);
+		addMapping(new ItemStack(Items.poisonous_potato), 64);
 		addMapping(new ItemStack(Items.iron_ingot), 256);
 		addMapping(new ItemStack(Items.gold_ingot), 2048);
 		addMapping(new ItemStack(Items.diamond), 8192);
@@ -118,6 +136,10 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.golden_horse_armor), 1024);
 		addMapping(new ItemStack(Items.diamond_horse_armor), 40960);
 		addMapping(new ItemStack(Blocks.tallgrass), 1);
+		addMapping(new ItemStack(Blocks.tallgrass, 1, 1), 1);
+		addMapping(new ItemStack(Blocks.tallgrass, 1, 2), 1);
+		addMapping(new ItemStack(Blocks.double_plant, 1, 2), 1);
+		addMapping(new ItemStack(Blocks.double_plant, 1, 3), 1);
 		addMapping(new ItemStack(Blocks.packed_ice), 4);
 		addMapping(new ItemStack(Items.snowball), 1);
 		addMapping(new ItemStack(Items.filled_map), 1472);
