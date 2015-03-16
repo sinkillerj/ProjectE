@@ -86,7 +86,7 @@ item.pe_gem_armor_2.name=Edelsteinbeinschutz
 item.pe_gem_armor_3.name=Edelsteinstiefel
 item.pe_arcana_ring.name=Ring von Arcana
 item.pe_zero_ring.name=Null-Ring
-item.pe_tome.name=Buch der Alchemie
+item.pe_tome.name=Buch des Wissens
 item.pe_transmutation_tablet.name=Transmutationsplatte
 
 tile.pe_alchemy_chest.name=Alchemietruhe
@@ -109,7 +109,7 @@ tile.pe_nova_cataclysm.name=Nova-Katastrophe
 tile.pe_fuel_block_0.name=Block aus Alchemiekohle
 tile.pe_fuel_block_1.name=Block aus Mobiuskraftstoff
 tile.pe_fuel_block_2.name=Block aus Aeternaliskraftstoff
-tile.pe_dmPedestal.name=Dunkler Materien Podest
+tile.pe_dmPedestal.name=Podest aus Dunkler Materie
 
 itemGroup.ProjectE=ProjectE
 
@@ -139,7 +139,7 @@ achievement.rm_block=Rot und glänzend!
 achievement.rm_block.desc=Jetzt läuft es!
 achievement.dm_furnace=Heiße Materie!
 achievement.dm_furnace.desc=Ein Ofen ist noch besser, wenn er aus Dunkler Materie hergestellt wurde.
-achievement.rm_furnace=Noch heißere Matterie!
+achievement.rm_furnace=Noch heißere Materie!
 achievement.rm_furnace.desc=Wow, dieses Ding ist schnell.
 achievement.dm_pick=Benutze Materie auf Materie
 achievement.dm_pick.desc=Warum nicht?
@@ -149,5 +149,3 @@ achievement.klein=EMC-Batterien
 achievement.klein.desc=Speichern EMC für einen regnerischen Tag.
 achievement.klein_big=GROSSE EMC-Batterien
 achievement.klein_big.desc=Halte das Universum in deinem Inventar.
-achievement.tome=Alchemie-Meister
-achievement.tome.desc=Dein Wissen ist... beeindruckend.
