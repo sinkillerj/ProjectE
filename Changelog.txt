@@ -1,3 +1,10 @@
+###Version 1.7.10-PE1.4.1
+* NEW: German language file updates
+* NEW: Added missing EMC values for several vanilla items
+* FIXED: Minor EMC tweaks for items such as moss stone
+* FIXED: A GraphMapper issue causing some items to be free
+* FIXED: Null item id crash
+
 ###Version 1.7.10-PE1.4.0
 * NEW: Implemented Dark Matter Pedestal
 * NEW: Replaced old EMC mapper with new GraphMapper
