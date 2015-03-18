@@ -12,6 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 public final class ProjectEAPI
 {
 	/**
+	 * Increment this every time the API changes.
+	 * (Adding methods, removing methods, changing method signatures, etc.)
+	 */
+	public static final String API_VERSION = "1";
+
+	/**
 	 * Register an EMC value for the specified itemstack.<br>
 	 * If the emcValue is <= 0, then the ItemStack will be blacklisted from any EMC mapping.<br>
 	 * The ItemStack's NBT data is completely ignored in registration.<br>
