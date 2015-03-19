@@ -37,8 +37,7 @@ import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
-{	
-	public static final String APINAME = "ProjectEAPI";
+{
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
