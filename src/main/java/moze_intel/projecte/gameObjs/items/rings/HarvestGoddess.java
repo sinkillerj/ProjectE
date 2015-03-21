@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.IGrowable;
@@ -21,7 +23,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	public HarvestGoddess() 
+	private int harvestCooldown;
+
+	public HarvestGoddess()
 	{
 		super("harvest_god");
 		this.setNoRepair();
@@ -364,9 +368,17 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.harvestPedCooldown != -1)
 		{
-			growNearbyRandomly(true, world, x, y, z);
+			if (harvestCooldown == 0)
+			{
+				growNearbyRandomly(true, world, x, y, z);
+				harvestCooldown = ProjectEConfig.harvestPedCooldown;
+			}
+			else
+			{
+				harvestCooldown--;
+			}
 		}
 	}
 
@@ -374,8 +386,12 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Accelerates growth of nearby crops");
-		list.add(EnumChatFormatting.BLUE + "Harvests nearby grown crops");
+		if (ProjectEConfig.harvestPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Accelerates growth of nearby crops");
+			list.add(EnumChatFormatting.BLUE + "Harvests nearby grown crops");
+			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown));
+		}
 		return list;
 	}
 

@@ -4,8 +4,10 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -119,7 +121,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.bodyPedCooldown != -1)
 		{
 			if (healCooldown == 0)
 			{
@@ -128,10 +130,10 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 
 				for (EntityPlayerMP player : players)
 				{
-					player.getFoodStats().addStats(1, 1); // 1/2 shank every 0.25 sec = 2 shank every second
+					player.getFoodStats().addStats(1, 1); // 1/2 shank
 				}
 
-				healCooldown = 5;
+				healCooldown = ProjectEConfig.bodyPedCooldown;
 			}
 			else
 			{
@@ -144,8 +146,11 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Restores hunger");
-		list.add(EnumChatFormatting.BLUE + "2 shanks/s");
+		if (ProjectEConfig.bodyPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Restores nearby players' hunger");
+			list.add(EnumChatFormatting.BLUE + "Half a shank every " + Utils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown));
+		}
 		return list;
 	}
 }

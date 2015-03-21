@@ -7,9 +7,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.CoordinateBox;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -34,7 +36,8 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOn;
-	
+	private int coolCooldown;
+
 	public Zero() 
 	{
 		super("zero_ring", (byte)4);
@@ -170,18 +173,25 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
-			AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
-			freezeInCoordinateBox(world, CoordinateBox.fromAABB(aabb));
-			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
-			for (Entity ent : list)
-			{
-				if (ent.isBurning())
+			if (coolCooldown == 0) {
+				TileEntity tile = world.getTileEntity(x, y, z);
+				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
+				freezeInCoordinateBox(world, CoordinateBox.fromAABB(aabb));
+				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
+				for (Entity ent : list)
 				{
-					ent.extinguish();
+					if (ent.isBurning())
+					{
+						ent.extinguish();
+					}
 				}
+				coolCooldown = ProjectEConfig.zeroPedCooldown;
+			}
+			else
+			{
+				coolCooldown--;
 			}
 		}
 	}
@@ -190,8 +200,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Extinguishes nearby entities");
-		list.add(EnumChatFormatting.BLUE + "Freezes surroundings");
+		if (ProjectEConfig.zeroPedCooldown != -1) {
+			list.add(EnumChatFormatting.BLUE + "Extinguishes nearby entities");
+			list.add(EnumChatFormatting.BLUE + "Freezes surroundings");
+			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown));
+		}
 		return list;
 	}
 }

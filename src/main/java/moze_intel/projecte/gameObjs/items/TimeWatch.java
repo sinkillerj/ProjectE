@@ -373,9 +373,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		if (!world.isRemote)
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
-			speedUpTileEntities(world, 18, bBox);
-			speedUpRandomTicks(world, 18, bBox);
-			slowMobs(world, bBox, 0.10F);
+			if (ProjectEConfig.timePedBonus > 0) {
+				speedUpTileEntities(world, 18, bBox);
+				speedUpRandomTicks(world, 18, bBox);
+			}
+
+			if (ProjectEConfig.timePedMobSlowness < 1.0F) {
+				slowMobs(world, bBox, ProjectEConfig.timePedMobSlowness);
+			}
 		}
 	}
 
@@ -383,8 +388,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Speeds up nearby blocks");
-		list.add(EnumChatFormatting.BLUE + "Slows down nearby mobs");
+		if (ProjectEConfig.timePedBonus > 0) {
+			list.add(EnumChatFormatting.BLUE + "Gives " + ProjectEConfig.timePedBonus + " bonus ticks to nearby blocks every tick");
+		}
+		if (ProjectEConfig.timePedMobSlowness < 1.0F)
+		{
+			list.add(EnumChatFormatting.BLUE + "Each tick nearby mobs move " + ProjectEConfig.timePedMobSlowness + "x the speed");
+		}
 		return list;
 	}
 }

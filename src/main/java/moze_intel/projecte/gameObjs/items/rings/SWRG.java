@@ -6,6 +6,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -427,7 +428,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
 			if (lightningCooldown <= 0)
 			{
@@ -437,7 +438,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				lightningCooldown = 70;
+				lightningCooldown = ProjectEConfig.swrgPedCooldown;
 			}
 			else
 			{
@@ -450,8 +451,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
-		list.add(EnumChatFormatting.BLUE + "Triggers every 3.5 seconds");
+		if (ProjectEConfig.swrgPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
+			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown));
+		}
 		return list;
 	}
 }

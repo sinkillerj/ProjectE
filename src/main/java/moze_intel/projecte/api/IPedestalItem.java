@@ -1,5 +1,6 @@
 package moze_intel.projecte.api;
 
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  */
 public interface IPedestalItem {
 
+	public static final String TOOLTIPDISABLED = EnumChatFormatting.RED + "Pedestal functionality has been disabled";
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside.
 	 * @param world

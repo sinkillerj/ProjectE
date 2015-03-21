@@ -4,8 +4,10 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -117,7 +119,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.soulPedCooldown != -1)
 		{
 			if (healCooldown == 0)
 			{
@@ -126,10 +128,10 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 
 				for (EntityPlayerMP player : players)
 				{
-					player.heal(1.0F); // 1/2 heart every second
+					player.heal(1.0F); // 1/2 heart
 				}
 
-				healCooldown = 20;
+				healCooldown = ProjectEConfig.soulPedCooldown;
 			}
 			else
 			{
@@ -142,8 +144,11 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Heals nearby players");
-		list.add(EnumChatFormatting.BLUE + "0.5 hearts/s");
+		if (ProjectEConfig.soulPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Heals nearby players");
+			list.add(EnumChatFormatting.BLUE + "Half a heart every " + Utils.tickToSecFormatted(ProjectEConfig.soulPedCooldown));
+		}
 		return list;
 	}
 }

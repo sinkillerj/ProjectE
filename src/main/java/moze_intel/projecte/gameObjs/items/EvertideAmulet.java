@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
@@ -34,6 +35,8 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
+	private int startRainCooldown;
+
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
@@ -243,12 +246,21 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && world.getWorldTime() % 20 == 0)
+		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
 		{
-			int i = (300 + world.rand.nextInt(600)) * 20;
-			world.getWorldInfo().setRainTime(i);
-			world.getWorldInfo().setThunderTime(i);
-			world.getWorldInfo().setRaining(true);
+			if (startRainCooldown == 0)
+			{
+				int i = (300 + world.rand.nextInt(600)) * 20;
+				world.getWorldInfo().setRainTime(i);
+				world.getWorldInfo().setThunderTime(i);
+				world.getWorldInfo().setRaining(true);
+
+				startRainCooldown = ProjectEConfig.evertidePedCooldown;
+			}
+			else
+			{
+				startRainCooldown--;
+			}
 		}
 	}
 
@@ -256,7 +268,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
+		if (ProjectEConfig.evertidePedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
+			list.add(EnumChatFormatting.BLUE + "Attempts to start rain every " + Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown));
+		}
 		return list;
 	}
 }

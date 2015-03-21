@@ -996,4 +996,27 @@ public final class Utils
 		mobs.add(EntityWitch.class);
 		mobs.add(EntityBlaze.class);
 	}
+
+	public static double tickToSec(int ticks)
+	{
+		return ticks / 20.0D;
+	}
+
+	public static String tickToSecFormatted(int ticks)
+	{
+		double result = tickToSec(ticks);
+		if (result == 0.0D)
+		{
+			return result + " seconds (every tick)";
+		}
+		else
+		{
+			return result + " seconds";
+		}
+	}
+
+	public static int secToTicks(double secs)
+	{
+		return (int) Math.round(secs * 20.0D);
+	}
 }
