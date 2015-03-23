@@ -10,10 +10,10 @@ import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
@@ -456,15 +456,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	{
 		if (item.getItemDamage() == 1 && !player.worldObj.isRemote)
 		{
-			AlchBagInventory inv = new AlchBagInventory(player, bag);
-			condense(item, new AlchBagInventory(player, bag));
+			IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
+
+			condense(item, inv);
 
 			IOHandler.markDirty();
 		}
 	}
 
 	@Override
-	public boolean onPickUp(EntityPlayer player, EntityItem item)
+	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
 	{
 		return false;
 	}

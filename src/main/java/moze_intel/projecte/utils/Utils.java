@@ -100,9 +100,14 @@ public final class Utils
 		if (result != null)
 		{
 			item.setEntityItemStack(result);
+			if (!result.equals(item.getEntityItem()))
+			{
+				item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			}
 		}
 		else
 		{
+			item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			item.setDead();
 		}
 	}

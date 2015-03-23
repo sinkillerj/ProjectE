@@ -9,13 +9,12 @@ import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
-import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.playerData.IOHandler;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -210,7 +209,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			}
 			else
 			{
-				boolean hadAction = repairAllInInventory(new AlchBagInventory(player, bag));
+				IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
+				boolean hadAction = repairAllInInventory(inv);
 				if (hadAction)
 				{
 					item.stackTagCompound.setByte("Cooldown", (byte) 19);
@@ -222,7 +222,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean onPickUp(EntityPlayer player, EntityItem item)
+	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
 	{
 		return false;
 	}

@@ -4,7 +4,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
@@ -14,10 +13,8 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -70,66 +67,19 @@ public class PlayerEvents
 			return;
 		}
 
-		if (event.item.getEntityItem().getItem() instanceof IAlchBagItem)
+		ItemStack bag = getFirstAlchemyBag(player, player.inventory.mainInventory);
+		if (bag != null)
 		{
-			if (((IAlchBagItem) event.item.getEntityItem().getItem()).onPickUp(player, event.item))
+			ItemStack[] invBag = AlchemicalBags.get(player.getCommandSenderName(), ((byte) bag.getItemDamage()));
+			for (ItemStack stack : invBag)
 			{
-				event.setCanceled(true);
-			}
-		}
-
-		if (player.openContainer instanceof AlchBagContainer)
-		{
-			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
-			
-			if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && Utils.hasSpace(inv, event.item.getEntityItem()))
-			{
-				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
-				
-				if (remain == null)
+				if (stack != null && stack.getItem() instanceof IAlchBagItem)
 				{
-					event.item.delayBeforeCanPickup = 10;
-					event.item.setDead();
-					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					if (((IAlchBagItem) stack.getItem()).onPickUp(player, stack, event.item))
+					{
+						event.setCanceled(true);
+					}
 				}
-				else 
-				{
-					event.item.setEntityItemStack(remain);
-				}
-				
-				event.setCanceled(true);
-			}
-		}
-		else
-		{
-			ItemStack bag = getAlchemyBag(player, player.inventory.mainInventory);
-			
-			if (bag == null)
-			{
-				return;
-			}
-			
-			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
-			
-			if (Utils.hasSpace(inv, event.item.getEntityItem()))
-			{
-				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
-				
-				if (remain == null)
-				{
-					event.item.delayBeforeCanPickup = 10;
-					event.item.setDead();
-					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				}
-				else 
-				{
-					event.item.setEntityItemStack(remain);
-				}
-				
-				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
-				AlchemicalBags.sync(player);
-				
-				event.setCanceled(true);
 			}
 		}
 	}
@@ -145,22 +95,22 @@ public class PlayerEvents
 			IOHandler.markedDirty = false;
 		}
 	}
-	
-	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory)
+
+	private ItemStack getFirstAlchemyBag(EntityPlayer player, ItemStack[] inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
-			if (stack == null) 
+			if (stack == null)
 			{
 				continue;
 			}
-			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+
+			if (stack.getItem() == ObjHandler.alchBag)
 			{
 				return stack;
 			}
 		}
-		
+
 		return null;
 	}
 }
