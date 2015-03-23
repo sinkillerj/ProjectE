@@ -110,7 +110,7 @@ public class DestructionCatalyst extends ItemCharge
 			
 			if (hasAction)
 			{
-				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+				world.spawnEntityInWorld(new EntityLootBall(world, drops, mop.blockX, mop.blockY, mop.blockZ));
 			}
 		}
 			

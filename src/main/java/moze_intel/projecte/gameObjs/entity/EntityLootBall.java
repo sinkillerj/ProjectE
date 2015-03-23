@@ -66,7 +66,12 @@ public class EntityLootBall extends Entity
 	{
 		return items;
 	}
-	
+
+	public void setItemList(List<ItemStack> list)
+	{
+		items = list;
+	}
+
 	@Override
 	public void onUpdate()
 	{

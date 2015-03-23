@@ -5,13 +5,20 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IAlchBagItem;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.playerData.IOHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -24,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
+public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
 	private int repairCooldown;
 
@@ -57,11 +64,25 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 		}
 	}
 
-	public void repairAllItems(EntityPlayer player)
+	private void repairAllItems(EntityPlayer player)
 	{
-		IInventory inv = player.inventory;
+		if (player.isSwingInProgress)
+		{
+			return;
+		}
 
-		for (int i = 0; i < 40; i++)
+		repairAllInInventory(player.inventory);
+	}
+
+	/**
+	 * Repair everything in this IInventory
+	 * @param inv The inventory
+	 * @return Whether the talisman repaired anything
+	 */
+	private boolean repairAllInInventory(IInventory inv)
+	{
+		boolean hadRepairs = false;
+		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 
@@ -70,16 +91,14 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 				continue;
 			}
 
-			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress) {
-				//Don't repair item that is currently used by the player.
-				continue;
-			}
-
 			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 			{
 				invStack.setItemDamage(invStack.getItemDamage() - 1);
+				hadRepairs = true;
+				inv.markDirty();
 			}
 		}
+		return hadRepairs;
 	}
 
 	@Override
@@ -154,5 +173,69 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 		list.add(EnumChatFormatting.BLUE + "Repairs nearby player items");
 		list.add(EnumChatFormatting.BLUE + "1 durability/s");
 		return list;
+	}
+
+	@Override
+	public void updateInAlchChest(AlchChestTile chest, ItemStack stack)
+	{
+		if (!chest.getWorldObj().isRemote)
+		{
+			byte coolDown = stack.stackTagCompound.getByte("Cooldown");
+			if (coolDown > 0)
+			{
+				stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+			}
+			else
+			{
+				boolean hadAction = repairAllInInventory(chest);
+				if (hadAction)
+				{
+					stack.stackTagCompound.setByte("Cooldown", (byte) 19);
+				}
+			}
+		}
+	}
+
+	@Override
+	public String getAlchChestDesc()
+	{
+		return "";
+	}
+
+	@Override
+	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
+	{
+		if (!player.worldObj.isRemote)
+		{
+			byte coolDown = item.stackTagCompound.getByte("Cooldown");
+			if (coolDown > 0)
+			{
+				item.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+				IOHandler.markDirty();
+			}
+			else
+			{
+				IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
+				boolean hadAction = repairAllInInventory(inv);
+				if (hadAction)
+				{
+					item.stackTagCompound.setByte("Cooldown", (byte) 19);
+					IOHandler.markDirty();
+				}
+			}
+
+		}
+	}
+
+	@Override
+	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
+	{
+		return false;
+	}
+
+	@Override
+	public String getAlchBagDesc()
+	{
+		return "";
 	}
 }

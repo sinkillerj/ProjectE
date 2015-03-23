@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.List;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -55,114 +56,23 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (world.isRemote || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
+
 		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
-		
-		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
-		{
-			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
-			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
-			
-			for (EntityItem item : itemList)
-			{
-				item.delayBeforeCanPickup = 0;
-				double d1 = (player.posX - item.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
-				double d3 = (player.posZ - item.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
 
-				item.motionX += d1 / d4 * 0.1D;
-				item.motionY += d2 / d4 * 0.1D;
-				item.motionZ += d3 / d4 * 0.1D;
-					
-				item.moveEntity(item.motionX, item.motionY, item.motionZ);
-			}
-			
-			List<EntityLootBall> lootBallList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
-			
-			for (EntityLootBall ball : lootBallList)
+		for (ItemStack itemStack : inv)
+		{
+			if (itemStack != null && itemStack.getItem() instanceof IAlchBagItem)
 			{
-				double d1 = (player.posX - ball.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
-				double d3 = (player.posZ - ball.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+				((IAlchBagItem) itemStack.getItem()).updateInAlchBag(player, stack, itemStack);
+			}
+		}
 
-				ball.motionX += d1 / d4 * 0.1D;
-				ball.motionY += d2 / d4 * 0.1D;
-				ball.motionZ += d3 / d4 * 0.1D;
-					
-				ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
-			}
-		}
-		
-		ItemStack rTalisman = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
-		
-		if (rTalisman != null)
-		{
-			byte coolDown = rTalisman.stackTagCompound.getByte("Cooldown");
-			
-			if (coolDown > 0)
-			{
-				rTalisman.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-			}
-			else
-			{
-				boolean hasAction = false;
-				
-				for (int i = 0; i < inv.length; i++)
-				{
-					ItemStack invStack = inv[i];
-				
-					if (invStack == null || invStack.getItem() instanceof RingToggle) 
-					{
-						continue;
-					}
-				
-					if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-					{
-						invStack.setItemDamage(invStack.getItemDamage() - 1);
-						inv[i] = invStack;
-						
-						if (!hasAction)
-						{
-							hasAction = true;
-						}
-					}
-				}
-				
-				if (hasAction)
-				{
-					rTalisman.stackTagCompound.setByte("Cooldown", (byte) 19);
-				}
-			}
-		}
-		
-		if (player.openContainer instanceof AlchBagContainer)
-		{
-			ItemStack gemDensity = Utils.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			
-			if (gemDensity != null)
-			{
-				GemEternalDensity.condense(gemDensity, ((AlchBagContainer) player.openContainer).inventory.getInventory());
-			}
-		}
-		else
-		{
-			ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			
-			if (gemDensity != null)
-			{
-				GemEternalDensity.condense(gemDensity, inv); 
-		
-				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
-				AlchemicalBags.sync(player);
-			}
-		}
 	}
 	
 	@Override
