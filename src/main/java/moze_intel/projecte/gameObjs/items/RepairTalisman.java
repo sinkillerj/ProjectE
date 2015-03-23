@@ -197,6 +197,12 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
+	public String getAlchChestDesc()
+	{
+		return "";
+	}
+
+	@Override
 	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
 	{
 		if (!player.worldObj.isRemote)
@@ -225,5 +231,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
 	{
 		return false;
+	}
+
+	@Override
+	public String getAlchBagDesc()
+	{
+		return "";
 	}
 }

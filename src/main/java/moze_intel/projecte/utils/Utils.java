@@ -100,14 +100,14 @@ public final class Utils
 		if (result != null)
 		{
 			item.setEntityItemStack(result);
-			if (!result.equals(item.getEntityItem()))
+			if (!Utils.areItemStacksEqual(item.getEntityItem(), result))
 			{
-				item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+				// item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			}
 		}
 		else
 		{
-			item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			// item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			item.setDead();
 		}
 	}
@@ -144,7 +144,7 @@ public final class Utils
 
 		if (playSound)
 		{
-			lootBall.worldObj.playSoundAtEntity(lootBall, "random.pop", 0.2F, ((lootBall.worldObj.rand.nextFloat() - lootBall.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			// lootBall.worldObj.playSoundAtEntity(lootBall, "random.pop", 0.2F, ((lootBall.worldObj.rand.nextFloat() - lootBall.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		}
 
 		if (result.size() == 0)

@@ -195,6 +195,12 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
+	public String getAlchChestDesc()
+	{
+		return "";
+	}
+
+	@Override
 	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
 	{
 		if (item.getItemDamage() == 0)
@@ -218,6 +224,13 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
 		Utils.insertEntityItemIntoInv(item, inv);
+		item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		return true;
+	}
+
+	@Override
+	public String getAlchBagDesc()
+	{
+		return "";
 	}
 }

@@ -16,4 +16,10 @@ public interface IAlchChestItem
 	 * @param stack The itemStack that received the callback
 	 */
 	public void updateInAlchChest(AlchChestTile chest, ItemStack stack);
+
+	/***
+	 * Unimplemented, in case we decide to add tooltips but don't want to break API compat
+	 * @return A string describing what the item does in an Alch Chest
+	 */
+	public String getAlchChestDesc();
 }

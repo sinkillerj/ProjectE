@@ -20,10 +20,16 @@ public interface IAlchBagItem
 
 	/***
 	 * The pickup callback. Only called serverside.
-	 * @param player
-	 * @param bag
-	 * @param item the item being picked up
-	 * @return If the standard Forge pickup event should be canceled or not.
+	 * @param player The player picking the item up
+	 * @param bag The first bag found in the player inv. Will never be null
+	 * @param item The item being picked up
+	 * @return If the standard Forge pickup event should be canceled or not
 	 */
 	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item);
+
+	/***
+	 * Unimplemented, in case we decide to add tooltips but don't want to break API compat
+	 * @return A string describing what the item does in an Alch Bag
+	 */
+	public String getAlchBagDesc();
 }

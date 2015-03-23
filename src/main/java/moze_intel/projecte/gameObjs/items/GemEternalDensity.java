@@ -452,6 +452,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
+	public String getAlchChestDesc()
+	{
+		return "";
+	}
+
+	@Override
 	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
 	{
 		if (item.getItemDamage() == 1 && !player.worldObj.isRemote)
@@ -468,5 +474,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
 	{
 		return false;
+	}
+
+	@Override
+	public String getAlchBagDesc()
+	{
+		return "";
 	}
 }
