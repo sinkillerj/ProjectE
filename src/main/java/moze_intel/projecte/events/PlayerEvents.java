@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.handlers.PlayerChecks;
@@ -13,6 +14,7 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -67,7 +69,15 @@ public class PlayerEvents
 		{
 			return;
 		}
-		
+
+		if (event.item.getEntityItem().getItem() instanceof IAlchBagItem)
+		{
+			if (((IAlchBagItem) event.item.getEntityItem().getItem()).onPickUp(player, event.item))
+			{
+				event.setCanceled(true);
+			}
+		}
+
 		if (player.openContainer instanceof AlchBagContainer)
 		{
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;

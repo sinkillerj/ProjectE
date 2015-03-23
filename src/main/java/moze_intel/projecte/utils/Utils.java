@@ -4,6 +4,7 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
@@ -67,6 +68,88 @@ public final class Utils
 			}
 		}
 		return list;
+	}
+
+	public static void insertEntityItemIntoAdjacentInv(EntityItem item, TileEntity tile)
+	{
+		List<TileEntity> list = Utils.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		for (TileEntity tileEntity : list)
+		{
+			if (tileEntity instanceof IInventory)
+			{
+				insertEntityItemIntoInv(item, ((IInventory) tileEntity));
+			}
+		}
+	}
+
+	public static void insertLootballIntoAdjacentInv(EntityLootBall lootBall, TileEntity tile)
+	{
+		List<TileEntity> list = Utils.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		for (TileEntity tileEntity : list)
+		{
+			if (tileEntity instanceof IInventory)
+			{
+				insertLootballntoInv(lootBall, ((IInventory) tileEntity));
+			}
+		}
+	}
+
+	public static void insertEntityItemIntoInv(EntityItem item, IInventory inv)
+	{
+		ItemStack result = Utils.pushStackInInv(inv, item.getEntityItem());
+		if (result != null)
+		{
+			item.setEntityItemStack(result);
+		}
+		else
+		{
+			item.setDead();
+		}
+	}
+
+	public static void insertLootballntoInv(EntityLootBall lootBall, IInventory inv)
+	{
+		List<ItemStack> result = new ArrayList<>();
+		boolean playSound = false;
+		for (ItemStack stack : lootBall.getItemList())
+		{
+			ItemStack remainder = Utils.pushStackInInv(inv, stack);
+			if (remainder == null)
+			{
+				playSound = true;
+			}
+			else
+			{
+				remainder = Utils.pushStackInInv(inv, remainder);
+				if (remainder == null)
+				{
+					playSound = true;
+				}
+				else
+				{
+					result.add(remainder);
+				}
+			}
+
+			if (Utils.areItemStacksEqual(stack, remainder))
+			{
+				playSound = true;
+			}
+		}
+
+		if (playSound)
+		{
+			lootBall.worldObj.playSoundAtEntity(lootBall, "random.pop", 0.2F, ((lootBall.worldObj.rand.nextFloat() - lootBall.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+		}
+
+		if (result.size() == 0)
+		{
+			lootBall.setDead();
+		}
+		else
+		{
+			lootBall.setItemList(result);
+		}
 	}
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
@@ -235,6 +318,10 @@ public final class Utils
 	
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
+		if (stack1 == null || stack2 == null)
+		{
+			return false;
+		}
 		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
 	}
 	
@@ -995,5 +1082,27 @@ public final class Utils
 		mobs.add(EntitySlime.class);
 		mobs.add(EntityWitch.class);
 		mobs.add(EntityBlaze.class);
+	}
+
+	/**
+	 * Gravitates an Entity, XP orb style, towards the given coordinates.
+	 * Adapted from Vanilla EntityXPOrb and OpenBlocks
+	 */
+	public static void gravitateEntityTowards(double destX, double destY, double destZ, Entity entity)
+	{
+		double dX = (destX - entity.posX);
+		double dY = (destY + 0.5 - entity.posY);
+		double dZ = (destZ + 0.5 - entity.posZ);
+		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
+
+		double vel = 1.0 - dist / 15.0;
+		if (vel > 0.0D)
+		{
+			vel *= vel;
+			entity.motionX += dX / dist * vel * 0.05;
+			entity.motionY += dY / dist * vel * 0.2;
+			entity.motionZ += dZ / dist * vel * 0.05;
+			entity.moveEntity(entity.motionX, entity.motionY, entity.motionZ);
+		}
 	}
 }

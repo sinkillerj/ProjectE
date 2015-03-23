@@ -6,9 +6,15 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchBagItem;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.playerData.AlchemicalBags;
+import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.PELogger;
@@ -16,8 +22,10 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -31,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
 {
 	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
 	
@@ -61,58 +69,117 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		
 		condense(stack, ((EntityPlayer) entity).inventory.mainInventory);
 	}
-	
+
+	/**
+	 * Copy-paste :(
+	 * If only there was a method to get an ItemStack[] from IInv yet allow changes to the original inv...
+	 */
+	private static void condense(ItemStack gem, IInventory inv)
+	{
+		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
+		{
+			return;
+		}
+
+		boolean isWhitelist = isWhitelistMode(gem);
+		List<ItemStack> whitelist = getWhitelist(gem);
+
+		ItemStack target = getTarget(gem);
+
+		for (int i = 0; i < inv.getSizeInventory(); i++)
+		{
+			ItemStack s = inv.getStackInSlot(i);
+
+			if (s == null || !Utils.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || Utils.getEmcValue(s) >= Utils.getEmcValue(target))
+			{
+				continue;
+			}
+
+			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
+			{
+				ItemStack copy = s.copy();
+				copy.stackSize = 1;
+
+				addToList(gem, copy);
+
+				inv.getStackInSlot(i).stackSize--;
+
+				if (inv.getStackInSlot(i).stackSize <= 0)
+				{
+					inv.setInventorySlotContents(i, null);
+				}
+
+				ItemPE.addEmc(gem, Utils.getEmcValue(copy));
+				break;
+			}
+		}
+
+		int value = Utils.getEmcValue(target);
+
+		while (ItemPE.getEmc(gem) >= value)
+		{
+			ItemStack remain = Utils.pushStackInInv(inv, target);
+			if (remain != null)
+			{
+				return;
+			}
+
+			ItemPE.removeEmc(gem, value);
+			setItems(gem, new ArrayList<ItemStack>());
+		}
+		inv.markDirty();
+	}
+
 	public static void condense(ItemStack gem, ItemStack[] inv)
 	{
 		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
 			return;
 		}
-		
+
 		boolean isWhitelist = isWhitelistMode(gem);
 		List<ItemStack> whitelist = getWhitelist(gem);
-		
+
 		ItemStack target = getTarget(gem);
-		
+
 		for (int i = 0; i < inv.length; i++)
 		{
 			ItemStack s = inv[i];
-			
+
 			if (s == null || !Utils.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || Utils.getEmcValue(s) >= Utils.getEmcValue(target))
 			{
 				continue;
 			}
-			
+
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
 				ItemStack copy = s.copy();
 				copy.stackSize = 1;
-				
+
 				addToList(gem, copy);
-				
+
 				inv[i].stackSize--;
-				
+
 				if (inv[i].stackSize <= 0)
 				{
 					inv[i] = null;
 				}
-				
+
 				ItemPE.addEmc(gem, Utils.getEmcValue(copy));
 				break;
 			}
 		}
-		
+
 		int value = Utils.getEmcValue(target);
-		
+
 		while (ItemPE.getEmc(gem) >= value)
 		{
 			ItemStack remain = Utils.pushStackInInv(inv, target);
-			
 			if (remain != null)
 			{
 				return;
 			}
-			
+
 			ItemPE.removeEmc(gem, value);
 			setItems(gem, new ArrayList<ItemStack>());
 		}
@@ -373,5 +440,32 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInAlchChest(AlchChestTile chest, ItemStack stack)
+	{
+		if (stack.getItemDamage() == 1 && !chest.getWorldObj().isRemote)
+		{
+			condense(stack, chest);
+		}
+	}
+
+	@Override
+	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
+	{
+		if (item.getItemDamage() == 1 && !player.worldObj.isRemote)
+		{
+			AlchBagInventory inv = new AlchBagInventory(player, bag);
+			condense(item, new AlchBagInventory(player, bag));
+
+			IOHandler.markDirty();
+		}
+	}
+
+	@Override
+	public boolean onPickUp(EntityPlayer player, EntityItem item)
+	{
+		return false;
 	}
 }
