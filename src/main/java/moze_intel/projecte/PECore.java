@@ -78,6 +78,7 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+		FMLCommonHandler.instance().bus().register(new PlayerEvents());
 		
 		proxy.registerClientOnlyEvents();
 
