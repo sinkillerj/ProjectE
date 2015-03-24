@@ -113,6 +113,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 	 * @param type
 	 */
 	public void setValue(T something, V value, FixedValue type) {
+		if (something == null) return;
 		switch (type) {
 			case FixAndInherit:
 				if (fixValueBeforeInherit.containsKey(something))
