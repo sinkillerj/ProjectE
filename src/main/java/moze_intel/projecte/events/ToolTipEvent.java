@@ -16,6 +16,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.List;
+
 @SideOnly(Side.CLIENT)
 public class ToolTipEvent 
 {
@@ -31,6 +33,12 @@ public class ToolTipEvent
 			return;
 		}
 
+		if (currentBlock == ObjHandler.dmPedestal)
+		{
+			event.toolTip.add("Shift-right click to open GUI");
+			event.toolTip.add("Right click to activate");
+		}
+
 		if (ProjectEConfig.showPedestalTooltip
 			&& currentItem instanceof IPedestalItem)
 		{
@@ -39,13 +47,29 @@ public class ToolTipEvent
 				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
 				{
 					event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
-					event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+					List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
+					if (description.isEmpty())
+					{
+						event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
+					}
+					else
+					{
+						event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+					}
 				}
 			}
 			else
 			{
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
-				event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+				List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
+				if (description.isEmpty())
+				{
+					event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
+				}
+				else
+				{
+					event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
+				}
 			}
 			
 		}

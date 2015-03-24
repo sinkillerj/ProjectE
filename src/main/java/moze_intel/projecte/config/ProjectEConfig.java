@@ -35,7 +35,20 @@ public final class ProjectEConfig
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
-	
+	public static int archangelPedCooldown;
+	public static int bodyPedCooldown;
+	public static int evertidePedCooldown;
+	public static int harvestPedCooldown;
+	public static int ignitePedCooldown;
+	public static int lifePedCooldown;
+	public static int repairPedCooldown;
+	public static int swrgPedCooldown;
+	public static int soulPedCooldown;
+	public static int timePedBonus;
+	public static float timePedMobSlowness;
+	public static int volcanitePedCooldown;
+	public static int zeroPedCooldown;
+
 	public static void init(File configFile)
 	{
 		Configuration config = new Configuration(configFile);
@@ -77,7 +90,25 @@ public final class ProjectEConfig
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
-			
+
+			config.getCategory("pedestal").setComment("Configuration for various items within the pedestal. Cooldowns of -1 means the functionality is disabled.\n" +
+					"Cooldowns of 0 mean the actions happens every tick. Be careful!\n" +
+					"WARNING: Invalid settings will be set to 0 on start!");
+			archangelPedCooldown = config.getInt("archangelPedCooldown", "pedestal", 100, -1, Integer.MAX_VALUE, "Delay between Archangel Smite shooting arrows while in pedestal.");
+			bodyPedCooldown = config.getInt("bodyPedCooldown", "pedestal", 10, -1, Integer.MAX_VALUE, "Delay between Body Stone healing 0.5 shanks while in pedestal.");
+			evertidePedCooldown = config.getInt("evertidePedCooldown", "pedestal", 20, -1, Integer.MAX_VALUE, "Delay between Evertide Amulet trying to start rain while in pedestal.");
+			harvestPedCooldown = config.getInt("harvestPedCooldown", "pedestal", 0, -1, Integer.MAX_VALUE, "Delay between Harvest Goddess trying to grow and harvest while in pedestal.");
+			ignitePedCooldown = config.getInt("ignitePedCooldown", "pedestal", 40, -1, Integer.MAX_VALUE, "Delay between Ignition Ring trying to light entities on fire while in pedestal.");
+			lifePedCooldown = config.getInt("lifePedCooldown", "pedestal", 5, -1, Integer.MAX_VALUE, "Delay between Life Stone healing both food and hunger by 0.5 shank/heart while in pedestal.");
+			repairPedCooldown = config.getInt("repairPedCooldown", "pedestal", 20, -1, Integer.MAX_VALUE, "Delay between Talisman of Repair trying to repair player items while in pedestal.");
+			swrgPedCooldown = config.getInt("swrgPedCooldown", "pedestal", 70, -1, Integer.MAX_VALUE, "Delay between SWRG trying to smite mobs while in pedestal.");
+			soulPedCooldown = config.getInt("soulPedCooldown", "pedestal", 10, -1, Integer.MAX_VALUE, "Delay between Soul Stone healing 0.5 hearts while in pedestal.");
+			volcanitePedCooldown = config.getInt("volcanitePedCooldown", "pedestal", 20, -1, Integer.MAX_VALUE, "Delay between Volcanite Amulet trying to stop rain while in pedestal.");
+			zeroPedCooldown = config.getInt("zeroPedCooldown", "pedestal", 40, -1, Integer.MAX_VALUE, "Delay between Zero Ring trying to extinguish entities and freezing ground.");
+
+			timePedBonus = config.getInt("timePedBonus", "pedestal", 18, 0, 256, "(Not a cooldown) Bonus ticks given by the Watch of Flowing Time in pedestal. 0 = effectively no bonus.");
+			timePedMobSlowness = config.getFloat("timePedMobSlowness", "pedestal", 0.10F, 0.0F, 1.0F, "(Not a cooldown) Factor to slow down mobs by. Set to 1.0 for no slowdown");
+
 			PELogger.logInfo("Loaded configuration file.");
 		}
 		catch (Exception e)

@@ -7,8 +7,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -128,7 +130,7 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
 		{
 			if (repairCooldown == 0)
 			{
@@ -138,7 +140,7 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 				{
 					repairAllItems(player);
 				}
-				repairCooldown = 20;
+				repairCooldown = ProjectEConfig.repairPedCooldown;
 			}
 			else
 			{
@@ -151,8 +153,11 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Repairs nearby player items");
-		list.add(EnumChatFormatting.BLUE + "1 durability/s");
+		if (ProjectEConfig.repairPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Repairs nearby players' items");
+			list.add(EnumChatFormatting.BLUE + "Restores 1 durability every " + Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown));
+		}
 		return list;
 	}
 }

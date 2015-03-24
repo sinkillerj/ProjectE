@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.utils.Constants;
@@ -34,6 +35,8 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
+	private int stopRainCooldown;
+
 	public VolcaniteAmulet()
 	{
 		this.setUnlocalizedName("volcanite_amulet");
@@ -279,12 +282,21 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && world.getWorldTime() % 20 == 0)
+		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			world.getWorldInfo().setRainTime(0);
-			world.getWorldInfo().setThunderTime(0);
-			world.getWorldInfo().setRaining(false);
-			world.getWorldInfo().setThundering(false);
+			if (stopRainCooldown == 0)
+			{
+				world.getWorldInfo().setRainTime(0);
+				world.getWorldInfo().setThunderTime(0);
+				world.getWorldInfo().setRaining(false);
+				world.getWorldInfo().setThundering(false);
+
+				stopRainCooldown = ProjectEConfig.volcanitePedCooldown;
+			}
+			else
+			{
+				stopRainCooldown--;
+			}
 		}
 	}
 
@@ -292,7 +304,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Prevents rain/snow storms");
+		if (ProjectEConfig.volcanitePedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Prevents rain/snow storms");
+			list.add(EnumChatFormatting.BLUE + "Attempts to stop weather every " + Utils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown));
+		}
 		return list;
 	}
 }

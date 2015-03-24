@@ -3,9 +3,11 @@ package moze_intel.projecte.gameObjs.items.rings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,7 +54,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
 		{
 			if (arrowCooldown == 0)
 			{
@@ -68,7 +70,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 						world.spawnEntityInWorld(arrow);
 					}
 				}
-				arrowCooldown = 100;
+				arrowCooldown = ProjectEConfig.archangelPedCooldown;
 			}
 			else
 			{
@@ -81,8 +83,10 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Fires arrows at nearby mobs");
-		list.add(EnumChatFormatting.BLUE + "Triggers every 5 seconds");
+		if (ProjectEConfig.archangelPedCooldown != -1) {
+			list.add(EnumChatFormatting.BLUE + "Fires arrows at nearby mobs");
+			list.add(EnumChatFormatting.BLUE + "Triggers every " + Utils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown));
+		}
 		return list;
 	}
 }
