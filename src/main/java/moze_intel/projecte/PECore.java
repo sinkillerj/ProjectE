@@ -37,7 +37,7 @@ import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
-{	
+{
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
@@ -75,6 +75,7 @@ public class PECore
 		
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+		FMLCommonHandler.instance().bus().register(new PlayerEvents());
 		
 		proxy.registerClientOnlyEvents();
 
