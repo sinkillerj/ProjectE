@@ -71,8 +71,11 @@ public class PECore
 		PacketHandler.register();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
-		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
-		
+
+		PlayerEvents pe = new PlayerEvents();
+		MinecraftForge.EVENT_BUS.register(pe);
+		FMLCommonHandler.instance().bus().register(pe);
+
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
 		
