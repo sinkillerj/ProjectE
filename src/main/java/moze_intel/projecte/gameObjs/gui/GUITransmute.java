@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmuteContainer;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
@@ -111,10 +112,25 @@ public class GUITransmute extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClicked(int par1, int par2, int par3)
+	protected void mouseClicked(int x, int y, int mouseButton)
 	{
-		super.mouseClicked(par1, par2, par3);
-		this.textBoxFilter.mouseClicked(par1, par2, par3);
+		super.mouseClicked(x, y, mouseButton);
+
+		int minX = textBoxFilter.xPosition;
+		int minY = textBoxFilter.yPosition;
+		int maxX = minX + textBoxFilter.width;
+		int maxY = minY + textBoxFilter.height;
+
+		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
+		{
+			PacketHandler.sendToServer(new SearchUpdatePKT(""));
+			tile.filter = "";
+			tile.updateOutputs();
+			this.textBoxFilter.setText("");
+		}
+
+		this.textBoxFilter.mouseClicked(x, y, mouseButton);
+
 	}
 
 	@Override
