@@ -42,8 +42,11 @@ public final class EMCMapper
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();
-			if (normStack.damage != OreDictionary.WILDCARD_VALUE && !( normStack instanceof NormalizedSimpleStack.Group) && entry.getValue() > 0) {
-				emc.put(new SimpleStack(normStack.id, 1, normStack.damage), entry.getValue());
+			if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
+				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;
+				if (normStackItem.damage != OreDictionary.WILDCARD_VALUE) {
+					emc.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
+				}
 			}
 		}
 
