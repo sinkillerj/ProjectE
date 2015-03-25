@@ -27,13 +27,16 @@ import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
 {
 	private int startRainCooldown;
 
@@ -185,6 +188,34 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		return false;
 	}
+
+	//Start IFluidContainerItem
+	@Override
+	public FluidStack getFluid(ItemStack container)
+	{
+		FluidStack theFluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+		return theFluid;
+	}
+
+	@Override
+	public int getCapacity(ItemStack container)
+	{
+		return FluidContainerRegistry.BUCKET_VOLUME;
+	}
+
+	@Override
+	public int fill(ItemStack container, FluidStack resource, boolean doFill)
+	{
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+	{
+		FluidStack toDrain = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+		return toDrain;
+	}
+	//End IFluidContainerItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
