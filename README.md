@@ -29,6 +29,8 @@ MaPePeR - Assistant developer
 
 Kolatra - Assistant developer: https://twitter.com/ItsKolatra
 
+Williewillus - Assistant developer: https://twitter.com/williewillus
+
 Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
 
 #Thanks To
