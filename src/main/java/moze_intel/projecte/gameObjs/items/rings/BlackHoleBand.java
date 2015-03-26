@@ -59,6 +59,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		
 		for (EntityItem item : itemList)
 		{
+			item.motionY *= 0.5;
 			Utils.gravitateEntityTowards(player.posX, player.posY + (world.isRemote ? 0 : 1.62), player.posZ, item);
 			// Need to change y level on clientside due to vanilla discrepancy which is fixed in 1.8
 		}
@@ -67,6 +68,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		
 		for (EntityLootBall ball : ballList)
 		{
+			ball.motionY *= 0.5;
 			Utils.gravitateEntityTowards(player.posX, player.posY + (world.isRemote ? 0 : 1.62), player.posZ, ball);
 			// Need to change y level on clientside due to vanilla discrepancy which is fixed in 1.8
 		}
@@ -201,7 +203,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
+	public void updateInAlchBag(EntityPlayer player, ItemStack[] invBag, ItemStack item)
 	{
 		if (item.getItemDamage() == 0)
 		{
@@ -211,19 +213,20 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(player.posX - 7, player.posY - 7, player.posZ - 7, player.posX + 7, player.posY + 7, player.posZ + 7);
 		for (EntityItem ent : ((List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, aabb)))
 		{
+			ent.motionY *= 0.5;
 			Utils.gravitateEntityTowards(player.posX, player.posY, player.posZ, ent);
 		}
 		for (EntityLootBall ball : ((List<EntityLootBall>) player.worldObj.getEntitiesWithinAABB(EntityLootBall.class, aabb)))
 		{
+			ball.motionY *= 0.5;
 			Utils.gravitateEntityTowards(player.posX, player.posY, player.posZ, ball);
 		}
 	}
 
 	@Override
-	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
+	public boolean onPickUp(EntityPlayer player, ItemStack[] invBag, EntityItem item)
 	{
-		IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
-		Utils.insertEntityItemIntoInv(item, inv);
+		Utils.insertEntityItemIntoInv(item, invBag);
 		item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		return true;
 	}

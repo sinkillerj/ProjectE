@@ -4,6 +4,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
@@ -70,14 +72,33 @@ public class PlayerEvents
 		ItemStack bag = getFirstAlchemyBag(player, player.inventory.mainInventory);
 		if (bag != null)
 		{
-			ItemStack[] invBag = AlchemicalBags.get(player.getCommandSenderName(), ((byte) bag.getItemDamage()));
-			for (ItemStack stack : invBag)
+			ItemStack[] invBag;
+			ItemStack[] deepCopy;
+			for (int i = 0; i < 104; i++)
 			{
-				if (stack != null && stack.getItem() instanceof IAlchBagItem)
+				// Grab a new shallow copy of the state
+				if (player.openContainer instanceof AlchBagContainer)
 				{
-					if (((IAlchBagItem) stack.getItem()).onPickUp(player, stack, event.item))
+					// Grab shallow copy from the container when it was opened
+					AlchBagInventory abi = ((AlchBagContainer) player.openContainer).inventory;
+					abi.refresh();
+					invBag = ((AlchBagContainer) player.openContainer).inventory.getInventory();
+				}
+				else
+				{
+					invBag = AlchemicalBags.get(player.getCommandSenderName(), ((byte) bag.getItemDamage()));
+				}
+
+				if (invBag[i] != null && invBag[i].getItem() instanceof IAlchBagItem)
+				{
+					deepCopy = Utils.deepCopyItemStackArr(invBag);
+					// pass deep copy of state to bag to modify. This prevents weirdness when nulling stuff
+					if (((IAlchBagItem) invBag[i].getItem()).onPickUp(player, deepCopy, event.item))
 					{
 						event.setCanceled(true);
+						// write the modified deep copy
+						AlchemicalBags.set(player.getCommandSenderName(), ((byte) bag.getItemDamage()), deepCopy);
+						AlchemicalBags.sync(player);
 					}
 				}
 			}

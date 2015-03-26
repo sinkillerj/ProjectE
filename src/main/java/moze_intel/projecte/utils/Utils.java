@@ -112,6 +112,24 @@ public final class Utils
 		}
 	}
 
+	public static void insertEntityItemIntoInv(EntityItem item, ItemStack[] inv)
+	{
+		ItemStack result = Utils.pushStackInInv(inv, item.getEntityItem());
+		if (result != null)
+		{
+			item.setEntityItemStack(result);
+			if (!Utils.areItemStacksEqual(item.getEntityItem(), result))
+			{
+				// item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			}
+		}
+		else
+		{
+			// item.worldObj.playSoundAtEntity(item, "random.pop", 0.2F, ((item.worldObj.rand.nextFloat() - item.worldObj.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			item.setDead();
+		}
+	}
+
 	public static void insertLootballntoInv(EntityLootBall lootBall, IInventory inv)
 	{
 		List<ItemStack> result = new ArrayList<>();
@@ -520,7 +538,7 @@ public final class Utils
 				stack.stackSize -= remaining;
 			}
 		}
-		
+		inv.markDirty();
 		return stack.copy();
 	}
 	
@@ -1109,5 +1127,22 @@ public final class Utils
 			entity.motionZ += dZ / dist * vel * 0.05;
 			entity.moveEntity(entity.motionX, entity.motionY, entity.motionZ);
 		}
+	}
+
+	public static ItemStack[] deepCopyItemStackArr(ItemStack[] stack)
+	{
+		if (stack == null)
+		{
+			return null;
+		}
+		ItemStack[] result = new ItemStack[stack.length];
+		for (int i = 0; i < stack.length; i++)
+		{
+			if (stack[i] != null)
+			{
+				result[i] = stack[i].copy();
+			}
+		}
+		return result;
 	}
 }

@@ -101,6 +101,32 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		return hadRepairs;
 	}
 
+	/**
+	 * Repair everything in this IInventory
+	 * @param inv The inventory
+	 * @return Whether the talisman repaired anything
+	 */
+	private boolean repairAllInInventory(ItemStack[] inv)
+	{
+		boolean hadRepairs = false;
+		for (int i = 0; i < inv.length; i++)
+		{
+			ItemStack invStack = inv[i];
+
+			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
+			{
+				continue;
+			}
+
+			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+			{
+				invStack.setItemDamage(invStack.getItemDamage() - 1);
+				hadRepairs = true;
+			}
+		}
+		return hadRepairs;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)
@@ -203,7 +229,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
+	public void updateInAlchBag(EntityPlayer player, ItemStack[] invBag, ItemStack item)
 	{
 		if (!player.worldObj.isRemote)
 		{
@@ -211,16 +237,13 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			if (coolDown > 0)
 			{
 				item.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-				IOHandler.markDirty();
 			}
 			else
 			{
-				IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
-				boolean hadAction = repairAllInInventory(inv);
+				boolean hadAction = repairAllInInventory(invBag);
 				if (hadAction)
 				{
 					item.stackTagCompound.setByte("Cooldown", (byte) 19);
-					IOHandler.markDirty();
 				}
 			}
 
@@ -228,7 +251,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
+	public boolean onPickUp(EntityPlayer player, ItemStack[] invBag, EntityItem item)
 	{
 		return false;
 	}

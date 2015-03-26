@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -29,8 +30,41 @@ public final class AlchemicalBags
 				return data.get(bagColour).clone();
 			}
 		}
-		
+
+		ItemStack[] stack = new ItemStack[104];
+		MAP.get(player).put(bagColour, stack);
+		return stack.clone();
+	}
+
+	public static ItemStack[] getDeepCopy(String player, byte bagColour)
+	{
+		if (MAP.containsKey(player))
+		{
+			LinkedHashMap<Byte, ItemStack[]> data = MAP.get(player);
+
+			if (data.containsKey(bagColour))
+			{
+				return Utils.deepCopyItemStackArr(data.get(bagColour));
+			}
+		}
+
 		return new ItemStack[104];
+	}
+
+	public static ItemStack[] getRaw(String player, byte bagColour)
+	{
+		if (MAP.containsKey(player))
+		{
+			LinkedHashMap<Byte, ItemStack[]> data = MAP.get(player);
+
+			if (data.containsKey(bagColour))
+			{
+				return data.get(bagColour);
+			}
+		}
+		ItemStack[] stack = new ItemStack[104];
+		MAP.get(player).put(bagColour, stack);
+		return stack;
 	}
 	
 	public static void set(String player, byte bagColour, ItemStack[] inv)
@@ -50,7 +84,7 @@ public final class AlchemicalBags
 			MAP.put(player, data);
 		}
 		data.put(bagColour, inv);
-		
+
 		IOHandler.markDirty();
 	}
 	

@@ -1,7 +1,9 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.playerData.AlchemicalBags;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -23,9 +25,12 @@ public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyn
 	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
 	{
 		AlchemicalBags.clear();
-		
 		AlchemicalBags.loadFromNBT(message.nbt);
-		
+		if (Minecraft.getMinecraft().thePlayer.openContainer instanceof AlchBagContainer)
+		{
+			((AlchBagContainer) Minecraft.getMinecraft().thePlayer.openContainer).inventory.refresh();
+		}
+
 		return null;
 	}
 

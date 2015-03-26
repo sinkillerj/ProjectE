@@ -458,20 +458,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchBag(EntityPlayer player, ItemStack bag, ItemStack item)
+	public void updateInAlchBag(EntityPlayer player, ItemStack[] invBag, ItemStack item)
 	{
-		if (item.getItemDamage() == 1 && !player.worldObj.isRemote)
+		if (!player.worldObj.isRemote && item.getItemDamage() == 1)
 		{
-			IInventory inv = player.openContainer instanceof AlchBagContainer ? ((AlchBagContainer) player.openContainer).inventory : new AlchBagInventory(player, bag);
-
-			condense(item, inv);
-
-			IOHandler.markDirty();
+			condense(item, invBag);
 		}
 	}
 
 	@Override
-	public boolean onPickUp(EntityPlayer player, ItemStack bag, EntityItem item)
+	public boolean onPickUp(EntityPlayer player, ItemStack[] invBag, EntityItem item)
 	{
 		return false;
 	}

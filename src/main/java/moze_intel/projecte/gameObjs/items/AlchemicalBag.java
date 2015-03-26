@@ -6,6 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.playerData.AlchemicalBags;
@@ -54,7 +55,7 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void onUpdate(ItemStack bag, World world, Entity entity, int par4, boolean par5)
 	{
 		if (!(entity instanceof EntityPlayer))
 		{
@@ -62,19 +63,50 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-
-		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
-
-		for (ItemStack itemStack : inv)
+		ItemStack[] invBag;
+		ItemStack[] deepCopy;
+		ItemStack tickedItem;
+		for (int i = 0; i < 104; i++)
 		{
-			if (itemStack != null && itemStack.getItem() instanceof IAlchBagItem)
+			if (player.openContainer instanceof AlchBagContainer)
 			{
-				((IAlchBagItem) itemStack.getItem()).updateInAlchBag(player, stack, itemStack);
+				// Update inventory, then grab shallow copy of data from it
+				AlchBagInventory abi = ((AlchBagContainer) player.openContainer).inventory;
+				abi.refresh();
+				invBag = ((AlchBagContainer) player.openContainer).inventory.getInventory();
+			}
+			else
+			{
+				// Grab latest shallow copy of data
+				invBag = AlchemicalBags.get(player.getCommandSenderName(), ((byte) bag.getItemDamage()));
+			}
+
+			if (invBag[i] != null && invBag[i].getItem() instanceof IAlchBagItem)
+			{
+				deepCopy = Utils.deepCopyItemStackArr(invBag);
+				tickedItem = deepCopy[i];
+				// pass deep copy of state to bag to modify. This prevents weirdness when nulling stuff
+				((IAlchBagItem) invBag[i].getItem()).updateInAlchBag(player, deepCopy, tickedItem);
+				removeEmptyStacks(deepCopy);
+				if (!world.isRemote) {
+					AlchemicalBags.set(player.getCommandSenderName(), ((byte) bag.getItemDamage()), deepCopy);
+					AlchemicalBags.sync(player);
+				}
 			}
 		}
-
 	}
-	
+
+	private void removeEmptyStacks(ItemStack[] deepCopy)
+	{
+		for (int i = 0; i < deepCopy.length; i++)
+		{
+			if (deepCopy[i] != null && deepCopy[i].stackSize <= 0)
+			{
+				deepCopy[i] = null;
+			}
+		}
+	}
+
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) 
 	{

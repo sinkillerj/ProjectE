@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 
 public class AlchBagInventory implements IInventory
 {
-	private final ItemStack invItem;
+	public final ItemStack invItem;
 	private ItemStack[] inventory;
-	private EntityPlayer player;
+	public EntityPlayer player;
 	
 	public AlchBagInventory(EntityPlayer player, ItemStack stack)
 	{
@@ -138,5 +138,10 @@ public class AlchBagInventory implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
+	}
+
+	public void refresh()
+	{
+		inventory = AlchemicalBags.get(player.getCommandSenderName(), ((byte) invItem.getItemDamage()));
 	}
 }
