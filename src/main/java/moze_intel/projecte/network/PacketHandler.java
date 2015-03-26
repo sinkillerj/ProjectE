@@ -11,6 +11,7 @@ import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.FakePlayer;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -153,7 +154,10 @@ public final class PacketHandler
 	 */
 	public static void sendTo(IMessage msg, EntityPlayerMP player)
 	{
-		HANDLER.sendTo(msg, player);
+		if (!(player instanceof FakePlayer))
+		{
+			HANDLER.sendTo(msg, player);
+		}
 	}
 	
 	/**
