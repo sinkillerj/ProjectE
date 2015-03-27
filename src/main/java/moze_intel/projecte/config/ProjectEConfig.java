@@ -100,7 +100,7 @@ public final class ProjectEConfig
 
 			evertidePedCooldown = config.getInt("evertidePedCooldown", "pedestalcooldown", 20, -1, Integer.MAX_VALUE, "Delay between Evertide Amulet trying to start rain while in the pedestal.");
 
-			harvestPedCooldown = config.getInt("harvestPedCooldown", "pedestalcooldown", 0, -1, Integer.MAX_VALUE, "Delay between Harvest Goddess trying to grow and harvest while in the pedestal.");
+			harvestPedCooldown = config.getInt("harvestPedCooldown", "pedestalcooldown", 10, -1, Integer.MAX_VALUE, "Delay between Harvest Goddess trying to grow and harvest while in the pedestal.");
 
 			ignitePedCooldown = config.getInt("ignitePedCooldown", "pedestalcooldown", 40, -1, Integer.MAX_VALUE, "Delay between Ignition Ring trying to light entities on fire while in the pedestal.");
 

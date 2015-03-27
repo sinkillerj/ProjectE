@@ -1,3 +1,12 @@
+###Version 1.7.10-PE1.4.2
+* NEW: Pedestal cooldowns and other variables are now configurable
+* NEW: Right clicking clears transmutation GUI search bar
+* NEW: Evertide Amulet now implements IFluidContainerItem for compatibility with things such as the Botania Apothecary
+* FIXED: A NullPointer crash related to fluid mapping
+* FIXED: Protection from mods including old API versions has been implemented
+* FIXED: High alchemist message is no longer shown on death
+* WIP: Added Botania specialFlower to NBT whitelist by default. Knowledge will be adjusted to allow learning NBT variants in the future
+
 ###Version 1.7.10-PE1.4.1
 * NEW: German language file updates
 * NEW: Added missing EMC values for several vanilla items
