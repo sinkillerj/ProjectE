@@ -86,7 +86,7 @@ public final class IMCHandler
 				}
 			}
 		}
-		else if (msg.key.equalsIgnoreCase("condensernbtcopy"))
+		else if (msg.key.equalsIgnoreCase("nbtwhitelist"))
 		{
 			if (msg.isItemStackMessage())
 			{

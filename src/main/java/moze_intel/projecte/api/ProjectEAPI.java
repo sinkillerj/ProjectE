@@ -42,6 +42,6 @@ public final class ProjectEAPI
 	 */
 	public static void registerCondenserNBTException(ItemStack stack)
 	{
-		FMLInterModComms.sendMessage("ProjectE", "condensernbtcopy", stack);
+		FMLInterModComms.sendMessage("ProjectE", "nbtwhitelist", stack);
 	}
 }
