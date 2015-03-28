@@ -44,7 +44,7 @@ public class Tome extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add(StatCollector.translateToLocal("pe.tome.desc"));
+		list.add(StatCollector.translateToLocal("pe.tome.tooltip1"));
 	}
 }
 

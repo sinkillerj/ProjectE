@@ -46,9 +46,7 @@ public class PlayerEvents
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.high_alchemist") + " "
-					+ EnumChatFormatting.GOLD + evt.player.getDisplayName()
-					+ EnumChatFormatting.BLUE + " " + StatCollector.translateToLocal("pe.server.has_joined") + EnumChatFormatting.RESET);
+			ChatComponentText joinMsg = new ChatComponentText(String.format(StatCollector.translateToLocal("pe.server.high_alchemist_join"), evt.player.getDisplayName()));
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
 		}
 	}

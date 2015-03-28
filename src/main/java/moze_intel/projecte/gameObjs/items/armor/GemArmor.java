@@ -26,6 +26,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import org.lwjgl.input.Keyboard;
@@ -242,8 +243,9 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			boots.stackTagCompound.setBoolean("StepAssist", false);
 			value = false;
 		}
-		
-		player.addChatMessage(new ChatComponentText("Step Assist: " + (value ? (EnumChatFormatting.GREEN + "enabled") : (EnumChatFormatting.RED + "disabled"))));
+
+		String s = value ? "pe.gem.stepassist.enabled" : "pe.gem.stepassist.disabled";
+		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(s)));
 	}
 	
 	public static void toggleNightVision(ItemStack helm, EntityPlayer player)
@@ -265,8 +267,9 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			helm.stackTagCompound.setBoolean("NightVision", false);
 			value = false;
 		}
-		
-		player.addChatMessage(new ChatComponentText("Night Vision: " + (value ? (EnumChatFormatting.GREEN + "enabled") : (EnumChatFormatting.RED + "disabled"))));
+
+		String s = value ? "pe.gem.nightvision.enabled" : "pe.gem.nightvision.disabled";
+		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(s)));
 	}
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
@@ -291,19 +294,23 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			{
 				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
-					list.add("Press " + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle step assist");
+					list.add(String.format(
+							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
 				}
-				
-				list.add("Step assist: " + (isStepAssistEnabled(stack) ? "enabled" : "disabled"));
+
+				String s = isStepAssistEnabled(stack) ? "pe.gem.stepassist.enabled" : "pe.gem.stepassist.disabled";
+				list.add(StatCollector.translateToLocal(s));
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
 				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
-					list.add("Press Shift+" + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle night vision");
+					list.add(String.format(
+							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
 				}
-				
-				list.add("Night Vision: " + (isNightVisionEnabled(stack) ? "enabled" : "disabled"));
+
+				String s = isNightVisionEnabled(stack) ? "pe.gem.nightvision.enabled" : "pe.gem.nightvision.disabled";
+				list.add(StatCollector.translateToLocal(s));
 			}
 		}
 	}

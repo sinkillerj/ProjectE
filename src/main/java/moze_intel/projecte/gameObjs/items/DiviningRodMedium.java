@@ -21,6 +21,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -126,9 +127,9 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 						
 						numBlocks++;	
 					}
-			
-			player.addChatComponentMessage(new ChatComponentText(String.format("Average EMC for %d blocks: %,d", numBlocks, (totalEmc / numBlocks))));
-			player.addChatComponentMessage(new ChatComponentText(String.format("Max EMC: %,d", max)));
+
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.avgemc"), numBlocks, (totalEmc / numBlocks))));
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.maxemc"), max)));
 		}
 		
 		return stack;
@@ -179,7 +180,8 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		changeMode(stack);
-		player.addChatComponentMessage(new ChatComponentText("Changed mode to: "+modes[getMode(stack)]));
+		player.addChatComponentMessage(new ChatComponentText(
+				String.format(StatCollector.translateToLocal("pe.item.mode_switch"), modes[getMode(stack)])));
 	}
 	
 	@Override
@@ -188,7 +190,7 @@ public class DiviningRodMedium extends ItemPE implements IModeChanger
 	{
 		if (stack.hasTagCompound())
 		{
-			list.add("Mode: "+EnumChatFormatting.AQUA+modes[getMode(stack)]);
+			list.add(StatCollector.translateToLocal("pe.item.mode") + ": " + EnumChatFormatting.AQUA+modes[getMode(stack)]);
 		}
 	}
 	
