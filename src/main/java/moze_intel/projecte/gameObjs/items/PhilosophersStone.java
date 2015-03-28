@@ -23,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
@@ -283,12 +284,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode()) + " to open the crafting grid.");
+			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode())));
 		}
 		
-		list.add("Acts like a wrench for ProjectE blocks.");
-		list.add("Left clicking changes the block's orientation.");
-		list.add("Shift right clicking will pick up the block.");
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));
 	}
 	
 	@Override

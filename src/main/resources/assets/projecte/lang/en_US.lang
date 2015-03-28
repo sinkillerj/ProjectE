@@ -149,3 +149,69 @@ achievement.klein=EMC Batteries
 achievement.klein.desc=Storing EMC for a rainy day.
 achievement.klein_big=BIG EMC Batteries
 achievement.klein_big.desc=Holding the universe in your pocket.
+
+pe.server.high_alchemist_join=High alchemist %s has joined the server
+
+pe.transmutation.transmute=Transmutation
+pe.transmutation.already_using=Someone is already using this transmutation table!
+pe.transmutation.learned0=L
+pe.transmutation.learned1=e
+pe.transmutation.learned2=a
+pe.transmutation.learned3=r
+pe.transmutation.learned4=n
+pe.transmutation.learned5=e
+pe.transmutation.learned6=d
+pe.transmutation.learned7=!
+
+pe.pedestal.shortname=DM Pedestal
+pe.pedestal.on_pedestal=On Pedestal
+pe.pedestal.tooltip1=Shift right-click to open GUI
+pe.pedestal.tooltip2=Right click to activate!
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.too_much=WAY TOO MUCH
+
+pe.dmfurnace.shortname=DM Furnace
+pe.rmfurnace.shortname=RM Furnace
+
+pe.gemdensity.blacklist=Blacklist
+pe.gemdensity.whitelist=Whitelist
+
+pe.relay.mk1=Relay MKI
+pe.relay.mk2=Relay MKII
+pe.relay.mk3=Relay MKIII
+
+pe.misc.seconds=seconds
+pe.misc.every_tick=every tick
+
+pe.item.mode=Mode
+pe.item.mode_switch=Switched to %s Mode
+
+pe.volcanite.tooltip1=Press %s to fire a lava projectile
+pe.volcanite.tooltip2=Acts as infinitely full lava bucket
+pe.volcanite.tooltip3=Right click to fill tanks
+pe.volcanite.tooltip4=All operations cost 32 EMC!
+pe.volcanite.pedestal1=Prevents rain/snow storms
+pe.volcanite.pedestal2=Attempts to stop weather every %s
+
+pe.tome.desc=Unlocks all transmutation knowledge when learned
+
+pe.timewatch.disabled=Item disabled by server admin
+pe.timewatch.mode=Time control mode: %s
+pe.timewatch.mode_switch=Time control mode set to: %s
+pe.timewatch.off=Off
+pe.timewatch.ff=Fast-Forward
+pe.timewatch.rw=Rewind
+pe.timewatch.tooltip1=Become the master of time
+pe.timewatch.tooltip2=Right click to change mode
+pe.timewatch.pedestal1=Gives %d bonus ticks to nearby blocks every tick
+pe.timewatch.pedestal2=Each tick, nearby mobs move %.3f times the speed
+
+pe.repairtalisman.pedestal1=Repairs nearby players' items
+pe.repairtalisman.pedestal2=Restores 1 durability every %s
+
+pe.philstone.tooltip1=Press %s to open a crafting grid
+pe.philstone.tooltip2=Acts like a wrench for ProjectE blocks
+pe.philstone.tooltip3=Left clicking changes the block's orientation
+pe.philstone.tooltip4=Shift right clicking will pick up the block

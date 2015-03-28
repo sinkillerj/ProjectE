@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class MercurialEyeInventory implements IInventory
@@ -103,7 +104,7 @@ public class MercurialEyeInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Mercurial Eye";
+		return StatCollector.translateToLocal("item.pe_mercurial_eye.name");
 	}
 
 	@Override

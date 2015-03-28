@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class Tome extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add("Unlocks all transmutation knowledge when learned.");
+		list.add(StatCollector.translateToLocal("pe.tome.desc"));
 	}
 }
 

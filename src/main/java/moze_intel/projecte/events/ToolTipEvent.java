@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -35,8 +36,8 @@ public class ToolTipEvent
 
 		if (currentBlock == ObjHandler.dmPedestal)
 		{
-			event.toolTip.add("Shift-right click to open GUI");
-			event.toolTip.add("Right click to activate");
+			event.toolTip.add(StatCollector.translateToLocal("pe.pedestal.tooltip1"));
+			event.toolTip.add("pe.pedestal.tooltip2");
 		}
 
 		if (ProjectEConfig.showPedestalTooltip
@@ -46,7 +47,7 @@ public class ToolTipEvent
 			{
 				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
 				{
-					event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
+					event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + ": ");
 					List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
 					if (description.isEmpty())
 					{
@@ -60,7 +61,7 @@ public class ToolTipEvent
 			}
 			else
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + ": ");
 				List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
 				if (description.isEmpty())
 				{
@@ -93,7 +94,7 @@ public class ToolTipEvent
 			{
 				int value = Utils.getEmcValue(current);
 
-				event.toolTip.add(EnumChatFormatting.YELLOW + "EMC: " + EnumChatFormatting.WHITE + String.format("%,d", value));
+				event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
 
 				if (current.stackSize > 1)
 				{
@@ -101,11 +102,12 @@ public class ToolTipEvent
 
 					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
 					{
-						event.toolTip.add(EnumChatFormatting.YELLOW + "Stack EMC: " + EnumChatFormatting.WHITE + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
+						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " "
+								+ EnumChatFormatting.WHITE + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
 					}
 					else
 					{
-						event.toolTip.add(EnumChatFormatting.YELLOW + "Stack EMC: " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
+						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
 					}
 				}
 			}
