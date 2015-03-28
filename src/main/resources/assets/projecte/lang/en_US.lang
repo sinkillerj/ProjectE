@@ -151,9 +151,9 @@ achievement.klein_big=BIG EMC Batteries
 achievement.klein_big.desc=Holding the universe in your pocket.
 
 pe.archangel.pedestal1=Fires arrows at nearby mobs
-pe.archangel.pedestal2=Fires every %s
+pe.archangel.pedestal2=Triggers every %s
 
-pe.bhb.pedestal1=Sucks in nearby dropped items
+pe.bhb.pedestal1=Sucks in nearby item drops
 pe.bhb.pedestal2=Dumps in adjacent inventories
 
 pe.body.pedestal1=Restores nearby players' hunger
@@ -186,8 +186,8 @@ pe.evertide.tooltip1=Press %s to fire a water projectile
 pe.evertide.tooltip2=Acts as an infinite water bucket
 pe.evertide.tooltip3=Right click to fill tanks and cauldrons
 pe.evertide.tooltip4=All operations are completely free!
-pe.evertide.pedestal1=Enforces constant rain/snow
-pe.evertide.pedestal2=Attempts to start weather every %s
+pe.evertide.pedestal1=Create rain/snow storms
+pe.evertide.pedestal2=Attempts to start rain every %s
 
 pe.gem.disabled=DISABLED
 pe.gem.enabled=ENABLED
@@ -220,7 +220,7 @@ pe.katar.mode2=Hoe
 pe.katar.mode3=Shear
 pe.katar.mode4=Attack
 
-pe.life.pedestal1=Restores both hearts and hunger
+pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s
 
 pe.misc.every_tick=every tick
@@ -260,7 +260,7 @@ pe.soul.pedestal1=Heals nearby players
 pe.soul.pedestal2=Half a heart every %s
 
 pe.swrg.pedestal1=Shoots lightning at nearby mobs
-pe.swrg.pedestal2=Activates ever %s
+pe.swrg.pedestal2=Activates every %s
 
 pe.timewatch.disabled=Item disabled by server admin
 pe.timewatch.ff=Fast-Forward

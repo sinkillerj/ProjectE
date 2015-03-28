@@ -44,7 +44,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
-		if (true)//PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
 			ChatComponentText joinMsg = new ChatComponentText(String.format(
 					EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.high_alchemist")
