@@ -59,7 +59,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 
 				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
 				{
-					player.setHealth(player.getHealth() + 2);
+					player.heal(2.0F);
 					removeEmc(stack, 64);
 				}
 
