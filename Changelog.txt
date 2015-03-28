@@ -1,3 +1,25 @@
+###Version 1.7.10-PE1.4.2
+* NEW: Pedestal cooldowns and other variables are now configurable
+* NEW: Right clicking clears transmutation GUI search bar
+* NEW: Evertide Amulet now implements IFluidContainerItem for compatibility with things such as the Botania Apothecary
+* FIXED: A NullPointer crash related to fluid mapping
+* FIXED: Protection from mods including old API versions has been implemented
+* FIXED: High alchemist message is no longer shown on death
+* WIP: Added Botania specialFlower to NBT whitelist by default. Knowledge will be adjusted to allow learning NBT variants in the future
+
+###Version 1.7.10-PE1.4.1
+* NEW: German language file updates
+* NEW: Added missing EMC values for several vanilla items
+* FIXED: Minor EMC tweaks for items such as moss stone
+* FIXED: A GraphMapper issue causing some items to be free
+* FIXED: Null item id crash
+
+###Version 1.7.10-PE1.4.0
+* NEW: Implemented Dark Matter Pedestal
+* NEW: Replaced old EMC mapper with new GraphMapper
+* NEW: Tooltips have been prettied up
+* FIXED: EntityMobRandomizer NullPointer
+
 ###Version 1.7.10-PE1.3.0
 * NEW: Patreon donors and code contributors are now announced as high alchemists
 * NEW: Bucket functionality for fluid amulets

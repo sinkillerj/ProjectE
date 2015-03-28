@@ -3,16 +3,28 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Ignition extends RingToggle implements IBauble
+public class Ignition extends RingToggle implements IBauble, IPedestalItem
 {
+	private int torchCooldown;
+
 	public Ignition()
 	{
 		super("ignition");
@@ -118,5 +130,41 @@ public class Ignition extends RingToggle implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
+		{
+			if (torchCooldown == 0)
+			{
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
+				for (EntityLiving living : list)
+				{
+					living.attackEntityFrom(DamageSource.inFire, 3.0F);
+					living.setFire(8);
+				}
+
+				torchCooldown = ProjectEConfig.ignitePedCooldown;
+			}
+			else
+			{
+				torchCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<String>();
+		if (ProjectEConfig.ignitePedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Nearby mobs combust");
+			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown));
+		}
+		return list;
 	}
 }

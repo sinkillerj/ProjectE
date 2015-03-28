@@ -64,4 +64,9 @@ public class CoordinateBox
 	{
 		return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
 	}
+
+	public static CoordinateBox fromAABB(AxisAlignedBB aabb)
+	{
+		return new CoordinateBox(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
+	}
 }

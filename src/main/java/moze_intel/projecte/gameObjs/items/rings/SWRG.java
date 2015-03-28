@@ -5,12 +5,18 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,14 +24,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble
+public class SWRG extends ItemPE implements IBauble, IPedestalItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] ringOn;
+	private int lightningCooldown;
 
 	public SWRG()
 	{
@@ -412,5 +423,39 @@ public class SWRG extends ItemPE implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
+		{
+			if (lightningCooldown <= 0)
+			{
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
+				for (EntityLiving living : list)
+				{
+					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
+				}
+				lightningCooldown = ProjectEConfig.swrgPedCooldown;
+			}
+			else
+			{
+				lightningCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<String>();
+		if (ProjectEConfig.swrgPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
+			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown));
+		}
+		return list;
 	}
 }

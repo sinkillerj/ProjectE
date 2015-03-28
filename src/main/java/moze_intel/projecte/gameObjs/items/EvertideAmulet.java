@@ -5,7 +5,9 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
@@ -22,15 +24,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
 {
+	private int startRainCooldown;
+
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
@@ -179,6 +188,34 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		return false;
 	}
+
+	//Start IFluidContainerItem
+	@Override
+	public FluidStack getFluid(ItemStack container)
+	{
+		FluidStack theFluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+		return theFluid;
+	}
+
+	@Override
+	public int getCapacity(ItemStack container)
+	{
+		return FluidContainerRegistry.BUCKET_VOLUME;
+	}
+
+	@Override
+	public int fill(ItemStack container, FluidStack resource, boolean doFill)
+	{
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+	{
+		FluidStack toDrain = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+		return toDrain;
+	}
+	//End IFluidContainerItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -235,5 +272,38 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
+		{
+			if (startRainCooldown == 0)
+			{
+				int i = (300 + world.rand.nextInt(600)) * 20;
+				world.getWorldInfo().setRainTime(i);
+				world.getWorldInfo().setThunderTime(i);
+				world.getWorldInfo().setRaining(true);
+
+				startRainCooldown = ProjectEConfig.evertidePedCooldown;
+			}
+			else
+			{
+				startRainCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = new ArrayList<String>();
+		if (ProjectEConfig.evertidePedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
+			list.add(EnumChatFormatting.BLUE + "Attempts to start rain every " + Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown));
+		}
+		return list;
 	}
 }

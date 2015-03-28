@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -36,16 +37,16 @@ public class PlayerEvents
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
+		}
+	}
 
-			if (PECore.uuids.contains(((EntityPlayer)event.entity).getUniqueID().toString()))
-			{
-				ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + "High alchemist " + EnumChatFormatting.GOLD + ((EntityPlayer)event.entity).getDisplayName() + EnumChatFormatting.BLUE + " has joined the server." + EnumChatFormatting.RESET);
-
-				for (EntityPlayer player : (List<EntityPlayer>) event.entity.worldObj.playerEntities)
-				{
-					player.addChatComponentMessage(joinMsg);
-				}
-			}
+	@SubscribeEvent
+	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
+	{
+		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		{
+			ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + "High alchemist " + EnumChatFormatting.GOLD + evt.player.getDisplayName() + EnumChatFormatting.BLUE + " has joined the server." + EnumChatFormatting.RESET);
+			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
 		}
 	}
 

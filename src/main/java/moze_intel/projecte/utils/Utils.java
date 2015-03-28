@@ -43,13 +43,32 @@ public final class Utils
 {	
 	private static List<Class> peacefuls = new ArrayList<Class>();
 	private static List<Class> mobs = new ArrayList<Class>();
-	
+
 	public static void init()
 	{
 		WorldTransmutations.init();
 		loadEntityLists();
 	}
-	
+
+	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
+	{
+		int x = tile.xCoord;
+		int y = tile.yCoord;
+		int z = tile.zCoord;
+
+		List<TileEntity> list = new ArrayList<TileEntity>();
+		for (int i = 0; i <= 5; i++)
+		{
+			ForgeDirection direction = ForgeDirection.getOrientation(i);
+			TileEntity te = world.getTileEntity(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
+			if (te != null)
+			{
+				list.add(te);
+			}
+		}
+		return list;
+	}
+
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
 		if (stack == null) 
@@ -976,5 +995,28 @@ public final class Utils
 		mobs.add(EntitySlime.class);
 		mobs.add(EntityWitch.class);
 		mobs.add(EntityBlaze.class);
+	}
+
+	public static double tickToSec(int ticks)
+	{
+		return ticks / 20.0D;
+	}
+
+	public static String tickToSecFormatted(int ticks)
+	{
+		double result = tickToSec(ticks);
+		if (result == 0.0D)
+		{
+			return result + " seconds (every tick)";
+		}
+		else
+		{
+			return result + " seconds";
+		}
+	}
+
+	public static int secToTicks(double secs)
+	{
+		return (int) Math.round(secs * 20.0D);
 	}
 }

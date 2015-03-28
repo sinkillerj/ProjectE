@@ -2,6 +2,7 @@ package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
@@ -9,7 +10,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class CustomEMCParser
 {
@@ -69,6 +72,8 @@ public final class CustomEMCParser
 		}
 	}
 
+	public static Map<NormalizedSimpleStack, Integer> userValues = new HashMap<NormalizedSimpleStack,Integer>();
+
 	public static void readUserData()
 	{
 		if (!loaded)
@@ -79,7 +84,7 @@ public final class CustomEMCParser
 
 		Entry entry;
 		LineNumberReader reader = null;
-
+		userValues.clear();
 		try
 		{
 			reader = new LineNumberReader(new FileReader(CONFIG));
@@ -99,14 +104,13 @@ public final class CustomEMCParser
 
 					if (entry.emc <= 0)
 					{
-						EMCMapper.addToBlackList(stack);
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
 					}
 					else
 					{
-						EMCMapper.addMapping(stack, entry.emc);
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
+					userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
 				}
 				else
 				{
@@ -119,13 +123,15 @@ public final class CustomEMCParser
 
 					if (entry.emc <= 0)
 					{
-						EMCMapper.addToBlackList(entry.name);
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
 					}
 					else
 					{
-						EMCMapper.addMapping(entry.name, entry.emc);
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
+					}
+					for (ItemStack stack : Utils.getODItems(entry.name))
+					{
+						userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
 					}
 				}
 			}

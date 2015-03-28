@@ -13,12 +13,11 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.RecipeMapper;
 import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.TickEvents;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -38,7 +37,7 @@ import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
-{	
+{
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
@@ -72,8 +71,11 @@ public class PECore
 		PacketHandler.register();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
-		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
-		
+
+		PlayerEvents pe = new PlayerEvents();
+		MinecraftForge.EVENT_BUS.register(pe);
+		FMLCommonHandler.instance().bus().register(pe);
+
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
 		
@@ -125,7 +127,6 @@ public class PECore
 
 		PELogger.logInfo("Starting server-side EMC mapping.");
 		
-		RecipeMapper.map();
 		EMCMapper.map();
 		
 		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");

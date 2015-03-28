@@ -44,7 +44,7 @@ public final class IMCHandler
 					emc = 0;
 				}
 				
-				if (EMCMapper.addIMCRegistration(stack, emc))
+				/*if (EMCMapper.addIMCRegistration(stack, emc))
 				{
 					PELogger.logInfo("Mod "+ msg.getSender() +" registered and EMC value from IMC message (" + stack + "," + emc + ").");
 				}
@@ -52,7 +52,7 @@ public final class IMCHandler
 				{
 					PELogger.logFatal("Failed to register EMC value from IMC message for: " + stack);
 					PELogger.logFatal("The ItemStack has probably already been registered.");
-				}
+				}*/
 			}
 			else
 			{

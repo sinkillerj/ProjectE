@@ -130,6 +130,7 @@ public final class NBTWhitelistParser
 			writer.println("#To add an item, just put it's unlocalized name on a new line. Here's some examples:");
 			writer.println("TConstruct:pickaxe");
 			writer.println("ExtraUtilities:unstableingot");
+			writer.println("Botania:specialFlower");
 		}
 		catch (IOException e)
 		{

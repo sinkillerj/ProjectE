@@ -109,6 +109,7 @@ tile.pe_nova_cataclysm.name=Катаклизм Новы
 tile.pe_fuel_block_0.name=Блок алхимического угля
 tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
+tile.pe_dmPedestal.name=пьедестал из тёмной материи
 
 itemGroup.ProjectE=ProjectE
 
