@@ -381,7 +381,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_transmutation._stone.name");
+		return StatCollector.translateToLocal("tile.pe_transmutation_stone.name");
 	}
 
 	@Override
