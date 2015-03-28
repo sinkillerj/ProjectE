@@ -44,9 +44,12 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
-		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		if (true)//PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			ChatComponentText joinMsg = new ChatComponentText(String.format(StatCollector.translateToLocal("pe.server.high_alchemist_join"), evt.player.getDisplayName()));
+			ChatComponentText joinMsg = new ChatComponentText(String.format(
+					EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.high_alchemist")
+					+ EnumChatFormatting.GOLD + " %s " + EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.has_joined"),
+					evt.player.getDisplayName()));
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
 		}
 	}

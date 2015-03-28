@@ -288,6 +288,6 @@ pe.volcanite.tooltip4=All operations cost 32 EMC!
 pe.volcanite.pedestal1=Prevents rain/snow storms
 pe.volcanite.pedestal2=Attempts to stop weather every %s
 
-pe.zero.pedestal1=TEST
+pe.zero.pedestal1=Extinguishes entities
 pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s

@@ -172,13 +172,15 @@ pe.divining.thirdmax=Third Max EMC: %,d
 pe.dmfurnace.shortname=DM Furnace
 pe.rmfurnace.shortname=RM Furnace
 
-pe.emc.emc_tooltip_prefix=§eEMC:§r
-pe.emc.maxgenrate_tooltip=§5Maximum Generation Rate: §9%d EMC/s§r
-pe.emc.maxoutrate_tooltip=§5Maximum Output Rate: §9%d EMC/s§r
-pe.emc.maxstorage_tooltip=§5Maximum Storage: §9%d EMC§r
-pe.emc.stackemc_tooltip_prefix=§eStack EMC:§r
-pe.emc.storedemc_tooltip=§eStored EMC: §r%,d
-pe.emc.too_much=§f§kasdasdasasdfeag§r§f(WAY TOO MUCH)§r
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Maximum Generation Rate:
+pe.emc.maxoutrate_tooltip=Maximum Output Rate:
+pe.emc.maxstorage_tooltip=Maximum Storage:
+pe.emc.name=EMC
+pe.emc.rate=EMC/s
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=Stored EMC:
+pe.emc.too_much=WAY TOO MUCH
 
 pe.evertide.tooltip1=Press %s to fire a water projectile
 pe.evertide.tooltip2=Acts as an infinite water bucket
@@ -187,11 +189,11 @@ pe.evertide.tooltip4=All operations are completely free!
 pe.evertide.pedestal1=Enforces constant rain/snow
 pe.evertide.pedestal2=Attempts to start weather every %s
 
-pe.gem.nightvision.disabled=Night Vision: §cDISABLED§r
-pe.gem.nightvision.enabled=Night Vision: §aENABLED§r
+pe.gem.disabled=DISABLED
+pe.gem.enabled=ENABLED
+pe.gem.nightvision_tooltip=Night Vision:
 pe.gem.nightvision.prompt=Press Shift %s to toggle Night Vision
-pe.gem.stepassist.disabled=Step Assist: §cDISABLED§r
-pe.gem.stepassist.enabled=Step Assist: §aENABLED§r
+pe.gem.stepassist_tooltip=Step Assist:
 pe.gem.stepassist.prompt=Press %s to toggle Step Assist
 
 pe.gemdensity.blacklist=Blacklist
@@ -223,10 +225,10 @@ pe.life.pedestal2=Half a heart and shank every %s
 
 pe.misc.every_tick=every tick
 pe.misc.seconds=seconds
-pe.misc.storedxp_tooltip=§2Stored XP: §a%,d§r
-pe.misc.wrenched_block=§aWrenched block!§r
+pe.misc.storedxp_tooltip=Stored XP:
+pe.misc.wrenched_block=Wrenched block!
 
-pe.pedestal.on_pedestal=§5On Pedestal:§r
+pe.pedestal.on_pedestal=On Pedestal:
 pe.pedestal.shortname=DM Pedestal
 pe.pedestal.tooltip1=Shift right-click to open GUI
 pe.pedestal.tooltip2=Right click to activate!
@@ -251,7 +253,8 @@ pe.relay.mk3=Relay MKIII
 pe.repairtalisman.pedestal1=Repairs nearby players' items
 pe.repairtalisman.pedestal2=Restores 1 durability every %s
 
-pe.server.high_alchemist_join=§9High alchemist §6%s §9has joined the server§r
+pe.server.high_alchemist=High alchemist
+pe.server.has_joined=has joined the server
 
 pe.soul.pedestal1=Heals nearby players
 pe.soul.pedestal2=Half a heart every %s

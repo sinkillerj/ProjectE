@@ -244,8 +244,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			value = false;
 		}
 
-		String s = value ? "pe.gem.stepassist.enabled" : "pe.gem.stepassist.disabled";
-		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(s)));
+		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
+		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
+				+ e + StatCollector.translateToLocal(s)));
 	}
 	
 	public static void toggleNightVision(ItemStack helm, EntityPlayer player)
@@ -268,8 +270,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			value = false;
 		}
 
-		String s = value ? "pe.gem.nightvision.enabled" : "pe.gem.nightvision.disabled";
-		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(s)));
+		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
+		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
+				+ e + StatCollector.translateToLocal(s)));
 	}
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
@@ -298,8 +302,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
 				}
 
-				String s = isStepAssistEnabled(stack) ? "pe.gem.stepassist.enabled" : "pe.gem.stepassist.disabled";
-				list.add(StatCollector.translateToLocal(s));
+				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+				String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+				list.add(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
+						+ e + StatCollector.translateToLocal(s));
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
@@ -309,8 +315,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
 				}
 
-				String s = isNightVisionEnabled(stack) ? "pe.gem.nightvision.enabled" : "pe.gem.nightvision.disabled";
-				list.add(StatCollector.translateToLocal(s));
+				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+				String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+				list.add(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
+						+ e + StatCollector.translateToLocal(s));
 			}
 		}
 	}
