@@ -19,9 +19,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper());
 	Set<Class> canNotMap = new HashSet<Class>();
+	Map<Class, Integer> recipeCount = new HashMap<Class, Integer>();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
+		recipeCount.clear();
+		canNotMap.clear();
 		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
 		while (iter.hasNext()) {
 			IRecipe recipe = iter.next();
@@ -81,7 +84,19 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					canNotMap.add(recipe.getClass());
 					PELogger.logWarn("Can not map Crafting Recipes with Type: " + recipe.getClass().getName());
 				}
+			} else {
+				int count = 0;
+				if (recipeCount.containsKey(recipe.getClass())) {
+					count = recipeCount.get(recipe.getClass());
+				}
+				count += 1;
+				recipeCount.put(recipe.getClass(), count);
 			}
+		}
+
+		PELogger.logInfo("CraftingMapper Statistics:");
+		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
+			PELogger.logInfo(String.format("Found %d Recipes of Type %s", entry.getValue(), entry.getKey()));
 		}
 	}
 
