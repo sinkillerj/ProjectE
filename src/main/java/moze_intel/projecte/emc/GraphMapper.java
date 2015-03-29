@@ -104,14 +104,6 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 		this.addConversionMultiple(outnumber, output, ingredientsWithAmount, baseValueForConversion);
 	}
 
-	/**
-	 * Set a Value for something. value has to be >= 0 or Free, which indicates that 'something' can be used in
-	 * Conversions, but does not add anything to the value of the Conversion-result.
-	 *
-	 * @param something
-	 * @param value
-	 * @param type
-	 */
 	public void setValue(T something, V value, FixedValue type) {
 		if (something == null) return;
 		switch (type) {

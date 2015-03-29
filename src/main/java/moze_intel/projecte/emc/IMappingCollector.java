@@ -75,10 +75,12 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Set a fixed {@code value} for {@code something}.<br/>
-	 * {@code type} controls how the Value should be handled when calculating the values for other items.
+	 * {@code type} controls how the Value should be handled when calculating the values for other items.<br/>
+	 * {@code value} has to be >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable) Free}, which indicates that {@code something} can be used in
+	 * Conversions, but does not add anything to the value of the Conversion-result.
 	 * @param something The thing that should get the Value.
-	 * @param value The value
-	 * @param type How the Value should be assigned. See {@link moze_intel.projecte.emc.IMappingCollector.FixedValue}
+	 * @param value The value. >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable)}{@code == true}
+	 * @param type How the value should be assigned. See {@link moze_intel.projecte.emc.IMappingCollector.FixedValue}
 	 */
 	public void setValue(T something, V value, FixedValue type);
 
