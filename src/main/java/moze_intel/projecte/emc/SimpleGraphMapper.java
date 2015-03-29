@@ -49,12 +49,18 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 				debugPrintln("Loop");
 				for (Map.Entry<T, V> entry : newValueFor.entrySet()) {
 					if (canOverride(entry.getKey(),entry.getValue()) && updateMapWithMinimum(values, entry.getKey(), entry.getValue())) {
+						//The new Value is now set in 'values'
 						debugFormat("Set Value for %s to %s because %s", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
+						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
 						for (Conversion conversion : getUsesFor(entry.getKey())) {
+							//Calculate how much the conversion-output costs with the new Value for entry.getKey
 							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
 							if (conversionValue.compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(conversionValue)) {
+								//We could calculate a valid value for the conversion
 								if (!hasSmaller(values, conversion.output, conversionValue)) {
+									//And there is no smaller value for that conversion output yet
 									if (updateMapWithMinimum(nextValueFor, conversion.output, conversionValue)) {
+										//So we mark that new value to set it in the next iteration.
 										reasonForChange.put(conversion.output, entry.getKey());
 									}
 								}
@@ -63,6 +69,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					}
 				}
 
+				//Swap nextValueFor into newValueFor and clear newValueFor
 				{
 					newValueFor.clear();
 					Map<T, V> tmp = nextValueFor;
@@ -70,18 +77,27 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					newValueFor = tmp;
 				}
 			}
+			//Iterate over all Conversions for a single conversion output
 			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
 				V minConversionValue = null;
+				//For all Conversions. All these have the same output.
 				for (Conversion conversion : entry.getValue()) {
 					//entry.getKey() == conversion.output
+					//How much do the ingredients cost:
 					V conversionValue = valueForConversion(values, conversion);
-					V conversionValueSingle = arithmetic.div(conversionValue, conversion.outnumber);;
+					//What would the output cost be, if that conversion would be used
+					V conversionValueSingle = arithmetic.div(conversionValue, conversion.outnumber);
+					//What is the actual emc value for the conversion output
 					V resultValue = values.containsKey(entry.getKey()) ? arithmetic.mul(conversion.outnumber, values.get(entry.getKey())) : arithmetic.getZero();
+
+					//Find the smallest EMC value for the conversion.output
 					if (conversionValueSingle.compareTo(arithmetic.getZero()) > 0 || arithmetic.isFree(conversionValueSingle)) {
 						if (minConversionValue == null || minConversionValue.compareTo(conversionValueSingle) > 0) {
 							minConversionValue = conversionValueSingle;
 						}
 					}
+					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
+					//This is a Loophole. We remove it by setting the value to 0.
 					if (canOverride(entry.getKey(),arithmetic.getZero()) && arithmetic.getZero().compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
 						debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValue, conversionValue, conversion);
 						newValueFor.put(conversion.output, arithmetic.getZero());
@@ -89,7 +105,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					}
 				}
 				if (minConversionValue == null || minConversionValue.equals(arithmetic.getZero())) {
+					//we could not find any valid conversion
 					if (values.containsKey(entry.getKey()) && !values.get(entry.getKey()).equals(arithmetic.getZero()) && canOverride(entry.getKey(), arithmetic.getZero()) && !hasSmaller(values, entry.getKey(), arithmetic.getZero())) {
+						//but the value for the conversion output is > 0, so we set it to 0.
 						debugFormat("Removing Value for %s because it does not have any nonzero-conversions anymore.", entry.getKey());
 						newValueFor.put(entry.getKey(), arithmetic.getZero());
 						reasonForChange.put(entry.getKey(), "all conversions dead");
@@ -101,6 +119,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		for (Map.Entry<T, V> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
 			values.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
 		}
+		//Remove all 'free' items from the output-values
 		for (Iterator<T> iter = values.keySet().iterator(); iter.hasNext();) {
 			T something = iter.next();
 			if (arithmetic.isFree(values.get(something))) {
@@ -110,6 +129,12 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		return values;
 	}
 
+	/**
+	 * Calculate the combined Cost for the ingredients in the Conversion.
+	 * @param values The values for the ingredients to use in the calculation
+	 * @param conversion The Conversion for which to calculate the combined ingredient cost.
+	 * @return The combined ingredient value, arithmetic.getZero() or arithmetic.getFree()
+	 */
 	protected V valueForConversion(Map<T, V> values, Conversion conversion) {
 		V value = conversion.value;
 		boolean allIngredientsAreFree = true;
@@ -125,12 +150,15 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 						allIngredientsAreFree = false;
 					}
 				} else {
+					//There is an ingredient with value = 0 => we cannot calculate the combined ingredient cost.
 					return arithmetic.getZero();
 				}
 			} else {
+				//There is an ingredient that does not have a value => we cannot calculate the combined ingredient cost.
 				return arithmetic.getZero();
 			}
 		}
+		//When all the ingredients for are 'free' or ingredients with negative amount made the Conversion have a value <= 0 this item should be free
 		if (allIngredientsAreFree || (hasPositiveIngredientValues && value.compareTo(arithmetic.getZero()) <= 0)) return arithmetic.getFree();
 		return value;
 	}
