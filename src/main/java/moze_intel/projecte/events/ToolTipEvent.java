@@ -7,6 +7,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIPedestal;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -118,20 +119,20 @@ public class ToolTipEvent
 			 */
 			if (currentBlock == ObjHandler.energyCollector)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "4 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "10000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK1_GEN + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK1_MAX + " EMC");
 			}
 
 			if (currentBlock == ObjHandler.collectorMK2)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "12 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "30000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK2_GEN + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK2_MAX + " EMC");
 			}
 
 			if (currentBlock == ObjHandler.collectorMK3)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "40 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "60000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK3_GEN + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.COLLECTOR_MK3_MAX + " EMC");
 			}
 
 			/**
@@ -139,20 +140,20 @@ public class ToolTipEvent
 			 */
 			if (currentBlock == ObjHandler.relay)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "64 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "100000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + Constants.RELAY_MK1_OUTPUT + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.RELAY_MK1_MAX + " EMC");
 			}
 
 			if (currentBlock == ObjHandler.relayMK2)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "192 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "1000000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + Constants.RELAY_MK2_OUTPUT + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.RELAY_MK2_MAX + " EMC");
 			}
 
 			if (currentBlock == ObjHandler.relayMK3)
 			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "640 EMC/s");
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "10000000 EMC");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + Constants.RELAY_MK3_OUTPUT + " EMC/s");
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + Constants.RELAY_MK3_MAX + " EMC");
 			}
 		}
 
