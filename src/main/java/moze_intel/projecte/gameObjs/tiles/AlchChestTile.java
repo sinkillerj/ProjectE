@@ -264,7 +264,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 			
 			for (EntityItem item : itemList)
 			{
-				if (getDistance(item.posX, item.posY, item.posZ) <= 0.5f)
+				if (item.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= 1.21F)
 				{
 					if (!this.worldObj.isRemote)
 					{
@@ -282,22 +282,13 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 				else
 				{
-					double d1 = (this.xCoord - item.posX);
-					double d2 = (this.yCoord - item.posY);
-					double d3 = (this.zCoord - item.posZ);
-					double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-					item.motionX += d1 / d4 * 0.1D;
-					item.motionY += d2 / d4 * 0.1D;
-					item.motionZ += d3 / d4 * 0.1D;
-						
-					item.moveEntity(item.motionX, item.motionY, item.motionZ);
+					Utils.gravitateEntityTowards(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, item);
 				}
 			}
 			
 			for (EntityLootBall loot : lootList)
 			{
-				if (getDistance(loot.posX, loot.posY, loot.posZ) <= 0.5f)
+				if (loot.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= 1.21F)
 				{
 					if (!this.worldObj.isRemote)
 					{
@@ -322,26 +313,12 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 				else
 				{
-					double d1 = (this.xCoord - loot.posX);
-					double d2 = (this.yCoord - loot.posY);
-					double d3 = (this.zCoord - loot.posZ);
-					double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-					loot.motionX += d1 / d4 * 0.1D;
-					loot.motionY += d2 / d4 * 0.1D;
-					loot.motionZ += d3 / d4 * 0.1D;
-						
-					loot.moveEntity(loot.motionX, loot.motionY, loot.motionZ);
+					Utils.gravitateEntityTowards(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, loot);
 				}
 			}
 		}
 	}
-	
-	private double getDistance(double x, double y, double z)
-	{
-		return Math.sqrt((Math.pow((this.xCoord - x), 2) + Math.pow((this.yCoord - y), 2) + Math.pow((this.zCoord - z), 2)));
-	}
-	
+
 	@Override
 	public boolean receiveClientEvent(int number, int arg)
 	{

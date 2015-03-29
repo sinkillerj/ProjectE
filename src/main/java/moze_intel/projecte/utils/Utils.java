@@ -1019,4 +1019,22 @@ public final class Utils
 	{
 		return (int) Math.round(secs * 20.0D);
 	}
+
+	public static void gravitateEntityTowards(double x, double y, double z, Entity ent)
+	{
+		double dX = (x - ent.posX);
+		double dY = (y - ent.posY);
+		double dZ = (z - ent.posZ);
+		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
+
+		double vel = 1.0 - dist / 15.0;
+		if (vel > 0.0D)
+		{
+			vel *= vel;
+			ent.motionX += dX / dist * vel * 0.05;
+			ent.motionY += dY / dist * vel * 0.2;
+			ent.motionZ += dZ / dist * vel * 0.05;
+			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
+		}
+	}
 }

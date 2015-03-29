@@ -10,6 +10,8 @@ import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.Utils;
@@ -99,6 +101,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 					if (consumed != -1)
 					{
 						placeLava(world, i, j, k);
+						PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
 					}
 				}
 			}
@@ -115,7 +118,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		{
 			world.func_147480_a(i, j, k, true);
 		}
-		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
+		if (world.isAirBlock(i, j, k))
+		{
+			world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
+		}
 	}
 
 	@Override
