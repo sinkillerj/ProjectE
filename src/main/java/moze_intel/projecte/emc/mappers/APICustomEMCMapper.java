@@ -5,6 +5,7 @@ import cpw.mods.fml.common.ModContainer;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
@@ -56,12 +57,15 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (config.getBoolean("enableModlessCustomEMC", "", true, "Custom EMC values for which the ModID could not be determined. Values: " + customEMCs.size())) {
 			for (Map.Entry<NormalizedSimpleStack, Integer> entry : customEMCs.entrySet()) {
 				mapper.setValue(entry.getKey(), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+				PELogger.logInfo(String.format("Unknown mod sets value for %s to %s", entry.getKey(), entry.getValue()));
 			}
 		}
 		for(Map.Entry<String, Map<NormalizedSimpleStack, Integer>> outerentry : customEMCforMod.entrySet()) {
 			if (config.getBoolean("enable" + outerentry.getKey(), "enableCustomEMCforMod", true, "Custom EMC for Mod with ModId = " + outerentry.getKey() + ". Values: " + outerentry.getValue().size())) {
 				for (Map.Entry<NormalizedSimpleStack, Integer> entry : outerentry.getValue().entrySet()) {
 					mapper.setValue(entry.getKey(), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+					PELogger.logInfo(String.format("%s setting value for %s to %s", outerentry.getKey(), entry.getKey(), entry.getValue()));
+
 				}
 			}
 		}
