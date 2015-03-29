@@ -7,13 +7,16 @@ import org.lwjgl.input.Keyboard;
 
 public final class KeyBinds 
 {
+	public static String[] nekKeyDescArray = new String[] {
+		"Charge", "Mode", "Fire Projectile", "Extra Function", "Armor effects"
+	};
 	public static KeyBinding[] array = new KeyBinding[] 
 	{
-		new KeyBinding("Charge", Keyboard.KEY_V, PECore.MODNAME),
-		new KeyBinding("Mode", Keyboard.KEY_G, PECore.MODNAME),
-		new KeyBinding("Fire Projectile", Keyboard.KEY_R, PECore.MODNAME),
-		new KeyBinding("Extra Function", Keyboard.KEY_C, PECore.MODNAME),
-		new KeyBinding("Armor effects", Keyboard.KEY_F, PECore.MODNAME)
+		new KeyBinding(nekKeyDescArray[0], Keyboard.KEY_V, PECore.MODNAME),
+		new KeyBinding(nekKeyDescArray[1], Keyboard.KEY_G, PECore.MODNAME),
+		new KeyBinding(nekKeyDescArray[2], Keyboard.KEY_R, PECore.MODNAME),
+		new KeyBinding(nekKeyDescArray[3], Keyboard.KEY_C, PECore.MODNAME),
+		new KeyBinding(nekKeyDescArray[4], Keyboard.KEY_F, PECore.MODNAME)
 	};
 	
 	public static int getChargeKeyCode()
