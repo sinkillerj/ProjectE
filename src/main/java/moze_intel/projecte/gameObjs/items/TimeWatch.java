@@ -195,7 +195,10 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
-				tile.updateEntity();
+				if (!tile.isInvalid())
+				{
+					tile.updateEntity();
+				}
 			}
 		}
 	}
