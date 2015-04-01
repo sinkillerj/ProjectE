@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.IGrowable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -27,6 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import moze_intel.projecte.config.ProjectEConfig;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
 
 import java.util.ArrayList;
@@ -220,7 +222,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 					if (block.getTickRandomly()
 							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
 							&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
-
+							&& !(block instanceof IGrowable)
+							&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
 						)
 					{
 						for (int i = 0; i < bonusTicks; i++)
