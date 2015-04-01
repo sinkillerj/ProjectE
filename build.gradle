@@ -1,10 +1,3 @@
-/* FOR THOSE WITH NO SENSE OF HUMOR
- * THIS PR WILL BE DELETED 24-HOURS AFTER ITS SUBMISSION
- * CHILL
- */
-
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -23,6 +16,16 @@ buildscript {
 }
 
 apply plugin: 'forge'
+
+/* FOR THOSE WITH NO SENSE OF HUMOR
+ * THIS PR WILL BE DELETED 24-HOURS AFTER ITS SUBMISSION
+ * CHILL
+ * ALSO.
+ * HAHAHAHAHAHAHAHA.
+ * LONG LIVE SAME LINE
+ */
+
+
 
 version = "${projecte_version}"
 group = "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
