@@ -35,19 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RedKatar extends ItemMode
-{
-	public RedKatar() 
-	{
-		super("rm_katar", (byte)4, new String[] {"De-Foresting", "Hoe", "Shear", "Attack"});
+public class RedKatar extends ItemMode {
+	public RedKatar() {
+		super("rm_katar", (byte) 4, new String[]{"De-Foresting", "Hoe", "Shear", "Attack"});
 		this.setNoRepair();
 	}
-	
+
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
-	{
-		switch (this.getMode(stack))
-		{
+	public boolean canHarvestBlock(Block block, ItemStack stack) {
+		switch (this.getMode(stack)) {
 			case 0:
 				return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
 			case 2:
@@ -58,91 +54,77 @@ public class RedKatar extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass) 
-	{
-		if (toolClass.equals("axe"))
-		{
+	public int getHarvestLevel(ItemStack stack, String toolClass) {
+		if (toolClass.equals("axe")) {
 			return 4;
 		}
-		
+
 		return -1;
 	}
-	
+
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
-	{
+	public float getDigSpeed(ItemStack stack, Block block, int metadata) {
 		/*if (this.getMode(stack) != 0 || this.getMode(stack) != 2)
 		{
 			return 1.0f;
 		}*/
 
-		if(canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
-		{
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack)) {
 			return 16.0f + (14.0f * this.getCharge(stack));
 		}
-		
+
 		return 1.0f;
 	}
-	
+
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
-	{
-		if (!(damager instanceof EntityPlayer) || this.getMode(stack) != 3)
-		{
+	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager) {
+		if (!(damager instanceof EntityPlayer) || this.getMode(stack) != 3) {
 			return false;
 		}
-		
+
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
 		byte charge = this.getCharge(stack);
 		float totalDmg = 15.0f;
-		
-		if (charge > 0)
-		{
+
+		if (charge > 0) {
 			dmg.setDamageBypassesArmor();
 			totalDmg += charge;
 		}
-		
+
 		damaged.attackEntityFrom(dmg, totalDmg);
 		return true;
 	}
-	
+
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
-	{
-		if (this.getMode(stack) != 1)
-		{
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+		if (this.getMode(stack) != 1) {
 			return false;
 		}
-		
+
 		return tillSoil(world, stack, player, x, y, z, par7, this.getCharge(stack));
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
-	{
-		if (player.worldObj.isRemote)
-		{
+	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
+		if (player.worldObj.isRemote) {
 			return false;
 		}
 
 		Block block = player.worldObj.getBlock(x, y, z);
 
-		if (block instanceof IShearable)
-		{
+		if (block instanceof IShearable) {
 			IShearable target = (IShearable) block;
 
-			if (target.isShearable(itemstack, player.worldObj, x, y, z))
-			{
+			if (target.isShearable(itemstack, player.worldObj, x, y, z)) {
 				ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
 				Random rand = new Random();
 
-				for(ItemStack stack : drops)
-				{
+				for (ItemStack stack : drops) {
 					float f = 0.7F;
-					double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
+					double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+					double d1 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+					double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+					EntityItem entityitem = new EntityItem(player.worldObj, (double) x + d, (double) y + d1, (double) z + d2, stack);
 					entityitem.delayBeforeCanPickup = 10;
 					player.worldObj.spawnEntityInWorld(entityitem);
 				}
@@ -154,132 +136,104 @@ public class RedKatar extends ItemMode
 
 		return false;
 	}
-	
+
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (world.isRemote)
-		{
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (world.isRemote) {
 			return stack;
 		}
-		
+
 		byte mode = this.getMode(stack);
 		byte charge = this.getCharge(stack);
-		
-		if (mode == 0)
-		{
+
+		if (mode == 0) {
 			deforest(world, stack, player, charge);
-		}
-		else if (mode == 2)
-		{
+		} else if (mode == 2) {
 			shear(world, stack, player, charge);
-		}
-		else if (mode == 3)
-		{
+		} else if (mode == 3) {
 			attackNearby(world, stack, player, charge);
 		}
-		
+
 		return stack;
 	}
-	
-	private void deforest(World world, ItemStack stack, EntityPlayer player, byte charge)
-	{
-		if (charge == 0)
-		{
+
+	private void deforest(World world, ItemStack stack, EntityPlayer player, byte charge) {
+		if (charge == 0) {
 			return;
 		}
-		
+
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		
+
 		for (int x = (int) player.posX - (5 * charge); x <= player.posX + (5 * charge); x++)
 			for (int y = (int) player.posY - (10 * charge); y <= player.posY + (10 * charge); y++)
-				for (int z = (int) player.posZ - (5 * charge); z <= player.posZ + (5 * charge); z++)
-				{
+				for (int z = (int) player.posZ - (5 * charge); z <= player.posZ + (5 * charge); z++) {
 					Block block = world.getBlock(x, y, z);
-					
-					if (block == Blocks.air)
-					{
+
+					if (block == Blocks.air) {
 						continue;
 					}
-					
+
 					ItemStack s = new ItemStack(block);
 					int[] oreIds = OreDictionary.getOreIDs(s);
-					
-					if (oreIds.length == 0)
-					{
+
+					if (oreIds.length == 0) {
 						continue;
 					}
-					
+
 					String oreName = OreDictionary.getOreName(oreIds[0]);
-					
-					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
-					{
+
+					if (oreName.equals("logWood") || oreName.equals("treeLeaves")) {
 						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
-					
-						if (!blockDrops.isEmpty())
-						{
+
+						if (!blockDrops.isEmpty()) {
 							drops.addAll(blockDrops);
 						}
-					
+
 						world.setBlockToAir(x, y, z);
 					}
 				}
-		
-		if (!drops.isEmpty())
-		{
+
+		if (!drops.isEmpty()) {
 			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 	}
-	
-	private boolean tillSoil(World world, ItemStack stack, EntityPlayer player, int x, int y, int z, int param, byte charge)
-	{
-		if (this.getMode(stack) != 1 || !player.canPlayerEdit(x, y, z, param, stack))
-		{
+
+	private boolean tillSoil(World world, ItemStack stack, EntityPlayer player, int x, int y, int z, int param, byte charge) {
+		if (this.getMode(stack) != 1 || !player.canPlayerEdit(x, y, z, param, stack)) {
 			return false;
-		}
-		else
-		{
+		} else {
 			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
 
-			if (MinecraftForge.EVENT_BUS.post(event))
-			{
+			if (MinecraftForge.EVENT_BUS.post(event)) {
 				return false;
 			}
 
-			if (event.getResult() == Result.ALLOW)
-			{
+			if (event.getResult() == Result.ALLOW) {
 				return true;
 			}
 
 			boolean hasAction = false;
 			boolean hasSoundPlayed = false;
-				
+
 			for (int i = x - charge; i <= x + charge; i++)
-				for (int j = z - charge; j <= z + charge; j++)
-				{
+				for (int j = z - charge; j <= z + charge; j++) {
 					Block block = world.getBlock(i, y, j);
-					
-					if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
-					{
+
+					if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt)) {
 						Block block1 = Blocks.farmland;
-							
-						if (!hasSoundPlayed)
-						{
-							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
+
+						if (!hasSoundPlayed) {
+							world.playSoundEffect((double) ((float) i + 0.5F), (double) ((float) y + 0.5F), (double) ((float) j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
 							hasSoundPlayed = true;
 						}
-							
-						if (world.isRemote)
-						{
+
+						if (world.isRemote) {
 							return true;
-						}
-						else
-						{
+						} else {
 							world.setBlock(i, y, j, block1);
-							
-							if (!hasAction)
-							{
+
+							if (!hasAction) {
 								hasAction = true;
 							}
 						}
@@ -288,13 +242,11 @@ public class RedKatar extends ItemMode
 			return hasAction;
 		}
 	}
-	
-	private void shear(World world, ItemStack stack, EntityPlayer player, byte charge)
-	{
+
+	private void shear(World world, ItemStack stack, EntityPlayer player, byte charge) {
 		int offset = 0;
-		
-		switch (charge)
-		{
+
+		switch (charge) {
 			case 0:
 				offset = 4;
 				break;
@@ -311,52 +263,44 @@ public class RedKatar extends ItemMode
 				offset = 40;
 				break;
 		}
-		
+
 		AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
 		List<Entity> list = world.getEntitiesWithinAABB(IShearable.class, bBox);
-		
-		if (list.isEmpty())
-		{
+
+		if (list.isEmpty()) {
 			return;
 		}
-		
+
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		
-		for (Entity ent : list)
-		{
+
+		for (Entity ent : list) {
 			IShearable target = (IShearable) ent;
-			
-			if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ))
-			{
+
+			if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ)) {
 				ArrayList<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
-				
-				if (entDrops.isEmpty())
-				{
+
+				if (entDrops.isEmpty()) {
 					continue;
 				}
-				
-				for (ItemStack drop : entDrops)
-				{
+
+				for (ItemStack drop : entDrops) {
 					drop.stackSize += Utils.randomIntInRange(6, 3);
 				}
-				
+
 				drops.addAll(entDrops);
 			}
 		}
-		
-		if (!drops.isEmpty())
-		{
+
+		if (!drops.isEmpty()) {
 			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
 	}
-	
-	private void attackNearby(World world, ItemStack stack, EntityPlayer player, byte charge)
-	{
+
+	private void attackNearby(World world, ItemStack stack, EntityPlayer player, byte charge) {
 		int offset = 0;
-		
-		switch (charge)
-		{
+
+		switch (charge) {
 			case 0:
 				offset = 4;
 				break;
@@ -373,67 +317,58 @@ public class RedKatar extends ItemMode
 				offset = 8;
 				break;
 		}
-		
+
 		AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
 		List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, bBox);
-		
-		if (list.isEmpty())
-		{
+
+		if (list.isEmpty()) {
 			return;
 		}
-		
+
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		
-		for (EntityLiving ent : list)
-		{
-			if (ent.getHealth() <= 0)
-			{
+
+		for (EntityLiving ent : list) {
+			if (ent.getHealth() <= 0) {
 				continue;
 			}
-			
+
 			DamageSource dmg = DamageSource.causePlayerDamage(player);
 			float totalDmg = 15.0f;
-			
-			if (charge > 0)
-			{
+
+			if (charge > 0) {
 				dmg.setDamageBypassesArmor();
 				totalDmg += charge;
 			}
-			
+
 			ent.attackEntityFrom(dmg, totalDmg);
 			List<EntityItem> entDrops = ent.capturedDrops;
-			
-			if (entDrops.isEmpty())
-			{
+
+			if (entDrops.isEmpty()) {
 				continue;
 			}
-			
-			for (EntityItem item : entDrops)
-			{
+
+			for (EntityItem item : entDrops) {
 				drops.add(item.getEntityItem());
 				item.setDead();
 			}
 		}
-		
+
 		PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-		
-		if (!drops.isEmpty())
-		{
+
+		if (!drops.isEmpty()) {
 			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
+	public boolean isFull3D() {
 		return true;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "katar"));
 	}
 }

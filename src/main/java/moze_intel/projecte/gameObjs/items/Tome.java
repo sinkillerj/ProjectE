@@ -10,10 +10,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class Tome extends ItemPE
-{
-	public Tome()
-	{
+public class Tome extends ItemPE {
+	public Tome() {
 		this.setUnlocalizedName("tome");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setMaxStackSize(1);
@@ -21,28 +19,24 @@ public class Tome extends ItemPE
 	}
 
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack)
-	{
-		return false; 
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack) {
+		return false;
 	}
 
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
 		super.onCreated(stack, world, player);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		this.itemIcon = register.registerIcon(this.getTexture("tome"));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
-	{
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		list.add("Unlocks all transmutation knowledge when learned.");
 	}
 }

@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -9,70 +11,56 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class RingToggle extends ItemPE implements IModeChanger
-{
+public abstract class RingToggle extends ItemPE implements IModeChanger {
 	private String name;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOn;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
-	
-	public RingToggle(String unlocalName)
-	{
+
+	public RingToggle(String unlocalName) {
 		name = unlocalName;
 		this.setUnlocalizedName(unlocalName);
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 	}
-	
+
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
+	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+		if (!stack.hasTagCompound()) {
 			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return false;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
+	public IIcon getIconFromDamage(int dmg) {
 		return dmg == 0 ? ringOff : ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOn = register.registerIcon(this.getTexture("rings", name+"_on"));
-		ringOff = register.registerIcon(this.getTexture("rings", name+"_off"));
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
-	{
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister register) {
+		ringOn = register.registerIcon(this.getTexture("rings", name + "_on"));
+		ringOff = register.registerIcon(this.getTexture("rings", name + "_off"));
+	}
+
+	@Override
+	public byte getMode(ItemStack stack) {
 		return (byte) stack.getItemDamage();
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
-	{
-		if (stack.getItemDamage() == 0)
-		{
+	public void changeMode(EntityPlayer player, ItemStack stack) {
+		if (stack.getItemDamage() == 0) {
 			stack.setItemDamage(1);
-		}
-		else
-		{
+		} else {
 			stack.setItemDamage(0);
 		}
 	}

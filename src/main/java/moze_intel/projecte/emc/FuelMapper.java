@@ -12,17 +12,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class FuelMapper 
-{
+public final class FuelMapper {
 	private static final List<SimpleStack> FUEL_MAP = new ArrayList<SimpleStack>();
-	
-	public static void loadMap()
-	{
-		if (!FUEL_MAP.isEmpty())
-		{
+
+	public static void loadMap() {
+		if (!FUEL_MAP.isEmpty()) {
 			FUEL_MAP.clear();
 		}
-		
+
 		addToMap(new ItemStack(Items.coal, 1, 1));
 		addToMap(new ItemStack(Items.redstone));
 		addToMap(new ItemStack(Blocks.redstone_block));
@@ -38,63 +35,52 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
-		
+
 		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
 	}
-	
-	private static void addToMap(ItemStack stack)
-	{
-		if (Utils.doesItemHaveEmc(stack))
-		{
+
+	private static void addToMap(ItemStack stack) {
+		if (Utils.doesItemHaveEmc(stack)) {
 			addToMap(new SimpleStack(stack));
 		}
 	}
-	
-	public static boolean isStackFuel(ItemStack stack)
-	{
+
+	public static boolean isStackFuel(ItemStack stack) {
 		return mapContains(new SimpleStack(stack));
 	}
-	
-	public static boolean isStackMaxFuel(ItemStack stack)
-	{
+
+	public static boolean isStackMaxFuel(ItemStack stack) {
 		return indexInMap(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
 	}
-	
-	public static ItemStack getFuelUpgrade(ItemStack stack)
-	{
+
+	public static ItemStack getFuelUpgrade(ItemStack stack) {
 		SimpleStack fuel = new SimpleStack(stack);
 
 		int index = indexInMap(fuel);
-		
-		if (index == -1)
-		{
-			PELogger.logFatal("Fuel not found in fuel map: "+stack);
+
+		if (index == -1) {
+			PELogger.logFatal("Fuel not found in fuel map: " + stack);
 			return null;
 		}
-		
+
 		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
-		
+
 		return FUEL_MAP.get(nextIndex).toItemStack();
 	}
 
-	private static void addToMap(SimpleStack stack)
-	{
-		if (stack.isValid())
-		{
+	private static void addToMap(SimpleStack stack) {
+		if (stack.isValid()) {
 			SimpleStack copy = stack.copy();
 			copy.qnty = 1;
 
-			if (!FUEL_MAP.contains(copy))
-			{
+			if (!FUEL_MAP.contains(copy)) {
 				FUEL_MAP.add(copy);
 			}
 		}
 	}
 
-	private static boolean mapContains(SimpleStack stack)
-	{
-		if (!stack.isValid())
-		{
+	private static boolean mapContains(SimpleStack stack) {
+		if (!stack.isValid()) {
 			return false;
 		}
 
@@ -104,8 +90,7 @@ public final class FuelMapper
 		return FUEL_MAP.contains(copy);
 	}
 
-	private static int indexInMap(SimpleStack stack)
-	{
+	private static int indexInMap(SimpleStack stack) {
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
 

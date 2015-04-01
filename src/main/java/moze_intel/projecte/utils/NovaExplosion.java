@@ -1,10 +1,5 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -16,19 +11,21 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class NovaExplosion extends Explosion 
-{
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+public class NovaExplosion extends Explosion {
 	private World worldObj;
-	
-	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius) 
-	{
+
+	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius) {
 		super(world, entity, x, y, z, radius);
 		worldObj = world;
 	}
-	
+
 	@Override
-	public void doExplosionA()
-	{
+	public void doExplosionA() {
 		float f = this.explosionSize;
 		HashSet hashset = new HashSet();
 		int i;
@@ -41,11 +38,10 @@ public class NovaExplosion extends Explosion
 		for (i = 0; i < 16; ++i)
 			for (j = 0; j < 16; ++j)
 				for (k = 0; k < 16; ++k)
-					if (i == 0 || i == 16 - 1 || j == 0 || j == 16 - 1 || k == 0 || k == 16 - 1)
-					{
-						double d0 = (double)((float)i / ((float)16 - 1.0F) * 2.0F - 1.0F);
-						double d1 = (double)((float)j / ((float)16 - 1.0F) * 2.0F - 1.0F);
-						double d2 = (double)((float)k / ((float)16 - 1.0F) * 2.0F - 1.0F);
+					if (i == 0 || i == 16 - 1 || j == 0 || j == 16 - 1 || k == 0 || k == 16 - 1) {
+						double d0 = (double) ((float) i / ((float) 16 - 1.0F) * 2.0F - 1.0F);
+						double d1 = (double) ((float) j / ((float) 16 - 1.0F) * 2.0F - 1.0F);
+						double d2 = (double) ((float) k / ((float) 16 - 1.0F) * 2.0F - 1.0F);
 						double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
 						d0 /= d3;
 						d1 /= d3;
@@ -55,15 +51,13 @@ public class NovaExplosion extends Explosion
 						d6 = this.explosionY;
 						d7 = this.explosionZ;
 
-						for (float f2 = 0.3F; f1 > 0.0F; f1 -= f2 * 0.75F)
-						{
+						for (float f2 = 0.3F; f1 > 0.0F; f1 -= f2 * 0.75F) {
 							int j1 = MathHelper.floor_double(d5);
 							int k1 = MathHelper.floor_double(d6);
 							int l1 = MathHelper.floor_double(d7);
 							Block block = this.worldObj.getBlock(j1, k1, l1);
 
-							if (block.getMaterial() != Material.air)
-							{
+							if (block.getMaterial() != Material.air) {
 								float f3 = this.exploder != null ? this.exploder.func_145772_a(this, this.worldObj, j1, k1, l1, block) : block.getExplosionResistance(this.exploder, worldObj, j1, k1, l1, explosionX, explosionY, explosionZ);
 								f1 -= (f3 + 0.3F) * f2;
 							}
@@ -71,19 +65,18 @@ public class NovaExplosion extends Explosion
 							if (f1 > 0.0F && (this.exploder == null || this.exploder.func_145774_a(this, this.worldObj, j1, k1, l1, block, f1)))
 								hashset.add(new ChunkPosition(j1, k1, l1));
 
-							d5 += d0 * (double)f2;
-							d6 += d1 * (double)f2;
-							d7 += d2 * (double)f2;
+							d5 += d0 * (double) f2;
+							d6 += d1 * (double) f2;
+							d7 += d2 * (double) f2;
 						}
 					}
 
 		this.affectedBlockPositions.addAll(hashset);
 		this.explosionSize = f;
 	}
-	
+
 	@Override
-	public void doExplosionB(boolean spawnParticles)
-	{
+	public void doExplosionB(boolean spawnParticles) {
 		worldObj.playSoundEffect(this.explosionX, this.explosionY, this.explosionZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
 		if (this.explosionSize >= 2.0F && this.isSmoking)
@@ -98,22 +91,19 @@ public class NovaExplosion extends Explosion
 		int k;
 		Block block;
 		List<ItemStack> list = new ArrayList();
-		
 
-		if (this.isSmoking)
-		{
+
+		if (this.isSmoking) {
 			iterator = this.affectedBlockPositions.iterator();
 
-			while (iterator.hasNext())
-			{
-				chunkposition = (ChunkPosition)iterator.next();
+			while (iterator.hasNext()) {
+				chunkposition = (ChunkPosition) iterator.next();
 				i = chunkposition.chunkPosX;
 				j = chunkposition.chunkPosY;
 				k = chunkposition.chunkPosZ;
 				block = worldObj.getBlock(i, j, k);
 
-				if (spawnParticles)
-				{
+				if (spawnParticles) {
 					double d0 = (double) ((float) i + worldObj.rand.nextFloat());
 					double d1 = (double) ((float) j + worldObj.rand.nextFloat());
 					double d2 = (double) ((float) k + worldObj.rand.nextFloat());
@@ -133,8 +123,7 @@ public class NovaExplosion extends Explosion
 					worldObj.spawnParticle("smoke", d0, d1, d2, d3, d4, d5);
 				}
 
-				if (block.getMaterial() != Material.air)
-				{
+				if (block.getMaterial() != Material.air) {
 					ArrayList<ItemStack> drops = block.getDrops(worldObj, (int) this.explosionX, (int) this.explosionY, (int) this.explosionZ, worldObj.getBlockMetadata((int) this.explosionX, (int) this.explosionY, (int) this.explosionZ), 0);
 					if (drops != null && drops.size() > 0)
 						list.addAll(drops);
@@ -142,13 +131,13 @@ public class NovaExplosion extends Explosion
 					block.onBlockExploded(worldObj, i, j, k, this);
 				}
 			}
-			
+
 			Entity ent = this.getExplosivePlacedBy();
-			if (list.size() > 0)
-			{
+			if (list.size() > 0) {
 				if (ent instanceof EntityPlayer)
 					worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, ent.posX, ent.posY, ent.posZ));
-				else worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, this.explosionX, this.explosionY, this.explosionZ));
+				else
+					worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, this.explosionX, this.explosionY, this.explosionZ));
 			}
 		}
 	}

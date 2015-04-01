@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Configuration;
 public class PrefixConfiguration extends Configuration {
 	final protected Configuration inner;
 	final protected String prefix;
+
 	public PrefixConfiguration(Configuration inner, String prefix) {
 		if (prefix.endsWith(".")) throw new IllegalArgumentException("Prefix is not allowed to end with a dot.");
 		this.inner = inner;

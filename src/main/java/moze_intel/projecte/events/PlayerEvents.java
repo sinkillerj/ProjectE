@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.handlers.PlayerChecks;
@@ -10,7 +11,6 @@ import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,22 +18,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ChatComponentText;
 
-import java.util.List;
-
-public class PlayerEvents
-{
+public class PlayerEvents {
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event)
-	{
-		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
-		{
+	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer) {
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
@@ -41,117 +36,94 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
-	{
-		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
-		{
+	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt) {
+		if (PECore.uuids.contains((evt.player.getUniqueID().toString()))) {
 			ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + "High alchemist " + EnumChatFormatting.GOLD + evt.player.getDisplayName() + EnumChatFormatting.BLUE + " has joined the server." + EnumChatFormatting.RESET);
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
 		}
 	}
 
 	@SubscribeEvent
-	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
-	{
+	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event) {
 		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
 
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 
 	@SubscribeEvent
-	public void pickupItem(EntityItemPickupEvent event)
-	{
+	public void pickupItem(EntityItemPickupEvent event) {
 		EntityPlayer player = event.entityPlayer;
 		World world = player.worldObj;
-		
-		if (world.isRemote)
-		{
+
+		if (world.isRemote) {
 			return;
 		}
-		
-		if (player.openContainer instanceof AlchBagContainer)
-		{
+
+		if (player.openContainer instanceof AlchBagContainer) {
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
-			
-			if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && Utils.hasSpace(inv, event.item.getEntityItem()))
-			{
+
+			if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && Utils.hasSpace(inv, event.item.getEntityItem())) {
 				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
-				
-				if (remain == null)
-				{
+
+				if (remain == null) {
 					event.item.delayBeforeCanPickup = 10;
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				}
-				else 
-				{
+				} else {
 					event.item.setEntityItemStack(remain);
 				}
-				
+
 				event.setCanceled(true);
 			}
-		}
-		else
-		{
+		} else {
 			ItemStack bag = getAlchemyBag(player, player.inventory.mainInventory);
-			
-			if (bag == null)
-			{
+
+			if (bag == null) {
 				return;
 			}
-			
+
 			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
-			
-			if (Utils.hasSpace(inv, event.item.getEntityItem()))
-			{
+
+			if (Utils.hasSpace(inv, event.item.getEntityItem())) {
 				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
-				
-				if (remain == null)
-				{
+
+				if (remain == null) {
 					event.item.delayBeforeCanPickup = 10;
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				}
-				else 
-				{
+				} else {
 					event.item.setEntityItemStack(remain);
 				}
-				
+
 				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
-				
+
 				event.setCanceled(true);
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
-	public void playerSaveData(PlayerEvent.SaveToFile event)
-	{
-		if (IOHandler.markedDirty)
-		{
+	public void playerSaveData(PlayerEvent.SaveToFile event) {
+		if (IOHandler.markedDirty) {
 			IOHandler.saveData();
 			PELogger.logInfo("Saved transmutation and alchemical bag data.");
-			
+
 			IOHandler.markedDirty = false;
 		}
 	}
-	
-	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory)
-	{
-		for (ItemStack stack : inventory)
-		{
-			if (stack == null) 
-			{
+
+	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory) {
+		for (ItemStack stack : inventory) {
+			if (stack == null) {
 				continue;
 			}
-			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
-			{
+
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1))) {
 				return stack;
 			}
 		}
-		
+
 		return null;
 	}
 }

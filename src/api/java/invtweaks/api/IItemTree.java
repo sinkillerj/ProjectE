@@ -27,42 +27,42 @@ import java.util.List;
 import java.util.Random;
 
 public interface IItemTree {
-    public void registerOre(String category, String name, String oreName, int order);
+	public void registerOre(String category, String name, String oreName, int order);
 
-    boolean matches(List<IItemTreeItem> items, String keyword);
+	boolean matches(List<IItemTreeItem> items, String keyword);
 
-    boolean isKeywordValid(String keyword);
+	boolean isKeywordValid(String keyword);
 
-    Collection<IItemTreeCategory> getAllCategories();
+	Collection<IItemTreeCategory> getAllCategories();
 
-    IItemTreeCategory getRootCategory();
+	IItemTreeCategory getRootCategory();
 
-    IItemTreeCategory getCategory(String keyword);
+	void setRootCategory(IItemTreeCategory category);
 
-    boolean isItemUnknown(String id, int damage);
+	IItemTreeCategory getCategory(String keyword);
 
-    List<IItemTreeItem> getItems(String id, int damage);
+	boolean isItemUnknown(String id, int damage);
 
-    List<IItemTreeItem> getItems(String name);
+	List<IItemTreeItem> getItems(String id, int damage);
 
-    IItemTreeItem getRandomItem(Random r);
+	List<IItemTreeItem> getItems(String name);
 
-    boolean containsItem(String name);
+	IItemTreeItem getRandomItem(Random r);
 
-    boolean containsCategory(String name);
+	boolean containsItem(String name);
 
-    void setRootCategory(IItemTreeCategory category);
+	boolean containsCategory(String name);
 
-    IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException;
+	IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException;
 
-    void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException;
+	void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException;
 
-    IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
-            throws NullPointerException;
+	IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
+			throws NullPointerException;
 
-    void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException;
+	void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException;
 
-    int getKeywordDepth(String keyword);
+	int getKeywordDepth(String keyword);
 
-    int getKeywordOrder(String keyword);
+	int getKeywordOrder(String keyword);
 }

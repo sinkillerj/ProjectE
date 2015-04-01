@@ -10,6 +10,7 @@ import java.util.*;
 
 public abstract class NormalizedSimpleStack {
 	public static Map<Integer, Set<Integer>> idWithUsedMetaData = new HashMap<Integer, Set<Integer>>();
+	public static Map<Map<NormalizedSimpleStack, Integer>, NSSGroup> groups = new HashMap<Map<NormalizedSimpleStack, Integer>, NSSGroup>();
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(int id, int damage) {
 		if (id < 0) return null;
@@ -54,17 +55,39 @@ public abstract class NormalizedSimpleStack {
 			entry.getValue().add(0);
 			NormalizedSimpleStack stackWildcard = new NSSItem(entry.getKey(), OreDictionary.WILDCARD_VALUE);
 			for (int metadata : entry.getValue()) {
-				mapper.addConversion(1, stackWildcard, Arrays.asList((NormalizedSimpleStack)new NSSItem(entry.getKey(), metadata)));
+				mapper.addConversion(1, stackWildcard, Arrays.asList((NormalizedSimpleStack) new NSSItem(entry.getKey(), metadata)));
 			}
 		}
 	}
 
+	public static NormalizedSimpleStack createGroup(Iterable<ItemStack> i) {
+		IngredientMap<NormalizedSimpleStack> groupMap = new IngredientMap<NormalizedSimpleStack>();
+		for (ItemStack itemStack : i) {
+			NormalizedSimpleStack normStack = getNormalizedSimpleStackFor(itemStack);
+			if (normStack == null) return null;
+			groupMap.addIngredient(normStack, itemStack.stackSize);
+		}
+		Map<NormalizedSimpleStack, Integer> map = groupMap.getMap();
+		NSSGroup g;
+		if (groups.containsKey(map)) {
+			g = groups.get(map);
+			;
+			map.clear();
+		} else {
+			g = new NSSGroup(map);
+			groups.put(map, g);
+		}
+		return g;
+	}
+
 	public abstract int hashCode();
+
 	public abstract boolean equals(Object o);
 
-	public static class NSSItem extends NormalizedSimpleStack{
+	public static class NSSItem extends NormalizedSimpleStack {
 		public int id;
 		public int damage;
+
 		private NSSItem(int id, int damage) {
 			this.id = id;
 			if (this.id == -1) {
@@ -114,38 +137,20 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static Map<Map<NormalizedSimpleStack,Integer>,NSSGroup> groups = new HashMap<Map<NormalizedSimpleStack,Integer>,NSSGroup> ();
-	public static NormalizedSimpleStack createGroup(Iterable<ItemStack> i) {
-		IngredientMap<NormalizedSimpleStack> groupMap = new IngredientMap<NormalizedSimpleStack>();
-		for (ItemStack itemStack:i) {
-			NormalizedSimpleStack normStack = getNormalizedSimpleStackFor(itemStack);
-			if (normStack == null) return null;
-			groupMap.addIngredient(normStack, itemStack.stackSize);
-		}
-		Map<NormalizedSimpleStack,Integer> map = groupMap.getMap();
-		NSSGroup g;
-		if (groups.containsKey(map)) {
-			g = groups.get(map);;
-			map.clear();
-		} else {
-			g = new NSSGroup(map);
-			groups.put(map, g);
-		}
-		return g;
-  	}
-
 	public static class NSSGroup extends NormalizedSimpleStack {
 		Map<NormalizedSimpleStack, Integer> group;
+
 		public NSSGroup(Map<NormalizedSimpleStack, Integer> g) {
 			group = g;
 		}
 
 		public boolean equals(Object o) {
 			if (o instanceof NSSGroup) {
-				return group.equals(((NSSGroup)o).group);
+				return group.equals(((NSSGroup) o).group);
 			}
 			return false;
 		}
+
 		@Override
 		public int hashCode() {
 			return this.group.hashCode();
@@ -160,15 +165,18 @@ public abstract class NormalizedSimpleStack {
 	public static class NSSFluid extends NormalizedSimpleStack {
 
 		String name;
+
 		private NSSFluid(net.minecraftforge.fluids.Fluid f) {
 			this.name = f.getName();
 		}
+
 		public boolean equals(Object o) {
 			if (o instanceof NSSFluid) {
 				return name.equals(((NSSFluid) o).name);
 			}
 			return false;
 		}
+
 		@Override
 		public int hashCode() {
 			return this.name.hashCode();

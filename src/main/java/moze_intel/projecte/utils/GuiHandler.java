@@ -1,23 +1,23 @@
 package moze_intel.projecte.utils;
 
+import cpw.mods.fml.common.network.IGuiHandler;
 import moze_intel.projecte.gameObjs.container.*;
-import moze_intel.projecte.gameObjs.container.inventory.*;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
+import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.gui.*;
 import moze_intel.projecte.gameObjs.tiles.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
 
-public class GuiHandler implements IGuiHandler
-{
+public class GuiHandler implements IGuiHandler {
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-	{
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		switch (ID)
-		{
+
+		switch (ID) {
 			case Constants.ALCH_CHEST_GUI:
 				if (tile != null && tile instanceof AlchChestTile)
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
@@ -77,17 +77,15 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PEDESTAL_GUI:
 				return new PedestalContainer(player.inventory, ((DMPedestalTile) tile));
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
-	{
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		switch (ID)
-		{
+
+		switch (ID) {
 			case Constants.ALCH_CHEST_GUI:
 				if (tile != null && tile instanceof AlchChestTile)
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
@@ -148,7 +146,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PEDESTAL_GUI:
 				return new GUIPedestal(player.inventory, ((DMPedestalTile) tile));
 		}
-		
+
 		return null;
 	}
 }

@@ -22,98 +22,81 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class TransmutationStone extends Block implements ITileEntityProvider
-{
+public class TransmutationStone extends Block implements ITileEntityProvider {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icon;
-	
-	public TransmutationStone() 
-	{
+
+	public TransmutationStone() {
 		super(Material.rock);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setBlockName("pe_transmutation_stone");
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
 		this.setHardness(10.0f);
 	}
-	
+
 	@Override
-	public Item getItemDropped(int par1, Random random, int par2)
-	{
+	public Item getItemDropped(int par1, Random random, int par2) {
 		return Item.getItemFromBlock(ObjHandler.transmuteStone);
 	}
-	
+
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
-	{
+	public TileEntity createNewTileEntity(World var1, int var2) {
 		return new TransmuteTile();
 	}
-	
+
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		TransmuteTile tile = (TransmuteTile) world.getTileEntity(x, y, z);
-			
-		if (!tile.isUsed())
-		{
+
+		if (!tile.isUsed()) {
 			tile.setPlayer(player);
-			
-			if (!world.isRemote)
-			{
+
+			if (!world.isRemote) {
 				player.openGui(PECore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
 			}
-		}
-		else
-		{
-			if (!world.isRemote)
-			{
+		} else {
+			if (!world.isRemote) {
 				player.addChatComponentMessage(new ChatComponentText("Someone is already using this transmutation stone!"));
 			}
 		}
 		return true;
 	}
-	
+
 	@Override
-	public boolean isOpaqueCube()
-	{
+	public boolean isOpaqueCube() {
 		return false;
 	}
-	
+
 	@Override
-	public boolean renderAsNormalBlock()
-	{
+	public boolean renderAsNormalBlock() {
 		return false;
 	}
-	
+
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
-	{
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
+
+		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc) {
 			stack.stackTagCompound.setInteger("x", x);
 			stack.stackTagCompound.setInteger("y", y);
 			stack.stackTagCompound.setInteger("z", z);
-			
+
 			tile.readFromNBT(stack.stackTagCompound);
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if (side < 2)
-		{
+	public IIcon getIcon(int side, int meta) {
+		if (side < 2) {
 			return icon[side];
 		}
 		return icon[2];
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
+	public void registerBlockIcons(IIconRegister register) {
 		icon = new IIcon[3];
 		icon[0] = register.registerIcon("projecte:transmutation_stone/bottom");
 		icon[1] = register.registerIcon("projecte:transmutation_stone/top");

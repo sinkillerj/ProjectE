@@ -1,58 +1,46 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
-import moze_intel.projecte.config.ProjectEConfig;
+import java.util.ArrayList;
+import java.util.List;
 
-public class InterdictionTile extends TileEntity
-{
-	private static List<Class> blacklist = new ArrayList(); 
+public class InterdictionTile extends TileEntity {
+	private static List<Class> blacklist = new ArrayList();
 	private AxisAlignedBB bBox = null;
-	
-	public static boolean addEntityToBlackList(Class entClass)
-	{
-		if (blacklist.contains(entClass))
-		{
+
+	public static boolean addEntityToBlackList(Class entClass) {
+		if (blacklist.contains(entClass)) {
 			return false;
 		}
-		
+
 		blacklist.add(entClass);
 		return true;
 	}
-	
-	public void updateEntity()
-	{
-		if (bBox == null)
-		{
+
+	public void updateEntity() {
+		if (bBox == null) {
 			bBox = AxisAlignedBB.getBoundingBox(xCoord - 8, yCoord - 8, zCoord - 8, xCoord + 8, yCoord + 8, zCoord + 8);
 		}
-		
+
 		List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, bBox);
-		
-		for (Entity ent : list)
-		{
-			if (blacklist.contains(ent.getClass()))
-			{
+
+		for (Entity ent : list) {
+			if (blacklist.contains(ent.getClass())) {
 				continue;
 			}
-			
-			if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
-			{
-				if (ProjectEConfig.interdictionMode && !(ent instanceof EntityMob))
-				{
+
+			if ((ent instanceof EntityLiving) || (ent instanceof IProjectile)) {
+				if (ProjectEConfig.interdictionMode && !(ent instanceof EntityMob)) {
 					continue;
-				}
-				else
-				{
+				} else {
 					Vec3 p = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
 					Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
 					double distance = p.distanceTo(t) + 0.1D;

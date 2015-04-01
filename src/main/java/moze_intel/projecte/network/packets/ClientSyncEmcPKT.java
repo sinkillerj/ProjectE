@@ -13,44 +13,38 @@ import moze_intel.projecte.utils.PELogger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmcPKT, IMessage>
-{
+public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmcPKT, IMessage> {
 	private int packetNum;
 	private Object[] data;
 
-	public ClientSyncEmcPKT() {}
+	public ClientSyncEmcPKT() {
+	}
 
-	public ClientSyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
-	{
+	public ClientSyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList) {
 		this.packetNum = packetNum;
 		data = arrayList.toArray();
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncEmcPKT pkt, MessageContext ctx)
-	{
-		if (pkt.packetNum == 0)
-		{
+	public IMessage onMessage(ClientSyncEmcPKT pkt, MessageContext ctx) {
+		if (pkt.packetNum == 0) {
 			PELogger.logInfo("Receiving EMC data from server.");
 
 			EMCMapper.emc.clear();
 			EMCMapper.emc = new LinkedHashMap<SimpleStack, Integer>();
 		}
 
-		for (Object obj : pkt.data)
-		{
+		for (Object obj : pkt.data) {
 			Integer[] array = (Integer[]) obj;
 
 			SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
 
-			if (stack.isValid())
-			{
+			if (stack.isValid()) {
 				EMCMapper.emc.put(stack, array[3]);
 			}
 		}
 
-		if (pkt.packetNum == -1)
-		{
+		if (pkt.packetNum == -1) {
 			PELogger.logInfo("Received all packets!");
 
 			Transmutation.loadCompleteKnowledge();
@@ -61,18 +55,15 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
-	{
+	public void fromBytes(ByteBuf buf) {
 		packetNum = buf.readInt();
 		int size = buf.readInt();
 		data = new Object[size];
 
-		for (int i = 0; i < size; i++)
-		{
+		for (int i = 0; i < size; i++) {
 			Integer[] array = new Integer[4];
 
-			for (int j = 0; j < 4; j++)
-			{
+			for (int j = 0; j < 4; j++) {
 				array[j] = buf.readInt();
 			}
 
@@ -81,17 +72,14 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
-	{
+	public void toBytes(ByteBuf buf) {
 		buf.writeInt(packetNum);
 		buf.writeInt(data.length);
 
-		for (Object obj : data)
-		{
+		for (Object obj : data) {
 			Integer[] array = (Integer[]) obj;
 
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++) {
 				buf.writeInt(array[i]);
 			}
 		}

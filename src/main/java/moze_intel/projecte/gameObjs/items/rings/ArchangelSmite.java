@@ -12,57 +12,47 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArchangelSmite extends ItemPE implements IPedestalItem
-{
+public class ArchangelSmite extends ItemPE implements IPedestalItem {
 	private int arrowCooldown;
 
-	public ArchangelSmite()
-	{
+	public ArchangelSmite() {
 		this.setUnlocalizedName("archangel_smite");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
-	
+
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, player, 2.0F);
 
-		if (!world.isRemote)
-		{
+		if (!world.isRemote) {
 			world.spawnEntityInWorld(arrow);
 		}
 
 		return stack;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "archangel_smite"));
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
-	{
-		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
-		{
-			if (arrowCooldown == 0)
-			{
+	public void updateInPedestal(World world, int x, int y, int z) {
+		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1) {
+			if (arrowCooldown == 0) {
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
-				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
-				{
-					for (int i = 0; i < 3; i++)
-					{
+				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty()) {
+					for (int i = 0; i < 3; i++) {
 						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.getMinecraft(((WorldServer) world)), 2.0F);
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
@@ -71,17 +61,14 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 					}
 				}
 				arrowCooldown = ProjectEConfig.archangelPedCooldown;
-			}
-			else
-			{
+			} else {
 				arrowCooldown--;
 			}
 		}
 	}
 
 	@Override
-	public List<String> getPedestalDescription()
-	{
+	public List<String> getPedestalDescription() {
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + "Fires arrows at nearby mobs");

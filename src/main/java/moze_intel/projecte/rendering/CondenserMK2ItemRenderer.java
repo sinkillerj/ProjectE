@@ -11,28 +11,23 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class CondenserMK2ItemRenderer implements IItemRenderer
-{
+public class CondenserMK2ItemRenderer implements IItemRenderer {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser_mk2.png");
 	private final ModelChest model = new ModelChest();
 
 	@Override
-	public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
-	{
+	public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type) {
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper)
-	{
+	public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper) {
 		return true;
 	}
 
 	@Override
-	public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
-	{
-		switch (type)
-		{
+	public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data) {
+		switch (type) {
 			case ENTITY:
 				renderCondenser(0.5F, 0.5F, 0.5F, 0);
 				break;
@@ -50,8 +45,7 @@ public class CondenserMK2ItemRenderer implements IItemRenderer
 		}
 	}
 
-	private void renderCondenser(float x, float y, float z, int metaData)
-	{
+	private void renderCondenser(float x, float y, float z, int metaData) {
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(x, y, z);

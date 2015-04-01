@@ -20,19 +20,15 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
-public class ClientProxy extends CommonProxy
-{	
-	public void registerKeyBinds()
-	{
-		for (int i = 0; i < KeyBinds.array.length; i++)
-		{
+public class ClientProxy extends CommonProxy {
+	public void registerKeyBinds() {
+		for (int i = 0; i < KeyBinds.array.length; i++) {
 			ClientRegistry.registerKeyBinding(KeyBinds.array[i]);
 		}
 	}
 
 	@Override
-	public void registerRenderers() 
-	{
+	public void registerRenderers() {
 		//Items
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.alchChest), new ChestItemRenderer());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.condenser), new CondenserItemRenderer());
@@ -44,7 +40,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new CondenserRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new CondenserMK2Renderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(DMPedestalTile.class, new PedestalRenderer());
-		
+
 		//Entities
 		RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, new RenderSnowball(ObjHandler.waterOrb));
 		RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, new RenderSnowball(ObjHandler.lavaOrb));
@@ -54,10 +50,9 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer());
 	}
-	
+
 	@Override
-	public void registerClientOnlyEvents() 
-	{
+	public void registerClientOnlyEvents() {
 		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());

@@ -4,8 +4,6 @@ import moze_intel.projecte.emc.arithmetics.IntArithmetic;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.util.*;
 
@@ -14,24 +12,29 @@ import static org.junit.Assert.*;
 //@RunWith(value = Parameterized.class)
 public class GraphMapperTest {
 
-/*	@Parameterized.Parameters
-	public static Collection  parameters() {
-		Object[][] data = new Object[][] { { new ComplexGraphMapper<String, Integer>(new IntArithmetic())  }};
-		return Arrays.asList(data);
+	@Rule
+	public Timeout timeout = new Timeout(3000);
+	public GraphMapper<String, Integer> graphMapper;
+
+	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
+		V val = map.get(key);
+		if (val == null) return 0;
+		return val.intValue();
 	}
 
-	public GraphMapperTest(GraphMapper<String, Integer> graphMapper) {
-		this.graphMapper = graphMapper;
-	}*/
+	/*	@Parameterized.Parameters
+		public static Collection  parameters() {
+			Object[][] data = new Object[][] { { new ComplexGraphMapper<String, Integer>(new IntArithmetic())  }};
+			return Arrays.asList(data);
+		}
+
+		public GraphMapperTest(GraphMapper<String, Integer> graphMapper) {
+			this.graphMapper = graphMapper;
+		}*/
 	@Before
 	public void setup() {
 		graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 	}
-
-	@Rule
-	public Timeout timeout = new Timeout(3000);
-
-	public GraphMapper<String, Integer> graphMapper;
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {
@@ -547,16 +550,16 @@ public class GraphMapperTest {
 		graphMapper.setValue(gDust, 384, IMappingCollector.FixedValue.FixAndInherit);
 		graphMapper.setValue(stone, 1, IMappingCollector.FixedValue.FixAndInherit);
 		graphMapper.addConversion(8, "antiblockWhite", Arrays.asList(
-				stone,stone,stone,
-				stone,gDust,stone,
-				stone,stone,stone));
+				stone, stone, stone,
+				stone, gDust, stone,
+				stone, stone, stone));
 
 		Map<String, Integer> values = graphMapper.generateValues();
-		assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
+		assertEquals((8 + 384) / 8, getValue(values, "antiblockWhite"));
 		for (int i = 0; i < dyes.length; i++) {
 			assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
 			if (!dyes[i].equals("White"))
-				assertEquals((dyeValue[i] + ((8 + 384)/8)*8)/8, getValue(values, "antiblock" + dyes[i]));
+				assertEquals((dyeValue[i] + ((8 + 384) / 8) * 8) / 8, getValue(values, "antiblock" + dyes[i]));
 		}
 	}
 
@@ -583,7 +586,6 @@ public class GraphMapperTest {
 		assertEquals(5, getValue(values, "c1"));
 		assertEquals(0, getValue(values, "c2"));
 	}
-
 
 	@org.junit.Test
 	public void testGenerateValuesFreeAlternatives() throws Exception {
@@ -621,11 +623,5 @@ public class GraphMapperTest {
 		assertEquals(768, getValue(values, "waterBucket"));
 		assertEquals(0, getValue(values, "waterGroup"));
 		assertEquals(3, getValue(values, "result"));
-	}
-
-	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
-		V val = map.get(key);
-		if (val == null) return 0;
-		return val.intValue();
 	}
 }

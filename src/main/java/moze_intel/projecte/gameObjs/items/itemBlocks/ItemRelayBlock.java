@@ -7,18 +7,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemRelayBlock extends ItemBlock
-{
-	public ItemRelayBlock(Block block)
-	{
+public class ItemRelayBlock extends ItemBlock {
+	public ItemRelayBlock(Block block) {
 		super(block);
 	}
-	
+
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (world != null)
-		{
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+		if (world != null) {
 			player.addStat(AchievementHandler.RELAY, 1);
 		}
 	}

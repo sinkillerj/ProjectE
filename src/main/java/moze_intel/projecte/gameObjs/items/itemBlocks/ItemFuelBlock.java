@@ -4,20 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemFuelBlock extends ItemBlock
-{
-	public ItemFuelBlock(Block block) 
-	{
+public class ItemFuelBlock extends ItemBlock {
+	public ItemFuelBlock(Block block) {
 		super(block);
 		this.setMaxDamage(0);
 		this.hasSubtypes = true;
 	}
-	
+
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
-	{
-		switch (stack.getItemDamage())
-		{
+	public String getUnlocalizedName(ItemStack stack) {
+		switch (stack.getItemDamage()) {
 			case 0:
 				return "tile.pe_fuel_block_0";
 			case 1:
@@ -28,10 +24,9 @@ public class ItemFuelBlock extends ItemBlock
 				return "tile.pe_fuel_block_null";
 		}
 	}
-	
+
 	@Override
-	public int getMetadata(int meta)
-	{
+	public int getMetadata(int meta) {
 		return meta;
 	}
 }

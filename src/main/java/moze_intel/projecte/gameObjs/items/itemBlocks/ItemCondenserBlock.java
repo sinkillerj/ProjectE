@@ -7,18 +7,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemCondenserBlock extends ItemBlock
-{
-	public ItemCondenserBlock(Block block) 
-	{
+public class ItemCondenserBlock extends ItemBlock {
+	public ItemCondenserBlock(Block block) {
 		super(block);
 	}
-	
+
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (world != null)
-		{
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+		if (world != null) {
 			player.addStat(AchievementHandler.CONDENSER, 1);
 		}
 	}

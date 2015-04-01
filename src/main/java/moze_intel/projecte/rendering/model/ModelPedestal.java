@@ -4,14 +4,12 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelPedestal extends ModelBase
-{
+public class ModelPedestal extends ModelBase {
 	public ModelRenderer base;
 	public ModelRenderer column;
 	public ModelRenderer table;
 
-	public ModelPedestal()
-	{
+	public ModelPedestal() {
 		this.textureWidth = 64;
 		this.textureHeight = 32;
 		this.base = new ModelRenderer(this, 0, 0);
@@ -29,8 +27,7 @@ public class ModelPedestal extends ModelBase
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-	{
+	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		this.base.render(f5);
 		this.column.render(f5);
 		this.table.render(f5);
@@ -39,8 +36,7 @@ public class ModelPedestal extends ModelBase
 	/**
 	 * This is a helper function from Tabula to set the rotation of model parts
 	 */
-	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
-	{
+	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

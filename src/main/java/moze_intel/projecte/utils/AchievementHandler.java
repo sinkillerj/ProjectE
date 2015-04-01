@@ -1,19 +1,15 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
-import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.AchievementPage;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public final class AchievementHandler
-{
-	private static List<Achievement> list;
-	
+
+public final class AchievementHandler {
 	public final static Achievement PHIL_STONE = new Achievement("phil_stone", "phil_stone", 0, 2, ObjHandler.philosStone, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_CHEST = new Achievement("alch_chest", "alch_chest", 0, -2, ObjHandler.alchChest, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_BAG = new Achievement("alch_bag", "alch_bag", 0, -4, ObjHandler.alchBag, ALCH_CHEST).registerStat();
@@ -32,12 +28,11 @@ public final class AchievementHandler
 	public final static Achievement RM_PICK = new Achievement("rm_pick", "rm_pick", 2, 4, ObjHandler.rmPick, DM_PICK).setSpecial().registerStat();
 	public final static Achievement KLEIN_BASIC = new Achievement("klein", "klein", 0, 4, new ItemStack(ObjHandler.kleinStars, 1, 0), PHIL_STONE).registerStat();
 	public final static Achievement KLEIN_MASTER = new Achievement("klein_big", "klein_big", -2, 4, new ItemStack(ObjHandler.kleinStars, 1, 5), KLEIN_BASIC).setSpecial().registerStat();
-	
-	
-	public static void init()
-	{
+	private static List<Achievement> list;
+
+	public static void init() {
 		list = new ArrayList();
-		
+
 		list.add(PHIL_STONE);
 		list.add(ALCH_CHEST);
 		list.add(ALCH_BAG);
@@ -56,27 +51,23 @@ public final class AchievementHandler
 		list.add(RM_PICK);
 		list.add(KLEIN_BASIC);
 		list.add(KLEIN_MASTER);
-		
+
 		AchievementPage.registerAchievementPage(new AchievementPage("ProjectE", list.toArray(new Achievement[list.size()])));
 	}
-	
-	public static Achievement getAchievementForItem(ItemStack stack)
-	{
-		if (stack == null)
-		{
+
+	public static Achievement getAchievementForItem(ItemStack stack) {
+		if (stack == null) {
 			return null;
 		}
-		
-		for (Achievement ach : list)
-		{
+
+		for (Achievement ach : list) {
 			ItemStack s = ach.theItemStack;
-			
-			if (s.getItem() == stack.getItem() && s.getItemDamage() == stack.getItemDamage())
-			{
+
+			if (s.getItem() == stack.getItem() && s.getItemDamage() == stack.getItemDamage()) {
 				return ach;
 			}
 		}
-		
+
 		return null;
 	}
 }

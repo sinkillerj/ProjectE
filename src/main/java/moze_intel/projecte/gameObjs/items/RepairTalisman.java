@@ -19,56 +19,47 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
-{
+public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem {
 	private int repairCooldown;
 
-	public RepairTalisman()
-	{
+	public RepairTalisman() {
 		this.setUnlocalizedName("repair_talisman");
 		this.setMaxStackSize(1);
 	}
-	
+
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
+	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+		if (!stack.hasTagCompound()) {
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
-		if (world.isRemote || !(entity instanceof EntityPlayer))
-		{
+
+		if (world.isRemote || !(entity instanceof EntityPlayer)) {
 			return;
 		}
-		
+
 		EntityPlayer player = (EntityPlayer) entity;
 
 		PlayerTimers.activateRepair(player);
 
-		if (PlayerTimers.canRepair(player))
-		{
+		if (PlayerTimers.canRepair(player)) {
 			repairAllItems(player);
 		}
 	}
 
-	public void repairAllItems(EntityPlayer player)
-	{
+	public void repairAllItems(EntityPlayer player) {
 		IInventory inv = player.inventory;
 
-		for (int i = 0; i < 40; i++)
-		{
+		for (int i = 0; i < 40; i++) {
 			ItemStack invStack = inv.getStackInSlot(i);
 
-			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
-			{
+			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable()) {
 				continue;
 			}
 
@@ -77,8 +68,7 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 				continue;
 			}
 
-			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-			{
+			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0) {
 				invStack.setItemDamage(invStack.getItemDamage() - 1);
 			}
 		}
@@ -86,75 +76,64 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		this.itemIcon = register.registerIcon(this.getTexture("repair_talisman"));
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
-	{
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack) {
 		return BaubleType.BELT;
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
-	{
+	public void onWornTick(ItemStack stack, EntityLivingBase player) {
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
+	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
+	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
+	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
-	{
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
 		return true;
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
-	{
+	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
 		return true;
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
-	{
-		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
-		{
-			if (repairCooldown == 0)
-			{
+	public void updateInPedestal(World world, int x, int y, int z) {
+		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1) {
+			if (repairCooldown == 0) {
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityPlayerMP> list = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
-				for (EntityPlayerMP player : list)
-				{
+				for (EntityPlayerMP player : list) {
 					repairAllItems(player);
 				}
 				repairCooldown = ProjectEConfig.repairPedCooldown;
-			}
-			else
-			{
+			} else {
 				repairCooldown--;
 			}
 		}
 	}
 
 	@Override
-	public List<String> getPedestalDescription()
-	{
+	public List<String> getPedestalDescription() {
 		List<String> list = new ArrayList<String>();
-		if (ProjectEConfig.repairPedCooldown != -1)
-		{
+		if (ProjectEConfig.repairPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + "Repairs nearby players' items");
 			list.add(EnumChatFormatting.BLUE + "Restores 1 durability every " + Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown));
 		}

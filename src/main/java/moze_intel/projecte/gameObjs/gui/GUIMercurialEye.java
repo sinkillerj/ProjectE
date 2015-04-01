@@ -7,25 +7,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
-public class GUIMercurialEye extends GuiContainer
-{
+public class GUIMercurialEye extends GuiContainer {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
 	private MercurialEyeInventory inventory;
-	
-	public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) 
-	{
+
+	public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) {
 		super(new MercurialEyeContainer(invPlayer, inventory));
 		this.xSize = 171;
 		this.ySize = 134;
 		this.inventory = inventory;
 	}
-	
+
 	@Override
-	protected void drawGuiContainerForegroundLayer(int var1, int var2)
-	{
+	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
 		/*this.fontRendererObj.drawString("Mercurial Eye", 52, 6, 4210752);
 		this.fontRendererObj.drawString("Target", 124, 24, 4210752);
 		this.fontRendererObj.drawString("Klein", 5, 24, 4210752);
@@ -42,8 +38,7 @@ public class GUIMercurialEye extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
+	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);

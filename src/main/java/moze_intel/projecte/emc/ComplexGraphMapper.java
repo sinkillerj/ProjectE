@@ -34,7 +34,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 						V minValue = arithmetic.getZero();
 						for (Conversion conversion : getConversionsFor(something)) {
 							assert conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0;
-							V thisValue = arithmetic.div(conversion.value,  conversion.outnumber);
+							V thisValue = arithmetic.div(conversion.value, conversion.outnumber);
 							assert thisValue.compareTo(arithmetic.getZero()) >= 0;
 							if (arithmetic.isZero(minValue) || (thisValue.compareTo(arithmetic.getZero()) > 0 && thisValue.compareTo(minValue) < 0)) {
 								minValue = thisValue;
@@ -93,7 +93,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 			boolean foundMinSolve = false;
 			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
 				debugFormat("Looking at %s with %d/%d\n", entry, getNoDependencyConversionCountFor(entry.getKey()), entry.getValue().size());
-				if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size() || valueFor.containsKey(entry.getKey()))  {
+				if (getNoDependencyConversionCountFor(entry.getKey()) == entry.getValue().size() || valueFor.containsKey(entry.getKey())) {
 					//Thing has no noDepencencyConversion => ignore this
 					continue;
 				}
@@ -139,7 +139,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 								debugFormat("Removing %s because it has no other solved dependencys\n", conversion);
 								toRemove.add(conversion);
 							}
-						} else  {
+						} else {
 							debugFormat("NOT Removing %s. Count: %s: %d -> %d; %d/%d, min: %s this: %s\n", conversion.toString(), conversion.output, count, conversion.outnumber, getNoDependencyConversionCountFor(conversion.output), getConversionsFor(conversion.output).size(), minValue, arithmetic.div(conversion.value, conversion.outnumber));
 						}
 					} else {
@@ -162,9 +162,10 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 		}
 		return valueFor;
 	}
+
 	protected boolean hasSolvedDependency(Conversion conversion) {
 		if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
-			for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
+			for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
 				if (hasSolvedConversionDependency(ingredient, new HashSet<T>(Arrays.asList(conversion.output)))) {
 					return true;
 				}
@@ -177,9 +178,9 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 	protected boolean hasSolvedConversionDependency(T something, Set<T> visited) {
 		if (visited.contains(something)) return false;
 		visited.add(something);
-		for (Conversion conversion: getConversionsFor(something)) {
+		for (Conversion conversion : getConversionsFor(something)) {
 			if (conversion.ingredientsWithAmount == null || conversion.ingredientsWithAmount.size() == 0) return true;
-			for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
+			for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
 				if (hasSolvedConversionDependency(ingredient, visited)) return true;
 			}
 		}

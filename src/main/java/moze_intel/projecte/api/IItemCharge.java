@@ -6,8 +6,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Used by items that have a "charge".
  */
-public interface IItemCharge 
-{
+public interface IItemCharge {
 	//Return the charge the ItemStack currently has
 	public byte getCharge(ItemStack stack);
 

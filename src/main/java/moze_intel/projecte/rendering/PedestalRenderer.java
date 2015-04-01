@@ -10,18 +10,15 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
-public class PedestalRenderer extends TileEntitySpecialRenderer
-{
+public class PedestalRenderer extends TileEntitySpecialRenderer {
 
 	private final ModelPedestal model = new ModelPedestal();
 	private RenderItem ghostItemRenderer;
 
-	public PedestalRenderer()
-	{
+	public PedestalRenderer() {
 		ghostItemRenderer = new RenderItem() {
 			@Override
-			public boolean shouldBob()
-			{
+			public boolean shouldBob() {
 				return false;
 			}
 		};
@@ -29,10 +26,8 @@ public class PedestalRenderer extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f1)
-	{
-		if (te instanceof DMPedestalTile)
-		{
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f1) {
+		if (te instanceof DMPedestalTile) {
 			DMPedestalTile pedestal = ((DMPedestalTile) te);
 
 			GL11.glDisable(GL11.GL_CULL_FACE);
@@ -45,8 +40,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(x + 0.5, y + 1.0, z + 0.5); // Feel free to improve this, anyone.
-			if (pedestal.getItemStack() != null)
-			{
+			if (pedestal.getItemStack() != null) {
 				EntityItem hover = new EntityItem(pedestal.getWorldObj());
 				hover.hoverStart = 0.0F;
 				hover.setEntityItemStack(pedestal.getItemStack());

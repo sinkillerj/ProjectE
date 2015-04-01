@@ -27,117 +27,95 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedHammer extends ItemCharge
-{
-	public RedHammer() 
-	{
-		super("rm_hammer", (byte)3);
+public class RedHammer extends ItemCharge {
+	public RedHammer() {
+		super("rm_hammer", (byte) 3);
 		this.setNoRepair();
 	}
-	
+
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
-	{
-		if (world.isRemote || !(eLiving instanceof EntityPlayer) || this.getCharge(stack) == 0 || !canHarvestBlock(block, stack))
-		{
+	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving) {
+		if (world.isRemote || !(eLiving instanceof EntityPlayer) || this.getCharge(stack) == 0 || !canHarvestBlock(block, stack)) {
 			return false;
 		}
-		
+
 		EntityPlayer player = (EntityPlayer) eLiving;
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
-		{
+		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK) {
 			return false;
 		}
-		
+
 		CoordinateBox box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		
+
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
-				for (int k = (int) box.minZ; k <= box.maxZ; k++)
-				{
+				for (int k = (int) box.minZ; k <= box.maxZ; k++) {
 					Block b = world.getBlock(i, j, k);
-					
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, j) != -1 && canHarvestBlock(b, stack))
-					{
+
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, j) != -1 && canHarvestBlock(b, stack)) {
 						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
 					}
 				}
-		
-		if (!drops.isEmpty())
-		{
+
+		if (!drops.isEmpty()) {
 			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
 			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 		}
-		
+
 		return true;
 	}
-	
-	private CoordinateBox getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
-	{
-		if (direction.offsetX != 0)
-		{
+
+	private CoordinateBox getRelativeBox(Coordinates coords, ForgeDirection direction, int charge) {
+		if (direction.offsetX != 0) {
 			return new CoordinateBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetY != 0)
-		{
+		} else if (direction.offsetY != 0) {
 			return new CoordinateBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
-		}
-		else
-		{
+		} else {
 			return new CoordinateBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
 		}
 	}
-	
+
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack) 
-	{
+	public boolean canHarvestBlock(Block block, ItemStack stack) {
 		return block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock;
 	}
-	
+
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass)
-	{
-		if (toolClass.equals("pickaxe") || toolClass.equals("chisel"))
-		{
+	public int getHarvestLevel(ItemStack stack, String toolClass) {
+		if (toolClass.equals("pickaxe") || toolClass.equals("chisel")) {
 			//mine TiCon blocks as well
 			return 4;
 		}
-		
+
 		return -1;
 	}
-	
+
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
-	{
-		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
-		{
+	public float getDigSpeed(ItemStack stack, Block block, int metadata) {
+		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn) {
 			return 1200000.0F;
 		}
-		
-		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
-		{
+
+		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack)) {
 			return 16.0f + (14.0F * this.getCharge(stack));
 		}
-		
+
 		return 1.0F;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
+	public boolean isFull3D() {
 		return true;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "hammer"));
 	}
 }

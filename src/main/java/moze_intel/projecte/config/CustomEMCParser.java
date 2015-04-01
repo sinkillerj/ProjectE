@@ -1,7 +1,6 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
@@ -14,57 +13,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class CustomEMCParser
-{
+public final class CustomEMCParser {
 	private static final String VERSION = "#0.2";
+	public static Map<NormalizedSimpleStack, Integer> userValues = new HashMap<NormalizedSimpleStack, Integer>();
 	private static File CONFIG;
 	private static boolean loaded;
 
-	public static void init()
-	{
+	public static void init() {
 		CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.cfg");
 		loaded = false;
 
-		if (!CONFIG.exists())
-		{
-			try
-			{
-				if (CONFIG.createNewFile())
-				{
+		if (!CONFIG.exists()) {
+			try {
+				if (CONFIG.createNewFile()) {
 					writeDefaultFile();
 					loaded = true;
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
 				return;
 			}
-		}
-		else
-		{
+		} else {
 			BufferedReader reader = null;
 
-			try
-			{
+			try {
 				reader = new BufferedReader(new FileReader(CONFIG));
 
 				String line = reader.readLine();
 
-				if (line == null || !line.equals(VERSION))
-				{
+				if (line == null || !line.equals(VERSION)) {
 					PELogger.logFatal("Found old custom EMC file: resetting.");
 					writeDefaultFile();
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-			}
-			finally
-			{
+			} finally {
 				Utils.closeStream(reader);
 			}
 
@@ -72,12 +57,8 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> userValues = new HashMap<NormalizedSimpleStack,Integer>();
-
-	public static void readUserData()
-	{
-		if (!loaded)
-		{
+	public static void readUserData() {
+		if (!loaded) {
 			PELogger.logFatal("ERROR: configurations files are not loaded!");
 			return;
 		}
@@ -85,71 +66,51 @@ public final class CustomEMCParser
 		Entry entry;
 		LineNumberReader reader = null;
 		userValues.clear();
-		try
-		{
+		try {
 			reader = new LineNumberReader(new FileReader(CONFIG));
 
-			while ((entry = getNextEntry(reader)) != null)
-			{
-				if (entry.name.contains(":"))
-				{
+			while ((entry = getNextEntry(reader)) != null) {
+				if (entry.name.contains(":")) {
 					ItemStack stack = Utils.getStackFromString(entry.name, entry.meta);
 
-					if (stack == null)
-					{
+					if (stack == null) {
 						PELogger.logFatal("Error in custom EMC file: couldn't find item: " + entry.name);
 						PELogger.logFatal("At line number: " + reader.getLineNumber());
 						continue;
 					}
 
-					if (entry.emc <= 0)
-					{
+					if (entry.emc <= 0) {
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
-					}
-					else
-					{
+					} else {
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
-				}
-				else
-				{
-					if (OreDictionary.getOres(entry.name).isEmpty())
-					{
+					userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc : 0);
+				} else {
+					if (OreDictionary.getOres(entry.name).isEmpty()) {
 						PELogger.logFatal("Error in custom EMC file: no OD entry for " + entry.name);
 						PELogger.logFatal("At line number: " + reader.getLineNumber());
 						continue;
 					}
 
-					if (entry.emc <= 0)
-					{
+					if (entry.emc <= 0) {
 						PELogger.logInfo("Removed " + entry.name + " from EMC mapping");
-					}
-					else
-					{
+					} else {
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					for (ItemStack stack : Utils.getODItems(entry.name))
-					{
-						userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
+					for (ItemStack stack : Utils.getODItems(entry.name)) {
+						userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc : 0);
 					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(reader);
 		}
 	}
 
-	public static boolean addToFile(String toAdd, int meta, int emc)
-	{
-		if (!loaded)
-		{
+	public static boolean addToFile(String toAdd, int meta, int emc) {
+		if (!loaded) {
 			PELogger.logFatal("ERROR: configurations files are not loaded!");
 			return false;
 		}
@@ -157,18 +118,15 @@ public final class CustomEMCParser
 		PrintWriter writer = null;
 		boolean result = false;
 
-		try
-		{
+		try {
 			List<String> file = readAllFile();
 			List<Entry> entries = getAllEntries();
 
 			boolean hasFound = false;
 			boolean isOD = !toAdd.contains(":");
 
-			for (Entry e : entries)
-			{
-				if (!e.name.equals(toAdd) || (!isOD && e.meta != meta))
-				{
+			for (Entry e : entries) {
+				if (!e.name.equals(toAdd) || (!isOD && e.meta != meta)) {
 					continue;
 				}
 
@@ -177,26 +135,21 @@ public final class CustomEMCParser
 				break;
 			}
 
-			if (hasFound)
-			{
+			if (hasFound) {
 				writer = new PrintWriter(new FileOutputStream(CONFIG, false));
 
-				for (String s : file)
-				{
+				for (String s : file) {
 					writer.println(s);
 				}
 
 				result = true;
-			}
-			else
-			{
+			} else {
 				writer = new PrintWriter(new FileOutputStream(CONFIG, true));
 
 				writer.append("\n");
 				writer.append("S:" + toAdd + "\n");
 
-				if (toAdd.contains(":"))
-				{
+				if (toAdd.contains(":")) {
 					writer.append("M:" + meta + "\n");
 				}
 
@@ -204,23 +157,17 @@ public final class CustomEMCParser
 
 				result = true;
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(writer);
 		}
 
 		return result;
 	}
 
-	public static boolean removeFromFile(String toRemove, int meta)
-	{
-		if (!loaded)
-		{
+	public static boolean removeFromFile(String toRemove, int meta) {
+		if (!loaded) {
 			PELogger.logFatal("ERROR: configurations files are not loaded!");
 			return false;
 		}
@@ -228,24 +175,20 @@ public final class CustomEMCParser
 		PrintWriter writer = null;
 		boolean result = false;
 
-		try
-		{
+		try {
 			List<String> file = readAllFile();
 			List<Entry> entries = getAllEntries();
 
 			boolean isOD = !toRemove.contains(":");
 
-			for (Entry e : entries)
-			{
-				if (!e.name.equals(toRemove) || (!isOD && e.meta != meta))
-				{
+			for (Entry e : entries) {
+				if (!e.name.equals(toRemove) || (!isOD && e.meta != meta)) {
 					continue;
 				}
 
 				file.remove(e.emcIndex - 1);
 
-				if (!isOD)
-				{
+				if (!isOD) {
 					file.remove(e.metaIndex - 1);
 				}
 
@@ -255,96 +198,73 @@ public final class CustomEMCParser
 				break;
 			}
 
-			if (result)
-			{
+			if (result) {
 				writer = new PrintWriter(new FileOutputStream(CONFIG, false));
 
-				for (String s : file)
-				{
+				for (String s : file) {
 					writer.println(s);
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(writer);
 		}
 
 		return result;
 	}
 
-	private static List<String> readAllFile()
-	{
+	private static List<String> readAllFile() {
 		List<String> list = new ArrayList<String>();
 		BufferedReader reader = null;
 
-		try
-		{
+		try {
 			reader = new BufferedReader(new FileReader(CONFIG));
 
 			String s;
 
-			while ((s = reader.readLine()) != null)
-			{
+			while ((s = reader.readLine()) != null) {
 				list.add(s);
 			}
 
 			return list;
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(reader);
 		}
 
 		return new ArrayList<String>();
 	}
 
-	private static List<Entry> getAllEntries()
-	{
+	private static List<Entry> getAllEntries() {
 		List<Entry> list = new ArrayList<Entry>();
 		LineNumberReader reader = null;
 
-		try
-		{
+		try {
 			reader = new LineNumberReader(new FileReader(CONFIG));
 
 			Entry e;
 
-			while ((e = getNextEntry(reader)) != null)
-			{
+			while ((e = getNextEntry(reader)) != null) {
 				list.add(e);
 			}
 
 			return list;
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(reader);
 		}
 
 		return new ArrayList<Entry>();
 	}
 
-	private static Entry getNextEntry(LineNumberReader reader) throws IOException
-	{
+	private static Entry getNextEntry(LineNumberReader reader) throws IOException {
 		String line;
 
-		while ((line = getNextLine(reader)) != null)
-		{
-			if (line.charAt(0) == 'S')
-			{
+		while ((line = getNextLine(reader)) != null) {
+			if (line.charAt(0) == 'S') {
 				String name = line.substring(2);
 				int nameIndex = reader.getLineNumber();
 
@@ -353,22 +273,17 @@ public final class CustomEMCParser
 				int meta = -1;
 				int metaIndex = -1;
 
-				if (name.contains(":"))
-				{
-					if (line == null || line.charAt(0) != 'M')
-					{
+				if (name.contains(":")) {
+					if (line == null || line.charAt(0) != 'M') {
 						continue;
 					}
 
 					meta = 0;
 					metaIndex = reader.getLineNumber();
 
-					try
-					{
+					try {
 						meta = Integer.valueOf(line.substring(2));
-					}
-					catch (NumberFormatException e)
-					{
+					} catch (NumberFormatException e) {
 						e.printStackTrace();
 						continue;
 					}
@@ -376,20 +291,16 @@ public final class CustomEMCParser
 					line = getNextLine(reader);
 				}
 
-				if (line == null || line.charAt(0) != 'E')
-				{
+				if (line == null || line.charAt(0) != 'E') {
 					continue;
 				}
 
 				int emc = 0;
 				int emcIndex = reader.getLineNumber();
 
-				try
-				{
+				try {
 					emc = Integer.valueOf(line.substring(2));
-				}
-				catch (NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 					e.printStackTrace();
 					continue;
 				}
@@ -401,16 +312,13 @@ public final class CustomEMCParser
 		return null;
 	}
 
-	private static String getNextLine(LineNumberReader reader) throws IOException
-	{
+	private static String getNextLine(LineNumberReader reader) throws IOException {
 		String line;
 
-		while ((line = reader.readLine()) != null)
-		{
+		while ((line = reader.readLine()) != null) {
 			line = line.trim();
 
-			if (line.isEmpty() || line.length() < 3 || line.charAt(0) == '#' || line.charAt(1) != ':')
-			{
+			if (line.isEmpty() || line.length() < 3 || line.charAt(0) == '#' || line.charAt(1) != ':') {
 				continue;
 			}
 
@@ -420,31 +328,24 @@ public final class CustomEMCParser
 		return null;
 	}
 
-	private static void writeDefaultFile() throws IOException
-	{
+	private static void writeDefaultFile() throws IOException {
 		PrintWriter writer = null;
 
-		try
-		{
+		try {
 			writer = new PrintWriter(CONFIG);
 
 			writer.println(VERSION);
 			writer.println("Custom EMC file");
 			writer.println("This file is used for custom EMC registration: do NOT modify it manually.");
 			writer.println("Use the in-game commands (projecte_setEMC/removeEMC/resetEMC).");
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(writer);
 		}
 	}
 
-	private static class Entry
-	{
+	private static class Entry {
 		public String name;
 		public int meta;
 		public int emc;
@@ -452,8 +353,7 @@ public final class CustomEMCParser
 		public int metaIndex;
 		public int emcIndex;
 
-		public Entry(String name, int meta, int emc, int nameIndex, int metaIndex, int emcIndex)
-		{
+		public Entry(String name, int meta, int emc, int nameIndex, int metaIndex, int emcIndex) {
 			this.name = name;
 			this.meta = meta;
 			this.emc = emc;

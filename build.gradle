@@ -1,5 +1,8 @@
 buildscript {
     repositories {
+    
+    // Fix this
+    
         mavenCentral()
         maven {
             name = "forge"
@@ -10,6 +13,7 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
+    // fix that
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
@@ -17,8 +21,18 @@ buildscript {
 
 apply plugin: 'forge'
 
+/* FOR THOSE WITH NO SENSE OF HUMOR
+ * THIS PR WILL BE DELETED 24-HOURS AFTER ITS SUBMISSION
+ * CHILL
+ * ALSO.
+ * HAHAHAHAHAHAHAHA.
+ * LONG LIVE SAME LINE
+ */
+
+
+
 version = "${projecte_version}"
-group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
 minecraft {
@@ -39,14 +53,14 @@ repositories {
         url "http://chickenbones.net/maven/"
     }
 }
- 
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -58,21 +72,21 @@ dependencies {
 }
 
 processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+
+                // replace version and mcversion
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
+
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }

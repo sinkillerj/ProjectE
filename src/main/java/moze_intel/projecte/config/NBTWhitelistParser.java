@@ -8,57 +8,42 @@ import net.minecraft.item.ItemStack;
 
 import java.io.*;
 
-public final class NBTWhitelistParser
-{
+public final class NBTWhitelistParser {
 	private static final String VERSION = "#0.1a";
 	private static File CONFIG;
 	private static boolean loaded;
 
-	public static void init()
-	{
+	public static void init() {
 		CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
 		loaded = false;
 
-		if (!CONFIG.exists())
-		{
-			try
-			{
-				if (CONFIG.createNewFile())
-				{
+		if (!CONFIG.exists()) {
+			try {
+				if (CONFIG.createNewFile()) {
 					writeDefaultFile();
 					loaded = true;
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
 				return;
 			}
-		}
-		else
-		{
+		} else {
 			BufferedReader reader = null;
 
-			try
-			{
+			try {
 				reader = new BufferedReader(new FileReader(CONFIG));
 
 				String line = reader.readLine();
 
-				if (line == null || !line.equals(VERSION))
-				{
+				if (line == null || !line.equals(VERSION)) {
 					PELogger.logFatal("Found old NBT whitelist file: resetting.");
 					writeDefaultFile();
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-			}
-			finally
-			{
+			} finally {
 				Utils.closeStream(reader);
 			}
 
@@ -66,62 +51,49 @@ public final class NBTWhitelistParser
 		}
 	}
 
-	public static void readUserData()
-	{
-		if (!loaded)
-		{
+	public static void readUserData() {
+		if (!loaded) {
 			PELogger.logFatal("ERROR: configurations files are not loaded!");
 			return;
 		}
 
 		LineNumberReader reader = null;
 
-		try
-		{
+		try {
 			reader = new LineNumberReader(new FileReader(CONFIG));
 
 			String line;
 
-			while ((line = reader.readLine()) != null)
-			{
+			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 
-				if (line.isEmpty() || line.charAt(0) == '#')
-				{
+				if (line.isEmpty() || line.charAt(0) == '#') {
 					continue;
 				}
 
 				ItemStack stack = Utils.getStackFromString(line, 0);
 
-				if (stack == null)
-				{
+				if (stack == null) {
 					PELogger.logFatal("Error in NBT whitelist file: no item stack found for " + line);
 					PELogger.logFatal("At line: " + reader.getLineNumber());
 					continue;
 				}
 
-				if (NBTWhitelist.register(stack))
-				{
+				if (NBTWhitelist.register(stack)) {
 					PELogger.logInfo("Registered NBT whitelist for: " + line);
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(reader);
 		}
 	}
 
-	private static void writeDefaultFile() throws IOException
-	{
+	private static void writeDefaultFile() throws IOException {
 		PrintWriter writer = null;
 
-		try
-		{
+		try {
 			writer = new PrintWriter(CONFIG);
 
 			writer.println(VERSION);
@@ -131,13 +103,9 @@ public final class NBTWhitelistParser
 			writer.println("TConstruct:pickaxe");
 			writer.println("ExtraUtilities:unstableingot");
 			writer.println("Botania:specialFlower");
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			Utils.closeStream(writer);
 		}
 	}
