@@ -19,117 +19,89 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class ToolTipEvent 
-{
+public class ToolTipEvent {
 	@SubscribeEvent
-	public void tTipEvent(ItemTooltipEvent event)
-	{
+	public void tTipEvent(ItemTooltipEvent event) {
 		ItemStack current = event.itemStack;
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 
-		if (current == null)
-		{
+		if (current == null) {
 			return;
 		}
 
-		if (currentBlock == ObjHandler.dmPedestal)
-		{
+		if (currentBlock == ObjHandler.dmPedestal) {
 			event.toolTip.add("Shift-right click to open GUI");
 			event.toolTip.add("Right click to activate");
 		}
 
 		if (ProjectEConfig.showPedestalTooltip
-			&& currentItem instanceof IPedestalItem)
-		{
-			if (ProjectEConfig.showPedestalTooltipInGUI)
-			{
-				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
-				{
+				&& currentItem instanceof IPedestalItem) {
+			if (ProjectEConfig.showPedestalTooltipInGUI) {
+				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal) {
 					event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
 					List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
-					if (description.isEmpty())
-					{
+					if (description.isEmpty()) {
 						event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
-					}
-					else
-					{
+					} else {
 						event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
 					}
 				}
-			}
-			else
-			{
+			} else {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "On Pedestal:");
 				List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
-				if (description.isEmpty())
-				{
+				if (description.isEmpty()) {
 					event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
-				}
-				else
-				{
+				} else {
 					event.toolTip.addAll(((IPedestalItem) currentItem).getPedestalDescription());
 				}
 			}
-			
+
 		}
 
-		if (ProjectEConfig.showUnlocalizedNames)
-		{
+		if (ProjectEConfig.showUnlocalizedNames) {
 			event.toolTip.add("UN: " + Item.itemRegistry.getNameForObject(current.getItem()));
 		}
-		
-		if (ProjectEConfig.showODNames)
-		{
-			for (int id : OreDictionary.getOreIDs(current))
-			{
+
+		if (ProjectEConfig.showODNames) {
+			for (int id : OreDictionary.getOreIDs(current)) {
 				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
 			}
 		}
 
-		if (ProjectEConfig.showEMCTooltip)
-		{
-			if (Utils.doesItemHaveEmc(current))
-			{
+		if (ProjectEConfig.showEMCTooltip) {
+			if (Utils.doesItemHaveEmc(current)) {
 				int value = Utils.getEmcValue(current);
 
 				event.toolTip.add(EnumChatFormatting.YELLOW + "EMC: " + EnumChatFormatting.WHITE + String.format("%,d", value));
 
-				if (current.stackSize > 1)
-				{
+				if (current.stackSize > 1) {
 					long total = value * current.stackSize;
 
-					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
-					{
+					if (total < 0 || total <= value || total > Integer.MAX_VALUE) {
 						event.toolTip.add(EnumChatFormatting.YELLOW + "Stack EMC: " + EnumChatFormatting.WHITE + EnumChatFormatting.OBFUSCATED + "WAY TOO MUCH");
-					}
-					else
-					{
+					} else {
 						event.toolTip.add(EnumChatFormatting.YELLOW + "Stack EMC: " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
 					}
 				}
 			}
 		}
 
-		if (ProjectEConfig.showStatTooltip)
-		{
+		if (ProjectEConfig.showStatTooltip) {
 			/**
 			 * Collector ToolTips
 			 */
-			if (currentBlock == ObjHandler.energyCollector)
-			{
+			if (currentBlock == ObjHandler.energyCollector) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "4 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "10000 EMC");
 			}
 
-			if (currentBlock == ObjHandler.collectorMK2)
-			{
+			if (currentBlock == ObjHandler.collectorMK2) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "12 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "30000 EMC");
 			}
 
-			if (currentBlock == ObjHandler.collectorMK3)
-			{
+			if (currentBlock == ObjHandler.collectorMK3) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Generation Rate: " + EnumChatFormatting.BLUE + "40 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "60000 EMC");
 			}
@@ -137,43 +109,34 @@ public class ToolTipEvent
 			/**
 			 * Relay ToolTips
 			 */
-			if (currentBlock == ObjHandler.relay)
-			{
+			if (currentBlock == ObjHandler.relay) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "64 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "100000 EMC");
 			}
 
-			if (currentBlock == ObjHandler.relayMK2)
-			{
+			if (currentBlock == ObjHandler.relayMK2) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "192 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "1000000 EMC");
 			}
 
-			if (currentBlock == ObjHandler.relayMK3)
-			{
+			if (currentBlock == ObjHandler.relayMK3) {
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Output Rate: " + EnumChatFormatting.BLUE + "640 EMC/s");
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + "Max Storage: " + EnumChatFormatting.BLUE + "10000000 EMC");
 			}
 		}
 
-		if (current.hasTagCompound())
-		{
-			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
-			{
+		if (current.hasTagCompound()) {
+			if (current.stackTagCompound.getBoolean("ProjectEBlock")) {
 				event.toolTip.add(EnumChatFormatting.GREEN + "Wrenched block!");
-				
-				if (current.stackTagCompound.getDouble("EMC") > 0)
-				{
+
+				if (current.stackTagCompound.getDouble("EMC") > 0) {
 					event.toolTip.add(EnumChatFormatting.YELLOW + "Stored EMC: " + EnumChatFormatting.WHITE + String.format("%,d", (int) current.stackTagCompound.getDouble("EMC")));
 				}
 			}
-			
-			if (current.stackTagCompound.hasKey("StoredEMC"))
-			{
+
+			if (current.stackTagCompound.hasKey("StoredEMC")) {
 				event.toolTip.add(EnumChatFormatting.YELLOW + "Stored EMC: " + EnumChatFormatting.WHITE + String.format("%,d", (int) current.stackTagCompound.getDouble("StoredEMC")));
-			}
-			else if (current.stackTagCompound.hasKey("StoredXP"))
-			{
+			} else if (current.stackTagCompound.hasKey("StoredXP")) {
 				event.toolTip.add(EnumChatFormatting.DARK_GREEN + "Stored XP: " + EnumChatFormatting.GREEN + String.format("%,d", current.stackTagCompound.getInteger("StoredXP")));
 			}
 		}

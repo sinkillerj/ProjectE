@@ -7,23 +7,19 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class NBTWhitelist
-{
+public final class NBTWhitelist {
 	private static final List<SimpleStack> LIST = new ArrayList<SimpleStack>();
 
-	public static boolean register(ItemStack stack)
-	{
+	public static boolean register(ItemStack stack) {
 		SimpleStack s = new SimpleStack(stack);
 
-		if (!s.isValid())
-		{
+		if (!s.isValid()) {
 			return false;
 		}
 
 		s.damage = OreDictionary.WILDCARD_VALUE;
 
-		if (!LIST.contains(s))
-		{
+		if (!LIST.contains(s)) {
 			LIST.add(s);
 			return true;
 		}
@@ -31,12 +27,10 @@ public final class NBTWhitelist
 		return false;
 	}
 
-	public static boolean shouldDupeWithNBT(ItemStack stack)
-	{
+	public static boolean shouldDupeWithNBT(ItemStack stack) {
 		SimpleStack s = new SimpleStack(stack);
 
-		if (!s.isValid())
-		{
+		if (!s.isValid()) {
 			return false;
 		}
 

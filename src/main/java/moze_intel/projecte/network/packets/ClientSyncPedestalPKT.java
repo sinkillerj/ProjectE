@@ -6,22 +6,20 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSyncPedestalPKT, IMessage>
-{
+public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSyncPedestalPKT, IMessage> {
 
 	public int x, y, z;
 	public boolean isActive;
 	public ItemStack itemStack;
 
-	public ClientSyncPedestalPKT() {}
+	public ClientSyncPedestalPKT() {
+	}
 
-	public ClientSyncPedestalPKT(DMPedestalTile tile)
-	{
+	public ClientSyncPedestalPKT(DMPedestalTile tile) {
 		x = tile.xCoord;
 		y = tile.yCoord;
 		z = tile.zCoord;
@@ -30,8 +28,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
-	{
+	public void fromBytes(ByteBuf buf) {
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -40,8 +37,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
-	{
+	public void toBytes(ByteBuf buf) {
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);
@@ -50,12 +46,10 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncPedestalPKT message, MessageContext ctx)
-	{
+	public IMessage onMessage(ClientSyncPedestalPKT message, MessageContext ctx) {
 		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
 
-		if (te instanceof DMPedestalTile)
-		{
+		if (te instanceof DMPedestalTile) {
 			DMPedestalTile pedestal = ((DMPedestalTile) te);
 			pedestal.setActive(message.isActive);
 			pedestal.setInventorySlotContents(0, message.itemStack);

@@ -9,69 +9,57 @@ import net.minecraft.world.World;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class EntityHomingArrow extends EntityArrow
-{
+public class EntityHomingArrow extends EntityArrow {
 	EntityLiving target;
 	World world;
 
-	private void init(World world)
-	{
-		this.world = world;
-	}
-
-	public EntityHomingArrow(World world)
-	{
+	public EntityHomingArrow(World world) {
 		super(world);
 		init(world);
 	}
 
-	public EntityHomingArrow(World world, EntityLivingBase par2, float par3) 
-	{
+	public EntityHomingArrow(World world, EntityLivingBase par2, float par3) {
 		super(world, par2, par3);
 		init(world);
 	}
-	
+
+	private void init(World world) {
+		this.world = world;
+	}
+
 	@Override
-	public void onUpdate()
-	{
+	public void onUpdate() {
 		//TODO Create proper custom arrow. This one is duplicating because of the super call for onUpdate();
 		super.onUpdate();
 
 		AxisAlignedBB box = this.boundingBox;
-		
-		if (target == null && !isInGround())
-		{
+
+		if (target == null && !isInGround()) {
 			AxisAlignedBB bBox = box.expand(8, 8, 8);
 			List<EntityLiving> list = this.worldObj.getEntitiesWithinAABB(EntityLiving.class, bBox);
 
 			double distance = 100000;
 
-			for (EntityLiving entity : list)
-			{
+			for (EntityLiving entity : list) {
 				double toIt = distanceTo(entity);
 
-				if (distance > toIt)
-				{
+				if (distance > toIt) {
 					distance = toIt;
 					target = entity;
 				}
 			}
-			
-			if (target == null)
-			{
+
+			if (target == null) {
 				return;
 			}
 
 			double d5 = target.posX - this.posX;
 			double d6 = target.boundingBox.minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
-			
+
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
-		}
-		else if (!isInGround())
-		{
-			if (target.getHealth() == 0) 
-			{
+		} else if (!isInGround()) {
+			if (target.getHealth() == 0) {
 				target = null;
 				return;
 			}
@@ -81,19 +69,18 @@ public class EntityHomingArrow extends EntityArrow
 			double d5 = target.posX - this.posX;
 			double d6 = target.boundingBox.minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
-			
+
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
 		}
 	}
 
-	private double distanceTo(EntityLiving entity)
-	{
-		double [] ds = new double []
-		{
-			this.posX - entity.posX,
-			this.posY - entity.posY,
-			this.posZ - entity.posZ
-		};
+	private double distanceTo(EntityLiving entity) {
+		double[] ds = new double[]
+				{
+						this.posX - entity.posX,
+						this.posY - entity.posY,
+						this.posZ - entity.posZ
+				};
 
 		double d = 0;
 
@@ -102,22 +89,18 @@ public class EntityHomingArrow extends EntityArrow
 
 		return Math.sqrt(d);
 	}
-	
-	private boolean isInGround()
-	{
+
+	private boolean isInGround() {
 		boolean result = false;
 		Field field = EntityArrow.class.getDeclaredFields()[5];
 		field.setAccessible(true);
 
-		try 
-		{
+		try {
 			result = field.getBoolean(this);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 }

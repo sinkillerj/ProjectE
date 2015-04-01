@@ -11,65 +11,52 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import net.minecraft.inventory.Container;
 
-public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
-{
+public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> {
 	private String search;
 
-	public SearchUpdatePKT() {}
+	public SearchUpdatePKT() {
+	}
 
-	public SearchUpdatePKT(String search) 
-	{
+	public SearchUpdatePKT(String search) {
 		this.search = search;
 	}
 
 	@Override
-	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) 
-	{
+	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) {
 		Container cont = ctx.getServerHandler().playerEntity.openContainer;
-		
-		if (cont instanceof TransmuteContainer) 
-		{
+
+		if (cont instanceof TransmuteContainer) {
 			TransmuteTile tile = ((TransmuteContainer) cont).tile;
-			
-			if (pkt.search != null)
-			{
+
+			if (pkt.search != null) {
 				tile.filter = pkt.search;
-			}
-			else
-			{
+			} else {
 				tile.filter = "";
 			}
-			
+
 			tile.updateOutputs();
-		}
-		else if (cont instanceof TransmuteTabletContainer)
-		{
+		} else if (cont instanceof TransmuteTabletContainer) {
 			TransmuteTabletInventory inv = ((TransmuteTabletContainer) cont).table;
-			
-			if (pkt.search != null)
-			{
+
+			if (pkt.search != null) {
 				inv.filter = pkt.search;
-			}
-			else
-			{
+			} else {
 				inv.filter = "";
 			}
-			
+
 			inv.updateOutputs();
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) 
-	{
+	public void fromBytes(ByteBuf buf) {
 		search = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
-	{
+	public void toBytes(ByteBuf buf) {
 		ByteBufUtils.writeUTF8String(buf, search);
 	}
 }

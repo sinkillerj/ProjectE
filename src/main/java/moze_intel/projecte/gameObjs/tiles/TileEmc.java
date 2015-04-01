@@ -8,117 +8,95 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileEmc extends TileEntity implements ITileEmc
-{
-	private double emc;
+public abstract class TileEmc extends TileEntity implements ITileEmc {
 	private final int maxAmount;
-	
-	public TileEmc()
-	{
+	private double emc;
+
+	public TileEmc() {
 		maxAmount = Constants.TILE_MAX_EMC;
 	}
-	
-	public TileEmc(int maxAmount)
-	{
+
+	public TileEmc(int maxAmount) {
 		this.maxAmount = maxAmount;
 	}
-	
+
 	@Override
-	public void setEmc(double value) 
-	{
+	public void setEmc(double value) {
 		this.emc = value <= maxAmount ? value : maxAmount;
 	}
-	
+
 	@Override
-	public void addEmc(double amount)
-	{
+	public void addEmc(double amount) {
 		emc += amount;
-		
-		if (emc > maxAmount)
-		{
+
+		if (emc > maxAmount) {
 			emc = maxAmount;
-		}
-		else if (emc < 0)
-		{
+		} else if (emc < 0) {
 			emc = 0;
 		}
 	}
-	
-	public void addEmcWithPKT(double amount)
-	{
+
+	public void addEmcWithPKT(double amount) {
 		addEmc(amount);
-		
+
 		sendUpdatePKT();
 	}
-	
-	public void addEmc(ItemStack stack)
-	{
+
+	public void addEmc(ItemStack stack) {
 		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
 	}
-	
+
 	@Override
-	public void removeEmc(double amount)
-	{
+	public void removeEmc(double amount) {
 		emc -= amount;
-		
-		if (emc < 0)
-		{
+
+		if (emc < 0) {
 			emc = 0;
 		}
 	}
-	
-	public void removeEmcWithPKT(double amount)
-	{
+
+	public void removeEmcWithPKT(double amount) {
 		removeEmc(amount);
-		
+
 		sendUpdatePKT();
 	}
-	
-	public void removeItemRelativeEmc(ItemStack stack)
-	{
+
+	public void removeItemRelativeEmc(ItemStack stack) {
 		removeEmc(Utils.getEmcValue(stack));
 	}
-	
-	public void removeItemRelativeEmcWithPKT(ItemStack stack)
-	{
+
+	public void removeItemRelativeEmcWithPKT(ItemStack stack) {
 		removeItemRelativeEmc(stack);
-		
+
 		sendUpdatePKT();
 	}
-	
+
 	@Override
-	public double getStoredEmc()
-	{
+	public double getStoredEmc() {
 		return emc;
 	}
-	
-	public int getMaxEmc()
-	{
+
+	public int getMaxEmc() {
 		return maxAmount;
 	}
-	
+
 	@Override
-	public boolean hasMaxedEmc()
-	{
+	public boolean hasMaxedEmc() {
 		return emc >= maxAmount;
 	}
-	
-	public void setEmcValue(double value)
-	{
+
+	public void setEmcValue(double value) {
 		emc = value;
 	}
-	
-	public void setEmcValueWithPKT(double value)
-	{
+
+	public void setEmcValueWithPKT(double value) {
 		setEmcValue(value);
-		
+
 		sendUpdatePKT();
 	}
-	
-	public void sendUpdatePKT()
-	{
-		if (this.worldObj != null && !this.worldObj.isRemote)
-		{
+
+	public void sendUpdatePKT() {
+		if (this.worldObj != null && !this.worldObj.isRemote) {
 			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
 		}
 	}

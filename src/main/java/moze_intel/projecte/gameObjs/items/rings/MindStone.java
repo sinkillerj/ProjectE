@@ -5,21 +5,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class MindStone extends RingToggle 
-{
+public class MindStone extends RingToggle {
 	private final int TRANSFER_RATE = 50;
 
-	public MindStone() 
-	{
+	public MindStone() {
 		super("mind_stone");
 		this.setNoRepair();
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (world.isRemote || par4 > 8 || !(entity instanceof EntityPlayer))
-		{
+	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+		if (world.isRemote || par4 > 8 || !(entity instanceof EntityPlayer)) {
 			return;
 		}
 
@@ -27,148 +23,121 @@ public class MindStone extends RingToggle
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (stack.getItemDamage() != 0) 
-		{
-			if (!canStore(stack))
-			{
+		if (stack.getItemDamage() != 0) {
+			if (!canStore(stack)) {
 				this.changeMode(player, stack);
 				return;
 			}
-			
-			if (getXP(player) > 0)
-			{
+
+			if (getXP(player) > 0) {
 				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
 				addStoredXP(stack, toAdd);
 				removeXP(player, TRANSFER_RATE);
 			}
 		}
 	}
-	
+
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
-	{
-		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
-		{
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
+		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
-			
-			if (toAdd > 0)
-			{
+
+			if (toAdd > 0) {
 				addXP(player, toAdd);
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	private void removeXP(EntityPlayer player, int amount)
-	{
+
+	private void removeXP(EntityPlayer player, int amount) {
 		int experiencetotal = getXP(player) - amount;
-		
-		if (experiencetotal < 0)
-		{
+
+		if (experiencetotal < 0) {
 			player.experienceTotal = 0;
 			player.experienceLevel = 0;
 			player.experience = 0;
-		}
-		else
-		{
+		} else {
 			player.experienceTotal = experiencetotal;
 			player.experienceLevel = getLvlForXP(experiencetotal);
-			player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+			player.experience = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
 		}
 	}
 
-	private void addXP(EntityPlayer player, int amount)
-	{
+	private void addXP(EntityPlayer player, int amount) {
 		int experiencetotal = getXP(player) + amount;
 		player.experienceTotal = experiencetotal;
 		player.experienceLevel = getLvlForXP(experiencetotal);
-		player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+		player.experience = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
 	}
 
-	private int getXP(EntityPlayer player)
-	{
-		return (int)(getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
+	private int getXP(EntityPlayer player) {
+		return (int) (getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
 	}
 
 	// Math referenced from the MC wiki
-	private int getXPForLvl(int level) 
-	{
-		if (level < 0) 
-		{
+	private int getXPForLvl(int level) {
+		if (level < 0) {
 			return Integer.MAX_VALUE;
 		}
 
-		if (level <= 15) 
-		{
+		if (level <= 15) {
 			return level * 17;
 		}
 
-		if (level <= 30) 
-		{
+		if (level <= 30) {
 			return (int) (((level * level) * 1.5D) - (29.5D * level) + 360.0D);
 		}
 
 		return (int) (((level * level) * 3.5D) - (151.5D * level) + 2220.0D);
 	}
 
-	private int getLvlForXP(int totalXP)
-	{
+	private int getLvlForXP(int totalXP) {
 		int result = 0;
 
-		while (getXPForLvl(result) <= totalXP) 
-		{
+		while (getXPForLvl(result) <= totalXP) {
 			result++;
 		}
 
 		return --result;
 	}
-	
-	private int getStoredXP(ItemStack stack)
-	{
+
+	private int getStoredXP(ItemStack stack) {
 		return stack.stackTagCompound.getInteger("StoredXP");
 	}
-	
-	private boolean canStore(ItemStack stack)
-	{
+
+	private boolean canStore(ItemStack stack) {
 		return getStoredXP(stack) <= Integer.MAX_VALUE;
 	}
 
-	private void setStoredXP(ItemStack stack, int XP) 
-	{
+	private void setStoredXP(ItemStack stack, int XP) {
 		stack.stackTagCompound.setInteger("StoredXP", XP);
 	}
 
-	private void addStoredXP(ItemStack stack, int XP) 
-	{
+	private void addStoredXP(ItemStack stack, int XP) {
 		long result = getStoredXP(stack) + XP;
-		
-		if (result > Integer.MAX_VALUE)
-		{
+
+		if (result > Integer.MAX_VALUE) {
 			result = Integer.MAX_VALUE;
 		}
-		
+
 		setStoredXP(stack, (int) result);
 	}
 
-	private int removeStoredXP(ItemStack stack, int XP) 
-	{
+	private int removeStoredXP(ItemStack stack, int XP) {
 		int currentXP = getStoredXP(stack);
 		int result = 0;
 		int returnResult = 0;
-		
-		if (currentXP < XP)
-		{
+
+		if (currentXP < XP) {
 			result = 0;
 			returnResult = currentXP;
-		}
-		else
-		{
+		} else {
 			result = currentXP - XP;
 			returnResult = XP;
 		}
-		
+
 		setStoredXP(stack, result);
 		return returnResult;
 	}

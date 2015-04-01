@@ -5,8 +5,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
-public final class ProjectEConfig 
-{
+public final class ProjectEConfig {
 	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
 	public static boolean enableDebugLog;
@@ -51,12 +50,10 @@ public final class ProjectEConfig
 	public static float timePedMobSlowness;
 	public static boolean interdictionMode;
 
-	public static void init(File configFile)
-	{
+	public static void init(File configFile) {
 		Configuration config = new Configuration(configFile);
-		
-		try
-		{
+
+		try {
 			config.load();
 
 			enableDebugLog = config.getBoolean("debugLogging", "misc", false, "Enable a more verbose debug logging");
@@ -124,16 +121,11 @@ public final class ProjectEConfig
 			interdictionMode = config.getBoolean("interdictionMode", "effects", true, "If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.");
 
 			PELogger.logInfo("Loaded configuration file.");
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			PELogger.logFatal("Caught exception while loading config file!");
 			e.printStackTrace();
-		}
-		finally
-		{
-			if (config.hasChanged())
-			{
+		} finally {
+			if (config.hasChanged()) {
 				config.save();
 			}
 		}

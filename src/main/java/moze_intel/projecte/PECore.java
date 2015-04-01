@@ -20,8 +20,8 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.ThreadCheckUUID;
+import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
@@ -36,32 +36,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
-public class PECore
-{
+public class PECore {
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
-
+	public static final List<String> uuids = new ArrayList();
 	public static File CONFIG_DIR;
-
 	@Instance(MODID)
 	public static PECore instance;
-	
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
 
-	public static final List<String> uuids = new ArrayList();
-	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 		CONFIG_DIR = new File(event.getModConfigurationDirectory(), "ProjectE");
-		
-		if (!CONFIG_DIR.exists())
-		{
+
+		if (!CONFIG_DIR.exists()) {
 			CONFIG_DIR.mkdirs();
 		}
-		
+
 		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
 		CustomEMCParser.init();
@@ -69,7 +62,7 @@ public class PECore
 		NBTWhitelistParser.init();
 
 		PacketHandler.register();
-		
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		PlayerEvents pe = new PlayerEvents();
@@ -78,34 +71,31 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
-		
+
 		proxy.registerClientOnlyEvents();
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
 	}
-	
+
 	@EventHandler
-	public void load(FMLInitializationEvent event)
-	{
+	public void load(FMLInitializationEvent event) {
 		proxy.registerKeyBinds();
 		proxy.registerRenderers();
-		
+
 		Utils.init();
 		AchievementHandler.init();
 	}
-	
+
 	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+	public void postInit(FMLPostInitializationEvent event) {
 		ObjHandler.registerPhiloStoneSmelting();
 
 		NBTWhitelistParser.readUserData();
 	}
-	
+
 	@Mod.EventHandler
-	public void serverStarting(FMLServerStartingEvent event)
-	{
+	public void serverStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new ChangelogCMD());
 		event.registerServerCommand(new ReloadEmcCMD());
 		event.registerServerCommand(new SetEmcCMD());
@@ -113,63 +103,56 @@ public class PECore
 		event.registerServerCommand(new ResetEmcCMD());
 		event.registerServerCommand(new ClearKnowledgeCMD());
 
-		if (!ThreadCheckUpdate.hasRunServer())
-		{
+		if (!ThreadCheckUpdate.hasRunServer()) {
 			new ThreadCheckUpdate(true).start();
 		}
 
-		if (!ThreadCheckUUID.hasRunServer())
-		{
+		if (!ThreadCheckUUID.hasRunServer()) {
 			new ThreadCheckUUID(true).start();
 		}
-		
+
 		CustomEMCParser.readUserData();
 
 		PELogger.logInfo("Starting server-side EMC mapping.");
-		
+
 		EMCMapper.map();
-		
+
 		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
-		
+
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
-		
-		if (!dir.exists())
-		{
-			dir.mkdirs(); 
+
+		if (!dir.exists()) {
+			dir.mkdirs();
 		}
-		
+
 		IOHandler.init(new File(dir, "knowledge.dat"), new File(dir, "bagdata.dat"));
 	}
 
 	@Mod.EventHandler
-	public void serverStopping (FMLServerStoppingEvent event)
-	{
+	public void serverStopping(FMLServerStoppingEvent event) {
 		IOHandler.saveData();
 		PELogger.logInfo("Saved transmutation and alchemical bag data.");
 	}
-	
+
 	@Mod.EventHandler
-	public void serverQuit(FMLServerStoppedEvent event)
-	{
+	public void serverQuit(FMLServerStoppedEvent event) {
 		TileEntityHandler.clearAll();
 		PELogger.logDebug("Cleared tile entity maps.");
 
 		Transmutation.clear();
 		AlchemicalBags.clear();
 		PELogger.logDebug("Cleared player data.");
-		
+
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
-		
+
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
 	}
-	
+
 	@Mod.EventHandler
-	public void onIMCMessage(FMLInterModComms.IMCEvent event)
-	{
-		for (IMCMessage msg : event.getMessages())
-		{
+	public void onIMCMessage(FMLInterModComms.IMCEvent event) {
+		for (IMCMessage msg : event.getMessages()) {
 			IMCHandler.handleIMC(msg);
 		}
 	}
@@ -186,7 +169,7 @@ public class PECore
 				} catch (Throwable t) {
 					// Yeah I know, silently skipping errors isn't good, but this really shouldn't fail, just adding a safety check ^_^
 				}
-        		}
+			}
 		}
 	}
 }

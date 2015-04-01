@@ -7,47 +7,35 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemMatterBlock extends ItemBlock
-{
-	public ItemMatterBlock(Block block) 
-	{
+public class ItemMatterBlock extends ItemBlock {
+	public ItemMatterBlock(Block block) {
 		super(block);
 		this.setMaxDamage(0);
 		this.hasSubtypes = true;
 	}
-	
+
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
-	{
-		if (stack.getItemDamage() == 0)
-		{
+	public String getUnlocalizedName(ItemStack stack) {
+		if (stack.getItemDamage() == 0) {
 			return "tile.pe_dm_block";
-		}
-		else
-		{
+		} else {
 			return "tile.pe_rm_block";
 		}
 	}
-	
+
 	@Override
-	public int getMetadata(int meta)
-	{
+	public int getMetadata(int meta) {
 		return meta;
 	}
-	
+
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
 		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			if (stack.getItemDamage() == 0)
-			{
+
+		if (!world.isRemote) {
+			if (stack.getItemDamage() == 0) {
 				player.addStat(AchievementHandler.DM_BLOCK, 1);
-			}
-			else
-			{
+			} else {
 				player.addStat(AchievementHandler.RM_BLOCK, 1);
 			}
 		}

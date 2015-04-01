@@ -19,6 +19,34 @@ import java.util.Map;
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private IMappingCollector<NormalizedSimpleStack, Long> mapper;
 
+	private static String handleFluidName(Fluid fluid) {
+		String name = fluid.getName();
+
+		if (name.endsWith(".molten")) {
+			name = name.substring(0, name.indexOf(".molten"));
+		} else if (name.endsWith(".liquid")) {
+			name = name.substring(0, name.indexOf(".liquid"));
+		}
+
+		return name;
+	}
+
+	private static List<ItemStack> getODEntriesForFluid(String name) {
+		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+
+		List<ItemStack> list = Utils.getODItems("ingot" + name);
+
+		if (list.isEmpty()) {
+			list = Utils.getODItems("dust" + name);
+
+			if (list.isEmpty()) {
+				list = Utils.getODItems("gem" + name);
+			}
+		}
+
+		return list;
+	}
+
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
@@ -49,8 +77,8 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(data.filledContainer), Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(data.emptyContainer), NormalizedSimpleStack.getNormalizedSimpleStackFor(fluid)));
 
 			List<ItemStack> odItems = getODEntriesForFluid(handleFluidName(data.fluid.getFluid()));
-			for (ItemStack itemStack:odItems) {
-				mapper.addConversion(1,NormalizedSimpleStack.getNormalizedSimpleStackFor(fluid), Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack)));
+			for (ItemStack itemStack : odItems) {
+				mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(fluid), Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack)));
 			}
 		}
 	}
@@ -68,40 +96,5 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public boolean isAvailable() {
 		return true;
-	}
-
-	private static String handleFluidName(Fluid fluid)
-	{
-		String name = fluid.getName();
-
-		if (name.endsWith(".molten"))
-		{
-			name = name.substring(0, name.indexOf(".molten"));
-		}
-		else if (name.endsWith(".liquid"))
-		{
-			name = name.substring(0, name.indexOf(".liquid"));
-		}
-
-		return name;
-	}
-
-	private static List<ItemStack> getODEntriesForFluid(String name)
-	{
-		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-
-		List<ItemStack> list = Utils.getODItems("ingot" + name);
-
-		if (list.isEmpty())
-		{
-			list = Utils.getODItems("dust" + name);
-
-			if (list.isEmpty())
-			{
-				list = Utils.getODItems("gem" + name);
-			}
-		}
-
-		return list;
 	}
 }

@@ -5,11 +5,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-public abstract class ProjectEBaseCMD extends CommandBase
-{
+public abstract class ProjectEBaseCMD extends CommandBase {
 	@Override
 	public abstract String getCommandName();
-	
+
 	@Override
 	public abstract int getRequiredPermissionLevel();
 
@@ -18,32 +17,25 @@ public abstract class ProjectEBaseCMD extends CommandBase
 
 	@Override
 	public abstract void processCommand(ICommandSender sender, String[] params);
-	
-	protected void sendSuccess(ICommandSender sender, String message)
-	{
+
+	protected void sendSuccess(ICommandSender sender, String message) {
 		sendMessage(sender, EnumChatFormatting.GREEN + message);
 	}
-	
-	protected void sendError(ICommandSender sender, String message)
-	{
+
+	protected void sendError(ICommandSender sender, String message) {
 		sendMessage(sender, EnumChatFormatting.RED + message);
 	}
-	
-	protected void sendMessage(ICommandSender sender, String message)
-	{
+
+	protected void sendMessage(ICommandSender sender, String message) {
 		sender.addChatMessage(new ChatComponentText(message));
 	}
 
-	protected int parseInteger(String string)
-	{
+	protected int parseInteger(String string) {
 		int value;
 
-		try
-		{
+		try {
 			value = Integer.parseInt(string);
-		}
-		catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			return -1;
 		}
 

@@ -19,37 +19,30 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider
-{
-	public CondenserMK2()
-	{
+public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider {
+	public CondenserMK2() {
 		super();
 		this.setBlockName("pe_condenser_mk2");
 	}
 
 	@Override
-	public Item getItemDropped(int par1, Random random, int par2)
-	{
+	public Item getItemDropped(int par1, Random random, int par2) {
 		return Item.getItemFromBlock(ObjHandler.condenserMk2);
 	}
 
 	@Override
-	public int getRenderType()
-	{
+	public int getRenderType() {
 		return Constants.CONDENSER_MK2_RENDER_ID;
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2)
-	{
+	public TileEntity createNewTileEntity(World var1, int var2) {
 		return new CondenserMK2Tile();
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
-		if (!world.isRemote)
-		{
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+		if (!world.isRemote) {
 			player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
 		}
 
@@ -57,21 +50,17 @@ public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
-	{
+	public void breakBlock(World world, int x, int y, int z, Block block, int noclue) {
 		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
 
-		if (tile == null)
-		{
+		if (tile == null) {
 			return;
 		}
 
-		for (int i = 1; i < tile.getSizeInventory(); i++)
-		{
+		for (int i = 1; i < tile.getSizeInventory(); i++) {
 			ItemStack stack = tile.getStackInSlot(i);
 
-			if (stack == null)
-			{
+			if (stack == null) {
 				continue;
 			}
 
@@ -84,8 +73,7 @@ public class CondenserMK2 extends AlchemicalChest implements ITileEntityProvider
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
+	public void registerBlockIcons(IIconRegister register) {
 		this.blockIcon = register.registerIcon("obsidian");
 	}
 }

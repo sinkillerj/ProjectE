@@ -14,51 +14,43 @@ import net.minecraft.util.MathHelper;
 
 import java.util.List;
 
-public class FuelBlock extends Block 
-{
+public class FuelBlock extends Block {
 	@SideOnly(Side.CLIENT)
 	private IIcon icons[];
-	
-	public FuelBlock() 
-	{
+
+	public FuelBlock() {
 		super(Material.rock);
 		this.setBlockName("pe_fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
 	}
-	
+
 	@Override
-	public int damageDropped(int meta)
-	{
+	public int damageDropped(int meta) {
 		return meta;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			list.add(new ItemStack(item , 1, i));
+	public void getSubBlocks(Item item, CreativeTabs cTab, List list) {
+		for (int i = 0; i < 3; i++) {
+			list.add(new ItemStack(item, 1, i));
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
+	public void registerBlockIcons(IIconRegister register) {
 		icons = new IIcon[3];
-		
-		for (int i = 0; i < 3; i++)
-		{
-			icons[i] = register.registerIcon("projecte:fuels_"+i);
+
+		for (int i = 0; i < 3; i++) {
+			icons[i] = register.registerIcon("projecte:fuels_" + i);
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
+	public IIcon getIcon(int side, int meta) {
 		return icons[MathHelper.clamp_int(meta, 0, 2)];
 	}
 }

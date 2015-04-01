@@ -3,20 +3,18 @@ package moze_intel.projecte.utils;
 import net.minecraft.util.AxisAlignedBB;
 
 /**
- * Utility class similar to AABB, but doesn't register in the AABBpool 
+ * Utility class similar to AABB, but doesn't register in the AABBpool
  */
 
-public class CoordinateBox
-{
+public class CoordinateBox {
 	public double minX;
 	public double minY;
 	public double minZ;
 	public double maxX;
 	public double maxY;
 	public double maxZ;
-	
-	public CoordinateBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
-	{
+
+	public CoordinateBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
@@ -25,8 +23,7 @@ public class CoordinateBox
 		this.maxZ = maxZ;
 	}
 
-	public CoordinateBox(AxisAlignedBB box)
-	{
+	public CoordinateBox(AxisAlignedBB box) {
 		minX = box.minX;
 		minY = box.minY;
 		minZ = box.minZ;
@@ -34,9 +31,12 @@ public class CoordinateBox
 		maxY = box.maxY;
 		maxZ = box.maxZ;
 	}
-	
-	public CoordinateBox expand(double x, double y, double z)
-	{
+
+	public static CoordinateBox fromAABB(AxisAlignedBB aabb) {
+		return new CoordinateBox(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
+	}
+
+	public CoordinateBox expand(double x, double y, double z) {
 		this.minX -= x;
 		this.minY -= y;
 		this.minZ -= z;
@@ -46,9 +46,8 @@ public class CoordinateBox
 
 		return this;
 	}
-	
-	public CoordinateBox offset(double x, double y, double z)
-	{
+
+	public CoordinateBox offset(double x, double y, double z) {
 		this.minX += x;
 		this.maxX += x;
 		this.maxY += y;
@@ -58,15 +57,9 @@ public class CoordinateBox
 
 		return this;
 	}
-	
-	@Override
-	public String toString()
-	{
-		return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
-	}
 
-	public static CoordinateBox fromAABB(AxisAlignedBB aabb)
-	{
-		return new CoordinateBox(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
+	@Override
+	public String toString() {
+		return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
 	}
 }

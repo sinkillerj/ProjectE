@@ -1,11 +1,9 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableConsume;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableInput;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableLock;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableOutput;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,12 +12,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class TransmuteContainer extends Container
-{
+public class TransmuteContainer extends Container {
 	public TransmuteTile tile;
 
-	public TransmuteContainer(InventoryPlayer invPlayer, TransmuteTile tile)
-	{
+	public TransmuteContainer(InventoryPlayer invPlayer, TransmuteTile tile) {
 		this.tile = tile;
 
 		//Tablet Inventory
@@ -51,8 +47,8 @@ public class TransmuteContainer extends Container
 		this.addSlotToContainer(new SlotTableOutput(this.tile, 25, 158, 69));
 
 		//Player Inventory
-		for(int i = 0; i < 3; i++)
-			for(int j = 0; j < 9; j++)
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 117 + i * 18));
 
 		//Player Hotbar
@@ -63,79 +59,65 @@ public class TransmuteContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) 
-	{
+	public boolean canInteractWith(EntityPlayer var1) {
 		return true;
 	}
-	
+
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
-	{
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
-		
-		if (slot == null || !slot.getHasStack()) 
-		{
+
+		if (slot == null || !slot.getHasStack()) {
 			return null;
 		}
-		
+
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
-		
-		if (slotIndex <= 7)
-		{
+
+		if (slotIndex <= 7) {
 			return null;
-		}
-		else if (slotIndex >= 10 && slotIndex <= 25)
-		{	
+		} else if (slotIndex >= 10 && slotIndex <= 25) {
 			int emc = Utils.getEmcValue(newStack);
-			
+
 			int stackSize = 0;
-			
-			while (tile.getStoredEmc() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
-			{
+
+			while (tile.getStoredEmc() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack)) {
 				tile.removeEmc(emc);
 				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
 				stackSize++;
 			}
-			
+
 			tile.updateOutputs();
-		}
-		else if (slotIndex >= 26)
-		{
+		} else if (slotIndex >= 26) {
 			int emc = Utils.getEmcValue(stack);
-			
-			if (emc == 0)
-			{
+
+			if (emc == 0) {
 				return null;
 			}
-			
-			while(!tile.hasMaxedEmc() && stack.stackSize > 0)
-			{
+
+			while (!tile.hasMaxedEmc() && stack.stackSize > 0) {
 				tile.addEmc(emc);
 				--stack.stackSize;
 			}
-			
+
 			tile.handleKnowledge(newStack);
 
-			if (stack.stackSize == 0)
-			{
+			if (stack.stackSize == 0) {
 				slot.putStack(null);
 			}
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
+	public void onContainerClosed(EntityPlayer player) {
 		super.onContainerClosed(player);
 		tile.closeInventory();
 	}
-	
+
 	@Override
-	public boolean canDragIntoSlot(Slot slot) 
-	{
+	public boolean canDragIntoSlot(Slot slot) {
 		return false;
 	}
 }

@@ -10,6 +10,15 @@ import java.util.Map;
 
 public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappingCollector<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
+	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();
+	protected Map<T, List<Conversion>> usedIn = new HashMap<T, List<Conversion>>();
+	protected Map<T, V> fixValueBeforeInherit = new HashMap<T, V>();
+	protected Map<T, V> fixValueAfterInherit = new HashMap<T, V>();
+	protected Map<T, Integer> noDependencyConversionCount = new HashMap<T, Integer>();
+	IValueArithmetic<V> arithmetic;
+	public GraphMapper(IValueArithmetic<V> arithmetic) {
+		this.arithmetic = arithmetic;
+	}
 
 	protected static void debugFormat(String format, Object... args) {
 		if (DEBUG_GRAPHMAPPER)
@@ -18,17 +27,6 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 
 	protected static void debugPrintln(String s) {
 		debugFormat("%s", s);
-	}
-
-	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();
-	protected Map<T, List<Conversion>> usedIn = new HashMap<T, List<Conversion>>();
-	protected Map<T, V> fixValueBeforeInherit = new HashMap<T, V>();
-	protected Map<T, V> fixValueAfterInherit = new HashMap<T, V>();
-	protected Map<T, Integer> noDependencyConversionCount = new HashMap<T, Integer>();
-
-	IValueArithmetic<V> arithmetic;
-	public GraphMapper(IValueArithmetic<V> arithmetic) {
-		this.arithmetic = arithmetic;
 	}
 
 	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {

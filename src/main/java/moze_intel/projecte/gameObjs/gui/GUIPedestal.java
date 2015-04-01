@@ -9,20 +9,17 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GUIPedestal extends GuiContainer
-{
+public class GUIPedestal extends GuiContainer {
 	private ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/pedestal.png");
 
-	public GUIPedestal(InventoryPlayer inventory, DMPedestalTile tile)
-	{
+	public GUIPedestal(InventoryPlayer inventory, DMPedestalTile tile) {
 		super(new PedestalContainer(inventory, tile));
 		xSize = 175;
 		ySize = 135;
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
-	{
+	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 

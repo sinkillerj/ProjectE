@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface InventoryContainer {
-    // Set to true if the Inventory Tweaks options button should be shown for this container.
-    // (For instance, if you are replacing a vanilla container such as the player's inventory)
-    boolean showOptions() default true;
+	// Set to true if the Inventory Tweaks options button should be shown for this container.
+	// (For instance, if you are replacing a vanilla container such as the player's inventory)
+	boolean showOptions() default true;
 }

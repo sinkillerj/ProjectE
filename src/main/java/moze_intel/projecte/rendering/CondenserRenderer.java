@@ -1,5 +1,7 @@
 package moze_intel.projecte.rendering;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.client.model.ModelChest;
@@ -7,35 +9,27 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @SideOnly(Side.CLIENT)
-public class CondenserRenderer extends TileEntitySpecialRenderer
-{
+public class CondenserRenderer extends TileEntitySpecialRenderer {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser.png");
 	private final ModelChest model = new ModelChest();
-	
+
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) 
-	{
-		if (!(tile instanceof CondenserTile)) 
-		{
+	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) {
+		if (!(tile instanceof CondenserTile)) {
 			return;
 		}
-		
+
 		CondenserTile condenser = (CondenserTile) tile;
 		ForgeDirection direction = null;
-		
-		if (condenser.getWorldObj() != null)
-		{
+
+		if (condenser.getWorldObj() != null) {
 			direction = condenser.getOrientation();
 		}
-		
+
 		this.bindTexture(texture);
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -45,22 +39,14 @@ public class CondenserRenderer extends TileEntitySpecialRenderer
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 		short angle = 0;
 
-		if (direction != null)
-		{
-			if (direction == ForgeDirection.NORTH)
-			{
+		if (direction != null) {
+			if (direction == ForgeDirection.NORTH) {
 				angle = 180;
-			}
-			else if (direction == ForgeDirection.SOUTH)
-			{
+			} else if (direction == ForgeDirection.SOUTH) {
 				angle = 0;
-			}
-			else if (direction == ForgeDirection.WEST)
-			{
+			} else if (direction == ForgeDirection.WEST) {
 				angle = 90;
-			}
-			else if (direction == ForgeDirection.EAST)
-			{
+			} else if (direction == ForgeDirection.EAST) {
 				angle = -90;
 			}
 		}

@@ -7,13 +7,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -21,115 +20,93 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem
-{
+public class SWRG extends ItemPE implements IBauble, IPedestalItem {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] ringOn;
 	private int lightningCooldown;
 
-	public SWRG()
-	{
+	public SWRG() {
 		this.setUnlocalizedName("swrg");
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);
 		this.setNoRepair();
 	}
-	
+
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
-	{
-		if (world.isRemote || invSlot > 8 || !(entity instanceof EntityPlayer))
-		{
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) {
+		if (world.isRemote || invSlot > 8 || !(entity instanceof EntityPlayer)) {
 			return;
 		}
 
-		if (!stack.hasTagCompound())
-		{
+		if (!stack.hasTagCompound()) {
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
+
 		EntityPlayer player = (EntityPlayer) entity;
 		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
-		
-		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
-		{
-			if (stack.getItemDamage() > 0)
-			{
+
+		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
+			if (stack.getItemDamage() > 0) {
 				changeMode(player, stack, 0);
 			}
-			
-			if (playerMP.capabilities.allowFlying)
-			{
+
+			if (playerMP.capabilities.allowFlying) {
 				disableFlight(playerMP);
 			}
-			
+
 			return;
 		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
+
+		if (!playerMP.capabilities.allowFlying) {
 			enableFlight(playerMP);
 		}
 
-		if (playerMP.capabilities.isFlying)
-		{
-			if (!isFlyingEnabled(stack))
-			{
+		if (playerMP.capabilities.isFlying) {
+			if (!isFlyingEnabled(stack)) {
 				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
 			}
-		}
-		else
-		{
-			if (isFlyingEnabled(stack))
-			{
+		} else {
+			if (isFlyingEnabled(stack)) {
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
 		}
-		
-		if (stack.getItemDamage() > 1)
-		{
+
+		if (stack.getItemDamage() > 1) {
 			Utils.repellEntities(player);
 		}
-		
+
 		float toRemove = 0;
-		
-		if (playerMP.capabilities.isFlying)
-		{
+
+		if (playerMP.capabilities.isFlying) {
 			toRemove = 0.32F;
 		}
-		
-		if (stack.getItemDamage() == 2)
-		{
+
+		if (stack.getItemDamage() == 2) {
 			toRemove = 0.32F;
-		}
-		else if (stack.getItemDamage() == 3)
-		{
+		} else if (stack.getItemDamage() == 3) {
 			toRemove = 0.64F;
 		}
-		
+
 		removeEmc(stack, toRemove);
 	}
-	
+
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (!world.isRemote)
-		{
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (!world.isRemote) {
 			int newMode = 0;
-			
-			switch (stack.getItemDamage())
-			{
+
+			switch (stack.getItemDamage()) {
 				case 0:
 					newMode = 2;
 					break;
@@ -143,38 +120,28 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 					newMode = 1;
 					break;
 			}
-			
-			if (newMode > 1)
-			{
-				if (getEmc(stack) > 0)
-				{
+
+			if (newMode > 1) {
+				if (getEmc(stack) > 0) {
 					changeMode(player, stack, newMode);
-				}
-				else 
-				{
-					if (consumeFuel(player, stack, 64, false))
-					{
+				} else {
+					if (consumeFuel(player, stack, 64, false)) {
 						changeMode(player, stack, newMode);
 					}
 				}
-			}
-			else 
-			{
+			} else {
 				changeMode(player, stack, newMode);
 			}
 		}
 		return stack;
 	}
-	
-	public void ToggleFlight(EntityPlayer player, ItemStack ring)
-	{
-		if (getEmc(ring) == 0 && !consumeFuel(player, ring, 64, false))
-		{
+
+	public void ToggleFlight(EntityPlayer player, ItemStack ring) {
+		if (getEmc(ring) == 0 && !consumeFuel(player, ring, 64, false)) {
 			return;
 		}
-		
-		switch (ring.getItemDamage())
-		{
+
+		switch (ring.getItemDamage()) {
 			case 0:
 				changeMode(player, ring, 1);
 				break;
@@ -189,222 +156,175 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 				break;
 		}
 	}
-	
-	public void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
+
+	public void enableFlight(EntityPlayerMP playerMP) {
+		if (playerMP.capabilities.isCreativeMode) {
 			return;
 		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
+
+		if (!playerMP.capabilities.allowFlying) {
 			Utils.setPlayerFlight(playerMP, true);
 			PlayerChecks.addPlayerFlyChecks(playerMP);
 		}
 	}
-	
-	public void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
+
+	public void disableFlight(EntityPlayerMP playerMP) {
+		if (playerMP.capabilities.isCreativeMode) {
 			return;
 		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
+
+		if (playerMP.capabilities.allowFlying) {
 			Utils.setPlayerFlight(playerMP, false);
 			PlayerChecks.removePlayerFlyChecks(playerMP);
 		}
 	}
-	
-	public void enableFlightNoChecks(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
+
+	public void enableFlightNoChecks(EntityPlayerMP playerMP) {
+		if (playerMP.capabilities.isCreativeMode) {
 			return;
 		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
+
+		if (!playerMP.capabilities.allowFlying) {
 			Utils.setPlayerFlight(playerMP, true);
 		}
 	}
-	
-	public void disableFlightNoChecks(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
+
+	public void disableFlightNoChecks(EntityPlayerMP playerMP) {
+		if (playerMP.capabilities.isCreativeMode) {
 			return;
 		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
+
+		if (playerMP.capabilities.allowFlying) {
 			Utils.setPlayerFlight(playerMP, false);
 		}
 	}
-	
+
 	/**
 	 * Change the mode of SWRG. Modes:<p>
-	 * 0 = Ring Off<p>  
+	 * 0 = Ring Off<p>
 	 * 1 = Flight<p>
 	 * 2 = Shield<p>
 	 * 3 = Flight + Shield<p>
 	 */
-	public void changeMode(EntityPlayer player, ItemStack stack, int mode)
-	{
+	public void changeMode(EntityPlayer player, ItemStack stack, int mode) {
 		stack.setItemDamage(mode);
 	}
-	
-	public boolean isFlyingEnabled(ItemStack stack)
-	{
+
+	public boolean isFlyingEnabled(ItemStack stack) {
 		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
 	}
-	
-	public float getEmcToRemove(ItemStack stack)
-	{
+
+	public float getEmcToRemove(ItemStack stack) {
 		int damage = stack.getItemDamage();
-		
-		if (damage == 0)
-		{
+
+		if (damage == 0) {
 			return 0;
-		}
-		else if (damage < 3)
-		{
+		} else if (damage < 3) {
 			return 0.32F;
-		}
-		else
-		{
+		} else {
 			return 0.64F;
 		}
 	}
-	
+
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return false;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		if (dmg == 0)
-		{
+	public IIcon getIconFromDamage(int dmg) {
+		if (dmg == 0) {
 			return ringOff;
-		}
-		
-		else
-		{
+		} else {
 			return ringOn[MathHelper.clamp_int(dmg - 1, 0, 2)];
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
+	public void registerIcons(IIconRegister register) {
 		ringOff = register.registerIcon(this.getTexture("rings", "swrg_off"));
 		ringOn = new IIcon[3];
-		
-		for (int i = 0; i < 3; i++)
-		{
-			ringOn[i] = register.registerIcon(this.getTexture("rings", "swrg_on"+(i+1)));
+
+		for (int i = 0; i < 3; i++) {
+			ringOn[i] = register.registerIcon(this.getTexture("rings", "swrg_on" + (i + 1)));
 		}
 	}
-	
+
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
-	{
+	public baubles.api.BaubleType getBaubleType(ItemStack itemstack) {
 		return BaubleType.RING;
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
-	{
-		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer))
-		{
+	public void onWornTick(ItemStack stack, EntityLivingBase ent) {
+		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer)) {
 			return;
 		}
-		
-		if (!stack.hasTagCompound())
-		{
+
+		if (!stack.hasTagCompound()) {
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
+
 		EntityPlayer player = (EntityPlayer) ent;
 		EntityPlayerMP playerMP = (EntityPlayerMP) player;
-		
-		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
-		{
-			if (stack.getItemDamage() > 0)
-			{
+
+		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
+			if (stack.getItemDamage() > 0) {
 				changeMode(player, stack, 0);
 			}
-			
-			if (playerMP.capabilities.allowFlying)
-			{
+
+			if (playerMP.capabilities.allowFlying) {
 				disableFlightNoChecks(playerMP);
 			}
-			
+
 			return;
 		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
+
+		if (!playerMP.capabilities.allowFlying) {
 			enableFlightNoChecks(playerMP);
 		}
-			
-		if (playerMP.capabilities.isFlying)
-		{
-			if (!isFlyingEnabled(stack))
-			{
+
+		if (playerMP.capabilities.isFlying) {
+			if (!isFlyingEnabled(stack)) {
 				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
 			}
-		}
-		else
-		{
-			if (isFlyingEnabled(stack))
-			{
+		} else {
+			if (isFlyingEnabled(stack)) {
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
 		}
-		
-		if (stack.getItemDamage() > 1)
-		{
+
+		if (stack.getItemDamage() > 1) {
 			Utils.repellEntities(player);
 		}
-		
+
 		float toRemove = 0;
-		
-		if (playerMP.capabilities.isFlying)
-		{
+
+		if (playerMP.capabilities.isFlying) {
 			toRemove = 0.32F;
 		}
-		
-		if (stack.getItemDamage() == 2)
-		{
+
+		if (stack.getItemDamage() == 2) {
 			toRemove = 0.32F;
-		}
-		else if (stack.getItemDamage() == 3)
-		{
+		} else if (stack.getItemDamage() == 3) {
 			toRemove = 0.64F;
 		}
-		
+
 		removeEmc(stack, toRemove);
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) 
-	{
-		if (player.worldObj.isRemote || !(player instanceof EntityPlayer))
-		{
+	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+		if (player.worldObj.isRemote || !(player instanceof EntityPlayer)) {
 			return;
 		}
 
@@ -413,46 +333,36 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
-	{
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
 		return true;
 	}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
-	{
+	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
 		return true;
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
-	{
-		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
-		{
-			if (lightningCooldown <= 0)
-			{
+	public void updateInPedestal(World world, int x, int y, int z) {
+		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1) {
+			if (lightningCooldown <= 0) {
 				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
-				for (EntityLiving living : list)
-				{
+				for (EntityLiving living : list) {
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
 				lightningCooldown = ProjectEConfig.swrgPedCooldown;
-			}
-			else
-			{
+			} else {
 				lightningCooldown--;
 			}
 		}
 	}
 
 	@Override
-	public List<String> getPedestalDescription()
-	{
+	public List<String> getPedestalDescription() {
 		List<String> list = new ArrayList<String>();
-		if (ProjectEConfig.swrgPedCooldown != -1)
-		{
+		if (ProjectEConfig.swrgPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
 			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown));
 		}

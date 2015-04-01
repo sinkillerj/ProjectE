@@ -8,28 +8,23 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-public class PedestalItemRenderer implements IItemRenderer
-{
+public class PedestalItemRenderer implements IItemRenderer {
 	private final ResourceLocation texture = Constants.PEDESTAL_MODELTEX_LOCATION;
 	private final ModelPedestal model = new ModelPedestal();
 
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type)
-	{
+	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
-	{
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
 		return true;
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
-	{
-		switch (type)
-		{
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
+		switch (type) {
 			case ENTITY:
 				renderPedestal(0.0F, 1.0F, 0.0F, 0);
 				break;
@@ -47,8 +42,7 @@ public class PedestalItemRenderer implements IItemRenderer
 		}
 	}
 
-	private void renderPedestal(float x, float y, float z, int meta)
-	{
+	private void renderPedestal(float x, float y, float z, int meta) {
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(x, y, z);

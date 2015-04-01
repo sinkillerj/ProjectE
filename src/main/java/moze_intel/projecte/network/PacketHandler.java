@@ -15,13 +15,11 @@ import net.minecraft.network.Packet;
 import java.util.ArrayList;
 import java.util.Map;
 
-public final class PacketHandler
-{
+public final class PacketHandler {
 	private static final int MAX_PKT_SIZE = 256;
 	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("projecte");
-	
-	public static void register()
-	{
+
+	public static void register() {
 		HANDLER.registerMessage(ClientSyncEmcPKT.class, ClientSyncEmcPKT.class, 0, Side.CLIENT);
 		HANDLER.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
 		HANDLER.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
@@ -43,38 +41,32 @@ public final class PacketHandler
 		HANDLER.registerMessage(ClientSyncPedestalPKT.class, ClientSyncPedestalPKT.class, 18, Side.CLIENT);
 	}
 
-	public static Packet getMCPacket(IMessage message)
-	{
+	public static Packet getMCPacket(IMessage message) {
 		return HANDLER.getPacketFrom(message);
 	}
 
-	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
-	{
+	public static void sendFragmentedEmcPacket(EntityPlayerMP player) {
 		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
-		{
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet()) {
 			SimpleStack stack = entry.getKey();
 
-			if (stack == null)
-			{
+			if (stack == null) {
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			Integer[] data = new Integer[]{stack.id, stack.qnty, stack.damage, entry.getValue()};
 			list.add(data);
 
-			if (list.size() >= MAX_PKT_SIZE)
-			{
+			if (list.size() >= MAX_PKT_SIZE) {
 				PacketHandler.sendTo(new ClientSyncEmcPKT(counter, list), player);
 				list.clear();
 				counter++;
 			}
 		}
 
-		if (list.size() > 0)
-		{
+		if (list.size() > 0) {
 			PacketHandler.sendTo(new ClientSyncEmcPKT(-1, list), player);
 			list.clear();
 			counter++;
@@ -84,33 +76,28 @@ public final class PacketHandler
 		PELogger.logDebug("Total packets: " + counter);
 	}
 
-	public static void sendFragmentedEmcPacketToAll()
-	{
+	public static void sendFragmentedEmcPacketToAll() {
 		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
-		{
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet()) {
 			SimpleStack stack = entry.getKey();
 
-			if (stack == null)
-			{
+			if (stack == null) {
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			Integer[] data = new Integer[]{stack.id, stack.qnty, stack.damage, entry.getValue()};
 			list.add(data);
 
-			if (list.size() >= MAX_PKT_SIZE)
-			{
+			if (list.size() >= MAX_PKT_SIZE) {
 				PacketHandler.sendToAll(new ClientSyncEmcPKT(counter, list));
 				list.clear();
 				counter++;
 			}
 		}
 
-		if (list.size() > 0)
-		{
+		if (list.size() > 0) {
 			PacketHandler.sendToAll(new ClientSyncEmcPKT(-1, list));
 			list.clear();
 			counter++;
@@ -122,46 +109,41 @@ public final class PacketHandler
 
 	/**
 	 * Sends a packet to the server.<br>
-	 * Must be called Client side. 
+	 * Must be called Client side.
 	 */
-	public static void sendToServer(IMessage msg)
-	{
+	public static void sendToServer(IMessage msg) {
 		HANDLER.sendToServer(msg);
 	}
-	
+
 	/**
 	 * Sends a packet to all the clients.<br>
 	 * Must be called Server side.
 	 */
-	public static void sendToAll(IMessage msg)
-	{
+	public static void sendToAll(IMessage msg) {
 		HANDLER.sendToAll(msg);
 	}
-	
+
 	/**
 	 * Send a packet to all players around a specific point.<br>
-	 * Must be called Server side. 
+	 * Must be called Server side.
 	 */
-	public static void sendToAllAround(IMessage msg, TargetPoint point)
-	{
+	public static void sendToAllAround(IMessage msg, TargetPoint point) {
 		HANDLER.sendToAllAround(msg, point);
 	}
-	
+
 	/**
 	 * Send a packet to a specific player.<br>
-	 * Must be called Server side. 
+	 * Must be called Server side.
 	 */
-	public static void sendTo(IMessage msg, EntityPlayerMP player)
-	{
+	public static void sendTo(IMessage msg, EntityPlayerMP player) {
 		HANDLER.sendTo(msg, player);
 	}
-	
+
 	/**
 	 * Send a packet to all the players in the specified dimension.<br>
-	 *  Must be called Server side.
+	 * Must be called Server side.
 	 */
-	public static void sendToDimension(IMessage msg, int dimension)
-	{
+	public static void sendToDimension(IMessage msg, int dimension) {
 		HANDLER.sendToDimension(msg, dimension);
 	}
 }

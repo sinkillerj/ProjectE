@@ -13,24 +13,20 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class CondenserMK2Renderer extends TileEntitySpecialRenderer
-{
+public class CondenserMK2Renderer extends TileEntitySpecialRenderer {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser_mk2.png");
 	private final ModelChest model = new ModelChest();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8)
-	{
-		if (!(tile instanceof CondenserTile))
-		{
+	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) {
+		if (!(tile instanceof CondenserTile)) {
 			return;
 		}
 
 		CondenserTile condenser = (CondenserTile) tile;
 		ForgeDirection direction = null;
 
-		if (condenser.getWorldObj() != null)
-		{
+		if (condenser.getWorldObj() != null) {
 			direction = condenser.getOrientation();
 		}
 
@@ -43,22 +39,14 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 		short angle = 0;
 
-		if (direction != null)
-		{
-			if (direction == ForgeDirection.NORTH)
-			{
+		if (direction != null) {
+			if (direction == ForgeDirection.NORTH) {
 				angle = 180;
-			}
-			else if (direction == ForgeDirection.SOUTH)
-			{
+			} else if (direction == ForgeDirection.SOUTH) {
 				angle = 0;
-			}
-			else if (direction == ForgeDirection.WEST)
-			{
+			} else if (direction == ForgeDirection.WEST) {
 				angle = 90;
-			}
-			else if (direction == ForgeDirection.EAST)
-			{
+			} else if (direction == ForgeDirection.EAST) {
 				angle = -90;
 			}
 		}

@@ -30,7 +30,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			if (recipeOutput == null) continue;
 			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
-				if (!config.getBoolean("enable" + recipeMapper.getName(),"IRecipeImplementations", true, recipeMapper.getDescription())) continue;
+				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
+					continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
@@ -51,8 +52,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
-								ingredientMap.addIngredient(normalizedSimpleStack,1);
-								for (ItemStack stack: multiIngredient) {
+								ingredientMap.addIngredient(normalizedSimpleStack, 1);
+								for (ItemStack stack : multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
 									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
@@ -102,7 +103,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 	public static interface IRecipeMapper {
 		public String getName();
+
 		public String getDescription();
+
 		public boolean canHandle(IRecipe recipe);
 
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
@@ -111,7 +114,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public static class CraftingIngredients {
 		public Iterable<ItemStack> fixedIngredients;
 		public Iterable<Iterable<ItemStack>> multiIngredients;
-		public CraftingIngredients( Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
+
+		public CraftingIngredients(Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
 			this.fixedIngredients = fixedIngredients;
 			this.multiIngredients = multiIngredients;
 		}
@@ -171,7 +175,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof  ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
+			return recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
 		}
 
 		@Override
@@ -195,7 +199,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					if (recipeItemCollection.size() == 1) {
 						Object element = recipeItemCollection.iterator().next();
 						if (element instanceof ItemStack) {
-							fixedInputs.add((ItemStack)element);
+							fixedInputs.add((ItemStack) element);
 						} else {
 							PELogger.logWarn("Can not map recipe " + recipe + " because found " + element.toString() + " instead of ItemStack");
 							return null;
