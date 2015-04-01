@@ -228,6 +228,7 @@ pe.misc.seconds=seconds
 pe.misc.storedxp_tooltip=Stored XP:
 pe.misc.wrenched_block=Wrenched block!
 
+pe.pedestal.item_disabled=Pedestal function has been disabled!
 pe.pedestal.on_pedestal=On Pedestal:
 pe.pedestal.shortname=DM Pedestal
 pe.pedestal.tooltip1=Shift right-click to open GUI
