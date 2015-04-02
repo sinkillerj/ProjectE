@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -159,8 +160,9 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.lifePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Restores both hunger and hearts");
-			list.add(EnumChatFormatting.BLUE + "Half a heart and shank every " + Utils.tickToSecFormatted(ProjectEConfig.lifePedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.life.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.life.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
 		}
 		return list;
 	}

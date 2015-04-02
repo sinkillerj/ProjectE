@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -201,9 +202,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.zeroPedCooldown != -1) {
-			list.add(EnumChatFormatting.BLUE + "Extinguishes nearby entities");
-			list.add(EnumChatFormatting.BLUE + "Freezes surroundings");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal2"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.zero.pedestal3"), Utils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
 		}
 		return list;
 	}

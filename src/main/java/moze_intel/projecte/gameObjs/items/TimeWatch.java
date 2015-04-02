@@ -17,12 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,7 +50,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			if (!ProjectEConfig.enableTimeWatch)
 			{
-				player.addChatComponentMessage(new ChatComponentText("Item disabled by server admin."));
+				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("pe.timewatch.disabled")));
 				return stack;
 			}
 
@@ -67,7 +63,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new ChatComponentText("Change time control mode to: " + getTimeDescription(stack)));
+			player.addChatComponentMessage(new ChatComponentText(
+					String.format(StatCollector.translateToLocal("pe.timewatch.mode_switch"), getTimeDescription(stack))));
 		}
 
 		return stack;
@@ -235,17 +232,22 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		byte mode = getTimeBoost(stack);
 
+		String s;
 		switch (mode)
 		{
 			case 0:
-				return "Off";
+				s = "pe.timewatch.off";
+				break;
 			case 1:
-				return "Fast-Forward";
+				s= "pe.timewatch.ff";
+				break;
 			case 2:
-				return "Rewind";
+				s = "pe.timewatch.rw";
+				break;
 			default:
-				return "ERROR_INVALID_MODE";
+				s = "ERROR_INVALID_MODE";
 		}
+		return StatCollector.translateToLocal(s);
 	}
 
 	private byte getTimeBoost(ItemStack stack)
@@ -318,12 +320,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
-		list.add("Become the master of time.");
-		list.add("Right click to change time control mode.");
+		list.add(StatCollector.translateToLocal("pe.timewatch.tooltip1"));
+		list.add(StatCollector.translateToLocal("pe.timewatch.tooltip2"));
 
 		if (stack.hasTagCompound())
 		{
-			list.add("Time control mode: " + getTimeDescription(stack));
+			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"), getTimeDescription(stack)));
 		}
 	}
 
@@ -389,11 +391,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.timePedBonus > 0) {
-			list.add(EnumChatFormatting.BLUE + "Gives " + ProjectEConfig.timePedBonus + " bonus ticks to nearby blocks every tick");
+			list.add(EnumChatFormatting.BLUE +
+				String.format(StatCollector.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
 		}
 		if (ProjectEConfig.timePedMobSlowness < 1.0F)
 		{
-			list.add(EnumChatFormatting.BLUE + "Each tick nearby mobs move " + ProjectEConfig.timePedMobSlowness + "x the speed");
+			list.add(EnumChatFormatting.BLUE +
+					String.format(StatCollector.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
 		}
 		return list;
 	}

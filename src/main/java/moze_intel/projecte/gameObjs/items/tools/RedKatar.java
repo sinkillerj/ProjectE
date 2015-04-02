@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
@@ -39,7 +40,9 @@ public class RedKatar extends ItemMode
 {
 	public RedKatar() 
 	{
-		super("rm_katar", (byte)4, new String[] {"De-Foresting", "Hoe", "Shear", "Attack"});
+		super("rm_katar", (byte)4, new String[] {
+				StatCollector.translateToLocal("pe.katar.mode1"), StatCollector.translateToLocal("pe.katar.mode2"),
+				StatCollector.translateToLocal("pe.katar.mode3"), StatCollector.translateToLocal("pe.katar.mode4")});
 		this.setNoRepair();
 	}
 	

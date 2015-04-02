@@ -23,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -230,12 +231,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
+			list.add(String.format(
+					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyBinds.getProjectileKeyCode())));
 		}
 
-		list.add("Acts as refilling water bucket");
-		list.add("Right-click to fill tanks and cauldrons");
-		list.add("All operations are completely free!");
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -301,8 +303,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.evertidePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
-			list.add(EnumChatFormatting.BLUE + "Attempts to start rain every " + Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.evertide.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
 	}

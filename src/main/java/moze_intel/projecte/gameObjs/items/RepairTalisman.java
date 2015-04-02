@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -155,8 +156,9 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.repairPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Repairs nearby players' items");
-			list.add(EnumChatFormatting.BLUE + "Restores 1 durability every " + Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.repairtalisman.pedestal1"));
+			list.add(EnumChatFormatting.BLUE +
+					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
 	}

@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -45,7 +46,10 @@ public class PlayerEvents
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			ChatComponentText joinMsg = new ChatComponentText(EnumChatFormatting.BLUE + "High alchemist " + EnumChatFormatting.GOLD + evt.player.getDisplayName() + EnumChatFormatting.BLUE + " has joined the server." + EnumChatFormatting.RESET);
+			ChatComponentText joinMsg = new ChatComponentText(String.format(
+					EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.high_alchemist")
+					+ EnumChatFormatting.GOLD + " %s " + EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.has_joined"),
+					evt.player.getDisplayName()));
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
 		}
 	}

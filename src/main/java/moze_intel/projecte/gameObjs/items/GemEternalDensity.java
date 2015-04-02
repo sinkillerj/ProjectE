@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.lwjgl.input.Keyboard;
@@ -33,8 +34,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 {
-	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
-	
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
 	@SideOnly(Side.CLIENT)
@@ -156,7 +155,21 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private String getTargetDesciption(ItemStack stack)
 	{
-		return targets[stack.stackTagCompound.getByte("Target")];
+		switch(stack.stackTagCompound.getByte("Target"))
+		{
+			case 0:
+				return StatCollector.translateToLocal("item.ingotIron.name");
+			case 1:
+				return StatCollector.translateToLocal("item.ingotGold.name");
+			case 2:
+				return StatCollector.translateToLocal("item.diamond.name");
+			case 3:
+				return StatCollector.translateToLocal("item.pe_matter_dark.name");
+			case 4:
+				return StatCollector.translateToLocal("item.pe_matter_red.name");
+			default:
+				return "INVALID";
+		}
 	}
 	
 	private static ItemStack getTarget(ItemStack stack)
@@ -301,27 +314,28 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentText("Set target to: " + getTargetDesciption(stack)));
+		player.addChatComponentMessage(new ChatComponentText(
+				String.format(StatCollector.translateToLocal("pe.gemdensity.mode_switch"), getTargetDesciption(stack))));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		list.add("Condenses items on the go.");
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip1"));
 		
 		if (stack.hasTagCompound())
 		{
-			list.add("Current target: " + getTargetDesciption(stack));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetDesciption(stack)));
 		}
 		
 		if (KeyBinds.getModeKeyCode() >= 0 && KeyBinds.getModeKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getModeKeyCode()) + " to change target");
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyBinds.getModeKeyCode())));
 		}
 		
-		list.add("Right click to set up the whitelist/blacklist");
-		list.add("Shift right click to activate/deactivate");
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
 	}
 
 	@Override

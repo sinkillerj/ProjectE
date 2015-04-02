@@ -9,6 +9,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger
 {
@@ -42,7 +43,8 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		changeMode(stack);
-		player.addChatComponentMessage(new ChatComponentText("Switched to "+modes[getMode(stack)]+" mode"));
+		player.addChatComponentMessage(new ChatComponentText(
+				String.format(StatCollector.translateToLocal("pe.item.mode_switch"), modes[getMode(stack)])));
 	}
 	
 	@Override
@@ -51,7 +53,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	{
 		if (stack.hasTagCompound())
 		{
-			list.add("Mode: "+EnumChatFormatting.AQUA+getModeDescription(stack));
+			list.add(StatCollector.translateToLocal("pe.item.mode") + ": " + EnumChatFormatting.AQUA + getModeDescription(stack));
 		}
 	}
 }

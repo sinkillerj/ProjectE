@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -146,8 +147,9 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.soulPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Heals nearby players");
-			list.add(EnumChatFormatting.BLUE + "Half a heart every " + Utils.tickToSecFormatted(ProjectEConfig.soulPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.soul.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.soul.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
 		}
 		return list;
 	}

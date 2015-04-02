@@ -18,6 +18,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -133,10 +134,10 @@ public class DiviningRodHigh extends DiviningRodMedium
 				maxValues[i] = emcValues.get(i);
 			}
 			
-			player.addChatComponentMessage(new ChatComponentText(String.format("Average EMC for %d blocks: %,d", numBlocks, (totalEmc / numBlocks))));
-			player.addChatComponentMessage(new ChatComponentText(String.format("Max EMC: %,d", maxValues[0])));
-			player.addChatComponentMessage(new ChatComponentText(String.format("Second Max EMC: %,d", maxValues[1])));
-			player.addChatComponentMessage(new ChatComponentText(String.format("Third Max EMC: %,d", maxValues[2])));
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.avgemc"), numBlocks, (totalEmc / numBlocks))));
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.maxemc"), maxValues[0])));
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.secondmax"), maxValues[1])));
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.thirdmax"), maxValues[2])));
 		}
 		
 		return stack;
@@ -155,8 +156,9 @@ public class DiviningRodHigh extends DiviningRodMedium
 		{
 			stack.stackTagCompound.setByte("Mode", (byte) (mode + 1));
 		}
-		
-		player.addChatComponentMessage(new ChatComponentText("Changed mode to: " + modes[getMode(stack)]));
+
+		player.addChatComponentMessage(new ChatComponentText(
+				String.format(StatCollector.translateToLocal("pe.item.mode_switch"), modes[getMode(stack)])));
 	}
 	
 	@Override
