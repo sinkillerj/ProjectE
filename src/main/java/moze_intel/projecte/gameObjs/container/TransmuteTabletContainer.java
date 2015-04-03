@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import invtweaks.api.container.InventoryContainer;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletConsume;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+@InventoryContainer(showOptions = true)
 public class TransmuteTabletContainer extends Container
 {
 	public TransmuteTabletInventory table;

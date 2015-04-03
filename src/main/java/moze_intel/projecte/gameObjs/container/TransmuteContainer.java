@@ -1,11 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
+import invtweaks.api.container.InventoryContainer;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableConsume;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableInput;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableLock;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableOutput;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +13,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+@InventoryContainer(showOptions = true)
 public class TransmuteContainer extends Container
 {
 	public TransmuteTile tile;
