@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -453,8 +454,9 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.swrgPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Shoots lightning at nearby mobs");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.swrg.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.swrg.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
 		}
 		return list;
 	}

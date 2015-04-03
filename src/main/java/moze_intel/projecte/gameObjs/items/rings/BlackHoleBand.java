@@ -15,6 +15,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -149,8 +150,8 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<String>();
-		list.add(EnumChatFormatting.BLUE + "Sucks in nearby item drops");
-		list.add(EnumChatFormatting.BLUE + "Dumps in adjacent inventories");
+		list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal1"));
+		list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal2"));
 		return list;
 	}
 

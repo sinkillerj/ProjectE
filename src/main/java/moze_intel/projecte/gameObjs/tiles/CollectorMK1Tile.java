@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraft.util.StatCollector;
 
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
@@ -444,7 +445,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	@Override
 	public String getInventoryName() 
 	{
-		return "Collector MK1";
+		return StatCollector.translateToLocal("tile.pe_collector_MK1.name");
 	}
 
 	@Override

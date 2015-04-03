@@ -20,6 +20,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -191,8 +192,9 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.ignitePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Nearby mobs combust");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.ignition.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.ignition.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
 		}
 		return list;
 	}

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.util.EnumChatFormatting;
@@ -84,8 +85,9 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	{
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
-			list.add(EnumChatFormatting.BLUE + "Fires arrows at nearby mobs");
-			list.add(EnumChatFormatting.BLUE + "Triggers every " + Utils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.archangel.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
 		}
 		return list;
 	}

@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -33,7 +34,9 @@ public class RedPick extends ItemMode
 {
 	public RedPick()
 	{
-		super("rm_pick", (byte)3, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
+		super("rm_pick", (byte)3, new String[] {
+				StatCollector.translateToLocal("pe.redpick.mode1"), StatCollector.translateToLocal("pe.redpick.mode2"),
+				StatCollector.translateToLocal("pe.redpick.mode3"), StatCollector.translateToLocal("pe.redpick.mode4")});
 		this.setNoRepair();
 	}
 	

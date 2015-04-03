@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -148,8 +149,9 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.bodyPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Restores nearby players' hunger");
-			list.add(EnumChatFormatting.BLUE + "Half a shank every " + Utils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.body.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.body.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown)));
 		}
 		return list;
 	}

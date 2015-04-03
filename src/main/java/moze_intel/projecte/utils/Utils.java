@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -1007,11 +1008,11 @@ public final class Utils
 		double result = tickToSec(ticks);
 		if (result == 0.0D)
 		{
-			return result + " seconds (every tick)";
+			return result + " " + StatCollector.translateToLocal("pe.misc.seconds") + " (" + StatCollector.translateToLocal("pe.misc.every_tick") + ")";
 		}
 		else
 		{
-			return result + " seconds";
+			return result + " " + StatCollector.translateToLocal("pe.misc.seconds");
 		}
 	}
 

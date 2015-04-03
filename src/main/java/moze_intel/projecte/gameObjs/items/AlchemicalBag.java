@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +29,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AlchemicalBag extends ItemPE
 {
 	private final String[] colors = new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"};
-	private final String[] localizedColors = new String[] {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Silver", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
+
+	// MC Lang files have these unlocalized names mapped to raw color names
+	private final String[] unlocalizedColors = new String[] {
+			"item.fireworksCharge.white", "item.fireworksCharge.orange",
+			"item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
+			"item.fireworksCharge.yellow", "item.fireworksCharge.lime",
+			"item.fireworksCharge.pink", "item.fireworksCharge.gray",
+			"item.fireworksCharge.silver", "item.fireworksCharge.cyan",
+			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
+			"item.fireworksCharge.brown", "item.fireworksCharge.green",
+			"item.fireworksCharge.red", "item.fireworksCharge.black"};
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -168,7 +179,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
-		String color = " ("+localizedColors[i]+")";
+		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
 	

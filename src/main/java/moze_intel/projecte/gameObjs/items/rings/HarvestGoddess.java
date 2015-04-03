@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.IPlantable;
@@ -388,9 +389,10 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.harvestPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Accelerates growth of nearby crops");
-			list.add(EnumChatFormatting.BLUE + "Harvests nearby grown crops");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal2"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.harvestgod.pedestal3"), Utils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
 		}
 		return list;
 	}
