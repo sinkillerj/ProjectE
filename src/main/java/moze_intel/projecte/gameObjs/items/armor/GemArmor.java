@@ -124,7 +124,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 
 				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(playerMP))
 				{
-					player.setHealth(player.getHealth() + 2);
+					player.heal(2.0F);
 				}
 				
 				if (isNightVisionEnabled(stack))
