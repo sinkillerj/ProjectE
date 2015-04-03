@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -31,7 +31,7 @@ import java.util.List;
 public class TransmutationRenderingEvent 
 {
 	private Minecraft mc = Minecraft.getMinecraft();
-	private final List<CoordinateBox> renderList = new ArrayList();
+	private final List<AxisAlignedBB> renderList = new ArrayList();
 	private double playerX;
 	private double playerY;
 	private double playerZ;
@@ -180,7 +180,7 @@ public class TransmutationRenderingEvent
 		float colorG = 1.0f;
 		float colorB = 1.0f;
 		
-		for (CoordinateBox b : renderList)
+		for (AxisAlignedBB b : renderList)
 		{
 			//Top
 			tessellator.startDrawingQuads();
@@ -242,7 +242,7 @@ public class TransmutationRenderingEvent
 	{
 		if (new MetaBlock(world, x, y, z).equals(current))
 		{
-			CoordinateBox box = new CoordinateBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
+			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
 			box.offset(-playerX, -playerY, -playerZ);
 			renderList.add(box);
 		}

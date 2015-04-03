@@ -7,7 +7,6 @@ import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -18,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -52,7 +52,7 @@ public class RedStar extends ItemCharge
 			return false;
 		}
 		
-		CoordinateBox box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+		AxisAlignedBB box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 		
 		for (int i = (int) box.minX; i <= box.maxX; i++)
@@ -87,7 +87,7 @@ public class RedStar extends ItemCharge
 			if (mop == null || !mop.typeOfHit.equals(MovingObjectType.BLOCK))
 			{
 				int offset = (this.getCharge(stack) - 1) + 3;
-				CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
+				AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
 				List<ItemStack> drops = new ArrayList<ItemStack>();
 				
 				for (int x = (int) box.minX; x <= box.maxX; x++)
@@ -120,7 +120,7 @@ public class RedStar extends ItemCharge
 			}
 			else if (block.getHarvestTool(0) == null || block.getHarvestTool(0).equals("shovel"))
 			{
-				CoordinateBox box = getRelativeBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), (this.getCharge(stack) - 1) + 1);
+				AxisAlignedBB box = getRelativeBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), (this.getCharge(stack) - 1) + 1);
 				byte charge = this.getCharge(stack);
 
 				for (int x = (int) box.minX; x <= box.maxX; x++)
@@ -147,19 +147,19 @@ public class RedStar extends ItemCharge
 		return stack;
 	}
 	
-	private CoordinateBox getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
+	private AxisAlignedBB getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
 	{
 		if (direction.offsetX != 0)
 		{
-			return new CoordinateBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
 		}
 		else if (direction.offsetY != 0)
 		{
-			return new CoordinateBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
 		}
 		else
 		{
-			return new CoordinateBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
 		}
 	}
 	

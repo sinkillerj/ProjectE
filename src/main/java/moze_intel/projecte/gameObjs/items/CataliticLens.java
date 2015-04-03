@@ -10,7 +10,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -67,7 +67,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
 			Coordinates coords = new Coordinates(mop);
-			CoordinateBox box = getBoxFromDirection(direction, coords, numRows);
+			AxisAlignedBB box = getBoxFromDirection(direction, coords, numRows);
 			
 			List<ItemStack> drops = new ArrayList();
 			
@@ -120,27 +120,27 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 		return stack;
 	}
 	
-	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
+	public AxisAlignedBB getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
 	{
 		charge--;
 		
 		if (direction.offsetX != 0)
 		{
 			if (direction.offsetX > 0)
-				return new CoordinateBox(coords.x - charge, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
-			else return new CoordinateBox(coords.x, coords.y - 1, coords.z - 1, coords.x + charge, coords.y + 1, coords.z + 1);
+				return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
+			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + charge, coords.y + 1, coords.z + 1);
 		}
 		else if (direction.offsetY != 0)
 		{
 			if (direction.offsetY > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - charge, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
-			else return new CoordinateBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + charge, coords.z + 1);
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - charge, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + charge, coords.z + 1);
 		}
 		else
 		{
 			if (direction.offsetZ > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z - charge, coords.x + 1, coords.y + 1, coords.z);
-			else return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + charge);
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - charge, coords.x + 1, coords.y + 1, coords.z);
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + charge);
 		}
 	}
 	

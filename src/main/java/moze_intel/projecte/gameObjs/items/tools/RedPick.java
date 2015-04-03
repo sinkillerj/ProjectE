@@ -8,7 +8,6 @@ import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -57,7 +57,7 @@ public class RedPick extends ItemMode
 		}
 			
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-		CoordinateBox box = null;
+		AxisAlignedBB box = null;
 		
 		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
 		{
@@ -68,17 +68,17 @@ public class RedPick extends ItemMode
 		
 		if (mode == 1)
 		{
-			box = new CoordinateBox(x, y - 1, z, x, y + 1, z);
+			box = AxisAlignedBB.getBoundingBox(x, y - 1, z, x, y + 1, z);
 		}
 		else if (mode == 2)
 		{
 			if (direction.offsetX != 0)
 			{
-				box = new CoordinateBox(x, y, z - 1, x, y, z + 1);
+				box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
 			}
 			else if (direction.offsetZ != 0)
 			{
-				box = new CoordinateBox(x - 1, y, z, x + 1, y, z);
+				box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
 			}
 			else
 			{
@@ -86,11 +86,11 @@ public class RedPick extends ItemMode
 				
 				if (dir == 0 || dir == 2)
 				{
-					box = new CoordinateBox(x, y, z - 1, x, y, z + 1);
+					box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
 				}
 				else
 				{
-					box = new CoordinateBox(x - 1, y, z, x + 1, y, z);
+					box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
 				}
 			}
 		}
@@ -98,27 +98,27 @@ public class RedPick extends ItemMode
 		{
 			if (direction.offsetX == 1)
 			{
-				box = new CoordinateBox(x - 2, y, z, x, y, z);
+				box = AxisAlignedBB.getBoundingBox(x - 2, y, z, x, y, z);
 			}
 			else if (direction.offsetX == - 1)
 			{
-				box = new CoordinateBox(x, y, z, x + 2, y, z);
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x + 2, y, z);
 			}
 			else if (direction.offsetZ == 1)
 			{
-				box = new CoordinateBox(x, y, z - 2, x, y, z);
+				box = AxisAlignedBB.getBoundingBox(x, y, z - 2, x, y, z);
 			}
 			else if (direction.offsetZ == -1)
 			{
-				box = new CoordinateBox(x, y, z, x, y, z + 2);
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y, z + 2);
 			}
 			else if (direction.offsetY == 1)
 			{
-				box = new CoordinateBox(x, y - 2, z, x, y, z);
+				box = AxisAlignedBB.getBoundingBox(x, y - 2, z, x, y, z);
 			}
 			else 
 			{
-				box = new CoordinateBox(x, y, z, x, y + 2, z);
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y + 2, z);
 			}
 		}
 		
@@ -147,7 +147,7 @@ public class RedPick extends ItemMode
 		if (!world.isRemote)
 		{
 			int offset = this.getCharge(stack) + 3;
-			CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
+			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
 			List<ItemStack> drops = new ArrayList<ItemStack>();
 			
 			for (int x = (int) box.minX; x <= box.maxX; x++)

@@ -794,7 +794,7 @@ public final class Utils
 			return;
 		}
 		
-		CoordinateBox b = new CoordinateBox(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
+		AxisAlignedBB b = AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
 		
 		for (int x = (int) b.minX; x <= b.maxX; x++)
 			for (int y = (int) b.minY; y <= b.maxY; y++)

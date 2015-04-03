@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
@@ -16,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -56,7 +56,7 @@ public class DiviningRodLow extends ItemPE
 			long totalEmc = 0;
 			int numBlocks = 0;
 			
-			CoordinateBox box = getBoxFromDirection(ForgeDirection.getOrientation(mop.sideHit), new Coordinates(mop));
+			AxisAlignedBB box = getBoxFromDirection(ForgeDirection.getOrientation(mop.sideHit), new Coordinates(mop));
 			
 			for (int i = (int) box.minX; i <= box.maxX; i++)
 				for (int j = (int) box.minY; j <= box.maxY; j++)
@@ -114,27 +114,27 @@ public class DiviningRodLow extends ItemPE
 		return stack;
 	}
 	
-	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords)
+	public AxisAlignedBB getBoxFromDirection(ForgeDirection direction, Coordinates coords)
 	{
 		int actualRange = searchRange - 1;
 		
 		if (direction.offsetX != 0)
 		{
 			if (direction.offsetX > 0)
-				return new CoordinateBox(coords.x - actualRange, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
-			else return new CoordinateBox(coords.x, coords.y - 1, coords.z - 1, coords.x + actualRange, coords.y + 1, coords.z + 1);
+				return AxisAlignedBB.getBoundingBox(coords.x - actualRange, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
+			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + actualRange, coords.y + 1, coords.z + 1);
 		}
 		else if (direction.offsetY != 0)
 		{
 			if (direction.offsetY > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - actualRange, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
-			else return new CoordinateBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + actualRange, coords.z + 1);
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - actualRange, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + actualRange, coords.z + 1);
 		}
 		else
 		{
 			if (direction.offsetZ > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z - actualRange, coords.x + 1, coords.y + 1, coords.z);
-			else return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + actualRange);
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - actualRange, coords.x + 1, coords.y + 1, coords.z);
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + actualRange);
 		}
 	}
 	

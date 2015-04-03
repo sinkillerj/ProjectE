@@ -10,7 +10,6 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -56,12 +55,12 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			return;
 		}
 
-		CoordinateBox box = new CoordinateBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		freezeInCoordinateBox(world, box);
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+		freezeInBoundingBox(world, box);
 
 	}
 
-	public void freezeInCoordinateBox(World world, CoordinateBox box)
+	public void freezeInBoundingBox(World world, AxisAlignedBB box)
 	{
 		for (int x = (int) box.minX; x <= box.maxX; x++)
 		{
@@ -94,10 +93,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		if (!world.isRemote)
 		{
-			CoordinateBox box = new CoordinateBox(player.boundingBox);
 			int offset = 3 + this.getCharge(stack);
-			box.expand(offset, offset, offset);
-			freezeInCoordinateBox(world, box);
+			AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
+			freezeInBoundingBox(world, box);
 		}
 		
 		return stack;
@@ -179,7 +177,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			if (coolCooldown == 0) {
 				TileEntity tile = world.getTileEntity(x, y, z);
 				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
-				freezeInCoordinateBox(world, CoordinateBox.fromAABB(aabb));
+				freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
 				{
