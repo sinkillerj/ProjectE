@@ -243,7 +243,7 @@ public class TransmutationRenderingEvent
 		if (new MetaBlock(world, x, y, z).equals(current))
 		{
 			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
-			box.offset(-playerX, -playerY, -playerZ);
+			box = box.offset(-playerX, -playerY, -playerZ);
 			renderList.add(box);
 		}
 	}
