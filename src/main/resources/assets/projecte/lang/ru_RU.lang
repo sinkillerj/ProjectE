@@ -109,7 +109,7 @@ tile.pe_nova_cataclysm.name=Катаклизм Новы
 tile.pe_fuel_block_0.name=Блок алхимического угля
 tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
-tile.pe_dmPedestal.name=пьедестал из тёмной материи
+tile.pe_dmPedestal.name=Пьедестал из тёмной материи
 
 itemGroup.ProjectE=ProjectE
 
@@ -149,3 +149,151 @@ achievement.klein=EMC аккумуляторы
 achievement.klein.desc=Запас EMC на чёрный день.
 achievement.klein_big=Большие EMC аккумуляторы
 achievement.klein_big.desc=Вселенная в Вашем кармане.
+
+pe.archangel.pedestal1=Стреляет стрелами в ближайших мобов
+pe.archangel.pedestal2=Срабатывает каждые %s
+
+pe.bhb.pedestal1=Всасывает лежащие рядом предметы
+pe.bhb.pedestal2=Сбрасывает их в соседние инвентари
+
+pe.body.pedestal1=Восстанавливает голод ближайших игроков
+pe.body.pedestal2=Восстанавливает половинку голода каждые %s
+
+pe.darkpick.mode1=Стандартный
+pe.darkpick.mode2=3x блока в высоту
+pe.darkpick.mode3=3x блока в ширину
+pe.darkpick.mode4=3x блока в длину
+
+pe.divining.avgemc=Средний EMC для %d блоков: %,d
+pe.divining.maxemc=Макс. EMC: %,d
+pe.divining.secondmax=Второй макс. EMC: %,d
+pe.divining.thirdmax=Третий макс. EMC: %,d
+
+pe.dmfurnace.shortname=Печь из ТМ
+pe.rmfurnace.shortname=Печь из КМ
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Максимальная скорость генерирования:
+pe.emc.maxoutrate_tooltip=Максимальная скорость выхода:
+pe.emc.maxstorage_tooltip=Максимальное хранилище:
+pe.emc.name=EMC
+pe.emc.rate=EMC/сек
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=Накоплено EMC:
+pe.emc.too_much=СЛИШКОМ МНОГО
+
+pe.evertide.tooltip1=Нажмите %s, чтобы выпустить водный снаряд
+pe.evertide.tooltip2=Работает как бесконечное ведро воды
+pe.evertide.tooltip3=ПКМ, чтобы наполнить резервуары и котлы
+pe.evertide.tooltip4=Все операции ничего не стоят!
+pe.evertide.pedestal1=Вызывает дождь/снег
+pe.evertide.pedestal2=Пытается вызвать дождь каждые %s
+
+pe.gem.disabled=ОТКЛЮЧЕНО
+pe.gem.enabled=ВКЛЮЧЕНО
+pe.gem.nightvision_tooltip=Ночное зрение:
+pe.gem.nightvision.prompt=Нажмите Shift %s, чтобы переключить ночное зрение
+pe.gem.stepassist_tooltip=Помощь в шаге:
+pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в шаге
+
+pe.gemdensity.blacklist=Чёрный список
+pe.gemdensity.mode_switch=Цель установлена на %s
+pe.gemdensity.tooltip1=Уплотняет предметы на ходу
+pe.gemdensity.tooltip2=Текущая цель: %s
+pe.gemdensity.tooltip3=Нажмите %s, чтобы сменить цель
+pe.gemdensity.tooltip4=ПКМ, чтобы установить чёрный/белый список
+pe.gemdensity.tooltip5=Shift-ПКМ, чтобы переключить
+pe.gemdensity.whitelist=Белый список
+
+pe.harvestgod.pedestal1=Ускоряет рост ближайших ростков
+pe.harvestgod.pedestal2=Собирает ближайшие созревшие ростки
+pe.harvestgod.pedestal3=Активируется каждые %s
+
+pe.ignition.pedestal1=Сжигает ближайших мобов
+pe.ignition.pedestal2=Активируется каждые %s
+
+pe.item.mode=Режим
+pe.item.mode_switch=Переключено на режим: %s
+
+pe.katar.mode1=Вырубка
+pe.katar.mode2=Мотыга
+pe.katar.mode3=Стрижка
+pe.katar.mode4=Бой
+
+pe.life.pedestal1=Восстанавливает голод и здоровье
+pe.life.pedestal2=По половинке сердца и голода каждые %s
+
+pe.misc.every_tick=каждый такт
+pe.misc.seconds=секунд(-ы)
+pe.misc.storedxp_tooltip=Накоплено опыта:
+pe.misc.wrenched_block=Wrenched block!
+
+pe.pedestal.item_disabled=Функционал пьедестала отключен!
+pe.pedestal.on_pedestal=На пьедестале:
+pe.pedestal.shortname=Пьедестал из ТМ
+pe.pedestal.tooltip1=Shift-ПКМ, чтобы открыть интерфейс
+pe.pedestal.tooltip2=ПКМ, чтобы активировать!
+
+pe.philstone.mode1=Куб
+pe.philstone.mode2=Панель
+pe.philstone.mode3=Линия
+pe.philstone.tooltip1=Нажмите %s, чтобы открыть сетку создания
+pe.philstone.tooltip2=Работает как ключ для блоков ProjectE
+pe.philstone.tooltip3=Нажатие ЛКМ изменяет ориентацию блока
+pe.philstone.tooltip4=Нажатие Shift-ПКМ поднимет блок
+
+pe.redpick.mode1=Стандартный
+pe.redpick.mode2=3x блока в высоту
+pe.redpick.mode3=3x блока в ширину
+pe.redpick.mode4=3x блока в длину
+
+pe.relay.mk1=Реле MKI
+pe.relay.mk2=Реле MKII
+pe.relay.mk3=Реле MKIII
+
+pe.repairtalisman.pedestal1=Чинит предметы ближайших игроков
+pe.repairtalisman.pedestal2=Восстанавливает 1 прочность каждые %s
+
+pe.server.high_alchemist=Верховный алхимик
+pe.server.has_joined=присоединился к серверу
+
+pe.soul.pedestal1=Лечит ближайших игроков
+pe.soul.pedestal2=По половине сердца каждые %s
+
+pe.swrg.pedestal1=Стреляет молнией в ближайших мобов
+pe.swrg.pedestal2=Активируется каждые %s
+
+pe.timewatch.disabled=Предмет отключен администратором
+pe.timewatch.ff=Перемотка вперёд
+pe.timewatch.mode=Режим контроля времени: %s
+pe.timewatch.mode_switch=Режим контроля времени изменён на: %s
+pe.timewatch.off=Выкл.
+pe.timewatch.rw=Перемотка
+pe.timewatch.tooltip1=Станьте хозяином времени
+pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
+pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
+pe.timewatch.pedestal2=Each tick, nearby mobs move %.3f times the speed
+
+pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
+
+pe.transmutation.already_using=Кто-то уже использует стол трансмутаций!
+pe.transmutation.transmute=Трансмутация
+pe.transmutation.learned0=В
+pe.transmutation.learned1=ы
+pe.transmutation.learned2=у
+pe.transmutation.learned3=ч
+pe.transmutation.learned4=е
+pe.transmutation.learned5=н
+pe.transmutation.learned6=о
+pe.transmutation.learned7=!
+
+pe.volcanite.tooltip1=Нажмите %s, чтобы выпустить лавовый снаряд
+pe.volcanite.tooltip2=Работает как бесконечное полное ведро лавы
+pe.volcanite.tooltip3=ПКМ, чтобы наполнить резервуары
+pe.volcanite.tooltip4=Все операции стоят 32 EMC!
+pe.volcanite.pedestal1=Убирает дождь/снег
+pe.volcanite.pedestal2=Пытается остановить погодные явления каждые %s
+
+pe.zero.pedestal1=Тушит сущностей
+pe.zero.pedestal2=Замораживает окрестности
+pe.zero.pedestal3=Активируется каждые %s
