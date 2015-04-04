@@ -20,7 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -53,27 +52,13 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		if (meta == 0) 
-		{
-			return 1000000.0F;
-		}
-		else
-		{
-			return 2000000.0F;
-		}
+		return world.getBlockMetadata(x, y, z) == 0 ? 1000000F : 2000000F;
 	}
 	
 	@Override
 	public Item getItemDropped(int no, Random rand, int clue)
 	{
-		if (isHighTier)
-		{
-			return Item.getItemFromBlock(ObjHandler.rmFurnaceOff);
-		}
-		
-		return Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
 	}
 	
 	@Override
@@ -151,27 +136,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
 	{
-		int l = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-
-		if (l == 0)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		}
-
-		if (l == 1)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		}
-
-		if (l == 2)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		}
-
-		if (l == 3)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		}
+		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
 		
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
@@ -250,7 +215,6 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
-		if (isHighTier) return new RMFurnaceTile();
-		return new DMFurnaceTile();
+		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
 	}
 }

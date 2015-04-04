@@ -18,7 +18,8 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 		super(world, x, y, z, placer);
 		this.fuse = 20;
 	}
-	
+
+	// Need exact override to do our own explosion
 	@Override
 	public void onUpdate()
 	{

@@ -51,7 +51,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!hasKnowledge(stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
 			
@@ -238,24 +238,6 @@ public class TransmuteTabletInventory implements IInventory
  				}
 			}
 		}
-	}
-	
-	private boolean hasKnowledge(ItemStack stack)
-	{
-		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
-			{
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	public void setPlayer(EntityPlayer player)

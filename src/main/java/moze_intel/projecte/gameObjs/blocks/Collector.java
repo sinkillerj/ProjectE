@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -57,27 +56,7 @@ public class Collector extends BlockDirection
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
 	{
-		int orientation = MathHelper.floor_double((double)(entLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		
-		if (orientation == 0)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		}
-
-		if (orientation == 1)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		}
-
-		if (orientation == 2)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		}
-
-		if (orientation == 3)
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		}
+		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
 		
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
@@ -118,23 +97,15 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
-	{
-		if (tier == 1) 
-		{
-			return new CollectorMK1Tile();
+	public TileEntity createNewTileEntity(World var1, int var2) {
+		switch (tier) {
+			case 3:
+				return new CollectorMK3Tile();
+			case 2:
+				return new CollectorMK2Tile();
+			case 1: // Fall through
+			default:
+				return new CollectorMK1Tile();
 		}
-		
-		if (tier == 2)
-		{
-			return new CollectorMK2Tile();
-		}
-		
-		if (tier == 3)
-		{
-			return new CollectorMK3Tile();
-		}
-		
-		return null;
 	}
 }

@@ -15,7 +15,6 @@ public class ConnectionHandler
 	@SubscribeEvent
 	public void playerConnect(PlayerLoggedInEvent event)
 	{
-		//PacketHandler.sendTo(new ClientSyncPKT(), (EntityPlayerMP) event.player);
 		PacketHandler.sendFragmentedEmcPacket((EntityPlayerMP) event.player);
 		PacketHandler.sendTo(new ClientCheckUpdatePKT(), (EntityPlayerMP) event.player);
 
@@ -31,13 +30,5 @@ public class ConnectionHandler
 		PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled checklists: Player disconnected.");
 		PlayerChecks.removePlayerFromLists(event.player.getCommandSenderName());
 	}
-		
-	
-	/*@SubscribeEvent
-	public void playerDisconnect(ClientDisconnectionFromServerEvent event)
-	{
-		String userName = Minecraft.getMinecraft().thePlayer.getCommandSenderName();
-		PELogger.logInfo("Removing " + userName + " from scheduled checklists: Player disconnected.");
-		PlayerChecksEvent.removePlayerFromLists(userName);
-	}*/
+
 }

@@ -118,7 +118,25 @@ public final class Transmutation
 			IOHandler.markDirty();
 		}
 	}
-	
+
+	public static boolean hasKnowledgeForStack(EntityPlayer player, ItemStack stack)
+	{
+		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
+		{
+			if (s == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static boolean hasFullKnowledge(String username)
 	{
 		return TOME_KNOWLEDGE.contains(username);

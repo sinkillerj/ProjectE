@@ -231,4 +231,22 @@ public class AlchemicalBag extends ItemPE
 			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
 		}
 	}
+
+	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	{
+		for (ItemStack stack : inventory)
+		{
+			if (stack == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			{
+				return stack;
+			}
+		}
+
+		return null;
+	}
 }

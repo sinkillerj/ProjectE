@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.material.Material;
@@ -195,7 +196,7 @@ public class EntityLootBall extends Entity
 		}
 		else
 		{
-			ItemStack bag = getAlchemyBag(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
 			
 			if (bag != null)
 			{
@@ -286,24 +287,6 @@ public class EntityLootBall extends Entity
 				this.setDead();
 			}
 		}
-	}
-	
-	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory)
-	{
-		for (ItemStack stack : inventory)
-		{
-			if (stack == null) 
-			{
-				continue;
-			}
-			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
-			{
-				return stack;
-			}
-		}
-		
-		return null;
 	}
 	
 	@Override

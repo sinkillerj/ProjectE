@@ -11,13 +11,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class NovaCataclysm extends BlockTNT
+public class NovaCataclysm extends NovaCatalyst
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon topIcon;
-	@SideOnly(Side.CLIENT)
-	private IIcon bottomIcon;
-	
 	public NovaCataclysm()
 	{
 		this.setBlockName("pe_nova_cataclysm");
@@ -27,26 +22,19 @@ public class NovaCataclysm extends BlockTNT
 	@Override
 	public void func_150114_a(World world, int x, int y, int z, int par5, EntityLivingBase entity)
 	{
-		if (world.isRemote || par5 != 1) return;
+		if (world.isRemote || par5 != 1)
+		{
+			return;
+		}
 		
 		if (entity == null)
+		{
 			entity = world.getClosestPlayer(x, y, z, 64);
-		
+		}
+
 		EntityNovaCataclysmPrimed ent = new EntityNovaCataclysmPrimed(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), entity); 
 		world.spawnEntityInWorld(ent);
 		world.playSoundAtEntity(ent, "game.tnt.primed", 1.0F, 1.0F);
-	}
-	
-	@Override
-	public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
-	{
-		func_150114_a(world, x, y, z, 1, null);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int p_149691_1_, int p_149691_2_)
-	{
-		return p_149691_1_ == 0 ? bottomIcon : (p_149691_1_ == 1 ? topIcon : this.blockIcon);
 	}
 	
 	@SideOnly(Side.CLIENT)
