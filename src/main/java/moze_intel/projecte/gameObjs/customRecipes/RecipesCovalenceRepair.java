@@ -2,18 +2,11 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemFlintAndSteel;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShears;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
 
 public class RecipesCovalenceRepair implements IRecipe
 {
@@ -22,7 +15,7 @@ public class RecipesCovalenceRepair implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) 
 	{
-		ItemStack[] dust = new ItemStack[3];
+		ItemStack[] dust = new ItemStack[8];
 		ItemStack tool = null;
 		boolean foundItem = false;
 		int dustCounter = 0;
@@ -50,7 +43,7 @@ public class RecipesCovalenceRepair implements IRecipe
 			}
 			else if (input.getItem() == ObjHandler.covalence)
 			{
-				if (dustCounter < 3)
+				if (dustCounter < 8)
 				{
 					dust[dustCounter] = input;
 					dustCounter++;
@@ -67,23 +60,18 @@ public class RecipesCovalenceRepair implements IRecipe
 			return false;
 		}
 
-		if (dustCounter < 3)
+		if (!correctDustCount(dustCounter, tool.getItem()))
 		{
 			return false;
 		}
-		
+
 		int dustDamage = getDustType(tool);
 		
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < dust.length; i++)
 		{
 			ItemStack stack = dust[i];
 
-			if (stack == null)
-			{
-				return false;
-			}
-
-			if (stack.getItemDamage() < dustDamage)
+			if (stack != null && stack.getItemDamage() < dustDamage)
 			{
 				return false;
 			}
@@ -91,10 +79,44 @@ public class RecipesCovalenceRepair implements IRecipe
 		
 		output = tool.copy();
 		output.setItemDamage(0);
-		
 		return true;
 	}
-	
+
+	private boolean correctDustCount(int dustCounter, Item toRepair)
+	{
+		if (toRepair instanceof ItemSpade || toRepair instanceof ItemShears
+				|| toRepair instanceof ItemFlintAndSteel || toRepair instanceof ItemFishingRod)
+		{
+			return dustCounter == 1;
+		}
+
+		if (toRepair instanceof ItemSword)
+		{
+			return dustCounter == 2;
+		}
+
+		if (toRepair instanceof ItemAxe || toRepair instanceof ItemPickaxe || toRepair instanceof ItemBow)
+		{
+			return dustCounter == 3;
+		}
+
+		if (toRepair instanceof ItemArmor)
+		{
+			ItemArmor armor = ((ItemArmor) toRepair);
+			switch(armor.armorType)
+			{
+				case 0: return dustCounter == 5;
+				case 1: return dustCounter == 8;
+				case 2: return dustCounter == 7;
+				case 3: return dustCounter == 4;
+				default: return false;
+			}
+		}
+
+		return false;
+
+	}
+
 	private boolean isItemRepairable(ItemStack stack)
 	{
 		if (stack.getHasSubtypes())
