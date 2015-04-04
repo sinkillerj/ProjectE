@@ -6,8 +6,6 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
-
 public class RecipesCovalenceRepair implements IRecipe
 {
 	private ItemStack output;
