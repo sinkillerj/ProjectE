@@ -85,35 +85,6 @@ public abstract class ItemPE extends Item
 		return true;
 	}
 	
-	/*public void setTickCounter(ItemStack stack, byte count)
-	{
-		stack.stackTagCompound.setByte("TickCounter", count);
-	}
-	
-	public byte getTickCount(ItemStack stack)
-	{
-		return stack.stackTagCompound.getByte("TickCounter");
-	}
-	
-	public void increaseTickCounter(ItemStack stack)
-	{
-		byte current = getTickCount(stack);
-		
-		if (current < 20)
-		{
-			setTickCounter(stack, ++current);
-		}
-		else
-		{
-			setTickCounter(stack, (byte) 0);
-		}
-	}
-	
-	public boolean isReady(ItemStack stack)
-	{
-		return getTickCount(stack) == 0;
-	}*/
-	
 	public String getTexture(String name)
 	{
 		return ("projecte:" + name);
