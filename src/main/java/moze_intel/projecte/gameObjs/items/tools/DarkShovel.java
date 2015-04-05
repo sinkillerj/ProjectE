@@ -1,16 +1,12 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -19,48 +15,31 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DarkShovel extends ItemCharge
+public class DarkShovel extends PEToolBase
 {
 	public DarkShovel() 
 	{
-		super("dm_shovel", (byte)1);
+		super("dm_shovel", (byte)1, new String[]{});
 		this.setNoRepair();
+		this.peToolMaterial = "dm_tools";
+		this.pePrimaryToolClass = "shovel";
+		this.harvestMaterials.add(Material.grass);
+		this.harvestMaterials.add(Material.ground);
+		this.harvestMaterials.add(Material.sand);
+		this.harvestMaterials.add(Material.snow);
 	}
-	
-	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+
+	// Only for RedShovel
+	protected DarkShovel(String name, byte numCharges, String[] modeDesc)
 	{
-		return block.getMaterial() == Material.grass || block.getMaterial() == Material.ground || block.getMaterial() == Material.sand || block.getMaterial() == Material.snow;
+		super(name, numCharges, modeDesc);
 	}
-	
-	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass) 
-	{
-		if (toolClass.equals("shovel"))
-		{
-			return 4;
-		}
-		
-		return -1;
-	}
-	
-	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
-	{
-		if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
-		{
-			return 14.0f + (12.0f * this.getCharge(stack));
-		}
-		
-		return 1.0F;
-	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -104,35 +83,5 @@ public class DarkShovel extends ItemCharge
 		}
 		
 		return stack;
-	}
-	
-	private AxisAlignedBB getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
-	{
-		if (direction.offsetX != 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetY != 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
-		}
-		else
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
-		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shovel"));
 	}
 }

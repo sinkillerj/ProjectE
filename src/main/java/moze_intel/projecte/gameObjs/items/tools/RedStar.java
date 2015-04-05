@@ -1,17 +1,13 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,12 +23,32 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedStar extends ItemCharge 
+public class RedStar extends PEToolBase
 {
 	public RedStar() 
 	{
-		super("rm_morning_star", (byte)4);
+		super("rm_morning_star", (byte) 4, new String[]{});
 		this.setNoRepair();
+		this.peToolMaterial = "rm_tools";
+		this.pePrimaryToolClass = "morning_star";
+
+		this.harvestMaterials.add(Material.grass);
+		this.harvestMaterials.add(Material.ground);
+		this.harvestMaterials.add(Material.sand);
+		this.harvestMaterials.add(Material.snow);
+
+		this.harvestMaterials.add(Material.iron);
+		this.harvestMaterials.add(Material.anvil);
+		this.harvestMaterials.add(Material.rock);
+
+		this.harvestMaterials.add(Material.wood);
+		this.harvestMaterials.add(Material.plants);
+		this.harvestMaterials.add(Material.vine);
+
+		this.secondaryClasses.add("pickaxe");
+		this.secondaryClasses.add("chisel");
+		this.secondaryClasses.add("shovel");
+		this.secondaryClasses.add("axe");
 	}
 	
 	@Override
@@ -147,43 +163,6 @@ public class RedStar extends ItemCharge
 		return stack;
 	}
 	
-	private AxisAlignedBB getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
-	{
-		if (direction.offsetX != 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetY != 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
-		}
-		else
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
-		}
-	}
-	
-	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack) 
-	{
-		return block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock 
-		|| block.getMaterial() == Material.grass || block.getMaterial() == Material.ground || block.getMaterial() == Material.sand 
-		|| block.getMaterial() == Material.snow || block.getMaterial() == Material.wood || block.getMaterial() == Material.plants 
-		|| block.getMaterial() == Material.vine;
-	}
-	
-	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass)
-	{
-		if (toolClass.equals("pickaxe") || toolClass.equals("chisel") || toolClass.equals("shovel") || toolClass.equals("axe"))
-		{
-			//mine TiCon blocks as well
-			return 4;
-		}
-		
-		return -1;
-	}
-	
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int metadata)
 	{
@@ -198,19 +177,5 @@ public class RedStar extends ItemCharge
 		}
 		
 		return 1.0f;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("rm_tools", "morning_star"));
 	}
 }

@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -26,17 +24,25 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class DarkShears extends ItemCharge
+public class DarkShears extends PEToolBase
 {
 	public DarkShears()
 	{
-		super("dm_shears", (byte)2);
+		super("dm_shears", (byte)2, new String[]{});
 		this.setNoRepair();
+		this.peToolMaterial = "dm_tools";
+		this.pePrimaryToolClass = "shears";
+		this.harvestMaterials.add(Material.web);
+		this.harvestMaterials.add(Material.circuits);
 	}
-	
+
+	// Only for RedShears
+	protected DarkShears(String name, byte numCharges, String[] modeDesc)
+	{
+		super(name, numCharges, modeDesc);
+	}
+
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase ent)
 	{
@@ -55,17 +61,6 @@ public class DarkShears extends ItemCharge
 	{
 		return block == Blocks.web || block == Blocks.redstone_wire || block == Blocks.tripwire;
 	}
-	
-	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata) 
-	{
-		if (canHarvestBlock(block, stack))
-		{
-			return 14.0f + (12.0f * this.getCharge(stack));
-		}
-		
-		return 1.0f;
-	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -73,21 +68,8 @@ public class DarkShears extends ItemCharge
 		if (!world.isRemote)
 		{
 			byte charge = this.getCharge(stack);
-			
-			int offset = 0;
-			
-			switch (charge)
-			{
-				case 0:
-					offset = 4;
-					break;
-				case 1:
-					offset = 8;
-					break;
-				case 2:
-					offset = 16;
-					break;
-			}
+
+			int offset = ((int) Math.pow(2, 2 + charge));
 			
 			AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(IShearable.class, bBox);
@@ -165,12 +147,5 @@ public class DarkShears extends ItemCharge
 		}
 	
 		return false;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "shears"));
 	}
 }

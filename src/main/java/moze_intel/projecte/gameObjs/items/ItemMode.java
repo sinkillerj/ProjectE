@@ -36,12 +36,16 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.stackTagCompound.setByte("Mode", (byte) (newMode > numModes - 1 ? 0 : newMode));
+		stack.stackTagCompound.setByte("Mode", (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
+		if (numModes == 0)
+		{
+			return;
+		}
 		changeMode(stack);
 		player.addChatComponentMessage(new ChatComponentText(
 				String.format(StatCollector.translateToLocal("pe.item.mode_switch"), modes[getMode(stack)])));
@@ -51,7 +55,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (stack.hasTagCompound())
+		if (stack.hasTagCompound() && this.numModes > 0)
 		{
 			list.add(StatCollector.translateToLocal("pe.item.mode") + ": " + EnumChatFormatting.AQUA + getModeDescription(stack));
 		}

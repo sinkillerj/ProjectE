@@ -67,7 +67,7 @@ public class ObjHandler
 	public static Item covalence = new CovalenceDust();
 	public static Item matter = new Matter();
 	
-	public static Item dmPick = new DarkPickaxe();
+	public static Item dmPick = new DarkPick();
 	public static Item dmAxe = new DarkAxe();
 	public static Item dmShovel = new DarkShovel();
 	public static Item dmSword = new DarkSword();

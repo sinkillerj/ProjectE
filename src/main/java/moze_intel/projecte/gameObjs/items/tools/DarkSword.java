@@ -1,9 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.gameObjs.items.ItemCharge;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -11,15 +9,21 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class DarkSword extends ItemCharge 
+public class DarkSword extends PEToolBase
 {
 	public DarkSword() 
 	{
-		super("dm_sword", (byte)2);
+		super("dm_sword", (byte)2, new String[] {});
 		this.setNoRepair();
+		this.peToolMaterial = "dm_tools";
+		this.pePrimaryToolClass = "sword";
+	}
+
+	// Only for RedSword to use
+	protected DarkSword(String name, byte numcharges, String[] modeDesc)
+	{
+		super(name, numcharges, modeDesc);
 	}
 	
 	@Override
@@ -57,14 +61,7 @@ public class DarkSword extends ItemCharge
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-	
+
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
@@ -88,12 +85,5 @@ public class DarkSword extends ItemCharge
 	public boolean func_150897_b(Block p_150897_1_)
 	{
 		return p_150897_1_ == Blocks.web;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "sword"));
 	}
 }
