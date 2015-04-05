@@ -36,15 +36,17 @@ public class RedKatar extends PEToolBase
 	public RedKatar() 
 	{
 		super("rm_katar", (byte)4, new String[] {
-				StatCollector.translateToLocal("pe.katar.mode1"), StatCollector.translateToLocal("pe.katar.mode2"),
-				StatCollector.translateToLocal("pe.katar.mode3"), StatCollector.translateToLocal("pe.katar.mode4")});
+				StatCollector.translateToLocal("pe.redsword.mode1"), StatCollector.translateToLocal("pe.redsword.mode2"),
+		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "katar";
 		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
 		this.harvestMaterials.add(Material.web);
+		this.harvestMaterials.add(Material.cloth);
+		this.harvestMaterials.add(Material.plants);
+		this.harvestMaterials.add(Material.leaves);
+		this.harvestMaterials.add(Material.vine);
 
 		this.secondaryClasses.add("sword");
 		this.secondaryClasses.add("axe");
@@ -52,38 +54,9 @@ public class RedKatar extends PEToolBase
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
-	{
-		switch (this.getMode(stack))
-		{
-			case 0:
-				return block.getMaterial() == Material.wood || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine;
-			case 2:
-				return block.getMaterial() == Material.web;
-			default:
-				return false;
-		}
-	}
-	
-	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		if (!(damager instanceof EntityPlayer) || this.getMode(stack) != 3)
-		{
-			return false;
-		}
-		
-		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
-		float totalDmg = 15.0f;
-		
-		if (charge > 0)
-		{
-			dmg.setDamageBypassesArmor();
-			totalDmg += charge;
-		}
-		
-		damaged.attackEntityFrom(dmg, totalDmg);
+		attackWithCharge(stack, damaged, damager, 15.0F);
 		return true;
 	}
 	
@@ -92,10 +65,10 @@ public class RedKatar extends PEToolBase
 	{
 		if (this.getMode(stack) == 1)
 		{
-			return tillSoil(stack, player, world, x, y, z, par7);
+			tillSoil(stack, player, world, x, y, z, par7);
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override

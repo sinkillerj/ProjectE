@@ -1,15 +1,20 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.api.IExtraFunction;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 
 public class RedSword extends DarkSword
 {
 	public RedSword() 
 	{
-		super("rm_sword", (byte)3, new String[]{});
+		super("rm_sword", (byte)3, new String[]{
+				StatCollector.translateToLocal("pe.redsword.mode1"),
+				StatCollector.translateToLocal("pe.redsword.mode2")
+		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "sword";
@@ -18,22 +23,13 @@ public class RedSword extends DarkSword
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		if (!(damager instanceof EntityPlayer))
-		{
-			return false;
-		}
-		
-		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
-		float totalDmg = 14.0f;
-		
-		if (charge > 0)
-		{
-			dmg.setDamageBypassesArmor();
-			totalDmg += charge;
-		}
-		
-		damaged.attackEntityFrom(dmg, totalDmg);
+		attackWithCharge(stack, damaged, damager, 16.0F);
 		return true;
+	}
+
+	@Override
+	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	{
+		attackAOE(stack, player, getMode(stack) == 1, 16.0F);
 	}
 }

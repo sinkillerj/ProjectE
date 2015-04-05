@@ -34,7 +34,10 @@ public class DarkShears extends PEToolBase
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "shears";
 		this.harvestMaterials.add(Material.web);
-		this.harvestMaterials.add(Material.circuits);
+		this.harvestMaterials.add(Material.cloth);
+		this.harvestMaterials.add(Material.plants);
+		this.harvestMaterials.add(Material.leaves);
+		this.harvestMaterials.add(Material.vine);
 	}
 
 	// Only for RedShears
@@ -59,7 +62,7 @@ public class DarkShears extends PEToolBase
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack) 
 	{
-		return block == Blocks.web || block == Blocks.redstone_wire || block == Blocks.tripwire;
+		return super.canHarvestBlock(block, stack) || block == Blocks.redstone_wire || block == Blocks.tripwire;
 	}
 
 	@Override

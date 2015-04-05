@@ -43,45 +43,7 @@ public class DarkShovel extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (!world.isRemote)
-		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-			
-			if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
-			{
-				AxisAlignedBB box = getRelativeBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack) + 1);
-				List<ItemStack> drops = new ArrayList<ItemStack>();
-				byte charge = this.getCharge(stack);
-
-				for (int x = (int) box.minX; x <= box.maxX; x++)
-					for (int y = (int) box.minY; y <= box.maxY; y++)
-						for (int z = (int) box.minZ; z <= box.maxZ; z++)
-						{
-							Block block = world.getBlock(x, y, z);
-							
-							if (block == Blocks.air || block.getBlockHardness(world, x, y, z) == -1 || !canHarvestBlock(block, stack))
-							{
-								continue;
-							}
-							
-							ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
-							
-							if (!blockDrops.isEmpty())
-							{
-								drops.addAll(blockDrops);
-							}
-							
-							world.setBlockToAir(x, y, z);
-						}
-
-				if (!drops.isEmpty())
-				{
-					world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
-					PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-				}
-			}
-		}
-		
+		digAOE(stack, world, player);
 		return stack;
 	}
 }

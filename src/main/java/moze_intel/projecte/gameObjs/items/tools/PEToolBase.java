@@ -13,11 +13,17 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -92,6 +98,9 @@ public abstract class PEToolBase extends ItemMode
 		this.itemIcon = register.registerIcon(this.getTexture(peToolMaterial, pePrimaryToolClass));
 	}
 
+	/*
+	 * Deforests in an AOE. Charge affects the AOE.
+	 */
 	protected void deforest(World world, ItemStack stack, EntityPlayer player, byte charge)
 	{
 		if (charge == 0 || world.isRemote)
@@ -158,23 +167,26 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
-	protected boolean tillSoil(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
+	/*
+	 * Tills in an AOE. Charge affects the AOE.
+	 */
+	protected void tillSoil(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
 	{
 		if (!player.canPlayerEdit(x, y, z, par7, stack))
 		{
-			return false;
+			return;
 		}
 		else
 		{
 			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
 			if (MinecraftForge.EVENT_BUS.post(event))
 			{
-				return false;
+				return;
 			}
 
 			if (event.getResult() == Event.Result.ALLOW)
 			{
-				return true;
+				return;
 			}
 
 			byte charge = this.getCharge(stack);
@@ -198,7 +210,7 @@ public abstract class PEToolBase extends ItemMode
 
 						if (world.isRemote)
 						{
-							return true;
+							return;
 						}
 						else
 						{
@@ -211,8 +223,195 @@ public abstract class PEToolBase extends ItemMode
 						}
 					}
 				}
+		}
+	}
 
-			return hasAction;
+	/*
+	 * Called by multiple tools' left click function. Charge has no effect.
+	 */
+	protected void digBasedOnMode(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase living)
+	{
+		if (world.isRemote || !(living instanceof EntityPlayer))
+		{
+			return;
+		}
+
+		EntityPlayer player = (EntityPlayer) living;
+		byte mode = this.getMode(stack);
+
+		if (mode == 0)
+		{
+			return;
+		}
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		AxisAlignedBB box;
+
+		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+		{
+			return;
+		}
+
+		ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
+
+		if (mode == 1)
+		{
+			box = AxisAlignedBB.getBoundingBox(x, y - 1, z, x, y + 1, z);
+		}
+		else if (mode == 2)
+		{
+			if (direction.offsetX != 0)
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
+			}
+			else if (direction.offsetZ != 0)
+			{
+				box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
+			}
+			else
+			{
+				int dir = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+
+				if (dir == 0 || dir == 2)
+				{
+					box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
+				}
+				else
+				{
+					box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
+				}
+			}
+		}
+		else
+		{
+			if (direction.offsetX == 1)
+			{
+				box = AxisAlignedBB.getBoundingBox(x - 2, y, z, x, y, z);
+			}
+			else if (direction.offsetX == - 1)
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x + 2, y, z);
+			}
+			else if (direction.offsetZ == 1)
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y, z - 2, x, y, z);
+			}
+			else if (direction.offsetZ == -1)
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y, z + 2);
+			}
+			else if (direction.offsetY == 1)
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y - 2, z, x, y, z);
+			}
+			else
+			{
+				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y + 2, z);
+			}
+		}
+
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+
+		for (int i = (int) box.minX; i <= box.maxX; i++)
+			for (int j = (int) box.minY; j <= box.maxY; j++)
+				for (int k = (int) box.minZ; k <= box.maxZ; k++)
+				{
+					Block b = world.getBlock(i, j, k);
+
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
+					{
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
+						world.setBlockToAir(i, j, k);
+					}
+				}
+
+		world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
+	}
+
+	/*
+	 * Carves in an AOE. Charge affects the AOE.
+	 */
+	protected void digAOE(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (world.isRemote || this.getCharge(stack) == 0)
+		{
+			return;
+		}
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+
+		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+		{
+			return;
+		}
+
+		AxisAlignedBB box = getRelativeBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+
+		for (int i = (int) box.minX; i <= box.maxX; i++)
+			for (int j = (int) box.minY; j <= box.maxY; j++)
+				for (int k = (int) box.minZ; k <= box.maxZ; k++)
+				{
+					Block b = world.getBlock(i, j, k);
+
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && canHarvestBlock(b, stack))
+					{
+						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
+						world.setBlockToAir(i, j, k);
+					}
+				}
+
+		if (!drops.isEmpty())
+		{
+			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+		}
+	}
+
+	/*
+	 * Attacks. Charge affects damage.
+	 */
+	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
+	{
+		if (!(damager instanceof EntityPlayer))
+		{
+			return;
+		}
+
+		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
+		byte charge = this.getCharge(stack);
+		float totalDmg = baseDmg;
+
+		if (charge > 0)
+		{
+			dmg.setDamageBypassesArmor();
+			totalDmg += charge;
+		}
+
+		damaged.attackEntityFrom(dmg, totalDmg);
+	}
+
+	/*
+	 * Attacks in an AOE. Charge affects AOE, not damage (intentional)
+	 */
+	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage)
+	{
+		byte charge = getCharge(stack);
+		float factor = 2.5F * charge;
+		AxisAlignedBB aabb = player.boundingBox.expand(factor, factor, factor);
+		List<Entity> toAttack = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, aabb);
+		DamageSource src = DamageSource.causePlayerDamage(player);
+		src.setDamageBypassesArmor();
+		for (Entity entity : toAttack)
+		{
+			if (entity instanceof IMob)
+			{
+				entity.attackEntityFrom(src, damage);
+			}
+			else if (entity instanceof EntityLivingBase && slayAll)
+			{
+				entity.attackEntityFrom(src, damage);
+			}
 		}
 	}
 }

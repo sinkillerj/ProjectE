@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.api.IExtraFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -7,10 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class DarkSword extends PEToolBase
+public class DarkSword extends PEToolBase implements IExtraFunction
 {
 	public DarkSword() 
 	{
@@ -29,22 +29,7 @@ public class DarkSword extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		if (!(damager instanceof EntityPlayer))
-		{
-			return false;
-		}
-		
-		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
-		float totalDmg = 12.0f;
-		
-		if (charge > 0)
-		{
-			dmg.setDamageBypassesArmor();
-			totalDmg += charge;
-		}
-		
-		damaged.attackEntityFrom(dmg, totalDmg);
+		attackWithCharge(stack, damaged, damager, 12.0F);
 		return true;
 	}
 
@@ -85,5 +70,11 @@ public class DarkSword extends PEToolBase
 	public boolean func_150897_b(Block p_150897_1_)
 	{
 		return p_150897_1_ == Blocks.web;
+	}
+
+	@Override
+	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	{
+		attackAOE(stack, player, false, 12.0F);
 	}
 }

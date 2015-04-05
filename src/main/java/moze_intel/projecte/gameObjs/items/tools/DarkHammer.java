@@ -1,26 +1,12 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DarkHammer extends PEToolBase
 {
@@ -45,45 +31,17 @@ public class DarkHammer extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
+	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		if (world.isRemote || !(eLiving instanceof EntityPlayer) || this.getCharge(stack) == 0 || !canHarvestBlock(block, stack))
-		{
-			return false;
-		}
-		
-		EntityPlayer player = (EntityPlayer) eLiving;
-
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-
-		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
-		{
-			return false;
-		}
-		
-		AxisAlignedBB box = getRelativeBox(new Coordinates(x, y, z), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
-		List<ItemStack> drops = new ArrayList<ItemStack>();
-		
-		for (int i = (int) box.minX; i <= box.maxX; i++)
-			for (int j = (int) box.minY; j <= box.maxY; j++)
-				for (int k = (int) box.minZ; k <= box.maxZ; k++)
-				{
-					Block b = world.getBlock(i, j, k);
-					
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && canHarvestBlock(b, stack))
-					{
-						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
-						world.setBlockToAir(i, j, k);
-					}
-				}
-		
-		if (!drops.isEmpty())
-		{
-			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-		}
-		
+		attackWithCharge(stack, damaged, damager, 13.0F);
 		return true;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		digAOE(stack, world, player);
+		return stack;
 	}
 	
 	@Override

@@ -247,6 +247,9 @@ pe.redpick.mode2=3x Tallshot
 pe.redpick.mode3=3x Wideshot
 pe.redpick.mode4=3x Longshot
 
+pe.redsword.mode1=Slay Hostile
+pe.redsword.mode2=Slay All
+
 pe.relay.mk1=Relay MKI
 pe.relay.mk2=Relay MKII
 pe.relay.mk3=Relay MKIII
