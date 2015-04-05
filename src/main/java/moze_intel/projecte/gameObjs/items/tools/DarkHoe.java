@@ -23,7 +23,7 @@ public class DarkHoe extends PEToolBase
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
 	{
-		tillSoil(stack, player, world, x, y, z, par7);
+		tillAOE(stack, player, world, x, y, z, par7);
 		return true;
 	}
 }

@@ -27,7 +27,7 @@ public class DarkAxe extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		deforest(world, stack, player, getCharge(stack));
+		deforestAOE(world, stack, player);
 		return stack;
 	}
 }

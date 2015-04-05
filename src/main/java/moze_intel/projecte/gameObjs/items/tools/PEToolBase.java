@@ -13,19 +13,27 @@ import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
@@ -33,6 +41,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public abstract class PEToolBase extends ItemMode
@@ -101,8 +110,9 @@ public abstract class PEToolBase extends ItemMode
 	/*
 	 * Deforests in an AOE. Charge affects the AOE.
 	 */
-	protected void deforest(World world, ItemStack stack, EntityPlayer player, byte charge)
+	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player)
 	{
+		byte charge = getCharge(stack);
 		if (charge == 0 || world.isRemote)
 		{
 			return;
@@ -170,7 +180,7 @@ public abstract class PEToolBase extends ItemMode
 	/*
 	 * Tills in an AOE. Charge affects the AOE.
 	 */
-	protected void tillSoil(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
+	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
 	{
 		if (!player.canPlayerEdit(x, y, z, par7, stack))
 		{
@@ -411,6 +421,104 @@ public abstract class PEToolBase extends ItemMode
 			else if (entity instanceof EntityLivingBase && slayAll)
 			{
 				entity.attackEntityFrom(src, damage);
+			}
+		}
+		PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
+	}
+
+	/*
+	 * Called when tools that act as shears start breaking a block
+	 */
+	protected void shearBlock(ItemStack stack, int x, int y, int z, EntityPlayer player)
+	{
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+
+		Block block = player.worldObj.getBlock(x, y, z);
+
+		if (block instanceof IShearable)
+		{
+			IShearable target = (IShearable) block;
+
+			if (target.isShearable(stack, player.worldObj, x, y, z))
+			{
+				ArrayList<ItemStack> drops = target.onSheared(stack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+				Random rand = new Random();
+
+				for(ItemStack drop : drops)
+				{
+					float f = 0.7F;
+					double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+					EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, drop);
+					entityitem.delayBeforeCanPickup = 10;
+					player.worldObj.spawnEntityInWorld(entityitem);
+				}
+
+				stack.damageItem(1, player);
+				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
+			}
+		}
+	}
+
+	/*
+	 * Shears entities in an AOE. Charge affects AOE.
+	 */
+	protected void shearEntityAOE(ItemStack stack, EntityPlayer player)
+	{
+		World world = player.worldObj;
+		if (!world.isRemote)
+		{
+			byte charge = this.getCharge(stack);
+
+			int offset = ((int) Math.pow(2, 2 + charge));
+
+			AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
+			List<Entity> list = world.getEntitiesWithinAABB(IShearable.class, bBox);
+
+			List<ItemStack> drops = new ArrayList<>();
+
+			for (Entity ent : list)
+			{
+				IShearable target = (IShearable) ent;
+
+				if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ))
+				{
+					ArrayList<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+
+					if (!entDrops.isEmpty())
+					{
+						for (ItemStack drop : entDrops)
+						{
+							drop.stackSize *= 2;
+						}
+
+						drops.addAll(entDrops);
+					}
+				}
+				if (Math.random() < 0.01)
+				{
+					Entity e = EntityList.createEntityByName(EntityList.getEntityString(ent), world);
+					e.copyDataFrom(ent, true);
+					if (e instanceof EntitySheep)
+					{
+						((EntitySheep) e).setFleeceColor(Utils.randomIntInRange(16, 0));
+					}
+					if (e instanceof EntityAgeable)
+					{
+						((EntityAgeable) e).setGrowingAge(-24000);
+					}
+					world.spawnEntityInWorld(e);
+				}
+			}
+
+			if (!drops.isEmpty())
+			{
+				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 			}
 		}
 	}

@@ -1,10 +1,8 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.IExtraFunction;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.StatCollector;
 
 public class RedSword extends DarkSword
