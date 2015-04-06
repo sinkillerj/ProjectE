@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * Helper class for any method that turns numbers into other numbers.
+ * Named Utils to not clash with vanilla classes
  * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
 public final class MathUtils
@@ -26,7 +27,7 @@ public final class MathUtils
 		return value;
 	}
 
-	public static int randomIntInRange(int max, int min)
+	public static int randomIntInRange(int min, int max)
 	{
 		Random rand = new Random();
 		return rand.nextInt((max - min) + 1) + min;

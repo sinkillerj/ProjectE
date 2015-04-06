@@ -1,12 +1,13 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.utils.ReflectionHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class EntityHomingArrow extends EntityArrow
@@ -39,7 +40,7 @@ public class EntityHomingArrow extends EntityArrow
 
 		AxisAlignedBB box = this.boundingBox;
 		
-		if (target == null && !isInGround())
+		if (target == null && !WorldHelper.isArrowInGround(this))
 		{
 			AxisAlignedBB bBox = box.expand(8, 8, 8);
 			List<EntityLiving> list = this.worldObj.getEntitiesWithinAABB(EntityLiving.class, bBox);
@@ -68,7 +69,7 @@ public class EntityHomingArrow extends EntityArrow
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
 		}
-		else if (!isInGround())
+		else if (!WorldHelper.isArrowInGround(this))
 		{
 			if (target.getHealth() == 0) 
 			{
@@ -101,23 +102,5 @@ public class EntityHomingArrow extends EntityArrow
 			d += ds[i] * ds[i];
 
 		return Math.sqrt(d);
-	}
-	
-	private boolean isInGround()
-	{
-		boolean result = false;
-		Field field = EntityArrow.class.getDeclaredFields()[5];
-		field.setAccessible(true);
-
-		try 
-		{
-			result = field.getBoolean(this);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		return result;
 	}
 }

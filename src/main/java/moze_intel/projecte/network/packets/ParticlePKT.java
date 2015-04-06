@@ -16,7 +16,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	private double velX;
 	private double velY;
 	private double velZ;
-	
+
 	//Needs to have an empty constructor
 	public ParticlePKT() {}
 	
@@ -27,7 +27,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public ParticlePKT(String name, double x, double y, double z, double velX, double velY, double velZ)
 	{
 		this(name, x, y, z);

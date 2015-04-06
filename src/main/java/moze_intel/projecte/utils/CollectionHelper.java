@@ -14,7 +14,7 @@ public final class CollectionHelper
 
 		do
 		{
-			int random = MathUtils.randomIntInRange(list.size() - 1, 0);
+			int random = MathUtils.randomIntInRange(0, list.size() - 1);
 			obj = list.get(random);
 		}
 		while(obj.equals(toExclude));

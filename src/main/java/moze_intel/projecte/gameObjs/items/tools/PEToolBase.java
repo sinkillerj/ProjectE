@@ -159,46 +159,6 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Gets an AABB for AOE digging operations. The charge increases both the breadth and depth of the box.
-	 */
-	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int charge)
-	{
-		if (direction.offsetX > 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetX < 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetY > 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
-		}
-		else if (direction.offsetY < 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
-		}
-		else if (direction.offsetZ > 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z);
-		}
-		else if (direction.offsetZ < 0)
-		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z + charge);
-		}
-		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
-	}
-
-	/**
-	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant.
-	 */
-	public static AxisAlignedBB getFlatYBox(Coordinates coords, ForgeDirection direction, int charge)
-	{
-		return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
-	}
-
-	/**
 	 * Tills in an AOE. Charge affects the AOE.
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
@@ -376,8 +336,8 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB box = affectDepth ? getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
-				: getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
+				: WorldHelper.getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
 
 		List<ItemStack> drops = Lists.newArrayList();
 
@@ -525,7 +485,7 @@ public abstract class PEToolBase extends ItemMode
 					e.copyDataFrom(ent, true);
 					if (e instanceof EntitySheep)
 					{
-						((EntitySheep) e).setFleeceColor(MathUtils.randomIntInRange(16, 0));
+						((EntitySheep) e).setFleeceColor(MathUtils.randomIntInRange(0, 16));
 					}
 					if (e instanceof EntityAgeable)
 					{
@@ -545,7 +505,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
 	{
-		AxisAlignedBB aabb = getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
 		List<ItemStack> drops = Lists.newArrayList();
 
 		for (int i = (int) aabb.minX; i <= aabb.maxX; i++)

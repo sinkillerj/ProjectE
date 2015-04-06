@@ -4,12 +4,8 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.PlayerCapabilities;
-
-import java.lang.reflect.Field;
 
 /**
  * Helper class for player-related methods.
@@ -17,38 +13,14 @@ import java.lang.reflect.Field;
  */
 public final class PlayerHelper
 {
-	public static void setPlayerFireImmunity(EntityPlayer player, boolean flag)
+	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{
-		// TODO: Tag for Willie's magical obfuscation helper later
-		Class c = Entity.class;
-		Field field = c.getDeclaredFields()[52];
-		field.setAccessible(true);
-
-		try
-		{
-			field.setBoolean(player, flag);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		ReflectionHelper.setEntityFireImmunity(player, value);
 	}
 
 	public static void setPlayerWalkSpeed(EntityPlayer player, float value)
 	{
-		// TODO: Tag for Willie's magical obfuscation helper later
-		Class c = PlayerCapabilities.class;
-		Field field = c.getDeclaredFields()[6];
-		field.setAccessible(true);
-
-		try
-		{
-			field.setFloat(player.capabilities, value);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		ReflectionHelper.setPlayerCapabilityWalkspeed(player.capabilities, value);
 	}
 
 	public static void swingItem(EntityPlayerMP player)

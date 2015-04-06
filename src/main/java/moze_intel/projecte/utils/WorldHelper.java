@@ -102,6 +102,46 @@ public final class WorldHelper
 		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 	}
 
+	/**
+	 * Gets an AABB for AOE digging operations. The charge increases both the breadth and depth of the box.
+	 */
+	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int charge)
+	{
+		if (direction.offsetX > 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
+		}
+		else if (direction.offsetX < 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
+		}
+		else if (direction.offsetY > 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+		}
+		else if (direction.offsetY < 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
+		}
+		else if (direction.offsetZ > 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z);
+		}
+		else if (direction.offsetZ < 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z + charge);
+		}
+		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+	}
+
+	/**
+	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant.
+	 */
+	public static AxisAlignedBB getFlatYBox(Coordinates coords, ForgeDirection direction, int charge)
+	{
+		return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+	}
+
 	public static Entity getNewEntityInstance(Class c, World world)
 	{
 		try
@@ -203,6 +243,11 @@ public final class WorldHelper
 						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
 				}
+	}
+
+	public static boolean isArrowInGround(EntityArrow arrow)
+	{
+		return ReflectionHelper.getArrowInGround(arrow);
 	}
 
 	/**

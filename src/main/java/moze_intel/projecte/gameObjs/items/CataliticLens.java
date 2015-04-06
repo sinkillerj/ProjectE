@@ -104,7 +104,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 						
 						if (world.rand.nextInt(8) == 0)
 						{
-							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+							PacketHandler.sendToAllAround(new ParticlePKT("explode", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
 
