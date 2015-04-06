@@ -8,11 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 /**
  * Helper class for player-related methods.
@@ -20,30 +17,6 @@ import java.util.List;
  */
 public final class PlayerHelper
 {
-	public static void repelEntities(Entity player)
-	{
-		AxisAlignedBB bBox = AxisAlignedBB.getBoundingBox(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5);
-		List<Entity> list = player.worldObj.getEntitiesWithinAABB(Entity.class, bBox);
-
-		for (Entity ent : list)
-		{
-			if (ent instanceof EntityPlayer)
-			{
-				continue;
-			}
-
-			Vec3 p = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
-			Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
-			double distance = p.distanceTo(t) + 0.1D;
-
-			Vec3 r = Vec3.createVectorHelper(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
-
-			ent.motionX += r.xCoord / 1.5D / distance;
-			ent.motionY += r.yCoord / 1.5D / distance;
-			ent.motionZ += r.zCoord / 1.5D / distance;
-		}
-	}
-
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean flag)
 	{
 		// TODO: Tag for Willie's magical obfuscation helper later

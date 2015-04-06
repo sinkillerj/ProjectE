@@ -13,6 +13,7 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -100,7 +101,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (stack.getItemDamage() > 1)
 		{
-			PlayerHelper.repelEntities(player);
+			WorldHelper.repelEntitiesInAABBFromPoint(world, playerMP.boundingBox.expand(5.0, 5.0, 5.0), playerMP.posX, playerMP.posY, playerMP.posZ, true);
 		}
 		
 		float toRemove = 0;
@@ -374,7 +375,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (stack.getItemDamage() > 1)
 		{
-			PlayerHelper.repelEntities(player);
+			WorldHelper.repelEntitiesInAABBFromPoint(playerMP.worldObj, playerMP.boundingBox.expand(5.0, 5.0, 5.0),
+					playerMP.posX, playerMP.posY, playerMP.posZ, true);
 		}
 		
 		float toRemove = 0;

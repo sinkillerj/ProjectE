@@ -69,7 +69,7 @@ public final class IMCHandler
 				{
 					Class c = Class.forName(s);
 					
-					if (InterdictionTile.addEntityToBlackList(c))
+					if (WorldHelper.blacklistInterdiction(c))
 					{
 						PELogger.logInfo("Mod " + msg.getSender() + " blacklisted the entity " + c.getCanonicalName() + " for interdiction torches.");
 					}
