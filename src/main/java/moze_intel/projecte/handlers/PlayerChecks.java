@@ -16,14 +16,12 @@ import java.util.List;
 
 public final class PlayerChecks
 {
-	private static List<EntityPlayerMP> flyChecks = new ArrayList<EntityPlayerMP>();
-	private static List<EntityPlayerMP> fireChecks = new ArrayList<EntityPlayerMP>();
-	private static List<EntityPlayerMP> stepChecks = new ArrayList<EntityPlayerMP>();
+	private static List<EntityPlayerMP> flyChecks = new ArrayList<>();
+	private static List<EntityPlayerMP> fireChecks = new ArrayList<>();
+	private static List<EntityPlayerMP> stepChecks = new ArrayList<>();
 
 	public static void update()
 	{
-		World world = MinecraftServer.getServer().getEntityWorld();
-
 		Iterator<EntityPlayerMP> iter = flyChecks.iterator();
 
 		while (iter.hasNext())

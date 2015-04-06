@@ -46,6 +46,7 @@ public final class PlayerHelper
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean flag)
 	{
+		// TODO: Tag for Willie's magical obfuscation helper later
 		Class c = Entity.class;
 		Field field = c.getDeclaredFields()[52];
 		field.setAccessible(true);
@@ -62,6 +63,7 @@ public final class PlayerHelper
 
 	public static void setPlayerWalkSpeed(EntityPlayer player, float value)
 	{
+		// TODO: Tag for Willie's magical obfuscation helper later
 		Class c = PlayerCapabilities.class;
 		Field field = c.getDeclaredFields()[6];
 		field.setAccessible(true);

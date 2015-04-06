@@ -21,7 +21,6 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 	//Not actually the key code, but the index of the keybind in the array!
 	private int key;
 	
-	//Needs to have an empty constructor
 	public KeyPressPKT() {}
 	
 	public KeyPressPKT(int key)

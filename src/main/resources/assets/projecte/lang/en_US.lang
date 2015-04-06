@@ -187,7 +187,7 @@ pe.command.set.invalidmeta=Error: The meta value "%s" is not valid!
 pe.command.set.invalidparams=Error: Please provide parameters!
 pe.command.set.notholding=Error: Player is not holding any item!
 pe.command.set.success=Set EMC value for %s to %s!
-pe.command.set.usage=/projecte_setEMC <unlocalized | oredict name> [meta] <EMC value>
+pe.command.set.usage=/projecte_setEMC [unlocalized | oredict name] [meta] [EMC value]
 
 
 pe.darkpick.mode1=Standard

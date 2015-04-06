@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TileEntityHandler
 {
-	private static final List<Coordinates> CONDENSERS = new ArrayList<Coordinates>();
+	private static final List<Coordinates> CONDENSERS = new ArrayList<>();
 
 	public static void addCondenser(CondenserTile tile)
 	{

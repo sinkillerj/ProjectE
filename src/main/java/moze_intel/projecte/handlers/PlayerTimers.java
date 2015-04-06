@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 
 public final class PlayerTimers
 {
-	private static final LinkedHashMap<String, TimerSet> MAP = new LinkedHashMap<String, TimerSet>();
+	private static final LinkedHashMap<String, TimerSet> MAP = new LinkedHashMap<>();
 
 	public static void update()
 	{

@@ -21,7 +21,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_setEMC <unlocalized-name/ore dictionary name> <metadata (optional)> <EMC value>";
+		return StatCollector.translateToLocal("pe.command.set.usage");
 	}
 	
 	@Override
