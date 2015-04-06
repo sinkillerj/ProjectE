@@ -7,7 +7,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -151,7 +151,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.body.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.body.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown)));
+					StatCollector.translateToLocal("pe.body.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown)));
 		}
 		return list;
 	}

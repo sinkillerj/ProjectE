@@ -7,7 +7,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -87,7 +87,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 		if (ProjectEConfig.archangelPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.archangel.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+					StatCollector.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
 		}
 		return list;
 	}

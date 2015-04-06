@@ -6,6 +6,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -52,7 +53,7 @@ public class DiviningRodLow extends ItemPE
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 			long totalEmc = 0;
 			int numBlocks = 0;
 			

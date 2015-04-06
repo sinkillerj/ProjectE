@@ -5,7 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -294,10 +294,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		{
 			if (stack.getItem() == ObjHandler.gemFeet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
 					list.add(String.format(
-							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
+							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
 
 				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
@@ -307,10 +307,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
 					list.add(String.format(
-							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
+							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
 
 				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;

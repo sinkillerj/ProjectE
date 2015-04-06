@@ -2,9 +2,9 @@ package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.FileHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -65,7 +65,7 @@ public final class CustomEMCParser
 			}
 			finally
 			{
-				Utils.closeStream(reader);
+				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
@@ -142,7 +142,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 	}
 
@@ -211,7 +211,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -271,7 +271,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -301,7 +301,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 
 		return new ArrayList<String>();
@@ -331,7 +331,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 
 		return new ArrayList<Entry>();
@@ -439,7 +439,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 	}
 

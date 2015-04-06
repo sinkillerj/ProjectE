@@ -5,7 +5,7 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
-public final class KeyBinds 
+public final class KeyHelper
 {
 	public static KeyBinding[] array = new KeyBinding[] 
 	{

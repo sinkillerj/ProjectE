@@ -97,7 +97,6 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ObjHandler.registerPhiloStoneSmelting();
-
 		NBTWhitelistParser.readUserData();
 	}
 	
@@ -182,9 +181,9 @@ public class PECore
 						if (remappedItem != null) mapping.remap(remappedItem);
 					}
 				} catch (Throwable t) {
-					// Yeah I know, silently skipping errors isn't good, but this really shouldn't fail, just adding a safety check ^_^
+					// safety check ^_^
 				}
-        		}
+			}
 		}
 	}
 }

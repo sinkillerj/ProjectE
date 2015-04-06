@@ -5,14 +5,9 @@ import java.util.List;
 
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -94,7 +89,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 							hasAction = true;
 						}
 						
-						ArrayList<ItemStack> list = Utils.getBlockDrops(world, player, block, stack, x, y, z);
+						ArrayList<ItemStack> list = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 						
 						if (list != null && list.size() > 0)
 						{
@@ -108,8 +103,8 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 			
 			if (hasAction)
 			{

@@ -11,7 +11,6 @@ import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,8 +120,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			}
 
 			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 		}
 		
 		return true;
@@ -284,9 +283,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyHelper.getExtraFuncKeyCode())));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));

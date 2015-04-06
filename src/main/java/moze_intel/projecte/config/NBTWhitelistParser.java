@@ -1,10 +1,7 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.*;
 import net.minecraft.item.ItemStack;
 
 import java.io.*;
@@ -60,7 +57,7 @@ public final class NBTWhitelistParser
 			}
 			finally
 			{
-				Utils.closeStream(reader);
+				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
@@ -113,7 +110,7 @@ public final class NBTWhitelistParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 	}
 
@@ -139,7 +136,7 @@ public final class NBTWhitelistParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 	}
 }

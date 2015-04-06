@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
+import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -73,6 +74,11 @@ public final class PlayerHelper
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static void swingItem(EntityPlayerMP player)
+	{
+		PacketHandler.sendTo(new SwingItemPKT(), player);
 	}
 
 	public static void updateClientFlight(EntityPlayerMP player, boolean state)

@@ -6,11 +6,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -108,7 +104,7 @@ public abstract class PEToolBase extends ItemMode
 		this.itemIcon = register.registerIcon(this.getTexture(peToolMaterial, pePrimaryToolClass));
 	}
 
-	/*
+	/**
 	 * Deforests in an AOE. Charge affects the AOE.
 	 */
 	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player)
@@ -144,7 +140,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
 					{
-						ArrayList<ItemStack> blockDrops = Utils.getBlockDrops(world, player, block, stack, x, y, z);
+						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
 						if (!blockDrops.isEmpty())
 						{
@@ -156,10 +152,10 @@ public abstract class PEToolBase extends ItemMode
 				}
 
 		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
-		PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
+		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
-	/*
+	/**
 	 * Gets an AABB for AOE digging operations. The charge increases both the breadth and depth of the box.
 	 */
 	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int charge)
@@ -191,7 +187,7 @@ public abstract class PEToolBase extends ItemMode
 		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 	}
 
-	/*
+	/**
 	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant.
 	 */
 	public static AxisAlignedBB getFlatYBox(Coordinates coords, ForgeDirection direction, int charge)
@@ -199,7 +195,7 @@ public abstract class PEToolBase extends ItemMode
 		return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
 	}
 
-	/*
+	/**
 	 * Tills in an AOE. Charge affects the AOE.
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
@@ -258,7 +254,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
-	/*
+	/**
 	 * Called by multiple tools' left click function. Charge has no effect.
 	 */
 	protected void digBasedOnMode(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase living)
@@ -352,7 +348,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
-						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
+						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
 					}
 				}
@@ -360,7 +356,7 @@ public abstract class PEToolBase extends ItemMode
 		WorldHelper.createLootDrop(drops, world, x, y, z);
 	}
 
-	/*
+	/**
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE.
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth)
@@ -390,16 +386,16 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && canHarvestBlock(b, stack))
 					{
-						drops.addAll(Utils.getBlockDrops(world, player, b, stack, i, j, k));
+						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
 					}
 				}
 
 		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
-		PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
-	/*
+	/**
 	 * Attacks. Charge affects damage.
 	 */
 	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
@@ -422,7 +418,7 @@ public abstract class PEToolBase extends ItemMode
 		damaged.attackEntityFrom(dmg, totalDmg);
 	}
 
-	/*
+	/**
 	 * Attacks in an AOE. Charge affects AOE, not damage (intentional)
 	 */
 	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage)
@@ -444,10 +440,10 @@ public abstract class PEToolBase extends ItemMode
 				entity.attackEntityFrom(src, damage);
 			}
 		}
-		PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
+		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
-	/*
+	/**
 	 * Called when tools that act as shears start breaking a block
 	 */
 	protected void shearBlock(ItemStack stack, int x, int y, int z, EntityPlayer player)
@@ -485,7 +481,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
-	/*
+	/**
 	 * Shears entities in an AOE. Charge affects AOE.
 	 */
 	protected void shearEntityAOE(ItemStack stack, EntityPlayer player)
@@ -526,7 +522,7 @@ public abstract class PEToolBase extends ItemMode
 					e.copyDataFrom(ent, true);
 					if (e instanceof EntitySheep)
 					{
-						((EntitySheep) e).setFleeceColor(Utils.randomIntInRange(16, 0));
+						((EntitySheep) e).setFleeceColor(MathUtils.randomIntInRange(16, 0));
 					}
 					if (e instanceof EntityAgeable)
 					{
@@ -537,10 +533,13 @@ public abstract class PEToolBase extends ItemMode
 			}
 
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 		}
 	}
 
+	/**
+	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
+	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
 	{
 		AxisAlignedBB aabb = getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));

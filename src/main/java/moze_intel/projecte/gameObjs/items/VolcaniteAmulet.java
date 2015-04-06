@@ -54,13 +54,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			{
 				IFluidHandler tank = (IFluidHandler) tile;
 
-				if (Utils.canFillTank(tank, FluidRegistry.LAVA, sideHit))
+				if (FluidHelper.canFillTank(tank, FluidRegistry.LAVA, sideHit))
 				{
 					int consumed = (int) EMCHelper.consumePlayerFuel(player, 32);
 
 					if (consumed != -1)
 					{
-						Utils.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000 * (consumed / 32));
+						FluidHelper.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000 * (consumed / 32));
 						return true;
 					}
 				}
@@ -190,9 +190,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), Keyboard.getKeyName(KeyBinds.getProjectileKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
 		}
 		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip3"));
@@ -306,7 +306,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		if (ProjectEConfig.volcanitePedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.volcanite.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
 	}

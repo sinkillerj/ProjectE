@@ -9,10 +9,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
@@ -60,9 +57,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				IFluidHandler tank = (IFluidHandler) tile;
 
-				if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
+				if (FluidHelper.canFillTank(tank, FluidRegistry.WATER, sideHit))
 				{
-					Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+					FluidHelper.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
 					return true;
 				}
 			}
@@ -230,10 +227,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
 			list.add(String.format(
-					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyBinds.getProjectileKeyCode())));
+					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
 		}
 
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
@@ -306,7 +303,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.evertide.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
 	}

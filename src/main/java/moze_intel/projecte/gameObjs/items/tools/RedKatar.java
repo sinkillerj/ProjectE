@@ -1,36 +1,19 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IShearable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class RedKatar extends PEToolBase implements IExtraFunction
 {

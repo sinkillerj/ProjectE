@@ -3,12 +3,10 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -92,7 +90,7 @@ public class DestructionCatalyst extends ItemCharge
 							hasAction = true;
 						}
 						
-						ArrayList<ItemStack> list = Utils.getBlockDrops(world, player, block, stack, x, y, z);
+						ArrayList<ItemStack> list = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 						
 						if (list != null && list.size() > 0)
 						{
@@ -106,9 +104,8 @@ public class DestructionCatalyst extends ItemCharge
 							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 			if (hasAction)
 			{
 				WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);

@@ -324,9 +324,9 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetDesciption(stack)));
 		}
 		
-		if (KeyBinds.getModeKeyCode() >= 0 && KeyBinds.getModeKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyBinds.getModeKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyHelper.getModeKeyCode())));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));

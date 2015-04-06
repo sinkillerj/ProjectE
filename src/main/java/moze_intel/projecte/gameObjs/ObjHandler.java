@@ -512,8 +512,10 @@ public class ObjHandler
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
 	}
-	
-	//Philosopher's stone smelting recipes, EE3 style
+
+	/**
+	 * Philosopher's stone smelting recipes, EE3 style
+	 */
 	public static void registerPhiloStoneSmelting()
 	{
 		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))

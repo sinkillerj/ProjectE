@@ -8,6 +8,7 @@ import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -75,7 +76,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 		{
 			if (((IProjectileShooter) item).shootProjectile(player, stack))
 			{
-				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				PlayerHelper.swingItem((player));
 			}
 		}
 		else if (message.key == 3 && item instanceof IExtraFunction)

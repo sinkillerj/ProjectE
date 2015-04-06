@@ -10,7 +10,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -158,7 +158,7 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.repairtalisman.pedestal1"));
 			list.add(EnumChatFormatting.BLUE +
-					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
+					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
 	}

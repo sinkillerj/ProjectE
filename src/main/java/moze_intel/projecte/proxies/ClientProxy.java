@@ -14,7 +14,7 @@ import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.rendering.*;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.KeyHelper;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -24,9 +24,9 @@ public class ClientProxy extends CommonProxy
 {	
 	public void registerKeyBinds()
 	{
-		for (int i = 0; i < KeyBinds.array.length; i++)
+		for (int i = 0; i < KeyHelper.array.length; i++)
 		{
-			ClientRegistry.registerKeyBinding(KeyBinds.array[i]);
+			ClientRegistry.registerKeyBinding(KeyHelper.array[i]);
 		}
 	}
 

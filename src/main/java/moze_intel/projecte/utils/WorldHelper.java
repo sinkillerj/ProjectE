@@ -1,14 +1,18 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +20,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,17 +71,65 @@ public final class WorldHelper
 		return list;
 	}
 
+	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && block.canSilkHarvest(world, player, x, y, z, meta))
+		{
+			ArrayList<ItemStack> list = Lists.newArrayList(new ItemStack(block, 1, meta));
+			return list;
+		}
+
+		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+	}
+
+	public static Entity getNewEntityInstance(Class c, World world)
+	{
+		try
+		{
+			Constructor constr = c.getConstructor(World.class);
+			Entity ent = (Entity) constr.newInstance(world);
+
+			if (ent instanceof EntitySkeleton)
+			{
+				if (world.rand.nextInt(2) == 0)
+				{
+					((EntitySkeleton) ent).setSkeletonType(1);
+					ent.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
+				}
+				else
+				{
+					ent.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+				}
+			}
+			else if (ent instanceof EntityPigZombie)
+			{
+				ent.setCurrentItemOrArmor(0, new ItemStack(Items.golden_sword));
+			}
+
+			return ent;
+		}
+		catch (Exception e)
+		{
+			PELogger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static Entity getRandomEntity(World world, Entity toRandomize)
 	{
 		Class entClass = toRandomize.getClass();
 
 		if (peacefuls.contains(entClass))
 		{
-			return Utils.getNewEntityInstance((Class) Utils.getRandomListEntry(peacefuls, entClass), world);
+			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
 		}
 		else if (mobs.contains(entClass))
 		{
-			return Utils.getNewEntityInstance((Class) Utils.getRandomListEntry(mobs, entClass), world);
+			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(mobs, entClass), world);
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
@@ -126,7 +179,7 @@ public final class WorldHelper
 
 					if (block == target)
 					{
-						currentDrops.addAll(Utils.getBlockDrops(world, player, block, stack, x, y, z));
+						currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
 						world.setBlockToAir(x, y, z);
 						numMined++;
 						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);

@@ -7,6 +7,7 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,8 +49,8 @@ public class DiviningRodHigh extends DiviningRodMedium
 		
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			List<Integer> emcValues = new ArrayList<Integer>();
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			List<Integer> emcValues = new ArrayList<>();
 			long totalEmc = 0;
 			int numBlocks = 0;
 			
