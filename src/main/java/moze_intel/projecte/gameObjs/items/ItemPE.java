@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,7 +66,7 @@ public abstract class ItemPE extends Item
 			removeEmc(stack, current);
 			amount -= current;
 			
-			double consume = Utils.consumePlayerFuel(player, amount);
+			double consume = EMCHelper.consumePlayerFuel(player, amount);
 			
 			if (consume == -1)
 			{

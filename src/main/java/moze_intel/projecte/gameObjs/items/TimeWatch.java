@@ -6,7 +6,7 @@ import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
@@ -183,7 +183,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			return;
 		}
-		Iterator<TileEntity> iter = Utils.getTileEntitiesWithinAABB(world, bBox).iterator();
+		Iterator<TileEntity> iter = WorldHelper.getTileEntitiesWithinAABB(world, bBox).iterator();
 		while (iter.hasNext())
 		{
 			TileEntity tile = iter.next();

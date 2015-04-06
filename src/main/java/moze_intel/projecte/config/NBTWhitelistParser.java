@@ -1,6 +1,7 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
@@ -91,7 +92,7 @@ public final class NBTWhitelistParser
 					continue;
 				}
 
-				ItemStack stack = Utils.getStackFromString(line, 0);
+				ItemStack stack = ItemHelper.getStackFromString(line, 0);
 
 				if (stack == null)
 				{

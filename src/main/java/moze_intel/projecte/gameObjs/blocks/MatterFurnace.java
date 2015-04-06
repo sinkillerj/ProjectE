@@ -8,7 +8,7 @@ import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -95,7 +95,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 					continue;
 				}
 				
-				Utils.spawnEntityItem(world, stack, x, y, z);
+				WorldHelper.spawnEntityItem(world, stack, x, y, z);
 			}
 			
 			world.func_147453_f(x, y, z, block);

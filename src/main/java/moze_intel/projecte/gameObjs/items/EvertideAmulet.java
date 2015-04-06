@@ -11,6 +11,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -159,7 +160,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
-				Utils.setPlayerWalkSpeed(player, 0.25F);
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
 		else if (!world.isRemote)
@@ -171,7 +172,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
-				Utils.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
 	}

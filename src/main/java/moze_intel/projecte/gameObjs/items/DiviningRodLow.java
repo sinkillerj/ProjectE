@@ -5,7 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -76,7 +76,7 @@ public class DiviningRodLow extends ItemPE
 							continue;
 						}
 						
-						int blockEmc = Utils.getEmcValue(drops.get(0));
+						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
 						
 						if (blockEmc == 0)
 						{
@@ -91,7 +91,7 @@ public class DiviningRodLow extends ItemPE
 								
 								if (entry.getKey().getItem() == drops.get(0).getItem())
 								{
-									int currentValue = Utils.getEmcValue(entry.getValue());
+									int currentValue = EMCHelper.getEmcValue(entry.getValue());
 									
 									if (currentValue != 0)
 									{

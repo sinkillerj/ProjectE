@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -94,7 +93,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					world.removeTileEntity(blockX, blockY, blockZ);
 					world.setBlock(blockX, blockY, blockZ, Blocks.air, 0, 2);
-					Utils.spawnEntityItem(world, s, blockX, blockY, blockZ);
+					WorldHelper.spawnEntityItem(world, s, blockX, blockY, blockZ);
 				}
 			}
 		}

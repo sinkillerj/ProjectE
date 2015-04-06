@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -27,7 +27,7 @@ public class CondenserMK2Tile extends CondenserTile
 				continue;
 			}
 
-			this.addEmc(Utils.getEmcValue(stack) * stack.stackSize);
+			this.addEmc(EMCHelper.getEmcValue(stack) * stack.stackSize);
 			inventory[i] = null;
 			break;
 		}
@@ -89,7 +89,7 @@ public class CondenserMK2Tile extends CondenserTile
 			return false;
 		}
 
-		return !isStackEqualToLock(stack) && Utils.doesItemHaveEmc(stack);
+		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
 	}
 
 	@Override

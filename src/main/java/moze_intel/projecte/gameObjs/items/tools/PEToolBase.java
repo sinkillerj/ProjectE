@@ -1,15 +1,16 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -154,27 +155,48 @@ public abstract class PEToolBase extends ItemMode
 					}
 				}
 
-		if (!drops.isEmpty())
-		{
-			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-		}
+		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
+		PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
 	}
 
-	public static AxisAlignedBB getRelativeBox(Coordinates coords, ForgeDirection direction, int charge)
+	/*
+	 * Gets an AABB for AOE digging operations. The charge increases both the breadth and depth of the box.
+	 */
+	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int charge)
 	{
-		if (direction.offsetX != 0)
+		if (direction.offsetX > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
 		}
-		else if (direction.offsetY != 0)
+		else if (direction.offsetX < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
 		}
-		else
+		else if (direction.offsetY > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z);
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
 		}
+		else if (direction.offsetY < 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
+		}
+		else if (direction.offsetZ > 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z);
+		}
+		else if (direction.offsetZ < 0)
+		{
+			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z + charge);
+		}
+		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+	}
+
+	/*
+	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant.
+	 */
+	public static AxisAlignedBB getFlatYBox(Coordinates coords, ForgeDirection direction, int charge)
+	{
+		return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
 	}
 
 	/*
@@ -249,7 +271,7 @@ public abstract class PEToolBase extends ItemMode
 		EntityPlayer player = (EntityPlayer) living;
 		byte mode = this.getMode(stack);
 
-		if (mode == 0)
+		if (mode == 0) // Standard
 		{
 			return;
 		}
@@ -264,11 +286,11 @@ public abstract class PEToolBase extends ItemMode
 
 		ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 
-		if (mode == 1)
+		if (mode == 1) // 3x Tallshot
 		{
 			box = AxisAlignedBB.getBoundingBox(x, y - 1, z, x, y + 1, z);
 		}
-		else if (mode == 2)
+		else if (mode == 2) // 3x Wideshot
 		{
 			if (direction.offsetX != 0)
 			{
@@ -292,7 +314,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 		}
-		else
+		else // 3x Longshot
 		{
 			if (direction.offsetX == 1)
 			{
@@ -320,7 +342,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 		}
 
-		List<ItemStack> drops = new ArrayList<ItemStack>();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
@@ -335,13 +357,13 @@ public abstract class PEToolBase extends ItemMode
 					}
 				}
 
-		world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
+		WorldHelper.createLootDrop(drops, world, x, y, z);
 	}
 
 	/*
-	 * Carves in an AOE. Charge affects the AOE.
+	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE.
 	 */
-	protected void digAOE(ItemStack stack, World world, EntityPlayer player)
+	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth)
 	{
 		if (world.isRemote || this.getCharge(stack) == 0)
 		{
@@ -355,7 +377,9 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB box = getRelativeBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+		AxisAlignedBB box = affectDepth ? getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
+				: getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 
 		for (int i = (int) box.minX; i <= box.maxX; i++)
@@ -371,11 +395,8 @@ public abstract class PEToolBase extends ItemMode
 					}
 				}
 
-		if (!drops.isEmpty())
-		{
-			world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-		}
+		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
+		PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
 	}
 
 	/*
@@ -515,11 +536,31 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 
-			if (!drops.isEmpty())
+			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
+			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+		}
+	}
+
+	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
+	{
+		AxisAlignedBB aabb = getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
+		List<ItemStack> drops = Lists.newArrayList();
+
+		for (int i = (int) aabb.minX; i <= aabb.maxX; i++)
+		{
+			for (int j = (int) aabb.minY; j <= aabb.maxY; j++)
 			{
-				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
-				PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+				for (int k = (int) aabb.minZ; k <= aabb.maxZ; k++)
+				{
+					Block b = player.worldObj.getBlock(i, j, k);
+					if (b.getBlockHardness(player.worldObj, i, j, k) > -1 && canHarvestBlock(b, stack))
+					{
+						WorldHelper.harvestVein(player.worldObj, player, stack, new Coordinates(i, j, k), b, drops, 0);
+					}
+				}
 			}
 		}
+
+		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
 	}
 }

@@ -2,7 +2,8 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,9 +66,9 @@ public class EntityMobRandomizer extends EntityThrowable
 		}
 		
 		Entity ent = mop.entityHit;
-		Entity randomized = Utils.getRandomEntity(this.worldObj, ent);
+		Entity randomized = WorldHelper.getRandomEntity(this.worldObj, ent);
 		
-		if (ent instanceof EntityLiving && randomized != null && Utils.consumePlayerFuel(shooter, 384) != -1)
+		if (ent instanceof EntityLiving && randomized != null && EMCHelper.consumePlayerFuel(shooter, 384) != -1)
 		{
 			this.setDead();
 			ent.setDead();

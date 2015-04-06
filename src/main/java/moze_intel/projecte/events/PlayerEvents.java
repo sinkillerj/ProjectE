@@ -12,8 +12,8 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -26,8 +26,6 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ChatComponentText;
-
-import java.util.List;
 
 public class PlayerEvents
 {
@@ -78,9 +76,9 @@ public class PlayerEvents
 		{
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
 			
-			if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && Utils.hasSpace(inv, event.item.getEntityItem()))
+			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
-				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
+				ItemStack remain = ItemHelper.pushStackInInv(inv, event.item.getEntityItem());
 				
 				if (remain == null)
 				{
@@ -107,9 +105,9 @@ public class PlayerEvents
 			
 			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
 			
-			if (Utils.hasSpace(inv, event.item.getEntityItem()))
+			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
-				ItemStack remain = Utils.pushStackInInv(inv, event.item.getEntityItem());
+				ItemStack remain = ItemHelper.pushStackInInv(inv, event.item.getEntityItem());
 				
 				if (remain == null)
 				{

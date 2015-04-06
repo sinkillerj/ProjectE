@@ -40,7 +40,7 @@ public class DarkHammer extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		digAOE(stack, world, player);
+		digAOE(stack, world, player, true);
 		return stack;
 	}
 	

@@ -9,6 +9,7 @@ import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,12 +77,12 @@ public class DestructionCatalyst extends ItemCharge
 						Block block = world.getBlock(x, y, z);
 						float hardness = block.getBlockHardness(world, x, y, z);
 						
-						if (block == null || block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
+						if (block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
 						{
 							continue;
 						}
 						
-						if (!this.consumeFuel(player, stack, 8, true))
+						if (!consumeFuel(player, stack, 8, true))
 						{
 							break;
 						}
@@ -110,7 +111,7 @@ public class DestructionCatalyst extends ItemCharge
 			
 			if (hasAction)
 			{
-				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+				WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 			}
 		}
 			

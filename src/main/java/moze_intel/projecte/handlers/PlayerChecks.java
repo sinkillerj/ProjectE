@@ -2,10 +2,8 @@ package moze_intel.projecte.handlers;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -36,7 +34,7 @@ public final class PlayerChecks
 			{
 				if (player.capabilities.allowFlying)
 				{
-					Utils.setPlayerFlight(player, false);
+					PlayerHelper.updateClientFlight(player, false);
 				}
 
 				iter.remove();
@@ -54,7 +52,7 @@ public final class PlayerChecks
 			{
 				if (player.isImmuneToFire())
 				{
-					Utils.setPlayerFireImmunity(player, false);
+					PlayerHelper.setPlayerFireImmunity(player, false);
 				}
 
 				iter.remove();
@@ -71,7 +69,7 @@ public final class PlayerChecks
 			if (!canPlayerStep(player))
 			{
 				player.stepHeight = 0.5f;
-				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
+				PlayerHelper.updateClientStepHeight(player, 0.5F);
 
 				iter.remove();
 				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
@@ -83,18 +81,18 @@ public final class PlayerChecks
 	{
 		if (canPlayerFly(playerMP))
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 		}
 
 		if (isPlayerFireImmune(playerMP))
 		{
-			Utils.setPlayerFireImmunity(playerMP, true);
+			PlayerHelper.setPlayerFireImmunity(playerMP, true);
 		}
 
 		if (canPlayerStep(playerMP))
 		{
 			playerMP.stepHeight = 1.0f;
-			PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+			PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
 		}
 	}
 

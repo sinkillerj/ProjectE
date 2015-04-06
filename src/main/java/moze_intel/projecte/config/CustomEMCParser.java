@@ -1,8 +1,8 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
@@ -93,7 +93,7 @@ public final class CustomEMCParser
 			{
 				if (entry.name.contains(":"))
 				{
-					ItemStack stack = Utils.getStackFromString(entry.name, entry.meta);
+					ItemStack stack = ItemHelper.getStackFromString(entry.name, entry.meta);
 
 					if (stack == null)
 					{
@@ -129,7 +129,7 @@ public final class CustomEMCParser
 					{
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					for (ItemStack stack : Utils.getODItems(entry.name))
+					for (ItemStack stack : ItemHelper.getODItems(entry.name))
 					{
 						userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
 					}

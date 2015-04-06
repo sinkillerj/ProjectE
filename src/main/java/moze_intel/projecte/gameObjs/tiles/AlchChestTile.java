@@ -7,7 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -204,7 +204,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		
 		if (!this.worldObj.isRemote)
 		{
-			ItemStack rTalisman = Utils.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
+			ItemStack rTalisman = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
 			
 			if (rTalisman != null)
 			{
@@ -246,7 +246,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 			}
 			
-			ItemStack gemDensity = Utils.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -254,7 +254,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 			}
 		}
 			
-		ItemStack blackHoleBand = Utils.getStackFromInv(this, new ItemStack(ObjHandler.blackHole, 1, 1));
+		ItemStack blackHoleBand = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.blackHole, 1, 1));
 			
 		if (blackHoleBand != null)
 		{
@@ -270,9 +270,9 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 					if (!this.worldObj.isRemote)
 					{
 					
-						if (Utils.hasSpace(this, item.getEntityItem()))
+						if (ItemHelper.hasSpace(this, item.getEntityItem()))
 						{
-							ItemStack remain = Utils.pushStackInInv(this, item.getEntityItem());
+							ItemStack remain = ItemHelper.pushStackInInv(this, item.getEntityItem());
 							
 							if (remain == null)
 							{
@@ -309,9 +309,9 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 						{
 							ItemStack current = iter.next();
 							
-							if (Utils.hasSpace(this, current))
+							if (ItemHelper.hasSpace(this, current))
 							{
-								ItemStack remain = Utils.pushStackInInv(this, current);
+								ItemStack remain = ItemHelper.pushStackInInv(this, current);
 								
 								if (remain == null)
 								{

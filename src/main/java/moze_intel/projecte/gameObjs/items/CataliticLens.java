@@ -12,6 +12,7 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,7 +114,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 			if (hasAction)
 			{
 				world.playSoundAtEntity(player, "projecte:destruct", 0.5F, 1.0F);
-				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+				WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 			}
 		}
 			

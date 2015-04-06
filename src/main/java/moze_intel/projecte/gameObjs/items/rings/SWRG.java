@@ -10,10 +10,10 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.Utils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -100,7 +100,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (stack.getItemDamage() > 1)
 		{
-			Utils.repellEntities(player);
+			PlayerHelper.repelEntities(player);
 		}
 		
 		float toRemove = 0;
@@ -200,7 +200,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 			PlayerChecks.addPlayerFlyChecks(playerMP);
 		}
 	}
@@ -214,7 +214,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, false);
+			PlayerHelper.updateClientFlight(playerMP, false);
 			PlayerChecks.removePlayerFlyChecks(playerMP);
 		}
 	}
@@ -228,7 +228,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 		}
 	}
 	
@@ -241,7 +241,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, false);
+			PlayerHelper.updateClientFlight(playerMP, false);
 		}
 	}
 	
@@ -374,7 +374,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (stack.getItemDamage() > 1)
 		{
-			Utils.repellEntities(player);
+			PlayerHelper.repelEntities(player);
 		}
 		
 		float toRemove = 0;

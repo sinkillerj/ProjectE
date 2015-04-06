@@ -90,8 +90,6 @@ public class PECore
 	{
 		proxy.registerKeyBinds();
 		proxy.registerRenderers();
-		
-		Utils.init();
 		AchievementHandler.init();
 	}
 	

@@ -2,7 +2,7 @@ package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -90,15 +90,15 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	{
 		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
-		List<ItemStack> list = Utils.getODItems("ingot" + name);
+		List<ItemStack> list = ItemHelper.getODItems("ingot" + name);
 
 		if (list.isEmpty())
 		{
-			list = Utils.getODItems("dust" + name);
+			list = ItemHelper.getODItems("dust" + name);
 
 			if (list.isEmpty())
 			{
-				list = Utils.getODItems("gem" + name);
+				list = ItemHelper.getODItems("gem" + name);
 			}
 		}
 

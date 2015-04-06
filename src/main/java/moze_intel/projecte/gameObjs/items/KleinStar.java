@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.List;
 
 import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -47,7 +47,7 @@ public class KleinStar extends ItemPE
 			return 1.0D;
 		}
 		
-		return 1.0D - starEmc / (double)Utils.getKleinStarMaxEmc(stack);
+		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
 
 	

@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.relay;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,6 +21,6 @@ public class SlotRelayInput extends Slot
 			return false;
 		}
 		
-		return stack.getItem() == ObjHandler.kleinStars || Utils.doesItemHaveEmc(stack);
+		return stack.getItem() == ObjHandler.kleinStars || EMCHelper.doesItemHaveEmc(stack);
 	}
 }

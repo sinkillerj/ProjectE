@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -62,7 +62,7 @@ public abstract class BlockDirection extends BlockContainer
 				continue;
 			}
 			
-			Utils.spawnEntityItem(world, stack, x, y, z);
+			WorldHelper.spawnEntityItem(world, stack, x, y, z);
 		}
 		
 		world.func_147453_f(x, y, z, block);

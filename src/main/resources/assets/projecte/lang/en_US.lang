@@ -215,10 +215,8 @@ pe.ignition.pedestal2=Activates every %s
 pe.item.mode=Mode
 pe.item.mode_switch=Switched to %s Mode
 
-pe.katar.mode1=Deforest
-pe.katar.mode2=Hoe
-pe.katar.mode3=Shear
-pe.katar.mode4=Attack
+pe.katar.mode1=Slay Hostile
+pe.katar.mode2=Slay All
 
 pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s
@@ -227,6 +225,11 @@ pe.misc.every_tick=every tick
 pe.misc.seconds=seconds
 pe.misc.storedxp_tooltip=Stored XP:
 pe.misc.wrenched_block=Wrenched block!
+
+pe.morningstar.mode1=Standard
+pe.morningstar.mode2=3x Tallshot
+pe.morningstar.mode3=3x Wideshot
+pe.morningstar.mode4=3x Longshot
 
 pe.pedestal.item_disabled=Pedestal function has been disabled!
 pe.pedestal.on_pedestal=On Pedestal:

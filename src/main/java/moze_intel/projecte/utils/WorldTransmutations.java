@@ -10,7 +10,7 @@ public final class WorldTransmutations
 {
 	private static final HashMap<MetaBlock, MetaBlock[]> MAP = new HashMap<MetaBlock, MetaBlock[]>();
 
-	public static void init()
+	static
 	{
 		register(Blocks.stone, Blocks.cobblestone, Blocks.grass);
 		register(Blocks.cobblestone, Blocks.stone, Blocks.grass);

@@ -144,12 +144,7 @@ public class NovaExplosion extends Explosion
 			}
 			
 			Entity ent = this.getExplosivePlacedBy();
-			if (list.size() > 0)
-			{
-				if (ent instanceof EntityPlayer)
-					worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, ent.posX, ent.posY, ent.posZ));
-				else worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, this.explosionX, this.explosionY, this.explosionZ));
-			}
+			WorldHelper.createLootDrop(list, worldObj, explosionX, explosionY, explosionZ);
 		}
 	}
 }

@@ -4,10 +4,8 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.*;
 import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -78,9 +76,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return;
 		}
 
-		if (Utils.doesItemHaveEmc(lock))
+		if (EMCHelper.doesItemHaveEmc(lock))
 		{
-			int lockEmc = Utils.getEmcValue(lock);
+			int lockEmc = EMCHelper.getEmcValue(lock);
 
 			if (requiredEmc != lockEmc)
 			{
@@ -125,7 +123,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			}
 			
 			decrStackSize(i, 1);
-			this.addEmc(Utils.getEmcValue(stack));
+			this.addEmc(EMCHelper.getEmcValue(stack));
 			break;
 		}
 		
@@ -211,10 +209,10 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 		if (NBTWhitelist.shouldDupeWithNBT(lock))
 		{
-			return Utils.areItemStacksEqual(lock, stack);
+			return ItemHelper.areItemStacksEqual(lock, stack);
 		}
 
-		return Utils.areItemStacksEqualIgnoreNBT(lock, stack);
+		return ItemHelper.areItemStacksEqualIgnoreNBT(lock, stack);
 	}
 	
 	public int getProgressScaled()
@@ -459,7 +457,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return false;
 		}
 		
-		return !isStackEqualToLock(stack) && Utils.doesItemHaveEmc(stack);
+		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override

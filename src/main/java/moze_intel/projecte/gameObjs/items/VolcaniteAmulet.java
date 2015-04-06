@@ -10,9 +10,7 @@ import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -58,7 +56,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 				if (Utils.canFillTank(tank, FluidRegistry.LAVA, sideHit))
 				{
-					int consumed = (int) Utils.consumePlayerFuel(player, 32);
+					int consumed = (int) EMCHelper.consumePlayerFuel(player, 32);
 
 					if (consumed != -1)
 					{
@@ -96,7 +94,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 						default: break;
 					}
 
-					int consumed = (int) Utils.consumePlayerFuel(player, 32);
+					int consumed = (int) EMCHelper.consumePlayerFuel(player, 32);
 					if (consumed != -1)
 					{
 						placeLava(world, i, j, k);
@@ -141,14 +139,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				
 			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
-				Utils.setPlayerWalkSpeed(player, 0.25F);
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
 		else if (!world.isRemote)
 		{
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
-				Utils.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
 		
@@ -156,7 +154,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		{
 			if (!player.isImmuneToFire())
 			{
-				Utils.setPlayerFireImmunity(player, true);
+				PlayerHelper.setPlayerFireImmunity(player, true);
 			}
 
 			PlayerChecks.addPlayerFireChecks((EntityPlayerMP) player);
@@ -172,7 +170,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
-		if (Utils.consumePlayerFuel(player, 32) != -1)
+		if (EMCHelper.consumePlayerFuel(player, 32) != -1)
 		{
 			player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
 			return true;
@@ -235,20 +233,20 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				
 			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
-				Utils.setPlayerWalkSpeed(player, 0.25F);
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
 		else if (!world.isRemote)
 		{
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
-				Utils.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
 		
 		if (!world.isRemote && !player.isImmuneToFire())
 		{
-			Utils.setPlayerFireImmunity(player, true);
+			PlayerHelper.setPlayerFireImmunity(player, true);
 		}
 	}
 
@@ -262,7 +260,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		if (player instanceof EntityPlayer && !player.worldObj.isRemote)
 		{
-			Utils.setPlayerFireImmunity((EntityPlayer) player, false);
+			PlayerHelper.setPlayerFireImmunity((EntityPlayer) player, false);
 		}
 	}
 

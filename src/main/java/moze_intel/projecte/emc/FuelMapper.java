@@ -2,8 +2,8 @@ package moze_intel.projecte.emc;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -44,7 +44,7 @@ public final class FuelMapper
 	
 	private static void addToMap(ItemStack stack)
 	{
-		if (Utils.doesItemHaveEmc(stack))
+		if (EMCHelper.doesItemHaveEmc(stack))
 		{
 			addToMap(new SimpleStack(stack));
 		}

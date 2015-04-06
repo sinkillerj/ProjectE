@@ -80,8 +80,8 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -109,14 +109,14 @@ public class TransmuteTabletInventory implements IInventory
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{
 				return;
 			}
 
-			lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+			lockCopy = ItemHelper.getNormalizedStack(inventory[LOCK_INDEX]);
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
@@ -129,13 +129,13 @@ public class TransmuteTabletInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (Utils.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
 				}
 
-				if (Utils.basicAreStacksEqual(lockCopy, stack))
+				if (ItemHelper.basicAreStacksEqual(lockCopy, stack))
 				{
 					iter.remove();
 					continue;
@@ -170,7 +170,7 @@ public class TransmuteTabletInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (emc < Utils.getEmcValue(stack))
+				if (emc < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;
