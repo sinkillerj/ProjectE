@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import net.minecraft.block.BlockTNT;
@@ -8,8 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class NovaCatalyst extends BlockTNT
 {

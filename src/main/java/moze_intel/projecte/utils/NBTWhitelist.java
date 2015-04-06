@@ -5,7 +5,6 @@ import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class NBTWhitelist

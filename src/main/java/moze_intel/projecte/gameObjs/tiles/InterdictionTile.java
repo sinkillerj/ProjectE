@@ -1,18 +1,16 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
+import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
-import moze_intel.projecte.config.ProjectEConfig;
+import java.util.List;
 
 public class InterdictionTile extends TileEntity
 {

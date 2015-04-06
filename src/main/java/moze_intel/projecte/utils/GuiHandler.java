@@ -1,13 +1,16 @@
 package moze_intel.projecte.utils;
 
+import cpw.mods.fml.common.network.IGuiHandler;
 import moze_intel.projecte.gameObjs.container.*;
-import moze_intel.projecte.gameObjs.container.inventory.*;
+import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
+import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.gui.*;
 import moze_intel.projecte.gameObjs.tiles.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler
 {

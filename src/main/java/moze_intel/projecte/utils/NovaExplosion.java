@@ -1,19 +1,20 @@
 package moze_intel.projecte.utils;
 
-import java.util.*;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class NovaExplosion extends Explosion 
 {

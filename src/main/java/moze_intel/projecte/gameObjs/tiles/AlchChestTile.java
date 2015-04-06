@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.Iterator;
-import java.util.List;
-
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
@@ -16,6 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory
 {

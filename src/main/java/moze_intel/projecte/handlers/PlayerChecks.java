@@ -8,10 +8,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

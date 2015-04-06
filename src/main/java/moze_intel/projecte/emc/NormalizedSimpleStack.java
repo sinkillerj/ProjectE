@@ -8,7 +8,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class NormalizedSimpleStack {
 	public static Map<Integer, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();

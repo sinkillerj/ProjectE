@@ -1,12 +1,11 @@
 package moze_intel.projecte.network.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+
+import java.util.List;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.EMCHelper;
@@ -11,7 +12,6 @@ import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class EntityMobRandomizer extends EntityThrowable
 {

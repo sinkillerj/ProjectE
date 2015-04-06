@@ -6,11 +6,10 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.gui.GuiTextField;
-
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 

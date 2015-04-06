@@ -1,14 +1,17 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,9 +23,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CataliticLens extends ItemCharge implements IProjectileShooter
 {

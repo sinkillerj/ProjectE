@@ -1,13 +1,9 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
-import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.AchievementPage;
 
 

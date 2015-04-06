@@ -21,19 +21,21 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.ThreadCheckUUID;
+import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.GuiHandler;
+import moze_intel.projecte.utils.IMCHandler;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)

@@ -1,20 +1,19 @@
 package moze_intel.projecte.network.packets;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IItemCharge;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMessage>
 {

@@ -1,15 +1,12 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-import net.minecraft.block.BlockTNT;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.world.World;
 
 public class NovaCataclysm extends NovaCatalyst
 {

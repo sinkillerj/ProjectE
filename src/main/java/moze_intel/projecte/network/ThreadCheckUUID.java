@@ -3,15 +3,12 @@ package moze_intel.projecte.network;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadCheckUUID extends Thread

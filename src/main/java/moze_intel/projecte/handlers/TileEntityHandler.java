@@ -7,7 +7,6 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

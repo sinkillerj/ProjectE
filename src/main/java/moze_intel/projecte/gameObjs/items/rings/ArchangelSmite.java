@@ -13,13 +13,12 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ArchangelSmite extends ItemPE implements IPedestalItem

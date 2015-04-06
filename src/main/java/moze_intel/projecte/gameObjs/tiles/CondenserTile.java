@@ -2,10 +2,13 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
-import moze_intel.projecte.utils.*;
-import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
