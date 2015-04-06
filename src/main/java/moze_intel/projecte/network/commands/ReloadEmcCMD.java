@@ -6,6 +6,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 
 public class ReloadEmcCMD extends ProjectEBaseCMD
 {
@@ -24,14 +25,14 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		sender.addChatMessage(new ChatComponentText("[ProjectE] Reloading EMC registrations..."));
+		sender.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.command.reload.started")));
 			
 		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
 		TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
 		
-		sender.addChatMessage(new ChatComponentText("[ProjectE] Done! Sending updates to clients."));
+		sender.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.command.reload.success")));
 		PacketHandler.sendFragmentedEmcPacketToAll();
 	}
 

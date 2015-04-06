@@ -63,12 +63,8 @@ public class ThreadCheckUUID extends Thread
 					uuids.add(line);
 				}
 			}
-				
-			//if (isServerSide)
-			//{
-				PECore.uuids.addAll(uuids);
-			//}
 
+			PECore.uuids.addAll(uuids);
 		}
 		catch(Exception e)
 		{

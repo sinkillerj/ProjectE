@@ -4,9 +4,11 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class SetEmcCMD extends ProjectEBaseCMD
 {
@@ -33,7 +35,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, "Error: command needs parameters!");
+			sendError(sender, StatCollector.translateToLocal("pe.command.set.invalidparams"));
 			return;
 		}
 
@@ -47,17 +49,17 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, "Error: player isn't holding any item!");
+				sendError(sender, StatCollector.translateToLocal("pe.command.set.notholding"));
 				return;
 			}
 
 			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
 			meta = heldItem.getItemDamage();
-			emc = parseInteger(params[0]);
+			emc = MathUtils.parseInteger(params[0]);
 
 			if (emc < 0)
 			{
-				sendError(sender, "Error: " + params[0] + " isn't a valid number!");
+				sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
 			}
 		}
 		else
@@ -70,40 +72,40 @@ public class SetEmcCMD extends ProjectEBaseCMD
 			{
 				if (params.length > 2)
 				{
-					meta = parseInteger(params[1]);
+					meta = MathUtils.parseInteger(params[1]);
 
 					if (meta < 0)
 					{
-						sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidmeta"), params[1]));
 						return;
 					}
 
-					emc = parseInteger(params[2]);
+					emc = MathUtils.parseInteger(params[2]);
 
 					if (emc < 0)
 					{
-						sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
 						return;
 					}
 				}
 				else
 				{
-					emc = parseInteger(params[1]);
+					emc = MathUtils.parseInteger(params[1]);
 
 					if (emc < 0)
 					{
-						sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
 						return;
 					}
 				}
 			}
 			else
 			{
-				emc = parseInteger(params[1]);
+				emc = MathUtils.parseInteger(params[1]);
 
 				if (emc < 0)
 				{
-					sendError(sender, "Error: " + params[1] + " isn't a valid number!");
+					sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
 					return;
 				}
 			}
@@ -118,11 +120,11 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			PacketHandler.sendFragmentedEmcPacketToAll();
 
-			sendSuccess(sender, "Registered EMC value for: " + name + "(" + emc + ")");
+			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.set.success"), name, emc));
 		}
 		else
 		{
-			sendError(sender, "Error: couldn't find any valid items for: " + name);
+			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invaliditem"), name));
 		}
 	}
 }

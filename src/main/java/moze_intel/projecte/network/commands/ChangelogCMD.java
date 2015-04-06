@@ -5,10 +5,11 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
-	public static final List<String> changelog = new ArrayList();
+	public static final List<String> changelog = new ArrayList<>();
 	
 	@Override
 	public String getCommandName() 
@@ -27,7 +28,7 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new ChatComponentText("ProjectE is up to date."));
+			sender.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.command.changelog.uptodate")));
 		}
 		else
 		{

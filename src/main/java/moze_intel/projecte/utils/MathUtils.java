@@ -10,6 +10,22 @@ import java.util.Random;
  */
 public final class MathUtils
 {
+	public static int parseInteger(String string)
+	{
+		int value;
+
+		try
+		{
+			value = Integer.parseInt(string);
+		}
+		catch (NumberFormatException e)
+		{
+			return -1;
+		}
+
+		return value;
+	}
+
 	public static int randomIntInRange(int max, int min)
 	{
 		Random rand = new Random();

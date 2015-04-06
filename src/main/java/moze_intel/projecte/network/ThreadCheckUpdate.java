@@ -5,6 +5,7 @@ import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class ThreadCheckUpdate extends Thread
 	private final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/Changelog.txt";
 	private final String changelogDevURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogDev.txt";
 	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
 	private boolean isServerSide;
 	
 	public ThreadCheckUpdate(boolean isServer) 
@@ -37,14 +39,7 @@ public class ThreadCheckUpdate extends Thread
 		
 		try
 		{
-			//if (PECore.VERSION.contains("dev"))
-			//{
-			//	connection = (HttpURLConnection) new URL(changelogDevURL).openConnection();
-			//}
-			//else
-			//{
-				connection = (HttpURLConnection) new URL(changelogURL).openConnection();
-			//}
+			connection = (HttpURLConnection) new URL(changelogURL).openConnection();
 
 			connection.connect();
 			
@@ -58,7 +53,7 @@ public class ThreadCheckUpdate extends Thread
 				throw new IOException("No data from github changelog!");
 			}
 			
-			String latestVersion = null;
+			String latestVersion;
 			List<String> changes = new ArrayList<String>();
 			
 			latestVersion = line.substring(11);
@@ -80,7 +75,7 @@ public class ThreadCheckUpdate extends Thread
 			
 			if (!PECore.VERSION.equals(latestVersion))
 			{
-				PELogger.logInfo("Mod is outdated! Check " + githubURL + " to get the latest version (" + latestVersion + ").");
+				PELogger.logInfo("Mod is outdated! Check " + curseURL + " to get the latest version (" + latestVersion + ").");
 				
 				for (String s : changes)
 				{
@@ -93,9 +88,11 @@ public class ThreadCheckUpdate extends Thread
 				}
 				else
 				{
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("New update for Project-E is available! Version: " + latestVersion));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Get it at " + githubURL));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Use /projecte_log for update notes."));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.update.available"), latestVersion)));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.getit")));
+					// Someone turn this into a link
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(curseURL));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.changelog")));
 				}
 			}
 			else

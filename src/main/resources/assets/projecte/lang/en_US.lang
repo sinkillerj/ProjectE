@@ -159,6 +159,37 @@ pe.bhb.pedestal2=Dumps in adjacent inventories
 pe.body.pedestal1=Restores nearby players' hunger
 pe.body.pedestal2=Half a shank every %s
 
+pe.command.changelog.uptodate=ProjectE is up to date.
+pe.command.clearknowledge.error=Couldn't clear knowledge for: %s
+pe.command.clearknowledge.notify=Your transmutation knowledge was cleared by %s!
+pe.command.clearknowledge.playernotfound=Couldn't find player named: %s
+pe.command.clearknowledge.success=Cleared knowledge for: %s
+pe.command.clearknowledge.usage=/projecte_clearKnowledge [username]
+
+pe.command.reload.started=Reloading EMC registrations...
+pe.command.reload.success=Done! Sending updated data to clients.
+
+pe.command.remove.invaliditem=Error: The item "%s" was not found!
+pe.command.remove.invalidmeta=Error: The meta value "%s" is not valid!
+pe.command.remove.notholding=Error: Player is not holding any item!
+pe.command.remove.success=Removed EMC value for %s.
+pe.command.remove.usage=/projecte_removeEMC <unlocalized | oredict name> [meta]
+
+pe.command.reset.invalidmeta=Error: The meta value "%s" is not valid!
+pe.command.reset.nochange=The EMC value for %s:%s has not been modified!
+pe.command.reset.notholding=Error: Player is not holding any item!
+pe.command.reset.success=Reset EMC value for %s.
+pe.command.reset.usage=/projecte_resetEMC <unlocalized | oredict name> [meta]
+
+pe.command.set.invalidemc=Error: The EMC value "%s" is not valid!
+pe.command.set.invaliditem=Error: The item "%s" was not found!
+pe.command.set.invalidmeta=Error: The meta value "%s" is not valid!
+pe.command.set.invalidparams=Error: Please provide parameters!
+pe.command.set.notholding=Error: Player is not holding any item!
+pe.command.set.success=Set EMC value for %s to %s!
+pe.command.set.usage=/projecte_setEMC <unlocalized | oredict name> [meta] <EMC value>
+
+
 pe.darkpick.mode1=Standard
 pe.darkpick.mode2=3x Tallshot
 pe.darkpick.mode3=3x Wideshot
@@ -292,6 +323,10 @@ pe.transmutation.learned4=n
 pe.transmutation.learned5=e
 pe.transmutation.learned6=d
 pe.transmutation.learned7=!
+
+pe.update.available=New ProjectE update available! Version: %s
+pe.update.changelog=Use /projecte_log for change log!
+pe.update.getit=Get it here!
 
 pe.volcanite.tooltip1=Press %s to fire a lava projectile
 pe.volcanite.tooltip2=Acts as infinitely full lava bucket

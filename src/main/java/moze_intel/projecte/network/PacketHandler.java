@@ -87,7 +87,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Integer[]> list = new ArrayList<>();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())

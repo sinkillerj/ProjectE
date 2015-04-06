@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
@@ -79,6 +78,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			}
 			else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS)
 			{
+				// Sword block? (doesn't work) :(
 				player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 			}
 		}
@@ -86,6 +86,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		{
 			// Shear
 			shearEntityAOE(stack, player);
+			// Sword block? (doesn't work) :(
 			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		}
 		

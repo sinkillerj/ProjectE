@@ -4,9 +4,11 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class RemoveEmcCMD extends ProjectEBaseCMD
 {
@@ -19,7 +21,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_removeEMC <unlocalized/ore-dictionary name> <metadata (optional)>";
+		return StatCollector.translateToLocal("pe.command.remove.usage");
 	}
 	
 	@Override
@@ -31,7 +33,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
-		String name = "";
+		String name;
 		int meta = 0;
 
 		if (params.length == 0)
@@ -40,7 +42,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, "Error: player isn't holding any item!");
+				sendError(sender, StatCollector.translateToLocal("pe.command.remove.notholding"));
 				return;
 			}
 
@@ -53,11 +55,11 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 			if (params.length > 1)
 			{
-				meta = parseInteger(params[1]);
+				meta = MathUtils.parseInteger(params[1]);
 
 				if (meta < 0)
 				{
-					sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a valid number!");
+					sendError(sender, String.format(StatCollector.translateToLocal("pe.command.remove.invalidmeta"), params[1]));
 					return;
 				}
 			}
@@ -72,11 +74,11 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 			PacketHandler.sendFragmentedEmcPacketToAll();
 
-			sendSuccess(sender, "Removed EMC value for: " + name);
+			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.remove.success"), name));
 		}
 		else
 		{
-			sendError(sender, "Error: couldn't find any valid items for: " + name);
+			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.remove.invaliditem"), name));
 		}
 	}
 }

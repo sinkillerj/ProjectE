@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
