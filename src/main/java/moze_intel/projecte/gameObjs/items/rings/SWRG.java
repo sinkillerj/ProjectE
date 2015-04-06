@@ -51,19 +51,31 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
 	{
-		if (world.isRemote || invSlot > 8 || !(entity instanceof EntityPlayer))
+		if (invSlot > 8 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
+		
+		EntityPlayer player = (EntityPlayer) entity;
+
+		if (stack.getItemDamage() > 1)
+		{
+			// Repel on both sides - smooth animation
+			WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+		}
+
+		if (world.isRemote)
+		{
+			return;
+		}
+
+		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
 
 		if (!stack.hasTagCompound())
 		{
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
-		EntityPlayer player = (EntityPlayer) entity;
-		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
-		
+
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
 			if (stack.getItemDamage() > 0)
@@ -97,11 +109,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			{
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
-		}
-		
-		if (stack.getItemDamage() > 1)
-		{
-			WorldHelper.repelEntitiesInAABBFromPoint(world, playerMP.boundingBox.expand(5.0, 5.0, 5.0), playerMP.posX, playerMP.posY, playerMP.posZ, true);
 		}
 		
 		float toRemove = 0;
@@ -325,19 +332,26 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
 	{
-		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer))
+		if (!(ent instanceof EntityPlayer))
 		{
 			return;
 		}
-		
+
+		EntityPlayer player = (EntityPlayer) ent;
+
+		if (stack.getItemDamage() > 1)
+		{
+			// Repel on both sides - smooth animation
+			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+		}
+
+		EntityPlayerMP playerMP = (EntityPlayerMP) player;
+
 		if (!stack.hasTagCompound())
 		{
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
-		EntityPlayer player = (EntityPlayer) ent;
-		EntityPlayerMP playerMP = (EntityPlayerMP) player;
-		
+
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
 			if (stack.getItemDamage() > 0)
@@ -371,12 +385,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			{
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
-		}
-		
-		if (stack.getItemDamage() > 1)
-		{
-			WorldHelper.repelEntitiesInAABBFromPoint(playerMP.worldObj, playerMP.boundingBox.expand(5.0, 5.0, 5.0),
-					playerMP.posX, playerMP.posY, playerMP.posZ, true);
 		}
 		
 		float toRemove = 0;

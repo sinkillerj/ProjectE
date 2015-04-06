@@ -15,6 +15,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -215,14 +216,19 @@ public final class WorldHelper
 		for (Entity ent : list)
 		{
 			if (isSWRG || !interdictionBlacklist.contains(ent.getClass())) {
+				// SWRG repels all, only the torch respects blacklist
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (ProjectEConfig.interdictionMode && !(ent instanceof EntityMob))
+					if (ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}
 					else
 					{
+						if (ent instanceof EntityArrow && ((EntityArrow) ent).onGround)
+						{
+							continue;
+						}
 						Vec3 p = Vec3.createVectorHelper(x, y, z);
 						Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
