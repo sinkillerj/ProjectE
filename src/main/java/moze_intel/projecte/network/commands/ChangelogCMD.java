@@ -3,13 +3,14 @@ package moze_intel.projecte.network.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
-	public static final List<String> changelog = new ArrayList<>();
+	public static final List<String> changelog = Lists.newArrayList();
 	
 	@Override
 	public String getCommandName() 

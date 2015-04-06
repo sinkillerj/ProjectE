@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
@@ -83,7 +84,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(

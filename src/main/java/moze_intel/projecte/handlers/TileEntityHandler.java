@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PELogger;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class TileEntityHandler
 {
-	private static final List<Coordinates> CONDENSERS = new ArrayList<>();
+	private static final List<Coordinates> CONDENSERS = Lists.newArrayList();
 
 	public static void addCondenser(CondenserTile tile)
 	{

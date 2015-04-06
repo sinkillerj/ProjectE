@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.MathUtils;
@@ -186,7 +187,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	
 	private List<StackWithSlot> getAllSeeds(ItemStack[] inv) 
 	{
-		List<StackWithSlot> result = new ArrayList();
+		List<StackWithSlot> result = Lists.newArrayList();
 		
 		for (int i = 0; i < inv.length; i++)
 		{
@@ -386,7 +387,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.harvestPedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal1"));

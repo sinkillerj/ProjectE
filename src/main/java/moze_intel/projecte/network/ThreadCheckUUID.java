@@ -1,5 +1,6 @@
 package moze_intel.projecte.network;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public class ThreadCheckUUID extends Thread
 				throw new IOException("No data from github UUID list!");
 			}
 
-			List<String> uuids = new ArrayList<String>();
+			List<String> uuids = Lists.newArrayList();
 					
 			while ((line = reader.readLine()) != null)
 			{

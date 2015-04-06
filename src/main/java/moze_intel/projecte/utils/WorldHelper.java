@@ -58,7 +58,7 @@ public final class WorldHelper
 		int y = tile.yCoord;
 		int z = tile.zCoord;
 
-		List<TileEntity> list = new ArrayList<>();
+		List<TileEntity> list = Lists.newArrayList();
 		for (int i = 0; i <= 5; i++)
 		{
 			ForgeDirection direction = ForgeDirection.getOrientation(i);
@@ -143,7 +143,7 @@ public final class WorldHelper
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)
 	{
-		List<TileEntity> list = new ArrayList<TileEntity>();
+		List<TileEntity> list = Lists.newArrayList();
 
 		for (int i = (int) bBox.minX; i <= bBox.maxX; i++)
 			for (int j = (int) bBox.minY; j <= bBox.maxY; j++)

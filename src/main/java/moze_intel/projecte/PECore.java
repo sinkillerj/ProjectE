@@ -1,5 +1,6 @@
 package moze_intel.projecte;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -50,7 +51,7 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
 
-	public static final List<String> uuids = new ArrayList();
+	public static final List<String> uuids = Lists.newArrayList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)

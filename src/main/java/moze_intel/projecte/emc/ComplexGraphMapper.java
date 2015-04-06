@@ -1,6 +1,9 @@
 package moze_intel.projecte.emc;
 
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import java.util.*;
 
 public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
@@ -9,8 +12,8 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 	}
 
 	public Map<T, V> generateValues() {
-		Map<T, V> valueFor = new HashMap<T, V>();
-		Map<T, V> solvableThings = new HashMap<T, V>();
+		Map<T, V> valueFor = Maps.newHashMap();
+		Map<T, V> solvableThings = Maps.newHashMap();
 
 		//Everything, that only appears in 'uses' and has no conversion itself has a value of 0.
 		for (T someThing : usedIn.keySet()) {
@@ -22,7 +25,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 		solvableThings.putAll(fixValueBeforeInherit);
 
 
-		Set<T> lookAt = new HashSet<T>(conversionsFor.keySet());
+		Set<T> lookAt = Sets.newHashSet(conversionsFor.keySet());
 		while (!solvableThings.isEmpty() || !lookAt.isEmpty()) {
 			while (true) {
 				for (T something : lookAt) {
@@ -165,7 +168,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 	protected boolean hasSolvedDependency(Conversion conversion) {
 		if (conversion.ingredientsWithAmount != null && conversion.ingredientsWithAmount.size() > 0) {
 			for (T ingredient: conversion.ingredientsWithAmount.keySet()) {
-				if (hasSolvedConversionDependency(ingredient, new HashSet<T>(Arrays.asList(conversion.output)))) {
+				if (hasSolvedConversionDependency(ingredient, Sets.newHashSet(Collections.singletonList(conversion.output)))) {
 					return true;
 				}
 			}

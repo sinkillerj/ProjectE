@@ -1,10 +1,12 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Maps;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class IngredientMap<T> {
-	protected HashMap<T, Integer> ingredientsWithAmount = new HashMap<T, Integer>();
+	protected HashMap<T, Integer> ingredientsWithAmount = Maps.newHashMap();
 
 	public void addIngredient(T stackNorm, int amount) {
 		int count = amount;
@@ -15,7 +17,7 @@ public class IngredientMap<T> {
 	}
 
 	public Map<T, Integer> getMap() {
-		return new HashMap<T, Integer>(ingredientsWithAmount);
+		return Maps.newHashMap(ingredientsWithAmount);
 	}
 
 	public String toString() {

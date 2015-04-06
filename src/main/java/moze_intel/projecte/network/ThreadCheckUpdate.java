@@ -1,5 +1,6 @@
 package moze_intel.projecte.network;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
@@ -54,7 +55,7 @@ public class ThreadCheckUpdate extends Thread
 			}
 			
 			String latestVersion;
-			List<String> changes = new ArrayList<String>();
+			List<String> changes = Lists.newArrayList();
 			
 			latestVersion = line.substring(11);
 			latestVersion = latestVersion.trim();

@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Maps;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,10 +38,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 
 	@Override
 	public Map<T, V> generateValues() {
-		Map<T, V> values = new HashMap<T, V>();
-		Map<T, V> newValueFor = new HashMap<T, V>();
-		Map<T, V> nextValueFor = new HashMap<T, V>();
-		Map<T,Object> reasonForChange = new HashMap<T, Object>();
+		Map<T, V> values = Maps.newHashMap();
+		Map<T, V> newValueFor = Maps.newHashMap();
+		Map<T, V> nextValueFor = Maps.newHashMap();
+		Map<T,Object> reasonForChange = Maps.newHashMap();
 
 
 		for (Map.Entry<T,V> entry: fixValueBeforeInherit.entrySet()) {

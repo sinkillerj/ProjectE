@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -104,7 +105,7 @@ public final class ItemHelper
 	 */
 	public static List<ItemStack> getODItems(String oreName)
 	{
-		List<ItemStack> result = new ArrayList<ItemStack>();
+		List<ItemStack> result = Lists.newArrayList();
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
@@ -115,7 +116,7 @@ public final class ItemHelper
 
 			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
-				List<ItemStack> list = new ArrayList<ItemStack>();
+				List<ItemStack> list = Lists.newArrayList();
 
 				ItemStack copy = stack.copy();
 				copy.setItemDamage(0);

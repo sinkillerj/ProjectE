@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -203,7 +204,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = Lists.newArrayList();
 		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
@@ -260,7 +261,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
-		List<ItemStack> result = new ArrayList<ItemStack>();
+		List<ItemStack> result = Lists.newArrayList();
 		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)

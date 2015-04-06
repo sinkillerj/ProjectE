@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -9,14 +11,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.*;
 
 public abstract class NormalizedSimpleStack {
-	public static Map<Integer, Set<Integer>> idWithUsedMetaData = new HashMap<Integer, Set<Integer>>();
+	public static Map<Integer, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(int id, int damage) {
 		if (id < 0) return null;
 		NSSItem normStack = new NSSItem(id, damage);
 		Set<Integer> usedMetadata;
 		if (!idWithUsedMetaData.containsKey(normStack.id)) {
-			usedMetadata = new HashSet<Integer>();
+			usedMetadata = Sets.newHashSet();
 			idWithUsedMetaData.put(normStack.id, usedMetadata);
 		} else {
 			usedMetadata = idWithUsedMetaData.get(normStack.id);
@@ -114,7 +116,7 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static Map<Map<NormalizedSimpleStack,Integer>,NSSGroup> groups = new HashMap<Map<NormalizedSimpleStack,Integer>,NSSGroup> ();
+	public static Map<Map<NormalizedSimpleStack,Integer>,NSSGroup> groups = Maps.newHashMap();
 	public static NormalizedSimpleStack createGroup(Iterable<ItemStack> i) {
 		IngredientMap<NormalizedSimpleStack> groupMap = new IngredientMap<NormalizedSimpleStack>();
 		for (ItemStack itemStack:i) {

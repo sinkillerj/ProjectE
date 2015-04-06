@@ -1,5 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
@@ -18,8 +21,8 @@ import java.util.*;
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper());
-	Set<Class> canNotMap = new HashSet<Class>();
-	Map<Class, Integer> recipeCount = new HashMap<Class, Integer>();
+	Set<Class> canNotMap = Sets.newHashSet();
+	Map<Class, Integer> recipeCount = Maps.newHashMap();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
@@ -199,8 +202,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 				recipeItems = ((ShapelessOreRecipe) recipe).getInput();
 			}
 			if (recipeItems == null) return null;
-			ArrayList<Iterable<ItemStack>> variableInputs = new ArrayList<Iterable<ItemStack>>();
-			ArrayList<ItemStack> fixedInputs = new ArrayList<ItemStack>();
+			ArrayList<Iterable<ItemStack>> variableInputs = Lists.newArrayList();
+			ArrayList<ItemStack> fixedInputs = Lists.newArrayList();
 			for (Object recipeItem : recipeItems) {
 				if (recipeItem instanceof ItemStack) {
 					fixedInputs.add((ItemStack) recipeItem);

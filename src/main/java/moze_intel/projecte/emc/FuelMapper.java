@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public final class FuelMapper 
 {
-	private static final List<SimpleStack> FUEL_MAP = new ArrayList<SimpleStack>();
+	private static final List<SimpleStack> FUEL_MAP = Lists.newArrayList();
 	
 	public static void loadMap()
 	{

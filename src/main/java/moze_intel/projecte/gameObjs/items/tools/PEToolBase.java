@@ -115,7 +115,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		List<ItemStack> drops = new ArrayList<ItemStack>();
+		List<ItemStack> drops = Lists.newArrayList();
 
 		for (int x = (int) player.posX - (5 * charge); x <= player.posX + (5 * charge); x++)
 			for (int y = (int) player.posY - (10 * charge); y <= player.posY + (10 * charge); y++)
@@ -338,7 +338,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 		}
 
-		List<ItemStack> drops = new ArrayList<>();
+		List<ItemStack> drops = Lists.newArrayList();
 
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
@@ -376,7 +376,7 @@ public abstract class PEToolBase extends ItemMode
 		AxisAlignedBB box = affectDepth ? getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
 				: getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
 
-		List<ItemStack> drops = new ArrayList<ItemStack>();
+		List<ItemStack> drops = Lists.newArrayList();
 
 		for (int i = (int) box.minX; i <= box.maxX; i++)
 			for (int j = (int) box.minY; j <= box.maxY; j++)
@@ -496,7 +496,7 @@ public abstract class PEToolBase extends ItemMode
 			AxisAlignedBB bBox = player.boundingBox.expand(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(IShearable.class, bBox);
 
-			List<ItemStack> drops = new ArrayList<>();
+			List<ItemStack> drops = Lists.newArrayList();
 
 			for (Entity ent : list)
 			{

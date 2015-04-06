@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,7 +32,7 @@ import java.util.List;
 public class TransmutationRenderingEvent 
 {
 	private Minecraft mc = Minecraft.getMinecraft();
-	private final List<AxisAlignedBB> renderList = new ArrayList();
+	private final List<AxisAlignedBB> renderList = Lists.newArrayList();
 	private double playerX;
 	private double playerY;
 	private double playerZ;

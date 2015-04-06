@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
@@ -127,7 +128,7 @@ public class EntityLootBall extends Entity
 		}
 		
 		boolean playSound = false;
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		
 		if (player.openContainer instanceof AlchBagContainer)
 		{
@@ -295,7 +296,7 @@ public class EntityLootBall extends Entity
 	protected void readEntityFromNBT(NBTTagCompound nbt) 
 	{
 		age = nbt.getShort("Age");
-		items = new ArrayList();
+		items = Lists.newArrayList();
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
 		for (int i = 0; i < list.tagCount(); i++)

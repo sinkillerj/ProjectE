@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 
 public final class WorldTransmutations
 {
-	private static final HashMap<MetaBlock, MetaBlock[]> MAP = new HashMap<MetaBlock, MetaBlock[]>();
+	private static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
 
 	static
 	{

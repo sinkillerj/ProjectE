@@ -1,10 +1,9 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -30,7 +29,7 @@ public class NovaExplosion extends Explosion
 	public void doExplosionA()
 	{
 		float f = this.explosionSize;
-		HashSet hashset = new HashSet();
+		Set<ChunkPosition> hashset = Sets.newHashSet();
 		int i;
 		int j;
 		int k;
@@ -97,7 +96,7 @@ public class NovaExplosion extends Explosion
 		int j;
 		int k;
 		Block block;
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		
 
 		if (this.isSmoking)

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
@@ -15,7 +16,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 
 public class InterdictionTile extends TileEntity
 {
-	private static List<Class> blacklist = new ArrayList(); 
+	private static List<Class> blacklist = Lists.newArrayList();
 	private AxisAlignedBB bBox = null;
 	
 	public static boolean addEntityToBlackList(Class entClass)

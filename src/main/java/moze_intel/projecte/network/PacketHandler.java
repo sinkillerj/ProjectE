@@ -1,5 +1,6 @@
 package moze_intel.projecte.network;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -51,7 +52,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
@@ -87,7 +88,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = new ArrayList<>();
+		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())

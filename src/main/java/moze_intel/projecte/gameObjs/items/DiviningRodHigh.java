@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
@@ -50,7 +51,7 @@ public class DiviningRodHigh extends DiviningRodMedium
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PlayerHelper.swingItem(((EntityPlayerMP) player));
-			List<Integer> emcValues = new ArrayList<>();
+			List<Integer> emcValues = Lists.newArrayList();
 			long totalEmc = 0;
 			int numBlocks = 0;
 			

@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.utils.PELogger;
@@ -16,9 +17,9 @@ import java.util.List;
 
 public final class PlayerChecks
 {
-	private static List<EntityPlayerMP> flyChecks = new ArrayList<>();
-	private static List<EntityPlayerMP> fireChecks = new ArrayList<>();
-	private static List<EntityPlayerMP> stepChecks = new ArrayList<>();
+	private static List<EntityPlayerMP> flyChecks = Lists.newArrayList();
+	private static List<EntityPlayerMP> fireChecks = Lists.newArrayList();
+	private static List<EntityPlayerMP> stepChecks = Lists.newArrayList();
 
 	public static void update()
 	{

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.network.PacketHandler;
@@ -65,7 +66,7 @@ public class CataliticLens extends ItemCharge implements IProjectileShooter
 			Coordinates coords = new Coordinates(mop);
 			AxisAlignedBB box = getBoxFromDirection(direction, coords, numRows);
 			
-			List<ItemStack> drops = new ArrayList();
+			List<ItemStack> drops = Lists.newArrayList();
 			
 			for (int x = (int) box.minX; x <= box.maxX; x++)
 				for (int y = (int) box.minY; y <= box.maxY; y++)

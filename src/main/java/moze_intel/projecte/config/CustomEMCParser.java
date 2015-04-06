@@ -1,5 +1,7 @@
 package moze_intel.projecte.config;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.FileHelper;
@@ -72,7 +74,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> userValues = new HashMap<NormalizedSimpleStack,Integer>();
+	public static Map<NormalizedSimpleStack, Integer> userValues = Maps.newHashMap();
 
 	public static void readUserData()
 	{
@@ -279,7 +281,7 @@ public final class CustomEMCParser
 
 	private static List<String> readAllFile()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		BufferedReader reader = null;
 
 		try
@@ -304,12 +306,12 @@ public final class CustomEMCParser
 			FileHelper.closeStream(reader);
 		}
 
-		return new ArrayList<String>();
+		return Lists.newArrayList();
 	}
 
 	private static List<Entry> getAllEntries()
 	{
-		List<Entry> list = new ArrayList<Entry>();
+		List<Entry> list = Lists.newArrayList();
 		LineNumberReader reader = null;
 
 		try
@@ -334,7 +336,7 @@ public final class CustomEMCParser
 			FileHelper.closeStream(reader);
 		}
 
-		return new ArrayList<Entry>();
+		return Lists.newArrayList();
 	}
 
 	private static Entry getNextEntry(LineNumberReader reader) throws IOException
