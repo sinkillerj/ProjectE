@@ -218,7 +218,7 @@ public abstract class PEToolBase extends ItemMode
 							{
 								world.setBlock(i, y, j, block1);
 
-								if (blockAbove.getMaterial() == Material.plants
+								if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
 										&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
 										) {
 									// Fancy break block - get rid of tall grass
