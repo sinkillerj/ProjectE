@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import net.minecraft.util.StatCollector;
 import scala.actors.threadpool.Arrays;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,7 +82,7 @@ public class AlchBagInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Alchemical Bag";
+		return StatCollector.translateToLocal("item.pe_alchemical_bag_white.name");
 	}
 
 	@Override

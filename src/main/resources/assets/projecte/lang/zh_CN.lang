@@ -51,7 +51,7 @@ item.pe_divining_rod_3.name=探知之杖 <高级>
 item.pe_destruction_catalyst.name=毁灭燧石
 item.pe_hyperkinetic_lens.name=不稳定水晶
 item.pe_catalitic_lens.name=催化水晶
-item.pe_lens_explozive.name=烈性宝珠
+item.pe_lens_explosive.name=烈性宝珠
 item.pe_water_orb.name=潮汐宝珠
 item.pe_lava_orb.name=熔焰宝珠
 item.pe_randomizer.name=异变宝珠
@@ -87,11 +87,11 @@ item.pe_gem_armor_3.name=飓风长靴
 item.pe_arcana_ring.name=奥术指环
 item.pe_zero_ring.name=零度指环
 item.pe_tome.name=炼金术卷册
-item.pe_transmutation_tablet.name=便携式转换桌
+item.pe_transmutation_tablet.name=便携式转化桌
 
 tile.pe_alchemy_chest.name=炼金术箱子
 tile.pe_interdiction_torch.name=禁止火把
-tile.pe_transmutation_stone.name=转换桌
+tile.pe_transmutation_stone.name=转化桌
 tile.pe_condenser.name=能量凝聚器
 tile.pe_condenser_mk2.name=能量凝聚器 MK2
 tile.pe_rm_furnace.name=红物质熔炉
@@ -145,7 +145,155 @@ achievement.dm_pick=物质触碰物质
 achievement.dm_pick.desc=为什么不试试这个呢?
 achievement.rm_pick=安全的工具?
 achievement.rm_pick.desc=也许不那么安全
-achievement.klein=EMC电池
+achievement.klein=能量电池
 achievement.klein.desc=存储EMC以备不时之需
-achievement.klein_big=大容量EMC电池
+achievement.klein_big=大容量能量电池
 achievement.klein_big.desc=它能容得下整个宇宙
+
+pe.archangel.pedestal1=射击附近的怪物
+pe.archangel.pedestal2=每过%s射击一次
+
+pe.bhb.pedestal1=收集附近的掉落物
+pe.bhb.pedestal2=并存入邻接的容器中
+
+pe.body.pedestal1=恢复附近玩家的饥饿度
+pe.body.pedestal2=每过%s恢复半格饥饿值
+
+pe.darkpick.mode1=普通模式
+pe.darkpick.mode2=3x 竖直模式
+pe.darkpick.mode3=3x 横向模式
+pe.darkpick.mode4=3x 直线模式
+
+pe.divining.avgemc=平均EMC: %,d (共%d个方块)
+pe.divining.maxemc=最高EMC: %,d
+pe.divining.secondmax=第二高EMC: %,d
+pe.divining.thirdmax=第三高EMC: %,d
+
+pe.dmfurnace.shortname=暗物质熔炉
+pe.rmfurnace.shortname=红物质熔炉
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=最高生产效率:
+pe.emc.maxoutrate_tooltip=最高输出效率:
+pe.emc.maxstorage_tooltip=存储上限:
+pe.emc.name=EMC
+pe.emc.rate=EMC/s
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=Stored EMC:
+pe.emc.too_much=EMC的存储已达到上限!
+
+pe.evertide.tooltip1=按%s发射一颗潮汐宝珠
+pe.evertide.tooltip2=能提供无限水
+pe.evertide.tooltip3=右键填充流体储罐或炼药锅
+pe.evertide.tooltip4=任何操作均不消耗EMC
+pe.evertide.pedestal1=召唤暴风雨/雪
+pe.evertide.pedestal2=每过%s激活一次
+
+pe.gem.disabled=关闭
+pe.gem.enabled=启用
+pe.gem.nightvision_tooltip=夜视模式:
+pe.gem.nightvision.prompt=按Shift%s开启夜视模式
+pe.gem.stepassist_tooltip=跳跃辅助:
+pe.gem.stepassist.prompt=按%s开启跳跃辅助
+
+pe.gemdensity.blacklist=黑名单
+pe.gemdensity.mode_switch=转换目标设定为 %s
+pe.gemdensity.tooltip1=不停地转换物品
+pe.gemdensity.tooltip2=转换目标: %s
+pe.gemdensity.tooltip3=按%s改变转换目标
+pe.gemdensity.tooltip4=右键设置黑名单或白名单
+pe.gemdensity.tooltip5=Shift右键开始或停止转换
+pe.gemdensity.whitelist=白名单
+
+pe.harvestgod.pedestal1=使周围的作物加速生长
+pe.harvestgod.pedestal2=并收割附近成熟的作物
+pe.harvestgod.pedestal3=每过%s激活一次
+
+pe.ignition.pedestal1=燃烧附近的怪物
+pe.ignition.pedestal2=每过%s激活一次
+
+pe.item.mode=模式
+pe.item.mode_switch=切换为%s模式
+
+pe.katar.mode1=伐木
+pe.katar.mode2=锄
+pe.katar.mode3=剪刀
+pe.katar.mode4=攻击
+
+pe.life.pedestal1=恢复生命值与饥饿度
+pe.life.pedestal2=每过%s恢复半颗心及半格饥饿值
+
+pe.misc.every_tick=/tick
+pe.misc.seconds=秒
+pe.misc.storedxp_tooltip=Stored XP:
+pe.misc.wrenched_block=扳动方块!
+
+pe.pedestal.item_disabled=暗物质台座的功能已被禁止!
+pe.pedestal.on_pedestal=在暗物质台座上:
+pe.pedestal.shortname=暗物质台座
+pe.pedestal.tooltip1=Shift右键打开界面
+pe.pedestal.tooltip2=右击激活台座
+
+pe.philstone.mode1=正方体
+pe.philstone.mode2=平面
+pe.philstone.mode3=直线
+pe.philstone.tooltip1=按%s打开合成界面
+pe.philstone.tooltip2=可用于调整ProjectE中的方块
+pe.philstone.tooltip3=用左键改变方块朝向
+pe.philstone.tooltip4=用Shift右键拆卸方块
+
+pe.redpick.mode1=普通模式
+pe.redpick.mode2=3x 竖直模式
+pe.redpick.mode3=3x 横向模式
+pe.redpick.mode4=3x 直线模式
+
+pe.relay.mk1=反物质继电器 MKI
+pe.relay.mk2=反物质继电器 MKII
+pe.relay.mk3=反物质继电器 MKIII
+
+pe.repairtalisman.pedestal1=修复附近玩家的工具
+pe.repairtalisman.pedestal2=每过%s修复1点耐久
+
+pe.server.high_alchemist=高级炼金术士
+pe.server.has_joined=进入服务器
+
+pe.soul.pedestal1=治疗附近的玩家
+pe.soul.pedestal2=每过%s恢复半颗心
+
+pe.swrg.pedestal1=雷击附近的怪物
+pe.swrg.pedestal2=每过%s激活一次
+
+pe.timewatch.disabled=该物品已被管理员禁止!
+pe.timewatch.ff=怀表使时间迅速流逝...
+pe.timewatch.mode=怀表模式: %s
+pe.timewatch.mode_switch=怀表模式: %s
+pe.timewatch.off=怀表关闭
+pe.timewatch.rw=怀表使时间快速倒流...
+pe.timewatch.tooltip1=成为时间的领主
+pe.timewatch.tooltip2=右键切换模式
+pe.timewatch.pedestal1=%d倍加快附近方块的刷新及运作速度
+pe.timewatch.pedestal2=%.3f倍减低附近生物的活动速度
+
+pe.tome.tooltip1=放入转化桌可习得全部的知识
+
+pe.transmutation.already_using=有人正在使用这个转化桌!
+pe.transmutation.transmute=转化桌
+pe.transmutation.learned0=L
+pe.transmutation.learned1=e
+pe.transmutation.learned2=a
+pe.transmutation.learned3=r
+pe.transmutation.learned4=n
+pe.transmutation.learned5=e
+pe.transmutation.learned6=d
+pe.transmutation.learned7=!
+
+pe.volcanite.tooltip1=按%s发射一颗熔焰宝珠
+pe.volcanite.tooltip2=能提供无限岩浆
+pe.volcanite.tooltip3=右键填充流体储罐
+pe.volcanite.tooltip4=任何操作均需消耗32EMC
+pe.volcanite.pedestal1=停止暴风雨/雪
+pe.volcanite.pedestal2=每过%s激活一次
+
+pe.zero.pedestal1=熄灭实体上燃烧的火焰
+pe.zero.pedestal2=并冻结周围的一切
+pe.zero.pedestal3=每过%s激活一次

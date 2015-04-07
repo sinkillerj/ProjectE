@@ -1,3 +1,18 @@
+###Version 1.7.10-PE1.4.3
+* NEW: Previously hard coded English strings can now be localized
+* NEW: Chinese language file updates
+* NEW: Russian language file updates
+* NEW: Misc GraphMapper enhancements
+* FIXED: Interdiction Torch only affects hostile mobs by default. A new config option has been added for this
+* FIXED: Pedestal effect range is now 9x9x9 instead of 10x10x10 to allow proper centering and prevent OCD
+* FIXED: Volcanite Amulet can now be used to craft the Iron Band
+* FIXED: A issue where FakePlayer blocks could cause a crash
+* FIXED: Players being revived after death and other health related item derps
+* FIXED: Watch of Flowing Time no longer makes the Harvest Goddess Band redundant
+* FIXED: A typo preventing the Explosive Lens from being localized
+* FIXED: EMC remapping moved to a separate thread to prevent lag
+* FIXED: Removed Kappabrine
+
 ###Version 1.7.10-PE1.4.2
 * NEW: Pedestal cooldowns and other variables are now configurable
 * NEW: Right clicking clears transmutation GUI search bar

@@ -1,9 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,12 +63,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			EMCMapper.clearMaps();
-			CustomEMCParser.readUserData();
-			EMCMapper.map();
-			TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
-
-			PacketHandler.sendFragmentedEmcPacketToAll();
+			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
 
 			sendSuccess(sender, "Removed EMC value for: " + name);
 		}

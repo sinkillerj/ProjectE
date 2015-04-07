@@ -8,6 +8,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class GUIRMFurnace extends GuiContainer 
@@ -50,7 +51,7 @@ public class GUIRMFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString("RM Furnace", 76, 5, 4210752);
-		this.fontRendererObj.drawString("Inventory", 76, ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.rmfurnace.shortname"), 76, 5, 4210752);
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 76, ySize - 96 + 2, 4210752);
 	}
 }

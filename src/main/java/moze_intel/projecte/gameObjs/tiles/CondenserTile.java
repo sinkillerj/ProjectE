@@ -14,6 +14,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 
 public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory
 {
@@ -354,7 +355,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public String getInventoryName() 
 	{
-		return "Condenser";
+		return StatCollector.translateToLocal("tile.pe_condenser.name");
 	}
 
 	@Override

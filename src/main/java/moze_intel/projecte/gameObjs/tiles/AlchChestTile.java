@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory
 {
@@ -128,7 +129,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Alchemical Chest";
+		return StatCollector.translateToLocal("tile.pe_alchemy_chest.name");
 	}
 
 	@Override

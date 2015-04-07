@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import net.minecraft.util.StatCollector;
 import scala.actors.threadpool.Arrays;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
@@ -648,7 +649,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public String getInventoryName() 
 	{
-		return "Transmutation Stone";
+		return StatCollector.translateToLocal("pe.rmfurnace.shortname");
 	}
 
 	@Override

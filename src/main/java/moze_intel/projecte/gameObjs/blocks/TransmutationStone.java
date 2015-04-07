@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -66,7 +67,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 		{
 			if (!world.isRemote)
 			{
-				player.addChatComponentMessage(new ChatComponentText("Someone is already using this transmutation stone!"));
+				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("pe.transmutation.already_using")));
 			}
 		}
 		return true;

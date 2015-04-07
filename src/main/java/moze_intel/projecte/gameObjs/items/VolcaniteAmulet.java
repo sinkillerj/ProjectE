@@ -23,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -193,11 +194,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a lava projectile");
+			list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), Keyboard.getKeyName(KeyBinds.getProjectileKeyCode())));
 		}
-		list.add("Acts as refilling lava bucket");
-		list.add("Right-click to fill tanks");
-		list.add("All operations cost 32 EMC!");
+		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip4"));
 	}
 	
 	@Override
@@ -306,8 +307,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		List<String> list = new ArrayList<String>();
 		if (ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Prevents rain/snow storms");
-			list.add(EnumChatFormatting.BLUE + "Attempts to stop weather every " + Utils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.volcanite.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
 	}

@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -106,8 +107,8 @@ public class DiviningRodLow extends ItemPE
 						
 						numBlocks++;	
 					}
-			
-			player.addChatComponentMessage(new ChatComponentText(String.format("Average EMC for %d blocks: %,d", numBlocks, (totalEmc / numBlocks))));
+
+			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.avgemc"), numBlocks, (totalEmc / numBlocks))));
 		}
 		
 		return stack;

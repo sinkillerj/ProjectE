@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -33,7 +34,9 @@ public class DarkPickaxe extends ItemMode
 {
 	public DarkPickaxe() 
 	{
-		super("dm_pick", (byte)2, new String[] {"Standard", "3x Tallshot", "3x Wideshot", "3x Longshot"});
+		super("dm_pick", (byte)2, new String[] {
+				StatCollector.translateToLocal("pe.darkpick.mode1"), StatCollector.translateToLocal("pe.darkpick.mode2"),
+				StatCollector.translateToLocal("pe.darkpick.mode3"), StatCollector.translateToLocal("pe.darkpick.mode4")});
 		this.setNoRepair();
 	}
 	
