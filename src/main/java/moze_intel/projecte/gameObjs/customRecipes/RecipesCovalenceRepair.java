@@ -111,7 +111,7 @@ public class RecipesCovalenceRepair implements IRecipe
 			}
 		}
 
-		return false;
+		return dustCounter == 3;
 
 	}
 
