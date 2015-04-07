@@ -11,6 +11,8 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
@@ -46,6 +48,12 @@ import java.util.Set;
 
 public abstract class PEToolBase extends ItemMode
 {
+	public static final float HAMMER_BASE_ATTACK = 13.0F;
+	public static final float DARKSWORD_BASE_ATTACK = 12.0F;
+	public static final float REDSWORD_BASE_ATTACK = 16.0F;
+	public static final float STAR_BASE_ATTACK = 20.0F;
+	public static final float KATAR_BASE_ATTACK = 23.0F;
+	public static final float KATAR_DEATHATTACK = 1000.0F;
 	protected String pePrimaryToolClass;
 	protected String peToolMaterial;
 	protected Set<Material> harvestMaterials;
@@ -108,9 +116,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Deforests in an AOE. Charge affects the AOE.
+	 * Deforests in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player)
+	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player, int emcCost)
 	{
 		byte charge = getCharge(stack);
 		if (charge == 0 || world.isRemote)
@@ -145,12 +153,11 @@ public abstract class PEToolBase extends ItemMode
 					{
 						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
-						if (!blockDrops.isEmpty())
+						if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
 						{
 							drops.addAll(blockDrops);
+							world.setBlockToAir(x, y, z);
 						}
-
-						world.setBlockToAir(x, y, z);
 					}
 				}
 
@@ -159,11 +166,11 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Tills in an AOE. Charge affects the AOE.
+	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7)
+	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, int emcCost)
 	{
-		if (!player.canPlayerEdit(x, y, z, par7, stack))
+		if (!player.canPlayerEdit(x, y, z, meta, stack))
 		{
 			return;
 		}
@@ -188,8 +195,9 @@ public abstract class PEToolBase extends ItemMode
 				for (int j = z - charge; j <= z + charge; j++)
 				{
 					Block block = world.getBlock(i, y, j);
+					Block blockAbove = world.getBlock(i, y + 1, j);
 
-					if (world.getBlock(i, y + 1, j).isAir(world, i, y + 1, j) && (block == Blocks.grass || block == Blocks.dirt))
+					if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
 					{
 						Block block1 = Blocks.farmland;
 
@@ -205,11 +213,22 @@ public abstract class PEToolBase extends ItemMode
 						}
 						else
 						{
-							world.setBlock(i, y, j, block1);
-
-							if (!hasAction)
+							// The initial block we target is always free
+							if ((i == x && j == z) || consumeFuel(player, stack, emcCost, true))
 							{
-								hasAction = true;
+								world.setBlock(i, y, j, block1);
+
+								if (blockAbove.getMaterial() == Material.plants
+										&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
+										) {
+									// Fancy break block - get rid of tall grass
+									world.func_147480_a(i, y + 1, j, true);
+								}
+
+								if (!hasAction)
+								{
+									hasAction = true;
+								}
 							}
 						}
 					}
@@ -218,7 +237,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Called by multiple tools' left click function. Charge has no effect.
+	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
 	protected void digBasedOnMode(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase living)
 	{
@@ -320,9 +339,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE.
+	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
-	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth)
+	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost)
 	{
 		if (world.isRemote || this.getCharge(stack) == 0)
 		{
@@ -347,7 +366,10 @@ public abstract class PEToolBase extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && canHarvestBlock(b, stack))
+					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1
+							&& canHarvestBlock(b, stack)
+							&& consumeFuel(player, stack, emcCost, true)
+							)
 					{
 						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -359,7 +381,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Attacks. Charge affects damage.
+	 * Attacks. Charge affects damage. Free operation.
 	 */
 	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
 	{
@@ -382,9 +404,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Attacks in an AOE. Charge affects AOE, not damage (intentional)
+	 * Attacks in an AOE. Charge affects AOE, not damage (intentional). Optional per-entity EMC cost.
 	 */
-	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage)
+	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage, int emcCost)
 	{
 		byte charge = getCharge(stack);
 		float factor = 2.5F * charge;
@@ -394,20 +416,22 @@ public abstract class PEToolBase extends ItemMode
 		src.setDamageBypassesArmor();
 		for (Entity entity : toAttack)
 		{
-			if (entity instanceof IMob)
-			{
-				entity.attackEntityFrom(src, damage);
-			}
-			else if (entity instanceof EntityLivingBase && slayAll)
-			{
-				entity.attackEntityFrom(src, damage);
+			if (consumeFuel(player, stack, emcCost, true)) {
+				if (entity instanceof IMob)
+				{
+					entity.attackEntityFrom(src, damage);
+				}
+				else if (entity instanceof EntityLivingBase && slayAll)
+				{
+					entity.attackEntityFrom(src, damage);
+				}
 			}
 		}
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
 	/**
-	 * Called when tools that act as shears start breaking a block
+	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
 	protected void shearBlock(ItemStack stack, int x, int y, int z, EntityPlayer player)
 	{
@@ -445,9 +469,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Shears entities in an AOE. Charge affects AOE.
+	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
-	protected void shearEntityAOE(ItemStack stack, EntityPlayer player)
+	protected void shearEntityAOE(ItemStack stack, EntityPlayer player, int emcCost)
 	{
 		World world = player.worldObj;
 		if (!world.isRemote)
@@ -465,7 +489,9 @@ public abstract class PEToolBase extends ItemMode
 			{
 				IShearable target = (IShearable) ent;
 
-				if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ))
+				if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ)
+						&& consumeFuel(player, stack, emcCost, true)
+						)
 				{
 					ArrayList<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 

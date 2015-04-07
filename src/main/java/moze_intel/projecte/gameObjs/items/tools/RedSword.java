@@ -21,13 +21,13 @@ public class RedSword extends DarkSword
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 16.0F);
+		attackWithCharge(stack, damaged, damager, REDSWORD_BASE_ATTACK);
 		return true;
 	}
 
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, 16.0F);
+		attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 96);
 	}
 }

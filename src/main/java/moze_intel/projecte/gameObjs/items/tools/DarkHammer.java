@@ -33,14 +33,14 @@ public class DarkHammer extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 13.0F);
+		attackWithCharge(stack, damaged, damager, HAMMER_BASE_ATTACK);
 		return true;
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		digAOE(stack, world, player, true);
+		digAOE(stack, world, player, true, 4);
 		return stack;
 	}
 	

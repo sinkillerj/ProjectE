@@ -40,7 +40,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
 		// Sword
-		attackWithCharge(stack, damaged, damager, 23.0F);
+		attackWithCharge(stack, damaged, damager, KATAR_BASE_ATTACK);
 		return true;
 	}
 
@@ -55,6 +55,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		if (world.isRemote)
 		{
 			return stack;
@@ -68,26 +69,19 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 				if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt)
 				{
 					// Hoe
-					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
+					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), 0);
 				}
 				else if (blockHit instanceof BlockLog)
 				{
 					// Axe
-					deforestAOE(world, stack, player);
+					deforestAOE(world, stack, player, 0);
 				}
-			}
-			else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS)
-			{
-				// Sword block? (doesn't work) :(
-				player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 			}
 		}
 		else
 		{
 			// Shear
-			shearEntityAOE(stack, player);
-			// Sword block? (doesn't work) :(
-			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+			shearEntityAOE(stack, player, 0);
 		}
 		
 		return stack;
@@ -96,7 +90,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, 1000.0F);
+		attackAOE(stack, player, getMode(stack) == 1, KATAR_DEATHATTACK, 0);
 	}
 
 	@Override

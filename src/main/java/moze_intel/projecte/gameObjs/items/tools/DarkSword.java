@@ -29,7 +29,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 12.0F);
+		attackWithCharge(stack, damaged, damager, DARKSWORD_BASE_ATTACK);
 		return true;
 	}
 
@@ -75,6 +75,6 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, false, 12.0F);
+		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 64);
 	}
 }

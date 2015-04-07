@@ -56,11 +56,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 				if (FluidHelper.canFillTank(tank, FluidRegistry.LAVA, sideHit))
 				{
-					int consumed = (int) EMCHelper.consumePlayerFuel(player, 32);
-
-					if (consumed != -1)
+					if (consumeFuel(player, stack, 32.0F, true))
 					{
-						FluidHelper.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000 * (consumed / 32));
+						FluidHelper.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000);
 						return true;
 					}
 				}
@@ -94,8 +92,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 						default: break;
 					}
 
-					int consumed = (int) EMCHelper.consumePlayerFuel(player, 32);
-					if (consumed != -1)
+					if (consumeFuel(player, stack, 32, true))
 					{
 						placeLava(world, i, j, k);
 					}
@@ -170,7 +167,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
-		if (EMCHelper.consumePlayerFuel(player, 32) != -1)
+		if (consumeFuel(player, stack, 32, true))
 		{
 			player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
 			return true;

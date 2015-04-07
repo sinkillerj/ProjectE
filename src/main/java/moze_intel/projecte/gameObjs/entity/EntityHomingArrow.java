@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.ReflectionHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

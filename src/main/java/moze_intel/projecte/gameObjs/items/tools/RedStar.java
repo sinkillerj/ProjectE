@@ -18,7 +18,7 @@ public class RedStar extends PEToolBase
 	{
 		super("rm_morning_star", (byte) 4, new String[]{
 				StatCollector.translateToLocal("pe.morningstar.mode1"), StatCollector.translateToLocal("pe.morningstar.mode2"),
-				StatCollector.translateToLocal("pe.morningstar.mode3"), StatCollector.translateToLocal("pe.morningstar.mode4")
+				StatCollector.translateToLocal("pe.morningstar.mode3"), StatCollector.translateToLocal("pe.morningstar.mode4"),
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
@@ -46,7 +46,7 @@ public class RedStar extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 20.0F);
+		attackWithCharge(stack, damaged, damager, STAR_BASE_ATTACK);
 		return true;
 	}
 
@@ -76,11 +76,11 @@ public class RedStar extends PEToolBase
 				}
 				else if (block instanceof BlockGrass || block instanceof BlockDirt || block instanceof BlockSand)
 				{
-					digAOE(stack, world, player, false);
+					digAOE(stack, world, player, false, 0);
 				}
 				else
 				{
-					digAOE(stack, world, player, true);
+					digAOE(stack, world, player, true, 0);
 				}
 			}
 

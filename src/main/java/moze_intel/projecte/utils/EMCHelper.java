@@ -22,6 +22,10 @@ import java.util.Map;
  */
 public final class EMCHelper
 {
+	/**
+	 * Consumes EMC from fuel items or Klein Stars
+	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
+	 */
 	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
 	{
 		if (player.capabilities.isCreativeMode)
@@ -30,7 +34,7 @@ public final class EMCHelper
 		}
 
 		IInventory inv = player.inventory;
-		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int decrement = 0;
 		int emcConsumed = 0;

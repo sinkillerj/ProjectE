@@ -59,6 +59,11 @@ public abstract class ItemPE extends Item
 	
 	public static boolean consumeFuel(EntityPlayer player, ItemStack stack, double amount, boolean shouldRemove)
 	{
+		if (amount <= 0)
+		{
+			return true;
+		}
+
 		double current = getEmc(stack);
 		
 		if (current < amount)

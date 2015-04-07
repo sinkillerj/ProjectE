@@ -52,7 +52,7 @@ public class DarkShears extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		shearEntityAOE(stack, player);
+		shearEntityAOE(stack, player, 32);
 		return stack;
 	}
 
