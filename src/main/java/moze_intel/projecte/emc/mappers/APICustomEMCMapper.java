@@ -8,6 +8,8 @@ import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
@@ -20,20 +22,30 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	public static final int PRIORITY_DEFAULT_VALUE = 1;
 	private APICustomEMCMapper() {}
 
-	Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = new HashMap<String, Map<NormalizedSimpleStack, Integer>>();
+	Map<String, Map<String, Integer>> customEMCforMod = new HashMap<String, Map<String, Integer>>();
 
 	public void registerCustomEMC(ItemStack stack, int emcValue) {
+		if (stack == null || stack.getItem() == null) return;
 		if (emcValue < 0) emcValue = 0;
 		ModContainer activeMod = Loader.instance().activeModContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<NormalizedSimpleStack, Integer> modMap;
+		Map<String, Integer> modMap;
 		if (customEMCforMod.containsKey(modId)) {
 			modMap = customEMCforMod.get(modId);
 		} else {
-			modMap = new HashMap<NormalizedSimpleStack, Integer>();
+			modMap = new HashMap<String, Integer>();
 			customEMCforMod.put(modId, modMap);
 		}
-		modMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), emcValue);
+		modMap.put(serializeToString(stack), emcValue);
+	}
+
+	protected String serializeToString(ItemStack stack) {
+		String name = Item.itemRegistry.getNameForObject(stack.getItem());
+		return String.format("%d@%s", stack.getItemDamage(), name);
+	}
+	protected NormalizedSimpleStack deserializeFromString(String s) {
+		String[] splits = s.split("@", 2);
+		return NormalizedSimpleStack.getNormalizedSimpleStackFor((Item)Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
 	}
 
 	@Override
@@ -75,9 +87,10 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 		for(String modId : modIds) {
 			if (priorityMap.get(modId) != 0) {
-				for (Map.Entry<NormalizedSimpleStack, Integer> entry : customEMCforMod.get(modId).entrySet()) {
-					mapper.setValue(entry.getKey(), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
-					PELogger.logInfo(String.format("%s setting value for %s to %s", modId == null ? "unknown mod" : modId, entry.getKey(), entry.getValue()));
+				for (Map.Entry<String, Integer> entry : customEMCforMod.get(modId).entrySet()) {
+					NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
+					mapper.setValue(normStack, entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+					PELogger.logInfo(String.format("%s setting value for %s to %s", modId == null ? "unknown mod" : modId, normStack, entry.getValue()));
 				}
 			}
 		}
