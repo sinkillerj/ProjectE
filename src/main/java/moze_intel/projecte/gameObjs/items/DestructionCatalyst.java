@@ -31,7 +31,13 @@ public class DestructionCatalyst extends ItemCharge
 		super("destruction_catalyst", (byte)3);
 		this.setNoRepair();
 	}
-	
+
+	// Only for Catalitic Lens
+	protected DestructionCatalyst(String name, byte numCharges)
+	{
+		super(name, numCharges);
+	}
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -41,31 +47,13 @@ public class DestructionCatalyst extends ItemCharge
 
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			int charge = this.getCharge(stack);
-			int numRows;
+			int numRows = calculateDepthFromCharge(stack);
 			boolean hasAction = false;
-			
-			if (charge == 0)
-			{
-				numRows = 1;
-			}
-			else if (charge == 1)
-			{
-				numRows = 4;
-			}
-			else if (charge == 2)
-			{
-				numRows = 9;
-			}
-			else 
-			{
-				numRows = 16;
-			}
 			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
 			Coordinates coords = new Coordinates(mop);
-			AxisAlignedBB box = getBoxFromDirection(direction, coords, numRows);
+			AxisAlignedBB box = WorldHelper.getDeepBox(coords, direction, --numRows);
 			
 			List<ItemStack> drops = Lists.newArrayList();
 			
@@ -115,31 +103,22 @@ public class DestructionCatalyst extends ItemCharge
 			
 		return stack;
 	}
-	
-	public AxisAlignedBB getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
+
+	protected int calculateDepthFromCharge(ItemStack stack)
 	{
-		charge--;
-		
-		if (direction.offsetX != 0)
+		byte charge = getCharge(stack);
+		if (charge <= 0)
 		{
-			if (direction.offsetX > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
-			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + charge, coords.y + 1, coords.z + 1);
+			return 1;
 		}
-		else if (direction.offsetY != 0)
+		if (this instanceof CataliticLens)
 		{
-			if (direction.offsetY > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - charge, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
-			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + charge, coords.z + 1);
+			return 8 + (charge * 8); // Increases linearly by 8, starting at 16 for charge 1
+
 		}
-		else
-		{
-			if (direction.offsetZ > 0)
-				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - charge, coords.x + 1, coords.y + 1, coords.z);
-			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + charge);
-		}
+		return (int) Math.pow(2, 1 + charge); // Default DesCatalyst formula, doubles for every level, starting at 4 for charge 1
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)

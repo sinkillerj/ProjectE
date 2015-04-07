@@ -337,7 +337,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
-				: WorldHelper.getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack));
+				: WorldHelper.getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), this.getCharge(stack));
 
 		List<ItemStack> drops = Lists.newArrayList();
 

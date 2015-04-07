@@ -103,43 +103,75 @@ public final class WorldHelper
 	}
 
 	/**
-	 * Gets an AABB for AOE digging operations. The charge increases both the breadth and depth of the box.
+	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
-	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int charge)
+	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int offset)
 	{
 		if (direction.offsetX > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetX < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetY > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 		}
 		else if (direction.offsetY < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetZ > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z - charge, coords.x + charge, coords.y + charge, coords.z);
+			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z);
 		}
 		else if (direction.offsetZ < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y - charge, coords.z, coords.x + charge, coords.y + charge, coords.z + charge);
+			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
 		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 	}
 
 	/**
-	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant.
+	 * Returns in AABB that is always 3x3 orthogonal to the side hit, but varies in depth in the direction of the side hit
 	 */
-	public static AxisAlignedBB getFlatYBox(Coordinates coords, ForgeDirection direction, int charge)
+	public static AxisAlignedBB getDeepBox(Coordinates coords, ForgeDirection direction, int depth)
 	{
-		return AxisAlignedBB.getBoundingBox(coords.x - charge, coords.y, coords.z - charge, coords.x + charge, coords.y, coords.z + charge);
+		if (direction.offsetX != 0)
+		{
+			if (direction.offsetX > 0)
+			{
+				return AxisAlignedBB.getBoundingBox(coords.x - depth, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
+			}
+			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
+		}
+		else if (direction.offsetY != 0)
+		{
+			if (direction.offsetY > 0)
+			{
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - depth, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
+			}
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
+		}
+		else
+		{
+			if (direction.offsetZ > 0)
+			{
+				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - depth, coords.x + 1, coords.y + 1, coords.z);
+			}
+			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
+		}
+	}
+
+	/**
+	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box.
+	 * Y level remains constant. As such, a direction hit is unneeded.
+	 */
+	public static AxisAlignedBB getFlatYBox(Coordinates coords, int offset)
+	{
+		return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 	}
 
 	public static Entity getNewEntityInstance(Class c, World world)
