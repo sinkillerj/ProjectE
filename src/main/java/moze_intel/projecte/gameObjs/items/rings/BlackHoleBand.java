@@ -45,7 +45,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (world.isRemote || stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer)) 
+		if (stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -59,16 +59,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 			if (Utils.hasSpace(player.inventory.mainInventory, item.getEntityItem())) 
 			{
 				item.delayBeforeCanPickup = 0;
-				double d1 = (player.posX - item.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
-				double d3 = (player.posZ - item.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				item.motionX += d1 / d4 * 0.1D;
-				item.motionY += d2 / d4 * 0.1D;
-				item.motionZ += d3 / d4 * 0.1D;
-				
-				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+				Utils.gravitateEntityTowards(player.posX, player.posY, player.posZ, item);
 			}
 		}
 		
@@ -76,16 +67,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 		
 		for (EntityLootBall ball : ballList)
 		{
-			double d1 = (player.posX - ball.posX);
-			double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
-			double d3 = (player.posZ - ball.posZ);
-			double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-			ball.motionX += d1 / d4 * 0.1D;
-			ball.motionY += d2 / d4 * 0.1D;
-			ball.motionZ += d3 / d4 * 0.1D;
-			
-			ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
+			Utils.gravitateEntityTowards(player.posX, player.posY, player.posZ, ball);
 		}
 	}
 
@@ -134,25 +116,10 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 			List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, tile.getEffectBounds());
 			for (EntityItem item : list)
 			{
-				// Adapted from openBlocks and vanilla
-				double dX = (x + 0.5 - item.posX);
-				double dY = (y + 0.5 - item.posY);
-				double dZ = (z + 0.5 - item.posZ);
-				double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
-
-				if (dist < 1.1 && !world.isRemote)
+				Utils.gravitateEntityTowards(x + 0.5, y + 0.5, z + 0.5, item);
+				if (item.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) < 1.21 && !world.isRemote)
 				{
 					suckDumpItem(item, tile);
-				}
-
-				double vel = 1.0 - dist / 15.0;
-				if (vel > 0.0D)
-				{
-					vel *= vel;
-					item.motionX += dX / dist * vel * 0.05;
-					item.motionY += dY / dist * vel * 0.2;
-					item.motionZ += dZ / dist * vel * 0.05;
-					item.moveEntity(item.motionX, item.motionY, item.motionZ);
 				}
 			}
 		}

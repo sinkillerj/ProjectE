@@ -9,6 +9,8 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.KeyBinds;
 import moze_intel.projecte.utils.Utils;
@@ -19,6 +21,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -103,6 +106,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
                     }
 
 					placeWater(world, i, j, k);
+					PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
 				}
 			}
 		}
@@ -129,7 +133,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				world.func_147480_a(i, j, k, true);
 			}
-			world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
+			if (world.isAirBlock(i, j, k))
+			{
+				world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
+			}
 		}
 
 	}

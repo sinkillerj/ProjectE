@@ -6,14 +6,20 @@ import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Utils;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
@@ -31,7 +37,30 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 		super("ignition");
 		this.setNoRepair();
 	}
-	
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (!world.isRemote)
+		{
+			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop == null)
+			{
+				return stack;
+			}
+			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			{
+				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT)
+				{
+					// Ignite TNT or derivatives
+					((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
+					world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+				}
+			}
+		}
+		return stack;
+	}
+
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5) 
 	{
