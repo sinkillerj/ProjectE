@@ -14,6 +14,7 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
@@ -122,14 +123,8 @@ public class PECore
 		{
 			new ThreadCheckUUID(true).start();
 		}
-		
-		CustomEMCParser.readUserData();
 
-		PELogger.logInfo("Starting server-side EMC mapping.");
-		
-		EMCMapper.map();
-		
-		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
+		ThreadReloadEMCMap.runEMCRemap(true, null);
 		
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
 		

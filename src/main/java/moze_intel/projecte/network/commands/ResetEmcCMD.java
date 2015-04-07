@@ -2,6 +2,7 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.MathUtils;
@@ -67,12 +68,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			EMCMapper.clearMaps();
-			CustomEMCParser.readUserData();
-			EMCMapper.map();
-			TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
-
-			PacketHandler.sendFragmentedEmcPacketToAll();
+			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
 
 			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.reset.success"), name));
 		}
