@@ -121,7 +121,7 @@ public final class ProjectEConfig
 
 			timePedBonus = config.getInt("timePedBonus", "effects", 18, 0, 256, "Bonus ticks given by the Watch of Flowing Time while in the pedestal. 0 = effectively no bonus.");
 			timePedMobSlowness = config.getFloat("timePedMobSlowness", "effects", 0.10F, 0.0F, 1.0F, "Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.");
-			interdictionMode = config.getBoolean("interdictionMode", "effects", true, "If true the Interdiction Torch (and SWRG) only affects hostile mobs. If false it affects all non blacklisted living entities.");
+			interdictionMode = config.getBoolean("interdictionMode", "effects", true, "If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.");
 
 			PELogger.logInfo("Loaded configuration file.");
 		}
