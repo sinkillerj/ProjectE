@@ -12,9 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import com.cricketcraft.chisel.init.ChiselBlocks;
 import net.minecraftforge.oredict.OreDictionary;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -64,8 +64,8 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 			}
 		}
 		for (int i = 1; i < stacks.size(); i++) {
-			mapper.addConversion(1, stacks.get(0), Arrays.asList(new Object[]{stacks.get(i)}));
-			mapper.addConversion(1, stacks.get(i), Arrays.asList(new Object[]{stacks.get(0)}));
+			mapper.addConversion(1, stacks.get(0), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(i)}));
+			mapper.addConversion(1, stacks.get(i), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(0)}));
 		}
 		PELogger.logInfo(String.format("Added %d Blocks for CarvingGroup %s", stacks.size(), group.getName()));
 	}
