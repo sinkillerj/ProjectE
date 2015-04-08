@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import invtweaks.api.container.InventoryContainer;
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
@@ -9,7 +10,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class RelayMK1Container extends Container 
+@InventoryContainer(showOptions = true)
+public class RelayMK1Container extends Container
 {
 	private RelayMK1Tile tile;
 	

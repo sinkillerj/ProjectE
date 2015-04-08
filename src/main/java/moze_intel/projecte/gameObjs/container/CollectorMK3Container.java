@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import invtweaks.api.container.InventoryContainer;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@InventoryContainer(showOptions = true)
 public class CollectorMK3Container extends Container
 {
 	private CollectorMK3Tile tile;
