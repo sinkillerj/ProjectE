@@ -27,9 +27,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
@@ -38,7 +36,18 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOn;
-	
+
+	private static Set<String> blacklistTE;
+
+	static
+	{
+		blacklistTE = new HashSet<>();
+		blacklistTE.add("moze_intel.projecte.gameObjs.tiles.DMPedestalTile");
+		blacklistTE.add("Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator");
+		blacklistTE.add("com.sci.torcherino.tile.TileTorcherino");
+		blacklistTE.add("com.sci.torcherino.tile.TileCompressedTorcherino");
+	}
+
 	public TimeWatch() 
 	{
 		super("time_watch", (byte)2);
@@ -187,9 +196,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		while (iter.hasNext())
 		{
 			TileEntity tile = iter.next();
-			if (tile instanceof DMPedestalTile)
+			if (blacklistTE.contains(tile.getClass().getName()))
 			{
-				iter.remove(); // Don't speed up other pedestals because of exploits and infinite recursion
+				iter.remove();
 				continue;
 			}
 			for (int i = 0; i < bonusTicks; i++)
@@ -219,13 +228,15 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 					if (block.getTickRandomly()
 							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
 							&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
-							&& !(block instanceof IGrowable)
-							&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
 						)
 					{
+						boolean nerf = block instanceof IPlantable || block instanceof IGrowable;
 						for (int i = 0; i < bonusTicks; i++)
 						{
-							block.updateTick(world, x, y, z, itemRand);
+							if ((nerf && Math.random() < 0.008) || !nerf)
+							{
+								block.updateTick(world, x, y, z, itemRand);
+							}
 						}
 					}
 				}
