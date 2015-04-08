@@ -103,9 +103,10 @@ public class Collector extends BlockDirection
 				return new CollectorMK3Tile();
 			case 2:
 				return new CollectorMK2Tile();
-			case 1: // Fall through
-			default:
+			case 1:
 				return new CollectorMK1Tile();
+			default:
+				return null;
 		}
 	}
 }

@@ -21,9 +21,6 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"

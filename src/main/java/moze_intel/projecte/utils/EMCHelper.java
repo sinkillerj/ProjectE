@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -34,7 +35,7 @@ public final class EMCHelper
 		}
 
 		IInventory inv = player.inventory;
-		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
 		boolean metRequirement = false;
 		int decrement = 0;
 		int emcConsumed = 0;

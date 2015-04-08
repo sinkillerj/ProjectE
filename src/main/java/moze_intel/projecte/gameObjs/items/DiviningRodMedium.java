@@ -11,7 +11,7 @@ import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
-public class DiviningRodMedium extends DiviningRodLow implements IModeChanger
+public class DiviningRodMedium extends DiviningRodLow
 {
 	public DiviningRodMedium()
 	{
