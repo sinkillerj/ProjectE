@@ -388,7 +388,7 @@ public final class Utils
 	}
 	
 	/**
-	 *	Returns an itemstack if the stack passed could not entirely fit in the inventory, otherwise returns null. 
+	 * Returns an {@code ItemStack} if the stack passed could not entirely fit in the inventory, otherwise returns null.
 	 */
 	public static ItemStack pushStackInInv(IInventory inv, ItemStack stack)
 	{
@@ -434,7 +434,7 @@ public final class Utils
 	}
 	
 	/**
-	 *	Returns an itemstack if the stack passed could not entirely fit in the inventory, otherwise returns null. 
+	 * Returns an {@code ItemStack} if the stack passed could not entirely fit in the inventory, otherwise returns null.
 	 */
 	public static ItemStack pushStackInInv(ItemStack[] inv, ItemStack stack)
 	{
@@ -672,7 +672,7 @@ public final class Utils
 	}
 	
 	/**
-	 * Returns an ItemStack with stacksize 1.
+	 * Returns an {@code ItemStack} with stacksize 1.
 	 */
 	public static ItemStack getNormalizedStack(ItemStack stack)
 	{
