@@ -65,7 +65,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 
 			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.reset.success"), name));
 		}

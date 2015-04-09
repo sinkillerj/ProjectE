@@ -23,7 +23,7 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
 		sender.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.command.reload.started")));
-		ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+		ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 	}
 
 	@Override
