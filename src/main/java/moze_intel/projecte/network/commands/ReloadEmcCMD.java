@@ -23,7 +23,7 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	{
 		sender.addChatMessage(new ChatComponentText("[ProjectE] Reloading EMC registrations..."));
 
-		ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+		ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 	}
 
 	@Override

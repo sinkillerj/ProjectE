@@ -124,7 +124,15 @@ public class PECore
 			new ThreadCheckUUID(true).start();
 		}
 
-		ThreadReloadEMCMap.runEMCRemap(true, null);
+		long start = System.currentTimeMillis();
+
+		CustomEMCParser.readUserData();
+
+		PELogger.logInfo("Starting server-side EMC mapping.");
+
+		EMCMapper.map();
+
+		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (in " + (System.currentTimeMillis() - start) + " ms)");
 		
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
 		
