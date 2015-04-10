@@ -6,8 +6,9 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -76,8 +77,8 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -105,14 +106,14 @@ public class TransmuteTile extends TileEmc implements IInventory
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.getStoredEmc() < reqEmc)
 			{
 				return;
 			}
 
-			lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+			lockCopy = ItemHelper.getNormalizedStack(inventory[LOCK_INDEX]);
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
@@ -125,13 +126,13 @@ public class TransmuteTile extends TileEmc implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (Utils.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
 				}
 
-				if (Utils.basicAreStacksEqual(lockCopy, stack))
+				if (ItemHelper.basicAreStacksEqual(lockCopy, stack))
 				{
 					iter.remove();
 					continue;
@@ -166,7 +167,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (this.getStoredEmc() < Utils.getEmcValue(stack))
+				if (this.getStoredEmc() < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;

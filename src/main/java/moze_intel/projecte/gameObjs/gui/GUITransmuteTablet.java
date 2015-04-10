@@ -6,11 +6,10 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.gui.GuiTextField;
-
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
@@ -63,7 +62,7 @@ public class GUITransmuteTablet extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.transmute"), 6, 8, 4210752);
-		String emc = String.format(StatCollector.translateToLocal("pe.emc_emc_tooltip_prefix") + " %,d", (int) table.emc);
+		String emc = String.format(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) table.emc);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (table.learnFlag > 0)

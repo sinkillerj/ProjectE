@@ -9,8 +9,10 @@ import net.minecraft.item.ItemStack;
 public interface IProjectileShooter 
 {
 	/**
-	 * Called when the player presses the 'R' button.
+	 * Called serverside when the player presses the Fire Projectile Button (R by default).
+	 * @param player The player pressing the key
+	 * @param stack The stack we are using to shoot
 	 * @return If the projectile was actually fired
 	 */
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack);
+	boolean shootProjectile(EntityPlayer player, ItemStack stack);
 }

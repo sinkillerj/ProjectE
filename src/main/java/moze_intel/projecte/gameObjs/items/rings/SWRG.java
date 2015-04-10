@@ -2,18 +2,20 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -21,13 +23,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumChatFormatting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -50,19 +51,31 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
 	{
-		if (world.isRemote || invSlot > 8 || !(entity instanceof EntityPlayer))
+		if (invSlot > 8 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
+		
+		EntityPlayer player = (EntityPlayer) entity;
+
+		if (stack.getItemDamage() > 1)
+		{
+			// Repel on both sides - smooth animation
+			WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+		}
+
+		if (world.isRemote)
+		{
+			return;
+		}
+
+		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
 
 		if (!stack.hasTagCompound())
 		{
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
-		EntityPlayer player = (EntityPlayer) entity;
-		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
-		
+
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
 			if (stack.getItemDamage() > 0)
@@ -96,11 +109,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			{
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
-		}
-		
-		if (stack.getItemDamage() > 1)
-		{
-			Utils.repellEntities(player);
 		}
 		
 		float toRemove = 0;
@@ -200,7 +208,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 			PlayerChecks.addPlayerFlyChecks(playerMP);
 		}
 	}
@@ -214,7 +222,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, false);
+			PlayerHelper.updateClientFlight(playerMP, false);
 			PlayerChecks.removePlayerFlyChecks(playerMP);
 		}
 	}
@@ -228,7 +236,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 		}
 	}
 	
@@ -241,7 +249,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, false);
+			PlayerHelper.updateClientFlight(playerMP, false);
 		}
 	}
 	
@@ -324,19 +332,26 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
 	{
-		if (ent.worldObj.isRemote || !(ent instanceof EntityPlayer))
+		if (!(ent instanceof EntityPlayer))
 		{
 			return;
 		}
-		
+
+		EntityPlayer player = (EntityPlayer) ent;
+
+		if (stack.getItemDamage() > 1)
+		{
+			// Repel on both sides - smooth animation
+			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+		}
+
+		EntityPlayerMP playerMP = (EntityPlayerMP) player;
+
 		if (!stack.hasTagCompound())
 		{
 			stack.stackTagCompound = new NBTTagCompound();
 		}
-		
-		EntityPlayer player = (EntityPlayer) ent;
-		EntityPlayerMP playerMP = (EntityPlayerMP) player;
-		
+
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
 			if (stack.getItemDamage() > 0)
@@ -370,11 +385,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			{
 				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
-		}
-		
-		if (stack.getItemDamage() > 1)
-		{
-			Utils.repellEntities(player);
 		}
 		
 		float toRemove = 0;
@@ -451,12 +461,12 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.swrgPedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.swrg.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.swrg.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
+					StatCollector.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
 		}
 		return list;
 	}

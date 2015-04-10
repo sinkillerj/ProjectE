@@ -2,7 +2,7 @@ package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -154,7 +154,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	}
 
 	protected void addMapping(String unlocalName, int meta, int value) {
-		ItemStack stack = Utils.getStackFromString(unlocalName, meta);
+		ItemStack stack = ItemHelper.getStackFromString(unlocalName, meta);
 
 		if (stack != null) {
 			addMapping(stack, value);

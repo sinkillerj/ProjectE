@@ -3,8 +3,7 @@ package moze_intel.projecte.gameObjs.container.slots.trasmute;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import moze_intel.projecte.utils.Utils;
-import net.minecraft.entity.player.EntityPlayer;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +20,7 @@ public class SlotTableInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
+		return !this.getHasStack() && !tile.hasMaxedEmc() && EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override
@@ -34,7 +33,7 @@ public class SlotTableInput extends Slot
 		
 		if (stack.getItem() == ObjHandler.kleinStars)
 		{
-			int remainingEmc = Utils.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemPE.getEmc(stack));
+			int remainingEmc = EMCHelper.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemPE.getEmc(stack));
 			
 			if (tile.getStoredEmc() >= remainingEmc)
 			{

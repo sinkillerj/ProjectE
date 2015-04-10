@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -10,7 +10,7 @@ import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -23,8 +23,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {
@@ -74,7 +74,7 @@ public class AlchemicalBag extends ItemPE
 		EntityPlayer player = (EntityPlayer) entity;
 		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 		
-		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
+		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
 			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
@@ -111,7 +111,7 @@ public class AlchemicalBag extends ItemPE
 			}
 		}
 		
-		ItemStack rTalisman = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
+		ItemStack rTalisman = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
 		
 		if (rTalisman != null)
 		{
@@ -155,7 +155,7 @@ public class AlchemicalBag extends ItemPE
 		
 		if (player.openContainer instanceof AlchBagContainer)
 		{
-			ItemStack gemDensity = Utils.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -164,7 +164,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		else
 		{
-			ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -230,5 +230,23 @@ public class AlchemicalBag extends ItemPE
 		{
 			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
 		}
+	}
+
+	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	{
+		for (ItemStack stack : inventory)
+		{
+			if (stack == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			{
+				return stack;
+			}
+		}
+
+		return null;
 	}
 }

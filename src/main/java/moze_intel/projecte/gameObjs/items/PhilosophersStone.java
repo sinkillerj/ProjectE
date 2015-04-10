@@ -11,8 +11,14 @@ import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +28,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -94,7 +99,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					world.removeTileEntity(blockX, blockY, blockZ);
 					world.setBlock(blockX, blockY, blockZ, Blocks.air, 0, 2);
-					Utils.spawnEntityItem(world, s, blockX, blockY, blockZ);
+					WorldHelper.spawnEntityItem(world, s, blockX, blockY, blockZ);
 				}
 			}
 		}
@@ -122,8 +127,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			}
 
 			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 		}
 		
 		return true;
@@ -285,9 +290,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyHelper.getExtraFuncKeyCode())));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
