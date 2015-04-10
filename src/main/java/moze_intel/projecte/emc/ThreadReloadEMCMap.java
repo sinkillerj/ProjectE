@@ -1,11 +1,10 @@
 package moze_intel.projecte.emc;
 
-import net.minecraft.world.World;
-
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.world.World;
 
 public class ThreadReloadEMCMap extends Thread {
 	private boolean serverStarting;

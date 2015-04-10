@@ -1,10 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
-import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;

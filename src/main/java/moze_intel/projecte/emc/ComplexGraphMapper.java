@@ -4,7 +4,13 @@ package moze_intel.projecte.emc;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
 	public ComplexGraphMapper(IValueArithmetic arithmetic) {
