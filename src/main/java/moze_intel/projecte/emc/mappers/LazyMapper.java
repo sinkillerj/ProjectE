@@ -145,8 +145,6 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.filled_map), 1472);
 		addMapping(new ItemStack(Items.blaze_powder), 768);
 		addMapping(new ItemStack(Items.dye, 1, 15), 48);
-
-		addMapping("appliedenergistics2:item.ItemMultiMaterial", 1, 256);
 	}
 
 	protected void addMapping(ItemStack itemStack, int value) {
