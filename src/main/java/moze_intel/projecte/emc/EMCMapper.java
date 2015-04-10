@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.common.Loader;
+
 public final class EMCMapper 
 {
 	public static Map<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
@@ -28,7 +30,8 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
+		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new FluidMapper(), new SmeltingMapper(), new ModMapper());
+	
 		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
