@@ -5,7 +5,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 
 import java.io.BufferedReader;
@@ -90,8 +92,11 @@ public class ThreadCheckUpdate extends Thread
 				{
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.update.available"), latestVersion)));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.getit")));
-					// Someone turn this into a link
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(curseURL));
+
+					IChatComponent link = new ChatComponentText(curseURL);
+					link.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(link);
+
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.changelog")));
 				}
 			}
