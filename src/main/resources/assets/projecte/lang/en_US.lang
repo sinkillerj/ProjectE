@@ -252,6 +252,8 @@ pe.katar.mode2=Slay All
 pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s
 
+pe.mind.pedestal1=Sucks nearby XP orbs into the Mind Stone
+
 pe.misc.every_tick=every tick
 pe.misc.seconds=seconds
 pe.misc.storedxp_tooltip=Stored XP:
