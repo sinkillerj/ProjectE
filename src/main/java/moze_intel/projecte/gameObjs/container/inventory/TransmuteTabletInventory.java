@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -31,6 +32,8 @@ public class TransmuteTabletInventory implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
+	public int searchpage = 0;
+	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
 	
 	public TransmuteTabletInventory(ItemStack stack, EntityPlayer player)
 	{
@@ -98,7 +101,7 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -111,6 +114,8 @@ public class TransmuteTabletInventory implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
+
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
@@ -129,10 +134,18 @@ public class TransmuteTabletInventory implements IInventory
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
+				}
 				
 				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
@@ -170,10 +183,18 @@ public class TransmuteTabletInventory implements IInventory
 		else
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
+				}
 				
 				if (emc < EMCHelper.getEmcValue(stack))
 				{
@@ -202,8 +223,6 @@ public class TransmuteTabletInventory implements IInventory
 				}
 			}
 		}
-		
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
