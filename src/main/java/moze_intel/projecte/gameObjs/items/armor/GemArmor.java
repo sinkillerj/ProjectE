@@ -3,13 +3,11 @@ package moze_intel.projecte.gameObjs.items.armor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -83,12 +81,12 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 					enableFlight(playerMP);
 				}
 
-				if (isStepAssistEnabled(stack)/*PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName())*/)
+				if (isStepAssistEnabled(stack))
 				{
 					if (playerMP.stepHeight != 1.0f)
 					{
 						playerMP.stepHeight = 1.0f;
-						PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+						PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
 
 						PlayerChecks.addPlayerStepChecks(playerMP);
 					}
@@ -114,7 +112,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				
 				if (!player.isImmuneToFire())
 				{
-					Utils.setPlayerFireImmunity(player, true);
+					PlayerHelper.setPlayerFireImmunity(player, true);
 					PlayerChecks.addPlayerFireChecks(playerMP);
 				}
 			}
@@ -158,7 +156,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			return;
 		}
 		
-		Utils.setPlayerFlight(playerMP, true);
+		PlayerHelper.updateClientFlight(playerMP, true);
 		PlayerChecks.addPlayerFlyChecks(playerMP);
 	}
 	
@@ -296,10 +294,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		{
 			if (stack.getItem() == ObjHandler.gemFeet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
 					list.add(String.format(
-							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
+							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
 
 				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
@@ -309,10 +307,10 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
 					list.add(String.format(
-							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode())));
+							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
 
 				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;

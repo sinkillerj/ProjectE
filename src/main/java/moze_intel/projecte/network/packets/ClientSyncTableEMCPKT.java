@@ -1,14 +1,11 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraft.client.Minecraft;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.items.TransmutationTablet;
-import moze_intel.projecte.playerData.Transmutation;
-import io.netty.buffer.ByteBuf;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.playerData.Transmutation;
+import net.minecraft.client.Minecraft;
 
 public class ClientSyncTableEMCPKT implements IMessage, IMessageHandler<ClientSyncTableEMCPKT, IMessage>
 {

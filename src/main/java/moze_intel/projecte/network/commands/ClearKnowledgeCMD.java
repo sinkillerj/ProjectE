@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 public class ClearKnowledgeCMD extends ProjectEBaseCMD
 {
@@ -20,7 +21,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-		return "/projecte_clearKnowledge <username> (optional)";
+		return StatCollector.translateToLocal("pe.command.clearknowledge.usage");
 	}
 
 	@Override
@@ -32,11 +33,11 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 			{
 				Transmutation.clearKnowledge(sender.getCommandSenderName());
 				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
-				sendSuccess(sender, "Cleared transmutation knowledge for: " + sender.getCommandSenderName());
+				sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.success"), sender.getCommandSenderName()));
 			}
 			else
 			{
-				sendError(sender, "Can't clear knowledge for " + sender.getCommandSenderName());
+				sendError(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.error"), sender.getCommandSenderName()));
 			}
 		}
 		else
@@ -49,18 +50,18 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 				{
 					Transmutation.clearKnowledge(player.getCommandSenderName());
 					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
-					sendSuccess(sender, "Cleared transmutation knowledge for: " + player.getCommandSenderName());
+					sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.success"), player.getCommandSenderName()));
 					
 					if (!player.getCommandSenderName().equals(sender.getCommandSenderName()))
 					{
-						player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "Your transmutation knowledge was cleared! (by: " + sender.getCommandSenderName() + ")"));
+						player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + String.format(StatCollector.translateToLocal("pe.command.clearknowledge.notify"), sender.getCommandSenderName())));
 					}
 					
 					return;
 				}
 			}
 			
-			sendError(sender, "Couldn't find player named: " + params[0]);
+			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.playernotfound"), params[0]));
 		}
 	}
 

@@ -6,7 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -75,7 +75,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 				continue;
 			}
 
-			Utils.spawnEntityItem(world, stack, x, y, z);
+			WorldHelper.spawnEntityItem(world, stack, x, y, z);
 		}
 
 		world.func_147453_f(x, y, z, block);

@@ -1,3 +1,6 @@
+###Version 1.7.10-PE1.4.3.1
+* FIXED: Reverted EMC mapping thread change till it can be fixed
+
 ###Version 1.7.10-PE1.4.3
 * NEW: Previously hard coded English strings can now be localized
 * NEW: Chinese language file updates

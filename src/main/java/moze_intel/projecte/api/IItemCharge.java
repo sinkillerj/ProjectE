@@ -8,9 +8,17 @@ import net.minecraft.item.ItemStack;
  */
 public interface IItemCharge 
 {
-	//Return the charge the ItemStack currently has
-	public byte getCharge(ItemStack stack);
+	/**
+	 * Returns the current charge on the given ItemStack
+	 * @param stack Stack whose charge we want
+	 * @return The charge on the stack
+	 */
+	byte getCharge(ItemStack stack);
 
-	//Called whenever the item needs to change it's charge (the 'V' button is pressed)
-	public void changeCharge(EntityPlayer player, ItemStack stack);
+	/**
+	 * Called serverside when the player presses the change mode button (V and Shift-V by default)
+	 * @param player The player
+	 * @param stack The item whose mode we are changing
+	 */
+	void changeCharge(EntityPlayer player, ItemStack stack);
 }

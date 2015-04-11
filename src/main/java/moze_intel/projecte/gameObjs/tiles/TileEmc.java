@@ -4,7 +4,7 @@ import moze_intel.projecte.api.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -53,7 +53,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	
 	public void addEmc(ItemStack stack)
 	{
-		addEmc(Utils.getEmcValue(stack) * stack.stackSize);
+		addEmc(EMCHelper.getEmcValue(stack) * stack.stackSize);
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	
 	public void removeItemRelativeEmc(ItemStack stack)
 	{
-		removeEmc(Utils.getEmcValue(stack));
+		removeEmc(EMCHelper.getEmcValue(stack));
 	}
 	
 	public void removeItemRelativeEmcWithPKT(ItemStack stack)

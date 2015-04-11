@@ -2,11 +2,13 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -15,11 +17,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumChatFormatting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -56,7 +57,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 		
 		for (EntityItem item : itemList)
 		{
-			if (Utils.hasSpace(player.inventory.mainInventory, item.getEntityItem())) 
+			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getEntityItem()))
 			{
 				item.delayBeforeCanPickup = 0;
 				double d1 = (player.posX - item.posX);
@@ -160,13 +161,13 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 
 	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
 	{
-		List<TileEntity> list = Utils.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorldObj(), tile);
 		for (TileEntity tileEntity : list)
 		{
 			if (tileEntity instanceof IInventory)
 			{
 				IInventory inv = ((IInventory) tileEntity);
-				ItemStack result = Utils.pushStackInInv(inv, item.getEntityItem());
+				ItemStack result = ItemHelper.pushStackInInv(inv, item.getEntityItem());
 				if (result != null)
 				{
 					item.setEntityItemStack(result);
@@ -182,7 +183,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal1"));
 		list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal2"));
 		return list;

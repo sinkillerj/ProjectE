@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
@@ -7,18 +8,17 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ArchangelSmite extends ItemPE implements IPedestalItem
@@ -83,11 +83,11 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.archangel.pedestal2"), Utils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+					StatCollector.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
 		}
 		return list;
 	}

@@ -1,13 +1,12 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletConsume;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletInput;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletLock;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletOutput;
-import moze_intel.projecte.gameObjs.items.KleinStar;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -87,14 +86,14 @@ public class TransmuteTabletContainer extends Container
 		}
 		else if (slotIndex >= 10 && slotIndex <= 25)
 		{	
-			int emc = Utils.getEmcValue(newStack);
+			int emc = EMCHelper.getEmcValue(newStack);
 			
 			int stackSize = 0;
 			
-			while (table.emc >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory.mainInventory, newStack))
+			while (table.emc >= emc && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory.mainInventory, newStack))
 			{
 				table.removeEmc(emc);
-				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
+				ItemHelper.pushStackInInv(player.inventory, ItemHelper.getNormalizedStack(newStack));
 				stackSize++;
 			}
 			
@@ -102,7 +101,7 @@ public class TransmuteTabletContainer extends Container
 		}
 		else if (slotIndex >= 26)
 		{
-			int emc = Utils.getEmcValue(stack);
+			int emc = EMCHelper.getEmcValue(stack);
 			
 			if (emc == 0)
 			{

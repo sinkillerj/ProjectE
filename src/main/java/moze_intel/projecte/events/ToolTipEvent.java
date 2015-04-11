@@ -8,7 +8,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIPedestal;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -91,9 +91,9 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (Utils.doesItemHaveEmc(current))
+			if (EMCHelper.doesItemHaveEmc(current))
 			{
-				int value = Utils.getEmcValue(current);
+				int value = EMCHelper.getEmcValue(current);
 
 				event.toolTip.add(EnumChatFormatting.YELLOW +
 						StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));

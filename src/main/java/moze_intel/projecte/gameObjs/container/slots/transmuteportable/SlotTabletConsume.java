@@ -1,12 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.transmuteportable;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.items.KleinStar;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -34,7 +29,7 @@ public class SlotTabletConsume extends Slot
 		
 		while (!table.hasMaxedEmc() && stack.stackSize > 0)
 		{
-			toAdd += Utils.getEmcValue(stack);
+			toAdd += EMCHelper.getEmcValue(stack);
 			stack.stackSize--;
 		}
 		
@@ -46,6 +41,6 @@ public class SlotTabletConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !table.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
+		return !table.hasMaxedEmc() && EMCHelper.doesItemHaveEmc(stack);
 	}
 }

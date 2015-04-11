@@ -1,7 +1,6 @@
 package moze_intel.projecte.api;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

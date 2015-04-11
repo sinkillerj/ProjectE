@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 
+import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.HashMap;
@@ -20,11 +21,11 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 		debugFormat("%s", s);
 	}
 
-	protected Map<T, List<Conversion>> conversionsFor = new HashMap<T, List<Conversion>>();
-	protected Map<T, List<Conversion>> usedIn = new HashMap<T, List<Conversion>>();
-	protected Map<T, V> fixValueBeforeInherit = new HashMap<T, V>();
-	protected Map<T, V> fixValueAfterInherit = new HashMap<T, V>();
-	protected Map<T, Integer> noDependencyConversionCount = new HashMap<T, Integer>();
+	protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
+	protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
+	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
+	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
+	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
 	IValueArithmetic<V> arithmetic;
 	public GraphMapper(IValueArithmetic<V> arithmetic) {
@@ -65,7 +66,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 	}
 
 	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
-		ingredientsWithAmount = new HashMap<T, Integer>(ingredientsWithAmount);
+		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
 			return;

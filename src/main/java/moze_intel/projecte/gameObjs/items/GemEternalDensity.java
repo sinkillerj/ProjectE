@@ -2,17 +2,19 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -77,7 +79,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		{
 			ItemStack s = inv[i];
 			
-			if (s == null || !Utils.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || Utils.getEmcValue(s) >= Utils.getEmcValue(target))
+			if (s == null || !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
 			{
 				continue;
 			}
@@ -96,16 +98,16 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 					inv[i] = null;
 				}
 				
-				ItemPE.addEmc(gem, Utils.getEmcValue(copy));
+				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy));
 				break;
 			}
 		}
 		
-		int value = Utils.getEmcValue(target);
+		int value = EMCHelper.getEmcValue(target);
 		
 		while (ItemPE.getEmc(gem) >= value)
 		{
-			ItemStack remain = Utils.pushStackInInv(inv, target);
+			ItemStack remain = ItemHelper.pushStackInInv(inv, target);
 			
 			if (remain != null)
 			{
@@ -130,9 +132,8 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 					
 					if (!items.isEmpty())
 					{
-						EntityLootBall loot = new EntityLootBall(world, items, player.posX, player.posY, player.posZ);
-						world.spawnEntityInWorld(loot);
-						
+						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
+
 						setItems(stack, new ArrayList<ItemStack>());
 						ItemPE.setEmc(stack, 0);
 					}
@@ -208,7 +209,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = Lists.newArrayList();
 		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
@@ -234,7 +235,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		
 		for (ItemStack s : list)
 		{
-			if (s.stackSize < s.getMaxStackSize() && Utils.areItemStacksEqual(s, stack))
+			if (s.stackSize < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack))
 			{
 				int remain = s.getMaxStackSize() - s.stackSize;
 				
@@ -265,7 +266,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
-		List<ItemStack> result = new ArrayList<ItemStack>();
+		List<ItemStack> result = Lists.newArrayList();
 		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
@@ -280,7 +281,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	{
 		for (ItemStack s : list)
 		{
-			if (Utils.areItemStacksEqual(s, stack))
+			if (ItemHelper.areItemStacksEqual(s, stack))
 			{
 				return true;
 			}
@@ -329,9 +330,9 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetDesciption(stack)));
 		}
 		
-		if (KeyBinds.getModeKeyCode() >= 0 && KeyBinds.getModeKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyBinds.getModeKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyHelper.getModeKeyCode())));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));

@@ -1,46 +1,35 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.gameObjs.items.ItemCharge;
+import moze_intel.projecte.api.IExtraFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class DarkSword extends ItemCharge 
+public class DarkSword extends PEToolBase implements IExtraFunction
 {
 	public DarkSword() 
 	{
-		super("dm_sword", (byte)2);
+		super("dm_sword", (byte)2, new String[] {});
 		this.setNoRepair();
+		this.peToolMaterial = "dm_tools";
+		this.pePrimaryToolClass = "sword";
+	}
+
+	// Only for RedSword to use
+	protected DarkSword(String name, byte numcharges, String[] modeDesc)
+	{
+		super(name, numcharges, modeDesc);
 	}
 	
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		if (!(damager instanceof EntityPlayer))
-		{
-			return false;
-		}
-		
-		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
-		float totalDmg = 12.0f;
-		
-		if (charge > 0)
-		{
-			dmg.setDamageBypassesArmor();
-			totalDmg += charge;
-		}
-		
-		damaged.attackEntityFrom(dmg, totalDmg);
+		attackWithCharge(stack, damaged, damager, DARKSWORD_BASE_ATTACK);
 		return true;
 	}
 
@@ -57,14 +46,7 @@ public class DarkSword extends ItemCharge
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-	
+
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
@@ -89,11 +71,10 @@ public class DarkSword extends ItemCharge
 	{
 		return p_150897_1_ == Blocks.web;
 	}
-	
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("dm_tools", "sword"));
+		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 64);
 	}
 }

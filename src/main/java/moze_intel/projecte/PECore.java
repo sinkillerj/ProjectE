@@ -1,12 +1,20 @@
 package moze_intel.projecte;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
@@ -21,19 +29,26 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.ThreadCheckUUID;
-import moze_intel.projecte.network.commands.*;
+import moze_intel.projecte.network.ThreadCheckUpdate;
+import moze_intel.projecte.network.commands.ChangelogCMD;
+import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
+import moze_intel.projecte.network.commands.ReloadEmcCMD;
+import moze_intel.projecte.network.commands.RemoveEmcCMD;
+import moze_intel.projecte.network.commands.ResetEmcCMD;
+import moze_intel.projecte.network.commands.SetEmcCMD;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.GuiHandler;
+import moze_intel.projecte.utils.IMCHandler;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
@@ -51,7 +66,7 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
 
-	public static final List<String> uuids = new ArrayList();
+	public static final List<String> uuids = Lists.newArrayList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -91,8 +106,6 @@ public class PECore
 	{
 		proxy.registerKeyBinds();
 		proxy.registerRenderers();
-		
-		Utils.init();
 		AchievementHandler.init();
 	}
 	
@@ -100,7 +113,6 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ObjHandler.registerPhiloStoneSmelting();
-
 		NBTWhitelistParser.readUserData();
 	}
 	
@@ -179,9 +191,9 @@ public class PECore
 						if (remappedItem != null) mapping.remap(remappedItem);
 					}
 				} catch (Throwable t) {
-					// Yeah I know, silently skipping errors isn't good, but this really shouldn't fail, just adding a safety check ^_^
+					// safety check ^_^
 				}
-        		}
+			}
 		}
 	}
 }

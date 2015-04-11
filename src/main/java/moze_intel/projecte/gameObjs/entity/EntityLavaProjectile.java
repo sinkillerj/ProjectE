@@ -56,11 +56,6 @@ public class EntityLavaProjectile extends EntityThrowable
 						}
 					}
 			
-			if (this.isInWater())
-			{
-				this.setDead();
-			}
-			
 			if (this.posY > 128)
 			{
 				WorldInfo worldInfo = this.worldObj.getWorldInfo();

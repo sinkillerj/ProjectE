@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.transmuteportable;
 
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -22,7 +21,7 @@ public class SlotTabletOutput extends Slot
 	{
 		ItemStack stack = getStack().copy();
 		stack.stackSize = slot;
-		table.removeEmc(Utils.getEmcValue(stack));
+		table.removeEmc(EMCHelper.getEmcValue(stack));
 		table.checkForUpdates();
 		
 		return stack;
