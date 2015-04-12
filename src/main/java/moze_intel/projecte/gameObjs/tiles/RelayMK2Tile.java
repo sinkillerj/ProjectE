@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.util.StatCollector;
 
 public class RelayMK2Tile extends RelayMK1Tile
 {

@@ -2,9 +2,7 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.StatCollector;
 
 public class ReloadEmcCMD extends ProjectEBaseCMD
 {

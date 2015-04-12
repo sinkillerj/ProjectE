@@ -3,7 +3,6 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 

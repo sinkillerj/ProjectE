@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 public class CondenserMK2Tile extends CondenserTile
 {
