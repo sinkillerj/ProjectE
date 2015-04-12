@@ -16,6 +16,7 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'checkstyle'
 
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -39,9 +40,10 @@ repositories {
         url "http://chickenbones.net/maven/"
     }
 }
- 
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
+    checkstyle('com.puppycrawl.tools:checkstyle:6.4')
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
