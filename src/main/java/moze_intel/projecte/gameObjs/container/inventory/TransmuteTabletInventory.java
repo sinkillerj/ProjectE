@@ -166,12 +166,12 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
-                    continue;
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
-                    continue;
+					continue;
 				}
 
 				if (pagecounter < (searchpage * 12))
@@ -211,12 +211,12 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
-                    continue;
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
-                    continue;
+					continue;
 				}
 
 				if (pagecounter < (searchpage * 12))
