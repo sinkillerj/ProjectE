@@ -139,13 +139,6 @@ public class TransmuteTabletInventory implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
@@ -178,6 +171,13 @@ public class TransmuteTabletInventory implements IInventory
 				{
 					iter.remove();
 				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
+				}
 			}
 		}
 		else
@@ -188,13 +188,6 @@ public class TransmuteTabletInventory implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (emc < EMCHelper.getEmcValue(stack))
 				{
@@ -220,6 +213,13 @@ public class TransmuteTabletInventory implements IInventory
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
