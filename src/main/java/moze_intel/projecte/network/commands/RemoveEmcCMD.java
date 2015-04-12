@@ -65,7 +65,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 
 			sendSuccess(sender, new ChatComponentTranslation("pe.command.remove.success", name));
 		}

@@ -8,6 +8,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -96,7 +98,26 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 			stack.setItemDamage(0);
 		}
 	}
-	
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (!world.isRemote)
+		{
+			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			{
+				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT)
+				{
+					// Ignite TNT or derivatives
+					((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
+					world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+				}
+			}
+		}
+		return stack;
+	}
+
 	@Override
 	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)

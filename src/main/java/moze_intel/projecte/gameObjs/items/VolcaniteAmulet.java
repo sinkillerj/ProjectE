@@ -96,9 +96,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 						default: break;
 					}
 
-					if (consumeFuel(player, stack, 32, true))
+					if (world.isAirBlock(i, j, k) && consumeFuel(player, stack, 32, true))
 					{
 						placeLava(world, i, j, k);
+						PlayerHelper.swingItem(((EntityPlayerMP) player));
 					}
 				}
 			}

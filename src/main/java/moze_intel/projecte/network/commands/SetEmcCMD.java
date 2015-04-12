@@ -111,7 +111,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, emc))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 
 			sendSuccess(sender, new ChatComponentTranslation("pe.command.set.success", name, emc));
 		}
