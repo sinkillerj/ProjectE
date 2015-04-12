@@ -163,7 +163,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 			}
 			if (this instanceof DiviningRodHigh)
 			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.second", maxValues[1]));
+				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.secondmax", maxValues[1]));
 				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.thirdmax", maxValues[2]));
 			}
 		}
