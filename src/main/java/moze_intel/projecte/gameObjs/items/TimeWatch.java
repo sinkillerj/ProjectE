@@ -23,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -56,7 +56,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			if (!ProjectEConfig.enableTimeWatch)
 			{
-				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("pe.timewatch.disabled")));
+				player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.disabled"));
 				return stack;
 			}
 
@@ -69,8 +69,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new ChatComponentText(
-					String.format(StatCollector.translateToLocal("pe.timewatch.mode_switch"), getTimeDescription(stack))));
+			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch")
+					.appendSibling(new ChatComponentTranslation(getTimeName(stack))));
 		}
 
 		return stack;
@@ -238,26 +238,20 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		}
 	}
 
-	private String getTimeDescription(ItemStack stack)
+	private String getTimeName(ItemStack stack)
 	{
 		byte mode = getTimeBoost(stack);
-
-		String s;
 		switch (mode)
 		{
 			case 0:
-				s = "pe.timewatch.off";
-				break;
+				return "pe.timewatch.off";
 			case 1:
-				s= "pe.timewatch.ff";
-				break;
+				return "pe.timewatch.ff";
 			case 2:
-				s = "pe.timewatch.rw";
-				break;
+				return "pe.timewatch.rw";
 			default:
-				s = "ERROR_INVALID_MODE";
+				return "ERROR_INVALID_MODE";
 		}
-		return StatCollector.translateToLocal(s);
 	}
 
 	private byte getTimeBoost(ItemStack stack)
@@ -335,7 +329,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"), getTimeDescription(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"), getTimeName(stack)));
 		}
 	}
 

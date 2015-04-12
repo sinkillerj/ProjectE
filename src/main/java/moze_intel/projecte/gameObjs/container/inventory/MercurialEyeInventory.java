@@ -104,7 +104,7 @@ public class MercurialEyeInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_mercurial_eye.name");
+		return "item.pe_mercurial_eye.name";
 	}
 
 	@Override

@@ -95,6 +95,6 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("tile.pe_condenser_mk2.name");
+		return "tile.pe_condenser_mk2.name";
 	}
 }

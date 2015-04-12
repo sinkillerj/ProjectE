@@ -20,6 +20,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.StatCollector;
@@ -156,16 +157,16 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 				maxValues[i] = emcValues.get(i);
 			}
 
-			player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.avgemc"), numBlocks, (totalEmc / numBlocks))));
+			player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
 			if (this instanceof DiviningRodMedium)
 			{
-				player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.maxemc"), maxValues[0])));
+				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.maxemc", maxValues[0]));
 			}
 			if (this instanceof DiviningRodHigh)
 			{
-				player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.secondmax"), maxValues[1])));
-				player.addChatComponentMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.divining.thirdmax"), maxValues[2])));
+				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.second", maxValues[1]));
+				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.thirdmax", maxValues[2]));
 			}
 		}
 
@@ -212,7 +213,6 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 			stack.stackTagCompound.setByte("Mode", ((byte) (getMode(stack) + 1)));
 		}
 
-		player.addChatComponentMessage(new ChatComponentText(
-				String.format(StatCollector.translateToLocal("pe.item.mode_switch"), modes[getMode(stack)])));
+		player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 	}
 }

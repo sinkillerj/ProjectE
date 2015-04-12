@@ -202,7 +202,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.pedestal.shortname");
+		return "pe.pedestal.shortname";
 	}
 
 	@Override

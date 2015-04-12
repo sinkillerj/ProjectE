@@ -72,6 +72,6 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.dmfurnace.shortname");
+		return "pe.dmfurnace.shortname";
 	}
 }

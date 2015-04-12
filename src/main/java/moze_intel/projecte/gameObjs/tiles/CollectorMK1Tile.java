@@ -446,7 +446,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_collector_MK1.name");
+		return "tile.pe_collector_MK1.name";
 	}
 
 	@Override

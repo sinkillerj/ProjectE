@@ -326,7 +326,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("pe.relay.mk1");
+		return "pe.relay.mk1";
 	}
 
 	@Override

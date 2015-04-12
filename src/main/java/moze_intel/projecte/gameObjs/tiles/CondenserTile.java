@@ -356,7 +356,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_condenser.name");
+		return "tile.pe_condenser.name";
 	}
 
 	@Override

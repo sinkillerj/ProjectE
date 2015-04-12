@@ -129,7 +129,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_alchemy_chest.name");
+		return "tile.pe_alchemy_chest.name";
 	}
 
 	@Override

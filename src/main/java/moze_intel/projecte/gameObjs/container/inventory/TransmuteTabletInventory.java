@@ -366,7 +366,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_transmutation_tablet.name");
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override

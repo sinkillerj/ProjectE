@@ -38,6 +38,10 @@ public final class MathUtils
 		return ticks / 20.0D;
 	}
 
+	/**
+	 * Converts ticks to seconds, and adds the string unit on. If result is 0, then "every tick" is appended
+	 * Take care when calling this serverside, the units will be in the Locale of the server.
+	 */
 	public static String tickToSecFormatted(int ticks)
 	{
 		double result = tickToSec(ticks);

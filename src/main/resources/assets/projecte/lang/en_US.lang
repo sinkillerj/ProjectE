@@ -195,10 +195,10 @@ pe.darkpick.mode2=3x Tallshot
 pe.darkpick.mode3=3x Wideshot
 pe.darkpick.mode4=3x Longshot
 
-pe.divining.avgemc=Average EMC for %d blocks: %,d
-pe.divining.maxemc=Max EMC: %,d
-pe.divining.secondmax=Second Max EMC: %,d
-pe.divining.thirdmax=Third Max EMC: %,d
+pe.divining.avgemc=Average EMC for %s blocks: %s
+pe.divining.maxemc=Max EMC: %s
+pe.divining.secondmax=Second Max EMC: %s
+pe.divining.thirdmax=Third Max EMC: %s
 
 pe.dmfurnace.shortname=DM Furnace
 pe.rmfurnace.shortname=RM Furnace

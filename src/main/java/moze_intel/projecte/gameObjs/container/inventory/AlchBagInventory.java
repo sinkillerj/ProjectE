@@ -81,7 +81,7 @@ public class AlchBagInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_alchemical_bag_white.name");
+		return "item.pe_alchemical_bag_white.name";
 	}
 
 	@Override

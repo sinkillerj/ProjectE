@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -244,8 +246,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 
 		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
 		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
-				+ e + StatCollector.translateToLocal(s)));
+		player.addChatMessage(new ChatComponentTranslation("pe.gem.stepassist_tooltip")
+				.appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
 	}
 	
 	public static void toggleNightVision(ItemStack helm, EntityPlayer player)
@@ -270,8 +272,8 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 
 		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
 		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-		player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
-				+ e + StatCollector.translateToLocal(s)));
+		player.addChatMessage(new ChatComponentTranslation("pe.gem.nightvision_tooltip")
+				.appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
 	}
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)

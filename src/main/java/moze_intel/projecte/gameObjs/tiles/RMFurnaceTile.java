@@ -647,7 +647,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("pe.rmfurnace.shortname");
+		return "pe.rmfurnace.shortname";
 	}
 
 	@Override

@@ -13,6 +13,6 @@ public class RelayMK3Tile extends RelayMK1Tile
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.relay.mk3");
+		return "pe.relay.mk3";
 	}
 }

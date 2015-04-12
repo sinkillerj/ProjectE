@@ -3,6 +3,7 @@ package moze_intel.projecte.network.commands;
 import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.command.changelog.uptodate")));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.changelog.uptodate"));
 		}
 		else
 		{

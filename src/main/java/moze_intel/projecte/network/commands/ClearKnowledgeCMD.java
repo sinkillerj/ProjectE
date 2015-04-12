@@ -3,10 +3,12 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientKnowledgeClearPKT;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
@@ -21,7 +23,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-		return StatCollector.translateToLocal("pe.command.clearknowledge.usage");
+		return "pe.command.clearknowledge.usage";
 	}
 
 	@Override
@@ -33,11 +35,11 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 			{
 				Transmutation.clearKnowledge(sender.getCommandSenderName());
 				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
-				sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.success"), sender.getCommandSenderName()));
+				sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", sender.getCommandSenderName()));
 			}
 			else
 			{
-				sendError(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.error"), sender.getCommandSenderName()));
+				sendError(sender, new ChatComponentTranslation("pe.command.clearknowledge.error", sender.getCommandSenderName()));
 			}
 		}
 		else
@@ -50,18 +52,18 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 				{
 					Transmutation.clearKnowledge(player.getCommandSenderName());
 					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
-					sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.success"), player.getCommandSenderName()));
+					sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", player.getCommandSenderName()));
 					
 					if (!player.getCommandSenderName().equals(sender.getCommandSenderName()))
 					{
-						player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + String.format(StatCollector.translateToLocal("pe.command.clearknowledge.notify"), sender.getCommandSenderName())));
+						player.addChatComponentMessage(ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.clearknowledge.notify", sender.getCommandSenderName()), EnumChatFormatting.RED));
 					}
 					
 					return;
 				}
 			}
-			
-			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.clearknowledge.playernotfound"), params[0]));
+
+			sendError(sender, new ChatComponentTranslation("pe.command.clearknowledge.playernotfound", params[0]));
 		}
 	}
 

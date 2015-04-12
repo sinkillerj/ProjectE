@@ -13,6 +13,6 @@ public class CollectorMK2Tile extends CollectorMK1Tile
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("tile.pe_collector_MK2.name");
+		return "tile.pe_collector_MK2.name";
 	}
 }

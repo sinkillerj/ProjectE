@@ -12,6 +12,7 @@ import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,8 +21,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -43,13 +45,12 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
-		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		if (true)//PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			ChatComponentText joinMsg = new ChatComponentText(String.format(
-					EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.high_alchemist")
-					+ EnumChatFormatting.GOLD + " %s " + EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.server.has_joined"),
-					evt.player.getDisplayName()));
-			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(joinMsg); // Sends to all everywhere, not just same world like before.
+			IChatComponent prior = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.high_alchemist"), EnumChatFormatting.BLUE);
+			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getCommandSenderName() + " "), EnumChatFormatting.GOLD);
+			IChatComponent latter = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.has_joined"), EnumChatFormatting.BLUE);
+			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}
 	}
 
