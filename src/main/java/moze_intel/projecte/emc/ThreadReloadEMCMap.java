@@ -7,38 +7,29 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.world.World;
 
 public class ThreadReloadEMCMap extends Thread {
-	private boolean serverStarting;
 	private World world;
 
 	/**
-	 * Runs the EMC Remap. If serverStarting is true, world can safely be null.
-	 * @param serverStarting true if this is being run when the server is starting up.
-	 * @param world The world; used for checking the condensers after an EMC remap. Can be null if serverStarting is true.
+	 * Runs the EMC Remap.
+	 * @param world The world; used for checking the condensers after an EMC remap.
 	 */
-	public static void runEMCRemap(boolean serverStarting, World world) {
-		new ThreadReloadEMCMap(serverStarting, world).start();
+	public static void runEMCRemap(World world) {
+		new ThreadReloadEMCMap(world).start();
 	}
 
-	private ThreadReloadEMCMap(boolean serverStarting, World world) {
+	private ThreadReloadEMCMap(World world) {
 		super("ProjectE Reload EMC Thread");
-		this.serverStarting = serverStarting;
 		this.world = world;
 	}
 
 	@Override
 	public void run() {
-		if (serverStarting) {
-			PELogger.logInfo("Starting server-side EMC mapping.");
-		} else {
-			EMCMapper.clearMaps();
-		}
+		long start = System.currentTimeMillis();
+		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
-		if (serverStarting) {
-			PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
-		} else {
-			TileEntityHandler.checkAllCondensers(world);
-			PacketHandler.sendFragmentedEmcPacketToAll();
-		}
+		TileEntityHandler.checkAllCondensers(world);
+		PacketHandler.sendFragmentedEmcPacketToAll();
+		PELogger.logInfo("Thread ran for " + (System.currentTimeMillis() - start) + " ms.");
 	}
 }
