@@ -103,7 +103,7 @@ public class PlayerEvents
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getMetadata());
 			
 			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
@@ -120,7 +120,7 @@ public class PlayerEvents
 					event.item.setEntityItemStack(remain);
 				}
 				
-				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
+				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getMetadata(), inv);
 				AlchemicalBags.sync(player);
 				
 				event.setCanceled(true);

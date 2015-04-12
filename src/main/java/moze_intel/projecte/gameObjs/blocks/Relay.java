@@ -28,7 +28,7 @@ public class Relay extends BlockDirection
 	public Relay(int tier) 
 	{
 		super(Material.rock);
-		this.setBlockName("pe_relay_MK" + Integer.toString(tier));
+		this.setUnlocalizedName("pe_relay_MK" + Integer.toString(tier));
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(10.0f);
 		this.tier = tier;
@@ -74,7 +74,7 @@ public class Relay extends BlockDirection
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:relays/other");
 		this.front = register.registerIcon("projecte:relays/front");

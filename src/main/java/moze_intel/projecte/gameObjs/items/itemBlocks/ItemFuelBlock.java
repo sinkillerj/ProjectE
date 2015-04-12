@@ -9,14 +9,14 @@ public class ItemFuelBlock extends ItemBlock
 	public ItemFuelBlock(Block block) 
 	{
 		super(block);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 		this.hasSubtypes = true;
 	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		switch (stack.getItemDamage())
+		switch (stack.getMetadata())
 		{
 			case 0:
 				return "tile.pe_fuel_block_0";

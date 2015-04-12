@@ -16,7 +16,7 @@ public class AlchBagInventory implements IInventory
 	{
 		invItem = stack;
 		this.player = player;
-		inventory = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		inventory = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getMetadata());
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class AlchBagInventory implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -115,16 +115,16 @@ public class AlchBagInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openChest()
 	{
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeChest()
 	{
 		if (!player.worldObj.isRemote)
 		{
-			AlchemicalBags.set(player.getCommandSenderName(), (byte) invItem.getItemDamage(), inventory);
+			AlchemicalBags.set(player.getCommandSenderName(), (byte) invItem.getMetadata(), inventory);
 			AlchemicalBags.sync(player);
 		}
 	}

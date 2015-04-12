@@ -360,7 +360,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -439,14 +439,14 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 	
 	@Override
-	public void openInventory()
+	public void openChest()
 	{
 		++numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
 	}
 	
 	@Override
-	public void closeInventory()
+	public void closeChest()
 	{
 		--numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
@@ -464,7 +464,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 	
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getSlotsForFace(int side)
 	{
 		int[] slots = new int[inventory.length - 1];
 		

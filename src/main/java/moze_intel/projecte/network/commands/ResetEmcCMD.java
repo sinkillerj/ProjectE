@@ -45,7 +45,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 			}
 
 			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
-			meta = heldItem.getItemDamage();
+			meta = heldItem.getMetadata();
 		}
 		else
 		{

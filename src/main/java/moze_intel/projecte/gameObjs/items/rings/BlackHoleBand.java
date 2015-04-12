@@ -46,7 +46,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer))
+		if (stack.getMetadata() != 1 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -127,7 +127,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 
 	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
 	{
-		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorld(), tile);
 		for (TileEntity tileEntity : list)
 		{
 			if (tileEntity instanceof IInventory)

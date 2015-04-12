@@ -607,7 +607,7 @@ public class ObjHandler
 	 */
 	public static void registerPhiloStoneSmelting()
 	{
-		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))
+		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.instance().getSmeltingList()).entrySet()))
 		{
 			if (entry.getKey() == null || entry.getValue() == null)
 			{
@@ -629,7 +629,7 @@ public class ObjHandler
 		{
 			if (fuel.getItem() == fuels)
 			{
-				switch (fuel.getItemDamage())
+				switch (fuel.getMetadata())
 				{
 					case 0:
 						return Constants.ALCH_BURN_TIME;
@@ -641,7 +641,7 @@ public class ObjHandler
 			}
 			else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
 			{
-				switch (fuel.getItemDamage())
+				switch (fuel.getMetadata())
 				{
 					case 0:
 						return Constants.ALCH_BURN_TIME * 9;

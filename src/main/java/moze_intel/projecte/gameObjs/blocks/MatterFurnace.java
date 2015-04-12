@@ -41,7 +41,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		isActive = active;
 		isHighTier = isRM;
 		textureName = isHighTier ? "rm" : "dm";
-		this.setBlockName("pe_" + textureName + "_furnace");
+		this.setUnlocalizedName("pe_" + textureName + "_furnace");
 		
 		if (isActive) 
 		{
@@ -98,7 +98,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 				WorldHelper.spawnEntityItem(world, stack, x, y, z);
 			}
 			
-			world.func_147453_f(x, y, z, block);
+			world.updateNeighborsAboutBlockChange(x, y, z, block);
 		}
 		
 		world.removeTileEntity(x, y, z);

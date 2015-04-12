@@ -52,7 +52,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 			}
 
 			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
-			meta = heldItem.getItemDamage();
+			meta = heldItem.getMetadata();
 			emc = MathUtils.parseInteger(params[0]);
 
 			if (emc < 0)

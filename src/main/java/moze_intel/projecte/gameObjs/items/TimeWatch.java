@@ -119,7 +119,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 		}
 
-		if (stack.getItemDamage() == 0)
+		if (stack.getMetadata() == 0)
 		{
 			return;
 		}
@@ -279,20 +279,20 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public byte getMode(ItemStack stack)
 	{
-		return (byte) stack.getItemDamage();
+		return (byte) stack.getMetadata();
 	}
 
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getItemDamage() == 0)
+		if (stack.getMetadata() == 0)
 		{
-			stack.setItemDamage(1);
+			stack.setMetadata(1);
 			playChargeSound(player);
 		}
 		else 
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 			playUnChargeSound(player);
 		}
 	}

@@ -65,7 +65,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	public static void condense(ItemStack gem, ItemStack[] inv)
 	{
-		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
+		if (gem.getMetadata() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
 			return;
 		}
@@ -126,7 +126,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		{
 			if (player.isSneaking())
 			{
-				if (stack.getItemDamage() == 1)
+				if (stack.getMetadata() == 1)
 				{
 					List<ItemStack> items = getItems(stack);
 					
@@ -138,11 +138,11 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 						ItemPE.setEmc(stack, 0);
 					}
 					
-					stack.setItemDamage(0);
+					stack.setMetadata(0);
 				}
 				else
 				{
-					stack.setItemDamage(1);
+					stack.setMetadata(1);
 				}
 			}
 			else

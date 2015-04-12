@@ -223,7 +223,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			final int side = 0;
 			ISidedInventory inv = (ISidedInventory) tile;
 			
-			int[] slots = inv.getAccessibleSlotsFromSide(side);
+			int[] slots = inv.getSlotsForFace(side);
 			
 			if (slots.length > 0)
 			{
@@ -337,7 +337,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					
 					continue;
 				}
-				else if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null)
+				else if (FurnaceRecipes.instance().getSmeltingResult(stack) == null)
 				{
 					continue;
 				}
@@ -401,7 +401,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				
 				if (inv != null)
 				{
-					int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[iSide]);
+					int[] slots = inv.getSlotsForFace(ForgeDirection.OPPOSITES[iSide]);
 					
 					if (slots.length > 0)
 					{
@@ -476,7 +476,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	private void smeltItem()
 	{
 		ItemStack toSmelt = inventory[1];
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
 		ItemStack currentSmelted = getStackInSlot(outputSlot);
 
 		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
@@ -505,7 +505,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			return false;
 		}
 		
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt);
 		if (smeltResult == null) 
 		{
 			return false;
@@ -651,7 +651,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -669,13 +669,13 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public void openInventory() 
+	public void openChest()
 	{
 		
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeChest()
 	{
 		
 	}
@@ -694,14 +694,14 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		}
 		else if (slot >= 1 && slot <= 13)
 		{
-			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+			return FurnaceRecipes.instance().getSmeltingResult(stack) != null;
 		}
 		
 		return false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getSlotsForFace(int side)
 	{
 		switch(side)
 		{

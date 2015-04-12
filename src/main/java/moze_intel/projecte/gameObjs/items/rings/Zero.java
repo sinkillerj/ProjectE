@@ -50,7 +50,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		super.onUpdate(stack, world, entity, par4, par5);
 		
-		if (world.isRemote || par4 > 8 || stack.getItemDamage() == 0)
+		if (world.isRemote || par4 > 8 || stack.getMetadata() == 0)
 		{
 			return;
 		}
@@ -110,13 +110,13 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public byte getMode(ItemStack stack)
 	{
-		return (byte) stack.getItemDamage();
+		return (byte) stack.getMetadata();
 	}
 
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack) 
 	{
-		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
+		stack.setMetadata(stack.getMetadata() == 0 ? 1 : 0);
 	}
 	
 	@SideOnly(Side.CLIENT)
