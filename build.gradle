@@ -78,3 +78,12 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+//Thanks to http://stackoverflow.com/a/20362150/2256700/
+task checkstyleHtml << {
+    ant.xslt(in: checkstyleMain.reports.xml.destination,
+            style: file('/config/checkstyle/checkstyle-noframes-sorted.xsl'),
+            out: new File(checkstyleMain.reports.xml.destination.parent, 'main.html'))
+}
+
+checkstyleMain.finalizedBy checkstyleHtml
