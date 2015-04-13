@@ -79,6 +79,10 @@ processResources
     }
 }
 
+checkstyle {
+    sourceSets = [sourceSets.main, sourceSets.test]
+}
+
 //Thanks to http://stackoverflow.com/a/20362150/2256700/
 task checkstyleHtml << {
     ant.xslt(in: checkstyleMain.reports.xml.destination,
