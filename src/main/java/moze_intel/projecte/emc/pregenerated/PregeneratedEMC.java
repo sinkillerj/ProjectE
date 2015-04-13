@@ -14,10 +14,7 @@ import java.util.Map;
 
 public class PregeneratedEMC
 {
-	static Gson createGson()
-	{
-		return new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe()).enableComplexMapKeySerialization().setPrettyPrinting().create();
-	}
+	static final Gson gson =  new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe()).enableComplexMapKeySerialization().setPrettyPrinting().create();
 
 	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> map)
 	{
@@ -34,16 +31,13 @@ public class PregeneratedEMC
 
 	public static Map<NormalizedSimpleStack, Integer> read(File file) throws FileNotFoundException
 	{
-		Gson gson = createGson();
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
-
 		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(new FileReader(file), type);
 		return map;
 	}
 
 	public static void write(File file, Map<NormalizedSimpleStack, Integer> map) throws IOException
 	{
-		Gson gson = createGson();
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
 		FileWriter writer = new FileWriter(file);
 		gson.toJson(map, type, writer);
