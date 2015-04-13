@@ -68,6 +68,8 @@ public final class EMCMapper
 			graphMapperValues = graphMapper.generateValues();
 			PELogger.logInfo("Generated Values...");
 
+			filterEMCMap(graphMapperValues);
+
 			if (shouldUsePregenerated) {
 				//Should have used pregenerated, but the file was not read => regenerate.
 				try
@@ -82,19 +84,34 @@ public final class EMCMapper
 		}
 		config.save();
 
+		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
+			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
+			{
+				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
+				emc.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
+			}
+		}
+
+		Transmutation.loadCompleteKnowledge();
+		FuelMapper.loadMap();
+	}
+
+	/**
+	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
+	 * @param map
+	 */
+	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();
 			if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;
 				if (normStackItem.damage != OreDictionary.WILDCARD_VALUE) {
-					emc.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
+					continue;
 				}
 			}
+			iter.remove();
 		}
-
-		Transmutation.loadCompleteKnowledge();
-		FuelMapper.loadMap();
 	}
 
 	public static boolean mapContains(SimpleStack key)
