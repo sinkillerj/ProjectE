@@ -45,9 +45,6 @@
         <module name="AvoidStarImport">
             <property name="severity" value="error"/>
         </module>
-        <module name="NeedBraces">
-            <property name="severity" value="error"/>
-        </module>
         <module name="LeftCurly">
             <property name="severity" value="error"/>
             <property name="option" value="nl"/>
@@ -97,6 +94,7 @@
         </module>
 
          <!-- Warnings: -->
+        <module name="NeedBraces"/>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
