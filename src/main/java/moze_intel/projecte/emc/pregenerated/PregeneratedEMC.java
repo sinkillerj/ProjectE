@@ -33,6 +33,7 @@ public class PregeneratedEMC
 	{
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
 		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(new FileReader(file), type);
+		map.remove(null);
 		return map;
 	}
 

@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.pregenerated;
 
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.PELogger;
 
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
@@ -63,7 +64,8 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 			int id = Item.itemRegistry.getIDForObject(itemObject);
 			return NormalizedSimpleStack.getNormalizedSimpleStackFor(id, itemDamage);
 		}
-		throw new JsonParseException(String.format("Could not get Item-Object for Item with name: '%s'", itemName));
+		PELogger.logWarn(String.format("Could not get Item-Object for Item with name: '%s'", itemName));
+		return null;
 
 	}
 }
