@@ -139,6 +139,11 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 					}
 
 
+			if (numBlocks == 0)
+			{
+				return stack;
+			}
+			
 			int[] maxValues = new int[3];
 
 			for (int i = 0; i < 3; i++)
