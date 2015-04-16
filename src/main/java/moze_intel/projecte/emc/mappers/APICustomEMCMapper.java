@@ -1,14 +1,12 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.init.Blocks;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -68,7 +66,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		final Map<String, Integer> priorityMap = new HashMap<String, Integer>();
 		for (String modId: customEMCforMod.keySet()) {
 			if (modId == null) continue;
-			priorityMap.put(modId, config.getInt(modId + "priority", "customEMCPriorities", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for Mod with ModId = " + modId + ". 0 to disable. Values: " + customEMCforMod.get(modId).size()));
+			priorityMap.put(modId, config.getInt(modId + "priority", "customEMCPriorities", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for Mod with ModId = " + modId + ". Values: " + customEMCforMod.get(modId).size()));
 		}
 		if (customEMCforMod.containsKey(null))
 			priorityMap.put(null, config.getInt("modlessCustomEMCPriority", "", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for custom EMC values for which the ModId could not be determined. 0 to disable. Values: " + customEMCforMod.get(null).size()));
@@ -86,13 +84,43 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 
 		for(String modId : modIds) {
-			if (priorityMap.get(modId) != 0) {
-				for (Map.Entry<String, Integer> entry : customEMCforMod.get(modId).entrySet()) {
-					NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
+			String modIdOrModless = modId == null ? "modless": modId;
+			String modIdOrUnknown = modId == null ? "unknown mod" : modId;
+			boolean canSetSelf = config.getBoolean(modIdOrModless + "SetSelf", "permissions", true, "Allow " + modIdOrUnknown +" to set values for its own items.");
+			boolean canSetOther = config.getBoolean(modIdOrModless + "SetOther", "permissions", true, "Allow " + modIdOrUnknown +" to set values for other mods.");
+			boolean canSetVanilla = config.getBoolean(modIdOrModless + "SetVanilla", "permissions", true, "Allow " + modIdOrUnknown +" to set values for vanilla items.");
+			for (Map.Entry<String, Integer> entry : customEMCforMod.get(modId).entrySet()) {
+				NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
+				if (isAllowedToSet(modId, normStack, canSetSelf, canSetOther, canSetVanilla))
+				{
 					mapper.setValue(normStack, entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
-					PELogger.logInfo(String.format("%s setting value for %s to %s", modId == null ? "unknown mod" : modId, normStack, entry.getValue()));
+					PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
+				}
+				else
+				{
+					PELogger.logInfo(String.format("Disallowed %s to set the value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
 				}
 			}
 		}
+	}
+
+	protected boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, boolean canSetSelf, boolean canSetOther, boolean canSetVanilla) {
+		String itemName;
+		if (stack instanceof NormalizedSimpleStack.NSSItem)
+		{
+			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem)stack;
+			itemName = Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
+		} else {
+			return false;
+		}
+		if (itemName.startsWith("minecraft:"))
+		{
+			return canSetVanilla;
+		}
+		if (itemName.startsWith(modId + ":"))
+		{
+			return canSetSelf;
+		}
+		return canSetOther;
 	}
 }

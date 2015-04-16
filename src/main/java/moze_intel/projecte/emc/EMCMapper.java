@@ -2,6 +2,7 @@ package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IntArithmetic;
+import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
