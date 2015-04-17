@@ -55,7 +55,7 @@ public class NovaCatalyst extends BlockTNT
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:explosives/nova_side");
 		topIcon = register.registerIcon("projecte:explosives/top");

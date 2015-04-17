@@ -35,7 +35,7 @@ public class NovaCataclysm extends NovaCatalyst
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:explosives/nova1_side");
 		topIcon = register.registerIcon("projecte:explosives/top");

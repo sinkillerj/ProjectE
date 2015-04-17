@@ -189,7 +189,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:"+textureName);
 		front = register.registerIcon("projecte:matter_furnace/"+(isActive ? (textureName+"_on") : (textureName + "_off")));
