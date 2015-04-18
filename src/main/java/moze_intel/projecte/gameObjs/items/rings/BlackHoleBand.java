@@ -141,6 +141,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 				else
 				{
 					item.setDead();
+					break;
 				}
 			}
 		}
