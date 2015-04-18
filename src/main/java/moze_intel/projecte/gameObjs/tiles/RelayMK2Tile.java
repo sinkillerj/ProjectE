@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.util.StatCollector;
 
 public class RelayMK2Tile extends RelayMK1Tile
 {
@@ -13,6 +12,6 @@ public class RelayMK2Tile extends RelayMK1Tile
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.relay.mk2");
+		return "pe.relay.mk2";
 	}
 }

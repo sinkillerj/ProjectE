@@ -15,7 +15,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collections;
@@ -366,7 +365,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_transmutation_tablet.name");
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override

@@ -164,10 +164,10 @@ pe.darkpick.mode2=3x 竖直模式
 pe.darkpick.mode3=3x 横向模式
 pe.darkpick.mode4=3x 直线模式
 
-pe.divining.avgemc=平均EMC: %,d (共%d个方块)
-pe.divining.maxemc=最高EMC: %,d
-pe.divining.secondmax=第二高EMC: %,d
-pe.divining.thirdmax=第三高EMC: %,d
+pe.divining.avgemc=平均EMC: %s (共%s个方块)
+pe.divining.maxemc=最高EMC: %s
+pe.divining.secondmax=第二高EMC: %s
+pe.divining.thirdmax=第三高EMC: %s
 
 pe.dmfurnace.shortname=暗物质熔炉
 pe.rmfurnace.shortname=红物质熔炉
