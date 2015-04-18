@@ -1,3 +1,14 @@
+###Version 1.7.10-PE1.4.4
+* NEW: Transmutation GUI now has pages
+* NEW: Mind Stone can now absorb nearby XP while on a pedestal
+* NEW: Ignition Ring can ignite TNT
+* FIXED: The amount of Covalence Dust needed for item repair is more in line with EE2
+* FIXED: EMC remapping thread should now work properly
+* FIXED: Possible block deletion issue with fluid amulets
+* FIXED: Possible fix for a issue preventing localization during server play
+* CHANGE: A large code refactor has taken place. This should be largely unnoticeable in gameplay but please report discrepancies
+* CHANGE: Harvest Goddess Band works on plant life. Watch of Flowing Time works on everything else. Please report discrepancies
+
 ###Version 1.7.10-PE1.4.3.1
 * FIXED: Reverted EMC mapping thread change till it can be fixed
 
