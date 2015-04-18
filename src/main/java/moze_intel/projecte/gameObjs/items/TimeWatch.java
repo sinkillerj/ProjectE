@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
@@ -38,6 +39,13 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
+	private static ImmutableSet<String> internalBlacklist = ImmutableSet.of(
+			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
+			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
+			"com.sci.torcherino.tile.TileTorcherino",
+			"com.sci.torcherino.tile.TileCompressedTorcherino"
+	);
+
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
@@ -191,9 +199,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		while (iter.hasNext())
 		{
 			TileEntity tile = iter.next();
-			if (tile instanceof DMPedestalTile)
+			if (internalBlacklist.contains(tile.getClass().getName()))
 			{
-				iter.remove(); // Don't speed up other pedestals because of exploits and infinite recursion
+				iter.remove(); // Don't speed up other time speeders because of exploits and infinite recursion
 				continue;
 			}
 			for (int i = 0; i < bonusTicks; i++)
