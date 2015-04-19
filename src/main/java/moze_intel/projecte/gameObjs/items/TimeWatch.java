@@ -77,8 +77,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch")
-					.appendSibling(new ChatComponentTranslation(getTimeName(stack))));
+			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch", new ChatComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
 		}
 
 		return stack;
@@ -92,7 +91,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8)
+		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
 		}
@@ -127,7 +126,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 		}
 
-		if (stack.getItemDamage() == 0)
+		if (world.isRemote || stack.getItemDamage() == 0)
 		{
 			return;
 		}
@@ -337,7 +336,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"), getTimeName(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"),
+					StatCollector.translateToLocal(getTimeName(stack))));
 		}
 	}
 
