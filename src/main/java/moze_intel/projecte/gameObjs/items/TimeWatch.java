@@ -190,7 +190,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
 	{
-		if (bBox == null) // Sanity check for chunk unload weirdness
+		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
@@ -215,7 +215,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
 	{
-		if (bBox == null) // Sanity check for chunk unload weirdness
+		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
@@ -388,8 +388,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
 			if (ProjectEConfig.timePedBonus > 0) {
-				speedUpTileEntities(world, 18, bBox);
-				speedUpRandomTicks(world, 18, bBox);
+				speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
+				speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);
 			}
 
 			if (ProjectEConfig.timePedMobSlowness < 1.0F) {
