@@ -103,27 +103,29 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (timeControl == 1)
-		{
-			if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-			{
-				world.setWorldTime(Long.MAX_VALUE);
-			}
-			else
-			{
-				world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
-			}
-		}
-		else if (timeControl == 2)
-		{
-			if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
-			{
-				world.setWorldTime(0);
-			}
-			else
-			{
-				world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
-			}
+		if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle")) {
+			if (timeControl == 1)
+            {
+                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+                {
+                    world.setWorldTime(Long.MAX_VALUE);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+                }
+            }
+            else if (timeControl == 2)
+            {
+                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+                {
+                    world.setWorldTime(0);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+                }
+            }
 		}
 
 		if (world.isRemote || stack.getItemDamage() == 0)
