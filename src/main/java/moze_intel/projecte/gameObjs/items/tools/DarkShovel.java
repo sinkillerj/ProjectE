@@ -28,7 +28,7 @@ public class DarkShovel extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		digAOE(stack, world, player, false, 16);
+		digAOE(stack, world, player, false, 0);
 		return stack;
 	}
 }
