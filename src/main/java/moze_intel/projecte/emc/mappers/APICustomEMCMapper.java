@@ -84,14 +84,10 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 
 		for(String modId : modIds) {
-			String modIdOrModless = modId == null ? "modless": modId;
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;
-			boolean canSetSelf = config.getBoolean(modIdOrModless + "SetSelf", "permissions", true, "Allow " + modIdOrUnknown +" to set values for its own items.");
-			boolean canSetOther = config.getBoolean(modIdOrModless + "SetOther", "permissions", true, "Allow " + modIdOrUnknown +" to set values for other mods.");
-			boolean canSetVanilla = config.getBoolean(modIdOrModless + "SetVanilla", "permissions", true, "Allow " + modIdOrUnknown +" to set values for vanilla items.");
 			for (Map.Entry<String, Integer> entry : customEMCforMod.get(modId).entrySet()) {
 				NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
-				if (isAllowedToSet(modId, normStack, canSetSelf, canSetOther, canSetVanilla))
+				if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 				{
 					mapper.setValue(normStack, entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
 					PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
@@ -104,7 +100,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		}
 	}
 
-	protected boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, boolean canSetSelf, boolean canSetOther, boolean canSetVanilla) {
+	protected boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Integer value, Configuration config) {
 		String itemName;
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
@@ -113,14 +109,19 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		} else {
 			return false;
 		}
-		if (itemName.startsWith("minecraft:"))
+		String modForItem = itemName.substring(0, itemName.indexOf(':'));
+		String permission = config.getString("for"+modForItem,"permissions."+modId,"both", String.format("Allow %s to set and or remove values for %s", modId, modForItem), new String[]{"both", "set", "remove"});
+		if (permission.equals("both"))
 		{
-			return canSetVanilla;
+			return true;
 		}
-		if (itemName.startsWith(modId + ":"))
+		if (value == 0)
 		{
-			return canSetSelf;
+			return permission.equals("remove");
 		}
-		return canSetOther;
+		else
+		{
+			return permission.equals("set");
+		}
 	}
 }
