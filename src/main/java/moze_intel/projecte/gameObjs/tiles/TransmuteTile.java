@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -18,7 +19,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collections;
@@ -34,7 +34,8 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
-	
+	public int searchpage = 0;
+	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
 	
 	public void handleKnowledge(ItemStack stack)
 	{
@@ -90,7 +91,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -103,7 +104,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
-		
+
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
+
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
@@ -121,7 +124,8 @@ public class TransmuteTile extends TileEmc implements IInventory
 			}
 
 			Iterator<ItemStack> iter = knowledge.iterator();
-			
+			int pagecounter = 0;
+
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
@@ -152,17 +156,27 @@ public class TransmuteTile extends TileEmc implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
 		else
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
-			
+			int pagecounter = 0;
+
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
@@ -187,15 +201,22 @@ public class TransmuteTile extends TileEmc implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
-		
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
@@ -382,7 +403,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_transmutation_stone.name");
+		return "tile.pe_transmutation_stone.name";
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.StatCollector;
 
 public class DMPedestalTile extends TileEmc implements IInventory
 {
@@ -202,7 +201,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.pedestal.shortname");
+		return "pe.pedestal.shortname";
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,6 +42,9 @@ public class GUITransmute extends GuiContainer
 
 		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(tile.filter);
+
+		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
+		this.buttonList.add(new GuiButton(2, this.xLocation + 193, this.yLocation + 100, 14, 14, ">"));
 	}
 
 	@Override
@@ -98,8 +102,9 @@ public class GUITransmute extends GuiContainer
 
 			if (!tile.filter.equals(srch)) 
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch));
+				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				tile.filter = srch;
+				tile.searchpage = 0;
 				tile.updateOutputs();
 			}
 		}
@@ -122,14 +127,14 @@ public class GUITransmute extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT(""));
+			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			tile.filter = "";
+			tile.searchpage = 0;
 			tile.updateOutputs();
 			this.textBoxFilter.setText("");
 		}
 
 		this.textBoxFilter.mouseClicked(x, y, mouseButton);
-
 	}
 
 	@Override
@@ -137,5 +142,29 @@ public class GUITransmute extends GuiContainer
 	{
 		super.onGuiClosed();
 		tile.learnFlag = 0;
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button)
+	{
+		String srch = this.textBoxFilter.getText().toLowerCase();
+
+		if (button.id == 1)
+		{
+			if (tile.searchpage != 0)
+			{
+				tile.searchpage--;
+			}
+		}
+		else if (button.id == 2)
+		{
+			if (!(tile.knowledge.size() <= 12))
+			{
+				tile.searchpage++;
+			}
+		}
+		PacketHandler.sendToServer(new SearchUpdatePKT(srch, tile.searchpage));
+		tile.filter = srch;
+		tile.updateOutputs();
 	}
 }

@@ -271,6 +271,28 @@ public final class WorldHelper
 	}
 
 	/**
+	 * Gravitates an entity, vanilla xp orb style, towards a position
+	 * Code adapted from EntityXPOrb and OpenBlocks Vacuum Hopper, mostly the former
+	 */
+	public static void gravitateEntityTowards(Entity ent, double x, double y, double z)
+	{
+		double dX = x - ent.posX;
+		double dY = y - ent.posY;
+		double dZ = z - ent.posZ;
+		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
+
+		double vel = 1.0 - dist / 15.0;
+		if (vel > 0.0D)
+		{
+			vel *= vel;
+			ent.motionX += dX / dist * vel * 0.05;
+			ent.motionY += dY / dist * vel * 0.1;
+			ent.motionZ += dZ / dist * vel * 0.05;
+			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
+		}
+	}
+
+	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
 	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, Coordinates coords, Block target, List<ItemStack> currentDrops, int numMined)

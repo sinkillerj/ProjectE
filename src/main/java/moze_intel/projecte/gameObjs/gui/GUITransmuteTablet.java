@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,6 +42,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(table.filter);
+
+		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
+		this.buttonList.add(new GuiButton(2, this.xLocation + 193, this.yLocation + 100, 14, 14, ">"));
 	}
 
 	@Override
@@ -98,8 +102,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 			if (!table.filter.equals(srch)) 
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch));
+				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				table.filter = srch;
+				table.searchpage = 0;
 				table.updateOutputs();
 			}
 		}
@@ -122,8 +127,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT(""));
+			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			table.filter = "";
+			table.searchpage = 0;
 			table.updateOutputs();
 			this.textBoxFilter.setText("");
 		}
@@ -136,5 +142,29 @@ public class GUITransmuteTablet extends GuiContainer
 	{
 		super.onGuiClosed();
 		table.learnFlag = 0;
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button)
+	{
+		String srch = this.textBoxFilter.getText().toLowerCase();
+
+		if (button.id == 1)
+		{
+			if (table.searchpage != 0)
+			{
+				table.searchpage--;
+			}
+		}
+		else if (button.id == 2)
+		{
+			if (!(table.knowledge.size() <= 12))
+			{
+				table.searchpage++;
+			}
+		}
+		PacketHandler.sendToServer(new SearchUpdatePKT(srch, table.searchpage));
+		table.filter = srch;
+		table.updateOutputs();
 	}
 }

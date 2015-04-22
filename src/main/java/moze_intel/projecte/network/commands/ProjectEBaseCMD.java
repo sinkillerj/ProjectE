@@ -1,9 +1,10 @@
 package moze_intel.projecte.network.commands;
 
+import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 public abstract class ProjectEBaseCMD extends CommandBase
 {
@@ -19,18 +20,18 @@ public abstract class ProjectEBaseCMD extends CommandBase
 	@Override
 	public abstract void processCommand(ICommandSender sender, String[] params);
 	
-	protected void sendSuccess(ICommandSender sender, String message)
+	protected void sendSuccess(ICommandSender sender, IChatComponent message)
 	{
-		sendMessage(sender, EnumChatFormatting.GREEN + message);
+		sendMessage(sender, ChatHelper.modifyColor(message, EnumChatFormatting.GREEN));
 	}
 	
-	protected void sendError(ICommandSender sender, String message)
+	protected void sendError(ICommandSender sender, IChatComponent message)
 	{
-		sendMessage(sender, EnumChatFormatting.RED + message);
+		sendMessage(sender, ChatHelper.modifyColor(message, EnumChatFormatting.RED));
 	}
 	
-	protected void sendMessage(ICommandSender sender, String message)
+	protected void sendMessage(ICommandSender sender, IChatComponent message)
 	{
-		sender.addChatMessage(new ChatComponentText(message));
+		sender.addChatMessage(message);
 	}
 }

@@ -11,6 +11,7 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -66,7 +67,7 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (world.isRemote || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -82,35 +83,22 @@ public class AlchemicalBag extends ItemPE
 			for (EntityItem item : itemList)
 			{
 				item.delayBeforeCanPickup = 0;
-				double d1 = (player.posX - item.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
-				double d3 = (player.posZ - item.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				item.motionX += d1 / d4 * 0.1D;
-				item.motionY += d2 / d4 * 0.1D;
-				item.motionZ += d3 / d4 * 0.1D;
-					
-				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
 			
 			List<EntityLootBall> lootBallList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
 			
 			for (EntityLootBall ball : lootBallList)
 			{
-				double d1 = (player.posX - ball.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
-				double d3 = (player.posZ - ball.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				ball.motionX += d1 / d4 * 0.1D;
-				ball.motionY += d2 / d4 * 0.1D;
-				ball.motionZ += d3 / d4 * 0.1D;
-					
-				ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
+				WorldHelper.gravitateEntityTowards(ball, player.posX, player.posY, player.posZ);
 			}
 		}
-		
+
+		if (world.isRemote)
+		{
+			return;
+		}
+
 		ItemStack rTalisman = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
 		
 		if (rTalisman != null)

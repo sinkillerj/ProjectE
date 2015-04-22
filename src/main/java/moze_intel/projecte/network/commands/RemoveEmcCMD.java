@@ -6,7 +6,7 @@ import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ChatComponentTranslation;
 
 public class RemoveEmcCMD extends ProjectEBaseCMD
 {
@@ -19,7 +19,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return StatCollector.translateToLocal("pe.command.remove.usage");
+		return "pe.command.remove.usage";
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, StatCollector.translateToLocal("pe.command.remove.notholding"));
+				sendError(sender, new ChatComponentTranslation("pe.command.remove.notholding"));
 				return;
 			}
 
@@ -57,7 +57,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 				if (meta < 0)
 				{
-					sendError(sender, String.format(StatCollector.translateToLocal("pe.command.remove.invalidmeta"), params[1]));
+					sendError(sender, new ChatComponentTranslation("pe.command.remove.invalidmeta", params[1]));
 					return;
 				}
 			}
@@ -65,13 +65,13 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
+			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 
-			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.remove.success"), name));
+			sendSuccess(sender, new ChatComponentTranslation("pe.command.remove.success", name));
 		}
 		else
 		{
-			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.remove.invaliditem"), name));
+			sendError(sender, new ChatComponentTranslation("pe.command.remove.invaliditem", name));
 		}
 	}
 }
