@@ -110,7 +110,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 			return false;
 		}
 		String modForItem = itemName.substring(0, itemName.indexOf(':'));
-		String permission = config.getString("for"+modForItem,"permissions."+modId,"both", String.format("Allow %s to set and or remove values for %s", modId, modForItem), new String[]{"both", "set", "remove"});
+		String permission = config.getString(modForItem,"permissions."+modId,"both", String.format("Allow %s to set and or remove values for %s. Allowed Values: both, set, remove", modId, modForItem), new String[]{"both", "set", "remove"});
 		if (permission.equals("both"))
 		{
 			return true;
