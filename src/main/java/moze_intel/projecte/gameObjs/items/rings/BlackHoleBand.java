@@ -117,7 +117,7 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 			for (EntityItem item : list)
 			{
 				WorldHelper.gravitateEntityTowards(item, x + 0.5, y + 0.5, z + 0.5);
-				if (!world.isRemote && item.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) < 1.21)
+				if (!world.isRemote && item.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) < 1.21 && !item.isDead)
 				{
 					suckDumpItem(item, tile);
 				}
