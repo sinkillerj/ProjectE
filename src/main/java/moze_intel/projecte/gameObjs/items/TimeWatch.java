@@ -77,8 +77,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch")
-					.appendSibling(new ChatComponentTranslation(getTimeName(stack))));
+			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch", new ChatComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
 		}
 
 		return stack;
@@ -92,7 +91,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || invSlot > 8)
+		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
 		}
@@ -104,30 +103,32 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (timeControl == 1)
-		{
-			if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-			{
-				world.setWorldTime(Long.MAX_VALUE);
-			}
-			else
-			{
-				world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
-			}
-		}
-		else if (timeControl == 2)
-		{
-			if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
-			{
-				world.setWorldTime(0);
-			}
-			else
-			{
-				world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
-			}
+		if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle")) {
+			if (timeControl == 1)
+            {
+                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+                {
+                    world.setWorldTime(Long.MAX_VALUE);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+                }
+            }
+            else if (timeControl == 2)
+            {
+                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+                {
+                    world.setWorldTime(0);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+                }
+            }
 		}
 
-		if (stack.getItemDamage() == 0)
+		if (world.isRemote || stack.getItemDamage() == 0)
 		{
 			return;
 		}
@@ -191,7 +192,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
 	{
-		if (bBox == null) // Sanity check for chunk unload weirdness
+		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
@@ -216,7 +217,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
 	{
-		if (bBox == null) // Sanity check for chunk unload weirdness
+		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
@@ -337,7 +338,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"), getTimeName(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"),
+					StatCollector.translateToLocal(getTimeName(stack))));
 		}
 	}
 
@@ -388,8 +390,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
 			if (ProjectEConfig.timePedBonus > 0) {
-				speedUpTileEntities(world, 18, bBox);
-				speedUpRandomTicks(world, 18, bBox);
+				speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
+				speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);
 			}
 
 			if (ProjectEConfig.timePedMobSlowness < 1.0F) {
