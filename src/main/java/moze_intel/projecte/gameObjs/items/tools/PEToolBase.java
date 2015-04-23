@@ -377,6 +377,10 @@ public abstract class PEToolBase extends ItemMode
 
 		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		if (!drops.isEmpty())
+		{
+			world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
 	}
 
 	/**
@@ -549,5 +553,9 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
+		if (!drops.isEmpty())
+		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
 	}
 }
