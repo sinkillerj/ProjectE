@@ -1,6 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
+import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.cricketcraft.chisel.api.carving.ICarvingVariation;
 import com.cricketcraft.chisel.carving.Carving;
 import cpw.mods.fml.common.Loader;
@@ -38,14 +40,16 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+		ICarvingRegistry carvingRegistry = CarvingUtils.getChiselRegistry();
+		if (carvingRegistry == null) return;
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.marble), 1, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.limestone), 1, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.andesite), 1, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.granite), 1, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.diorite), 1, IMappingCollector.FixedValue.FixAndInherit);
 
-		for (String name : Carving.chisel.getSortedGroupNames()) {
-			handleCarvingGroup(mapper, config, Carving.chisel.getGroup(name));
+		for (String name : carvingRegistry.getSortedGroupNames()) {
+			handleCarvingGroup(mapper, config, carvingRegistry.getGroup(name));
 		}
 	}
 
