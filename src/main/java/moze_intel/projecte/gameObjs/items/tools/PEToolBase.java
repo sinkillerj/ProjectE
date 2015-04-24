@@ -394,7 +394,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
 	{
-		if (!(damager instanceof EntityPlayer))
+		if (!(damager instanceof EntityPlayer) || damager.worldObj.isRemote)
 		{
 			return;
 		}
@@ -417,6 +417,11 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage, int emcCost)
 	{
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+
 		byte charge = getCharge(stack);
 		float factor = 2.5F * charge;
 		AxisAlignedBB aabb = player.boundingBox.expand(factor, factor, factor);
@@ -541,7 +546,18 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
 	{
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
+		Block target = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+		if (target.getBlockHardness(player.worldObj, mop.blockX, mop.blockY, mop.blockZ) <= -1 || !canHarvestBlock(target, stack))
+		{
+			return;
+		}
+
 		List<ItemStack> drops = Lists.newArrayList();
 
 		for (int i = (int) aabb.minX; i <= aabb.maxX; i++)
@@ -551,7 +567,7 @@ public abstract class PEToolBase extends ItemMode
 				for (int k = (int) aabb.minZ; k <= aabb.maxZ; k++)
 				{
 					Block b = player.worldObj.getBlock(i, j, k);
-					if (b.getBlockHardness(player.worldObj, i, j, k) > -1 && canHarvestBlock(b, stack))
+					if (b == target)
 					{
 						WorldHelper.harvestVein(player.worldObj, player, stack, new Coordinates(i, j, k), b, drops, 0);
 					}

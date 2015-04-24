@@ -2,11 +2,13 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -29,6 +31,27 @@ public class DarkPick extends PEToolBase
 	protected DarkPick(String name, byte numCharges, String[] modeDesc)
 	{
 		super(name, numCharges, modeDesc);
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (world.isRemote)
+		{
+			return stack;
+		}
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		{
+			Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+			if (ItemHelper.isOre(b))
+			{
+				tryVeinMine(stack, player, mop);
+			}
+		}
+
+		return stack;
 	}
 
 	@Override

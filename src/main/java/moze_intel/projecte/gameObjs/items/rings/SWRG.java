@@ -345,6 +345,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+
 		EntityPlayerMP playerMP = (EntityPlayerMP) player;
 
 		if (!stack.hasTagCompound())
