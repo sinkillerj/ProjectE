@@ -1,5 +1,6 @@
 package moze_intel.projecte.network;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -7,10 +8,29 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.network.packets.*;
+import moze_intel.projecte.network.packets.ClientCheckUpdatePKT;
+import moze_intel.projecte.network.packets.ClientKnowledgeClearPKT;
+import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
+import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
+import moze_intel.projecte.network.packets.ClientSyncEmcPKT;
+import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
+import moze_intel.projecte.network.packets.ClientTableSyncPKT;
+import moze_intel.projecte.network.packets.CollectorSyncPKT;
+import moze_intel.projecte.network.packets.CondenserSyncPKT;
+import moze_intel.projecte.network.packets.KeyPressPKT;
+import moze_intel.projecte.network.packets.ParticlePKT;
+import moze_intel.projecte.network.packets.RelaySyncPKT;
+import moze_intel.projecte.network.packets.SearchUpdatePKT;
+import moze_intel.projecte.network.packets.SetFlyPKT;
+import moze_intel.projecte.network.packets.StepHeightPKT;
+import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.FakePlayer;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -50,7 +70,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
@@ -86,7 +106,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
@@ -153,7 +173,10 @@ public final class PacketHandler
 	 */
 	public static void sendTo(IMessage msg, EntityPlayerMP player)
 	{
-		HANDLER.sendTo(msg, player);
+		if (!(player instanceof FakePlayer))
+		{
+			HANDLER.sendTo(msg, player);
+		}
 	}
 	
 	/**

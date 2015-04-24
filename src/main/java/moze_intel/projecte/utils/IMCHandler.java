@@ -1,8 +1,6 @@
 package moze_intel.projecte.utils;
 
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -70,7 +68,7 @@ public final class IMCHandler
 				{
 					Class c = Class.forName(s);
 					
-					if (InterdictionTile.addEntityToBlackList(c))
+					if (WorldHelper.blacklistInterdiction(c))
 					{
 						PELogger.logInfo("Mod " + msg.getSender() + " blacklisted the entity " + c.getCanonicalName() + " for interdiction torches.");
 					}

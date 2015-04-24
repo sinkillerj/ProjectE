@@ -2,7 +2,13 @@ package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IntArithmetic;
-import moze_intel.projecte.emc.mappers.*;
+import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.CraftingMapper;
+import moze_intel.projecte.emc.mappers.CustomEMCMapper;
+import moze_intel.projecte.emc.mappers.IEMCMapper;
+import moze_intel.projecte.emc.mappers.LazyMapper;
+import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
+import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
@@ -10,7 +16,11 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class EMCMapper 
 {
@@ -19,7 +29,7 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
+		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(new OreDictionaryMapper(), new LazyMapper(), APICustomEMCMapper.instance, new CustomEMCMapper(), new CraftingMapper(), new moze_intel.projecte.emc.mappers.FluidMapper(), new SmeltingMapper());
 		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));

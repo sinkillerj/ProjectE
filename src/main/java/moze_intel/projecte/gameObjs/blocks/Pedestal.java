@@ -11,7 +11,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -38,7 +38,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
         DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
         if (tile.getItemStack() != null)
         {
-            Utils.spawnEntityItem(world, tile.getItemStack().copy(), x, y, z);
+            WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), x, y, z);
         }
         tile.invalidate();
         super.breakBlock(world, x, y, z, block, meta);

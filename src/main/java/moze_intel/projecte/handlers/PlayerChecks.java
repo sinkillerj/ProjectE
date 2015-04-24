@@ -1,31 +1,25 @@
 package moze_intel.projecte.handlers;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public final class PlayerChecks
 {
-	private static List<EntityPlayerMP> flyChecks = new ArrayList<EntityPlayerMP>();
-	private static List<EntityPlayerMP> fireChecks = new ArrayList<EntityPlayerMP>();
-	private static List<EntityPlayerMP> stepChecks = new ArrayList<EntityPlayerMP>();
+	private static List<EntityPlayerMP> flyChecks = Lists.newArrayList();
+	private static List<EntityPlayerMP> fireChecks = Lists.newArrayList();
+	private static List<EntityPlayerMP> stepChecks = Lists.newArrayList();
 
 	public static void update()
 	{
-		World world = MinecraftServer.getServer().getEntityWorld();
-
 		Iterator<EntityPlayerMP> iter = flyChecks.iterator();
 
 		while (iter.hasNext())
@@ -36,7 +30,7 @@ public final class PlayerChecks
 			{
 				if (player.capabilities.allowFlying)
 				{
-					Utils.setPlayerFlight(player, false);
+					PlayerHelper.updateClientFlight(player, false);
 				}
 
 				iter.remove();
@@ -54,7 +48,7 @@ public final class PlayerChecks
 			{
 				if (player.isImmuneToFire())
 				{
-					Utils.setPlayerFireImmunity(player, false);
+					PlayerHelper.setPlayerFireImmunity(player, false);
 				}
 
 				iter.remove();
@@ -71,7 +65,7 @@ public final class PlayerChecks
 			if (!canPlayerStep(player))
 			{
 				player.stepHeight = 0.5f;
-				PacketHandler.sendTo(new StepHeightPKT(0.5f), player);
+				PlayerHelper.updateClientStepHeight(player, 0.5F);
 
 				iter.remove();
 				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
@@ -83,18 +77,18 @@ public final class PlayerChecks
 	{
 		if (canPlayerFly(playerMP))
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			PlayerHelper.updateClientFlight(playerMP, true);
 		}
 
 		if (isPlayerFireImmune(playerMP))
 		{
-			Utils.setPlayerFireImmunity(playerMP, true);
+			PlayerHelper.setPlayerFireImmunity(playerMP, true);
 		}
 
 		if (canPlayerStep(playerMP))
 		{
 			playerMP.stepHeight = 1.0f;
-			PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+			PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
 		}
 	}
 

@@ -2,7 +2,6 @@ package moze_intel.projecte.utils;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import moze_intel.projecte.PECore;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 
 public final class Constants 

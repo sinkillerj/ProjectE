@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +16,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,12 +25,10 @@ public class EntityLootBall extends Entity
 	private final int lifespan = 6000;
 	private List<ItemStack> items;
 	private int age;
-	private float hoverStart;
-	
+
 	public EntityLootBall(World world)
 	{
 		super(world);
-		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
 		this.setSize(0.25F, 0.25F);
 		this.yOffset = this.height / 2.0F;
 	}
@@ -42,7 +41,6 @@ public class EntityLootBall extends Entity
 		this.setSize(0.25F, 0.25F);
 		this.yOffset = this.height / 2.0F;
 		this.setPosition(x, y, z);
-		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
 		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
@@ -56,7 +54,6 @@ public class EntityLootBall extends Entity
 		this.setSize(0.25F, 0.25F);
 		this.yOffset = this.height / 2.0F;
 		this.setPosition(x, y, z);
-		this.hoverStart = (float)(Math.random() * Math.PI * 2.0D);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
 		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
@@ -130,17 +127,17 @@ public class EntityLootBall extends Entity
 		}
 		
 		boolean playSound = false;
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		
 		if (player.openContainer instanceof AlchBagContainer)
 		{
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
 			
-			if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				for (ItemStack stack : items)
 				{
-					ItemStack remain = Utils.pushStackInInv(inv, stack);
+					ItemStack remain = ItemHelper.pushStackInInv(inv, stack);
 					
 					if (remain == null)
 					{
@@ -153,7 +150,7 @@ public class EntityLootBall extends Entity
 					}
 					else
 					{
-						remain = Utils.pushStackInInv(player.inventory, remain);
+						remain = ItemHelper.pushStackInInv(player.inventory, remain);
 						
 						if (remain == null)
 						{
@@ -169,7 +166,7 @@ public class EntityLootBall extends Entity
 							list.add(remain);
 						}
 						
-						if (!playSound && !Utils.areItemStacksEqual(stack, remain))
+						if (!playSound && !ItemHelper.areItemStacksEqual(stack, remain))
 						{
 							playSound = true;
 						}
@@ -195,7 +192,7 @@ public class EntityLootBall extends Entity
 		}
 		else
 		{
-			ItemStack bag = getAlchemyBag(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
 			
 			if (bag != null)
 			{
@@ -203,7 +200,7 @@ public class EntityLootBall extends Entity
 				
 				for (ItemStack stack : items)
 				{
-					ItemStack remain = Utils.pushStackInInv(inv, stack);
+					ItemStack remain = ItemHelper.pushStackInInv(inv, stack);
 					
 					if (remain == null)
 					{
@@ -216,7 +213,7 @@ public class EntityLootBall extends Entity
 					}
 					else
 					{
-						remain = Utils.pushStackInInv(player.inventory, remain);
+						remain = ItemHelper.pushStackInInv(player.inventory, remain);
 						
 						if (remain == null)
 						{
@@ -232,7 +229,7 @@ public class EntityLootBall extends Entity
 							list.add(remain);
 						}
 						
-						if (!playSound && !Utils.areItemStacksEqual(stack, remain))
+						if (!playSound && !ItemHelper.areItemStacksEqual(stack, remain))
 						{
 							playSound = true;
 						}
@@ -249,7 +246,7 @@ public class EntityLootBall extends Entity
 			{
 				for (ItemStack stack : items)
 				{
-					ItemStack remaining = Utils.pushStackInInv(player.inventory, stack);
+					ItemStack remaining = ItemHelper.pushStackInInv(player.inventory, stack);
 				
 					if (remaining == null) 
 					{
@@ -265,7 +262,7 @@ public class EntityLootBall extends Entity
 						list.add(remaining);
 					}
 				
-					if (!playSound && !Utils.areItemStacksEqual(stack, remaining))
+					if (!playSound && !ItemHelper.areItemStacksEqual(stack, remaining))
 					{
 						playSound = true;
 					}
@@ -288,24 +285,6 @@ public class EntityLootBall extends Entity
 		}
 	}
 	
-	private ItemStack getAlchemyBag(EntityPlayer player, ItemStack[] inventory)
-	{
-		for (ItemStack stack : inventory)
-		{
-			if (stack == null) 
-			{
-				continue;
-			}
-			
-			if (stack.getItem() == ObjHandler.alchBag && Utils.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
-			{
-				return stack;
-			}
-		}
-		
-		return null;
-	}
-	
 	@Override
 	public boolean handleWaterMovement()
 	{
@@ -316,7 +295,7 @@ public class EntityLootBall extends Entity
 	protected void readEntityFromNBT(NBTTagCompound nbt) 
 	{
 		age = nbt.getShort("Age");
-		items = new ArrayList();
+		items = Lists.newArrayList();
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
 		for (int i = 0; i < list.tagCount(); i++)

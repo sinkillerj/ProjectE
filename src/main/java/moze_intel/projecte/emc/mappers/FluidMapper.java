@@ -1,8 +1,9 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
 		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(FluidRegistry.LAVA), 64, IMappingCollector.FixedValue.FixAndInherit);
-		Map<String, Integer> fixValue = new HashMap<String, Integer>();
+		Map<String, Integer> fixValue = Maps.newHashMap();
 		fixValue.put("milk", 16);
 		for (Map.Entry<String, Integer> entry : fixValue.entrySet()) {
 			Fluid f = FluidRegistry.getFluid(entry.getKey());
@@ -32,7 +32,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			}
 		}
 
-		Map<String, NormalizedSimpleStack> molten = new HashMap<String, NormalizedSimpleStack>();
+		Map<String, NormalizedSimpleStack> molten = Maps.newHashMap();
 		molten.put("obsidian.molten", NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.obsidian));
 		molten.put("glass.molten", NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.glass));
 		molten.put("ender", NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.ender_pearl));
@@ -90,15 +90,15 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	{
 		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
-		List<ItemStack> list = Utils.getODItems("ingot" + name);
+		List<ItemStack> list = ItemHelper.getODItems("ingot" + name);
 
 		if (list.isEmpty())
 		{
-			list = Utils.getODItems("dust" + name);
+			list = ItemHelper.getODItems("dust" + name);
 
 			if (list.isEmpty())
 			{
-				list = Utils.getODItems("gem" + name);
+				list = ItemHelper.getODItems("gem" + name);
 			}
 		}
 

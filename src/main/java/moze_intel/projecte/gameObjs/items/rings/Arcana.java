@@ -55,7 +55,7 @@ public class Arcana extends ItemPE implements IModeChanger
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			Utils.setPlayerFlight(playerMP, true);
+			Utils.updateClientFlight(playerMP, true);
 			PlayerChecksEvent.addPlayerFlyChecks(playerMP);
 		}
 		
@@ -77,7 +77,7 @@ public class Arcana extends ItemPE implements IModeChanger
 				Utils.growNearbyRandomly(true, world, entity);
 				break;
 			case 3:
-				Utils.repellEntities(player);
+				Utils.repelEntities(player);
 				break;
 		}
 	}

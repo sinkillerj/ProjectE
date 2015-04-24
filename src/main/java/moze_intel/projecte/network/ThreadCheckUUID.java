@@ -1,16 +1,14 @@
 package moze_intel.projecte.network;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadCheckUUID extends Thread
@@ -49,7 +47,7 @@ public class ThreadCheckUUID extends Thread
 				throw new IOException("No data from github UUID list!");
 			}
 
-			List<String> uuids = new ArrayList<String>();
+			List<String> uuids = Lists.newArrayList();
 					
 			while ((line = reader.readLine()) != null)
 			{
@@ -63,12 +61,8 @@ public class ThreadCheckUUID extends Thread
 					uuids.add(line);
 				}
 			}
-				
-			//if (isServerSide)
-			//{
-				PECore.uuids.addAll(uuids);
-			//}
 
+			PECore.uuids.addAll(uuids);
 		}
 		catch(Exception e)
 		{

@@ -1,11 +1,9 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.IGrowable;
@@ -15,11 +13,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
@@ -185,7 +186,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	
 	private List<StackWithSlot> getAllSeeds(ItemStack[] inv) 
 	{
-		List<StackWithSlot> result = new ArrayList();
+		List<StackWithSlot> result = Lists.newArrayList();
 		
 		for (int i = 0; i < inv.length; i++)
 		{
@@ -276,11 +277,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				for (int z = (int) (zCoord - 5); z <= zCoord + 5; z++)
 				{
 					Block crop = world.getBlock(x, y, z);
-
-					if (crop instanceof BlockGrass)
-					{
-						continue;
-					}
 
 					if (crop instanceof IShearable)
 					{
@@ -385,12 +381,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.harvestPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Accelerates growth of nearby crops");
-			list.add(EnumChatFormatting.BLUE + "Harvests nearby grown crops");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal2"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.harvestgod.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
 		}
 		return list;
 	}

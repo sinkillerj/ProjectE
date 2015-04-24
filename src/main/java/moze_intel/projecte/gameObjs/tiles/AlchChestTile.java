@@ -1,13 +1,11 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.Iterator;
-import java.util.List;
-
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -15,6 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory
 {
@@ -128,7 +129,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Alchemical Chest";
+		return "tile.pe_alchemy_chest.name";
 	}
 
 	@Override
@@ -203,7 +204,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		
 		if (!this.worldObj.isRemote)
 		{
-			ItemStack rTalisman = Utils.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
+			ItemStack rTalisman = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.repairTalisman));
 			
 			if (rTalisman != null)
 			{
@@ -245,7 +246,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 			}
 			
-			ItemStack gemDensity = Utils.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -253,7 +254,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 			}
 		}
 			
-		ItemStack blackHoleBand = Utils.getStackFromInv(this, new ItemStack(ObjHandler.blackHole, 1, 1));
+		ItemStack blackHoleBand = ItemHelper.getStackFromInv(this, new ItemStack(ObjHandler.blackHole, 1, 1));
 			
 		if (blackHoleBand != null)
 		{
@@ -264,15 +265,15 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 			
 			for (EntityItem item : itemList)
 			{
-				if (getDistance(item.posX, item.posY, item.posZ) <= 0.5f)
+				if (item.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 1.21)
 				{
 					if (!this.worldObj.isRemote)
 					{
-					
-						if (Utils.hasSpace(this, item.getEntityItem()))
+
+						if (ItemHelper.hasSpace(this, item.getEntityItem()))
 						{
-							ItemStack remain = Utils.pushStackInInv(this, item.getEntityItem());
-							
+							ItemStack remain = ItemHelper.pushStackInInv(this, item.getEntityItem());
+
 							if (remain == null)
 							{
 								item.setDead();
@@ -282,36 +283,27 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 				else
 				{
-					double d1 = (this.xCoord - item.posX);
-					double d2 = (this.yCoord - item.posY);
-					double d3 = (this.zCoord - item.posZ);
-					double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-					item.motionX += d1 / d4 * 0.1D;
-					item.motionY += d2 / d4 * 0.1D;
-					item.motionZ += d3 / d4 * 0.1D;
-						
-					item.moveEntity(item.motionX, item.motionY, item.motionZ);
+					WorldHelper.gravitateEntityTowards(item, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 				}
 			}
 			
 			for (EntityLootBall loot : lootList)
 			{
-				if (getDistance(loot.posX, loot.posY, loot.posZ) <= 0.5f)
+				if (loot.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 1.21)
 				{
 					if (!this.worldObj.isRemote)
 					{
 						//Avoids concurrent modification exception
 						Iterator<ItemStack> iter = loot.getItemList().iterator();
-						
+
 						while (iter.hasNext())
 						{
 							ItemStack current = iter.next();
-							
-							if (Utils.hasSpace(this, current))
+
+							if (ItemHelper.hasSpace(this, current))
 							{
-								ItemStack remain = Utils.pushStackInInv(this, current);
-								
+								ItemStack remain = ItemHelper.pushStackInInv(this, current);
+
 								if (remain == null)
 								{
 									iter.remove();
@@ -322,24 +314,10 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 				}
 				else
 				{
-					double d1 = (this.xCoord - loot.posX);
-					double d2 = (this.yCoord - loot.posY);
-					double d3 = (this.zCoord - loot.posZ);
-					double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-					loot.motionX += d1 / d4 * 0.1D;
-					loot.motionY += d2 / d4 * 0.1D;
-					loot.motionZ += d3 / d4 * 0.1D;
-						
-					loot.moveEntity(loot.motionX, loot.motionY, loot.motionZ);
+					WorldHelper.gravitateEntityTowards(loot, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 				}
 			}
 		}
-	}
-	
-	private double getDistance(double x, double y, double z)
-	{
-		return Math.sqrt((Math.pow((this.xCoord - x), 2) + Math.pow((this.yCoord - y), 2) + Math.pow((this.zCoord - z), 2)));
 	}
 	
 	@Override

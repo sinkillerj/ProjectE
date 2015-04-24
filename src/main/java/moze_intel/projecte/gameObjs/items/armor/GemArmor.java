@@ -3,13 +3,12 @@ package moze_intel.projecte.gameObjs.items.armor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ChatHelper;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -23,9 +22,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import org.lwjgl.input.Keyboard;
@@ -82,12 +82,12 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 					enableFlight(playerMP);
 				}
 
-				if (isStepAssistEnabled(stack)/*PlayerChecksEvent.isPlayerCheckedForStep(playerMP.getCommandSenderName())*/)
+				if (isStepAssistEnabled(stack))
 				{
 					if (playerMP.stepHeight != 1.0f)
 					{
 						playerMP.stepHeight = 1.0f;
-						PacketHandler.sendTo(new StepHeightPKT(1.0f), playerMP);
+						PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
 
 						PlayerChecks.addPlayerStepChecks(playerMP);
 					}
@@ -113,7 +113,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				
 				if (!player.isImmuneToFire())
 				{
-					Utils.setPlayerFireImmunity(player, true);
+					PlayerHelper.setPlayerFireImmunity(player, true);
 					PlayerChecks.addPlayerFireChecks(playerMP);
 				}
 			}
@@ -123,7 +123,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 
 				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(playerMP))
 				{
-					player.setHealth(player.getHealth() + 2);
+					player.heal(2.0F);
 				}
 				
 				if (isNightVisionEnabled(stack))
@@ -157,7 +157,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			return;
 		}
 		
-		Utils.setPlayerFlight(playerMP, true);
+		PlayerHelper.updateClientFlight(playerMP, true);
 		PlayerChecks.addPlayerFlyChecks(playerMP);
 	}
 	
@@ -242,8 +242,11 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			boots.stackTagCompound.setBoolean("StepAssist", false);
 			value = false;
 		}
-		
-		player.addChatMessage(new ChatComponentText("Step Assist: " + (value ? (EnumChatFormatting.GREEN + "enabled") : (EnumChatFormatting.RED + "disabled"))));
+
+		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
+		player.addChatMessage(new ChatComponentTranslation("pe.gem.stepassist_tooltip")
+				.appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
 	}
 	
 	public static void toggleNightVision(ItemStack helm, EntityPlayer player)
@@ -265,8 +268,11 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 			helm.stackTagCompound.setBoolean("NightVision", false);
 			value = false;
 		}
-		
-		player.addChatMessage(new ChatComponentText("Night Vision: " + (value ? (EnumChatFormatting.GREEN + "enabled") : (EnumChatFormatting.RED + "disabled"))));
+
+		EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
+		player.addChatMessage(new ChatComponentTranslation("pe.gem.nightvision_tooltip")
+				.appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
 	}
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
@@ -289,21 +295,29 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		{
 			if (stack.getItem() == ObjHandler.gemFeet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
-					list.add("Press " + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle step assist");
+					list.add(String.format(
+							StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
-				
-				list.add("Step assist: " + (isStepAssistEnabled(stack) ? "enabled" : "disabled"));
+
+				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+				String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+				list.add(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
+						+ e + StatCollector.translateToLocal(s));
 			}
 			else if (stack.getItem() == ObjHandler.gemHelmet)
 			{
-				if (KeyBinds.getArmorEffectsKeyCode() >= 0 && KeyBinds.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
+				if (KeyHelper.getArmorEffectsKeyCode() >= 0 && KeyHelper.getArmorEffectsKeyCode() < Keyboard.getKeyCount())
 				{
-					list.add("Press Shift+" + Keyboard.getKeyName(KeyBinds.getArmorEffectsKeyCode()) + " to toggle night vision");
+					list.add(String.format(
+							StatCollector.translateToLocal("pe.gem.nightvision.prompt"), Keyboard.getKeyName(KeyHelper.getArmorEffectsKeyCode())));
 				}
-				
-				list.add("Night Vision: " + (isNightVisionEnabled(stack) ? "enabled" : "disabled"));
+
+				EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+				String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+				list.add(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
+						+ e + StatCollector.translateToLocal(s));
 			}
 		}
 	}
