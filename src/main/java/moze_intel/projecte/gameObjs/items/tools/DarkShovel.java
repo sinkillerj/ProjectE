@@ -43,7 +43,7 @@ public class DarkShovel extends PEToolBase
 		}
 		else
 		{
-			digAOE(stack, world, player, false, 16);
+			digAOE(stack, world, player, false, 0);
 		}
 		return stack;
 	}
