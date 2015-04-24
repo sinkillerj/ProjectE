@@ -212,43 +212,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(ItemStack[] inv, Class<?> type)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && type.isInstance(stack.getItem()))
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		return null;
-	}
-	
-	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && stack.getItem() == item && stack.getItemDamage() == meta)
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		
-		return null;
-	}
-	
 	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];

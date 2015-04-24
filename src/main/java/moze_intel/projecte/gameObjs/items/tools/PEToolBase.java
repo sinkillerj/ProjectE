@@ -191,6 +191,7 @@ public abstract class PEToolBase extends ItemMode
 			boolean hasSoundPlayed = false;
 
 			for (int i = x - charge; i <= x + charge; i++)
+			{
 				for (int j = z - charge; j <= z + charge; j++)
 				{
 					Block block = world.getBlock(i, y, j);
@@ -232,6 +233,11 @@ public abstract class PEToolBase extends ItemMode
 						}
 					}
 				}
+			}
+			if (hasAction)
+			{
+				player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
+			}
 		}
 	}
 
@@ -430,6 +436,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 		}
+		player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 

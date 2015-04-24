@@ -1,4 +1,20 @@
 {
+    "item.pewatermagic":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pewatermagic"
+        ]
+    },
+    "item.pepower":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pepower"
+        ]
+    },
     "item.peheal":
     {
         "category": "master",
