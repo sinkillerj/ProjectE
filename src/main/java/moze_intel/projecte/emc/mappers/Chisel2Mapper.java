@@ -4,15 +4,15 @@ import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
 import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.cricketcraft.chisel.api.carving.ICarvingVariation;
-import com.cricketcraft.chisel.carving.Carving;
 import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import com.cricketcraft.chisel.init.ChiselBlocks;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -22,6 +22,8 @@ import java.util.List;
 
 //Thanks to bdew for a first implementation of this: https://github.com/bdew/ProjectE/blob/f1b08624ff47c6cc716576701024cdb38ff3d297/src/main/java/moze_intel/projecte/emc/ChiselMapper.java
 public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+
+	public final static String[] chiselBlockNames = new String[]{"marble", "limestone", "andesite", "granite", "diorite"};
 
 	@Override
 	public String getName() {
@@ -42,11 +44,12 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		ICarvingRegistry carvingRegistry = CarvingUtils.getChiselRegistry();
 		if (carvingRegistry == null) return;
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.marble), 1, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.limestone), 1, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.andesite), 1, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.granite), 1, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(ChiselBlocks.diorite), 1, IMappingCollector.FixedValue.FixAndInherit);
+		for (String name: chiselBlockNames) {
+			Block block = Block.getBlockFromName("chisel:" + name);
+			if (block != null) {
+				mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(block), 1, IMappingCollector.FixedValue.FixAndInherit);
+			}
+		}
 
 		for (String name : carvingRegistry.getSortedGroupNames()) {
 			handleCarvingGroup(mapper, config, carvingRegistry.getGroup(name));
