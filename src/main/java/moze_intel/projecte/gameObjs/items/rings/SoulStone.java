@@ -130,7 +130,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 
 				for (EntityPlayerMP player : players)
 				{
-					if (player.getHealth() < player.getMaxHealth()) // If we actually change health
+					if (player.getHealth() < player.getMaxHealth())
 					{
 						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart

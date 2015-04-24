@@ -66,6 +66,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 
 				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
 				{
+					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
 					player.getFoodStats().addStats(2, 10);
 					removeEmc(stack, 64);
 				}
@@ -146,7 +147,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart
 					}
-					player.getFoodStats().addStats(1, 1); // 1/2 shank
+					if (player.getFoodStats().needFood())
+					{
+						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						player.getFoodStats().addStats(1, 1); // 1/2 shank
+					}
 				}
 
 				healCooldown = ProjectEConfig.lifePedCooldown;
