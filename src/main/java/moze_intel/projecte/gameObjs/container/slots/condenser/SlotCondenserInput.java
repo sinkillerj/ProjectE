@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.condenser;
 
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -15,6 +15,6 @@ public class SlotCondenserInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return Utils.doesItemHaveEmc(stack);
+		return EMCHelper.doesItemHaveEmc(stack);
 	}
 }

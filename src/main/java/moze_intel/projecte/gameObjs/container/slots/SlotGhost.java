@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -16,9 +17,9 @@ public class SlotGhost extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && Utils.doesItemHaveEmc(stack))
+		if (stack != null && EMCHelper.doesItemHaveEmc(stack))
 		{
-			this.putStack(Utils.getNormalizedStack(stack));
+			this.putStack(ItemHelper.getNormalizedStack(stack));
 		}
 		
 		return false;

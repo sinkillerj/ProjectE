@@ -1,16 +1,22 @@
 package moze_intel.projecte.config;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.FileHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -65,14 +71,14 @@ public final class CustomEMCParser
 			}
 			finally
 			{
-				Utils.closeStream(reader);
+				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> userValues = new HashMap<NormalizedSimpleStack,Integer>();
+	public static Map<NormalizedSimpleStack, Integer> userValues = Maps.newHashMap();
 
 	public static void readUserData()
 	{
@@ -93,7 +99,7 @@ public final class CustomEMCParser
 			{
 				if (entry.name.contains(":"))
 				{
-					ItemStack stack = Utils.getStackFromString(entry.name, entry.meta);
+					ItemStack stack = ItemHelper.getStackFromString(entry.name, entry.meta);
 
 					if (stack == null)
 					{
@@ -129,7 +135,7 @@ public final class CustomEMCParser
 					{
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					for (ItemStack stack : Utils.getODItems(entry.name))
+					for (ItemStack stack : ItemHelper.getODItems(entry.name))
 					{
 						userValues.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), entry.emc > 0 ? entry.emc  : 0);
 					}
@@ -142,7 +148,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 	}
 
@@ -211,7 +217,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -271,7 +277,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -279,7 +285,7 @@ public final class CustomEMCParser
 
 	private static List<String> readAllFile()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		BufferedReader reader = null;
 
 		try
@@ -301,15 +307,15 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 
-		return new ArrayList<String>();
+		return Lists.newArrayList();
 	}
 
 	private static List<Entry> getAllEntries()
 	{
-		List<Entry> list = new ArrayList<Entry>();
+		List<Entry> list = Lists.newArrayList();
 		LineNumberReader reader = null;
 
 		try
@@ -331,10 +337,10 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 
-		return new ArrayList<Entry>();
+		return Lists.newArrayList();
 	}
 
 	private static Entry getNextEntry(LineNumberReader reader) throws IOException
@@ -439,7 +445,7 @@ public final class CustomEMCParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 	}
 

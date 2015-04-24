@@ -2,7 +2,7 @@ package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -21,7 +21,7 @@ public class OreDictionaryMapper extends LazyMapper {
 						continue;
 					}
 
-					for (ItemStack stack : Utils.getODItems(s)) {
+					for (ItemStack stack : ItemHelper.getODItems(s)) {
 						if (stack == null) {
 							continue;
 						}
@@ -128,7 +128,7 @@ public class OreDictionaryMapper extends LazyMapper {
 	}
 
 	protected void addMapping(String odName, int value) {
-		for (ItemStack stack : Utils.getODItems(odName)) {
+		for (ItemStack stack : ItemHelper.getODItems(odName)) {
 			addMapping(stack, value);
 		}
 	}

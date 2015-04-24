@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedInventory
 {
@@ -66,5 +66,11 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 			case 5: return new int[] {0, 11, 12, 13, 14, 15, 16, 17, 18}; // Fuel and output accessible from all sides
 			default: return new int[] {};
 		}
+	}
+
+	@Override
+	public String getInventoryName()
+	{
+		return "pe.dmfurnace.shortname";
 	}
 }

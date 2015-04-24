@@ -1,9 +1,15 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,6 +31,8 @@ public class TransmuteTabletInventory implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
+	public int searchpage = 0;
+	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
 	
 	public TransmuteTabletInventory(ItemStack stack, EntityPlayer player)
 	{
@@ -50,7 +58,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!hasKnowledge(stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
 			
@@ -79,8 +87,8 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -92,7 +100,7 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -105,17 +113,19 @@ public class TransmuteTabletInventory implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
+
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{
 				return;
 			}
 
-			lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+			lockCopy = ItemHelper.getNormalizedStack(inventory[LOCK_INDEX]);
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
@@ -123,18 +133,19 @@ public class TransmuteTabletInventory implements IInventory
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
 				
-				if (Utils.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
 				}
 
-				if (Utils.basicAreStacksEqual(lockCopy, stack))
+				if (ItemHelper.basicAreStacksEqual(lockCopy, stack))
 				{
 					iter.remove();
 					continue;
@@ -154,22 +165,32 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
 		else
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
 				
-				if (emc < Utils.getEmcValue(stack))
+				if (emc < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;
@@ -189,15 +210,22 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
-		
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
@@ -237,24 +265,6 @@ public class TransmuteTabletInventory implements IInventory
  				}
 			}
 		}
-	}
-	
-	private boolean hasKnowledge(ItemStack stack)
-	{
-		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
-			{
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	public void setPlayer(EntityPlayer player)
@@ -359,7 +369,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Transmutation Stone";
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override

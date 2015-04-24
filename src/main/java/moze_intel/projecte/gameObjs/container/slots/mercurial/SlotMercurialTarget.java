@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots.mercurial;
 
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.inventory.IInventory;
@@ -24,6 +24,6 @@ public class SlotMercurialTarget extends Slot
 	public boolean isItemValid(ItemStack stack)
 	{
 		Block block = Block.getBlockFromItem(stack.getItem());
-		return block != null && !(block instanceof ITileEntityProvider) && Utils.doesItemHaveEmc(stack);
+		return block != null && !(block instanceof ITileEntityProvider) && EMCHelper.doesItemHaveEmc(stack);
 	}
 }

@@ -4,7 +4,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ public class SlotTabletLock extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return Utils.doesItemHaveEmc(stack);
+		return EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override

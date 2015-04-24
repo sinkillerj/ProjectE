@@ -1,20 +1,20 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class NovaExplosion extends Explosion 
 {
@@ -30,7 +30,7 @@ public class NovaExplosion extends Explosion
 	public void doExplosionA()
 	{
 		float f = this.explosionSize;
-		HashSet hashset = new HashSet();
+		Set<ChunkPosition> hashset = Sets.newHashSet();
 		int i;
 		int j;
 		int k;
@@ -97,7 +97,7 @@ public class NovaExplosion extends Explosion
 		int j;
 		int k;
 		Block block;
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		
 
 		if (this.isSmoking)
@@ -144,12 +144,7 @@ public class NovaExplosion extends Explosion
 			}
 			
 			Entity ent = this.getExplosivePlacedBy();
-			if (list.size() > 0)
-			{
-				if (ent instanceof EntityPlayer)
-					worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, ent.posX, ent.posY, ent.posZ));
-				else worldObj.spawnEntityInWorld(new EntityLootBall(worldObj, list, this.explosionX, this.explosionY, this.explosionZ));
-			}
+			WorldHelper.createLootDrop(list, worldObj, explosionX, explosionY, explosionZ);
 		}
 	}
 }

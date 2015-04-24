@@ -6,11 +6,12 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.gui.GuiTextField;
-
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class GUITransmuteTablet extends GuiContainer
@@ -41,6 +42,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(table.filter);
+
+		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
+		this.buttonList.add(new GuiButton(2, this.xLocation + 193, this.yLocation + 100, 14, 14, ">"));
 	}
 
 	@Override
@@ -61,20 +65,20 @@ public class GUITransmuteTablet extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString("Transmutation", 6, 8, 4210752);
-		String emc = String.format("EMC: %,d", (int) table.emc); 
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.transmute"), 6, 8, 4210752);
+		String emc = String.format(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) table.emc);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (table.learnFlag > 0)
 		{
-			this.fontRendererObj.drawString("L", 98, 30, 4210752);
-			this.fontRendererObj.drawString("e", 99, 38, 4210752);
-			this.fontRendererObj.drawString("a", 100, 46, 4210752);
-			this.fontRendererObj.drawString("r", 101, 54, 4210752);
-			this.fontRendererObj.drawString("n", 102, 62, 4210752);
-			this.fontRendererObj.drawString("e", 103, 70, 4210752);
-			this.fontRendererObj.drawString("d", 104, 78, 4210752);
-			this.fontRendererObj.drawString("!", 107, 86, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned0"), 98, 30, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned1"), 99, 38, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned2"), 100, 46, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned3"), 101, 54, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned4"), 102, 62, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned5"), 103, 70, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned6"), 104, 78, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned7"), 107, 86, 4210752);
 			
 			table.learnFlag--;
 		}
@@ -98,8 +102,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 			if (!table.filter.equals(srch)) 
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch));
+				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				table.filter = srch;
+				table.searchpage = 0;
 				table.updateOutputs();
 			}
 		}
@@ -122,8 +127,9 @@ public class GUITransmuteTablet extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT(""));
+			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			table.filter = "";
+			table.searchpage = 0;
 			table.updateOutputs();
 			this.textBoxFilter.setText("");
 		}
@@ -136,5 +142,29 @@ public class GUITransmuteTablet extends GuiContainer
 	{
 		super.onGuiClosed();
 		table.learnFlag = 0;
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button)
+	{
+		String srch = this.textBoxFilter.getText().toLowerCase();
+
+		if (button.id == 1)
+		{
+			if (table.searchpage != 0)
+			{
+				table.searchpage--;
+			}
+		}
+		else if (button.id == 2)
+		{
+			if (!(table.knowledge.size() <= 12))
+			{
+				table.searchpage++;
+			}
+		}
+		PacketHandler.sendToServer(new SearchUpdatePKT(srch, table.searchpage));
+		table.filter = srch;
+		table.updateOutputs();
 	}
 }

@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,7 +11,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,10 +20,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -152,11 +153,12 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.repairPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Repairs nearby players' items");
-			list.add(EnumChatFormatting.BLUE + "Restores 1 durability every " + Utils.tickToSecFormatted(ProjectEConfig.repairPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.repairtalisman.pedestal1"));
+			list.add(EnumChatFormatting.BLUE +
+					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
 	}

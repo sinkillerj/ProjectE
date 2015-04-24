@@ -1,12 +1,18 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.FileHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.item.ItemStack;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
 
 public final class NBTWhitelistParser
 {
@@ -59,7 +65,7 @@ public final class NBTWhitelistParser
 			}
 			finally
 			{
-				Utils.closeStream(reader);
+				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
@@ -91,7 +97,7 @@ public final class NBTWhitelistParser
 					continue;
 				}
 
-				ItemStack stack = Utils.getStackFromString(line, 0);
+				ItemStack stack = ItemHelper.getStackFromString(line, 0);
 
 				if (stack == null)
 				{
@@ -112,7 +118,7 @@ public final class NBTWhitelistParser
 		}
 		finally
 		{
-			Utils.closeStream(reader);
+			FileHelper.closeStream(reader);
 		}
 	}
 
@@ -138,7 +144,7 @@ public final class NBTWhitelistParser
 		}
 		finally
 		{
-			Utils.closeStream(writer);
+			FileHelper.closeStream(writer);
 		}
 	}
 }

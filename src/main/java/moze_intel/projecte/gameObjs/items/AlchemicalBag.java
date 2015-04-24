@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -10,7 +10,8 @@ import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -21,14 +22,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {
 	private final String[] colors = new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"};
-	private final String[] localizedColors = new String[] {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Silver", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
+
+	// MC Lang files have these unlocalized names mapped to raw color names
+	private final String[] unlocalizedColors = new String[] {
+			"item.fireworksCharge.white", "item.fireworksCharge.orange",
+			"item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
+			"item.fireworksCharge.yellow", "item.fireworksCharge.lime",
+			"item.fireworksCharge.pink", "item.fireworksCharge.gray",
+			"item.fireworksCharge.silver", "item.fireworksCharge.cyan",
+			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
+			"item.fireworksCharge.brown", "item.fireworksCharge.green",
+			"item.fireworksCharge.red", "item.fireworksCharge.black"};
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -55,7 +67,7 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (world.isRemote || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -63,7 +75,7 @@ public class AlchemicalBag extends ItemPE
 		EntityPlayer player = (EntityPlayer) entity;
 		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 		
-		if (Utils.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
+		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
 			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
@@ -71,36 +83,23 @@ public class AlchemicalBag extends ItemPE
 			for (EntityItem item : itemList)
 			{
 				item.delayBeforeCanPickup = 0;
-				double d1 = (player.posX - item.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
-				double d3 = (player.posZ - item.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				item.motionX += d1 / d4 * 0.1D;
-				item.motionY += d2 / d4 * 0.1D;
-				item.motionZ += d3 / d4 * 0.1D;
-					
-				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
 			
 			List<EntityLootBall> lootBallList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
 			
 			for (EntityLootBall ball : lootBallList)
 			{
-				double d1 = (player.posX - ball.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
-				double d3 = (player.posZ - ball.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				ball.motionX += d1 / d4 * 0.1D;
-				ball.motionY += d2 / d4 * 0.1D;
-				ball.motionZ += d3 / d4 * 0.1D;
-					
-				ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
+				WorldHelper.gravitateEntityTowards(ball, player.posX, player.posY, player.posZ);
 			}
 		}
-		
-		ItemStack rTalisman = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
+
+		if (world.isRemote)
+		{
+			return;
+		}
+
+		ItemStack rTalisman = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
 		
 		if (rTalisman != null)
 		{
@@ -144,7 +143,7 @@ public class AlchemicalBag extends ItemPE
 		
 		if (player.openContainer instanceof AlchBagContainer)
 		{
-			ItemStack gemDensity = Utils.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -153,7 +152,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		else
 		{
-			ItemStack gemDensity = Utils.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
+			ItemStack gemDensity = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
 			
 			if (gemDensity != null)
 			{
@@ -181,7 +180,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
-		String color = " ("+localizedColors[i]+")";
+		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
 	
@@ -219,5 +218,23 @@ public class AlchemicalBag extends ItemPE
 		{
 			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
 		}
+	}
+
+	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	{
+		for (ItemStack stack : inventory)
+		{
+			if (stack == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			{
+				return stack;
+			}
+		}
+
+		return null;
 	}
 }

@@ -2,17 +2,19 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,8 +23,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.lwjgl.input.Keyboard;
@@ -33,8 +36,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 {
-	private final String[] targets = new String[] {"Iron", "Gold", "Diamond", "Dark Matter", "Red Matter"};
-	
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
 	@SideOnly(Side.CLIENT)
@@ -78,7 +79,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		{
 			ItemStack s = inv[i];
 			
-			if (s == null || !Utils.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || Utils.getEmcValue(s) >= Utils.getEmcValue(target))
+			if (s == null || !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
 			{
 				continue;
 			}
@@ -97,16 +98,16 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 					inv[i] = null;
 				}
 				
-				ItemPE.addEmc(gem, Utils.getEmcValue(copy));
+				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy));
 				break;
 			}
 		}
 		
-		int value = Utils.getEmcValue(target);
+		int value = EMCHelper.getEmcValue(target);
 		
 		while (ItemPE.getEmc(gem) >= value)
 		{
-			ItemStack remain = Utils.pushStackInInv(inv, target);
+			ItemStack remain = ItemHelper.pushStackInInv(inv, target);
 			
 			if (remain != null)
 			{
@@ -131,9 +132,8 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 					
 					if (!items.isEmpty())
 					{
-						EntityLootBall loot = new EntityLootBall(world, items, player.posX, player.posY, player.posZ);
-						world.spawnEntityInWorld(loot);
-						
+						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
+
 						setItems(stack, new ArrayList<ItemStack>());
 						ItemPE.setEmc(stack, 0);
 					}
@@ -154,9 +154,23 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		return stack;
 	}
 	
-	private String getTargetDesciption(ItemStack stack)
+	private String getTargetName(ItemStack stack)
 	{
-		return targets[stack.stackTagCompound.getByte("Target")];
+		switch(stack.stackTagCompound.getByte("Target"))
+		{
+			case 0:
+				return "item.ingotIron.name";
+			case 1:
+				return "item.ingotGold.name";
+			case 2:
+				return "item.diamond.name";
+			case 3:
+				return "item.pe_matter_dark.name";
+			case 4:
+				return "item.pe_matter_red.name";
+			default:
+				return "INVALID";
+		}
 	}
 	
 	private static ItemStack getTarget(ItemStack stack)
@@ -195,7 +209,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = Lists.newArrayList();
 		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
@@ -221,7 +235,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		
 		for (ItemStack s : list)
 		{
-			if (s.stackSize < s.getMaxStackSize() && Utils.areItemStacksEqual(s, stack))
+			if (s.stackSize < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack))
 			{
 				int remain = s.getMaxStackSize() - s.stackSize;
 				
@@ -252,7 +266,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
-		List<ItemStack> result = new ArrayList<ItemStack>();
+		List<ItemStack> result = Lists.newArrayList();
 		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
@@ -267,7 +281,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	{
 		for (ItemStack s : list)
 		{
-			if (Utils.areItemStacksEqual(s, stack))
+			if (ItemHelper.areItemStacksEqual(s, stack))
 			{
 				return true;
 			}
@@ -301,27 +315,28 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentText("Set target to: " + getTargetDesciption(stack)));
+		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch")
+				.appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		list.add("Condenses items on the go.");
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip1"));
 		
 		if (stack.hasTagCompound())
 		{
-			list.add("Current target: " + getTargetDesciption(stack));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
 		}
 		
-		if (KeyBinds.getModeKeyCode() >= 0 && KeyBinds.getModeKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getModeKeyCode()) + " to change target");
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyHelper.getModeKeyCode())));
 		}
 		
-		list.add("Right click to set up the whitelist/blacklist");
-		list.add("Shift right click to activate/deactivate");
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
+		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
 	}
 
 	@Override

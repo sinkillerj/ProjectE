@@ -1,11 +1,11 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 
 public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMessage>
 {
@@ -16,7 +16,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	private double velX;
 	private double velY;
 	private double velZ;
-	
+
 	//Needs to have an empty constructor
 	public ParticlePKT() {}
 	
@@ -27,7 +27,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public ParticlePKT(String name, double x, double y, double z, double velX, double velY, double velZ)
 	{
 		this(name, x, y, z);

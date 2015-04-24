@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 public class DMPedestalTile extends TileEmc implements IInventory
@@ -36,7 +35,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 		if (effectBounds == null)
 		{
-			effectBounds = AxisAlignedBB.getBoundingBox(centeredX - 4, centeredY - 4, centeredZ - 4, centeredX + 5, centeredY + 5, centeredZ + 5);
+			effectBounds = AxisAlignedBB.getBoundingBox(centeredX - 4.5, centeredY - 4.5, centeredZ - 4.5,
+					centeredX + 4.5, centeredY + 4.5, centeredZ + 4.5);
 		}
 
 		if (getActive())
@@ -201,7 +201,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName()
 	{
-		return "DM Pedestal";
+		return "pe.pedestal.shortname";
 	}
 
 	@Override

@@ -1,14 +1,15 @@
 package moze_intel.projecte.network.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+
+import java.util.List;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
-	public static final List<String> changelog = new ArrayList();
+	public static final List<String> changelog = Lists.newArrayList();
 	
 	@Override
 	public String getCommandName() 
@@ -27,7 +28,7 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new ChatComponentText("ProjectE is up to date."));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.changelog.uptodate"));
 		}
 		else
 		{

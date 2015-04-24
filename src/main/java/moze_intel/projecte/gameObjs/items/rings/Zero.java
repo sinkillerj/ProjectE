@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,8 +11,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.CoordinateBox;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -21,12 +21,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -55,12 +55,12 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			return;
 		}
 
-		CoordinateBox box = new CoordinateBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		freezeInCoordinateBox(world, box);
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+		freezeInBoundingBox(world, box);
 
 	}
 
-	public void freezeInCoordinateBox(World world, CoordinateBox box)
+	public void freezeInBoundingBox(World world, AxisAlignedBB box)
 	{
 		for (int x = (int) box.minX; x <= box.maxX; x++)
 		{
@@ -93,10 +93,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		if (!world.isRemote)
 		{
-			CoordinateBox box = new CoordinateBox(player.boundingBox);
 			int offset = 3 + this.getCharge(stack);
-			box.expand(offset, offset, offset);
-			freezeInCoordinateBox(world, box);
+			AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
+			freezeInBoundingBox(world, box);
 		}
 		
 		return stack;
@@ -178,7 +177,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			if (coolCooldown == 0) {
 				TileEntity tile = world.getTileEntity(x, y, z);
 				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
-				freezeInCoordinateBox(world, CoordinateBox.fromAABB(aabb));
+				freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
 				{
@@ -199,11 +198,12 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.zeroPedCooldown != -1) {
-			list.add(EnumChatFormatting.BLUE + "Extinguishes nearby entities");
-			list.add(EnumChatFormatting.BLUE + "Freezes surroundings");
-			list.add(EnumChatFormatting.BLUE + "Activates every " + Utils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal2"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.zero.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
 		}
 		return list;
 	}

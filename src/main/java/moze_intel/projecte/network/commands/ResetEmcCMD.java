@@ -1,12 +1,12 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.emc.ThreadReloadEMCMap;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 
 public class ResetEmcCMD extends ProjectEBaseCMD
 {
@@ -19,7 +19,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_resetEMC <unlocalized/ore-dictionary name> <metada (optional)>";
+		return "pe.command.reset.usage";
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, "Error: player isn't holding any item!");
+				sendError(sender, new ChatComponentTranslation("pe.command.reset.notholding"));
 				return;
 			}
 
@@ -53,11 +53,11 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 			if (params.length > 1)
 			{
-				meta = parseInteger(params[1]);
+				meta = MathUtils.parseInteger(params[1]);
 
 				if (meta < 0)
 				{
-					sendError(sender, "Error: the metadata passed (" + params[1] + ") is not a valid number!");
+					sendError(sender, new ChatComponentTranslation("pe.command.reset.invalidmeta", params[1]));
 					return;
 				}
 			}
@@ -65,18 +65,13 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			EMCMapper.clearMaps();
-			CustomEMCParser.readUserData();
-			EMCMapper.map();
-			TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
 
-			PacketHandler.sendFragmentedEmcPacketToAll();
-
-			sendSuccess(sender, "Reset EMC value for: " + name);
+			sendSuccess(sender, new ChatComponentTranslation("pe.command.reset.success", name));
 		}
 		else
 		{
-			sendError(sender, "The EMC for " + name + "," + meta + " has not been modified!");
+			sendError(sender, new ChatComponentTranslation("pe.command.reset.nochange", name, meta));
 		}
 	}
 }

@@ -1,11 +1,19 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import com.google.common.collect.Lists;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class MindStone extends RingToggle 
+import java.util.List;
+
+public class MindStone extends RingToggle implements IPedestalItem
 {
 	private final int TRANSFER_RATE = 50;
 
@@ -171,5 +179,45 @@ public class MindStone extends RingToggle
 		
 		setStoredXP(stack, result);
 		return returnResult;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
+		for (EntityXPOrb orb : orbs)
+		{
+			WorldHelper.gravitateEntityTowards(orb, x + 0.5, y + 0.5, z + 0.5);
+			if (!world.isRemote && orb.getDistanceSq(x + 0.5,y + 0.5, z + 0.5) < 1.21)
+			{
+				suckXP(orb, tile.getItemStack());
+			}
+		}
+
+	}
+
+	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
+	{
+		if (canStore(mindStone))
+		{
+			long l = getStoredXP(mindStone);
+			if (l + orb.xpValue > Integer.MAX_VALUE)
+			{
+				orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
+				setStoredXP(mindStone, Integer.MAX_VALUE);
+			}
+			else
+			{
+				addStoredXP(mindStone, orb.xpValue);
+				orb.setDead();
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		return Lists.newArrayList(StatCollector.translateToLocal("pe.mind.pedestal1"));
 	}
 }

@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,8 +11,10 @@ import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
@@ -19,20 +22,21 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -58,9 +62,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				IFluidHandler tank = (IFluidHandler) tile;
 
-				if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
+				if (FluidHelper.canFillTank(tank, FluidRegistry.WATER, sideHit))
 				{
-					Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+					FluidHelper.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
 					return true;
 				}
 			}
@@ -101,7 +105,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 						default: break;
                     }
 
-					placeWater(world, i, j, k);
+					if (world.isAirBlock(i, j, k))
+					{
+						placeWater(world, i, j, k);
+					}
+					PlayerHelper.swingItem(((EntityPlayerMP) player));
 				}
 			}
 		}
@@ -158,7 +166,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
-				Utils.setPlayerWalkSpeed(player, 0.25F);
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
 		else if (!world.isRemote)
@@ -170,7 +178,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
-				Utils.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
 	}
@@ -193,8 +201,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public FluidStack getFluid(ItemStack container)
 	{
-		FluidStack theFluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-		return theFluid;
+		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 	}
 
 	@Override
@@ -212,8 +219,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
 	{
-		FluidStack toDrain = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-		return toDrain;
+		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 	}
 	//End IFluidContainerItem
 	
@@ -228,14 +234,15 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
+			list.add(String.format(
+					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
 		}
 
-		list.add("Acts as refilling water bucket");
-		list.add("Right-click to fill tanks and cauldrons");
-		list.add("All operations are completely free!");
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -298,11 +305,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.evertidePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + "Creates rain/snow storms");
-			list.add(EnumChatFormatting.BLUE + "Attempts to start rain every " + Utils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown));
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
 	}
