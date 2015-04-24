@@ -28,6 +28,6 @@ public class RedSword extends DarkSword
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 96);
+		attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0);
 	}
 }
