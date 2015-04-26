@@ -278,11 +278,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				{
 					Block crop = world.getBlock(x, y, z);
 
-					if (crop instanceof BlockGrass)
-					{
-						continue;
-					}
-
 					if (crop instanceof IShearable)
 					{
 						if (harvest)

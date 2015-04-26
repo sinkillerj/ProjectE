@@ -2,11 +2,13 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
+import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 public class ResetEmcCMD extends ProjectEBaseCMD
 {
@@ -19,7 +21,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return StatCollector.translateToLocal("pe.command.reset.usage");
+		return "pe.command.reset.usage";
 	}
 	
 	@Override
@@ -40,7 +42,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, StatCollector.translateToLocal("pe.command.reset.notholding"));
+				sendError(sender, new ChatComponentTranslation("pe.command.reset.notholding"));
 				return;
 			}
 
@@ -57,7 +59,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 				if (meta < 0)
 				{
-					sendError(sender, String.format(StatCollector.translateToLocal("pe.command.reset.invalidmeta"), params[1]));
+					sendError(sender, new ChatComponentTranslation("pe.command.reset.invalidmeta", params[1]));
 					return;
 				}
 			}
@@ -65,13 +67,11 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
-
-			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.reset.success"), name));
+			ThreadReloadEMCMap.runEMCRemap(sender, ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.reset.success", name), EnumChatFormatting.GREEN));
 		}
 		else
 		{
-			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.reset.nochange"), name, meta));
+			sendError(sender, new ChatComponentTranslation("pe.command.reset.nochange", name, meta));
 		}
 	}
 }

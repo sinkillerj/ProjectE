@@ -15,7 +15,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.StatCollector;
 
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
@@ -446,7 +445,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_collector_MK1.name");
+		return "tile.pe_collector_MK1.name";
 	}
 
 	@Override

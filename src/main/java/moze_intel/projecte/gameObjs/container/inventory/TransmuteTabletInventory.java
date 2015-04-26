@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -14,7 +15,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collections;
@@ -31,6 +31,8 @@ public class TransmuteTabletInventory implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
+	public int searchpage = 0;
+	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
 	
 	public TransmuteTabletInventory(ItemStack stack, EntityPlayer player)
 	{
@@ -98,7 +100,7 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -111,6 +113,8 @@ public class TransmuteTabletInventory implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
+
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
@@ -129,6 +133,7 @@ public class TransmuteTabletInventory implements IInventory
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
@@ -160,16 +165,26 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
 		else
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
+			int pagecounter = 0;
 			
 			while (iter.hasNext())
 			{
@@ -195,15 +210,22 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
-		
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
@@ -347,7 +369,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_transmutation_tablet.name");
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override

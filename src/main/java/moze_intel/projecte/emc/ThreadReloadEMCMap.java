@@ -4,41 +4,37 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.world.World;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.IChatComponent;
 
 public class ThreadReloadEMCMap extends Thread {
-	private boolean serverStarting;
-	private World world;
+	private ICommandSender sender;
+	private IChatComponent finishedMessage;
 
 	/**
-	 * Runs the EMC Remap. If serverStarting is true, world can safely be null.
-	 * @param serverStarting true if this is being run when the server is starting up.
-	 * @param world The world; used for checking the condensers after an EMC remap. Can be null if serverStarting is true.
+	 * Runs the EMC Remap.
+	 * @param sender The ICommandSender object that represents the one who sent the command.
+	 * @param finishedMessage The chat message to be sent upon finishing remapping.
 	 */
-	public static void runEMCRemap(boolean serverStarting, World world) {
-		new ThreadReloadEMCMap(serverStarting, world).start();
+	public static void runEMCRemap(ICommandSender sender, IChatComponent finishedMessage) {
+		new ThreadReloadEMCMap(sender, finishedMessage).start();
 	}
 
-	private ThreadReloadEMCMap(boolean serverStarting, World world) {
+	private ThreadReloadEMCMap(ICommandSender sender, IChatComponent finishedMessage) {
 		super("ProjectE Reload EMC Thread");
-		this.serverStarting = serverStarting;
-		this.world = world;
+		this.sender = sender;
+		this.finishedMessage = finishedMessage;
 	}
 
 	@Override
 	public void run() {
-		if (serverStarting) {
-			PELogger.logInfo("Starting server-side EMC mapping.");
-		} else {
-			EMCMapper.clearMaps();
-		}
+		long start = System.currentTimeMillis();
+		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
-		if (serverStarting) {
-			PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
-		} else {
-			TileEntityHandler.checkAllCondensers(world);
-			PacketHandler.sendFragmentedEmcPacketToAll();
-		}
+		TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+		PacketHandler.sendFragmentedEmcPacketToAll();
+		sender.addChatMessage(finishedMessage);
+		PELogger.logInfo("Thread ran for " + (System.currentTimeMillis() - start) + " ms.");
 	}
 }

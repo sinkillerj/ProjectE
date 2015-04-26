@@ -2,11 +2,13 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
+import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 public class SetEmcCMD extends ProjectEBaseCMD
 {
@@ -19,7 +21,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return StatCollector.translateToLocal("pe.command.set.usage");
+		return "pe.command.set.usage";
 	}
 	
 	@Override
@@ -33,7 +35,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, StatCollector.translateToLocal("pe.command.set.invalidparams"));
+			sendError(sender, new ChatComponentTranslation("pe.command.set.invalidparams"));
 			return;
 		}
 
@@ -47,7 +49,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, StatCollector.translateToLocal("pe.command.set.notholding"));
+				sendError(sender, new ChatComponentTranslation("pe.command.set.notholding"));
 				return;
 			}
 
@@ -57,7 +59,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (emc < 0)
 			{
-				sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
+				sendError(sender, new ChatComponentTranslation("pe.command.set.invalidemc", params[0]));
 			}
 		}
 		else
@@ -74,7 +76,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 					if (meta < 0)
 					{
-						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidmeta"), params[1]));
+						sendError(sender, new ChatComponentTranslation("pe.command.set.invalidmeta", params[1]));
 						return;
 					}
 
@@ -82,7 +84,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 					if (emc < 0)
 					{
-						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
+						sendError(sender, new ChatComponentTranslation("pe.command.set.invalidemc", params[0]));
 						return;
 					}
 				}
@@ -92,7 +94,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 					if (emc < 0)
 					{
-						sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
+						sendError(sender, new ChatComponentTranslation("pe.command.set.invalidemc", params[0]));
 						return;
 					}
 				}
@@ -103,7 +105,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 				if (emc < 0)
 				{
-					sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invalidemc"), params[0]));
+					sendError(sender, new ChatComponentTranslation("pe.command.set.invalidemc", params[0]));
 					return;
 				}
 			}
@@ -111,13 +113,11 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, emc))
 		{
-			ThreadReloadEMCMap.runEMCRemap(false, sender.getEntityWorld());
-
-			sendSuccess(sender, String.format(StatCollector.translateToLocal("pe.command.set.success"), name, emc));
+			ThreadReloadEMCMap.runEMCRemap(sender, ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.set.success", name, emc), EnumChatFormatting.GREEN));
 		}
 		else
 		{
-			sendError(sender, String.format(StatCollector.translateToLocal("pe.command.set.invaliditem"), name));
+			sendError(sender, new ChatComponentTranslation("pe.command.set.invaliditem", name));
 		}
 	}
 }
