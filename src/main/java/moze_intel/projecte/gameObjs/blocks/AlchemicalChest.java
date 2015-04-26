@@ -18,8 +18,6 @@ import java.util.Random;
 
 public class AlchemicalChest extends BlockDirection implements ITileEntityProvider
 {
-	private Random rand = new Random();
-	
 	public AlchemicalChest() 
 	{
 		super(Material.rock);

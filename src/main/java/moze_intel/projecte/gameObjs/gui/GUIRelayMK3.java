@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class GUIRelayMK3 extends GuiContainer
@@ -26,7 +26,7 @@ public class GUIRelayMK3 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString("Relay MK3", 38, 6, 4210752);
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.relay.mk3"), 38, 6, 4210752);
 		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 125, 39, 4210752);
 	}
 

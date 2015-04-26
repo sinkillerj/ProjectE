@@ -1,20 +1,20 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public final class FuelMapper 
 {
-	private static final List<SimpleStack> FUEL_MAP = new ArrayList<SimpleStack>();
+	private static final List<SimpleStack> FUEL_MAP = Lists.newArrayList();
 	
 	public static void loadMap()
 	{
@@ -44,7 +44,7 @@ public final class FuelMapper
 	
 	private static void addToMap(ItemStack stack)
 	{
-		if (Utils.doesItemHaveEmc(stack))
+		if (EMCHelper.doesItemHaveEmc(stack))
 		{
 			addToMap(new SimpleStack(stack));
 		}

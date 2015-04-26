@@ -1,36 +1,43 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.CoordinateBox;
 import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DestructionCatalyst extends ItemCharge
 {
 	public DestructionCatalyst() 
 	{
-		super("destruction_catalyst", (byte) 4);
+		super("destruction_catalyst", (byte)3);
+		this.setNoRepair();
 	}
-	
+
+	// Only for Catalitic Lens
+	protected DestructionCatalyst(String name, byte numCharges)
+	{
+		super(name, numCharges);
+	}
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -40,33 +47,15 @@ public class DestructionCatalyst extends ItemCharge
 
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			int charge = this.getCharge(stack);
-			int numRows;
+			int numRows = calculateDepthFromCharge(stack);
 			boolean hasAction = false;
-			
-			if (charge == 0)
-			{
-				numRows = 1;
-			}
-			else if (charge == 1)
-			{
-				numRows = 4;
-			}
-			else if (charge == 2)
-			{
-				numRows = 9;
-			}
-			else 
-			{
-				numRows = 16;
-			}
 			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
 			Coordinates coords = new Coordinates(mop);
-			CoordinateBox box = getBoxFromDirection(direction, coords, numRows);
+			AxisAlignedBB box = WorldHelper.getDeepBox(coords, direction, --numRows);
 			
-			List<ItemStack> drops = new ArrayList();
+			List<ItemStack> drops = Lists.newArrayList();
 			
 			for (int x = (int) box.minX; x <= box.maxX; x++)
 				for (int y = (int) box.minY; y <= box.maxY; y++)
@@ -75,12 +64,12 @@ public class DestructionCatalyst extends ItemCharge
 						Block block = world.getBlock(x, y, z);
 						float hardness = block.getBlockHardness(world, x, y, z);
 						
-						if (block == null || block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
+						if (block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
 						{
 							continue;
 						}
 						
-						if (!this.consumeFuel(player, stack, 8, true))
+						if (!consumeFuel(player, stack, 8, true))
 						{
 							break;
 						}
@@ -90,7 +79,7 @@ public class DestructionCatalyst extends ItemCharge
 							hasAction = true;
 						}
 						
-						ArrayList<ItemStack> list = Utils.getBlockDrops(world, player, block, stack, x, y, z);
+						ArrayList<ItemStack> list = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 						
 						if (list != null && list.size() > 0)
 						{
@@ -104,42 +93,32 @@ public class DestructionCatalyst extends ItemCharge
 							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
-			
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 			if (hasAction)
 			{
-				world.spawnEntityInWorld(new EntityLootBall(world, drops, player.posX, player.posY, player.posZ));
+				WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 			}
 		}
 			
 		return stack;
 	}
-	
-	public CoordinateBox getBoxFromDirection(ForgeDirection direction, Coordinates coords, int charge)
+
+	protected int calculateDepthFromCharge(ItemStack stack)
 	{
-		charge--;
-		
-		if (direction.offsetX != 0)
+		byte charge = getCharge(stack);
+		if (charge <= 0)
 		{
-			if (direction.offsetX > 0)
-				return new CoordinateBox(coords.x - charge, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
-			else return new CoordinateBox(coords.x, coords.y - 1, coords.z - 1, coords.x + charge, coords.y + 1, coords.z + 1);
+			return 1;
 		}
-		else if (direction.offsetY != 0)
+		if (this instanceof CataliticLens)
 		{
-			if (direction.offsetY > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - charge, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
-			else return new CoordinateBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + charge, coords.z + 1);
+			return 8 + (charge * 8); // Increases linearly by 8, starting at 16 for charge 1
+
 		}
-		else
-		{
-			if (direction.offsetZ > 0)
-				return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z - charge, coords.x + 1, coords.y + 1, coords.z);
-			else return new CoordinateBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + charge);
-		}
+		return (int) Math.pow(2, 1 + charge); // Default DesCatalyst formula, doubles for every level, starting at 4 for charge 1
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)

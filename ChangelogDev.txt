@@ -1,27 +1,2 @@
-###Version 1.7.10-0.2d-dev12
-* NEW: More tooltips
-* NEW: More config options
-* FIXED: Items from versions prior to dev10 will no longer be lost
-* FIXED: Various crashes
-* FIXED: A potential EMC exploit
-* FIXED: Light Blue and Cyan Alchemical Bag textures corrected
-* FIXED: Axes now render properly
-
-###Version Alpha 0.2d-dev11
-* WARNING: ALL ITEMS FROM PREVIOUS VERSIONS WILL BE LOST! USE DEV12 FOR CONVERSION
-* NEW: New system for item timing
-* NEW: Relay Automation
-* FIXED: Katar harvesting sheareable blocks
-* FIXED: More than one repair talisman active in the player inventory
-
-###Version Alpha 0.2d-dev10
-* WARNING: ALL ITEMS FROM PREVIOUS VERSIONS WILL BE LOST! USE DEV12 FOR CONVERSION
-* NEW: Energy condenser MK2. Still needs textures
-* FIX: Changed unlocalized names to avoid conflicts (this will cause the item reset)
-* FIX: Crash with API conflicts
-
-###Version Alpha 0.2d-dev9
-* NEW: Optimized energy condensers
-* NEW: Energy condenser lock slot is now a "ghost" slot
-* NEW: Added dev changelogs 
-* FIX: Energy condensers duping items infinitely after user EMC value change
+###Version Release
+* NEW: Dev builds deprecated. See main changelog

@@ -1,17 +1,26 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import com.google.common.collect.Lists;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class MindStone extends RingToggle 
+import java.util.List;
+
+public class MindStone extends RingToggle implements IPedestalItem
 {
 	private final int TRANSFER_RATE = 50;
 
 	public MindStone() 
 	{
 		super("mind_stone");
+		this.setNoRepair();
 	}
 
 	@Override
@@ -34,9 +43,9 @@ public class MindStone extends RingToggle
 				return;
 			}
 			
-			if (player.experienceTotal > 0)
+			if (getXP(player) > 0)
 			{
-				int toAdd = player.experienceTotal >= TRANSFER_RATE ? TRANSFER_RATE : player.experienceTotal;
+				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
 				addStoredXP(stack, toAdd);
 				removeXP(player, TRANSFER_RATE);
 			}
@@ -52,7 +61,7 @@ public class MindStone extends RingToggle
 			
 			if (toAdd > 0)
 			{
-				player.addExperience(toAdd);
+				addXP(player, toAdd);
 				return true;
 			}
 		}
@@ -62,16 +71,33 @@ public class MindStone extends RingToggle
 	
 	private void removeXP(EntityPlayer player, int amount)
 	{
-		player.experienceTotal -= amount;
-		player.experienceLevel = getLvlForXP(player.experienceTotal);
-		player.experience = (player.experienceTotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
+		int experiencetotal = getXP(player) - amount;
 		
-		if (player.experienceTotal < 0)
+		if (experiencetotal < 0)
 		{
 			player.experienceTotal = 0;
 			player.experienceLevel = 0;
 			player.experience = 0;
 		}
+		else
+		{
+			player.experienceTotal = experiencetotal;
+			player.experienceLevel = getLvlForXP(experiencetotal);
+			player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+		}
+	}
+
+	private void addXP(EntityPlayer player, int amount)
+	{
+		int experiencetotal = getXP(player) + amount;
+		player.experienceTotal = experiencetotal;
+		player.experienceLevel = getLvlForXP(experiencetotal);
+		player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+	}
+
+	private int getXP(EntityPlayer player)
+	{
+		return (int)(getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
 	}
 
 	// Math referenced from the MC wiki
@@ -153,5 +179,45 @@ public class MindStone extends RingToggle
 		
 		setStoredXP(stack, result);
 		return returnResult;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
+		for (EntityXPOrb orb : orbs)
+		{
+			WorldHelper.gravitateEntityTowards(orb, x + 0.5, y + 0.5, z + 0.5);
+			if (!world.isRemote && orb.getDistanceSq(x + 0.5,y + 0.5, z + 0.5) < 1.21)
+			{
+				suckXP(orb, tile.getItemStack());
+			}
+		}
+
+	}
+
+	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
+	{
+		if (canStore(mindStone))
+		{
+			long l = getStoredXP(mindStone);
+			if (l + orb.xpValue > Integer.MAX_VALUE)
+			{
+				orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
+				setStoredXP(mindStone, Integer.MAX_VALUE);
+			}
+			else
+			{
+				addStoredXP(mindStone, orb.xpValue);
+				orb.setDead();
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		return Lists.newArrayList(StatCollector.translateToLocal("pe.mind.pedestal1"));
 	}
 }

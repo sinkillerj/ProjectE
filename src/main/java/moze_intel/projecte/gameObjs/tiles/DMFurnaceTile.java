@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedInventory
 {
@@ -54,27 +54,23 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if (side == 1 || side == 0)
+		switch(side)
 		{
-			return new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-		}
-		else
-		{
-			return new int[] {10, 11, 12, 13, 14, 15, 16, 17, 18};
+			case 0: return new int[] {11, 12, 13, 14, 15, 16, 17, 18}; // Outputs accessible from bottom
+			case 1: return new int[] {2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18}; // Inputs accessible from top
+			case 2: // Fall through
+			case 3:
+			case 4:
+			case 5: return new int[] {0, 11, 12, 13, 14, 15, 16, 17, 18}; // Fuel and output accessible from all sides
+			default: return new int[] {};
 		}
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) 
+	public String getInventoryName()
 	{
-		return slot <= 9;
-	}
-
-	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) 
-	{
-		return slot >= 10;
+		return "pe.dmfurnace.shortname";
 	}
 }

@@ -11,8 +11,14 @@ import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
@@ -33,8 +39,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 {
 	public PhilosophersStone()
 	{
-		super("philosophers_stone", (byte) 4, new String[] {"Cube", "Panel", "Line"});
+		super("philosophers_stone", (byte)4, new String[] {
+				StatCollector.translateToLocal("pe.philstone.mode1"),
+				StatCollector.translateToLocal("pe.philstone.mode2"),
+				StatCollector.translateToLocal("pe.philstone.mode3")});
 		this.setContainerItem(this);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -42,27 +52,20 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		return false;
 	}
-	
+
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ, int sideHit, float px, float py, float pz)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return false;
 		}
-		
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
-		
-		if (mop == null)
-		{
-			return stack;
-		}
-		
-		MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+
+		MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
 
 		if (mBlock.getBlock() != Blocks.air)
 		{
-			TileEntity tile = world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+			TileEntity tile = world.getTileEntity(blockX, blockY, blockZ);
 			
 			if (player.isSneaking())
 			{
@@ -85,7 +88,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					if (s.getHasSubtypes())
 					{
-						s.setItemDamage(world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
+						s.setItemDamage(world.getBlockMetadata(blockX, blockY, blockZ));
 					}
 					else
 					{
@@ -94,21 +97,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					s.setTagCompound(nbt);
 					
-					world.removeTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-					world.setBlock(mop.blockX, mop.blockY, mop.blockZ, Blocks.air, 0, 2);
-					Utils.spawnEntityItem(world, s, mop.blockX, mop.blockY, mop.blockZ);
+					world.removeTileEntity(blockX, blockY, blockZ);
+					world.setBlock(blockX, blockY, blockZ, Blocks.air, 0, 2);
+					WorldHelper.spawnEntityItem(world, s, blockX, blockY, blockZ);
 				}
 			}
 		}
 
-		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, mop.blockX, mop.blockY, mop.blockZ, player.isSneaking());
+		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
 
 		if (result != null)
 		{
-			Coordinates pos = new Coordinates(mop);
+			Coordinates pos = new Coordinates(blockX, blockY,blockZ);
 			int mode = this.getMode(stack);
 			int charge = this.getCharge(stack);			
-			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
+			ForgeDirection direction = ForgeDirection.getOrientation(sideHit);
 			
 			if (mode == 0)
 			{
@@ -122,11 +125,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			{
 				getAxisOrientedLine(direction, charge, mBlock, result, pos, world, player);
 			}
-			
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+
+			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 		}
 		
-		return stack;
+		return true;
 	}
 	
 	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world)
@@ -285,14 +290,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getExtraFuncKeyCode()) + " to open the crafting grid.");
+			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyHelper.getExtraFuncKeyCode())));
 		}
 		
-		list.add("Acts like a wrench for ProjectE blocks.");
-		list.add("Left clicking changes the block's orientation.");
-		list.add("Shift right clicking will pick up the block.");
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));
 	}
 	
 	@Override

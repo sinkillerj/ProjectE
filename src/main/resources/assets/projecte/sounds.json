@@ -1,0 +1,26 @@
+{
+    "item.pecharge":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pecharge"
+        ]
+    },
+    "item.peuncharge":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/peuncharge"
+        ]
+    },
+    "item.petransmute":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/petransmute"
+        ]
+    }
+}

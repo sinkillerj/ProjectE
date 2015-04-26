@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -14,8 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class KleinStar extends ItemPE
 {
@@ -28,6 +28,7 @@ public class KleinStar extends ItemPE
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -46,7 +47,7 @@ public class KleinStar extends ItemPE
 			return 1.0D;
 		}
 		
-		return 1.0D - starEmc / (double)Utils.getKleinStarMaxEmc(stack);
+		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
 
 	

@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.PECore;
-import org.lwjgl.opengl.GL11;
-
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import net.minecraft.client.Minecraft;
@@ -10,6 +8,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
 public class GUIEternalDensity extends GuiContainer
 {
@@ -41,7 +41,7 @@ public class GUIEternalDensity extends GuiContainer
 		
 		inventory.changeMode();
 		
-		button.displayString = inventory.isWhitelistMode() ? "Whitelist" : "Blacklist";
+		button.displayString = StatCollector.translateToLocal(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist");
 	}
 
 	@Override

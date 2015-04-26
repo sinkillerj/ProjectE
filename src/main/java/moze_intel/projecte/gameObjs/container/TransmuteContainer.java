@@ -1,19 +1,17 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableConsume;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableInput;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableLock;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableOutput;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
 
 public class TransmuteContainer extends Container
 {
@@ -24,41 +22,41 @@ public class TransmuteContainer extends Container
 		this.tile = tile;
 
 		//Tablet Inventory
-		this.addSlotToContainer(new SlotTableInput(this.tile, 0, 43, 29));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 1, 34, 47));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 2, 52, 47));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 3, 16, 56));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 4, 70, 56));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 5, 34, 65));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 6, 52, 65));
-		this.addSlotToContainer(new SlotTableInput(this.tile, 7, 43, 83));
-		this.addSlotToContainer(new SlotTableLock(this.tile, 8, 158, 56));
-		this.addSlotToContainer(new SlotTableConsume(this.tile, 9, 107, 103));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 10, 123, 36));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 11, 140, 19));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 12, 158, 15));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 13, 176, 19));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 14, 193, 36));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 15, 199, 56));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 16, 193, 76));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 17, 176, 93));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 18, 158, 97));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 19, 140, 93));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 20, 123, 76));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 21, 116, 56));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 22, 158, 37));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 23, 139, 56));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 24, 177, 56));
-		this.addSlotToContainer(new SlotTableOutput(this.tile, 25, 158, 75));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 0, 43, 23));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 1, 34, 41));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 2, 52, 41));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 3, 16, 50));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 4, 70, 50));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 5, 34, 59));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 6, 52, 59));
+		this.addSlotToContainer(new SlotTableInput(this.tile, 7, 43, 77));
+		this.addSlotToContainer(new SlotTableLock(this.tile, 8, 158, 50));
+		this.addSlotToContainer(new SlotTableConsume(this.tile, 9, 107, 97));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 10, 123, 30));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 11, 140, 13));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 12, 158, 9));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 13, 176, 13));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 14, 193, 30));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 15, 199, 50));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 16, 193, 70));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 17, 176, 87));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 18, 158, 91));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 19, 140, 87));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 20, 123, 70));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 21, 116, 50));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 22, 158, 31));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 23, 139, 50));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 24, 177, 50));
+		this.addSlotToContainer(new SlotTableOutput(this.tile, 25, 158, 69));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 123 + i * 18));
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 117 + i * 18));
 
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 181));
+			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
 
 		this.tile.openInventory();
 	}
@@ -88,14 +86,14 @@ public class TransmuteContainer extends Container
 		}
 		else if (slotIndex >= 10 && slotIndex <= 25)
 		{	
-			int emc = Utils.getEmcValue(newStack);
+			int emc = EMCHelper.getEmcValue(newStack);
 			
 			int stackSize = 0;
 			
-			while (tile.getStoredEmc() >= emc && stackSize < newStack.getMaxStackSize() && Utils.hasSpace(player.inventory, newStack))
+			while (tile.getStoredEmc() >= emc && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory, newStack))
 			{
 				tile.removeEmc(emc);
-				Utils.pushStackInInv(player.inventory, Utils.getNormalizedStack(newStack));
+				ItemHelper.pushStackInInv(player.inventory, ItemHelper.getNormalizedStack(newStack));
 				stackSize++;
 			}
 			
@@ -103,7 +101,7 @@ public class TransmuteContainer extends Container
 		}
 		else if (slotIndex >= 26)
 		{
-			int emc = Utils.getEmcValue(stack);
+			int emc = EMCHelper.getEmcValue(stack);
 			
 			if (emc == 0)
 			{
@@ -117,12 +115,7 @@ public class TransmuteContainer extends Container
 			}
 			
 			tile.handleKnowledge(newStack);
-			
-			if (stack.getItem() == ObjHandler.kleinStars)
-			{
-				tile.addEmc(KleinStar.getEmc(stack));
-			}
-			
+
 			if (stack.stackSize == 0)
 			{
 				slot.putStack(null);

@@ -1,13 +1,15 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -32,7 +34,8 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private ItemStack[] inventory = new ItemStack[26];
 	public int learnFlag = 0;
 	public String filter = "";
-	
+	public int searchpage = 0;
+	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
 	
 	public void handleKnowledge(ItemStack stack)
 	{
@@ -75,8 +78,8 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = Utils.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = Utils.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -88,7 +91,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	
 	public void updateOutputs()
 	{
-		LinkedList<ItemStack> knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -101,17 +104,19 @@ public class TransmuteTile extends TileEmc implements IInventory
 		}
 		
 		ItemStack lockCopy = null;
-		
+
+		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
+
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = Utils.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.getStoredEmc() < reqEmc)
 			{
 				return;
 			}
 
-			lockCopy = Utils.getNormalizedStack(inventory[LOCK_INDEX]);
+			lockCopy = ItemHelper.getNormalizedStack(inventory[LOCK_INDEX]);
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
@@ -119,18 +124,19 @@ public class TransmuteTile extends TileEmc implements IInventory
 			}
 
 			Iterator<ItemStack> iter = knowledge.iterator();
-			
+			int pagecounter = 0;
+
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
 				
-				if (Utils.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
 				}
 
-				if (Utils.basicAreStacksEqual(lockCopy, stack))
+				if (ItemHelper.basicAreStacksEqual(lockCopy, stack))
 				{
 					iter.remove();
 					continue;
@@ -147,21 +153,35 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
 				{
 					iter.remove();
+					continue;
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				{
+					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
 		else
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
-			
+			int pagecounter = 0;
+
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
 				
-				if (this.getStoredEmc() < Utils.getEmcValue(stack))
+				if (this.getStoredEmc() < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;
@@ -178,14 +198,25 @@ public class TransmuteTile extends TileEmc implements IInventory
 					continue;
 				}
 
-				if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				if (displayName == null)
 				{
 					iter.remove();
+					continue;
+				}
+				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				{
+					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
-		
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
 		
 		int matterCounter = 0;
 		int fuelCounter = 0;
@@ -372,7 +403,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Transmutation Stone";
+		return "tile.pe_transmutation_stone.name";
 	}
 
 	@Override

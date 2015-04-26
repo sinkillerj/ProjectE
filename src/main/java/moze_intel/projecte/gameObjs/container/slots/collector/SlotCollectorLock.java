@@ -22,4 +22,10 @@ public class SlotCollectorLock extends Slot
 		
 		return FuelMapper.isStackFuel(stack);
 	}
+
+	@Override
+	public int getSlotStackLimit()
+	{
+		return 1;
+	}
 }

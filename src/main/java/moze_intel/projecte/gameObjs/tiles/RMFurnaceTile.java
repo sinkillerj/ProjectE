@@ -1,10 +1,11 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import scala.actors.threadpool.Arrays;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.items.KleinStar;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -17,9 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory
 {
@@ -143,7 +141,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		{
 			ItemStack slotStack = inventory[i];
 			
-			if (slotStack != null && (stack == null || Utils.areItemStacksEqual(slotStack, stack))) 
+			if (slotStack != null && (stack == null || ItemHelper.areItemStacksEqual(slotStack, stack)))
 			{
 				if (stack == null)
 				{
@@ -194,7 +192,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			}
 			else
 			{
-				if (Utils.areItemStacksEqual(output, stack) && stack.stackSize < stack.getMaxStackSize())
+				if (ItemHelper.areItemStacksEqual(output, stack) && stack.stackSize < stack.getMaxStackSize())
 				{
 					int remain = stack.getMaxStackSize() - stack.stackSize;
 					
@@ -247,7 +245,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 								inv.setInventorySlotContents(i, null);
 								break;
 							}
-							else if (Utils.areItemStacksEqual(stack, inventory[0]))
+							else if (ItemHelper.areItemStacksEqual(stack, inventory[0]))
 							{
 								int remain = inventory[0].getMaxStackSize() - inventory[0].stackSize;
 								
@@ -277,7 +275,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 								inv.setInventorySlotContents(i, null);
 								break;
 							}
-							else if (Utils.areItemStacksEqual(stack, otherStack))
+							else if (ItemHelper.areItemStacksEqual(stack, otherStack))
 							{
 								int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
 								
@@ -319,7 +317,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 						inv.setInventorySlotContents(i, null);
 						break;
 					}
-					else if (Utils.areItemStacksEqual(stack, inventory[0]))
+					else if (ItemHelper.areItemStacksEqual(stack, inventory[0]))
 					{
 						int remain = inventory[0].getMaxStackSize() - inventory[0].stackSize;
 						
@@ -353,7 +351,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 						inv.setInventorySlotContents(i, null);
 						break;
 					}
-					else if (Utils.areItemStacksEqual(stack, otherStack))
+					else if (ItemHelper.areItemStacksEqual(stack, otherStack))
 					{
 						int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
 						
@@ -426,7 +424,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 										inventory[j] = null;
 										break;
 									}
-									else if (Utils.areItemStacksEqual(stack, otherStack))
+									else if (ItemHelper.areItemStacksEqual(stack, otherStack))
 									{
 										int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
 										
@@ -456,7 +454,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					
 					if (stack != null)
 					{
-						ItemStack result = Utils.pushStackInInv((IInventory) tile, stack);
+						ItemStack result = ItemHelper.pushStackInInv((IInventory) tile, stack);
 						
 						if (result == null)
 						{
@@ -479,7 +477,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
 		ItemStack currentSmelted = getStackInSlot(outputSlot);
 
-		if (Utils.getOreDictionaryName(toSmelt).startsWith("ore"))
+		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
 		{
 			smeltResult.stackSize *= 2;
 		}
@@ -647,7 +645,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public String getInventoryName() 
 	{
-		return "Transmutation Stone";
+		return "pe.rmfurnace.shortname";
 	}
 
 	@Override
@@ -703,26 +701,40 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
-		if (side == 1 || side == 0)
+		switch(side)
 		{
-			return new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-		}
-		else
-		{
-			return new int[] {14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
+			case 0: return new int[] {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Outputs accessible from bottom
+			case 1: return new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Inputs accessible from top
+			case 2: // Fall through
+			case 3:
+			case 4:
+			case 5: return new int[] {0, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Fuel and output accessible from all sides
+			default: return new int[] {};
 		}
 	}
 
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) 
 	{
-		return slot <= 13;
+		if (side == 0)
+		{
+			return false;
+		}
+
+		if (side == 1)
+		{
+			return slot <= inputStorage[1] && slot >= inputStorage[0];
+		}
+		else
+		{
+			return slot == 0;
+		}
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
-		return slot >= 14;
+		return slot >= outputStorage[0];
 	}
 
 	@Override

@@ -5,8 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.CoordinateBox;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -25,9 +25,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 {
 	public MercurialEye()
 	{
-		super("mercurial_eye", (byte) 4, new String[] {"Normal", "Transmutation"});
+		super("mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
+		this.setNoRepair();
 	}
 	
+	final private int NORMAL_MODE = 0;
+	final private int TRANSMUTATION_MODE = 1;
+
+	final private double WALL_MODE = Math.sin(Math.toRadians(45));
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -47,15 +53,17 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return stack;
 			}
 
-			Block toSet = Block.getBlockFromItem(inventory[1].getItem());
+			Block newBlock = Block.getBlockFromItem(inventory[1].getItem());
 
-			if (toSet == Blocks.air)
+			if (newBlock == Blocks.air)
 			{
 				return stack;
 			}
 
+			int newMeta = inventory[1].getItemDamage();
+
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = Utils.getEmcValue(inventory[1]);
+			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
 
 			byte charge = getCharge(stack);
 			byte mode = this.getMode(stack);
@@ -64,128 +72,124 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 			Vec3 look = player.getLookVec();
 
-			CoordinateBox box = null;
+			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+					mop.blockX,
+					mop.blockY,
+					mop.blockZ,
+					mop.blockX,
+					mop.blockY,
+					mop.blockZ
+			);
 
-			if (dir == ForgeDirection.UP)
-			{
-				if (look.yCoord >= -1 && look.yCoord <= -0.8)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY + 1, mop.blockZ - charge, mop.blockX + charge, mop.blockY + 1, mop.blockZ + charge);
-				}
-				else if (facing == 0 || facing == 2)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY + 1, mop.blockZ, mop.blockX + charge, mop.blockY + (charge * 2), mop.blockZ);
-				}
-				else
-				{
-					box = new CoordinateBox(mop.blockX, mop.blockY + 1, mop.blockZ - charge, mop.blockX, mop.blockY + (charge * 2), mop.blockZ + charge);
-				}
+			int dX = 0, dY = 0, dZ = 0;
+
+			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
+			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
+
+			boolean lookingAlongZ = facing == 0 || facing == 2;
+
+			switch (dir) {
+				case UP:
+					if (lookingDown || mode == TRANSMUTATION_MODE)
+					{
+						box = box.expand(charge, 0, charge);
+						dY = 1;
+					}
+					else if (lookingAlongZ)
+						box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
+					else
+						box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
+
+					break;
+
+				case DOWN:
+					if (lookingUp || mode == TRANSMUTATION_MODE)
+					{
+						box = box.expand(charge, 0, charge);
+						dY = -1;
+
+					}
+					else if (lookingAlongZ)
+						box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
+					else
+						box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+
+					break;
+
+				case EAST:
+					box = box.expand(0, charge, charge);
+					dX = 1;
+					break;
+
+				case WEST:
+					box = box.expand(0, charge, charge);
+					dX = -1;
+					break;
+
+				case SOUTH:
+					box = box.expand(charge, charge, 0);
+					dZ = 1;
+					break;
+
+				case NORTH:
+					box = box.expand(charge, charge, 0);
+					dZ = -1;
+					break;
 			}
-			else if (dir == ForgeDirection.DOWN)
-			{
-				if (look.yCoord >= 0.8 && look.yCoord <= 1)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY - 1, mop.blockZ - charge, mop.blockX + charge, mop.blockY - 1, mop.blockZ + charge);
-				}
-				else if (facing == 0 || facing == 2)
-				{
-					box = new CoordinateBox(mop.blockX - charge, mop.blockY - (charge * 2), mop.blockZ, mop.blockX + charge, mop.blockY - 1, mop.blockZ);
-				}
-				else
-				{
-					box = new CoordinateBox(mop.blockX, mop.blockY - (charge * 2), mop.blockZ - charge, mop.blockX, mop.blockY - 1, mop.blockZ + charge);
-				}
-			}
-			else if (dir == ForgeDirection.EAST)
-			{
-				box = new CoordinateBox(mop.blockX + 1, mop.blockY - charge, mop.blockZ - charge, mop.blockX + 1, mop.blockY + charge, mop.blockZ + charge);
-			}
-			else if (dir == ForgeDirection.WEST)
-			{
-				box = new CoordinateBox(mop.blockX - 1, mop.blockY - charge, mop.blockZ - charge, mop.blockX - 1, mop.blockY + charge, mop.blockZ + charge);
-			}
-			else if (dir == ForgeDirection.SOUTH)
-			{
-				box = new CoordinateBox(mop.blockX - charge, mop.blockY - charge, mop.blockZ + 1, mop.blockX + charge, mop.blockY + charge, mop.blockZ + 1);
-			}
-			else if (dir == ForgeDirection.NORTH)
-			{
-				box = new CoordinateBox(mop.blockX - charge, mop.blockY - charge, mop.blockZ - 1, mop.blockX + charge, mop.blockY + charge, mop.blockZ - 1);
-			}
+
+			if (NORMAL_MODE == mode)
+				box = box.offset(dX, dY, dZ);
 
 			if (box != null)
 			{
-				for (double x = box.minX; x <= box.maxX; x++)
-				for (double y = box.minY; y <= box.maxY; y++)
-				for (double z = box.minZ; z <= box.maxZ; z++)
+				for (int x = (int) box.minX; x <= (int) box.maxX; x++)
+				for (int y = (int) box.minY; y <= (int) box.maxY; y++)
+				for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 				{
-					Block b = world.getBlock((int) x, (int) y, (int) z);
+					Block oldBlock = world.getBlock(x, y, z);
+					int oldMeta = oldBlock.getDamageValue(world, x, y, z);
 
-					if (mode == 0)
+					if (mode == NORMAL_MODE && oldBlock == Blocks.air)
 					{
-						if (b != Blocks.air)
+						if (kleinEmc < reqEmc)
+							break;
+
+						world.setBlock(x, y, z, newBlock, newMeta, 3);
+						removeKleinEMC(stack, reqEmc);
+						kleinEmc -= reqEmc;
+					}
+					else if (mode == TRANSMUTATION_MODE)
+					{
+						if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
 						{
 							continue;
 						}
 
-						if (kleinEmc >= reqEmc)
+						int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+
+						if (emc > reqEmc)
 						{
-							world.setBlock((int) x, (int) y, (int) z, toSet);
-							removeKleinEMC(stack, reqEmc);
-							kleinEmc -= reqEmc;
+							int difference = emc - reqEmc;
+
+							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+
+							addKleinEMC(stack, difference);
+							world.setBlock(x, y, z, newBlock, newMeta, 3);
 						}
-						else
+						else if (emc < reqEmc)
 						{
-							break;
-						}
-					}
-					else
-					{
-						if (b == Blocks.air)
-						{
-							if (kleinEmc >= reqEmc)
+							int difference = reqEmc - emc;
+
+							if (kleinEmc >= difference)
 							{
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-								removeKleinEMC(stack, reqEmc);
-								kleinEmc -= reqEmc;
-							}
-							else
-							{
-								break;
+								kleinEmc -= difference;
+								removeKleinEMC(stack, difference);
+								world.setBlock(x, y, z, newBlock, newMeta, 3);
 							}
 						}
 						else
 						{
-							if (b == toSet || !Utils.doesItemHaveEmc(new ItemStack(b)))
-							{
-								continue;
-							}
-
-							int emc = Utils.getEmcValue(new ItemStack(b));
-
-							if (emc > reqEmc)
-							{
-								int difference = emc - reqEmc;
-
-								kleinEmc += MathHelper.clamp_double(kleinEmc, 0, Utils.getKleinStarMaxEmc(inventory[0]));
-								addKleinEMC(stack, difference);
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-							}
-							else if (emc < reqEmc)
-							{
-								int difference = reqEmc - emc;
-
-								if (kleinEmc >= difference)
-								{
-									kleinEmc -= difference;
-									removeKleinEMC(stack, difference);
-									world.setBlock((int) x, (int) y, (int) z, toSet);
-								}
-							}
-							else
-							{
-								world.setBlock((int) x, (int) y, (int) z, toSet);
-							}
+							world.setBlock(x, y, z, newBlock, newMeta, 3);
 						}
 					}
 				}
@@ -209,7 +213,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 				NBTTagCompound tag = nbt.getCompoundTag("tag");
 
-				double newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, Utils.getKleinStarMaxEmc(kleinStar));
+				double newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
 
 				tag.setDouble("StoredEMC", newEmc);
 				break;

@@ -5,20 +5,108 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.blocks.*;
+import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
+import moze_intel.projecte.gameObjs.blocks.Collector;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
+import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
+import moze_intel.projecte.gameObjs.blocks.FuelBlock;
+import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
+import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
+import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
+import moze_intel.projecte.gameObjs.blocks.Pedestal;
+import moze_intel.projecte.gameObjs.blocks.Relay;
+import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
-import moze_intel.projecte.gameObjs.entity.*;
-import moze_intel.projecte.gameObjs.items.*;
+import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
+import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
+import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
+import moze_intel.projecte.gameObjs.items.CataliticLens;
+import moze_intel.projecte.gameObjs.items.CovalenceDust;
+import moze_intel.projecte.gameObjs.items.DestructionCatalyst;
+import moze_intel.projecte.gameObjs.items.DiviningRodHigh;
+import moze_intel.projecte.gameObjs.items.DiviningRodLow;
+import moze_intel.projecte.gameObjs.items.DiviningRodMedium;
+import moze_intel.projecte.gameObjs.items.EvertideAmulet;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity;
+import moze_intel.projecte.gameObjs.items.HyperkineticLens;
+import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.gameObjs.items.Matter;
+import moze_intel.projecte.gameObjs.items.MercurialEye;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone;
+import moze_intel.projecte.gameObjs.items.RepairTalisman;
+import moze_intel.projecte.gameObjs.items.TimeWatch;
+import moze_intel.projecte.gameObjs.items.Tome;
+import moze_intel.projecte.gameObjs.items.TransmutationTablet;
+import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
 import moze_intel.projecte.gameObjs.items.armor.DMArmor;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.gameObjs.items.armor.RMArmor;
-import moze_intel.projecte.gameObjs.items.itemBlocks.*;
-import moze_intel.projecte.gameObjs.items.itemEntities.*;
-import moze_intel.projecte.gameObjs.items.rings.*;
-import moze_intel.projecte.gameObjs.items.tools.*;
-import moze_intel.projecte.gameObjs.tiles.*;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemAlchemyChestBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCollectorBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCondenserBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemDMFurnaceBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemFuelBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemMatterBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRMFurnaceBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRelayBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemTransmutationBlock;
+import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
+import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
+import moze_intel.projecte.gameObjs.items.itemEntities.LootBallItem;
+import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
+import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
+import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
+import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
+import moze_intel.projecte.gameObjs.items.rings.BodyStone;
+import moze_intel.projecte.gameObjs.items.rings.HarvestGoddess;
+import moze_intel.projecte.gameObjs.items.rings.Ignition;
+import moze_intel.projecte.gameObjs.items.rings.IronBand;
+import moze_intel.projecte.gameObjs.items.rings.LifeStone;
+import moze_intel.projecte.gameObjs.items.rings.MindStone;
+import moze_intel.projecte.gameObjs.items.rings.SWRG;
+import moze_intel.projecte.gameObjs.items.rings.SoulStone;
+import moze_intel.projecte.gameObjs.items.rings.Zero;
+import moze_intel.projecte.gameObjs.items.tools.DarkAxe;
+import moze_intel.projecte.gameObjs.items.tools.DarkHammer;
+import moze_intel.projecte.gameObjs.items.tools.DarkHoe;
+import moze_intel.projecte.gameObjs.items.tools.DarkPick;
+import moze_intel.projecte.gameObjs.items.tools.DarkShears;
+import moze_intel.projecte.gameObjs.items.tools.DarkShovel;
+import moze_intel.projecte.gameObjs.items.tools.DarkSword;
+import moze_intel.projecte.gameObjs.items.tools.RedAxe;
+import moze_intel.projecte.gameObjs.items.tools.RedHammer;
+import moze_intel.projecte.gameObjs.items.tools.RedHoe;
+import moze_intel.projecte.gameObjs.items.tools.RedKatar;
+import moze_intel.projecte.gameObjs.items.tools.RedPick;
+import moze_intel.projecte.gameObjs.items.tools.RedShears;
+import moze_intel.projecte.gameObjs.items.tools.RedShovel;
+import moze_intel.projecte.gameObjs.items.tools.RedStar;
+import moze_intel.projecte.gameObjs.items.tools.RedSword;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -47,6 +135,7 @@ public class ObjHandler
 	public static Block rmFurnaceOn = new MatterFurnace(true, true);
 	public static Block dmFurnaceOff = new MatterFurnace(false, false);
 	public static Block dmFurnaceOn = new MatterFurnace(true, false);
+	public static Block dmPedestal = new Pedestal();
 	public static Block matterBlock = new MatterBlock();
 	public static Block fuelBlock = new FuelBlock();
 	public static Block energyCollector = new Collector(1);
@@ -66,7 +155,7 @@ public class ObjHandler
 	public static Item covalence = new CovalenceDust();
 	public static Item matter = new Matter();
 	
-	public static Item dmPick = new DarkPickaxe();
+	public static Item dmPick = new DarkPick();
 	public static Item dmAxe = new DarkAxe();
 	public static Item dmShovel = new DarkShovel();
 	public static Item dmSword = new DarkSword();
@@ -147,6 +236,7 @@ public class ObjHandler
 		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
 		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
 		GameRegistry.registerBlock(dmFurnaceOn, "DM Furnace Lit");
+		GameRegistry.registerBlock(dmPedestal, "DM Pedestal");
 		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "Matter Block");
 		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "Fuel Block");
 		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "Collector MK1");
@@ -250,6 +340,7 @@ public class ObjHandler
 		GameRegistry.registerTileEntity(RelayMK2Tile.class, "AM Relay MK2 Tile");
 		GameRegistry.registerTileEntity(RelayMK3Tile.class, "AM Relay MK3 Tile");
 		GameRegistry.registerTileEntity(TransmuteTile.class, "Transmutation Tablet Tile");
+		GameRegistry.registerTileEntity(DMPedestalTile.class, "DM Pedestal Tile");
 		
 		//Entities
 		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, PECore.instance, 256, 10, true);
@@ -264,11 +355,20 @@ public class ObjHandler
 	
 	public static void addRecipes()
 	{
+		ItemStack diamondReplacement = new ItemStack(Items.diamond);
+		ItemStack diamondBlockReplacement = new ItemStack(Blocks.diamond_block);
+
+		if (ProjectEConfig.altCraftingMat)
+		{
+			diamondReplacement = new ItemStack(Items.nether_star);
+			diamondBlockReplacement = new ItemStack(Items.nether_star);
+		}
+
 		//Shaped Recipes
 		//Philos Stone
-		GameRegistry.addRecipe(new ItemStack(philosStone), "RGR", "GDG", "RGR", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond);
+		GameRegistry.addRecipe(new ItemStack(philosStone), "RGR", "GDG", "RGR", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', diamondReplacement);
 		
-		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', Items.diamond);
+		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', diamondReplacement);
 		
 		//Interdiction torch
 		if (ProjectEConfig.enableITorch)
@@ -290,7 +390,7 @@ public class ObjHandler
 		//Alchemical Chest
 		if (ProjectEConfig.enableAlcChest)
 		{
-			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', Items.diamond, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2),'S', Blocks.stone, 'I', Items.iron_ingot, 'C', Blocks.chest);
+			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2),'S', Blocks.stone, 'I', Items.iron_ingot, 'C', Blocks.chest);
 		}
 		
 		//Alchemical Bags
@@ -302,7 +402,7 @@ public class ObjHandler
 		//Condenser
 		if (ProjectEConfig.enableCondenser)
 		{
-			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', new ItemStack(Items.diamond), 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
+			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.diamond, 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
 		}
 
 		//Condenser MK2
@@ -330,11 +430,17 @@ public class ObjHandler
 		{
 			GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
 		}
-		
+
+		// DM Pedestal
+		if (ProjectEConfig.enableDarkPedestal)
+		{
+			GameRegistry.addRecipe(new ItemStack(dmPedestal), "RDR", "RDR", "DDD", 'R', new ItemStack(matter, 1, 1), 'D', new ItemStack(matterBlock, 1, 0));
+		}
+
 		//Collectors
 		if (ProjectEConfig.enableCollector)
 		{
-			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', Blocks.diamond_block, 'T', Blocks.glass);
+			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', diamondBlockReplacement, 'T', Blocks.glass);
 		}
 		if (ProjectEConfig.enableCollector2)
 		{
@@ -392,6 +498,7 @@ public class ObjHandler
 		
 		//Rings
 		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.iron_ingot, 'L', Items.lava_bucket);
+		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.iron_ingot, 'L', volcanite);
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), "SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', Blocks.red_flower, 'F', Blocks.red_flower, 'D', matter));
 		GameRegistry.addRecipe(new ItemStack(swrg), "DFD", "FIF", "DFD", 'I', ironBand, 'F', Items.feather, 'D', matter);
 		GameRegistry.addRecipe(new ItemStack(ignition), "FMF", "DID", "FMF", 'I', ironBand, 'F', new ItemStack(Items.flint_and_steel, 1, OreDictionary.WILDCARD_VALUE), 'D', matter, 'M', new ItemStack(fuels, 1, 1));
@@ -426,7 +533,10 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 2), "FFF", "FFF", "FFF", 'F', new ItemStack(fuels, 1, 2));
 		
 		//Tome
-		GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
+		if (ProjectEConfig.craftableTome)
+		{
+			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
+		}
 				
 		//TransmutationTablet
 		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);
@@ -491,8 +601,10 @@ public class ObjHandler
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
 	}
-	
-	//Philosopher's stone smelting recipes, EE3 style
+
+	/**
+	 * Philosopher's stone smelting recipes, EE3 style
+	 */
 	public static void registerPhiloStoneSmelting()
 	{
 		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))

@@ -1,10 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.trasmute;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -32,15 +29,10 @@ public class SlotTableConsume extends Slot
 		
 		while (!tile.hasMaxedEmc() && stack.stackSize > 0)
 		{
-			toAdd += Utils.getEmcValue(stack);
+			toAdd += EMCHelper.getEmcValue(stack);
 			stack.stackSize--;
 		}
-		
-		if (cache.getItem() == ObjHandler.kleinStars)
-		{
-			toAdd += KleinStar.getEmc(cache);
-		}
-		
+
 		tile.addEmcWithPKT(toAdd);
 		this.onSlotChanged();
 		tile.handleKnowledge(cache);
@@ -49,6 +41,6 @@ public class SlotTableConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !tile.hasMaxedEmc() && Utils.doesItemHaveEmc(stack);
+		return !tile.hasMaxedEmc() && EMCHelper.doesItemHaveEmc(stack);
 	}
 }

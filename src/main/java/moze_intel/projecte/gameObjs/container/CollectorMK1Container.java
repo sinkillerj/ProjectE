@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
@@ -10,14 +12,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CollectorMK1Container extends Container
 {
 	private CollectorMK1Tile tile;
 	private int sunLevel;
-	
+
+
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
 	{
 		this.tile = collector;

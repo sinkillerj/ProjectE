@@ -4,10 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Used by items that have a special function
+ * Used by items that trigger with the extra function key (C by default)
  */
 public interface IExtraFunction 
 {
-	//Called when the player presses the 'G' button
-	public void doExtraFunction(ItemStack stack, EntityPlayer player);
+	/**
+	 * Do our extra function. Called serverside only.
+	 * @param stack The ItemStack the player is pressing C on
+	 * @param player The player
+	 */
+	void doExtraFunction(ItemStack stack, EntityPlayer player);
 }

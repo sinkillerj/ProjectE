@@ -103,7 +103,7 @@ public class MercurialEyeInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "Mercurial Eye";
+		return "item.pe_mercurial_eye.name";
 	}
 
 	@Override

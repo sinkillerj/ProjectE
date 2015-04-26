@@ -2,18 +2,30 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SoulStone extends RingToggle implements IBauble
+public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 {
-	public SoulStone() 
+	private int healCooldown;
+
+	public SoulStone()
 	{
 		super("soul_stone");
 	}
@@ -42,7 +54,7 @@ public class SoulStone extends RingToggle implements IBauble
 
 				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
 				{
-					player.setHealth(player.getHealth() + 2);
+					player.heal(2.0F);
 					removeEmc(stack, 64);
 				}
 			}
@@ -103,5 +115,42 @@ public class SoulStone extends RingToggle implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.soulPedCooldown != -1)
+		{
+			if (healCooldown == 0)
+			{
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
+
+				for (EntityPlayerMP player : players)
+				{
+					player.heal(1.0F); // 1/2 heart
+				}
+
+				healCooldown = ProjectEConfig.soulPedCooldown;
+			}
+			else
+			{
+				healCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = Lists.newArrayList();
+		if (ProjectEConfig.soulPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.soul.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.soul.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
+		}
+		return list;
 	}
 }

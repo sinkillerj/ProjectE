@@ -1,19 +1,20 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
@@ -111,28 +112,32 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		if (inventory[upgradedSlot] != null)
 		{
-			for (int i = 1; i < invBufferSize; i++)
-			{
-				if (inventory[i] == null)
+			if (!(inventory[lockSlot] != null
+					&& inventory[upgradedSlot].getItem() == inventory[lockSlot].getItem()
+					&& inventory[upgradedSlot].stackSize < inventory[upgradedSlot].getMaxStackSize())) {
+				for (int i = 1; i < invBufferSize; i++)
 				{
-					inventory[i] = inventory[upgradedSlot];
-					inventory[upgradedSlot] = null;
-					break;
-				}
-				else if (Utils.areItemStacksEqual(inventory[i], inventory[upgradedSlot]))
-				{
-					int remain = inventory[i].getMaxStackSize() - inventory[i].stackSize;
-					
-					if (remain >= inventory[upgradedSlot].stackSize)
+					if (inventory[i] == null)
 					{
-						inventory[i].stackSize += inventory[upgradedSlot].stackSize;
+						inventory[i] = inventory[upgradedSlot];
 						inventory[upgradedSlot] = null;
 						break;
 					}
-					else
+					else if (ItemHelper.areItemStacksEqual(inventory[i], inventory[upgradedSlot]))
 					{
-						inventory[i].stackSize += remain;
-						inventory[upgradedSlot].stackSize -= remain;
+						int remain = inventory[i].getMaxStackSize() - inventory[i].stackSize;
+
+						if (remain >= inventory[upgradedSlot].stackSize)
+						{
+							inventory[i].stackSize += inventory[upgradedSlot].stackSize;
+							inventory[upgradedSlot] = null;
+							break;
+						}
+						else
+						{
+							inventory[i].stackSize += remain;
+							inventory[upgradedSlot].stackSize -= remain;
+						}
 					}
 				}
 			}
@@ -158,7 +163,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 				
 				continue;
 			}
-			else if (Utils.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
+			else if (ItemHelper.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
 				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 				
@@ -182,7 +187,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		if (inventory[0].getItem().equals(ObjHandler.kleinStars))
 		{
-			if(ItemPE.getEmc(inventory[0]) != Utils.getKleinStarMaxEmc(inventory[0]))
+			if(ItemPE.getEmc(inventory[0]) != EMCHelper.getKleinStarMaxEmc(inventory[0]))
 			{
 				hasKleinStar = true;
 				hasFuel = false;
@@ -216,7 +221,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
 			double starEmc = ItemPE.getEmc(inventory[0]);
-			int maxStarEmc = Utils.getKleinStarMaxEmc(inventory[0]);
+			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(inventory[0]);
 			
 			if ((starEmc + toSend) > maxStarEmc)
 			{
@@ -230,7 +235,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
-			int upgradeCost = Utils.getEmcValue(result) - Utils.getEmcValue(inventory[0]);
+			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
@@ -242,7 +247,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 					this.setInventorySlotContents(upgradedSlot, result);
 					this.decrStackSize(0, 1);
 				}
-				else if (Utils.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
+				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
 				{
 					this.removeEmc(upgradeCost);
 					inventory[upgradedSlot].stackSize++;
@@ -281,7 +286,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			return 0;
 		}
 		
-		return displayKleinCharge * i / Utils.getKleinStarMaxEmc(inventory[0]);
+		return displayKleinCharge * i / EMCHelper.getKleinStarMaxEmc(inventory[0]);
 	}
 	
 	public int getSunLevel()
@@ -318,7 +323,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		if (inventory[lockSlot] != null)
 		{
-			reqEmc = Utils.getEmcValue(inventory[lockSlot]) - Utils.getEmcValue(inventory[0]);
+			reqEmc = EMCHelper.getEmcValue(inventory[lockSlot]) - EMCHelper.getEmcValue(inventory[0]);
 			
 			if (reqEmc < 0)
 			{
@@ -327,7 +332,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else
 		{
-			reqEmc = Utils.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - Utils.getEmcValue(inventory[0]);
+			reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
 		}
 		
 		if (this.getStoredEmc() >= reqEmc)
@@ -440,7 +445,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	@Override
 	public String getInventoryName() 
 	{
-		return "Collector MK1";
+		return "tile.pe_collector_MK1.name";
 	}
 
 	@Override

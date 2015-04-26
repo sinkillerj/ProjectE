@@ -2,25 +2,34 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BlackHoleBand extends RingToggle implements IBauble
+public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 {
 	public BlackHoleBand()
 	{
 		super("black_hole");
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -37,7 +46,7 @@ public class BlackHoleBand extends RingToggle implements IBauble
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (world.isRemote || stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer)) 
+		if (stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -48,19 +57,9 @@ public class BlackHoleBand extends RingToggle implements IBauble
 		
 		for (EntityItem item : itemList)
 		{
-			if (Utils.hasSpace(player.inventory.mainInventory, item.getEntityItem())) 
+			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getEntityItem()))
 			{
-				item.delayBeforeCanPickup = 0;
-				double d1 = (player.posX - item.posX);
-				double d2 = (player.posY + (double)player.getEyeHeight() - item.posY);
-				double d3 = (player.posZ - item.posZ);
-				double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-				item.motionX += d1 / d4 * 0.1D;
-				item.motionY += d2 / d4 * 0.1D;
-				item.motionZ += d3 / d4 * 0.1D;
-				
-				item.moveEntity(item.motionX, item.motionY, item.motionZ);
+				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
 		}
 		
@@ -68,16 +67,7 @@ public class BlackHoleBand extends RingToggle implements IBauble
 		
 		for (EntityLootBall ball : ballList)
 		{
-			double d1 = (player.posX - ball.posX);
-			double d2 = (player.posY + (double)player.getEyeHeight() - ball.posY);
-			double d3 = (player.posZ - ball.posZ);
-			double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-
-			ball.motionX += d1 / d4 * 0.1D;
-			ball.motionY += d2 / d4 * 0.1D;
-			ball.motionZ += d3 / d4 * 0.1D;
-			
-			ball.moveEntity(ball.motionX, ball.motionY, ball.motionZ);
+			WorldHelper.gravitateEntityTowards(ball, player.posX, player.posY, player.posZ);
 		}
 	}
 
@@ -116,4 +106,54 @@ public class BlackHoleBand extends RingToggle implements IBauble
 	{
 		return true;
 	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		if (tile != null)
+		{
+			List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, tile.getEffectBounds());
+			for (EntityItem item : list)
+			{
+				WorldHelper.gravitateEntityTowards(item, x + 0.5, y + 0.5, z + 0.5);
+				if (!world.isRemote && item.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) < 1.21 && !item.isDead)
+				{
+					suckDumpItem(item, tile);
+				}
+			}
+		}
+	}
+
+	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
+	{
+		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		for (TileEntity tileEntity : list)
+		{
+			if (tileEntity instanceof IInventory)
+			{
+				IInventory inv = ((IInventory) tileEntity);
+				ItemStack result = ItemHelper.pushStackInInv(inv, item.getEntityItem());
+				if (result != null)
+				{
+					item.setEntityItemStack(result);
+				}
+				else
+				{
+					item.setDead();
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		return Lists.newArrayList(
+				EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal1"),
+				EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal2")
+		);
+	}
+
 }

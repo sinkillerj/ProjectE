@@ -3,10 +3,10 @@ package moze_intel.projecte.gameObjs.items;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.AchievementHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -31,11 +31,6 @@ public class Tome extends ItemPE
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
 		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.TOME, 1);
-		}
 	}
 
 	@Override
@@ -49,7 +44,7 @@ public class Tome extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add("Unlocks all items with an EMC value in the tile.");
+		list.add(StatCollector.translateToLocal("pe.tome.tooltip1"));
 	}
 }
 

@@ -2,35 +2,53 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.KeyBinds;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCauldron;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
 {
+	private int startRainCooldown;
+
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
 		this.setMaxStackSize(1);
+		this.setNoRepair();
 	}
 
 	@Override
@@ -44,17 +62,85 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				IFluidHandler tank = (IFluidHandler) tile;
 
-				if (Utils.canFillTank(tank, FluidRegistry.WATER, sideHit))
+				if (FluidHelper.canFillTank(tank, FluidRegistry.WATER, sideHit))
 				{
-					Utils.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+					FluidHelper.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
 					return true;
 				}
+			}
+
+			Block block = world.getBlock(x, y, z);
+			int meta = world.getBlockMetadata(x, y, z);
+			if (block == Blocks.cauldron && meta < 3)
+			{
+				((BlockCauldron) block).func_150024_a(world, x, y, z, meta + 1);
+				// Cauldron-specific setblock that has extra checks on metadata, called by vanilla water buckets
 			}
 		}
 
 		return false;
 	}
-	
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		if (!world.isRemote)
+		{
+			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			{
+				int i = mop.blockX;
+				int j = mop.blockY;
+				int k = mop.blockZ;
+				if (!(world.getTileEntity(i, j, k) instanceof IFluidHandler))
+				{
+					switch(mop.sideHit) // Ripped from vanilla ItemBucket and simplified
+					{
+						case 0: --j; break;
+						case 1: ++j; break;
+						case 2: --k; break;
+						case 3: ++k; break;
+						case 4: --i; break;
+						case 5: ++i; break;
+						default: break;
+                    }
+
+					if (world.isAirBlock(i, j, k))
+					{
+						placeWater(world, i, j, k);
+					}
+					PlayerHelper.swingItem(((EntityPlayerMP) player));
+				}
+			}
+		}
+
+		return stack;
+	}
+
+	private void placeWater(World world, int i, int j, int k)
+	{
+		Material material = world.getBlock(i, j, k).getMaterial();
+
+		if (world.provider.isHellWorld)
+		{
+			world.playSoundEffect((double)((float)i + 0.5F), (double)((float)j + 0.5F), (double)((float)k + 0.5F), "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+
+			for (int l = 0; l < 8; ++l)
+			{
+				world.spawnParticle("largesmoke", (double)i + Math.random(), (double)j + Math.random(), (double)k + Math.random(), 0.0D, 0.0D, 0.0D);
+			}
+		}
+		else
+		{
+			if (!world.isRemote && !material.isSolid() && !material.isLiquid())
+			{
+				world.func_147480_a(i, j, k, true);
+			}
+			world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
+		}
+
+	}
+
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
@@ -80,7 +166,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
-				Utils.setPlayerWalkSpeed(player, 0.25F);
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
 		else if (!world.isRemote)
@@ -92,7 +178,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
-				Utils.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
 	}
@@ -110,6 +196,32 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		return false;
 	}
+
+	//Start IFluidContainerItem
+	@Override
+	public FluidStack getFluid(ItemStack container)
+	{
+		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+	}
+
+	@Override
+	public int getCapacity(ItemStack container)
+	{
+		return FluidContainerRegistry.BUCKET_VOLUME;
+	}
+
+	@Override
+	public int fill(ItemStack container, FluidStack resource, boolean doFill)
+	{
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+	{
+		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+	}
+	//End IFluidContainerItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -122,13 +234,15 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyBinds.getExtraFuncKeyCode() >= 0 && KeyBinds.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
 		{
-			list.add("Press " + Keyboard.getKeyName(KeyBinds.getProjectileKeyCode()) + " to fire a water projectile");
+			list.add(String.format(
+					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
 		}
 
-		list.add("Right-click to fill tanks");
-		list.add("All operations are completely free!");
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
+		list.add(StatCollector.translateToLocal("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -165,5 +279,39 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
+		{
+			if (startRainCooldown == 0)
+			{
+				int i = (300 + world.rand.nextInt(600)) * 20;
+				world.getWorldInfo().setRainTime(i);
+				world.getWorldInfo().setThunderTime(i);
+				world.getWorldInfo().setRaining(true);
+
+				startRainCooldown = ProjectEConfig.evertidePedCooldown;
+			}
+			else
+			{
+				startRainCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = Lists.newArrayList();
+		if (ProjectEConfig.evertidePedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+		}
+		return list;
 	}
 }

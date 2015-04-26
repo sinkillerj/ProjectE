@@ -1,15 +1,15 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class NBTWhitelist
 {
-	private static final List<SimpleStack> LIST = new ArrayList<SimpleStack>();
+	private static final List<SimpleStack> LIST = Lists.newArrayList();
 
 	public static boolean register(ItemStack stack)
 	{

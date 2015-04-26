@@ -1,0 +1,299 @@
+item.pe_philosophers_stone.name=Философский камень
+item.pe_alchemical_bag_black.name=Алхимический мешок
+item.pe_alchemical_bag_red.name=Алхимический мешок
+item.pe_alchemical_bag_green.name=Алхимический мешок
+item.pe_alchemical_bag_brown.name=Алхимический мешок
+item.pe_alchemical_bag_blue.name=Алхимический мешок
+item.pe_alchemical_bag_purple.name=Алхимический мешок
+item.pe_alchemical_bag_cyan.name=Алхимический мешок
+item.pe_alchemical_bag_silver.name=Алхимический мешок
+item.pe_alchemical_bag_gray.name=Алхимический мешок
+item.pe_alchemical_bag_pink.name=Алхимический мешок
+item.pe_alchemical_bag_lime.name=Алхимический мешок
+item.pe_alchemical_bag_yellow.name=Алхимический мешок
+item.pe_alchemical_bag_lightBlue.name=Алхимический мешок
+item.pe_alchemical_bag_magenta.name=Алхимический мешок
+item.pe_alchemical_bag_orange.name=Алхимический мешок
+item.pe_alchemical_bag_white.name=Алхимический мешок
+item.pe_repair_talisman.name=Талисман восстановления
+item.pe_klein_star_1.name=Звезда Клейна 1
+item.pe_klein_star_2.name=Звезда Клейна 2
+item.pe_klein_star_3.name=Звезда Клейна 3
+item.pe_klein_star_4.name=Звезда Клейна 4
+item.pe_klein_star_5.name=Звезда Клейна Сфера
+item.pe_klein_star_6.name=Звезда Клейна Омега
+item.pe_fuel_alchemical_coal.name=Алхимический уголь
+item.pe_fuel_mobius.name=Топливо Мёбиуса
+item.pe_fuel_aeternalis.name=Эфирное топливо
+item.pe_covalence_dust_low.name=Слабая ковалентная пыль
+item.pe_covalence_dust_medium.name=Средняя ковалентная пыль
+item.pe_covalence_dust_high.name=Сильная ковалентная пыль
+item.pe_matter_dark.name=Тёмная материя
+item.pe_matter_red.name=Красная материя
+item.pe_ring_iron_band.name=Железное кольцо
+item.pe_black_hole.name=Кольцо чёрной дыры
+item.pe_harvest_god.name=Кольцо богини урожая
+item.pe_archangel_smite.name=Кара Архангела [WIP]
+item.pe_ignition.name=Кольцо воспламенения
+item.pe_body_stone.name=Камень тела
+item.pe_soul_stone.name=Камень души
+item.pe_mind_stone.name=Камень разума
+item.pe_life_stone.name=Камень жизни
+item.pe_evertide_amulet.name=Водяной амулет
+item.pe_volcanite_amulet.name=Вулканический амулет
+item.pe_swrg.name=Кольцо ярости стихии
+item.pe_mercurial_eye.name=Ртутное око
+item.pe_time_watch.name=Часы течения времени
+item.pe_gem_density.name=Драгоценный камень вечной плотности
+item.pe_divining_rod_1.name=Слабая волшебная лоза
+item.pe_divining_rod_2.name=Средняя волшебная лоза
+item.pe_divining_rod_3.name=Сильная волшебная лоза
+item.pe_destruction_catalyst.name=Катализатор разрушения
+item.pe_hyperkinetic_lens.name=Гиперкинетическая линза
+item.pe_catalitic_lens.name=Каталитическая линза
+item.pe_lens_explosive.name=Взрывная линза
+item.pe_water_orb.name=Водяной шар
+item.pe_lava_orb.name=Лавовый шар
+item.pe_randomizer.name=Случайный шар
+item.pe_loot_ball.name=Шар добычи
+item.pe_dm_pick.name=Кирка из тёмной материи
+item.pe_dm_axe.name=Топор из тёмной материи
+item.pe_dm_shovel.name=Лопата из тёмной материи
+item.pe_dm_sword.name=Меч из тёмной материи
+item.pe_dm_hoe.name=Мотыга из тёмной материи
+item.pe_dm_shears.name=Ножницы из тёмной материи
+item.pe_dm_hammer.name=Молот из тёмной материи
+item.pe_rm_pick.name=Кирка из красной материи
+item.pe_rm_axe.name=Топор из красной материи
+item.pe_rm_shovel.name=Лопата из красной материи
+item.pe_rm_sword.name=Меч из красной материи
+item.pe_rm_hoe.name=Мотыга из красной материи
+item.pe_rm_shears.name=Ножницы из красной материи
+item.pe_rm_hammer.name=Молот из красной материи
+item.pe_rm_katar.name=Красный катар
+item.pe_rm_morning_star.name=Красная утренняя звезда
+item.pe_dm_armor_0.name=Шлем из тёмной материи
+item.pe_dm_armor_1.name=Кираса из тёмной материи
+item.pe_dm_armor_2.name=Поножи из тёмной материи
+item.pe_dm_armor_3.name=Ботинки из тёмной материи
+item.pe_rm_armor_0.name=Шлем из красной материи
+item.pe_rm_armor_1.name=Кираса из красной материи
+item.pe_rm_armor_2.name=Поножи из красной материи
+item.pe_rm_armor_3.name=Ботинки из красной материи
+item.pe_gem_armor_0.name=Шлем из драгоценных камней
+item.pe_gem_armor_1.name=Кираса из драгоценных камней
+item.pe_gem_armor_2.name=Поножи из драгоценных камней
+item.pe_gem_armor_3.name=Ботинки из драгоценных камней
+item.pe_arcana_ring.name=Кольцо тайн
+item.pe_zero_ring.name=Кольцо абсолютного нуля
+item.pe_tome.name=Алхимический том
+item.pe_transmutation_tablet.name=Стол трансмутаций
+
+tile.pe_alchemy_chest.name=Алхимический сундук
+tile.pe_interdiction_torch.name=Факел изгнания
+tile.pe_transmutation_stone.name=Стол трансмутаций
+tile.pe_condenser.name=Конденсатор энергии
+tile.pe_condenser_mk2.name=Конденсатор энергии MK2
+tile.pe_rm_furnace.name=Печь из красной материи
+tile.pe_dm_furnace.name=Печь из тёмной материи
+tile.pe_rm_block.name=Блок из красной материи
+tile.pe_dm_block.name=Блок из тёмной материи
+tile.pe_collector_MK1.name=Сборщик энергии MK1
+tile.pe_collector_MK2.name=Сборщик энергии MK2
+tile.pe_collector_MK3.name=Сборщик энергии MK3
+tile.pe_relay_MK1.name=Реле из антиматерии MK1
+tile.pe_relay_MK2.name=Реле из антиматерии MK2
+tile.pe_relay_MK3.name=Реле из антиматерии MK3
+tile.pe_nova_catalyst.name=Катализатор Новы
+tile.pe_nova_cataclysm.name=Катаклизм Новы
+tile.pe_fuel_block_0.name=Блок алхимического угля
+tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
+tile.pe_fuel_block_2.name=Блок эфирного топлива
+tile.pe_dmPedestal.name=Пьедестал из тёмной материи
+
+itemGroup.ProjectE=ProjectE
+
+achievement.phil_stone=Лучший друг алхимиков!
+achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень
+achievement.alch_chest=Улучшение хранилища!
+achievement.alch_chest.desc="Небольшое" улучшение хранилища.
+achievement.alch_bag=Карманное хранилище!
+achievement.alch_bag.desc=Все чудеса алхимического сундука в Вашем кармане.
+achievement.transmutation=Превратите это в это!
+achievement.transmutation.desc=Начало и конец всего.
+achievement.condenser=Уплотнение мира!
+achievement.condenser.desc=БОЛЬШЕ АЛМАЗОВ!
+achievement.collector=Энергия солнца!
+achievement.collector.desc=Теперь начинается самое интересное.
+achievement.relay=Энергия цветов!
+achievement.relay.desc=Соедините сборщики для ещё большей энергии.
+achievement.portable_transmutation=Превращение на ходу!
+achievement.portable_transmutation.desc=И тогда Вы подумали, что ничего лучше быть не может.
+achievement.dark_matter=Вся эта материя.
+achievement.dark_matter.desc=Она выглядит... странно....
+achievement.red_matter=Ещё более улучшенная материя!
+achievement.red_matter.desc=Пространство-временной континуум может быть повреждён.
+achievement.dm_block=Блок материи!
+achievement.dm_block.desc=Объединение материи вместе. Потому что это хорошая идея.
+achievement.rm_block=Красная и блестящая!
+achievement.rm_block.desc=Теперь уже что-то!
+achievement.dm_furnace=Горячая материя!
+achievement.dm_furnace.desc=Печь намного лучше, если она сделана из тёмной материи.
+achievement.rm_furnace=Материя - теперь ещё горячее!
+achievement.rm_furnace.desc=Ничего себе, это вещичка быстра.
+achievement.dm_pick=Применение материи на материи
+achievement.dm_pick.desc=Почему бы и нет?
+achievement.rm_pick=Это безопасно?
+achievement.rm_pick.desc=Скорее всего нет.
+achievement.klein=EMC аккумуляторы
+achievement.klein.desc=Запас EMC на чёрный день.
+achievement.klein_big=Большие EMC аккумуляторы
+achievement.klein_big.desc=Вселенная в Вашем кармане.
+
+pe.archangel.pedestal1=Стреляет стрелами в ближайших мобов
+pe.archangel.pedestal2=Срабатывает каждые %s
+
+pe.bhb.pedestal1=Всасывает лежащие рядом предметы
+pe.bhb.pedestal2=Сбрасывает их в соседние инвентари
+
+pe.body.pedestal1=Восстанавливает голод ближайших игроков
+pe.body.pedestal2=Восстанавливает половинку голода каждые %s
+
+pe.darkpick.mode1=Стандартный
+pe.darkpick.mode2=3x блока в высоту
+pe.darkpick.mode3=3x блока в ширину
+pe.darkpick.mode4=3x блока в длину
+
+pe.divining.avgemc=Средний EMC для %s блоков: %s
+pe.divining.maxemc=Макс. EMC: %s
+pe.divining.secondmax=Второй макс. EMC: %s
+pe.divining.thirdmax=Третий макс. EMC: %s
+
+pe.dmfurnace.shortname=Печь из ТМ
+pe.rmfurnace.shortname=Печь из КМ
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Максимальная скорость генерирования:
+pe.emc.maxoutrate_tooltip=Максимальная скорость выхода:
+pe.emc.maxstorage_tooltip=Максимальное хранилище:
+pe.emc.name=EMC
+pe.emc.rate=EMC/сек
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=Накоплено EMC:
+pe.emc.too_much=СЛИШКОМ МНОГО
+
+pe.evertide.tooltip1=Нажмите %s, чтобы выпустить водный снаряд
+pe.evertide.tooltip2=Работает как бесконечное ведро воды
+pe.evertide.tooltip3=ПКМ, чтобы наполнить резервуары и котлы
+pe.evertide.tooltip4=Все операции ничего не стоят!
+pe.evertide.pedestal1=Вызывает дождь/снег
+pe.evertide.pedestal2=Пытается вызвать дождь каждые %s
+
+pe.gem.disabled=ОТКЛЮЧЕНО
+pe.gem.enabled=ВКЛЮЧЕНО
+pe.gem.nightvision_tooltip=Ночное зрение:
+pe.gem.nightvision.prompt=Нажмите Shift %s, чтобы переключить ночное зрение
+pe.gem.stepassist_tooltip=Помощь в шаге:
+pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в шаге
+
+pe.gemdensity.blacklist=Чёрный список
+pe.gemdensity.mode_switch=Цель установлена на %s
+pe.gemdensity.tooltip1=Уплотняет предметы на ходу
+pe.gemdensity.tooltip2=Текущая цель: %s
+pe.gemdensity.tooltip3=Нажмите %s, чтобы сменить цель
+pe.gemdensity.tooltip4=ПКМ, чтобы установить чёрный/белый список
+pe.gemdensity.tooltip5=Shift-ПКМ, чтобы переключить
+pe.gemdensity.whitelist=Белый список
+
+pe.harvestgod.pedestal1=Ускоряет рост ближайших ростков
+pe.harvestgod.pedestal2=Собирает ближайшие созревшие ростки
+pe.harvestgod.pedestal3=Активируется каждые %s
+
+pe.ignition.pedestal1=Сжигает ближайших мобов
+pe.ignition.pedestal2=Активируется каждые %s
+
+pe.item.mode=Режим
+pe.item.mode_switch=Переключено на режим: %s
+
+pe.katar.mode1=Вырубка
+pe.katar.mode2=Мотыга
+pe.katar.mode3=Стрижка
+pe.katar.mode4=Бой
+
+pe.life.pedestal1=Восстанавливает голод и здоровье
+pe.life.pedestal2=По половинке сердца и голода каждые %s
+
+pe.misc.every_tick=каждый такт
+pe.misc.seconds=секунд(-ы)
+pe.misc.storedxp_tooltip=Накоплено опыта:
+pe.misc.wrenched_block=Wrenched block!
+
+pe.pedestal.item_disabled=Функционал пьедестала отключен!
+pe.pedestal.on_pedestal=На пьедестале:
+pe.pedestal.shortname=Пьедестал из ТМ
+pe.pedestal.tooltip1=Shift-ПКМ, чтобы открыть интерфейс
+pe.pedestal.tooltip2=ПКМ, чтобы активировать!
+
+pe.philstone.mode1=Куб
+pe.philstone.mode2=Панель
+pe.philstone.mode3=Линия
+pe.philstone.tooltip1=Нажмите %s, чтобы открыть сетку создания
+pe.philstone.tooltip2=Работает как ключ для блоков ProjectE
+pe.philstone.tooltip3=Нажатие ЛКМ изменяет ориентацию блока
+pe.philstone.tooltip4=Нажатие Shift-ПКМ поднимет блок
+
+pe.redpick.mode1=Стандартный
+pe.redpick.mode2=3x блока в высоту
+pe.redpick.mode3=3x блока в ширину
+pe.redpick.mode4=3x блока в длину
+
+pe.relay.mk1=Реле MKI
+pe.relay.mk2=Реле MKII
+pe.relay.mk3=Реле MKIII
+
+pe.repairtalisman.pedestal1=Чинит предметы ближайших игроков
+pe.repairtalisman.pedestal2=Восстанавливает 1 прочность каждые %s
+
+pe.server.high_alchemist=Верховный алхимик
+pe.server.has_joined=присоединился к серверу
+
+pe.soul.pedestal1=Лечит ближайших игроков
+pe.soul.pedestal2=По половине сердца каждые %s
+
+pe.swrg.pedestal1=Стреляет молнией в ближайших мобов
+pe.swrg.pedestal2=Активируется каждые %s
+
+pe.timewatch.disabled=Предмет отключен администратором
+pe.timewatch.ff=Перемотка вперёд
+pe.timewatch.mode=Режим контроля времени: %s
+pe.timewatch.mode_switch=Режим контроля времени изменён на: %s
+pe.timewatch.off=Выкл.
+pe.timewatch.rw=Перемотка
+pe.timewatch.tooltip1=Станьте хозяином времени
+pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
+pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
+pe.timewatch.pedestal2=Each tick, nearby mobs move %.3f times the speed
+
+pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
+
+pe.transmutation.already_using=Кто-то уже использует стол трансмутаций!
+pe.transmutation.transmute=Трансмутация
+pe.transmutation.learned0=В
+pe.transmutation.learned1=ы
+pe.transmutation.learned2=у
+pe.transmutation.learned3=ч
+pe.transmutation.learned4=е
+pe.transmutation.learned5=н
+pe.transmutation.learned6=о
+pe.transmutation.learned7=!
+
+pe.volcanite.tooltip1=Нажмите %s, чтобы выпустить лавовый снаряд
+pe.volcanite.tooltip2=Работает как бесконечное полное ведро лавы
+pe.volcanite.tooltip3=ПКМ, чтобы наполнить резервуары
+pe.volcanite.tooltip4=Все операции стоят 32 EMC!
+pe.volcanite.pedestal1=Убирает дождь/снег
+pe.volcanite.pedestal2=Пытается остановить погодные явления каждые %s
+
+pe.zero.pedestal1=Тушит сущностей
+pe.zero.pedestal2=Замораживает окрестности
+pe.zero.pedestal3=Активируется каждые %s

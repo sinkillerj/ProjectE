@@ -4,7 +4,7 @@ import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserInput
 import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserMK2Lock;
 import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserMK2Output;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
-import moze_intel.projecte.utils.Utils;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -69,7 +69,7 @@ public class CondenserMK2Container extends Container
 				return null;
 			}
 		}
-		else if (!Utils.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 42, false))
+		else if (!EMCHelper.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 42, false))
 		{
 			return null;
 		}

@@ -1,11 +1,11 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.FOVUpdateEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.FOVUpdateEvent;
 
 @SideOnly(Side.CLIENT)
 public class FovChangeEvent 

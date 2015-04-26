@@ -1,41 +1,59 @@
 package moze_intel.projecte;
 
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.RecipeMapper;
+import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.TickEvents;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.*;
+import moze_intel.projecte.network.commands.ChangelogCMD;
+import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
+import moze_intel.projecte.network.commands.ReloadEmcCMD;
+import moze_intel.projecte.network.commands.RemoveEmcCMD;
+import moze_intel.projecte.network.commands.ResetEmcCMD;
+import moze_intel.projecte.network.commands.SetEmcCMD;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.GuiHandler;
+import moze_intel.projecte.utils.IMCHandler;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
-{	
+{
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
@@ -47,6 +65,8 @@ public class PECore
 	
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
 	public static CommonProxy proxy;
+
+	public static final List<String> uuids = Lists.newArrayList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -67,8 +87,11 @@ public class PECore
 		PacketHandler.register();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
-		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
-		
+
+		PlayerEvents pe = new PlayerEvents();
+		MinecraftForge.EVENT_BUS.register(pe);
+		FMLCommonHandler.instance().bus().register(pe);
+
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
 		
@@ -83,9 +106,6 @@ public class PECore
 	{
 		proxy.registerKeyBinds();
 		proxy.registerRenderers();
-		
-		Utils.init();
-		NeiHelper.init();
 		AchievementHandler.init();
 	}
 	
@@ -93,7 +113,6 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ObjHandler.registerPhiloStoneSmelting();
-
 		NBTWhitelistParser.readUserData();
 	}
 	
@@ -111,15 +130,21 @@ public class PECore
 		{
 			new ThreadCheckUpdate(true).start();
 		}
-		
+
+		if (!ThreadCheckUUID.hasRunServer())
+		{
+			new ThreadCheckUUID(true).start();
+		}
+
+		long start = System.currentTimeMillis();
+
 		CustomEMCParser.readUserData();
 
 		PELogger.logInfo("Starting server-side EMC mapping.");
-		
-		RecipeMapper.map();
+
 		EMCMapper.map();
-		
-		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values.");
+
+		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 		
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
 		
@@ -174,9 +199,9 @@ public class PECore
 						if (remappedItem != null) mapping.remap(remappedItem);
 					}
 				} catch (Throwable t) {
-					// Yeah I know, silently skipping errors isn't good, but this really shouldn't fail, just adding a safety check ^_^
+					// safety check ^_^
 				}
-        		}
+			}
 		}
 	}
 }

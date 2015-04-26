@@ -2,20 +2,32 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BodyStone extends RingToggle implements IBauble
+public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 {
+	private int healCooldown = 5;
 	public BodyStone() 
 	{
 		super("body_stone");
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -105,5 +117,42 @@ public class BodyStone extends RingToggle implements IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInPedestal(World world, int x, int y, int z)
+	{
+		if (!world.isRemote && ProjectEConfig.bodyPedCooldown != -1)
+		{
+			if (healCooldown == 0)
+			{
+				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
+
+				for (EntityPlayerMP player : players)
+				{
+					player.getFoodStats().addStats(1, 1); // 1/2 shank
+				}
+
+				healCooldown = ProjectEConfig.bodyPedCooldown;
+			}
+			else
+			{
+				healCooldown--;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPedestalDescription()
+	{
+		List<String> list = Lists.newArrayList();
+		if (ProjectEConfig.bodyPedCooldown != -1)
+		{
+			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.body.pedestal1"));
+			list.add(EnumChatFormatting.BLUE + String.format(
+					StatCollector.translateToLocal("pe.body.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown)));
+		}
+		return list;
 	}
 }

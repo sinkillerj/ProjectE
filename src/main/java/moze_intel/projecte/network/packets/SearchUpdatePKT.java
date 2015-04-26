@@ -14,12 +14,14 @@ import net.minecraft.inventory.Container;
 public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
 {
 	private String search;
+	private int searchpage;
 
 	public SearchUpdatePKT() {}
 
-	public SearchUpdatePKT(String search) 
+	public SearchUpdatePKT(String search, int page) 
 	{
 		this.search = search;
+		this.searchpage = page;
 	}
 
 	@Override
@@ -33,12 +35,14 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 			
 			if (pkt.search != null)
 			{
-				tile.filter = pkt.search.toLowerCase();
+				tile.filter = pkt.search;
 			}
 			else
 			{
 				tile.filter = "";
 			}
+
+			tile.searchpage = pkt.searchpage;
 			
 			tile.updateOutputs();
 		}
@@ -48,12 +52,14 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 			
 			if (pkt.search != null)
 			{
-				inv.filter = pkt.search.toLowerCase();
+				inv.filter = pkt.search;
 			}
 			else
 			{
 				inv.filter = "";
 			}
+
+			inv.searchpage = pkt.searchpage;
 			
 			inv.updateOutputs();
 		}
@@ -65,11 +71,13 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	public void fromBytes(ByteBuf buf) 
 	{
 		search = ByteBufUtils.readUTF8String(buf);
+		searchpage = ByteBufUtils.readVarShort(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		ByteBufUtils.writeUTF8String(buf, search);
+		ByteBufUtils.writeVarShort(buf, searchpage);
 	}
 }

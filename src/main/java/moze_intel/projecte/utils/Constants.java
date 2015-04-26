@@ -1,6 +1,8 @@
 package moze_intel.projecte.utils;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import moze_intel.projecte.PECore;
+import net.minecraft.util.ResourceLocation;
 
 public final class Constants 
 {
@@ -10,8 +12,8 @@ public final class Constants
 	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
 	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
 	
-	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F};
-	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304};
+	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
+	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 	
 	public static final int TILE_MAX_EMC = 1073741824;
 	
@@ -52,13 +54,16 @@ public final class Constants
 	public static final int TRANSMUTE_TABLET_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
 	public static final int CONDENSER_MK2_GUI = 16;
-	
+	public static final int PEDESTAL_GUI = 17;
+
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 	
 	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	
+	public static final int PEDESTAL_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static final ResourceLocation PEDESTAL_MODELTEX_LOCATION = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/models/pedestaltexmap.png");
+
 	public static final int MAX_VEIN_SIZE = 250;
 	
 	public static final int ENCH_EMC_BONUS = 5000;

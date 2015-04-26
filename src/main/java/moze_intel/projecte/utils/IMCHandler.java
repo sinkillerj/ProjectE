@@ -1,8 +1,6 @@
 package moze_intel.projecte.utils;
 
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -44,7 +42,7 @@ public final class IMCHandler
 					emc = 0;
 				}
 				
-				if (EMCMapper.addIMCRegistration(stack, emc))
+				/*if (EMCMapper.addIMCRegistration(stack, emc))
 				{
 					PELogger.logInfo("Mod "+ msg.getSender() +" registered and EMC value from IMC message (" + stack + "," + emc + ").");
 				}
@@ -52,7 +50,7 @@ public final class IMCHandler
 				{
 					PELogger.logFatal("Failed to register EMC value from IMC message for: " + stack);
 					PELogger.logFatal("The ItemStack has probably already been registered.");
-				}
+				}*/
 			}
 			else
 			{
@@ -70,7 +68,7 @@ public final class IMCHandler
 				{
 					Class c = Class.forName(s);
 					
-					if (InterdictionTile.addEntityToBlackList(c))
+					if (WorldHelper.blacklistInterdiction(c))
 					{
 						PELogger.logInfo("Mod " + msg.getSender() + " blacklisted the entity " + c.getCanonicalName() + " for interdiction torches.");
 					}

@@ -13,8 +13,8 @@ public final class Comparators
 		@Override
 		public int compare(ItemStack s1, ItemStack s2) 
 		{
-			int emc1 = Utils.getEmcValue(s1);
-			int emc2 = Utils.getEmcValue(s2);
+			int emc1 = EMCHelper.getEmcValue(s1);
+			int emc2 = EMCHelper.getEmcValue(s2);
 			
 			if (emc1 < emc2)
 			{

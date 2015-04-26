@@ -4,8 +4,9 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -39,7 +40,7 @@ public final class Transmutation
 				s.stackSize = 1;
 
 				//Apparently items can still not have EMC if they are in the EMC map.
-				if (Utils.doesItemHaveEmc(s) && Utils.getEmcValue(s) > 0 && !Utils.ContainsItemStack(CACHED_TOME_KNOWLEDGE, s))
+				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{
 					CACHED_TOME_KNOWLEDGE.add(s);
 				}
@@ -64,7 +65,7 @@ public final class Transmutation
 			
 			for (int i = 0; i < list.size(); i++)
 			{
-				if (!Utils.doesItemHaveEmc(list.get(i)))
+				if (!EMCHelper.doesItemHaveEmc(list.get(i)))
 				{
 					list.remove(i);
 				}
@@ -118,7 +119,25 @@ public final class Transmutation
 			IOHandler.markDirty();
 		}
 	}
-	
+
+	public static boolean hasKnowledgeForStack(EntityPlayer player, ItemStack stack)
+	{
+		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
+		{
+			if (s == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static boolean hasFullKnowledge(String username)
 	{
 		return TOME_KNOWLEDGE.contains(username);

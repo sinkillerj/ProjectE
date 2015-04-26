@@ -18,7 +18,8 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 		super(world, x, y, z, placer);
 		this.fuse = 20;
 	}
-	
+
+	// Need exact override to do our own explosion
 	@Override
 	public void onUpdate()
 	{
@@ -48,7 +49,7 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 		else
 			this.worldObj.spawnParticle("smoke", this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 	}
-	
+
 	private void explode()
 	{
 		NovaExplosion explosion = new NovaExplosion(worldObj, this, this.posX, this.posY, this.posZ, 48.0F);

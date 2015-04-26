@@ -1,23 +1,23 @@
 package moze_intel.projecte.gameObjs.items;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 {
 	public HyperkineticLens() 
 	{
-		super("hyperkinetic_lens", (byte) 4);
+		super("hyperkinetic_lens", (byte)3);
+		this.setNoRepair();
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		
 		if (shootProjectile(player, stack))
 		{
-			PacketHandler.sendTo(new SwingItemPKT(), (EntityPlayerMP) player);
+			PlayerHelper.swingItem(((EntityPlayerMP) player));
 		}
 		
 		return stack;
