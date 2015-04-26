@@ -395,49 +395,52 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				continue;
 			}
 			
-			if (tile instanceof ISidedInventory)
+			if (tile != null && tile instanceof ISidedInventory)
 			{
 				ISidedInventory inv = (ISidedInventory) tile;
 				
-				int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[dir.ordinal()]);
-
-				if (slots.length > 0)
+				if (inv != null)
 				{
-					for (int j = outputStorage[0]; j < outputStorage[1]; j++)
+					int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[dir.ordinal()]);
+					
+					if (slots.length > 0)
 					{
-						ItemStack stack = inventory[j];
-
-						if (stack == null)
+						for (int j = outputStorage[0]; j < outputStorage[1]; j++)
 						{
-							continue;
-						}
-
-						for (int k : slots)
-						{
-							if (inv.canInsertItem(k, stack, Facing.oppositeSide[dir.ordinal()]))
+							ItemStack stack = inventory[j];
+							
+							if (stack == null)
 							{
-								ItemStack otherStack = inv.getStackInSlot(k);
-
-								if (otherStack == null)
+								continue;
+							}
+							
+							for (int k : slots)
+							{
+								if (inv.canInsertItem(k, stack, Facing.oppositeSide[dir.ordinal()]))
 								{
-									inv.setInventorySlotContents(k, stack);
-									inventory[j] = null;
-									break;
-								}
-								else if (Utils.areItemStacksEqual(stack, otherStack))
-								{
-									int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
-
-									if (stack.stackSize <= remain)
+									ItemStack otherStack = inv.getStackInSlot(k);
+									
+									if (otherStack == null)
 									{
-										otherStack.stackSize += stack.stackSize;
+										inv.setInventorySlotContents(k, stack);
 										inventory[j] = null;
 										break;
 									}
-									else
+									else if (Utils.areItemStacksEqual(stack, otherStack))
 									{
-										otherStack.stackSize += remain;
-										inventory[j].stackSize -= remain;
+										int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
+										
+										if (stack.stackSize <= remain)
+										{
+											otherStack.stackSize += stack.stackSize;
+											inventory[j] = null;
+											break;
+										}
+										else
+										{
+											otherStack.stackSize += remain;
+											inventory[j].stackSize -= remain;
+										}
 									}
 								}
 							}
