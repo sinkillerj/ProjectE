@@ -2,7 +2,9 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class DarkShovel extends PEToolBase
@@ -28,7 +30,21 @@ public class DarkShovel extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		digAOE(stack, world, player, false, 16);
+		if (world.isRemote)
+		{
+			return stack;
+		}
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+				&& world.getBlock(mop.blockX, mop.blockY, mop.blockZ) == Blocks.gravel)
+		{
+			tryVeinMine(stack, player, mop);
+		}
+		else
+		{
+			digAOE(stack, world, player, false, 0);
+		}
 		return stack;
 	}
 }

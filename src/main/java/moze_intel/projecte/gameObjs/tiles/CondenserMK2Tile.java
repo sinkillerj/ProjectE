@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 public class CondenserMK2Tile extends CondenserTile
 {
@@ -95,6 +94,6 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("tile.pe_condenser_mk2.name");
+		return "tile.pe_condenser_mk2.name";
 	}
 }

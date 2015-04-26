@@ -37,6 +37,10 @@ public abstract class NormalizedSimpleStack {
 		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(item), 0);
 	}
 
+	public static NormalizedSimpleStack getNormalizedSimpleStackFor(Item item, int meta ) {
+		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(item), meta);
+	}
+
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return null;
 		int id = Item.itemRegistry.getIDForObject(stack.getItem());

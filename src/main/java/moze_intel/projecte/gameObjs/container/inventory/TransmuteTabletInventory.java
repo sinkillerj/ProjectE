@@ -15,7 +15,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collections;
@@ -139,13 +138,6 @@ public class TransmuteTabletInventory implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
@@ -173,10 +165,19 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
@@ -188,13 +189,6 @@ public class TransmuteTabletInventory implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (emc < EMCHelper.getEmcValue(stack))
 				{
@@ -216,10 +210,19 @@ public class TransmuteTabletInventory implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
@@ -366,7 +369,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_transmutation_tablet.name");
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override

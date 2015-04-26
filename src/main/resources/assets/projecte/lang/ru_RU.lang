@@ -164,10 +164,10 @@ pe.darkpick.mode2=3x блока в высоту
 pe.darkpick.mode3=3x блока в ширину
 pe.darkpick.mode4=3x блока в длину
 
-pe.divining.avgemc=Средний EMC для %d блоков: %,d
-pe.divining.maxemc=Макс. EMC: %,d
-pe.divining.secondmax=Второй макс. EMC: %,d
-pe.divining.thirdmax=Третий макс. EMC: %,d
+pe.divining.avgemc=Средний EMC для %s блоков: %s
+pe.divining.maxemc=Макс. EMC: %s
+pe.divining.secondmax=Второй макс. EMC: %s
+pe.divining.thirdmax=Третий макс. EMC: %s
 
 pe.dmfurnace.shortname=Печь из ТМ
 pe.rmfurnace.shortname=Печь из КМ

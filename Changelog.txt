@@ -1,3 +1,25 @@
+###Version 1.7.10-PE1.4.5
+* NEW: registerCustomEMC has returned to the API. If a mod sets values maliciously or undesirably it can be blocked in the mapping config
+* NEW: EMC remapping sends a chat message upon completion
+* NEW: Chinese language file updates
+* FIXED: A crash when using the SWRG in a Bauble slot
+* FIXED: Watch of Flowing Time missing localization
+* FIXED: Watch of Flowing obeys doDaylightCycle
+* FIXED: Vein mining mistargeting
+* FIXED: A dupe bug with the Black Hole Band on the pedestal
+* FIXED: Reverted tool costs from 1.4.4. This will be a config option in the future
+
+###Version 1.7.10-PE1.4.4
+* NEW: Transmutation GUI now has pages
+* NEW: Mind Stone can now absorb nearby XP while on a pedestal
+* NEW: Ignition Ring can ignite TNT
+* FIXED: The amount of Covalence Dust needed for item repair is more in line with EE2
+* FIXED: EMC remapping thread should now work properly
+* FIXED: Possible block deletion issue with fluid amulets
+* FIXED: Possible fix for a issue preventing localization during server play
+* CHANGE: A large code refactor has taken place. This should be largely unnoticeable in gameplay but please report discrepancies
+* CHANGE: Harvest Goddess Band works on plant life. Watch of Flowing Time works on everything else. Please report discrepancies
+
 ###Version 1.7.10-PE1.4.3.1
 * FIXED: Reverted EMC mapping thread change till it can be fixed
 
@@ -205,7 +227,6 @@
 * NEW: Philosopher's stone AOE higlight
 * NEW: /projecte changelog command
 * NEW: /projecte reloadcfg (allows for editing custom EMC values without reloading the world)
-
 * FIX: Optimized Update Checker
 * FIX: Tool silk-touch enchantment
 * FIX: Transmutation table dupe bug
@@ -215,23 +236,18 @@
 * FIX: Incorrect Thread starting. Sorry for that one.
 
 ###Version Alpha 0.1d
-
 * NEW: Update checker
 * NEW: Added reverse recipes for matter/fuel blocks
 * NEW: zh_CN.lang
-
 * FIX: Transmutation table knowledge reset on player death
 * FIX: Fuel mapping initialization 
 
 ###Version Alpha 0.1c
-
 * FIX: Major client-packet leak
 
 ###Version Alpha 0.1b
-
 * NEW: custom EMC mapping file
 * NEW: basic configuration file
-
 * FIX: Fixed Transmutation Table knowledge saving/syncing
 * FIX: Fixed Katar right click bug
 * FIX: Fixed bug with auto-step assist
