@@ -19,7 +19,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collections;
@@ -130,13 +129,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (EMCHelper.getEmcValue(stack) > reqEmc)
 				{
@@ -164,10 +156,19 @@ public class TransmuteTile extends TileEmc implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
@@ -179,13 +180,6 @@ public class TransmuteTile extends TileEmc implements IInventory
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
-
-				if (pagecounter < (searchpage * 12))
-				{
-					pagecounter++;
-					iter.remove();
-					continue;
-				}
 				
 				if (this.getStoredEmc() < EMCHelper.getEmcValue(stack))
 				{
@@ -207,10 +201,19 @@ public class TransmuteTile extends TileEmc implements IInventory
 				if (displayName == null)
 				{
 					iter.remove();
+					continue;
 				}
 				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
 				{
 					iter.remove();
+					continue;
+				}
+
+				if (pagecounter < (searchpage * 12))
+				{
+					pagecounter++;
+					iter.remove();
+					continue;
 				}
 			}
 		}
@@ -400,7 +403,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("tile.pe_transmutation_stone.name");
+		return "tile.pe_transmutation_stone.name";
 	}
 
 	@Override

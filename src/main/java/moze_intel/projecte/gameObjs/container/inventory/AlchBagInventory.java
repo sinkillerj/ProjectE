@@ -4,7 +4,6 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 public class AlchBagInventory implements IInventory
 {
@@ -81,7 +80,7 @@ public class AlchBagInventory implements IInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return StatCollector.translateToLocal("item.pe_alchemical_bag_white.name");
+		return "item.pe_alchemical_bag_white.name";
 	}
 
 	@Override

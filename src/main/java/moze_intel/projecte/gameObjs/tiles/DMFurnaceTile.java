@@ -8,7 +8,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.StatCollector;
 
 public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedInventory
 {
@@ -72,6 +71,6 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 	@Override
 	public String getInventoryName()
 	{
-		return StatCollector.translateToLocal("pe.dmfurnace.shortname");
+		return "pe.dmfurnace.shortname";
 	}
 }

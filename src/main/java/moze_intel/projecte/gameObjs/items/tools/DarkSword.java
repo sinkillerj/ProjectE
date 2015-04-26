@@ -75,6 +75,6 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 64);
+		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
 	}
 }

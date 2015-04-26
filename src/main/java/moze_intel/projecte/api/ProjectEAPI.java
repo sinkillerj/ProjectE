@@ -10,6 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public final class ProjectEAPI
 {
+	public static interface IRegisterCustomEMC {
+		public void registerCustomEMC(ItemStack stack, int emcValue);
+	}
 	/**
 	 * Register an EMC value for the specified itemstack.<br>
 	 * If the emcValue is <= 0, then the ItemStack will be blacklisted from any EMC mapping.<br>
@@ -19,11 +22,13 @@ public final class ProjectEAPI
 	 */
 	public static void registerCustomEMC(ItemStack stack, int emcValue)
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
-		stack.writeToNBT(nbt);
-		nbt.setInteger("EMC", emcValue);
-		
-		FMLInterModComms.sendMessage("ProjectE", "registeremc", nbt);
+		try {
+			Class<?> clazz = Class.forName("moze_intel.projecte.emc.mappers.APICustomEMCMapper");
+			IRegisterCustomEMC instance = (IRegisterCustomEMC)clazz.getField("instance").get(null);
+			instance.registerCustomEMC(stack, emcValue);
+		} catch (Throwable t) {
+
+		}
 	}
 
 	/**

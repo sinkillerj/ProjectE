@@ -23,7 +23,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -154,20 +154,20 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		return stack;
 	}
 	
-	private String getTargetDesciption(ItemStack stack)
+	private String getTargetName(ItemStack stack)
 	{
 		switch(stack.stackTagCompound.getByte("Target"))
 		{
 			case 0:
-				return StatCollector.translateToLocal("item.ingotIron.name");
+				return "item.ingotIron.name";
 			case 1:
-				return StatCollector.translateToLocal("item.ingotGold.name");
+				return "item.ingotGold.name";
 			case 2:
-				return StatCollector.translateToLocal("item.diamond.name");
+				return "item.diamond.name";
 			case 3:
-				return StatCollector.translateToLocal("item.pe_matter_dark.name");
+				return "item.pe_matter_dark.name";
 			case 4:
-				return StatCollector.translateToLocal("item.pe_matter_red.name");
+				return "item.pe_matter_red.name";
 			default:
 				return "INVALID";
 		}
@@ -315,8 +315,8 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentText(
-				String.format(StatCollector.translateToLocal("pe.gemdensity.mode_switch"), getTargetDesciption(stack))));
+		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch")
+				.appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
 	}
 	
 	@Override
@@ -327,7 +327,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetDesciption(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
 		}
 		
 		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
