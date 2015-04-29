@@ -195,10 +195,10 @@ pe.darkpick.mode2=3x Tallshot
 pe.darkpick.mode3=3x Wideshot
 pe.darkpick.mode4=3x Longshot
 
-pe.divining.avgemc=Durchschnitts-EMC für %d Blöcke: %,d
-pe.divining.maxemc=Höchste EMC: %,d
-pe.divining.secondmax=Zweithöchste EMC: %,d
-pe.divining.thirdmax=Dritthöchste EMC: %,d
+pe.divining.avgemc=Durchschnitts-EMC für %s Blöcke: %s
+pe.divining.maxemc=Höchste EMC: %s
+pe.divining.secondmax=Zweithöchste EMC: %s
+pe.divining.thirdmax=Dritthöchste EMC: %s
 
 pe.dmfurnace.shortname=DM-Ofen
 pe.rmfurnace.shortname=RM-Ofen
@@ -252,12 +252,12 @@ pe.katar.mode2=Alle töten
 pe.life.pedestal1=Stellt Hunger und Lebensenergie wieder her
 pe.life.pedestal2=Ein halbes Herz und eine halbe Hungerkeule jede %s
 
-pe.mind.pedestal1=Saugt nahe XP-Kugel in den Stein der Gedanken
+pe.mind.pedestal1=Saugt nahe XP-Kugeln in den Stein der Gedanken
 
 pe.misc.every_tick=jeden Tick
 pe.misc.seconds=Sekunden
 pe.misc.storedxp_tooltip=Gespeicherte XP:
-pe.misc.wrenched_block=Block wurde gewrenched!
+pe.misc.wrenched_block=Ausrichtung des Blocks wurde geändert!
 
 pe.morningstar.mode1=Standard
 pe.morningstar.mode2=3x Tallshot
