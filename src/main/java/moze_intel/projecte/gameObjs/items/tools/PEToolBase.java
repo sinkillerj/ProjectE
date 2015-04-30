@@ -7,9 +7,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -565,5 +567,35 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
+	}
+
+	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player) {
+		if (!player.worldObj.isRemote)
+		{
+			return;
+		}
+		int offset = this.getCharge(stack) + 3;
+		AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
+		//CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
+		List<ItemStack> drops = new ArrayList();
+		World world = player.worldObj;
+
+		for (int x = (int) box.minX; x <= box.maxX; x++)
+			for (int y = (int) box.minY; y <= box.maxY; y++)
+				for (int z = (int) box.minZ; z <= box.maxZ; z++)
+				{
+					Block block = world.getBlock(x, y, z);
+
+					if (ItemHelper.isOre(block) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+					{
+						WorldHelper.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
+					}
+				}
+
+		if (!drops.isEmpty())
+		{
+			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ );
+			PlayerHelper.swingItem((EntityPlayerMP)player);
+		}
 	}
 }

@@ -50,6 +50,7 @@ public final class ProjectEConfig
 	public static int timePedBonus;
 	public static float timePedMobSlowness;
 	public static boolean interdictionMode;
+	public static boolean pickaxeAoeVeinMining;
 
 	public static void init(File configFile)
 	{
@@ -123,6 +124,7 @@ public final class ProjectEConfig
 			timePedMobSlowness = config.getFloat("timePedMobSlowness", "effects", 0.10F, 0.0F, 1.0F, "Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.");
 			interdictionMode = config.getBoolean("interdictionMode", "effects", true, "If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.");
 
+			pickaxeAoeVeinMining = config.getBoolean("pickaxeAoeVeinMining", "items", false, "Instead of vein mining the ore you right click with your Dark/Red Matter Pick it vein mines all ores in an AOE around you like it did in ProjectE before version 1.4.4.");
 			PELogger.logInfo("Loaded configuration file.");
 		}
 		catch (Exception e)
