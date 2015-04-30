@@ -582,7 +582,7 @@ public abstract class PEToolBase extends ItemMode
 		int offset = this.getCharge(stack) + 3;
 		AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
 		//CoordinateBox box = new CoordinateBox(player.posX - offset, player.posY - offset, player.posZ - offset, player.posX + offset, player.posY + offset, player.posZ + offset);
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = Lists.newArrayList();
 		World world = player.worldObj;
 
 		for (int x = (int) box.minX; x <= box.maxX; x++)
