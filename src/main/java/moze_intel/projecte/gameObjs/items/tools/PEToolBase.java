@@ -569,6 +569,11 @@ public abstract class PEToolBase extends ItemMode
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
 	}
 
+
+	/**
+	 * Mines all ore veins in a Box around the player.
+	 * Based on https://github.com/sinkillerj/ProjectE/blob/5f3734769483ee00fa6dce2fa2c96c4b18aaa218/src/main/java/moze_intel/projecte/gameObjs/items/tools/DarkPickaxe.java#L149-L172
+	 */
 	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player) {
 		if (!player.worldObj.isRemote)
 		{
