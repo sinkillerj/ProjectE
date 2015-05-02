@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.EnumArmorType;
+import moze_intel.projecte.utils.NovaExplosion;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class GemChest extends GemArmor
+public class GemChest extends GemArmorBase
 {
     public GemChest()
     {
@@ -67,5 +68,14 @@ public class GemChest extends GemArmor
                 PlayerChecks.addPlayerFireChecks(playerMP);
             }
         }
+    }
+
+    public static void doExplode(EntityPlayer player)
+    {
+        NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
+        explosion.isFlaming = true;
+        explosion.isSmoking = true;
+        explosion.doExplosionA();
+        explosion.doExplosionB(true);
     }
 }

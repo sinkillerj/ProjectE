@@ -13,11 +13,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
 
-public abstract class GemArmor extends ItemArmor implements ISpecialArmor
+public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {
 	private final EnumArmorType armorPiece;
 
-	public GemArmor(EnumArmorType armorType)
+	public GemArmorBase(EnumArmorType armorType)
 	{
 		super(ArmorMaterial.DIAMOND, 0, armorType.ordinal());
 		this.setCreativeTab(ObjHandler.cTab);
@@ -31,7 +31,7 @@ public abstract class GemArmor extends ItemArmor implements ISpecialArmor
 	{
 		for (ItemStack i : player.inventory.armorInventory)
 		{
-			if (!(i.getItem() instanceof GemArmor))
+			if (!(i.getItem() instanceof GemArmorBase))
 			{
 				return false;
 			}
@@ -42,7 +42,7 @@ public abstract class GemArmor extends ItemArmor implements ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		EnumArmorType type = ((GemArmor) armor.getItem()).armorPiece;
+		EnumArmorType type = ((GemArmorBase) armor.getItem()).armorPiece;
 		if (source.isExplosion())
 		{
 			return new ArmorProperties(1, 1.0D, 750);
@@ -64,7 +64,7 @@ public abstract class GemArmor extends ItemArmor implements ISpecialArmor
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
 	{
-		EnumArmorType type = ((GemArmor) armor.getItem()).armorPiece;
+		EnumArmorType type = ((GemArmorBase) armor.getItem()).armorPiece;
 		return (type == EnumArmorType.HEAD || type == EnumArmorType.FEET) ? 4 : 6;
 	}
 

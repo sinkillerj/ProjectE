@@ -17,7 +17,7 @@ public class FovChangeEvent
 		
 		if (legs != null && legs.getItem() == ObjHandler.gemLegs)
 		{
-			event.newfov -= 0.5f;
+			//event.newfov -= 0.5f;
 		}
 	}
 }

@@ -3,12 +3,13 @@ package moze_intel.projecte.utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 public class Coordinates
 {
-	public int x;
-	public int y;
-	public int z;
+	public final int x;
+	public final int y;
+	public final int z;
 	
 	public Coordinates(int x, int y, int z)
 	{
@@ -61,5 +62,18 @@ public class Coordinates
 		Coordinates c = (Coordinates) other;
 		
 		return (x == c.x && y == c.y && z == c.z);
+	}
+
+	public Coordinates lowerToGround(World world)
+	{
+		int xCoord = x;
+		int yCoord = y;
+		int zCoord = z;
+
+		while (world.isAirBlock(xCoord, yCoord, zCoord))
+		{
+			yCoord--;
+		}
+		return new Coordinates(xCoord, yCoord, zCoord);
 	}
 }

@@ -10,17 +10,16 @@ import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.utils.NovaExplosion;
 import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 
 public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMessage>
 {
@@ -66,19 +65,12 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 			ItemStack[] armor = player.inventory.armorInventory;
 			if (armor[2] != null && armor[2].getItem() == ObjHandler.gemChest && message.key == PEKeyBind.EXTRA_FUNCTION)
 			{
-				NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
-				explosion.isFlaming = true;
-				explosion.isSmoking = true;
-				explosion.doExplosionA();
-				explosion.doExplosionB(true);
+				GemChest.doExplode(player);
 			}
 			if (armor[3] != null && armor[3].getItem() == ObjHandler.gemHelmet && message.key == PEKeyBind.FIRE_PROJECTILE)
 			{
-				//Todo: Shoot lightning where the player is looking. Whoever implements the "where am I looking code" could also do the void ring as well.
+				GemHelmet.doZap(player);
 			}
-
-
-
 			return null;
 		}
 		

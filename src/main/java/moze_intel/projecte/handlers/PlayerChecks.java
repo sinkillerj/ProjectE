@@ -2,7 +2,8 @@ package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -289,6 +290,6 @@ public final class PlayerChecks
 	{
 		ItemStack boots = player.getCurrentArmor(0);
 		
-		return (boots != null && boots.getItem() == ObjHandler.gemFeet && GemArmor.GemFeet.isStepAssistEnabled(boots));
+		return (boots != null && boots.getItem() == ObjHandler.gemFeet && GemFeet.isStepAssistEnabled(boots));
 	}
 }

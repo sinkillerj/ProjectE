@@ -50,7 +50,6 @@ import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.items.TransmutationTablet;
 import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
 import moze_intel.projecte.gameObjs.items.armor.DMArmor;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;

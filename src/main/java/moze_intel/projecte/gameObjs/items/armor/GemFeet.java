@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.EnumArmorType;
@@ -22,7 +21,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class GemFeet extends GemArmor
+public class GemFeet extends GemArmorBase
 {
     public GemFeet()
     {

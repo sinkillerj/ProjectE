@@ -10,6 +10,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -89,6 +90,23 @@ public final class WorldHelper
 			return;
 		}
 		world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
+	}
+
+	/**
+	 * Performs a nova explosion at position's coordinates.
+	 */
+	public static void createNovaExplosionAtEntity(EntityLivingBase exploder, Entity position, float strength)
+	{
+		if (position == null)
+		{
+			return;
+		}
+
+		NovaExplosion explosion = new NovaExplosion(position.worldObj, exploder, position.posX, position.posY, position.posZ, strength);
+		explosion.isFlaming = true;
+		explosion.isSmoking = true;
+		explosion.doExplosionA();
+		explosion.doExplosionB(true);
 	}
 
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)

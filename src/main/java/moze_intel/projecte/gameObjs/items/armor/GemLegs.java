@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class GemLegs extends GemArmor
+public class GemLegs extends GemArmorBase
 {
     public GemLegs()
     {

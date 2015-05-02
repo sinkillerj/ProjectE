@@ -5,10 +5,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
+import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.PEKeyBind;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -18,6 +21,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
@@ -26,7 +31,7 @@ import thaumcraft.api.nodes.IRevealer;
 import java.util.List;
 
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
-public class GemHelmet extends GemArmor implements IGoggles, IRevealer
+public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 {
     public GemHelmet()
     {
@@ -148,5 +153,14 @@ public class GemHelmet extends GemArmor implements IGoggles, IRevealer
     public boolean showNodes(ItemStack stack, EntityLivingBase player)
     {
         return true;
+    }
+
+    public static void doZap(EntityPlayer player)
+    {
+        Coordinates strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
+        if (strikePos != null)
+        {
+            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.x, strikePos.y, strikePos.z));
+        }
     }
 }
