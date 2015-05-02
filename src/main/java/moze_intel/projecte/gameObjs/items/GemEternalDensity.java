@@ -12,7 +12,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -329,10 +329,10 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		{
 			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
 		}
-		
-		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
+		int keyCode = PEKeyBind.MODE.keyCode;
+		if (keyCode >= 0 && keyCode < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyHelper.getModeKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(keyCode)));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));

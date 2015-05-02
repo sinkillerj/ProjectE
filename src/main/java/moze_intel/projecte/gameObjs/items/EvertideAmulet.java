@@ -12,7 +12,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -234,10 +234,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		int keyCode = PEKeyBind.FIRE_PROJECTILE.keyCode;
+		if (keyCode >= 0 && keyCode < Keyboard.getKeyCount())
 		{
 			list.add(String.format(
-					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
+					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(keyCode)));
 		}
 
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));

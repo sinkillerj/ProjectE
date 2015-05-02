@@ -1,11 +1,14 @@
 package moze_intel.projecte.utils;
 
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 /**
  * Helper class for player-related methods.
@@ -13,6 +16,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
  */
 public final class PlayerHelper
 {
+	public static void enableFlight(EntityPlayerMP playerMP)
+	{
+		if (playerMP.capabilities.isCreativeMode)
+		{
+			return;
+		}
+
+		updateClientFlight(playerMP, true);
+		PlayerChecks.addPlayerFlyChecks(playerMP);
+	}
+
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{
 		ReflectionHelper.setEntityFireImmunity(player, value);

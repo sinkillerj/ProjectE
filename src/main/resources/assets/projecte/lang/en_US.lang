@@ -222,6 +222,12 @@ pe.evertide.pedestal2=Attempts to start rain every %s
 
 pe.gem.disabled=DISABLED
 pe.gem.enabled=ENABLED
+
+pe.gem.helm.lorename=Abyss Helmet
+pe.gem.chest.lorename=Infernal Armor
+pe.gem.legs.lorename=Gravity Greaves
+pe.gem.feet.lorename=Hurricane Boots
+
 pe.gem.nightvision_tooltip=Night Vision:
 pe.gem.nightvision.prompt=Press Shift %s to toggle Night Vision
 pe.gem.stepassist_tooltip=Step Assist:

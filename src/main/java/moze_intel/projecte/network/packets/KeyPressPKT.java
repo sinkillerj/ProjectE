@@ -9,20 +9,26 @@ import moze_intel.projecte.api.IItemCharge;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.armor.GemArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
+import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
+import moze_intel.projecte.utils.NovaExplosion;
+import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMessage>
 {
-	//Not actually the key code, but the index of the keybind in the array!
-	private int key;
+	private PEKeyBind key;
 	
 	public KeyPressPKT() {}
 	
-	public KeyPressPKT(int key)
+	public KeyPressPKT(PEKeyBind key)
 	{
 		this.key = key;
 	}
@@ -33,7 +39,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 		EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 		ItemStack stack = player.getHeldItem();
 		
-		if (message.key == 4)
+		if (message.key == PEKeyBind.ARMOR_TOGGLE)
 		{
 			if (player.isSneaking())
 			{
@@ -41,7 +47,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 				
 				if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
 				{
-					GemArmor.toggleNightVision(helm, player);
+					GemHelmet.toggleNightVision(helm, player);
 				}
 			}
 			else
@@ -50,34 +56,50 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 			
 				if (boots != null && boots.getItem() == ObjHandler.gemFeet)
 				{
-					GemArmor.toggleStepAssist(boots, player);
+					GemFeet.toggleStepAssist(boots, player);
 				}
 			}
 		}
 		
-		if (stack == null)
+		if (stack == null || !(stack.getItem() instanceof ItemPE))
 		{
+			ItemStack[] armor = player.inventory.armorInventory;
+			if (armor[2] != null && armor[2].getItem() == ObjHandler.gemChest && message.key == PEKeyBind.EXTRA_FUNCTION)
+			{
+				NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
+				explosion.isFlaming = true;
+				explosion.isSmoking = true;
+				explosion.doExplosionA();
+				explosion.doExplosionB(true);
+			}
+			if (armor[3] != null && armor[3].getItem() == ObjHandler.gemHelmet && message.key == PEKeyBind.FIRE_PROJECTILE)
+			{
+				//Todo: Shoot lightning where the player is looking. Whoever implements the "where am I looking code" could also do the void ring as well.
+			}
+
+
+
 			return null;
 		}
 		
 		Item item = stack.getItem();
 		
-		if (message.key == 0 && item instanceof IItemCharge)
+		if (message.key == PEKeyBind.CHARGE && item instanceof IItemCharge)
 		{
 			((IItemCharge) item).changeCharge(player, stack);
 		}
-		else if (message.key == 1 && item instanceof IModeChanger)
+		else if (message.key == PEKeyBind.MODE && item instanceof IModeChanger)
 		{
 			((IModeChanger) item).changeMode(player, stack);
 		}
-		else if (message.key == 2 && item instanceof IProjectileShooter)
+		else if (message.key == PEKeyBind.FIRE_PROJECTILE && item instanceof IProjectileShooter)
 		{
 			if (((IProjectileShooter) item).shootProjectile(player, stack))
 			{
 				PlayerHelper.swingItem((player));
 			}
 		}
-		else if (message.key == 3 && item instanceof IExtraFunction)
+		else if (message.key == PEKeyBind.EXTRA_FUNCTION && item instanceof IExtraFunction)
 		{
 			((IExtraFunction) item).doExtraFunction(stack, player);
 		}
@@ -88,12 +110,12 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		key = buf.readInt();
+		key = PEKeyBind.values()[buf.readInt()];
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(key);
+		buf.writeInt(key.ordinal());
 	}
 }

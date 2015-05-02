@@ -6,7 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KeyPressPKT;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeyBind;
 
 @SideOnly(Side.CLIENT)
 public class KeyPressEvent 
@@ -14,11 +14,11 @@ public class KeyPressEvent
 	@SubscribeEvent
 	public void keyPress(KeyInputEvent event)
 	{
-		for (int i = 0; i < KeyHelper.array.length; i++)
+		for (PEKeyBind k : PEKeyBind.values())
 		{
-			if (KeyHelper.isPressed(i))
+			if (k.mcKeyBinding.isPressed())
 			{
-				PacketHandler.sendToServer(new KeyPressPKT(i));
+				PacketHandler.sendToServer(new KeyPressPKT(k));
 			}
 		}
 	}

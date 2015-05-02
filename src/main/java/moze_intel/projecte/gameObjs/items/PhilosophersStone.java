@@ -14,7 +14,7 @@ import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -290,9 +290,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
+		int keyCode = PEKeyBind.EXTRA_FUNCTION.keyCode;
+		if (keyCode >= 0 && keyCode < Keyboard.getKeyCount())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyHelper.getExtraFuncKeyCode())));
+			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(keyCode)));
 		}
 		
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));

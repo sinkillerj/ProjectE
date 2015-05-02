@@ -29,7 +29,7 @@ import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeyBind;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -39,9 +39,9 @@ public class ClientProxy extends CommonProxy
 {	
 	public void registerKeyBinds()
 	{
-		for (int i = 0; i < KeyHelper.array.length; i++)
+		for (PEKeyBind k : PEKeyBind.values())
 		{
-			ClientRegistry.registerKeyBinding(KeyHelper.array[i]);
+			ClientRegistry.registerKeyBinding(k.mcKeyBinding);
 		}
 	}
 

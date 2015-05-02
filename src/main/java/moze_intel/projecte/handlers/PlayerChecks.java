@@ -289,6 +289,6 @@ public final class PlayerChecks
 	{
 		ItemStack boots = player.getCurrentArmor(0);
 		
-		return (boots != null && boots.getItem() == ObjHandler.gemFeet && GemArmor.isStepAssistEnabled(boots));
+		return (boots != null && boots.getItem() == ObjHandler.gemFeet && GemArmor.GemFeet.isStepAssistEnabled(boots));
 	}
 }
