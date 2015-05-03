@@ -57,6 +57,7 @@ public class EntityLootBall extends Entity
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
 		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		ItemHelper.compactItemList(items);
 	}
 	
 	public List<ItemStack> getItemList()
@@ -106,18 +107,34 @@ public class EntityLootBall extends Entity
 		
 		if (!this.worldObj.isRemote)
 		{
-			if (age > lifespan)
+			if (age > lifespan || items.isEmpty())
 			{
 				this.setDead();
 			}
-			
-			if (this.items.isEmpty())
+			if (ticksExisted % 60 == 0 && !isDead)
 			{
-				this.setDead();
+				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
+				for (EntityLootBall e : nearby)
+				{
+					mergeWith(e);
+				}
 			}
+
 		}
 	}
-	
+
+	public void mergeWith(EntityLootBall other)
+	{
+		if (other == this)
+		{
+			return;
+		}
+		other.setDead();
+		items.addAll(Lists.newArrayList(other.getItemList()));
+		other.getItemList().clear();
+		ItemHelper.compactItemList(items);
+	}
+
 	@Override
 	public void onCollideWithPlayer(EntityPlayer player)
 	{
