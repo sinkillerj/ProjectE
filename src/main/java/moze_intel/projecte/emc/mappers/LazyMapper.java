@@ -49,7 +49,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 				continue;
 			}
 
-			addMapping(new ItemStack(Blocks.double_plant, 1, i), 16);
+			addMapping(new ItemStack(Blocks.double_plant, 1, i), 32);
 		}
 
 		addMapping(new ItemStack(Blocks.yellow_flower), 16);
