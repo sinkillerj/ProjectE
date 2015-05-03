@@ -1,9 +1,12 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Multimap;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -31,13 +34,6 @@ public class DarkHammer extends PEToolBase
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
-	{
-		attackWithCharge(stack, damaged, damager, HAMMER_BASE_ATTACK);
-		return true;
-	}
-
-	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		digAOE(stack, world, player, true, 0);
@@ -53,5 +49,16 @@ public class DarkHammer extends PEToolBase
 		}
 		
 		return super.getDigSpeed(stack, block, metadata);
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack)
+	{
+		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		float damage = HAMMER_BASE_ATTACK + charge;
+
+		Multimap multimap = super.getAttributeModifiers(stack);
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
+		return multimap;
 	}
 }
