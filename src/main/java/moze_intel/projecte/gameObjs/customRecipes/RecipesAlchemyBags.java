@@ -52,7 +52,7 @@ public class RecipesAlchemyBags implements IRecipe
 		
 		if (foundBag && foundDye)
 		{
-			if (bag.getMetadata() != 0 && dye.getMetadata() == 15)
+			if (bag.getItemDamage() != 0 && dye.getItemDamage() == 15)
 			{
 				output = new ItemStack(ObjHandler.alchBag, 1, 0);
 
@@ -63,9 +63,9 @@ public class RecipesAlchemyBags implements IRecipe
 
 				return true;
 			}
-			else if (bag.getMetadata() == 0 && dye.getMetadata() != 15)
+			else if (bag.getItemDamage() == 0 && dye.getItemDamage() != 15)
 			{
-				output = new ItemStack(ObjHandler.alchBag, 1, 15 - dye.getMetadata());
+				output = new ItemStack(ObjHandler.alchBag, 1, 15 - dye.getItemDamage());
 
 				if (bag.hasTagCompound())
 				{

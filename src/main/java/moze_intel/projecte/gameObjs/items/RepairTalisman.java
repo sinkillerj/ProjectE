@@ -81,9 +81,9 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 				continue;
 			}
 
-			if (!invStack.getHasSubtypes() && invStack.getMaxDurability() != 0 && invStack.getMetadata() > 0)
+			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 			{
-				invStack.setMetadata(invStack.getMetadata() - 1);
+				invStack.setItemDamage(invStack.getItemDamage() - 1);
 			}
 		}
 	}

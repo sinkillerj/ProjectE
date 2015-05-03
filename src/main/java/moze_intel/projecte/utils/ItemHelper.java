@@ -32,17 +32,17 @@ public final class ItemHelper
 		}
 
 
-		if (stack1.getMetadata() == OreDictionary.WILDCARD_VALUE || stack2.getMetadata() == OreDictionary.WILDCARD_VALUE)
+		if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 		{
 			return true;
 		}
 
-		return stack1.getMetadata() == stack2.getMetadata();
+		return stack1.getItemDamage() == stack2.getItemDamage();
 	}
 
 	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
-		return (stack1.getItem() == stack2.getItem()) && (stack1.getMetadata() == stack2.getMetadata());
+		return (stack1.getItem() == stack2.getItem()) && (stack1.getItemDamage() == stack2.getItemDamage());
 	}
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
@@ -60,7 +60,7 @@ public final class ItemHelper
 
 			if (stack.getItem().equals(toSearch.getItem()))
 			{
-				if( !stack.getHasSubtypes() || stack.getMetadata() == toSearch.getMetadata())
+				if( !stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
 				{
 					return true;
 				}
@@ -80,7 +80,7 @@ public final class ItemHelper
 
 			if (stack.getItem() == toSearch.getItem())
 			{
-				if (!stack.getHasSubtypes() || stack.getMetadata() == toSearch.getMetadata())
+				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
 				{
 					return true;
 				}
@@ -114,12 +114,12 @@ public final class ItemHelper
 				continue;
 			}
 
-			if (stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
+			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
 				List<ItemStack> list = Lists.newArrayList();
 
 				ItemStack copy = stack.copy();
-				copy.setMetadata(0);
+				copy.setItemDamage(0);
 
 				list.add(copy.copy());
 
@@ -129,7 +129,7 @@ public final class ItemHelper
 				{
 					try
 					{
-						copy.setMetadata(i);
+						copy.setItemDamage(i);
 
 						if (copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName))
 						{
@@ -150,7 +150,7 @@ public final class ItemHelper
 
 					if (i == 128)
 					{
-						copy.setMetadata(0);
+						copy.setItemDamage(0);
 						result.add(copy);
 					}
 				}

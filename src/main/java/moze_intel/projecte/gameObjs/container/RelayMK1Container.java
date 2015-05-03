@@ -16,7 +16,7 @@ public class RelayMK1Container extends Container
 	public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay)
 	{
 		this.tile = relay;
-		tile.openChest();
+		tile.openInventory();
 		
 		//Klein Star charge slot
 		this.addSlotToContainer(new SlotRelayInput(tile, 0, 67, 43));
@@ -43,7 +43,7 @@ public class RelayMK1Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeChest();
+		tile.closeInventory();
 	}
 	
 	@Override

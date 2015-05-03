@@ -134,7 +134,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 
 	@Override
-	public boolean isCustomInventoryName()
+	public boolean hasCustomInventoryName() 
 	{
 		return false;
 	}
@@ -229,14 +229,14 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 	
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 		++numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
 	}
 	
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 		--numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);

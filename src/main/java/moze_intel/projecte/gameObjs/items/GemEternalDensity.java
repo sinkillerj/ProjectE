@@ -67,7 +67,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	
 	public static void condense(ItemStack gem, ItemStack[] inv)
 	{
-		if (gem.getMetadata() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
+		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
 			return;
 		}
@@ -128,7 +128,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		{
 			if (player.isSneaking())
 			{
-				if (stack.getMetadata() == 1)
+				if (stack.getItemDamage() == 1)
 				{
 					List<ItemStack> items = getItems(stack);
 					
@@ -140,11 +140,11 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 						ItemPE.setEmc(stack, 0);
 					}
 					
-					stack.setMetadata(0);
+					stack.setItemDamage(0);
 				}
 				else
 				{
-					stack.setMetadata(1);
+					stack.setItemDamage(1);
 				}
 			}
 			else

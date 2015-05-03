@@ -44,13 +44,13 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getMetadata() != 0)
+		if (stack.getItemDamage() != 0)
 		{
 			double itemEmc = getEmc(stack);
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.setMetadata(0);
+				stack.setItemDamage(0);
 			}
 			else
 			{
@@ -75,7 +75,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getMetadata() == 0)
+		if (stack.getItemDamage() == 0)
 		{
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
@@ -83,12 +83,12 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				stack.setMetadata(1);
+				stack.setItemDamage(1);
 			}
 		}
 		else
 		{
-			stack.setMetadata(0);
+			stack.setItemDamage(0);
 		}
 	}
 	
