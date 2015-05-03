@@ -12,7 +12,7 @@ public class NovaCataclysm extends NovaCatalyst
 {
 	public NovaCataclysm()
 	{
-		this.setUnlocalizedName("pe_nova_cataclysm");
+		this.setBlockName("pe_nova_cataclysm");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
@@ -35,7 +35,7 @@ public class NovaCataclysm extends NovaCatalyst
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:explosives/nova1_side");
 		topIcon = register.registerIcon("projecte:explosives/top");

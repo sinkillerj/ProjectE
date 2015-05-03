@@ -35,7 +35,7 @@ public class RecipesKleinStars implements IRecipe
 			
 			if (starDamage == -1)
 			{
-				starDamage = input.getMetadata();
+				starDamage = input.getItemDamage();
 				
 				if (starDamage >= 5)
 				{
@@ -44,7 +44,7 @@ public class RecipesKleinStars implements IRecipe
 			}
 			else
 			{
-				if (input.getMetadata() != starDamage)
+				if (input.getItemDamage() != starDamage)
 				{
 					return false;
 				}

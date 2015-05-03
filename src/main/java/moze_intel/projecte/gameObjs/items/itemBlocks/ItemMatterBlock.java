@@ -12,14 +12,14 @@ public class ItemMatterBlock extends ItemBlock
 	public ItemMatterBlock(Block block) 
 	{
 		super(block);
-		this.setMaxDurability(0);
+		this.setMaxDamage(0);
 		this.hasSubtypes = true;
 	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		if (stack.getMetadata() == 0)
+		if (stack.getItemDamage() == 0)
 		{
 			return "tile.pe_dm_block";
 		}
@@ -42,7 +42,7 @@ public class ItemMatterBlock extends ItemBlock
 		
 		if (!world.isRemote)
 		{
-			if (stack.getMetadata() == 0)
+			if (stack.getItemDamage() == 0)
 			{
 				player.addStat(AchievementHandler.DM_BLOCK, 1);
 			}

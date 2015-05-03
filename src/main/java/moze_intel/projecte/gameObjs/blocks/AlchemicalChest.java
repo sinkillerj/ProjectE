@@ -21,7 +21,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	public AlchemicalChest() 
 	{
 		super(Material.rock);
-		this.setUnlocalizedName("pe_alchemy_chest");
+		this.setBlockName("pe_alchemy_chest");
 		this.setBlockBounds(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
 		this.setHardness(10.0f);
 	}
@@ -69,7 +69,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("obsidian");
 	}

@@ -42,11 +42,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (stack.getMetadata() != 0)
+		if (stack.getItemDamage() != 0)
 		{
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
 			{
-				stack.setMetadata(0);
+				stack.setItemDamage(0);
 			}
 			else 
 			{
@@ -82,7 +82,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		
-		if (stack.getMetadata() == 0)
+		if (stack.getItemDamage() == 0)
 		{
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
 			{
@@ -90,12 +90,12 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				stack.setMetadata(1);
+				stack.setItemDamage(1);
 			}
 		}
 		else
 		{
-			stack.setMetadata(0);
+			stack.setItemDamage(0);
 		}
 	}
 

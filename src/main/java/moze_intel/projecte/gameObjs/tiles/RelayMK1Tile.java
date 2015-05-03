@@ -329,7 +329,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public boolean isCustomInventoryName()
+	public boolean hasCustomInventoryName() 
 	{
 		return false;
 	}
@@ -347,13 +347,13 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory() 
 	{
 		numUsing++;
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory() 
 	{
 		numUsing--;
 	}
@@ -371,7 +371,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		int indexes[] = new int[inventory.length - 2];
 		byte counter = 0;
