@@ -64,7 +64,7 @@ public class NovaExplosion extends Explosion
 
 							if (block.getMaterial() != Material.air)
 							{
-								float f3 = this.exploder != null ? this.exploder.func_145772_a(this, this.worldObj, j1, k1, l1, block) : block.getExplosionResistance(this.exploder, worldObj, j1, k1, l1, explosionX, explosionY, explosionZ);
+								float f3 = this.exploder != null ? this.exploder.getExplosionResistance(this, this.worldObj, j1, k1, l1, block) : block.getExplosionResistance(this.exploder, worldObj, j1, k1, l1, explosionX, explosionY, explosionZ);
 								f1 -= (f3 + 0.3F) * f2;
 							}
 

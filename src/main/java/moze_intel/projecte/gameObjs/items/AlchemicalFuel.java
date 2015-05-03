@@ -21,13 +21,13 @@ public class AlchemicalFuel extends ItemPE
 	{
 		this.setUnlocalizedName("fuel");
 		this.setHasSubtypes(true);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName()+ "_"+names[stack.getItemDamage()];
+		return super.getUnlocalizedName()+ "_"+names[stack.getMetadata()];
 	}
 	
 	@SideOnly(Side.CLIENT)
