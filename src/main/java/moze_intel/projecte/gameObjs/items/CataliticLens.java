@@ -28,7 +28,8 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 		{
 			return false;
 		}
-		
+
+		world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 		world.spawnEntityInWorld(new EntityLensProjectile(world, player, this.getCharge(stack)));
 		return true;
 	}

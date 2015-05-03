@@ -114,6 +114,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 					world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
 				}
 			}
+			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 		}
 		return stack;
 	}
