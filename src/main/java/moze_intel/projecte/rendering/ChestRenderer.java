@@ -29,7 +29,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer
 		AlchChestTile chestTile = (AlchChestTile) tile;
 		ForgeDirection direction = null;
 		
-		if (chestTile.getWorldObj() != null)
+		if (chestTile.getWorld() != null)
 		{
 			direction = chestTile.getOrientation();
 		}

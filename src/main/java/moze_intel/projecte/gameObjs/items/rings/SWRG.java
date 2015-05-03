@@ -44,7 +44,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	{
 		this.setUnlocalizedName("swrg");
 		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 		this.setNoRepair();
 	}
 	
@@ -58,7 +58,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (stack.getItemDamage() > 1)
+		if (stack.getMetadata() > 1)
 		{
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
@@ -78,7 +78,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getItemDamage() > 0)
+			if (stack.getMetadata() > 0)
 			{
 				changeMode(player, stack, 0);
 			}
@@ -100,14 +100,14 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
+				changeMode(player, stack, stack.getMetadata() == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
+				changeMode(player, stack, stack.getMetadata() == 1 ? 0 : 2);
 			}
 		}
 		
@@ -118,11 +118,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			toRemove = 0.32F;
 		}
 		
-		if (stack.getItemDamage() == 2)
+		if (stack.getMetadata() == 2)
 		{
 			toRemove = 0.32F;
 		}
-		else if (stack.getItemDamage() == 3)
+		else if (stack.getMetadata() == 3)
 		{
 			toRemove = 0.64F;
 		}
@@ -137,7 +137,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		{
 			int newMode = 0;
 			
-			switch (stack.getItemDamage())
+			switch (stack.getMetadata())
 			{
 				case 0:
 					newMode = 2;
@@ -182,7 +182,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			return;
 		}
 		
-		switch (ring.getItemDamage())
+		switch (ring.getMetadata())
 		{
 			case 0:
 				changeMode(player, ring, 1);
@@ -262,17 +262,17 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	 */
 	public void changeMode(EntityPlayer player, ItemStack stack, int mode)
 	{
-		stack.setItemDamage(mode);
+		stack.setMetadata(mode);
 	}
 	
 	public boolean isFlyingEnabled(ItemStack stack)
 	{
-		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
+		return stack.getMetadata() == 1 || stack.getMetadata() == 3;
 	}
 	
 	public float getEmcToRemove(ItemStack stack)
 	{
-		int damage = stack.getItemDamage();
+		int damage = stack.getMetadata();
 		
 		if (damage == 0)
 		{
@@ -339,7 +339,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 		EntityPlayer player = (EntityPlayer) ent;
 
-		if (stack.getItemDamage() > 1)
+		if (stack.getMetadata() > 1)
 		{
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
@@ -359,7 +359,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getItemDamage() > 0)
+			if (stack.getMetadata() > 0)
 			{
 				changeMode(player, stack, 0);
 			}
@@ -381,14 +381,14 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
+				changeMode(player, stack, stack.getMetadata() == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
+				changeMode(player, stack, stack.getMetadata() == 1 ? 0 : 2);
 			}
 		}
 		
@@ -399,11 +399,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			toRemove = 0.32F;
 		}
 		
-		if (stack.getItemDamage() == 2)
+		if (stack.getMetadata() == 2)
 		{
 			toRemove = 0.32F;
 		}
-		else if (stack.getItemDamage() == 3)
+		else if (stack.getMetadata() == 3)
 		{
 			toRemove = 0.64F;
 		}

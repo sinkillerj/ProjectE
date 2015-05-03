@@ -25,7 +25,7 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 		name = unlocalName;
 		this.setUnlocalizedName(unlocalName);
 		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 		this.setHasSubtypes(true);
 	}
 	
@@ -61,19 +61,19 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(ItemStack stack)
 	{
-		return (byte) stack.getItemDamage();
+		return (byte) stack.getMetadata();
 	}
 
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getItemDamage() == 0)
+		if (stack.getMetadata() == 0)
 		{
-			stack.setItemDamage(1);
+			stack.setMetadata(1);
 		}
 		else
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 		}
 	}
 }

@@ -81,14 +81,14 @@ public class RecipesCovalenceRepair implements IRecipe
 		{
 			ItemStack stack = dust[i];
 
-			if (stack != null && stack.getItemDamage() < dustDamage)
+			if (stack != null && stack.getMetadata() < dustDamage)
 			{
 				return false;
 			}
 		}
 		
 		output = tool.copy();
-		output.setItemDamage(0);
+		output.setMetadata(0);
 		return true;
 	}
 
@@ -134,7 +134,7 @@ public class RecipesCovalenceRepair implements IRecipe
 			return false;
 		}
 
-		if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0)
+		if (stack.getMaxDurability() == 0 || stack.getMetadata() == 0)
 		{
 			return false;
 		}
@@ -175,7 +175,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		}
 		else if (item instanceof ItemHoe)
 		{
-			name = ((ItemHoe) item).getToolMaterialName();
+			name = ((ItemHoe) item).getMaterialName();
 		}
 		else if (item instanceof ItemArmor)
 		{

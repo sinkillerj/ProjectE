@@ -42,13 +42,13 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getItemDamage() != 0)
+		if (stack.getMetadata() != 0)
 		{
 			double itemEmc = getEmc(stack);
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.setItemDamage(0);
+				stack.setMetadata(0);
 			}
 			else
 			{
@@ -66,7 +66,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getItemDamage() == 0)
+		if (stack.getMetadata() == 0)
 		{
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
@@ -74,12 +74,12 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				stack.setItemDamage(1);
+				stack.setMetadata(1);
 			}
 		}
 		else
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 		}
 	}
 

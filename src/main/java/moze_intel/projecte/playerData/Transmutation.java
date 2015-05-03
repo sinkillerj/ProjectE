@@ -129,7 +129,7 @@ public final class Transmutation
 				continue;
 			}
 
-			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
+			if (stack.getItem().equals(s.getItem()) && stack.getMetadata() == s.getMetadata())
 			{
 				return true;
 			}

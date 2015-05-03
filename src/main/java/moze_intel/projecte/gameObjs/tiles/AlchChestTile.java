@@ -133,7 +133,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -227,9 +227,9 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 							continue;
 						}
 					
-						if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+						if (!invStack.getHasSubtypes() && invStack.getMaxDurability() != 0 && invStack.getMetadata() > 0)
 						{
-							invStack.setItemDamage(invStack.getItemDamage() - 1);
+							invStack.setMetadata(invStack.getMetadata() - 1);
 							inventory[i] = invStack;
 							
 							if (!hasAction)
@@ -332,14 +332,14 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 	
 	@Override
-	public void openInventory()
+	public void openChest()
 	{
 		++numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
 	}
 	
 	@Override
-	public void closeInventory()
+	public void closeChest()
 	{
 		--numPlayersUsing;
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
