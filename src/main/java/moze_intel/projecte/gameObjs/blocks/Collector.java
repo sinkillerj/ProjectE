@@ -28,7 +28,7 @@ public class Collector extends BlockDirection
 	public Collector(int tier) 
 	{
 		super(Material.glass);
-		this.setUnlocalizedName("pe_collector_MK" + tier);
+		this.setBlockName("pe_collector_MK" + tier);
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(0.3f);
 		this.tier = tier;
@@ -72,7 +72,7 @@ public class Collector extends BlockDirection
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:collectors/other");
 		this.front = register.registerIcon("projecte:collectors/front");

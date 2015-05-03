@@ -51,7 +51,7 @@ public final class AchievementHandler
 		{
 			ItemStack s = ach.theItemStack;
 			
-			if (s.getItem() == stack.getItem() && s.getMetadata() == stack.getMetadata())
+			if (s.getItem() == stack.getItem() && s.getItemDamage() == stack.getItemDamage())
 			{
 				return ach;
 			}

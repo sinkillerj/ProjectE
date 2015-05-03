@@ -88,7 +88,7 @@ public class AlchBagContainer extends Container
 	@Override
 	public void onContainerClosed(EntityPlayer player) 
 	{
-		inventory.closeChest();
+		inventory.closeInventory();
 		super.onContainerClosed(player);
 	}
 }

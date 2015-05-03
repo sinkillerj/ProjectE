@@ -41,7 +41,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		isActive = active;
 		isHighTier = isRM;
 		textureName = isHighTier ? "rm" : "dm";
-		this.setUnlocalizedName("pe_" + textureName + "_furnace");
+		this.setBlockName("pe_" + textureName + "_furnace");
 		
 		if (isActive) 
 		{
@@ -98,7 +98,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 				WorldHelper.spawnEntityItem(world, stack, x, y, z);
 			}
 			
-			world.updateNeighborsAboutBlockChange(x, y, z, block);
+			world.func_147453_f(x, y, z, block);
 		}
 		
 		world.removeTileEntity(x, y, z);
@@ -189,7 +189,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:"+textureName);
 		front = register.registerIcon("projecte:matter_furnace/"+(isActive ? (textureName+"_on") : (textureName + "_off")));

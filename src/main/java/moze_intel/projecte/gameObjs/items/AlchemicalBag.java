@@ -50,7 +50,7 @@ public class AlchemicalBag extends ItemPE
 		this.setUnlocalizedName("alchemical_bag");
 		this.hasSubtypes = true;
 		this.setMaxStackSize(1);
-		this.setMaxDurability(0);
+		this.setMaxDamage(0);
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getMetadata());
+		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 		
 		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
@@ -122,9 +122,9 @@ public class AlchemicalBag extends ItemPE
 						continue;
 					}
 				
-					if (!invStack.getHasSubtypes() && invStack.getMaxDurability() != 0 && invStack.getMetadata() > 0)
+					if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 					{
-						invStack.setMetadata(invStack.getMetadata() - 1);
+						invStack.setItemDamage(invStack.getItemDamage() - 1);
 						inv[i] = invStack;
 						
 						if (!hasAction)
@@ -158,7 +158,7 @@ public class AlchemicalBag extends ItemPE
 			{
 				GemEternalDensity.condense(gemDensity, inv); 
 		
-				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getMetadata(), inv);
+				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 			}
 		}
@@ -173,13 +173,13 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName()+ "_" +colors[MathHelper.clamp_int(stack.getMetadata(), 0, 15)];
+		return super.getUnlocalizedName()+ "_" +colors[MathHelper.clamp_int(stack.getItemDamage(), 0, 15)];
 	}
 	
 	public String getItemStackDisplayName(ItemStack stack)
 	{
 		String name = super.getItemStackDisplayName(stack);
-		int i = stack.getMetadata();
+		int i = stack.getItemDamage();
 		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
@@ -229,7 +229,7 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getMetadata()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

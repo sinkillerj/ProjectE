@@ -65,7 +65,7 @@ public abstract class BlockDirection extends BlockContainer
 			WorldHelper.spawnEntityItem(world, stack, x, y, z);
 		}
 		
-		world.updateNeighborsAboutBlockChange(x, y, z, block);
+		world.func_147453_f(x, y, z, block);
 		super.breakBlock(world, x, y, z, block, noclue);
 	}
 	

@@ -47,7 +47,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer
 			GL11.glTranslated(x + 0.5, y + 1.0, z + 0.5); // Feel free to improve this, anyone.
 			if (pedestal.getItemStack() != null)
 			{
-				EntityItem hover = new EntityItem(pedestal.getWorld());
+				EntityItem hover = new EntityItem(pedestal.getWorldObj());
 				hover.hoverStart = 0.0F;
 				hover.setEntityItemStack(pedestal.getItemStack());
 				ghostItemRenderer.doRender(hover, 0, 0, 0, 0, 0);

@@ -29,7 +29,7 @@ public class CondenserRenderer extends TileEntitySpecialRenderer
 		CondenserTile condenser = (CondenserTile) tile;
 		ForgeDirection direction = null;
 		
-		if (condenser.getWorld() != null)
+		if (condenser.getWorldObj() != null)
 		{
 			direction = condenser.getOrientation();
 		}

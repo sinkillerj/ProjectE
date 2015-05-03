@@ -29,7 +29,7 @@ public class MetaBlock
 	public MetaBlock(ItemStack stack)
 	{
 		this.block = Block.getBlockFromItem(stack.getItem());
-		this.meta = stack.getMetadata();
+		this.meta = stack.getItemDamage();
 	}
 
 	public ItemStack toItemStack()
