@@ -98,6 +98,7 @@ public class DestructionCatalyst extends ItemCharge
 			if (hasAction)
 			{
 				WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
+				world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
 			}
 		}
 			

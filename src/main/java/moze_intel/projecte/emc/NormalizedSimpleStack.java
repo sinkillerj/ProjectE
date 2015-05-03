@@ -115,7 +115,7 @@ public abstract class NormalizedSimpleStack {
 			Object obj = Item.itemRegistry.getObjectById(id);
 
 			if (obj != null) {
-				return "" + Item.itemRegistry.getNameForObject(obj) + "(" + id + ") " + (damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+				return String.format("%s(%s:%s)", Item.itemRegistry.getNameForObject(obj), id, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 			}
 
 			return "id:" + id + " damage:" + (damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);

@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +19,9 @@ import java.util.List;
  */
 public final class ItemHelper
 {
+	/**
+	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
+	 */
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
@@ -42,6 +46,34 @@ public final class ItemHelper
 	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		return (stack1.getItem() == stack2.getItem()) && (stack1.getItemDamage() == stack2.getItemDamage());
+	}
+
+	public static void compactItemList(List<ItemStack> list)
+	{
+		for (int i = 0; i < list.size(); i++)
+		{
+			ItemStack s = list.get(i);
+			for (int j = i + 1; j < list.size(); j++)
+			{
+				ItemStack s1 = list.get(j);
+				if (areItemStacksEqual(s, s1))
+				{
+					if (s.stackSize + s1.stackSize <= s.getMaxStackSize())
+					{
+						s.stackSize += s1.stackSize;
+						s1.stackSize = 0;
+					}
+					else
+					{
+						s1.stackSize = (s1.stackSize + s.stackSize) - s.getMaxStackSize();
+						s.stackSize = s.getMaxStackSize();
+					}
+				}
+			}
+		}
+
+		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
+		trimItemList(list);
 	}
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
@@ -394,5 +426,18 @@ public final class ItemHelper
 		}
 
 		return stack.copy();
+	}
+
+	public static void trimItemList(List<ItemStack> list)
+	{
+		Iterator<ItemStack> iter = list.iterator();
+		while (iter.hasNext())
+		{
+			ItemStack s = iter.next();
+			if (s.stackSize <= 0)
+			{
+				iter.remove();
+			}
+		}
 	}
 }

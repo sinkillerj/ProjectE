@@ -193,6 +193,7 @@ public abstract class PEToolBase extends ItemMode
 			boolean hasSoundPlayed = false;
 
 			for (int i = x - charge; i <= x + charge; i++)
+			{
 				for (int j = z - charge; j <= z + charge; j++)
 				{
 					Block block = world.getBlock(i, y, j);
@@ -234,6 +235,11 @@ public abstract class PEToolBase extends ItemMode
 						}
 					}
 				}
+			}
+			if (hasAction)
+			{
+				player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
+			}
 		}
 	}
 
@@ -379,6 +385,10 @@ public abstract class PEToolBase extends ItemMode
 
 		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		if (!drops.isEmpty())
+		{
+			world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
 	}
 
 	/**
@@ -433,6 +443,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 		}
+		player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
@@ -567,6 +578,10 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
+		if (!drops.isEmpty())
+		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
 	}
 
 

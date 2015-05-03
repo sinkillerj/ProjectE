@@ -143,56 +143,60 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			if (box != null)
 			{
 				for (int x = (int) box.minX; x <= (int) box.maxX; x++)
-				for (int y = (int) box.minY; y <= (int) box.maxY; y++)
-				for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 				{
-					Block oldBlock = world.getBlock(x, y, z);
-					int oldMeta = oldBlock.getDamageValue(world, x, y, z);
-
-					if (mode == NORMAL_MODE && oldBlock == Blocks.air)
+					for (int y = (int) box.minY; y <= (int) box.maxY; y++)
 					{
-						if (kleinEmc < reqEmc)
-							break;
-
-						world.setBlock(x, y, z, newBlock, newMeta, 3);
-						removeKleinEMC(stack, reqEmc);
-						kleinEmc -= reqEmc;
-					}
-					else if (mode == TRANSMUTATION_MODE)
-					{
-						if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
+						for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 						{
-							continue;
-						}
+							Block oldBlock = world.getBlock(x, y, z);
+							int oldMeta = oldBlock.getDamageValue(world, x, y, z);
 
-						int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
-
-						if (emc > reqEmc)
-						{
-							int difference = emc - reqEmc;
-
-							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-
-							addKleinEMC(stack, difference);
-							world.setBlock(x, y, z, newBlock, newMeta, 3);
-						}
-						else if (emc < reqEmc)
-						{
-							int difference = reqEmc - emc;
-
-							if (kleinEmc >= difference)
+							if (mode == NORMAL_MODE && oldBlock == Blocks.air)
 							{
-								kleinEmc -= difference;
-								removeKleinEMC(stack, difference);
+								if (kleinEmc < reqEmc)
+									break;
 								world.setBlock(x, y, z, newBlock, newMeta, 3);
+								removeKleinEMC(stack, reqEmc);
+								kleinEmc -= reqEmc;
 							}
-						}
-						else
-						{
-							world.setBlock(x, y, z, newBlock, newMeta, 3);
+							else if (mode == TRANSMUTATION_MODE)
+							{
+								if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
+								{
+									continue;
+								}
+
+								int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+
+								if (emc > reqEmc)
+								{
+									int difference = emc - reqEmc;
+
+									kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+
+									addKleinEMC(stack, difference);
+									world.setBlock(x, y, z, newBlock, newMeta, 3);
+								}
+								else if (emc < reqEmc)
+								{
+									int difference = reqEmc - emc;
+
+									if (kleinEmc >= difference)
+									{
+										kleinEmc -= difference;
+										removeKleinEMC(stack, difference);
+										world.setBlock(x, y, z, newBlock, newMeta, 3);
+									}
+								}
+								else
+								{
+									world.setBlock(x, y, z, newBlock, newMeta, 3);
+								}
+							}
 						}
 					}
 				}
+				player.worldObj.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 			}
 		}
 
