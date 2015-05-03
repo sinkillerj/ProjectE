@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
@@ -40,14 +41,18 @@ public class DarkPick extends PEToolBase
 		{
 			return stack;
 		}
-
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		if (ProjectEConfig.pickaxeAoeVeinMining) {
+			mineOreVeinsInAOE(stack, player);
+		} else
 		{
-			Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			if (ItemHelper.isOre(b))
+			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				tryVeinMine(stack, player, mop);
+				Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				if (ItemHelper.isOre(b))
+				{
+					tryVeinMine(stack, player, mop);
+				}
 			}
 		}
 
