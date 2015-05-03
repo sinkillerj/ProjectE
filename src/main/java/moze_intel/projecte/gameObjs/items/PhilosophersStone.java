@@ -88,11 +88,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					if (s.getHasSubtypes())
 					{
-						s.setMetadata(world.getBlockMetadata(blockX, blockY, blockZ));
+						s.setItemDamage(world.getBlockMetadata(blockX, blockY, blockZ));
 					}
 					else
 					{
-						s.setMetadata(0);
+						s.setItemDamage(0);
 					}
 					
 					s.setTagCompound(nbt);

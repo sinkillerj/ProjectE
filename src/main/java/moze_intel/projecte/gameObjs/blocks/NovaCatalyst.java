@@ -20,7 +20,7 @@ public class NovaCatalyst extends BlockTNT
 	
 	public NovaCatalyst()
 	{
-		this.setUnlocalizedName("pe_nova_catalyst");
+		this.setBlockName("pe_nova_catalyst");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
@@ -55,7 +55,7 @@ public class NovaCatalyst extends BlockTNT
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:explosives/nova_side");
 		topIcon = register.registerIcon("projecte:explosives/top");

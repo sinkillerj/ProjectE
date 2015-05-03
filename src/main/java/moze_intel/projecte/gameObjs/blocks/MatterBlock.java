@@ -81,7 +81,7 @@ public class MatterBlock extends Block
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		dmIcon = register.registerIcon("projecte:dm");
 		rmIcon = register.registerIcon("projecte:rm");

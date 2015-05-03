@@ -21,16 +21,10 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
-idea {
-    module {
-	    inheritOutputDirs = true;
-	}
-}
-
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"
-	mappings = "stable_12"
+
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
 }
@@ -60,7 +54,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "mcp.mobius.waila:Waila:1.5.8a_1.7.10"
+    //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
 }
 
 processResources

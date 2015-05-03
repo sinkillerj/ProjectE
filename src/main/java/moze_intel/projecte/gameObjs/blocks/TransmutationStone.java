@@ -31,7 +31,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	{
 		super(Material.rock);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setUnlocalizedName("pe_transmutation_stone");
+		this.setBlockName("pe_transmutation_stone");
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
 		this.setHardness(10.0f);
 	}
@@ -112,7 +112,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		icon = new IIcon[3];
 		icon[0] = register.registerIcon("projecte:transmutation_stone/bottom");

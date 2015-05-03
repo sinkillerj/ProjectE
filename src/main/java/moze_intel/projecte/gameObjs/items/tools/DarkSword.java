@@ -30,7 +30,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack p_150893_1_, Block p_150893_2_)
+	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_)
 	{
 		if (p_150893_2_ == Blocks.web)
 		{
@@ -63,7 +63,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean canItemHarvestBlock(Block p_150897_1_)
+	public boolean func_150897_b(Block p_150897_1_)
 	{
 		return p_150897_1_ == Blocks.web;
 	}

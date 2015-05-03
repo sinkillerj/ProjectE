@@ -96,7 +96,7 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public boolean isCustomInventoryName()
+	public boolean hasCustomInventoryName() 
 	{
 		return false;
 	}
@@ -131,10 +131,10 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
