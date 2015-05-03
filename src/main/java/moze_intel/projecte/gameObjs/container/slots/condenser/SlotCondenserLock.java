@@ -20,7 +20,7 @@ public class SlotCondenserLock extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && EMCHelper.doesItemHaveEmc(stack) && !container.tile.getWorldObj().isRemote)
+		if (stack != null && EMCHelper.doesItemHaveEmc(stack) && !container.tile.getWorld().isRemote)
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
 			container.tile.checkLockAndUpdate();

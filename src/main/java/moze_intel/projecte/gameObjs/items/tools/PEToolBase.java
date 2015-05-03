@@ -202,7 +202,7 @@ public abstract class PEToolBase extends ItemMode
 
 						if (!hasSoundPlayed)
 						{
-							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
+							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepSound(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getFrequency() * 0.8F);
 							hasSoundPlayed = true;
 						}
 
@@ -220,8 +220,8 @@ public abstract class PEToolBase extends ItemMode
 								if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
 										&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
 										) {
-									// Fancy break block - get rid of tall grass
-									world.func_147480_a(i, y + 1, j, true);
+									// Get rid of tall grass
+									world.breakBlock(i, y + 1, j, true);
 								}
 
 								if (!hasAction)

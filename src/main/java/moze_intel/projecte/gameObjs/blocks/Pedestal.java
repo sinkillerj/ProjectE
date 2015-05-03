@@ -29,8 +29,8 @@ public class Pedestal extends Block implements ITileEntityProvider {
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
         this.setBlockBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 0.75F, 0.8125F);
-        this.setBlockTextureName(PECore.MODID.toLowerCase() + ":dm");
-        setBlockName("pe_dmPedestal");
+        this.setTextureName(PECore.MODID.toLowerCase() + ":dm");
+        this.setUnlocalizedName("pe_dmPedestal");
     }
 
     public void breakBlock(World world, int x, int y, int z, Block block, int meta)

@@ -22,7 +22,7 @@ public class FuelBlock extends Block
 	public FuelBlock() 
 	{
 		super(Material.rock);
-		this.setBlockName("pe_fuel_block");
+		this.setUnlocalizedName("pe_fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
 	}
@@ -45,7 +45,7 @@ public class FuelBlock extends Block
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons = new IIcon[3];
 		

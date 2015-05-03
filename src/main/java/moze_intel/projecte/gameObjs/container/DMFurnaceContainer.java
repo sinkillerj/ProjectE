@@ -60,9 +60,9 @@ public class DMFurnaceContainer extends Container
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
+	public void onCraftGuiOpened(ICrafting par1ICrafting)
 	{
-		super.addCraftingToCrafters(par1ICrafting);
+		super.onCraftGuiOpened(par1ICrafting);
 		par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
 		par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
 		par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
@@ -135,7 +135,7 @@ public class DMFurnaceContainer extends Container
 					return null;
 				}
 			}
-			else if (FurnaceRecipes.smelting().getSmeltingResult(newStack) != null)
+			else if (FurnaceRecipes.instance().getSmeltingResult(newStack) != null)
 			{
 				if (!this.mergeItemStack(stack, 1, 10, false))
 				{

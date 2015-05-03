@@ -39,7 +39,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 	protected String serializeToString(ItemStack stack) {
 		String name = Item.itemRegistry.getNameForObject(stack.getItem());
-		return String.format("%d@%s", stack.getItemDamage(), name);
+		return String.format("%d@%s", stack.getMetadata(), name);
 	}
 	protected NormalizedSimpleStack deserializeFromString(String s) {
 		String[] splits = s.split("@", 2);

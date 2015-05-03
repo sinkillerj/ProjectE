@@ -24,13 +24,13 @@ public class Matter extends ItemPE
 	{
 		this.setUnlocalizedName("matter");
 		this.setHasSubtypes(true);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName() + "_" + names[stack.getItemDamage()];
+		return super.getUnlocalizedName() + "_" + names[stack.getMetadata()];
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class Matter extends ItemPE
 		
 		if (!world.isRemote)
 		{
-			if (stack.getItemDamage() == 0)
+			if (stack.getMetadata() == 0)
 			{
 				player.addStat(AchievementHandler.DARK_MATTER, 1);
 			}
