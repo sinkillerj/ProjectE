@@ -4,8 +4,10 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -24,7 +26,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
+public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble, IPedestalItem
 {
 	public BlackHoleBand()
 	{
@@ -156,4 +158,41 @@ public class BlackHoleBand extends RingToggle implements IBauble, IPedestalItem
 		);
 	}
 
+	@Override
+	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	{
+		if (stack.getItemDamage() == 1)
+		{
+			AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(tile.xCoord - 5, tile.yCoord - 5, tile.zCoord - 5, tile.xCoord + 5, tile.yCoord + 5, tile.zCoord + 5);
+			double centeredX = tile.xCoord + 0.5;
+			double centeredY = tile.yCoord + 0.5;
+			double centeredZ = tile.zCoord + 0.5;
+
+			for (EntityItem e : (List<EntityItem>) tile.getWorldObj().getEntitiesWithinAABB(EntityItem.class, aabb))
+			{
+				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
+				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
+				{
+					ItemStack result = ItemHelper.pushStackInInv(tile, e.getEntityItem());
+					if (result != null)
+					{
+						e.setEntityItemStack(result);
+					}
+					else
+					{
+						e.setDead();
+					}
+				}
+			}
+
+			for (EntityLootBall e : (List<EntityLootBall>) tile.getWorldObj().getEntitiesWithinAABB(EntityLootBall.class, aabb))
+			{
+				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
+				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
+				{
+					ItemHelper.pushLootBallInInv(tile, e);
+				}
+			}
+		}
+	}
 }

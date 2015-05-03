@@ -7,8 +7,10 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeChanger, IBauble
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
@@ -388,5 +390,15 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	{
+		if (!tile.getWorldObj().isRemote && stack.getItemDamage() == 1)
+		{
+			condense(stack, tile.getBackingInventoryArray());
+			tile.markDirty();
+		}
 	}
 }

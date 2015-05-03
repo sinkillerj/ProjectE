@@ -35,15 +35,7 @@ public class EntityLootBall extends Entity
 	
 	public EntityLootBall(World world, ItemStack[] drops, double x, double y, double z)
 	{
-		super(world);
-		items = Arrays.asList(drops);
-		
-		this.setSize(0.25F, 0.25F);
-		this.yOffset = this.height / 2.0F;
-		this.setPosition(x, y, z);
-		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
-		this.motionY = 0.20000000298023224D;
-		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		this(world, Arrays.asList(drops), x, y, z);
 	}
 	
 	public EntityLootBall(World world, List<ItemStack> drops, double x, double y, double z)
@@ -347,4 +339,9 @@ public class EntityLootBall extends Entity
 
 	@Override
 	protected void entityInit() {}
+
+	public void setItemList(List<ItemStack> itemList)
+	{
+		this.items = itemList;
+	}
 }

@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -345,6 +346,20 @@ public final class ItemHelper
 		}
 
 		return getOreDictionaryName(new ItemStack(block)).startsWith("ore");
+	}
+
+	public static void pushLootBallInInv(IInventory inv, EntityLootBall ball)
+	{
+		List<ItemStack> results = Lists.newArrayList();
+		for (ItemStack s : ball.getItemList())
+		{
+			ItemStack result = pushStackInInv(inv, s);
+			if (result != null)
+			{
+				results.add(result);
+			}
+		}
+		ball.setItemList(results);
 	}
 
 	/**

@@ -6,9 +6,12 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.rings.RingToggle;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.MathUtils;
@@ -27,7 +30,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
+public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, IPedestalItem
 {
 	private int repairCooldown;
 
@@ -161,5 +164,52 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	{
+		if (tile.getWorldObj().isRemote)
+		{
+			return;
+		}
+
+		byte coolDown = stack.stackTagCompound.getByte("Cooldown");
+
+		if (coolDown > 0)
+		{
+			stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+		}
+		else
+		{
+			boolean hasAction = false;
+
+			for (int i = 0; i < tile.getSizeInventory(); i++)
+			{
+				ItemStack invStack = tile.getStackInSlot(i);
+
+				if (invStack == null || invStack.getItem() instanceof RingToggle)
+				{
+					continue;
+				}
+
+				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				{
+					invStack.setItemDamage(invStack.getItemDamage() - 1);
+					tile.setInventorySlotContents(i, invStack);
+
+					if (!hasAction)
+					{
+						hasAction = true;
+					}
+				}
+			}
+
+			if (hasAction)
+			{
+				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
+				tile.markDirty();
+			}
+		}
 	}
 }
