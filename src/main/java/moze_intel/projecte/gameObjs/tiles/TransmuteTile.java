@@ -44,9 +44,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 			stack.stackSize = 1;
 		}
 
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		if (!stack.getHasSubtypes() && stack.getMaxDurability() != 0 && stack.getMetadata() != 0)
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 		}
 		
 		if (!hasKnowledge(stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
@@ -267,7 +267,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 				continue;
 			}
 			
-			if (stack.getItem() == s.getItem() && stack.getItemDamage() == s.getItemDamage())
+			if (stack.getItem() == s.getItem() && stack.getMetadata() == s.getMetadata())
 			{
 				return true;
 			}
@@ -297,7 +297,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
-		this.readFromNBT(packet.func_148857_g());
+		this.readFromNBT(packet.getNbtCompound());
 	}
 	
 	@Override
@@ -407,7 +407,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -425,7 +425,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openChest()
 	{
 		if (!this.worldObj.isRemote)
 		{
@@ -436,7 +436,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeChest()
 	{
 		if (!this.worldObj.isRemote)
 		{

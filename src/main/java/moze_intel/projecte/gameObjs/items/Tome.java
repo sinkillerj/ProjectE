@@ -18,7 +18,7 @@ public class Tome extends ItemPE
 		this.setUnlocalizedName("tome");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
+		this.setMaxDurability(0);
 	}
 
 	@Override

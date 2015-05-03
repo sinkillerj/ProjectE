@@ -53,9 +53,9 @@ public class TransmuteTabletInventory implements IInventory
 			stack.stackSize = 1;
 		}
 		
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		if (!stack.getHasSubtypes() && stack.getMaxDurability() != 0 && stack.getMetadata() != 0)
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 		}
 		
 		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
@@ -373,7 +373,7 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -391,7 +391,7 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openChest()
 	{
 		emc = Transmutation.getStoredEmc(player.getCommandSenderName());
 		
@@ -399,7 +399,7 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeChest()
 	{
 		if (player != null && player.getHeldItem() != null)
 		{

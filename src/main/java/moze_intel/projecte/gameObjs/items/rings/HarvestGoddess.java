@@ -44,13 +44,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getItemDamage() != 0)
+		if (stack.getMetadata() != 0)
 		{
 			double storedEmc = this.getEmc(stack);
 			
 			if (storedEmc == 0 && !this.consumeFuel(player, stack, 64, true))
 			{
-				stack.setItemDamage(0);
+				stack.setMetadata(0);
 			}
 			else
 			{
@@ -110,14 +110,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				{
 					IGrowable growable = (IGrowable) crop;
 					
-					if (growable.func_149852_a(world, world.rand, x, yCoord, z))
+					if (growable.shouldFertilize(world, world.rand, x, yCoord, z))
 					{
 						if (!result)
 						{
 							result = true;
 						}
 						
-						growable.func_149853_b(world, world.rand, x, yCoord, z);
+						growable.fertilize(world, world.rand, x, yCoord, z);
 					}
 				}
 			}
@@ -212,6 +212,43 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
+	private Object[] getStackFromInventory(ItemStack[] inv, Class<?> type)
+	{
+		Object[] obj = new Object[2];
+		
+		for (int i = 0; i < inv.length;i++)
+		{
+			ItemStack stack = inv[i];
+			
+			if (stack != null && type.isInstance(stack.getItem()))
+			{
+				obj[0] = i;
+				obj[1] = stack;
+				return obj;
+			}
+		}
+		return null;
+	}
+	
+	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta)
+	{
+		Object[] obj = new Object[2];
+		
+		for (int i = 0; i < inv.length;i++)
+		{
+			ItemStack stack = inv[i];
+			
+			if (stack != null && stack.getItem() == item && stack.getMetadata() == meta)
+			{
+				obj[0] = i;
+				obj[1] = stack;
+				return obj;
+			}
+		}
+		
+		return null;
+	}
+	
 	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
@@ -220,7 +257,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			ItemStack stack = inv[i];
 			
-			if (stack != null && stack.stackSize >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
+			if (stack != null && stack.stackSize >= minAmount && stack.getItem() == item && stack.getMetadata() == meta)
 			{
 				obj[0] = i;
 				obj[1] = stack;
@@ -245,20 +282,20 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					{
 						if (harvest)
 						{
-							world.func_147480_a(x, y, z, true);
+							world.breakBlock(x, y, z, true);
 						}
 					}
 					else if (crop instanceof IGrowable)
 					{
 						IGrowable growable = (IGrowable) crop;
 
-						if(harvest && !growable.func_149851_a(world, x, y, z, false))
+						if(harvest && !growable.canFertilize(world, x, y, z, false))
 						{
-							world.func_147480_a(x, y, z, true);
+							world.breakBlock(x, y, z, true);
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
-							growable.func_149853_b(world, world.rand, x, y, z);
+							growable.fertilize(world, world.rand, x, y, z);
 						}
 					}
 					else if (crop instanceof IPlantable)
@@ -290,7 +327,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 								{
 									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 									{
-										world.func_147480_a(x, y + i, z, true);
+										world.breakBlock(x, y + i, z, true);
 									}
 								}
 							}
@@ -307,7 +344,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getItemDamage() == 0)
+		if (stack.getMetadata() == 0)
 		{
 			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, true))
 			{
@@ -315,12 +352,12 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			}
 			else
 			{
-				stack.setItemDamage(1);
+				stack.setMetadata(1);
 			}
 		}
 		else
 		{
-			stack.setItemDamage(0);
+			stack.setMetadata(0);
 		}
 	}
 

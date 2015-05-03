@@ -115,7 +115,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		Material material = world.getBlock(i, j, k).getMaterial();
 		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
 		{
-			world.func_147480_a(i, j, k, true);
+			world.breakBlock(i, j, k, true);
 		}
 		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
 	}

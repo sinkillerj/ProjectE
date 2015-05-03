@@ -78,9 +78,9 @@ public class RepairTalisman extends ItemPE implements IBauble, IPedestalItem
 				continue;
 			}
 
-			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+			if (!invStack.getHasSubtypes() && invStack.getMaxDurability() != 0 && invStack.getMetadata() > 0)
 			{
-				invStack.setItemDamage(invStack.getItemDamage() - 1);
+				invStack.setMetadata(invStack.getMetadata() - 1);
 			}
 		}
 	}

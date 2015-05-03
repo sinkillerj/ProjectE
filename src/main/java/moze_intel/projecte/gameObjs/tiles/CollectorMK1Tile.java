@@ -449,7 +449,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean isCustomInventoryName()
 	{
 		return false;
 	}
@@ -467,13 +467,13 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public void openInventory() 
+	public void openChest()
 	{
 		numUsing++;
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeChest()
 	{
 		numUsing--;
 	}
@@ -485,7 +485,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getSlotsForFace(int side)
 	{
 		if (side == 0 || side == 1)
 		{

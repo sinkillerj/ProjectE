@@ -17,7 +17,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 	public InterdictionTorch()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("pe_interdiction_torch");
+		this.setUnlocalizedName("pe_interdiction_torch");
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}
@@ -52,7 +52,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("projecte:interdiction_torch");
 	}

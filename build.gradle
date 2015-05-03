@@ -21,10 +21,16 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
+idea {
+    module {
+	    inheritOutputDirs = true;
+	}
+}
+
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"
-
+	mappings = "stable_12"
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
 }
