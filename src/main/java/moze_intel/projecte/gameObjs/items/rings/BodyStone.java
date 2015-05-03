@@ -56,6 +56,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 
 				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
 				{
+					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
 					player.getFoodStats().addStats(2, 10);
 					removeEmc(stack, 64);
 				}
@@ -131,7 +132,11 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 
 				for (EntityPlayerMP player : players)
 				{
-					player.getFoodStats().addStats(1, 1); // 1/2 shank
+					if (player.getFoodStats().needFood())
+					{
+						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						player.getFoodStats().addStats(1, 1); // 1/2 shank
+					}
 				}
 
 				healCooldown = ProjectEConfig.bodyPedCooldown;

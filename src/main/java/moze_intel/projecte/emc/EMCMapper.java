@@ -47,8 +47,7 @@ public final class EMCMapper
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper()
 		);
-
-		GraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+		SimpleGraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
@@ -61,6 +60,13 @@ public final class EMCMapper
 		}
 		else
 		{
+
+
+			graphMapper.setLogFoundExploits(config.getBoolean("logEMCExploits", "general", true,
+					"Log known EMC Exploits. This can and will NOT find all the exploits! " +
+							"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
+							"Exploits that derive from conversions, that are unknown to ProjectE will not be found!"
+			));
 
 			PELogger.logInfo("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)

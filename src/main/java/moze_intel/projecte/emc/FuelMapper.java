@@ -68,7 +68,7 @@ public final class FuelMapper
 		
 		if (index == -1)
 		{
-			PELogger.logFatal("Fuel not found in fuel map: "+stack);
+			PELogger.logFatal("Tried to upgrade invalid fuel: " + stack);
 			return null;
 		}
 		

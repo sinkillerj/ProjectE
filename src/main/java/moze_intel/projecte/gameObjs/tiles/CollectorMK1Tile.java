@@ -233,6 +233,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else if (hasFuel)
 		{
+			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			{
+				this.setInventorySlotContents(0, null);
+			}
+
 			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
 			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
@@ -332,7 +337,16 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else
 		{
-			reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			{
+				this.setInventorySlotContents(0, null);
+				return 0;
+			}
+			else
+			{
+				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+			}
+
 		}
 		
 		if (this.getStoredEmc() >= reqEmc)

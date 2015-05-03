@@ -1,4 +1,36 @@
 {
+    "item.pewatermagic":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pewatermagic"
+        ]
+    },
+    "item.pepower":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pepower"
+        ]
+    },
+    "item.peheal":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/peheal"
+        ]
+    },
+    "item.pedestruct":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pedestruct"
+        ]
+    },
     "item.pecharge":
     {
         "category": "master",
