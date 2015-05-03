@@ -18,7 +18,7 @@ public class CondenserMK2Container extends Container
 	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
 	{
 		tile = condenser;
-		tile.openChest();
+		tile.openInventory();
 
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserMK2Lock(this, 0, 12, 6));
@@ -97,7 +97,7 @@ public class CondenserMK2Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeChest();
+		tile.closeInventory();
 	}
 
 	@Override

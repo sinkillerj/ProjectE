@@ -21,7 +21,7 @@ public class CollectorMK2Container extends Container
 	public CollectorMK2Container(InventoryPlayer invPlayer, CollectorMK2Tile collector)
 	{
 		this.tile = collector;
-		tile.openChest();
+		tile.openInventory();
 		
 		//Klein Star Slot
 		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 140, 58));
@@ -48,9 +48,9 @@ public class CollectorMK2Container extends Container
 	}
 	
 	@Override
-	public void onCraftGuiOpened(ICrafting par1ICrafting)
+	public void addCraftingToCrafters(ICrafting par1ICrafting)
 	{
-		super.onCraftGuiOpened(par1ICrafting);
+		super.addCraftingToCrafters(par1ICrafting);
 		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
 	}
 	
@@ -80,7 +80,7 @@ public class CollectorMK2Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeChest();
+		tile.closeInventory();
 	}
 	
 	@Override

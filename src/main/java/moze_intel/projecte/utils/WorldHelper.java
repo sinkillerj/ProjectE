@@ -392,7 +392,7 @@ public final class WorldHelper
 				j1 = stack.stackSize;
 
 			stack.stackSize -= j1;
-			entityitem = new EntityItem(world, (double)((float) x + f), (double)((float) y + f1), (double)((float) z + f2), new ItemStack(stack.getItem(), j1, stack.getMetadata()));
+			entityitem = new EntityItem(world, (double)((float) x + f), (double)((float) y + f1), (double)((float) z + f2), new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
 			float f3 = 0.05F;
 			entityitem.motionX = (double)((float) world.rand.nextGaussian() * f3);
 			entityitem.motionY = (double)((float) world.rand.nextGaussian() * f3 + 0.2F);

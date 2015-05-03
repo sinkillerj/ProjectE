@@ -24,7 +24,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	public Condenser() 
 	{
 		super();
-		this.setUnlocalizedName("pe_condenser");
+		this.setBlockName("pe_condenser");
 	}
 	
 	@Override
@@ -78,13 +78,13 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 			WorldHelper.spawnEntityItem(world, stack, x, y, z);
 		}
 
-		world.updateNeighborsAboutBlockChange(x, y, z, block);
+		world.func_147453_f(x, y, z, block);
 		world.removeTileEntity(x, y, z);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("obsidian");
 	}

@@ -43,7 +43,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("pe_gem_armor_"+armorType);
 		this.setHasSubtypes(false);
-		this.setMaxDurability(0);
+		this.setMaxDamage(0);
 	}
 
 	@Override

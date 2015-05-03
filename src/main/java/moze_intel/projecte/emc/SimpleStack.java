@@ -26,7 +26,7 @@ public class SimpleStack
 		else
 		{
 			id = Item.itemRegistry.getIDForObject(stack.getItem());
-			damage = stack.getMetadata();
+			damage = stack.getItemDamage();
 			qnty = stack.stackSize;
 		}
 	}

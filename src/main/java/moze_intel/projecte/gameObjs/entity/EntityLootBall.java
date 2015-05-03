@@ -74,7 +74,7 @@ public class EntityLootBall extends Entity
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.noClip = this.pushOutOfBlocks(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+		this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
 		this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
 		
@@ -213,7 +213,7 @@ public class EntityLootBall extends Entity
 			
 			if (bag != null)
 			{
-				ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getMetadata());
+				ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
 				
 				for (ItemStack stack : items)
 				{
@@ -255,7 +255,7 @@ public class EntityLootBall extends Entity
 				
 				if (playSound)
 				{
-					AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getMetadata(), inv);
+					AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
 					AlchemicalBags.sync(player);
 				}
 			}
