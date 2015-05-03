@@ -114,7 +114,7 @@ public class TransmuteTabletInventory implements IInventory
 		
 		ItemStack lockCopy = null;
 
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
+		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
