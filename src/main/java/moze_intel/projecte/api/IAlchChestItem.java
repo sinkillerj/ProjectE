@@ -10,7 +10,8 @@ public interface IAlchChestItem
 {
     /**
      * Called on both client and server every time the alchemical chest ticks this item.
-     * Implementers that modify the chest inventory MUST call markDirty() on the tile entity, or else your changes may not be saved!
+     * Implementers that modify the chest inventory (serverside) MUST call markDirty() on the tile entity. 
+     * If you do not, your changes may not be saved when the world/chunk unloads!
      *
      * @param tile The Tile being ticked
      * @param stack The ItemStack being ticked
