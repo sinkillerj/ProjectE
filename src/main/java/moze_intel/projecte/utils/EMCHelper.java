@@ -123,7 +123,7 @@ public final class EMCHelper
 			return false;
 		}
 
-		if (!stack.getHasSubtypes() && stack.getMaxDurability() != 0)
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
 			iStack.damage = 0;
 		}
@@ -179,7 +179,7 @@ public final class EMCHelper
 			return 0;
 		}
 
-		if (!stack.getHasSubtypes() && stack.getMaxDurability() != 0)
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
 			iStack.damage = 0;
 
@@ -187,7 +187,7 @@ public final class EMCHelper
 			{
 				int emc = EMCMapper.getEmcValue(iStack);
 
-				int relDamage = (stack.getMaxDurability() - stack.getMetadata());
+				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
 
 				if (relDamage <= 0)
 				{
@@ -203,7 +203,7 @@ public final class EMCHelper
 					return emc;
 				}
 
-				result /= stack.getMaxDurability();
+				result /= stack.getMaxDamage();
 				result += getEnchantEmcBonus(stack);
 
 				result += getStoredEMCBonus(stack);
@@ -258,7 +258,7 @@ public final class EMCHelper
 
 	public static int getKleinStarMaxEmc(ItemStack stack)
 	{
-		return Constants.MAX_KLEIN_EMC[stack.getMetadata()];
+		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
 	public static double getStoredEMCBonus(ItemStack stack) {

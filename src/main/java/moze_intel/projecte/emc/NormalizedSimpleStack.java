@@ -48,7 +48,7 @@ public abstract class NormalizedSimpleStack {
 			PELogger.logWarn(String.format("Could not get id for stack %s with item %s (Class: %s)", stack, stack.getItem(), stack.getItem().getClass()));
 			return null;
 		}
-		return getNormalizedSimpleStackFor(id, stack.getMetadata());
+		return getNormalizedSimpleStackFor(id, stack.getItemDamage());
 	}
 
 	public static NormalizedSimpleStack getNormalizedSimpleStackFor(net.minecraftforge.fluids.Fluid fluid) {

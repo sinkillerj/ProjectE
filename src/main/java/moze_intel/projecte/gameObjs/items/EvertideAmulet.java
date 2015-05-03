@@ -73,7 +73,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			int meta = world.getBlockMetadata(x, y, z);
 			if (block == Blocks.cauldron && meta < 3)
 			{
-				((BlockCauldron) block).setWaterLevel(world, x, y, z, meta + 1);
+				((BlockCauldron) block).func_150024_a(world, x, y, z, meta + 1);
+				// Cauldron-specific setblock that has extra checks on metadata, called by vanilla water buckets
 			}
 		}
 
@@ -133,7 +134,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			if (!world.isRemote && !material.isSolid() && !material.isLiquid())
 			{
-				world.breakBlock(i, j, k, true);
+				world.func_147480_a(i, j, k, true);
 			}
 			world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
 		}

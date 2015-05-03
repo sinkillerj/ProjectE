@@ -100,7 +100,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 						if (blockEmc == 0)
 						{
-							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.instance().getSmeltingList();
+							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
 
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{

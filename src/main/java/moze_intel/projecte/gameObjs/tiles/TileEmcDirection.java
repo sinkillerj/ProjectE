@@ -94,6 +94,6 @@ public abstract class TileEmcDirection extends TileEmc
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
-		this.readFromNBT(packet.getNbtCompound());
+		this.readFromNBT(packet.func_148857_g());
 	}
 }

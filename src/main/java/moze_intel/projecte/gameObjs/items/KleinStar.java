@@ -25,7 +25,7 @@ public class KleinStar extends ItemPE
 	public KleinStar()
 	{
 		this.setUnlocalizedName("klein_star");
-		this.setMaxDurability(0);
+		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
 		this.setNoRepair();
@@ -87,7 +87,7 @@ public class KleinStar extends ItemPE
 		
 		if (!world.isRemote)
 		{
-			if (stack.getMetadata() == 5)
+			if (stack.getItemDamage() == 5)
 			{
 				player.addStat(AchievementHandler.KLEIN_MASTER, 1);
 			}
@@ -101,7 +101,7 @@ public class KleinStar extends ItemPE
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName()+ "_"+(stack.getMetadata() + 1);
+		return super.getUnlocalizedName()+ "_"+(stack.getItemDamage() + 1);
 	}
 	
 	@SideOnly(Side.CLIENT)

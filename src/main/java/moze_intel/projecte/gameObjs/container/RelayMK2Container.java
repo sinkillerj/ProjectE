@@ -16,7 +16,7 @@ public class RelayMK2Container extends Container
 	public RelayMK2Container(InventoryPlayer invPlayer, RelayMK2Tile relay)
 	{
 		this.tile = relay;
-		tile.openChest();
+		tile.openInventory();
 		
 		//Burn slot
 		this.addSlotToContainer(new SlotRelayInput(tile, 0, 84, 44));
@@ -43,7 +43,7 @@ public class RelayMK2Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeChest();
+		tile.closeInventory();
 	}
 	
 	@Override

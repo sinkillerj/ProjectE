@@ -205,7 +205,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public boolean isCustomInventoryName()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -223,10 +223,10 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public void openChest() { }
+	public void openInventory() { }
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 		this.markDirty();
 	}
