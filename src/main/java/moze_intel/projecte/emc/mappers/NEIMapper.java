@@ -35,7 +35,9 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	@Override
 	public String getDescription()
 	{
-		return "Reads Recipes from the GUIs that are displayed by NEI. ONLY WORKS IN SINGLEPLAYER!";
+		return "Reads Recipes from the GUIs that are displayed by NEI. THIS MAPPER DOES NOT WORK DURING STARTUP OR ON SERVERS!\n" +
+				"YOU HAVE TO USE /projecte_reloadEMC TO PREGENERATE VALUES IF YOU WANT TO USE THIS!";
+
 	}
 
 	@Override
@@ -66,7 +68,6 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
 		try {
-			int recipeCount = 0;
 			Collection craftinghandlers = getCraftingHandlersFromNEI();
 			if (craftinghandlers == null) return;
 			System.out.println("NEI has " + craftinghandlers.size() + " CraftingHandlers");
@@ -86,7 +87,6 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 					}
 				}
 			}
-			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
 		} catch (Exception e) {
 			System.out.println("Could not load Recipes from NEI");
 		}
