@@ -31,15 +31,15 @@ public class GemLegs extends GemArmorBase
     {
         if (world.isRemote)
         {
-            if (player.isSneaking() && !player.onGround)
+            if (player.isSneaking() && !player.onGround && player.motionY <= 0)
             {
-                player.motionY -= 0.1;
+                player.motionY *= 2;
             }
         }
 
         if (player.isSneaking())
         {
-            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - 2.5, player.posY - 2.5, player.posZ - 2.5, player.posX + 2.5, player.posY + 2.5, player.posZ + 2.5);
+            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
             WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
         }
     }

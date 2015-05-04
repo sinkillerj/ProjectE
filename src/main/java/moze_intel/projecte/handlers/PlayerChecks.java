@@ -239,13 +239,6 @@ public final class PlayerChecks
 			return true;
 		}
 		
-		ItemStack boots = player.getCurrentArmor(0);
-		
-		if (boots != null && boots.getItem() == ObjHandler.gemFeet)
-		{
-			return true;
-		}
-		
 		for (int i = 0; i <= 8; i++)
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);

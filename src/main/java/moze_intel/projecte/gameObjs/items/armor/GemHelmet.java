@@ -120,18 +120,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
             if (isNightVisionEnabled(stack))
             {
-                if (world.getBlockLightValue((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)) < 10)
-                {
-                    player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 220, 0));
-                }
-                else if (player.isPotionActive(Potion.nightVision.id))
-                {
-                    player.removePotionEffect(Potion.nightVision.id);
-                }
-            }
-            else if (player.isPotionActive(Potion.nightVision.id))
-            {
-                player.removePotionEffect(Potion.nightVision.id);
+                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 220, 0));
             }
 
             if (player.isInWater())

@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import com.google.common.collect.Multimap;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
@@ -7,6 +9,8 @@ import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.PEKeyBind;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -66,10 +70,7 @@ public class GemFeet extends GemArmorBase
         if (!world.isRemote)
         {
             EntityPlayerMP playerMP = ((EntityPlayerMP) player);
-            if (!playerMP.capabilities.allowFlying)
-            {
-                PlayerHelper.enableFlight(playerMP);
-            }
+            playerMP.fallDistance = 0;
 
             if (isStepAssistEnabled(stack))
             {
@@ -77,16 +78,27 @@ public class GemFeet extends GemArmorBase
                 {
                     playerMP.stepHeight = 1.0f;
                     PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
-
                     PlayerChecks.addPlayerStepChecks(playerMP);
                 }
             }
 
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 1, 4));
-
             if (!player.isSneaking())
             {
                 player.addPotionEffect(new PotionEffect(Potion.jump.id, 1, 4));
+            }
+        }
+        else
+        {
+            if (!player.onGround)
+            {
+                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed())
+                {
+                    player.motionY += 0.15;
+                }
+                if (player.motionY <= 0)
+                {
+                    player.motionY *= 0.90;
+                }
             }
         }
     }
@@ -107,5 +119,13 @@ public class GemFeet extends GemArmorBase
         String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
         tooltips.add(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
                 + e + StatCollector.translateToLocal(s));
+    }
+
+    @Override
+    public Multimap getAttributeModifiers(ItemStack stack)
+    {
+        Multimap multimap = super.getAttributeModifiers(stack);
+        multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Armor modifier", 1.0, 2));
+        return multimap;
     }
 }
