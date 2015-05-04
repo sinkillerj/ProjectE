@@ -89,8 +89,10 @@ public class EntityWaterProjectile extends EntityThrowable
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-
-			this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+			if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ))
+			{
+				this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+			}
 			this.setDead();
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)

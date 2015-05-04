@@ -59,6 +59,7 @@ public class PECore
 	public static final String VERSION = "@VERSION@";
 
 	public static File CONFIG_DIR;
+	public static File PREGENERATED_EMC_FILE;
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -77,7 +78,8 @@ public class PECore
 		{
 			CONFIG_DIR.mkdirs();
 		}
-		
+
+		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
 		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
 		CustomEMCParser.init();

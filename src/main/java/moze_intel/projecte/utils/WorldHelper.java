@@ -89,7 +89,21 @@ public final class WorldHelper
 		{
 			return;
 		}
-		world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
+
+		ItemHelper.compactItemList(drops);
+
+		if (ProjectEConfig.useLootBalls)
+		{
+			world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
+		}
+		else
+		{
+			for (ItemStack drop : drops)
+			{
+				spawnEntityItem(world, drop, x, y, z);
+			}
+		}
+
 	}
 
 	/**
@@ -382,7 +396,7 @@ public final class WorldHelper
 		}
 	}
 
-	public static void spawnEntityItem(World world, ItemStack stack, int x, int y, int z)
+	public static void spawnEntityItem(World world, ItemStack stack, double x, double y, double z)
 	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
 		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;

@@ -39,11 +39,12 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		World world = player.worldObj;
 		int requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		
-		if (!this.consumeFuel(player, stack, requiredEmc, true))
+		if (!consumeFuel(player, stack, requiredEmc, true))
 		{
 			return false;
 		}
-		
+
+		world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 		world.spawnEntityInWorld(new EntityLensProjectile(world, player, this.getCharge(stack)));
 		return true;
 	}
