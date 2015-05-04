@@ -36,7 +36,8 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	public String getDescription()
 	{
 		return "Reads Recipes from the GUIs that are displayed by NEI. THIS MAPPER DOES NOT WORK DURING STARTUP OR ON SERVERS!\n" +
-				"YOU HAVE TO USE /projecte_reloadEMC TO PREGENERATE VALUES IF YOU WANT TO USE THIS!";
+				"YOU HAVE TO USE /projecte_reloadEMC TO PREGENERATE VALUES IF YOU WANT TO USE THIS!\n" +
+				"This will also reveal additional configuration options in this file!";
 
 	}
 
@@ -80,9 +81,10 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 						continue;
 					}
 					TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
-					if (config.getBoolean(trh.getClass().getName(), "recipeHandlers", true,
+					if (config.getBoolean("enabled", getCategoryForRecipeHandler(trh), false, //Everything disabled by default
 							String.format("Has %s recipes for \"%s\" with identifier \"%s\"", trh.numRecipes(), trh.getRecipeName(), trh.getOverlayIdentifier())
-					)) {
+					))
+					{
 						doTemplateRecipeHandler(mapper, config, trh);
 					}
 				}
@@ -90,6 +92,11 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		} catch (Exception e) {
 			System.out.println("Could not load Recipes from NEI");
 		}
+	}
+
+	protected String getCategoryForRecipeHandler(TemplateRecipeHandler trh)
+	{
+		return "recipeHandlers." + trh.getClass().getName().replace('.', '_');
 	}
 
 	protected void doTemplateRecipeHandler(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, TemplateRecipeHandler trh)
