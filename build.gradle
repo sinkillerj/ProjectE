@@ -20,6 +20,9 @@ apply plugin: 'forge'
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
+runClient {
+    args "--noCoreSearch"
+}
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
@@ -55,6 +58,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.110:dev"
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
 }
 
 processResources
