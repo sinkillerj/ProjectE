@@ -78,7 +78,12 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 						System.out.println("Not TemplateRecipeHandler - ignoring");
 						continue;
 					}
-					doTemplateRecipeHandler(mapper, config, (TemplateRecipeHandler)recipeHandler);
+					TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
+					if (config.getBoolean(trh.getClass().getName(), "recipeHandlers", true,
+							String.format("Has %s recipes for \"%s\" with identifier \"%s\"", trh.numRecipes(), trh.getRecipeName(), trh.getOverlayIdentifier())
+					)) {
+						doTemplateRecipeHandler(mapper, config, trh);
+					}
 				}
 			}
 			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
