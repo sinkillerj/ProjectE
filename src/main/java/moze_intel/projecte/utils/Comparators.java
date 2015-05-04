@@ -2,13 +2,14 @@ package moze_intel.projecte.utils;
 
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.Comparator;
 
 public final class Comparators
 {
-	public static final Comparator<ItemStack> ITEMSTACK_DESCENDING = new Comparator<ItemStack>()
+	public static final Comparator<ItemStack> ITEMSTACK_EMC_DESCENDING = new Comparator<ItemStack>()
 	{
 		@Override
 		public int compare(ItemStack s1, ItemStack s2) 
@@ -29,7 +30,38 @@ public final class Comparators
 			return 0;
 		}
 	};
-	
+
+	public static final Comparator<ItemStack> ITEMSTACK_ASCENDING = new Comparator<ItemStack>() {
+		@Override
+		public int compare(ItemStack o1, ItemStack o2)
+		{
+			if ((o1 == null && o2 == null))
+			{
+				return 0;
+			}
+			if (o1 == null)
+			{
+				return Integer.MAX_VALUE;
+			}
+			if (o2 == null)
+			{
+				return Integer.MIN_VALUE;
+			}
+			if (ItemHelper.areItemStacksEqualIgnoreNBT(o1, o2))
+			{
+				return 0;
+			}
+			if (o1.getItem() == o2.getItem())
+			{
+				return o1.stackSize - o2.stackSize;
+			}
+			else
+			{
+				return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
+			}
+		}
+	};
+
 	public static final Comparator<SimpleStack> SIMPLESTACK_ASCENDING = new Comparator<SimpleStack>()
 	{
 		@Override

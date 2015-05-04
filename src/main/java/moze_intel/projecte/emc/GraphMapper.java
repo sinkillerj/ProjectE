@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,25 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 		}
 
 		public String toString() {
-			return "" + value + " + " + this.ingredientsWithAmount + " => " + outnumber + "x" + output;
+			return "" + value + " + " + ingredientsToString() + " => " + outnumber + "*" + output;
+		}
+
+		public String ingredientsToString() {
+			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
+			StringBuilder sb = new StringBuilder();
+			boolean first = true;
+			Iterator<Map.Entry<T,Integer>> iter = ingredientsWithAmount.entrySet().iterator();
+			if (iter.hasNext()) {
+				Map.Entry<T, Integer> entry = iter.next();
+				sb.append(entry.getValue()).append("*").append(entry.getKey().toString());
+				while(iter.hasNext()) {
+					entry = iter.next();
+					sb.append(" + ").append(entry.getValue()).append("*").append(entry.getKey().toString());
+				}
+			}
+
+
+			return sb.toString();
 		}
 
 		public boolean equals(Conversion other) {

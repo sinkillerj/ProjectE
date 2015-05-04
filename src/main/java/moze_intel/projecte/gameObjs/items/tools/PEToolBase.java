@@ -7,9 +7,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -191,6 +193,7 @@ public abstract class PEToolBase extends ItemMode
 			boolean hasSoundPlayed = false;
 
 			for (int i = x - charge; i <= x + charge; i++)
+			{
 				for (int j = z - charge; j <= z + charge; j++)
 				{
 					Block block = world.getBlock(i, y, j);
@@ -232,6 +235,11 @@ public abstract class PEToolBase extends ItemMode
 						}
 					}
 				}
+			}
+			if (hasAction)
+			{
+				player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
+			}
 		}
 	}
 
@@ -377,6 +385,10 @@ public abstract class PEToolBase extends ItemMode
 
 		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		if (!drops.isEmpty())
+		{
+			world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
 	}
 
 	/**
@@ -431,6 +443,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 		}
+		player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
 	}
 
@@ -542,7 +555,7 @@ public abstract class PEToolBase extends ItemMode
 
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
 		Block target = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-		if (target.getBlockHardness(player.worldObj, mop.blockX, mop.blockY, mop.blockZ) <= -1 || !canHarvestBlock(target, stack))
+		if (target.getBlockHardness(player.worldObj, mop.blockX, mop.blockY, mop.blockZ) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(target, player.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), stack)))
 		{
 			return;
 		}
@@ -565,5 +578,42 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
+		if (!drops.isEmpty())
+		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+		}
+	}
+
+
+	/**
+	 * Mines all ore veins in a Box around the player.
+	 */
+	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player) {
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+		int offset = this.getCharge(stack) + 3;
+		AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
+		List<ItemStack> drops = Lists.newArrayList();
+		World world = player.worldObj;
+
+		for (int x = (int) box.minX; x <= box.maxX; x++)
+			for (int y = (int) box.minY; y <= box.maxY; y++)
+				for (int z = (int) box.minZ; z <= box.maxZ; z++)
+				{
+					Block block = world.getBlock(x, y, z);
+
+					if (ItemHelper.isOre(block) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+					{
+						WorldHelper.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
+					}
+				}
+
+		if (!drops.isEmpty())
+		{
+			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ );
+			PlayerHelper.swingItem((EntityPlayerMP)player);
+		}
 	}
 }
