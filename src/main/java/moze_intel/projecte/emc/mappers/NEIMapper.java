@@ -78,42 +78,46 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 						System.out.println("Not TemplateRecipeHandler - ignoring");
 						continue;
 					}
-					try {
-						TemplateRecipeHandler trh = (TemplateRecipeHandler)recipeHandler;
-						trh.loadCraftingRecipes(trh.getOverlayIdentifier());
-						System.out.println(recipeHandler.numRecipes());
-						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
-							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
-							ItemStack outStack = recipeHandler.getResultStack(recipeNumber).item;
-							IngredientMap<NormalizedSimpleStack> ingredientsNSSMap = new IngredientMap<NormalizedSimpleStack>();
-							for (PositionedStack ingredient: ingredients)
-							{
-								NormalizedSimpleStack ingredientNSS;
-								if (ingredient.items.length == 1) {
-									ingredientNSS = NormalizedSimpleStack.getNormalizedSimpleStackFor(ingredient.items[0]);
-									ingredientsNSSMap.addIngredient(ingredientNSS, ingredient.items[0].stackSize);
-								} else {
-									ingredientNSS = NormalizedSimpleStack.createGroup(Arrays.asList(ingredient.items));
-									Map<NormalizedSimpleStack, Integer> groupCountMap = Maps.newHashMap();
-									for (ItemStack itemStack: ingredient.items) {
-										groupCountMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), itemStack.stackSize);
-										mapper.addConversionMultiple(1, ingredientNSS, groupCountMap);
-										groupCountMap.clear();
-									}
-									ingredientsNSSMap.addIngredient(ingredientNSS, 1);
-								}
-
-							}
-							mapper.addConversionMultiple(outStack.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(outStack), ingredientsNSSMap.getMap());
-						}
-					} catch (Exception e) {
-						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
-					}
+					doTemplateRecipeHandler(mapper, config, (TemplateRecipeHandler)recipeHandler);
 				}
 			}
 			System.out.println("Loaded " + recipeCount + " Recipes from NEI");
 		} catch (Exception e) {
 			System.out.println("Could not load Recipes from NEI");
+		}
+	}
+
+	protected void doTemplateRecipeHandler(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, TemplateRecipeHandler trh)
+	{
+		try {
+			trh.loadCraftingRecipes(trh.getOverlayIdentifier());
+			System.out.println(trh.numRecipes());
+			for (int recipeNumber = 0; recipeNumber < trh.numRecipes(); recipeNumber++) {
+				List<PositionedStack> ingredients = trh.getIngredientStacks(recipeNumber);
+				ItemStack outStack = trh.getResultStack(recipeNumber).item;
+				IngredientMap<NormalizedSimpleStack> ingredientsNSSMap = new IngredientMap<NormalizedSimpleStack>();
+				for (PositionedStack ingredient: ingredients)
+				{
+					NormalizedSimpleStack ingredientNSS;
+					if (ingredient.items.length == 1) {
+						ingredientNSS = NormalizedSimpleStack.getNormalizedSimpleStackFor(ingredient.items[0]);
+						ingredientsNSSMap.addIngredient(ingredientNSS, ingredient.items[0].stackSize);
+					} else {
+						ingredientNSS = NormalizedSimpleStack.createGroup(Arrays.asList(ingredient.items));
+						Map<NormalizedSimpleStack, Integer> groupCountMap = Maps.newHashMap();
+						for (ItemStack itemStack: ingredient.items) {
+							groupCountMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), itemStack.stackSize);
+							mapper.addConversionMultiple(1, ingredientNSS, groupCountMap);
+							groupCountMap.clear();
+						}
+						ingredientsNSSMap.addIngredient(ingredientNSS, 1);
+					}
+
+				}
+				mapper.addConversionMultiple(outStack.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(outStack), ingredientsNSSMap.getMap());
+			}
+		} catch (Exception e) {
+			System.out.println("Could not get Recipes from IRecipeHandler" + trh.toString());
 		}
 	}
 }
