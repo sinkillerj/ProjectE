@@ -49,7 +49,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 				continue;
 			}
 
-			addMapping(new ItemStack(Blocks.double_plant, 1, i), 16);
+			addMapping(new ItemStack(Blocks.double_plant, 1, i), 32);
 		}
 
 		addMapping(new ItemStack(Blocks.yellow_flower), 16);
@@ -120,13 +120,8 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.quartz), 256);
 		addMapping(new ItemStack(Items.dye, 1, 4), 864);
 
-		for (int i = 0; i < 15; i++) {
-			if (i == 3 || i == 4) {
-				continue;
-			}
-
-			addMapping(new ItemStack(Items.dye, 1, i), 16);
-		}
+		//ink sac
+		addMapping(new ItemStack(Items.dye, 1, 0), 16);
 
 		addMapping(new ItemStack(Items.enchanted_book), 2048);
 		addMapping(new ItemStack(Items.emerald), 16384);

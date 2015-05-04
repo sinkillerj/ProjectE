@@ -273,6 +273,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
 		World world = player.worldObj;
+		world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 		world.spawnEntityInWorld(new EntityMobRandomizer(world, player));
 		return true;
 	}

@@ -107,9 +107,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 					if (world.isAirBlock(i, j, k))
 					{
+						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 						placeWater(world, i, j, k);
+						PlayerHelper.swingItem(((EntityPlayerMP) player));
 					}
-					PlayerHelper.swingItem(((EntityPlayerMP) player));
 				}
 			}
 		}
@@ -190,6 +191,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		if (!world.provider.isHellWorld)
 		{
+			world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 			world.spawnEntityInWorld(new EntityWaterProjectile(world, player));
 			return true;
 		}

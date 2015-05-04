@@ -2,11 +2,13 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
+import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 public class ResetEmcCMD extends ProjectEBaseCMD
 {
@@ -65,9 +67,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			ThreadReloadEMCMap.runEMCRemap(sender.getEntityWorld());
-
-			sendSuccess(sender, new ChatComponentTranslation("pe.command.reset.success", name));
+			ThreadReloadEMCMap.runEMCRemap(sender, ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.reset.success", name), EnumChatFormatting.GREEN));
 		}
 		else
 		{
