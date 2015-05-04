@@ -6,13 +6,18 @@ import moze_intel.projecte.emc.SimpleStack;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +38,25 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	@Override
 	public boolean isAvailable()
 	{
-		return false;
+		return getCraftingHandlersFromNEI() != null;
+	}
+
+	protected Collection getCraftingHandlersFromNEI() {
+		try
+		{
+			Class clazz = Class.forName("codechicken.nei.recipe.GuiCraftingRecipe");
+			Field f = clazz.getDeclaredField("craftinghandlers");
+			Object craftinghandlers = f.get(null);
+			if (craftinghandlers instanceof Collection) {
+				return (Collection)craftinghandlers;
+			} else {
+				return null;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -41,10 +64,13 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 	{
 		try {
 			int recipeCount = 0;
-			System.out.println("NEI has " + GuiCraftingRecipe.craftinghandlers.size() + " CraftingHandlers");
-			for (IRecipeHandler recipeHandler: GuiCraftingRecipe.craftinghandlers) {
-				System.out.println(recipeHandler);
-				if (recipeHandler != null) {
+			Collection craftinghandlers = getCraftingHandlersFromNEI();
+			if (craftinghandlers == null) return;
+			System.out.println("NEI has " + craftinghandlers.size() + " CraftingHandlers");
+			for (Object o: craftinghandlers) {
+				if (o != null && o instanceof IRecipeHandler) {
+					IRecipeHandler recipeHandler = (IRecipeHandler)o;
+					System.out.println(recipeHandler);
 					if (!(recipeHandler instanceof TemplateRecipeHandler)) {
 						System.out.println("Not TemplateRecipeHandler - ignoring");
 						continue;
