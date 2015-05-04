@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.SimpleStack;
 
@@ -10,6 +11,7 @@ import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
@@ -82,21 +85,26 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 						for (int recipeNumber = 0; recipeNumber < recipeHandler.numRecipes(); recipeNumber++) {
 							List<PositionedStack> ingredients = recipeHandler.getIngredientStacks(recipeNumber);
 							ItemStack outStack = recipeHandler.getResultStack(recipeNumber).item;
-							List<NormalizedSimpleStack> ingredientsNSS = Lists.newLinkedList();
+							IngredientMap<NormalizedSimpleStack> ingredientsNSSMap = new IngredientMap<NormalizedSimpleStack>();
 							for (PositionedStack ingredient: ingredients)
 							{
 								NormalizedSimpleStack ingredientNSS;
 								if (ingredient.items.length == 1) {
 									ingredientNSS = NormalizedSimpleStack.getNormalizedSimpleStackFor(ingredient.items[0]);
+									ingredientsNSSMap.addIngredient(ingredientNSS, ingredient.items[0].stackSize);
 								} else {
 									ingredientNSS = NormalizedSimpleStack.createGroup(Arrays.asList(ingredient.items));
+									Map<NormalizedSimpleStack, Integer> groupCountMap = Maps.newHashMap();
 									for (ItemStack itemStack: ingredient.items) {
-										mapper.addConversion(1, ingredientNSS, Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack)));
+										groupCountMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), itemStack.stackSize);
+										mapper.addConversionMultiple(1, ingredientNSS, groupCountMap);
+										groupCountMap.clear();
 									}
+									ingredientsNSSMap.addIngredient(ingredientNSS, 1);
 								}
-								ingredientsNSS.add(ingredientNSS);
+
 							}
-							mapper.addConversion(outStack.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(outStack), ingredientsNSS);
+							mapper.addConversionMultiple(outStack.stackSize, NormalizedSimpleStack.getNormalizedSimpleStackFor(outStack), ingredientsNSSMap.getMap());
 						}
 					} catch (Exception e) {
 						System.out.println("Could not get Recipes from IRecipeHandler" + recipeHandler.toString());
