@@ -107,7 +107,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 
