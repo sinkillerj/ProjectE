@@ -33,10 +33,6 @@ public final class EMCMapper
 
 	public static void map()
 	{
-		final String PREGENERATE_CONFIG_COMMENT = String.format(
-				"When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
-						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.",
-				PECore.PREGENERATED_EMC_FILE);
 
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
@@ -52,7 +48,8 @@ public final class EMCMapper
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
-		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, PREGENERATE_CONFIG_COMMENT);
+		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
+						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
 		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap()))
 		{
