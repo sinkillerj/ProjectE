@@ -1,3 +1,17 @@
+###Version 1.7.10-PE1.4.6
+* NEW: More EE2 sounds added
+* NEW: EMC values can now be pregenerated via config. Pack authors can use this feature to decrease load times
+* NEW: Config option to log possible EMC exploits
+* NEW: Italian language file
+* NEW: German language file updates
+* NEW: Config option to use old PE vein mining instead of the EE2 accurate version
+* NEW: Test rendering code for future Patreon/code contributor cosmetics. Look for sinkillerj on your server to see it in action
+* FIXED: Collector log spam caused by a naughty mod not checking if a inventory can accept a item
+* FIXED: Possible workaround for the rare alchemical bag issues
+* CHANGE: Lootballs have been optimized further
+* CHANGE: Lootballs can be disabled via config
+* CHANGE: Minimum Forge version bumped to 1291
+
 ###Version 1.7.10-PE1.4.5
 * NEW: registerCustomEMC has returned to the API. If a mod sets values maliciously or undesirably it can be blocked in the mapping config
 * NEW: EMC remapping sends a chat message upon completion
