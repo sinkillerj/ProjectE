@@ -30,6 +30,13 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
+	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	{
+		attackWithCharge(stack, damaged, damager, 1.0F);
+		return true;
+	}
+
+	@Override
 	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_)
 	{
 		if (p_150893_2_ == Blocks.web)

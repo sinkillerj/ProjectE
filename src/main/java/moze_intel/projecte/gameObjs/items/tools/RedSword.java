@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -16,13 +15,6 @@ public class RedSword extends DarkSword
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "sword";
-	}
-	
-	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
-	{
-		attackWithCharge(stack, damaged, damager, REDSWORD_BASE_ATTACK);
-		return true;
 	}
 
 	@Override

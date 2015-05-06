@@ -40,6 +40,13 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
+	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	{
+		attackWithCharge(stack, damaged, damager, 1.0F);
+		return true;
+	}
+
+	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
 	{
 		// Shear

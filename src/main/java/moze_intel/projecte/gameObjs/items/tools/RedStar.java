@@ -51,6 +51,13 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
+	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	{
+		attackWithCharge(stack, damaged, damager, 1.0F);
+		return true;
+	}
+
+	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
 	{
 		digBasedOnMode(stack, world, block, x, y, z, eLiving);
