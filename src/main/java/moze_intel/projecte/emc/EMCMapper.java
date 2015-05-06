@@ -34,8 +34,8 @@ public final class EMCMapper
 	public static void map()
 	{
 		final String PREGENERATE_CONFIG_COMMENT = String.format(
-				"When the next EMC mapping occurs write the result to %s and only ever run the mapping again," +
-						" when that file does not exist, this setting is set to false or an error occurred parsing that file.",
+				"When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
+						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.",
 				PECore.PREGENERATED_EMC_FILE);
 
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
@@ -63,9 +63,9 @@ public final class EMCMapper
 
 
 			graphMapper.setLogFoundExploits(config.getBoolean("logEMCExploits", "general", true,
-					"Log known EMC Exploits. This can and will NOT find all the exploits! " +
+					"Log known EMC Exploits. This can not and will not find all possible exploits. " +
 							"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
-							"Exploits that derive from conversions, that are unknown to ProjectE will not be found!"
+							"Exploits that derive from conversions that are unknown to ProjectE will not be found."
 			));
 
 			PELogger.logInfo("Starting to collect Mappings...");
