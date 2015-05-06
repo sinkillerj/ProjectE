@@ -5,6 +5,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
+import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
 import moze_intel.projecte.events.TransmutationRenderingEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -77,6 +78,10 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 		FMLCommonHandler.instance().bus().register(new KeyPressEvent());
+
+		PlayerRender pr = new PlayerRender();
+		MinecraftForge.EVENT_BUS.register(pr);
+		FMLCommonHandler.instance().bus().register(pr);
 	}
 }
 
