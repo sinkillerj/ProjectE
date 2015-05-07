@@ -12,19 +12,34 @@ import net.minecraftforge.common.util.Constants.NBT;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import moze_intel.projecte.utils.PELogger;
+
 public final class AlchemicalBags 
 {
 	private static LinkedHashMap<String, LinkedHashMap<Byte, ItemStack[]>> MAP = new LinkedHashMap();
 	
 	public static ItemStack[] get(String player, byte bagColour)
 	{
+		LinkedHashMap<Byte, ItemStack[]> getdata;
+
 		if (MAP.containsKey(player))
 		{
-			LinkedHashMap<Byte, ItemStack[]> data = MAP.get(player);
+			getdata = MAP.get(player);
 			
-			if (data.containsKey(bagColour))
+
+			if (getdata == null)
 			{
-				return data.get(bagColour).clone();
+				PELogger.logFatal("AlchemicalBags getdata returned null, retrying. Please send this log to the ProjectE developers.");
+				getdata = MAP.get(player);
+				if (getdata == null)
+				{
+					PELogger.logFatal("AlchemicalBags getdata retry failed. Please send this log to the ProjectE developers.");
+				}
+			}
+			
+			if (getdata.containsKey(bagColour))
+			{
+				return getdata.get(bagColour).clone();
 			}
 		}
 		
@@ -33,21 +48,23 @@ public final class AlchemicalBags
 	
 	public static void set(String player, byte bagColour, ItemStack[] inv)
 	{
-		LinkedHashMap<Byte, ItemStack[]> data;
+		LinkedHashMap<Byte, ItemStack[]> setdata;
+
 		if (MAP.containsKey(player))
 		{
-			data = MAP.get(player);
+			setdata = MAP.get(player);
 		}
 		else
 		{
-			data = new LinkedHashMap();
-			MAP.put(player, data);
+			setdata = new LinkedHashMap();
+			MAP.put(player, setdata);
 		}
-		if (data == null) {
-			data = new LinkedHashMap();
-			MAP.put(player, data);
+		if (setdata == null)
+		{
+			setdata = new LinkedHashMap();
+			MAP.put(player, setdata);
 		}
-		data.put(bagColour, inv);
+		setdata.put(bagColour, inv);
 		
 		IOHandler.markDirty();
 	}
