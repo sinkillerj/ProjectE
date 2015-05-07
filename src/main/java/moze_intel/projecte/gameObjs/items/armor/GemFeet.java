@@ -60,7 +60,7 @@ public class GemFeet extends GemArmorBase
 
         EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new ChatComponentTranslation("pe.gem.stepassist_tooltip")
+        player.addChatMessage(new ChatComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
                 .appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
     }
 
