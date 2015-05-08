@@ -101,21 +101,35 @@ public class Relay extends BlockDirection
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
-		if (tier == 1)
+		switch (tier)
 		{
-			return new RelayMK1Tile();
+			case 1: return new RelayMK1Tile();
+			case 2: return new RelayMK2Tile();
+			case 3: return new RelayMK3Tile();
+			default: return null;
 		}
-		
-		if (tier == 2) 
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(x, y, z));
+		double proportion = relay.getStoredEmc() / relay.getMaxEmc();
+		if (relay.getStoredEmc() == 0)
 		{
-			return new RelayMK2Tile();
+			return 0;
 		}
-		
-		if (tier == 3) 
+		if (relay.getStoredEmc() == relay.getMaxEmc())
 		{
-			return new RelayMK3Tile();
+			return 15;
 		}
-		
-		return null;
+
+		return (int) Math.round(proportion * 13 + 1);
 	}
 }

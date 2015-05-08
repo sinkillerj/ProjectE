@@ -10,6 +10,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -72,5 +73,17 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("obsidian");
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return Container.calcRedstoneFromInventory(((AlchChestTile) world.getTileEntity(x, y, z)));
 	}
 }

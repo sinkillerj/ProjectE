@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
@@ -11,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -87,5 +89,11 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("obsidian");
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return Container.calcRedstoneFromInventory(((CondenserTile) world.getTileEntity(x, y, z)));
 	}
 }
