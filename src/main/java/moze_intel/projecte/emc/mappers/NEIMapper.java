@@ -129,12 +129,12 @@ public class NEIMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 					NormalizedSimpleStack ingredientNSS;
 					if (ingredient.items.length == 1) {
 						ingredientNSS = NormalizedSimpleStack.getNormalizedSimpleStackFor(ingredient.items[0]);
-						ingredientsNSSMap.addIngredient(ingredientNSS, ingredient.items[0].stackSize);
+						ingredientsNSSMap.addIngredient(ingredientNSS, Math.max(ingredient.items[0].stackSize, 1));
 					} else {
 						ingredientNSS = NormalizedSimpleStack.createGroup(Arrays.asList(ingredient.items));
 						Map<NormalizedSimpleStack, Integer> groupCountMap = Maps.newHashMap();
 						for (ItemStack itemStack: ingredient.items) {
-							groupCountMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), itemStack.stackSize);
+							groupCountMap.put(NormalizedSimpleStack.getNormalizedSimpleStackFor(itemStack), Math.max(itemStack.stackSize, 1));
 							mapper.addConversionMultiple(1, ingredientNSS, groupCountMap);
 							groupCountMap.clear();
 						}
