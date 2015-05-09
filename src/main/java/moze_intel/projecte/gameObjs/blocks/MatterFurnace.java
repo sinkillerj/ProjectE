@@ -115,13 +115,15 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		{
 			if (isHighTier)
 				world.setBlock(x, y, z, ObjHandler.rmFurnaceOn);
-			else world.setBlock(x, y, z, ObjHandler.dmFurnaceOn);
+			else
+				world.setBlock(x, y, z, ObjHandler.dmFurnaceOn);
 		}
 		else
 		{
 			if (isHighTier)
 				world.setBlock(x, y, z, ObjHandler.rmFurnaceOff);
-			else world.setBlock(x, y, z, ObjHandler.dmFurnaceOff);
+			else
+				world.setBlock(x, y, z, ObjHandler.dmFurnaceOff);
 		}
 
 		isUpdating = false;
