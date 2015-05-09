@@ -268,7 +268,7 @@ pe.pedestal.item_disabled=Podestfunktion wurde deaktiviert!
 pe.pedestal.on_pedestal=Auf Podest:
 pe.pedestal.shortname=DM-Podest
 pe.pedestal.tooltip1=Shift + Rechtsklick um GUI zu öffnen
-pe.pedestal.tooltip2=Rechtsklick zum aktivieren!
+pe.pedestal.tooltip2=Rechtsklick zum Aktivieren!
 
 pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel

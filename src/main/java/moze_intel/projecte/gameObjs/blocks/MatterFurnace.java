@@ -45,6 +45,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		
 		if (isActive) 
 		{
+			this.setCreativeTab(null);
 			this.setLightLevel(0.875F);
 		}
 	}
@@ -191,8 +192,8 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		this.blockIcon = register.registerIcon("projecte:"+textureName);
-		front = register.registerIcon("projecte:matter_furnace/"+(isActive ? (textureName+"_on") : (textureName + "_off")));
+		this.blockIcon = register.registerIcon("projecte:" + textureName);
+		front = register.registerIcon("projecte:matter_furnace/" + (isActive ? (textureName + "_on") : (textureName + "_off")));
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -209,7 +210,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int x, int y, int z)
 	{
-		return isHighTier ? isActive ? Item.getItemFromBlock(ObjHandler.rmFurnaceOn) : Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
 	}
 
 	@Override
