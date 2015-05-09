@@ -228,7 +228,7 @@ pe.gem.stepassist_tooltip=Step Assist:
 pe.gem.stepassist.prompt=Press %s to toggle Step Assist
 
 pe.gemdensity.blacklist=Blacklist
-pe.gemdensity.mode_switch=Set target to %s
+pe.gemdensity.mode_switch=Set target to
 pe.gemdensity.tooltip1=Condenses items on the go
 pe.gemdensity.tooltip2=Current target: %s
 pe.gemdensity.tooltip3=Press %s to change target

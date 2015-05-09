@@ -317,8 +317,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch")
-				.appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
+		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
 	}
 	
 	@Override
@@ -329,7 +328,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), StatCollector.translateToLocal(getTargetName(stack))));
 		}
 		
 		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
