@@ -21,8 +21,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraft.util.Tuple;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
@@ -121,6 +119,10 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             if (isNightVisionEnabled(stack))
             {
                 player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 220, 0));
+            }
+            else
+            {
+                player.removePotionEffect(Potion.nightVision.id);
             }
 
             if (player.isInWater())

@@ -1,8 +1,10 @@
 package moze_intel.projecte.proxies;
 
+import com.google.common.collect.Sets;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -31,17 +33,24 @@ import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.PEKeyBind;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.Set;
+
 public class ClientProxy extends CommonProxy
-{	
+{
+	public final Set<KeyBinding> peMCKeyBinds = Sets.newHashSet();
+
 	public void registerKeyBinds()
 	{
 		for (PEKeyBind k : PEKeyBind.values())
 		{
-			ClientRegistry.registerKeyBinding(k.mcKeyBinding);
+			KeyBinding mcK = new KeyBinding(k.keyName, k.keyCode, PECore.MODID);
+			peMCKeyBinds.add(mcK);
+			ClientRegistry.registerKeyBinding(mcK);
 		}
 	}
 

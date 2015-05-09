@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.PECore;
-import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
 public enum PEKeyBind
@@ -14,12 +12,22 @@ public enum PEKeyBind
 
 	public final String keyName;
 	public final int keyCode;
-	public final KeyBinding mcKeyBinding;
 
 	PEKeyBind(String keyName, int keyCode)
 	{
 		this.keyName = keyName;
 		this.keyCode = keyCode;
-		this.mcKeyBinding = new KeyBinding(keyName, keyCode, PECore.MODNAME);
+	}
+
+	public static PEKeyBind getFromName(String name)
+	{
+		for (PEKeyBind k : values())
+		{
+			if (k.keyName.equals(name))
+			{
+				return k;
+			}
+		}
+		return null;
 	}
 }

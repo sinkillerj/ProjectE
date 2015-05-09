@@ -17,6 +17,15 @@ import net.minecraft.util.Vec3;
  */
 public final class PlayerHelper
 {
+	public static void disableFlight(EntityPlayerMP playerMP)
+	{
+		if (!playerMP.capabilities.isCreativeMode)
+		{
+			updateClientServerFlight(playerMP, false);
+			PlayerChecks.removePlayerFlyChecks(playerMP);
+		}
+	}
+
 	public static void enableFlight(EntityPlayerMP playerMP)
 	{
 		if (playerMP.capabilities.isCreativeMode)
@@ -24,7 +33,7 @@ public final class PlayerHelper
 			return;
 		}
 
-		updateClientFlight(playerMP, true);
+		updateClientServerFlight(playerMP, true);
 		PlayerChecks.addPlayerFlyChecks(playerMP);
 	}
 
@@ -67,7 +76,7 @@ public final class PlayerHelper
 		PacketHandler.sendTo(new SwingItemPKT(), player);
 	}
 
-	public static void updateClientFlight(EntityPlayerMP player, boolean state)
+	public static void updateClientServerFlight(EntityPlayerMP player, boolean state)
 	{
 		PacketHandler.sendTo(new SetFlyPKT(state), player);
 		player.capabilities.allowFlying = state;

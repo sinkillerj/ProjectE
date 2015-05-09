@@ -2,7 +2,6 @@ package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -31,7 +30,7 @@ public final class PlayerChecks
 			{
 				if (player.capabilities.allowFlying)
 				{
-					PlayerHelper.updateClientFlight(player, false);
+					PlayerHelper.updateClientServerFlight(player, false);
 				}
 
 				iter.remove();
@@ -78,7 +77,7 @@ public final class PlayerChecks
 	{
 		if (canPlayerFly(playerMP))
 		{
-			PlayerHelper.updateClientFlight(playerMP, true);
+			PlayerHelper.updateClientServerFlight(playerMP, true);
 		}
 
 		if (isPlayerFireImmune(playerMP))

@@ -82,6 +82,11 @@ public class GemFeet extends GemArmorBase
                 }
             }
 
+            if (!player.capabilities.allowFlying)
+            {
+                PlayerHelper.enableFlight(playerMP);
+            }
+
             if (!player.isSneaking())
             {
                 player.addPotionEffect(new PotionEffect(Potion.jump.id, 1, 4));
@@ -91,13 +96,18 @@ public class GemFeet extends GemArmorBase
         {
             if (!player.onGround)
             {
-                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed())
+                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed() && !player.capabilities.isFlying)
                 {
-                    player.motionY += 0.15;
+                    player.motionY += 0.18;
                 }
                 if (player.motionY <= 0)
                 {
                     player.motionY *= 0.90;
+                }
+                if (!player.capabilities.isFlying && (player.moveStrafing > 0 || player.moveForward > 0))
+                {
+                    player.motionX *= 1.1;
+                    player.motionZ *= 1.1;
                 }
             }
         }
