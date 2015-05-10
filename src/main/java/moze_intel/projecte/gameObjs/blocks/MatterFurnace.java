@@ -7,7 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.utils.ComparatorCalculators;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -228,6 +228,6 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
 	{
-		return ComparatorCalculators.getForMatterFurnace(world, x, y, z);
+		return ComparatorHelper.getForMatterFurnace(world, x, y, z);
 	}
 }

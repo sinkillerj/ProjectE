@@ -5,13 +5,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.utils.ComparatorCalculators;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -85,6 +84,6 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
 	{
-		return ComparatorCalculators.getForAlchChest(world, x, y, z);
+		return ComparatorHelper.getForAlchChest(world, x, y, z);
 	}
 }

@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -119,17 +120,6 @@ public class Relay extends BlockDirection
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
 	{
-		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(x, y, z));
-		double proportion = relay.getStoredEmc() / relay.getMaxEmc();
-		if (relay.getStoredEmc() == 0)
-		{
-			return 0;
-		}
-		if (relay.getStoredEmc() == relay.getMaxEmc())
-		{
-			return 15;
-		}
-
-		return (int) Math.round(proportion * 13 + 1);
+		return ComparatorHelper.getForRelay(world, x, y, z);
 	}
 }
