@@ -6,6 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.ComparatorCalculators;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -94,6 +95,6 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
 	{
-		return Container.calcRedstoneFromInventory(((CondenserTile) world.getTileEntity(x, y, z)));
+		return ComparatorCalculators.getForCondenser(world, x, y, z);
 	}
 }
