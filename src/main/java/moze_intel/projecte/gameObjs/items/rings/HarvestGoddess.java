@@ -265,7 +265,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 						}
 					}
 					// All modded
-					// Cactus, Reeds, Netherwart
+					// Cactus, Reeds, Netherwart, Flower
 					else if (crop instanceof IPlantable)
 					{
 						if (world.rand.nextInt(chance / 4) == 0)
