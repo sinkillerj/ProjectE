@@ -5,6 +5,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.IGrowable;
 import net.minecraft.entity.Entity;
@@ -46,16 +47,16 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		if (stack.getItemDamage() != 0)
 		{
-			double storedEmc = this.getEmc(stack);
+			double storedEmc = getEmc(stack);
 			
-			if (storedEmc == 0 && !this.consumeFuel(player, stack, 64, true))
+			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
 				stack.setItemDamage(0);
 			}
 			else
 			{
 				growNearbyRandomly(true, world, player);
-				this.removeEmc(stack, 0.32F);
+				removeEmc(stack, 0.32F);
 			}
 		}
 		else
@@ -212,43 +213,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(ItemStack[] inv, Class<?> type)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && type.isInstance(stack.getItem()))
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		return null;
-	}
-	
-	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && stack.getItem() == item && stack.getItemDamage() == meta)
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		
-		return null;
-	}
-	
 	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
@@ -278,6 +242,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				{
 					Block crop = world.getBlock(x, y, z);
 
+					// Vines, leaves, tallgrass, deadbush, doubleplants
 					if (crop instanceof IShearable)
 					{
 						if (harvest)
@@ -285,19 +250,22 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 							world.func_147480_a(x, y, z, true);
 						}
 					}
+					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
+					// Mushroom, potato, sapling, stems, tallgrass
 					else if (crop instanceof IGrowable)
 					{
 						IGrowable growable = (IGrowable) crop;
-
 						if(harvest && !growable.func_149851_a(world, x, y, z, false))
 						{
 							world.func_147480_a(x, y, z, true);
 						}
-						else if (world.rand.nextInt(chance) == 0)
+						else if (world.rand.nextInt(crop == Blocks.grass ? chance : chance * 20) == 0)
 						{
 							growable.func_149853_b(world, world.rand, x, y, z);
 						}
 					}
+					// All modded
+					// Cactus, Reeds, Netherwart
 					else if (crop instanceof IPlantable)
 					{
 						if (world.rand.nextInt(chance / 4) == 0)
@@ -310,6 +278,10 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 						if (harvest)
 						{
+							if (crop instanceof BlockFlower)
+							{
+								world.func_147480_a(x, y, z, true);
+							}
 							if (crop == Blocks.reeds || crop == Blocks.cactus)
 							{
 								boolean shouldHarvest = true;
@@ -331,6 +303,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 									}
 								}
 							}
+							if (crop == Blocks.nether_wart)
+							{
+								int meta = ((IPlantable) crop).getPlantMetadata(world, x, y, z);
+								if (meta == 3)
+								{
+									world.func_147480_a(x, y, z, true);
+								}
+							}
 						}
 					}
 				}
@@ -346,7 +326,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	{
 		if (stack.getItemDamage() == 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, true))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, true))
 			{
 				//NOOP (used to be sounds)
 			}
