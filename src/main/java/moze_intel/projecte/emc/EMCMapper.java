@@ -97,6 +97,7 @@ public final class EMCMapper
 		}
 		config.save();
 
+		emc.clear();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
 			{
