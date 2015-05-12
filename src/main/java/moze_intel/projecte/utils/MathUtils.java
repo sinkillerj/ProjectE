@@ -39,11 +39,11 @@ public final class MathUtils
 	public static int scaleToRedstone(double currentAmount, double max)
 	{
 		double proportion = currentAmount / max;
-		if (currentAmount == 0)
+		if (currentAmount <= 0)
 		{
 			return 0;
 		}
-		if (currentAmount == max)
+		if (currentAmount >= max)
 		{
 			return 15;
 		}
