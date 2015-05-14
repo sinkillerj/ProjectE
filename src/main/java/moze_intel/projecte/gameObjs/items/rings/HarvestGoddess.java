@@ -259,7 +259,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 						{
 							world.func_147480_a(x, y, z, true);
 						}
-						else if (world.rand.nextInt(crop == Blocks.grass ? chance : chance * 20) == 0)
+						else if (world.rand.nextInt(chance) == 0)
 						{
 							growable.func_149853_b(world, world.rand, x, y, z);
 						}
