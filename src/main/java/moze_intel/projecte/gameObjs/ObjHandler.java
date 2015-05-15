@@ -227,26 +227,26 @@ public class ObjHandler
 	public static void register()
 	{
 		//Blocks
-		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "Alchemical Chest");
-		GameRegistry.registerBlock(confuseTorch, "Interdiction Torch");
-		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "Transmutation Stone");
-		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "Condenser");
-		GameRegistry.registerBlock(condenserMk2, "Condenser MK2");
-		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "RM Furnace");
-		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
-		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
-		GameRegistry.registerBlock(dmFurnaceOn, "DM Furnace Lit");
-		GameRegistry.registerBlock(dmPedestal, "DM Pedestal");
-		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "Matter Block");
-		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "Fuel Block");
-		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "Collector MK1");
-		GameRegistry.registerBlock(collectorMK2, ItemRelayBlock.class, "Collector MK2");
-		GameRegistry.registerBlock(collectorMK3, ItemRelayBlock.class, "Collector MK3");
-		GameRegistry.registerBlock(relay, ItemRelayBlock.class, "Relay MK1");
-		GameRegistry.registerBlock(relayMK2, ItemRelayBlock.class, "Realy MK2");
-		GameRegistry.registerBlock(relayMK3, ItemRelayBlock.class, "Relay MK3");
-		GameRegistry.registerBlock(novaCatalyst, "Nova Catalyst");
-		GameRegistry.registerBlock(novaCataclysm, "Nova Cataclysm");
+		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "alchemical_chest");
+		GameRegistry.registerBlock(confuseTorch, "interdiction_torch");
+		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "transmutation_stone");
+		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "condenser");
+		GameRegistry.registerBlock(condenserMk2, "condenser_mk2");
+		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "rm_furnace");
+		GameRegistry.registerBlock(rmFurnaceOn, "rm_furnace_lit");
+		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "dm_furnace");
+		GameRegistry.registerBlock(dmFurnaceOn, "dm_furnace_lit");
+		GameRegistry.registerBlock(dmPedestal, "dm_pedestal");
+		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "matter_block");
+		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "fuel_block");
+		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "collector_mk1");
+		GameRegistry.registerBlock(collectorMK2, ItemRelayBlock.class, "collector_mk2");
+		GameRegistry.registerBlock(collectorMK3, ItemRelayBlock.class, "collector_mk3");
+		GameRegistry.registerBlock(relay, ItemRelayBlock.class, "relay_mk1");
+		GameRegistry.registerBlock(relayMK2, ItemRelayBlock.class, "relay_mk2");
+		GameRegistry.registerBlock(relayMK3, ItemRelayBlock.class, "relay_mk3");
+		GameRegistry.registerBlock(novaCatalyst, "nova_catalyst");
+		GameRegistry.registerBlock(novaCataclysm, "nova_cataclysm");
 		
 		//Items
 		GameRegistry.registerItem(philosStone, philosStone.getUnlocalizedName());
