@@ -82,6 +82,21 @@ public class GUITransmuteTablet extends GuiContainer
 			
 			table.learnFlag--;
 		}
+
+		if (table.unlearnFlag > 0)
+		{
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned0"), 97, 22, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned1"), 98, 30, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned2"), 99, 38, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned3"), 100, 46, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned4"), 101, 54, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned5"), 102, 62, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned6"), 103, 70, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned7"), 104, 78, 4210752);
+			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned8"), 107, 86, 4210752);
+			
+			table.unlearnFlag--;
+		}
 	}
 	
 	@Override
@@ -142,6 +157,7 @@ public class GUITransmuteTablet extends GuiContainer
 	{
 		super.onGuiClosed();
 		table.learnFlag = 0;
+		table.unlearnFlag = 0;
 	}
 
 	@Override

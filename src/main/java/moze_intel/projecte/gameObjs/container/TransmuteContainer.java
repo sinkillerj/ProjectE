@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableConsume;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableInput;
+import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableUnlearn;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableLock;
 import moze_intel.projecte.gameObjs.container.slots.trasmute.SlotTableOutput;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
@@ -48,6 +49,7 @@ public class TransmuteContainer extends Container
 		this.addSlotToContainer(new SlotTableOutput(this.tile, 23, 139, 50));
 		this.addSlotToContainer(new SlotTableOutput(this.tile, 24, 177, 50));
 		this.addSlotToContainer(new SlotTableOutput(this.tile, 25, 158, 69));
+		this.addSlotToContainer(new SlotTableUnlearn(this.tile, 26, 89, 97));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)

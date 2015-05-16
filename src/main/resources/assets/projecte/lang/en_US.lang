@@ -326,6 +326,16 @@ pe.transmutation.learned5=e
 pe.transmutation.learned6=d
 pe.transmutation.learned7=!
 
+pe.transmutation.unlearned0=U
+pe.transmutation.unlearned1=n
+pe.transmutation.unlearned2=l
+pe.transmutation.unlearned3=e
+pe.transmutation.unlearned4=a
+pe.transmutation.unlearned5=r
+pe.transmutation.unlearned6=n
+pe.transmutation.unlearned7=e
+pe.transmutation.unlearned8=d
+
 pe.update.available=New ProjectE update available! Version: %s
 pe.update.changelog=Use /projecte_log for change log!
 pe.update.getit=Get it here!

@@ -31,8 +31,9 @@ public class TransmuteTile extends TileEmc implements IInventory
 	private static final int LOCK_INDEX = 8;
 	private static final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
 	private static final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
-	private ItemStack[] inventory = new ItemStack[26];
+	private ItemStack[] inventory = new ItemStack[27];
 	public int learnFlag = 0;
+	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
 	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
@@ -49,7 +50,7 @@ public class TransmuteTile extends TileEmc implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!hasKnowledge(stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
 			
@@ -66,6 +67,38 @@ public class TransmuteTile extends TileEmc implements IInventory
 
 				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
 			}
+			
+			if (!this.worldObj.isRemote)
+			{
+				Transmutation.sync(player);
+			}
+		}
+		
+		updateOutputs();
+	}
+
+	public void handleUnlearn(ItemStack stack)
+	{
+		if (stack.stackSize > 1)
+		{
+			stack.stackSize = 1;
+		}
+
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		{
+			stack.setItemDamage(0);
+		}
+		
+		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		{
+			unlearnFlag = 300;
+
+			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			{
+				stack.stackTagCompound = null;
+			}
+
+			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
 			
 			if (!this.worldObj.isRemote)
 			{
@@ -256,24 +289,6 @@ public class TransmuteTile extends TileEmc implements IInventory
  				}
 			}
 		}
-	}
-	
-	private boolean hasKnowledge(ItemStack stack)
-	{
-		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			if (stack.getItem() == s.getItem() && stack.getItemDamage() == s.getItemDamage())
-			{
-				return true;
-			}
-		}
-		
-		return false;
 	}
 
 	public boolean isUsed()
