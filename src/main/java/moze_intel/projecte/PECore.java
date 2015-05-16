@@ -43,6 +43,7 @@ import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
 import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
@@ -210,19 +211,9 @@ public class PECore
 					}
 					else
 					{
-						String newSubName;
-						if (subName.contains("Realy"))
-						{
-							// Realy MK2 typo and strip space remap for ItemBlock
-							newSubName = subName.replace("Realy", "Relay").toLowerCase().replaceAll("\\s", "_");
-							remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
-						}
-						else
-						{
-							// strip space remap for ItemBlocks
-							newSubName = subName.toLowerCase().replaceAll("\\s", "_");
-							remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
-						}
+						// Space strip remap - ItemBlocks
+						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
+						remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
 
 						if (remappedItem != null)
 						{
@@ -237,20 +228,10 @@ public class PECore
 				}
 				if (mapping.type == GameRegistry.Type.BLOCK)
 				{
-					Block remappedBlock;
-					String newSubName;
-					if (subName.contains("Realy"))
-					{
-						// Realy MK2 typo remap
-						newSubName = subName.replace("Realy", "Relay").toLowerCase().replaceAll("\\s", "_");
-						remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
-					}
-					else
-					{
-						// strip space remap for blocks
-						newSubName = subName.toLowerCase().replaceAll("\\s", "_");
-						remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
-					}
+					// Space strip remap - Blocks
+					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
+					Block remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
+
 					if (remappedBlock != null)
 					{
 						mapping.remap(remappedBlock);

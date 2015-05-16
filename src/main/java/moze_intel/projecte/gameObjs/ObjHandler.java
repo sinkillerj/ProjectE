@@ -237,8 +237,8 @@ public class ObjHandler
 
 		// Blocks with ItemBlock
 		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "alchemical_chest");
-		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "transmutation_stone");
-		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "condenser");
+		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "transmutation_table");
+		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "condenser_mk1");
 		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "rm_furnace");
 		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "dm_furnace");
 		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "matter_block");
