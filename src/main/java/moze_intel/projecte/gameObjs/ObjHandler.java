@@ -226,28 +226,30 @@ public class ObjHandler
 	
 	public static void register()
 	{
-		//Blocks
-		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "Alchemical Chest");
-		GameRegistry.registerBlock(confuseTorch, "Interdiction Torch");
-		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "Transmutation Stone");
-		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "Condenser");
-		GameRegistry.registerBlock(condenserMk2, "Condenser MK2");
-		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "RM Furnace");
-		GameRegistry.registerBlock(rmFurnaceOn, "RM Furnace Lit");
-		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "DM Furnace");
-		GameRegistry.registerBlock(dmFurnaceOn, "DM Furnace Lit");
-		GameRegistry.registerBlock(dmPedestal, "DM Pedestal");
-		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "Matter Block");
-		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "Fuel Block");
-		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "Collector MK1");
-		GameRegistry.registerBlock(collectorMK2, ItemRelayBlock.class, "Collector MK2");
-		GameRegistry.registerBlock(collectorMK3, ItemRelayBlock.class, "Collector MK3");
-		GameRegistry.registerBlock(relay, ItemRelayBlock.class, "Relay MK1");
-		GameRegistry.registerBlock(relayMK2, ItemRelayBlock.class, "Realy MK2");
-		GameRegistry.registerBlock(relayMK3, ItemRelayBlock.class, "Relay MK3");
-		GameRegistry.registerBlock(novaCatalyst, "Nova Catalyst");
-		GameRegistry.registerBlock(novaCataclysm, "Nova Cataclysm");
-		
+		// Blocks without ItemBlock
+		GameRegistry.registerBlock(confuseTorch, "interdiction_torch");
+		GameRegistry.registerBlock(condenserMk2, "condenser_mk2");
+		GameRegistry.registerBlock(rmFurnaceOn, "rm_furnace_lit");
+		GameRegistry.registerBlock(dmFurnaceOn, "dm_furnace_lit");
+		GameRegistry.registerBlock(dmPedestal, "dm_pedestal");
+		GameRegistry.registerBlock(novaCatalyst, "nova_catalyst");
+		GameRegistry.registerBlock(novaCataclysm, "nova_cataclysm");
+
+		// Blocks with ItemBlock
+		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "alchemical_chest");
+		GameRegistry.registerBlock(transmuteStone, ItemTransmutationBlock.class, "transmutation_stone");
+		GameRegistry.registerBlock(condenser, ItemCondenserBlock.class, "condenser");
+		GameRegistry.registerBlock(rmFurnaceOff, ItemRMFurnaceBlock.class, "rm_furnace");
+		GameRegistry.registerBlock(dmFurnaceOff, ItemDMFurnaceBlock.class, "dm_furnace");
+		GameRegistry.registerBlock(matterBlock, ItemMatterBlock.class, "matter_block");
+		GameRegistry.registerBlock(fuelBlock, ItemFuelBlock.class, "fuel_block");
+		GameRegistry.registerBlock(energyCollector, ItemCollectorBlock.class, "collector_mk1");
+		GameRegistry.registerBlock(collectorMK2, ItemCollectorBlock.class, "collector_mk2");
+		GameRegistry.registerBlock(collectorMK3, ItemCollectorBlock.class, "collector_mk3");
+		GameRegistry.registerBlock(relay, ItemRelayBlock.class, "relay_mk1");
+		GameRegistry.registerBlock(relayMK2, ItemRelayBlock.class, "relay_mk2");
+		GameRegistry.registerBlock(relayMK3, ItemRelayBlock.class, "relay_mk3");
+
 		//Items
 		GameRegistry.registerItem(philosStone, philosStone.getUnlocalizedName());
 		GameRegistry.registerItem(alchBag, alchBag.getUnlocalizedName());
@@ -327,30 +329,30 @@ public class ObjHandler
 		GameRegistry.registerItem(transmutationTablet, transmutationTablet.getUnlocalizedName());
 		
 		//Tile Entities
-		GameRegistry.registerTileEntity(AlchChestTile.class, "Alchemical Chest Tile");
-		GameRegistry.registerTileEntity(InterdictionTile.class, "Interdiction Torch Tile");
-		GameRegistry.registerTileEntity(CondenserTile.class, "Condenser Tile");
-		GameRegistry.registerTileEntity(CondenserMK2Tile.class, "Condenser MK2 Tile");
-		GameRegistry.registerTileEntity(RMFurnaceTile.class, "RM Furnace Tile");
-		GameRegistry.registerTileEntity(DMFurnaceTile.class, "DM Furnace Tile");
-		GameRegistry.registerTileEntity(CollectorMK1Tile.class, "Energy Collector MK1 Tile");
-		GameRegistry.registerTileEntity(CollectorMK2Tile.class, "Energy Collector MK2 Tile");
-		GameRegistry.registerTileEntity(CollectorMK3Tile.class, "Energy Collector MK3 Tile");
-		GameRegistry.registerTileEntity(RelayMK1Tile.class, "AM Relay MK1 Tile");
-		GameRegistry.registerTileEntity(RelayMK2Tile.class, "AM Relay MK2 Tile");
-		GameRegistry.registerTileEntity(RelayMK3Tile.class, "AM Relay MK3 Tile");
-		GameRegistry.registerTileEntity(TransmuteTile.class, "Transmutation Tablet Tile");
-		GameRegistry.registerTileEntity(DMPedestalTile.class, "DM Pedestal Tile");
+		GameRegistry.registerTileEntityWithAlternatives(AlchChestTile.class, "AlchChestTile", "Alchemical Chest Tile");
+		GameRegistry.registerTileEntityWithAlternatives(InterdictionTile.class, "InterdictionTile", "Interdiction Torch Tile");
+		GameRegistry.registerTileEntityWithAlternatives(CondenserTile.class, "CondenserTile", "Condenser Tile");
+		GameRegistry.registerTileEntityWithAlternatives(CondenserMK2Tile.class, "CondenserMK2Tile", "Condenser MK2 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(RMFurnaceTile.class, "RMFurnaceTile", "RM Furnace Tile");
+		GameRegistry.registerTileEntityWithAlternatives(DMFurnaceTile.class, "DMFurnaceTile", "DM Furnace Tile");
+		GameRegistry.registerTileEntityWithAlternatives(CollectorMK1Tile.class, "CollectorMK1Tile", "Energy Collector MK1 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(CollectorMK2Tile.class, "CollectorMK2Tile", "Energy Collector MK2 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(CollectorMK3Tile.class, "CollectorMK3Tile", "Energy Collector MK3 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(RelayMK1Tile.class, "RelayMK1Tile", "AM Relay MK1 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(RelayMK2Tile.class, "RelayMK2Tile", "AM Relay MK2 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(RelayMK3Tile.class, "RelayMK3Tile", "AM Relay MK3 Tile");
+		GameRegistry.registerTileEntityWithAlternatives(TransmuteTile.class, "TransmuteTile", "Transmutation Tablet Tile");
+		GameRegistry.registerTileEntityWithAlternatives(DMPedestalTile.class, "DMPedestalTile", "DM Pedestal Tile");
 		
 		//Entities
-		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "Water Water", 1, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLavaProjectile.class, "Lava Orb", 2, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLootBall.class, "Loot Ball", 3, PECore.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(EntityMobRandomizer.class, "Mob Randomizer", 4, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLensProjectile.class, "Explosive Lens Projectile", 5, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "Nova Catalyst", 6, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityNovaCataclysmPrimed.class, "Nova Cataclysm", 7, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityHomingArrow.class, "Homing Arrow", 8, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLavaProjectile.class, "LavaProjectile", 2, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLootBall.class, "LootBall", 3, PECore.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(EntityMobRandomizer.class, "MobRandomizer", 4, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLensProjectile.class, "LensProjectile", 5, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "NovaCatalystPrimed", 6, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityNovaCataclysmPrimed.class, "NovaCataclysmPrimed", 7, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityHomingArrow.class, "HomingArrow", 8, PECore.instance, 256, 10, true);
 	}
 	
 	public static void addRecipes()
