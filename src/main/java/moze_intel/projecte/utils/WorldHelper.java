@@ -106,23 +106,6 @@ public final class WorldHelper
 
 	}
 
-	/**
-	 * Performs a nova explosion at position's coordinates.
-	 */
-	public static void createNovaExplosionAtEntity(EntityLivingBase exploder, Entity position, float strength)
-	{
-		if (position == null)
-		{
-			return;
-		}
-
-		NovaExplosion explosion = new NovaExplosion(position.worldObj, exploder, position.posX, position.posY, position.posZ, strength);
-		explosion.isFlaming = true;
-		explosion.isSmoking = true;
-		explosion.doExplosionA();
-		explosion.doExplosionB(true);
-	}
-
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
 		int x = tile.xCoord;
