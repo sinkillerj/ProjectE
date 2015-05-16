@@ -11,10 +11,11 @@ import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PEKeyBind;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -30,7 +31,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -331,12 +331,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		{
 			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
 		}
-		int keyCode = PEKeyBind.MODE.keyCode;
-		if (keyCode >= 0 && keyCode < Keyboard.getKeyCount())
-		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(keyCode)));
-		}
-		
+		list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
 	}

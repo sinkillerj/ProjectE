@@ -9,25 +9,25 @@ import moze_intel.projecte.api.IItemCharge;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
-import moze_intel.projecte.utils.NovaExplosion;
-import moze_intel.projecte.utils.PEKeyBind;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 
 public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMessage>
 {
-	private PEKeyBind key;
+	private PEKeybind key;
 	
 	public KeyPressPKT() {}
 	
-	public KeyPressPKT(PEKeyBind key)
+	public KeyPressPKT(PEKeybind key)
 	{
 		this.key = key;
 	}
@@ -38,7 +38,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 		EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 		ItemStack stack = player.getHeldItem();
 		
-		if (message.key == PEKeyBind.ARMOR_TOGGLE)
+		if (message.key == PEKeybind.ARMOR_TOGGLE)
 		{
 			if (player.isSneaking())
 			{
@@ -60,38 +60,48 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 			}
 		}
 		
-		if (stack == null || !(stack.getItem() instanceof ItemPE))
+		if (stack == null)
 		{
-			ItemStack[] armor = player.inventory.armorInventory;
-			if (armor[2] != null && armor[2].getItem() == ObjHandler.gemChest && message.key == PEKeyBind.EXTRA_FUNCTION)
+			if (message.key == PEKeybind.CHARGE && GemArmorBase.hasAnyPiece(player))
 			{
-				GemChest.doExplode(player);
+				PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
+				player.addChatMessage(new ChatComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
+				return null;
 			}
-			if (armor[3] != null && armor[3].getItem() == ObjHandler.gemHelmet && message.key == PEKeyBind.FIRE_PROJECTILE)
-			{
-				GemHelmet.doZap(player);
+
+			if (PlayerChecks.getGemState(player)) {
+				ItemStack[] armor = player.inventory.armorInventory;
+				if (armor[2] != null && armor[2].getItem() == ObjHandler.gemChest && message.key == PEKeybind.EXTRA_FUNCTION)
+                {
+                    GemChest.doExplode(player);
+                }
+				if (armor[3] != null && armor[3].getItem() == ObjHandler.gemHelmet && message.key == PEKeybind.FIRE_PROJECTILE)
+                {
+                    GemHelmet.doZap(player);
+                }
 			}
+
 			return null;
 		}
 		
 		Item item = stack.getItem();
 		
-		if (message.key == PEKeyBind.CHARGE && item instanceof IItemCharge)
+		if (message.key == PEKeybind.CHARGE && item instanceof IItemCharge)
 		{
 			((IItemCharge) item).changeCharge(player, stack);
 		}
-		else if (message.key == PEKeyBind.MODE && item instanceof IModeChanger)
+		else if (message.key == PEKeybind.MODE && item instanceof IModeChanger)
 		{
 			((IModeChanger) item).changeMode(player, stack);
 		}
-		else if (message.key == PEKeyBind.FIRE_PROJECTILE && item instanceof IProjectileShooter)
+		else if (message.key == PEKeybind.FIRE_PROJECTILE && item instanceof IProjectileShooter)
 		{
 			if (((IProjectileShooter) item).shootProjectile(player, stack))
 			{
 				PlayerHelper.swingItem((player));
 			}
 		}
-		else if (message.key == PEKeyBind.EXTRA_FUNCTION && item instanceof IExtraFunction)
+		else if (message.key == PEKeybind.EXTRA_FUNCTION && item instanceof IExtraFunction)
 		{
 			((IExtraFunction) item).doExtraFunction(stack, player);
 		}
@@ -102,7 +112,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		key = PEKeyBind.values()[buf.readInt()];
+		key = PEKeybind.values()[buf.readInt()];
 	}
 
 	@Override

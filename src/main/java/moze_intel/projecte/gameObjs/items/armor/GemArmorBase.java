@@ -27,6 +27,18 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 		this.armorPiece = armorType;
 	}
 
+	public static boolean hasAnyPiece(EntityPlayer player)
+	{
+		for (ItemStack i : player.inventory.armorInventory)
+		{
+			if (i != null && i.getItem() instanceof GemArmorBase)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean hasFullSet(EntityPlayer player)
 	{
 		for (ItemStack i : player.inventory.armorInventory)

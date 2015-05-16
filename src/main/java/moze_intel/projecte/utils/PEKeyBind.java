@@ -2,32 +2,25 @@ package moze_intel.projecte.utils;
 
 import org.lwjgl.input.Keyboard;
 
-public enum PEKeyBind
+/**
+ * Enumeration of ProjectE keybinds and their DEFAULT key code. Use ClientKeyHelper to get runtime key code from MC Keybind.
+ * To add keybinds, simply add them here. The rest should happen automagically(tm).
+ */
+public enum PEKeybind
 {
-	CHARGE("Charge", Keyboard.KEY_V),
-	MODE("Mode", Keyboard.KEY_G),
-	FIRE_PROJECTILE("Fire Projectile", Keyboard.KEY_R),
-	EXTRA_FUNCTION("Extra Function", Keyboard.KEY_C),
-	ARMOR_TOGGLE("Armor effects", Keyboard.KEY_F);
+	ARMOR_TOGGLE("pe.key.armor_toggle", Keyboard.KEY_F),
+	CHARGE("pe.key.charge", Keyboard.KEY_V),
+	EXTRA_FUNCTION("pe.key.extra_function", Keyboard.KEY_C),
+	FIRE_PROJECTILE("pe.key.fire_projectile", Keyboard.KEY_R),
+	MODE("pe.key.mode", Keyboard.KEY_G);
+
 
 	public final String keyName;
-	public final int keyCode;
+	public final int defaultKeyCode;
 
-	PEKeyBind(String keyName, int keyCode)
+	PEKeybind(String keyName, int defaultKeyCode)
 	{
 		this.keyName = keyName;
-		this.keyCode = keyCode;
-	}
-
-	public static PEKeyBind getFromName(String name)
-	{
-		for (PEKeyBind k : values())
-		{
-			if (k.keyName.equals(name))
-			{
-				return k;
-			}
-		}
-		return null;
+		this.defaultKeyCode = defaultKeyCode;
 	}
 }

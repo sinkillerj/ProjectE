@@ -4,8 +4,6 @@ import com.google.common.collect.Sets;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.ToolTipEvent;
 import moze_intel.projecte.events.TransmutationRenderingEvent;
@@ -31,7 +29,7 @@ import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
-import moze_intel.projecte.utils.PEKeyBind;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
@@ -42,16 +40,10 @@ import java.util.Set;
 
 public class ClientProxy extends CommonProxy
 {
-	public final Set<KeyBinding> peMCKeyBinds = Sets.newHashSet();
-
+	@Override
 	public void registerKeyBinds()
 	{
-		for (PEKeyBind k : PEKeyBind.values())
-		{
-			KeyBinding mcK = new KeyBinding(k.keyName, k.keyCode, PECore.MODID);
-			peMCKeyBinds.add(mcK);
-			ClientRegistry.registerKeyBinding(mcK);
-		}
+		ClientKeyHelper.registerMCBindings();
 	}
 
 	@Override
@@ -82,7 +74,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerClientOnlyEvents() 
 	{
-		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 		FMLCommonHandler.instance().bus().register(new KeyPressEvent());

@@ -6,8 +6,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ChatHelper;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.EnumArmorType;
-import moze_intel.projecte.utils.PEKeyBind;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -21,7 +22,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -118,12 +118,8 @@ public class GemFeet extends GemArmorBase
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
     {
         tooltips.add(StatCollector.translateToLocal("pe.gem.feet.lorename"));
-        int keyCode = PEKeyBind.ARMOR_TOGGLE.keyCode;
-        if (keyCode >= 0 && keyCode < Keyboard.getKeyCount())
-        {
-            tooltips.add(String.format(
-                    StatCollector.translateToLocal("pe.gem.stepassist.prompt"), Keyboard.getKeyName(keyCode)));
-        }
+        tooltips.add(String.format(
+                StatCollector.translateToLocal("pe.gem.stepassist.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
         EnumChatFormatting e = isStepAssistEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
         String s = isStepAssistEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";

@@ -223,6 +223,9 @@ pe.evertide.pedestal2=Attempts to start rain every %s
 pe.gem.disabled=DISABLED
 pe.gem.enabled=ENABLED
 
+pe.gem.activate=Activated Gem Armor Offensive Abilities
+pe.gem.deactivate=Deactivated Gem Armor Offensive Abilities
+
 pe.gem.helm.lorename=Abyss Helmet
 pe.gem.chest.lorename=Infernal Armor
 pe.gem.legs.lorename=Gravity Greaves
@@ -254,6 +257,12 @@ pe.item.mode_switch=Switched to %s Mode
 
 pe.katar.mode1=Slay Hostile
 pe.katar.mode2=Slay All
+
+pe.key.armor_toggle=Armor Effects
+pe.key.charge=Charge
+pe.key.extra_function=Extra Function
+pe.key.fire_projectile=Fire Projectile
+pe.key.mode=Change Mode
 
 pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s

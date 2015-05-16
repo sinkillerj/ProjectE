@@ -1,6 +1,7 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.utils.PELogger;
@@ -11,12 +12,31 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public final class PlayerChecks
 {
-	private static List<EntityPlayerMP> flyChecks = Lists.newArrayList();
-	private static List<EntityPlayerMP> fireChecks = Lists.newArrayList();
-	private static List<EntityPlayerMP> stepChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> flyChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> fireChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> stepChecks = Lists.newArrayList();
+	public static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+
+	public static void setGemState(EntityPlayerMP player, boolean state)
+	{
+		if (state)
+		{
+			gemArmorReadyChecks.add(player);
+		}
+		else
+		{
+			gemArmorReadyChecks.remove(player);
+		}
+	}
+
+	public static boolean getGemState(EntityPlayerMP player)
+	{
+		return gemArmorReadyChecks.contains(player);
+	}
 
 	public static void update()
 	{
