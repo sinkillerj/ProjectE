@@ -12,7 +12,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class TransmuteTile extends TileEmc implements IInventory
+public class TransmuteTile extends TileEmc implements ISidedInventory
 {
 	private EntityPlayer player = null;
 	private static final int LOCK_INDEX = 8;
@@ -470,6 +470,24 @@ public class TransmuteTile extends TileEmc implements IInventory
 
 	@Override
 	public boolean isRequestingEmc() 
+	{
+		return false;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide(int par1)
+	{
+		return new int[0];
+	}
+
+	@Override
+	public boolean canExtractItem(int par1, ItemStack stack, int par3)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canInsertItem(int par1, ItemStack stack, int par3)
 	{
 		return false;
 	}
