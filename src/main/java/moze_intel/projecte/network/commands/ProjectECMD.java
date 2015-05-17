@@ -5,7 +5,9 @@ import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -71,7 +73,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	{
 		if (params.length == 1)
 		{
-			return commands;
+			return Lists.newArrayList(Iterables.filter(commands, new PrefixPredicate(params[0])));
 		}
 
 		return null;
@@ -110,6 +112,21 @@ public class ProjectECMD extends ProjectEBaseCMD
 		{
 			sendError(sender, new ChatComponentTranslation("pe.command.main.usage"));
 			return;
+		}
+	}
+
+	private static class PrefixPredicate implements Predicate<String>
+	{
+		private final String prefix;
+		public PrefixPredicate(String prefix)
+		{
+			this.prefix = prefix;
+		}
+
+		@Override
+		public boolean apply(String input)
+		{
+			return input.startsWith(prefix);
 		}
 	}
 }
