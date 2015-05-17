@@ -31,12 +31,7 @@ import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.ChangelogCMD;
-import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
-import moze_intel.projecte.network.commands.ReloadEmcCMD;
-import moze_intel.projecte.network.commands.RemoveEmcCMD;
-import moze_intel.projecte.network.commands.ResetEmcCMD;
-import moze_intel.projecte.network.commands.SetEmcCMD;
+import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -121,12 +116,7 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		event.registerServerCommand(new ChangelogCMD());
-		event.registerServerCommand(new ReloadEmcCMD());
-		event.registerServerCommand(new SetEmcCMD());
-		event.registerServerCommand(new RemoveEmcCMD());
-		event.registerServerCommand(new ResetEmcCMD());
-		event.registerServerCommand(new ClearKnowledgeCMD());
+		event.registerServerCommand(new ProjectECMD());
 
 		if (!ThreadCheckUpdate.hasRunServer())
 		{

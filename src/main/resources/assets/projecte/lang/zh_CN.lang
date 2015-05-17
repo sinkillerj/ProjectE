@@ -171,13 +171,11 @@ pe.command.reload.success=更新完成!更新数据已发送至客户端.
 
 pe.command.remove.invaliditem=Error: 未找到物品"%s".
 pe.command.remove.invalidmeta=Error: meta数据"%s"是无效的.
-pe.command.remove.notholding=Error: 无法侦测到玩家手持物品.
 pe.command.remove.success=成功移除%s的EMC值.
 pe.command.remove.usage=/projecte_removeEMC <unlocalized | oredict name> [meta]
 
 pe.command.reset.invalidmeta=Error: meta数据"%s"是无效的.
 pe.command.reset.nochange=Error: "%s:%s"的EMC值未作任何修改.
-pe.command.reset.notholding=Error: 无法侦测到玩家手持物品.
 pe.command.reset.success=成功修改%s的EMC值.
 pe.command.reset.usage=/projecte_resetEMC <unlocalized | oredict name> [meta]
 
@@ -185,7 +183,6 @@ pe.command.set.invalidemc=Error: "%s"是一个无效的EMC值.
 pe.command.set.invaliditem=Error: 未找到物品"%s".
 pe.command.set.invalidmeta=Error: meta数据"%s"是无效的.
 pe.command.set.invalidparams=Error: 未输入参数!
-pe.command.set.notholding=Error: 无法侦测到玩家手持物品.
 pe.command.set.success=已将%s的EMC值设定为%s.
 pe.command.set.usage=/projecte_setEMC [unlocalized | oredict name] [meta] [EMC value]
 

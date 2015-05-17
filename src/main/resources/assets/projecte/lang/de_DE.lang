@@ -171,13 +171,11 @@ pe.command.reload.success=Fertig! Sende aktualisierte Daten an Clients.
 
 pe.command.remove.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.remove.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
-pe.command.remove.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.remove.success=EMC-Wert von %s entfernt.
 pe.command.remove.usage=/projecte_removeEMC <unlokalisierter | oredict-Name> [Meta-Wert]
 
 pe.command.reset.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.reset.nochange=Der EMC-Wert von %s:%s wurde nicht modifiziert!
-pe.command.reset.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.reset.success=EMC-Wert von %s zurückgesetzt.
 pe.command.reset.usage=/projecte_resetEMC <unlokalisierter | oredict-Name> [Meta-Wert]
 
@@ -185,7 +183,6 @@ pe.command.set.invalidemc=Fehler: Der EMC-Wert "%s" ist nicht gültig!
 pe.command.set.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.set.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.set.invalidparams=Fehler: Keine Parameter!
-pe.command.set.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.set.success=EMC-Wert von %s zu %s gesetzt!
 pe.command.set.usage=/projecte_setEMC [unlokalisierter | oredict-Name] [Meta-Wert] [EMC-Wert]
 

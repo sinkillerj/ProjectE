@@ -171,13 +171,11 @@ pe.command.reload.success=Fatto! Invio dei dati aggiornati al client.
 
 pe.command.remove.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
 pe.command.remove.invalidmeta=Errore: Il valore meta "%s" non è valido!
-pe.command.remove.notholding=Errore: Il giocatore non sta tenendo nessun oggetto!
 pe.command.remove.success=Rimosso valore EMC per %s.
 pe.command.remove.usage=/projecte_removeEMC <unlocalized | oredict name> [meta]
 
 pe.command.reset.invalidmeta=Errore: Errore: Il valore meta "%s" non è valido!
 pe.command.reset.nochange=Il valore EMC per %s:%s non è stato modificato!
-pe.command.reset.notholding=Errore: Il giocatore non sta tenendo nessun oggetto!
 pe.command.reset.success=Resettato valore EMC per %s.
 pe.command.reset.usage=/projecte_resetEMC <unlocalized | oredict name> [meta]
 
@@ -185,7 +183,6 @@ pe.command.set.invalidemc=Errore: Il valore EMC "%s" non è valido!
 pe.command.set.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
 pe.command.set.invalidmeta=Errore: Il valore meta "%s" non è valido!
 pe.command.set.invalidparams=Errore: Si prega di fornire i parametri
-pe.command.set.notholding=Errore: Il giocatore non sta tenendo nessun oggetto!
 pe.command.set.success=Impostato ll valore EMC di %s a %s!
 pe.command.set.usage=/projecte_setEMC [unlocalized | oredict name] [meta] [EMC value]
 
