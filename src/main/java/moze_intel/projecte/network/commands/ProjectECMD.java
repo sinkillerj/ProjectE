@@ -4,6 +4,8 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
+
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +19,13 @@ import com.google.common.collect.Lists;
 
 public class ProjectECMD extends ProjectEBaseCMD
 {
-	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
+	private static final String changelogCmdName = "changelog";
+	private static final String clearKnowledgeCmdName = "clearKnowledge";
+	private static final String setEmcCmdName = "setEMC";
+	private static final String reloadEmcCmdName = "reloadEMC";
+	private static final String removeEmcCmdName = "removeEMC";
+	private static final String resetEmcCmdName = "resetEMC";
+	private static final List<String> commands = Lists.newArrayList(changelogCmdName, clearKnowledgeCmdName, setEmcCmdName, reloadEmcCmdName, removeEmcCmdName, resetEmcCmdName);
 
 	ChangelogCMD changelogcmd = new ChangelogCMD();
 	ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
@@ -25,6 +33,20 @@ public class ProjectECMD extends ProjectEBaseCMD
 	RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
 	ResetEmcCMD resetemccmd = new ResetEmcCMD();
 	ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
+	ImmutableMap<String,ProjectEBaseCMD> commandMap;
+	public ProjectECMD()
+	{
+		ImmutableMap.Builder<String, ProjectEBaseCMD> builder = ImmutableMap.builder();
+
+		//Commands as lowercase
+		builder.put(changelogCmdName.toLowerCase(), changelogcmd);
+		builder.put(clearKnowledgeCmdName.toLowerCase(), clearknowledgecmd);
+		builder.put(setEmcCmdName.toLowerCase(), setemccmd);
+		builder.put(reloadEmcCmdName.toLowerCase(), reloademccmd);
+		builder.put(removeEmcCmdName.toLowerCase(), removeemccmd);
+		builder.put(resetEmcCmdName.toLowerCase(), resetemccmd);
+		commandMap = builder.build();
+	}
 
 	@Override
 	public String getCommandName() 
@@ -71,72 +93,23 @@ public class ProjectECMD extends ProjectEBaseCMD
 			relayparams = Arrays.copyOfRange(params, 1, params.length);
 		}
 
-		if (params[0].toLowerCase().equals("setemc"))
-		{
-			if (setemccmd.canCommandSenderUseCommand(sender))
-			{
-				setemccmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
-		else if (params[0].toLowerCase().equals("resetemc"))
-		{
-			if (resetemccmd.canCommandSenderUseCommand(sender))
-			{
-				resetemccmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
-		else if (params[0].toLowerCase().equals("removeemc"))
-		{
-			if (removeemccmd.canCommandSenderUseCommand(sender))
-			{
-				removeemccmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
-		else if (params[0].toLowerCase().equals("reloademc"))
-		{
-			if (reloademccmd.canCommandSenderUseCommand(sender))
-			{
-				reloademccmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
-		else if (params[0].toLowerCase().equals("clearknowledge"))
-		{
-			if (clearknowledgecmd.canCommandSenderUseCommand(sender))
-			{
-				clearknowledgecmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
-		else if (params[0].toLowerCase().equals("changelog"))
-		{
-			if (changelogcmd.canCommandSenderUseCommand(sender))
-			{
-				changelogcmd.processCommand(sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
-			}
-		}
+		String commandName = params[0].toLowerCase();
 
+		if (commandMap.containsKey(commandName)) {
+			ProjectEBaseCMD command = commandMap.get(commandName);
+			if (command.canCommandSenderUseCommand(sender))
+			{
+				command.processCommand(sender, relayparams);
+			}
+			else
+			{
+				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+			}
+		}
+		else
+		{
+			sendError(sender, new ChatComponentTranslation("pe.command.main.usage"));
+			return;
+		}
 	}
 }
