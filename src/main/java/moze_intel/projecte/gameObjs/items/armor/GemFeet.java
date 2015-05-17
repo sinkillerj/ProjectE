@@ -86,25 +86,20 @@ public class GemFeet extends GemArmorBase
             {
                 PlayerHelper.enableFlight(playerMP);
             }
-
-            if (!player.isSneaking())
-            {
-                player.addPotionEffect(new PotionEffect(Potion.jump.id, 1, 4));
-            }
         }
         else
         {
             if (!player.onGround)
             {
-                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed() && !player.capabilities.isFlying)
+                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed() && !player.capabilities.isFlying && !player.isSneaking())
                 {
-                    player.motionY += 0.18;
+                    player.motionY += 0.12;
                 }
                 if (player.motionY <= 0)
                 {
                     player.motionY *= 0.90;
                 }
-                if (!player.capabilities.isFlying && (player.moveStrafing > 0 || player.moveForward > 0))
+                if (!player.capabilities.isFlying)
                 {
                     player.motionX *= 1.1;
                     player.motionZ *= 1.1;

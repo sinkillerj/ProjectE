@@ -232,7 +232,7 @@ pe.gem.legs.lorename=Gravity Greaves
 pe.gem.feet.lorename=Hurricane Boots
 
 pe.gem.nightvision_tooltip=Night Vision:
-pe.gem.nightvision.prompt=Press Shift %s to toggle Night Vision
+pe.gem.nightvision.prompt=Press %s + %s to toggle Night Vision
 pe.gem.stepassist_tooltip=Step Assist:
 pe.gem.stepassist.prompt=Press %s to toggle Step Assist
 

@@ -57,7 +57,7 @@ public class GemChest extends GemArmorBase
             EntityPlayerMP playerMP = ((EntityPlayerMP) player);
             PlayerTimers.activateFeed(playerMP);
 
-            if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP) && hasFullSet(playerMP))
+            if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP))
             {
                 player.getFoodStats().addStats(2, 10);
             }

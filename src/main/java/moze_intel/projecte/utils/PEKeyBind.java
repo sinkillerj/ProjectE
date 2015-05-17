@@ -4,7 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 /**
  * Enumeration of ProjectE keybinds and their DEFAULT key code. Use ClientKeyHelper to get runtime key code from MC Keybind.
- * To add keybinds, simply add them here. The rest should happen automagically(tm).
+ * To add keybinds, simply add them here and handle them in KeyPressPKT. The rest should happen automagically(tm).
  */
 public enum PEKeybind
 {

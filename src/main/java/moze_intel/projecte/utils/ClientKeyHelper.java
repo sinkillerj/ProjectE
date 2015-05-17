@@ -43,4 +43,14 @@ public class ClientKeyHelper
         }
         return Keyboard.getKeyName(keyCode);
     }
+
+    public static String getKeyName(KeyBinding k)
+    {
+        int keyCode = k.getKeyCode();
+        if (keyCode > Keyboard.getKeyCount() || keyCode < 0)
+        {
+            return "INVALID KEY";
+        }
+        return Keyboard.getKeyName(keyCode);
+    }
 }

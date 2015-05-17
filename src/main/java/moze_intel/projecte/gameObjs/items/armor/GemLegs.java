@@ -39,7 +39,7 @@ public class GemLegs extends GemArmorBase
             }
         }
 
-        if (player.isSneaking() && PlayerChecks.getGemState(((EntityPlayerMP) player)))
+        if (player.isSneaking())
         {
             AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
             WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);

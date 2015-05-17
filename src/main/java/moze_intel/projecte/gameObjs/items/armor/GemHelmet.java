@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,6 +13,7 @@ import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +26,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
@@ -75,7 +79,8 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         tooltips.add(StatCollector.translateToLocal("pe.gem.helm.lorename"));
 
         tooltips.add(String.format(
-                StatCollector.translateToLocal("pe.gem.nightvision.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+                StatCollector.translateToLocal("pe.gem.nightvision.prompt"), ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
+        ));
 
         EnumChatFormatting e = isNightVisionEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
         String s = isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
