@@ -89,18 +89,18 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
 				ItemStack copy = s.copy();
-				copy.stackSize = 1;
-				
+				copy.stackSize = s.stackSize == 1 ? 1 : s.stackSize / 2;
+
 				addToList(gem, copy);
 				
-				inv[i].stackSize--;
+				s.stackSize -= copy.stackSize;
 				
-				if (inv[i].stackSize <= 0)
+				if (s.stackSize <= 0)
 				{
 					inv[i] = null;
 				}
 				
-				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy));
+				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
 				break;
 			}
 		}
