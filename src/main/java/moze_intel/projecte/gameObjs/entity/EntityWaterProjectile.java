@@ -35,6 +35,12 @@ public class EntityWaterProjectile extends EntityThrowable
 
 		if (!this.worldObj.isRemote)
 		{
+			if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+			{
+				this.setDead();
+				return;
+			}
+
 			for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
 				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
 					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)

@@ -35,7 +35,7 @@ public class EntityMobRandomizer extends EntityThrowable
 		
 		if (!this.worldObj.isRemote)
 		{
-			if (this.isInWater() || shooter == null)
+			if (ticksExisted > 400 || this.isInWater() || shooter == null || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
 			{
 				this.setDead();
 			}
