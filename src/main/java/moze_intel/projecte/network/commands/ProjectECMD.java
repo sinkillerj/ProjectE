@@ -73,7 +73,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	{
 		if (params.length == 1)
 		{
-			return Lists.newArrayList(Iterables.filter(commands, new PrefixPredicate(params[0])));
+			return Lists.newArrayList(Iterables.filter(commands, new LowerCasePrefixPredicate(params[0])));
 		}
 
 		return null;
@@ -115,10 +115,10 @@ public class ProjectECMD extends ProjectEBaseCMD
 		}
 	}
 
-	private static class PrefixPredicate implements Predicate<String>
+	private static class LowerCasePrefixPredicate implements Predicate<String>
 	{
 		private final String prefix;
-		public PrefixPredicate(String prefix)
+		public LowerCasePrefixPredicate(String prefix)
 		{
 			this.prefix = prefix;
 		}
@@ -126,7 +126,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 		@Override
 		public boolean apply(String input)
 		{
-			return input.startsWith(prefix);
+			return input.toLowerCase().startsWith(prefix.toLowerCase());
 		}
 	}
 }
