@@ -106,9 +106,10 @@ public class OreDictionaryMapper extends LazyMapper {
 		//TE
 		addMapping("blockGlassHardened", 192);
 
-		//IC2
+		//IC2 BigReactors
 		addMapping("itemRubber", 32);
 		addMapping("ingotUranium", 4096);
+		addMapping("ingotCyanite", 1024);
 
 		//Thaumcraft
 		addMapping("shardAir", 64);
