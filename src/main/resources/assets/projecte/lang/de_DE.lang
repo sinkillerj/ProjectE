@@ -111,8 +111,6 @@ tile.pe_fuel_block_1.name=Block aus Mobiuskraftstoff
 tile.pe_fuel_block_2.name=Block aus Aeternaliskraftstoff
 tile.pe_dmPedestal.name=Podest aus Dunkler Materie
 
-itemGroup.ProjectE=ProjectE
-
 achievement.phil_stone=Der beste Freund eines Alchemisten!
 achievement.phil_stone.desc=Lass uns anfangen! Stelle einen Stein der Weisen her.
 achievement.alch_chest=Speicher-Upgrade!
@@ -164,30 +162,27 @@ pe.command.clearknowledge.error=Transmutationswissen von %s konnte nicht gelösc
 pe.command.clearknowledge.notify=Dein Transmutationswissen wurde von %s gelöscht!
 pe.command.clearknowledge.playernotfound=Der Spieler mit dem Namen %s wurde nicht gefunden
 pe.command.clearknowledge.success=Transmutationswissen von %s gelöscht
-pe.command.clearknowledge.usage=/projecte_clearKnowledge [Benutzername]
+pe.command.clearknowledge.usage=/projecte clearKnowledge [Benutzername]
 
 pe.command.reload.started=Lade EMC-Registrierungen neu...
 pe.command.reload.success=Fertig! Sende aktualisierte Daten an Clients.
 
 pe.command.remove.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.remove.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
-pe.command.remove.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.remove.success=EMC-Wert von %s entfernt.
-pe.command.remove.usage=/projecte_removeEMC <unlokalisierter | oredict-Name> [Meta-Wert]
+pe.command.remove.usage=/projecte removeEMC <unlokalisierter | oredict-Name> [Meta-Wert]
 
 pe.command.reset.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.reset.nochange=Der EMC-Wert von %s:%s wurde nicht modifiziert!
-pe.command.reset.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.reset.success=EMC-Wert von %s zurückgesetzt.
-pe.command.reset.usage=/projecte_resetEMC <unlokalisierter | oredict-Name> [Meta-Wert]
+pe.command.reset.usage=/projecte resetEMC <unlokalisierter | oredict-Name> [Meta-Wert]
 
 pe.command.set.invalidemc=Fehler: Der EMC-Wert "%s" ist nicht gültig!
 pe.command.set.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.set.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.set.invalidparams=Fehler: Keine Parameter!
-pe.command.set.notholding=Fehler: Der Spieler hat kein Item in der Hand!
 pe.command.set.success=EMC-Wert von %s zu %s gesetzt!
-pe.command.set.usage=/projecte_setEMC [unlokalisierter | oredict-Name] [Meta-Wert] [EMC-Wert]
+pe.command.set.usage=/projecte setEMC [unlokalisierter | oredict-Name] [Meta-Wert] [EMC-Wert]
 
 
 pe.darkpick.mode1=Standard
@@ -268,7 +263,7 @@ pe.pedestal.item_disabled=Podestfunktion wurde deaktiviert!
 pe.pedestal.on_pedestal=Auf Podest:
 pe.pedestal.shortname=DM-Podest
 pe.pedestal.tooltip1=Shift + Rechtsklick um GUI zu öffnen
-pe.pedestal.tooltip2=Rechtsklick zum aktivieren!
+pe.pedestal.tooltip2=Rechtsklick zum Aktivieren!
 
 pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel
@@ -327,7 +322,7 @@ pe.transmutation.learned6=t
 pe.transmutation.learned7=!
 
 pe.update.available=Neues ProjectE-Update verfügbar! Version: %s
-pe.update.changelog=Benutze /projecte_log für die Versionsgeschichte!
+pe.update.changelog=Benutze /projecte changelog für die Versionsgeschichte!
 pe.update.getit=Hier herunterladen!
 
 pe.volcanite.tooltip1=Drücke %s, um ein Lavaprojektil zu feuern

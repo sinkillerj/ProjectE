@@ -345,7 +345,8 @@ public final class ItemHelper
 			return true;
 		}
 
-		return getOreDictionaryName(new ItemStack(block)).startsWith("ore");
+		String oreDictName = getOreDictionaryName(new ItemStack(block));
+		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
 
 	public static void pushLootBallInInv(IInventory inv, EntityLootBall ball)

@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -96,6 +97,32 @@ public final class Transmutation
 		}
 		
 		IOHandler.markDirty();
+	}
+
+	public static void removeFromKnowledge(String username, ItemStack stack)
+	{
+		if (TOME_KNOWLEDGE.contains(username))
+		{
+			return;
+		}
+		
+		if (MAP.containsKey(username))
+		{
+			Iterator<ItemStack> iter = MAP.get(username).iterator();
+
+			while (iter.hasNext())
+			{
+				ItemStack knownstack = iter.next();
+
+				if (knownstack.areItemStacksEqual(knownstack, stack))
+				{
+					MAP.get(username).remove(knownstack);
+					IOHandler.markDirty();
+					break;
+				}
+			}
+		}
+
 	}
 	
 	public static void setAllKnowledge(String username)

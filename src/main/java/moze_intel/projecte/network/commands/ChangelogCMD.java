@@ -14,13 +14,13 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandName() 
 	{
-		return "projecte_log";
+		return "projecte_changelog";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) 
 	{
-		return "/projecte_log";
+		return "/projecte changelog";
 	}
 
 	@Override

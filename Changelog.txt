@@ -1,3 +1,31 @@
+###Version 1.7.10-PE1.4.7
+* NOTICE: A longstanding internal issue of spaces in unlocalized names has been corrected. World conversion code has been added and extensively tested but as always when updating a mod it would be wise to backup your world
+* NEW: Unlearn item slot added to transmutation GUI. If you are using a resource pack it will need to be updated
+* NEW: Chinese language file updates
+* NEW: German language file updates
+* FIXED: A mod interaction issue with the Transmutation Table
+* FIXED: ingotCyanite has been registered in the oreDict mapper to provide a saner EMC value
+* FIXED: Ores from the DenseOres mod are now properly recognized
+* FIXED: A issue preventing ProjectE projectiles from despawning in some situations
+* CHANGE: ProjectE commands have been unified
+* CHANGE: Harvest Goddess Band no longer passively grows flowers and tall grass on grass blocks by default. A config option has been added to revert this
+* CHANGE: Gem of Eternal Density is now faster thanks to a change that makes it work more like its EE2 counterpart
+* CHANGE: Pick AOE config now applies to the Morning Star as well 
+
+###Version 1.7.10-PE1.4.6
+* NEW: More EE2 sounds added
+* NEW: EMC values can now be pregenerated via config. Pack authors can use this feature to decrease load times
+* NEW: Config option to log possible EMC exploits
+* NEW: Italian language file
+* NEW: German language file updates
+* NEW: Config option to use old PE vein mining instead of the EE2 accurate version
+* NEW: Test rendering code for future Patreon/code contributor cosmetics. Look for sinkillerj on your server to see it in action
+* FIXED: Collector log spam caused by a naughty mod not checking if a inventory can accept a item
+* FIXED: Possible workaround for the rare alchemical bag issues
+* CHANGE: Lootballs have been optimized further
+* CHANGE: Lootballs can be disabled via config
+* CHANGE: Minimum Forge version bumped to 1291
+
 ###Version 1.7.10-PE1.4.5
 * NEW: registerCustomEMC has returned to the API. If a mod sets values maliciously or undesirably it can be blocked in the mapping config
 * NEW: EMC remapping sends a chat message upon completion

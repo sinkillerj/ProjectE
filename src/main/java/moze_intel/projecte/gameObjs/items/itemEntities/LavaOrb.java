@@ -9,6 +9,7 @@ public class LavaOrb extends ItemPE
 {
 	public LavaOrb()
 	{
+		this.setCreativeTab(null);
 		this.setUnlocalizedName("lava_orb");
 		this.setMaxStackSize(1);
 	}

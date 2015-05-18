@@ -111,8 +111,6 @@ tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
 tile.pe_dmPedestal.name=Пьедестал из тёмной материи
 
-itemGroup.ProjectE=ProjectE
-
 achievement.phil_stone=Лучший друг алхимиков!
 achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень
 achievement.alch_chest=Улучшение хранилища!
@@ -178,7 +176,6 @@ pe.emc.maxoutrate_tooltip=Максимальная скорость выхода
 pe.emc.maxstorage_tooltip=Максимальное хранилище:
 pe.emc.name=EMC
 pe.emc.rate=EMC/сек
-pe.emc.stackemc_tooltip_prefix=Stack EMC:
 pe.emc.storedemc_tooltip=Накоплено EMC:
 pe.emc.too_much=СЛИШКОМ МНОГО
 
@@ -272,7 +269,6 @@ pe.timewatch.rw=Перемотка
 pe.timewatch.tooltip1=Станьте хозяином времени
 pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
 pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
-pe.timewatch.pedestal2=Each tick, nearby mobs move %.3f times the speed
 
 pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
 
