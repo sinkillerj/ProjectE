@@ -1,5 +1,6 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.collect.Maps;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,45 +11,57 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import moze_intel.projecte.utils.PELogger;
 
 public final class AlchemicalBags 
 {
-	private static LinkedHashMap<String, LinkedHashMap<Byte, ItemStack[]>> MAP = new LinkedHashMap();
+	private static Map<String, Map<Byte, ItemStack[]>> MAP = Maps.newLinkedHashMap();
 	
 	public static ItemStack[] get(String player, byte bagColour)
 	{
-		LinkedHashMap<Byte, ItemStack[]> getdata;
+		Map<Byte, ItemStack[]> colorToInvMap;
 
 		if (MAP.containsKey(player))
 		{
-			getdata = MAP.get(player);
+			colorToInvMap = MAP.get(player);
 			
 
-			if (getdata == null)
+			if (colorToInvMap == null) // Should not happen, diagnostic / debug code.
 			{
-				PELogger.logFatal("AlchemicalBags getdata returned null, retrying. Please send this log to the ProjectE developers.");
-				getdata = MAP.get(player);
-				if (getdata == null)
+				PELogger.logFatal(String.format("AlchemicalBags colorToInvMap returned null for player %s, retrying. Please send this log to the ProjectE developers.", player));
+				colorToInvMap = MAP.get(player);
+				if (colorToInvMap == null)
 				{
-					PELogger.logFatal("AlchemicalBags getdata retry failed. Please send this log to the ProjectE developers.");
+					PELogger.logFatal(String.format("AlchemicalBags colorToInvMap retry failed for player %s. Please send this log to the ProjectE developers.", player));
+					MAP.put(player, Maps.<Byte, ItemStack[]>newLinkedHashMap());
+					MAP.get(player).put(bagColour, new ItemStack[104]);
+					PELogger.logFatal(String.format("Now recreating inventory array for player %s and bagColour %s. Items may be wiped. Please report!!", player, Byte.toString(bagColour)));
+					return MAP.get(player).get(bagColour).clone();
 				}
 			}
 			
-			if (getdata.containsKey(bagColour))
+			if (!colorToInvMap.containsKey(bagColour))
 			{
-				return getdata.get(bagColour).clone();
+				PELogger.logDebug(String.format("Created inventory array for existing player %s, new bag color %s", player, Byte.toString(bagColour)));
+				colorToInvMap.put(bagColour, new ItemStack[104]);
 			}
+			return colorToInvMap.get(bagColour).clone();
 		}
-		
-		return new ItemStack[104];
+		else
+		{
+			PELogger.logDebug(String.format("Created new maps for brand new player %s, new bag color %s", player, Byte.toString(bagColour)));
+			MAP.put(player, Maps.<Byte, ItemStack[]>newLinkedHashMap());
+			MAP.get(player).put(bagColour, new ItemStack[104]);
+			return MAP.get(player).get(bagColour).clone();
+		}
 	}
 	
 	public static void set(String player, byte bagColour, ItemStack[] inv)
 	{
-		LinkedHashMap<Byte, ItemStack[]> setdata;
+		Map<Byte, ItemStack[]> setdata;
 
 		if (MAP.containsKey(player))
 		{
@@ -56,12 +69,12 @@ public final class AlchemicalBags
 		}
 		else
 		{
-			setdata = new LinkedHashMap();
+			setdata = Maps.newLinkedHashMap();
 			MAP.put(player, setdata);
 		}
 		if (setdata == null)
 		{
-			setdata = new LinkedHashMap();
+			setdata = Maps.newLinkedHashMap();
 			MAP.put(player, setdata);
 		}
 		setdata.put(bagColour, inv);
@@ -109,7 +122,7 @@ public final class AlchemicalBags
 		
 		if (MAP.containsKey(player))
 		{
-			LinkedHashMap<Byte, ItemStack[]> data = MAP.get(player);
+			Map<Byte, ItemStack[]> data = MAP.get(player);
 			
 			NBTTagList list = new NBTTagList();
 			
@@ -151,7 +164,7 @@ public final class AlchemicalBags
 		
 		NBTTagList list = new NBTTagList();
 		
-		for (Entry<String, LinkedHashMap<Byte, ItemStack[]>> entry : MAP.entrySet())
+		for (Entry<String, Map<Byte, ItemStack[]>> entry : MAP.entrySet())
 		{
 			NBTTagCompound subNBT = new NBTTagCompound();
 			subNBT.setString("player", entry.getKey());
