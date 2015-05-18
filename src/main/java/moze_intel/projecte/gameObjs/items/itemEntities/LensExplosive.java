@@ -9,6 +9,7 @@ public class LensExplosive extends ItemPE
 {
 	public LensExplosive()
 	{
+		this.setCreativeTab(null);
 		this.setUnlocalizedName("lens_explosive");
 		this.setMaxStackSize(1);
 	}
