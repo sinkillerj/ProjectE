@@ -261,7 +261,10 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
-							growable.func_149853_b(world, world.rand, x, y, z);
+							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
+							{
+								growable.func_149853_b(world, world.rand, x, y, z);
+							}
 						}
 					}
 					// All modded
