@@ -41,9 +41,12 @@ public class DarkPick extends PEToolBase
 		{
 			return stack;
 		}
-		if (ProjectEConfig.pickaxeAoeVeinMining) {
+
+		if (ProjectEConfig.pickaxeAoeVeinMining)
+		{
 			mineOreVeinsInAOE(stack, player);
-		} else
+		}
+		else
 		{
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)

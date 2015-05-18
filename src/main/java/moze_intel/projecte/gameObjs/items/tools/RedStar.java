@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
@@ -66,17 +67,38 @@ public class RedStar extends PEToolBase
 	{
 		if (!world.isRemote)
 		{
+			if (ProjectEConfig.pickaxeAoeVeinMining)
+			{
+				mineOreVeinsInAOE(stack, player);
+			}
+
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+
 			if (mop == null)
 			{
 				return stack;
 			}
-			if (mop.typeOfHit == MovingObjectType.BLOCK)
+			else if (mop.typeOfHit == MovingObjectType.BLOCK)
 			{
 				Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-				if (ItemHelper.isOre(block) || block instanceof BlockGravel)
+
+				if (block instanceof BlockGravel)
 				{
-					tryVeinMine(stack, player, mop);
+					if (ProjectEConfig.pickaxeAoeVeinMining)
+					{
+						digAOE(stack, world, player, false, 0);
+					}
+					else
+					{
+						tryVeinMine(stack, player, mop);
+					}
+				}
+				else if (ItemHelper.isOre(block))
+				{
+					if (!ProjectEConfig.pickaxeAoeVeinMining)
+					{
+						tryVeinMine(stack, player, mop);
+					}
 				}
 				else if (block instanceof BlockGrass || block instanceof BlockDirt || block instanceof BlockSand)
 				{
@@ -87,7 +109,6 @@ public class RedStar extends PEToolBase
 					digAOE(stack, world, player, true, 0);
 				}
 			}
-
 		}
 		
 		return stack;
