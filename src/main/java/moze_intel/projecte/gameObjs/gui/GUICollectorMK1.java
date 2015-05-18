@@ -4,7 +4,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
