@@ -33,7 +33,6 @@ item.pe_matter_red.name=Materia Rossa
 item.pe_ring_iron_band.name=Banda di ferro
 item.pe_black_hole.name=Banda del Buco Nero
 item.pe_harvest_god.name=Banda della dea del raccolto
-item.pe_archangel_smite.name=Archangel's Smite [WIP]
 item.pe_ignition.name=Anello d'Ignizione
 item.pe_body_stone.name=Pietra del Corpo
 item.pe_soul_stone.name=Pietra dell'Anima
@@ -41,8 +40,6 @@ item.pe_mind_stone.name=Pietra della Mente
 item.pe_life_stone.name=Pietra della Vita
 item.pe_evertide_amulet.name=Amuleto di Evertide
 item.pe_volcanite_amulet.name=Amuleto di Volcanite
-item.pe_swrg.name=Swiftwolf's Rending Gale
-item.pe_mercurial_eye.name=Mercurial Eye
 item.pe_time_watch.name=Orologio del Tempo che Scorre
 item.pe_gem_density.name=Gemma dell'Eterna Densità
 item.pe_divining_rod_1.name=Verga della Divinazione (Bassa)
@@ -111,8 +108,6 @@ tile.pe_fuel_block_1.name=Blocco di Combustibile Mobius
 tile.pe_fuel_block_2.name=Blocco Combustibile Aeternalis
 tile.pe_dmPedestal.name=Piedistallo di Materia Oscura
 
-itemGroup.ProjectE=ProjectE
-
 achievement.phil_stone=Il migliore amico di un alchimista!
 achievement.phil_stone.desc=Facciamo iniziare le cose! Crafta una Pietra Filosofale
 achievement.alch_chest=Aggiornamento dell'immagazzinamento!
@@ -164,7 +159,7 @@ pe.command.clearknowledge.error=Impossibile cancellare la conoscenza per: %s
 pe.command.clearknowledge.notify=Le vostre conoscenze della trasmutazione vengono cancellate da %s!
 pe.command.clearknowledge.playernotfound=Impossibile trovare il giocatore: %s
 pe.command.clearknowledge.success=Cancellata la conoscenza per: %s
-pe.command.clearknowledge.usage=/projecte_clearKnowledge [giocatore]
+pe.command.clearknowledge.usage=/projecte clearKnowledge [giocatore]
 
 pe.command.reload.started=Ricaricando le registrazioni di EMC...
 pe.command.reload.success=Fatto! Invio dei dati aggiornati al client.
@@ -172,25 +167,16 @@ pe.command.reload.success=Fatto! Invio dei dati aggiornati al client.
 pe.command.remove.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
 pe.command.remove.invalidmeta=Errore: Il valore meta "%s" non è valido!
 pe.command.remove.success=Rimosso valore EMC per %s.
-pe.command.remove.usage=/projecte_removeEMC <unlocalized | oredict name> [meta]
 
 pe.command.reset.invalidmeta=Errore: Errore: Il valore meta "%s" non è valido!
 pe.command.reset.nochange=Il valore EMC per %s:%s non è stato modificato!
 pe.command.reset.success=Resettato valore EMC per %s.
-pe.command.reset.usage=/projecte_resetEMC <unlocalized | oredict name> [meta]
 
 pe.command.set.invalidemc=Errore: Il valore EMC "%s" non è valido!
 pe.command.set.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
 pe.command.set.invalidmeta=Errore: Il valore meta "%s" non è valido!
 pe.command.set.invalidparams=Errore: Si prega di fornire i parametri
 pe.command.set.success=Impostato ll valore EMC di %s a %s!
-pe.command.set.usage=/projecte_setEMC [unlocalized | oredict name] [meta] [EMC value]
-
-
-pe.darkpick.mode1=Standard
-pe.darkpick.mode2=3x Tallshot
-pe.darkpick.mode3=3x Wideshot
-pe.darkpick.mode4=3x Longshot
 
 pe.divining.avgemc=Media EMC per %s blocchi: %s
 pe.divining.maxemc=Massima EMC: %s
@@ -200,13 +186,9 @@ pe.divining.thirdmax=Terza Massima EMC: %s
 pe.dmfurnace.shortname=Fornace di Materia Oscura
 pe.rmfurnace.shortname=Fornace di Materia Rossa
 
-pe.emc.emc_tooltip_prefix=EMC:
 pe.emc.maxgenrate_tooltip=Massima velocità di generazione:
 pe.emc.maxoutrate_tooltip=Massima velocità di output:
 pe.emc.maxstorage_tooltip=Massimo immagazzinamento:
-pe.emc.name=EMC
-pe.emc.rate=EMC/s
-pe.emc.stackemc_tooltip_prefix=Stack EMC:
 pe.emc.storedemc_tooltip=EMC Immagazzinata:
 pe.emc.too_much=TROPPA
 
@@ -224,14 +206,12 @@ pe.gem.nightvision.prompt=Premi Shift %s per attivare la Visione Notturna
 pe.gem.stepassist_tooltip=Passo Assistito:
 pe.gem.stepassist.prompt=Premi %s per attivare il Passo Assistito
 
-pe.gemdensity.blacklist=Blacklist
 pe.gemdensity.mode_switch=Impostato obbiettivo su %s
 pe.gemdensity.tooltip1=Condensa gli oggetti nell'inventario/raccolti
 pe.gemdensity.tooltip2=Obbiettivo corrente: %s
 pe.gemdensity.tooltip3=Premi %s per cambiare obbiettivo
 pe.gemdensity.tooltip4=Tasto destro per impostare la blacklist/whitelist
 pe.gemdensity.tooltip5=Shift + tasto destro del mause per attivare
-pe.gemdensity.whitelist=Whitelist
 
 pe.harvestgod.pedestal1=Accelera la crescita delle colture vicine
 pe.harvestgod.pedestal2=Raccoglie le colture cresciute vicine
@@ -256,11 +236,6 @@ pe.misc.seconds=secondi
 pe.misc.storedxp_tooltip=XP immagazzinata:
 pe.misc.wrenched_block=Blocco wrenchato!
 
-pe.morningstar.mode1=Standard
-pe.morningstar.mode2=3x Tallshot
-pe.morningstar.mode3=3x Wideshot
-pe.morningstar.mode4=3x Longshot
-
 pe.pedestal.item_disabled=La funzione del piedistallo è stata disattivata!
 pe.pedestal.on_pedestal=Sul Piedistallo:
 pe.pedestal.shortname=Piedistallo di Materia Oscura
@@ -274,11 +249,6 @@ pe.philstone.tooltip1=Premi %s per aprire un tavolo da lavoro
 pe.philstone.tooltip2=Funziona come una wrench per i blocchi ProjectE 
 pe.philstone.tooltip3=Cliccando il tasto destro cambia l'orientazione del blocco
 pe.philstone.tooltip4=Shift + tasto destro farà prendere il blocco
-
-pe.redpick.mode1=Standard
-pe.redpick.mode2=3x Tallshot
-pe.redpick.mode3=3x Wideshot
-pe.redpick.mode4=3x Longshot
 
 pe.redsword.mode1=Elimina mob ostili
 pe.redsword.mode2=Elimina tutti
@@ -324,7 +294,7 @@ pe.transmutation.learned6=t
 pe.transmutation.learned7=o
 
 pe.update.available=Un aggiornamento della mod ProjectE è disponibile! Versione: %s
-pe.update.changelog=Usa /projecte_log per il change log!
+pe.update.changelog=Usa /projecte changelog per il change log!
 pe.update.getit=Ottienila qui!
 
 pe.volcanite.tooltip1=Premi %s per lanciare un proiettile di lava

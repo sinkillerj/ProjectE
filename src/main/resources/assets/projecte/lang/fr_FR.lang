@@ -110,8 +110,6 @@ tile.pe_fuel_block_1.name=Bloc de combustible de Mœbius
 tile.pe_fuel_block_2.name=Bloc de combustible d'Æternalis
 tile.pe_dmPedestal.name=Piédestal de matière noire
 
-itemGroup.ProjectE=ProjectE
-
 achievement.phil_stone=Le meilleur ami des alchimistes !
 achievement.phil_stone.desc=Commençons donc ! Fabriquons une pierre philosophale...
 achievement.alch_chest=Amélioration du rangement !
