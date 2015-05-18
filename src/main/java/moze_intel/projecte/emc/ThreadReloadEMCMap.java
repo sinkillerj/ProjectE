@@ -32,7 +32,7 @@ public class ThreadReloadEMCMap extends Thread {
 		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
-		TileEntityHandler.checkAllCondensers(sender.getEntityWorld());
+		TileEntityHandler.checkAllCondensers();
 		PacketHandler.sendFragmentedEmcPacketToAll();
 		sender.addChatMessage(finishedMessage);
 		PELogger.logInfo("Thread ran for " + (System.currentTimeMillis() - start) + " ms.");
