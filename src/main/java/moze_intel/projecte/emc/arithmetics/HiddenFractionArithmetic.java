@@ -4,7 +4,7 @@ import moze_intel.projecte.emc.IValueArithmetic;
 
 import org.apache.commons.lang3.math.Fraction;
 
-public class HiddenRationalArithmetic implements IValueArithmetic<Fraction>
+public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 {
 
 	@Override
