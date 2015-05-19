@@ -156,10 +156,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		for (Map.Entry<T, Integer> entry:conversion.ingredientsWithAmount.entrySet()) {
 			if (values.containsKey(entry.getKey())) {
 				//value = value + amount * ingredientcost
-				V ingredientValue = values.get(entry.getKey());
+				V ingredientValue = arithmetic.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
 					if (!arithmetic.isFree(ingredientValue)) {
-						value = arithmetic.add(value, arithmetic.mul(entry.getValue(), ingredientValue));
+						value = arithmetic.add(value, ingredientValue);
 						if (ingredientValue.compareTo(ZERO) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
 						allIngredientsAreFree = false;
 					}
