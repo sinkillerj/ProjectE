@@ -1,8 +1,8 @@
 package moze_intel.projecte.rendering;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.item.ItemStack;

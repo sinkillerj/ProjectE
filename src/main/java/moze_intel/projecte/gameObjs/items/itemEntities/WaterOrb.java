@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items.itemEntities;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.client.renderer.texture.IIconRegister;
 

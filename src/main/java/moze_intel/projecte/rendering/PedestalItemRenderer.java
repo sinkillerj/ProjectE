@@ -1,6 +1,6 @@
 package moze_intel.projecte.rendering;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import moze_intel.projecte.rendering.model.ModelPedestal;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemStack;

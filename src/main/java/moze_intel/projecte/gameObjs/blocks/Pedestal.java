@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;

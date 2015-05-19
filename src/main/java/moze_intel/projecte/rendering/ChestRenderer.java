@@ -1,7 +1,7 @@
 package moze_intel.projecte.rendering;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.client.model.ModelChest;

@@ -2,9 +2,9 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.ItemHelper;

@@ -5,4 +5,4 @@
 @API(owner = "ProjectE", apiVersion = "3", provides = "ProjectEAPI")
 package moze_intel.projecte.api;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

@@ -1,7 +1,7 @@
 package moze_intel.projecte.events;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -43,7 +43,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
+	public void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
@@ -55,7 +55,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+	public void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
 

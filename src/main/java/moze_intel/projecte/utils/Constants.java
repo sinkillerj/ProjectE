@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
 

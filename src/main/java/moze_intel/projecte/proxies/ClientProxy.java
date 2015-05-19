@@ -1,8 +1,8 @@
 package moze_intel.projecte.proxies;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.PlayerRender;

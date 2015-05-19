@@ -17,16 +17,16 @@ public final class ReflectionHelper
 
 	protected static boolean getArrowInGround(EntityArrow instance)
 	{
-		return cpw.mods.fml.relauncher.ReflectionHelper.getPrivateValue(EntityArrow.class, instance, arrowInGroundNames);
+		return net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue(EntityArrow.class, instance, arrowInGroundNames);
 	}
 
 	protected static void setEntityFireImmunity(Entity instance, boolean value)
 	{
-		cpw.mods.fml.relauncher.ReflectionHelper.setPrivateValue(Entity.class, instance, value, entityFireImmuneNames);
+		net.minecraftforge.fml.relauncher.ReflectionHelper.setPrivateValue(Entity.class, instance, value, entityFireImmuneNames);
 	}
 
 	protected static void setPlayerCapabilityWalkspeed(PlayerCapabilities instance, float value)
 	{
-		cpw.mods.fml.relauncher.ReflectionHelper.setPrivateValue(PlayerCapabilities.class, instance, value, playerCapaWalkSpeedNames);
+		net.minecraftforge.fml.relauncher.ReflectionHelper.setPrivateValue(PlayerCapabilities.class, instance, value, playerCapaWalkSpeedNames);
 	}
 }
