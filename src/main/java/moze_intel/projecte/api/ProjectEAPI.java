@@ -1,8 +1,7 @@
 package moze_intel.projecte.api;
 
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 /**
  * Class for basic mod interactions with ProjectE.<br>
@@ -10,8 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public final class ProjectEAPI
 {
-	public static interface IRegisterCustomEMC {
-		public void registerCustomEMC(ItemStack stack, int emcValue);
+	public interface IRegisterCustomEMC {
+		void registerCustomEMC(ItemStack stack, int emcValue);
 	}
 	/**
 	 * Register an EMC value for the specified itemstack.<br>

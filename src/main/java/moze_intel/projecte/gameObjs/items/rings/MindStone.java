@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -182,14 +183,14 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
-		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
 		for (EntityXPOrb orb : orbs)
 		{
-			WorldHelper.gravitateEntityTowards(orb, x + 0.5, y + 0.5, z + 0.5);
-			if (!world.isRemote && orb.getDistanceSq(x + 0.5,y + 0.5, z + 0.5) < 1.21)
+			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21)
 			{
 				suckXP(orb, tile.getItemStack());
 			}

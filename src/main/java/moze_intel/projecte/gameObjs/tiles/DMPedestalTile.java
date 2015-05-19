@@ -46,7 +46,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 				Item item = getItemStack().getItem();
 				if (item instanceof IPedestalItem)
 				{
-					((IPedestalItem) item).updateInPedestal(worldObj, xCoord, yCoord, zCoord);
+					((IPedestalItem) item).updateInPedestal(worldObj, getPos());
 				}
 				if (particleCooldown <= 0)
 				{

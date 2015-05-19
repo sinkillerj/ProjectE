@@ -1,5 +1,6 @@
 package moze_intel.projecte.api;
 
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -15,11 +16,9 @@ public interface IPedestalItem {
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside.
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 */
-    void updateInPedestal(World world, int x, int y, int z);
+    void updateInPedestal(World world, BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
