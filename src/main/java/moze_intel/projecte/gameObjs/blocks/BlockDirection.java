@@ -7,11 +7,13 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -24,7 +26,7 @@ public abstract class BlockDirection extends BlockContainer
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack stack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityLiving, ItemStack stack)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
@@ -44,7 +46,7 @@ public abstract class BlockDirection extends BlockContainer
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
 		
@@ -66,11 +68,11 @@ public abstract class BlockDirection extends BlockContainer
 		}
 		
 		world.func_147453_f(x, y, z, block);
-		super.breakBlock(world, x, y, z, block, noclue);
+		super.breakBlock(world, pos, state);
 	}
 	
 	@Override
-	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) 
+	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
 	{
 		if (world.isRemote)
 		{

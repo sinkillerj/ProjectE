@@ -1,14 +1,16 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -17,7 +19,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 	public InterdictionTorch()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("pe_interdiction_torch");
+		this.setUnlocalizedName("pe_interdiction_torch");
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}
@@ -30,7 +32,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
+	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
 		int l = world.getBlockMetadata(x, y, z);
 		double d0 = (double)((float)x + 0.5F);
@@ -49,11 +51,5 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 			world.spawnParticle("smoke", d0, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
 		else
 			world.spawnParticle("smoke", d0, d1, d2, 0.0D, 0.0D, 0.0D);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		this.blockIcon = register.registerIcon("projecte:interdiction_torch");
 	}
 }

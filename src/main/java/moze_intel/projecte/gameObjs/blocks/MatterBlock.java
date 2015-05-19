@@ -1,27 +1,25 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class MatterBlock extends Block
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon dmIcon;
-	@SideOnly(Side.CLIENT)
-	private IIcon rmIcon;
-	
 	public MatterBlock() 
 	{
 		super(Material.iron);
@@ -29,7 +27,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		
@@ -44,7 +42,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(EntityPlayer player, int meta)
+	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
 	{
 		ItemStack stack = player.getHeldItem();
 		
@@ -64,7 +62,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public int damageDropped(int meta)
+	public int damageDropped(IBlockState state)
 	{
 		return meta;
 	}
@@ -78,24 +76,4 @@ public class MatterBlock extends Block
 			list.add(new ItemStack(item , 1, i));
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		dmIcon = register.registerIcon("projecte:dm");
-		rmIcon = register.registerIcon("projecte:rm");
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if (meta == 0) 
-		{
-			return dmIcon;
-		}
-		else return rmIcon;
-	}
-	
 }

@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -9,13 +7,18 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -24,11 +27,11 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	public Condenser() 
 	{
 		super();
-		this.setBlockName("pe_condenser");
+		this.setUnlocalizedName("pe_condenser");
 	}
 	
 	@Override
-	public Item getItemDropped(int par1, Random random, int par2)
+	public Item getItemDropped(IBlockState state, Random random, int par2)
 	{
 		return Item.getItemFromBlock(ObjHandler.condenser);
 	}
@@ -46,7 +49,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote) 
 		{
@@ -57,7 +60,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
 
@@ -80,12 +83,5 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 
 		world.func_147453_f(x, y, z, block);
 		world.removeTileEntity(x, y, z);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		this.blockIcon = register.registerIcon("obsidian");
 	}
 }

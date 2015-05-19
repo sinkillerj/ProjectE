@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -15,12 +14,16 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class Pedestal extends Block implements ITileEntityProvider {
 
@@ -29,11 +32,10 @@ public class Pedestal extends Block implements ITileEntityProvider {
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
         this.setBlockBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 0.75F, 0.8125F);
-        this.setBlockTextureName(PECore.MODID.toLowerCase() + ":dm");
-        setBlockName("pe_dmPedestal");
+        this.setUnlocalizedName("pe_dmPedestal");
     }
 
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
         if (tile.getItemStack() != null)
@@ -41,10 +43,10 @@ public class Pedestal extends Block implements ITileEntityProvider {
             WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), x, y, z);
         }
         tile.invalidate();
-        super.breakBlock(world, x, y, z, block, meta);
+        super.breakBlock(world, pos, state);
     }
 
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
@@ -67,7 +69,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase ent, ItemStack stack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase ent, ItemStack stack)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
@@ -82,7 +84,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
 
 
 	@Override
-    public boolean renderAsNormalBlock()
+    public boolean isFullCube()
     {
         return false;
     }
@@ -100,7 +102,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    public int getLightValue(IBlockAccess world, BlockPos pos)
     {
         return 12;
     }

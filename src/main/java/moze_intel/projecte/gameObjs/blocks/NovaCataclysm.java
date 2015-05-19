@@ -1,10 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
@@ -12,7 +9,7 @@ public class NovaCataclysm extends NovaCatalyst
 {
 	public NovaCataclysm()
 	{
-		this.setBlockName("pe_nova_cataclysm");
+		this.setUnlocalizedName("pe_nova_cataclysm");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
@@ -32,13 +29,5 @@ public class NovaCataclysm extends NovaCatalyst
 		EntityNovaCataclysmPrimed ent = new EntityNovaCataclysmPrimed(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), entity); 
 		world.spawnEntityInWorld(ent);
 		world.playSoundAtEntity(ent, "game.tnt.primed", 1.0F, 1.0F);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		this.blockIcon = register.registerIcon("projecte:explosives/nova1_side");
-		topIcon = register.registerIcon("projecte:explosives/top");
-		bottomIcon = register.registerIcon("projecte:explosives/bottom");
 	}
 }

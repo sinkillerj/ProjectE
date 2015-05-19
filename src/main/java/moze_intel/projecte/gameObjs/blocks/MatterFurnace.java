@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
@@ -12,6 +10,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,8 +18,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -30,8 +33,6 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	private boolean isActive;
 	private boolean isHighTier;
 	private static boolean isUpdating;
-	@SideOnly(Side.CLIENT) 
-	private IIcon front;
 	private Random rand = new Random();
 
 	public MatterFurnace(boolean active, boolean isRM) 
@@ -41,7 +42,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		isActive = active;
 		isHighTier = isRM;
 		textureName = isHighTier ? "rm" : "dm";
-		this.setBlockName("pe_" + textureName + "_furnace");
+		this.setUnlocalizedName("pe_" + textureName + "_furnace");
 		
 		if (isActive) 
 		{
@@ -51,19 +52,19 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
 		return world.getBlockMetadata(x, y, z) == 0 ? 1000000F : 2000000F;
 	}
 	
 	@Override
-	public Item getItemDropped(int no, Random rand, int clue)
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{
 		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
@@ -81,7 +82,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		if (!isUpdating)
 		{
@@ -137,7 +138,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
 	{
 		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
 		
@@ -157,7 +158,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
+	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
 		if (isActive)
 		{
@@ -192,25 +193,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		this.blockIcon = register.registerIcon("projecte:" + textureName);
-		front = register.registerIcon("projecte:matter_furnace/" + (isActive ? (textureName + "_on") : (textureName + "_off")));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if (meta == 0 && side == 3) 
-		{
-			return front;
-		}
-		
-		return side != meta ? this.blockIcon : front;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public Item getItem(World world, int x, int y, int z)
+	public Item getItem(World world, BlockPos pos)
 	{
 		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
 	}
