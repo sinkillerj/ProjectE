@@ -124,11 +124,11 @@ achievement.condenser.desc=MEHR DIAMANTEN!
 achievement.collector=Die Kraft der Sonne!
 achievement.collector.desc=Jetzt beginnt der Spaß.
 achievement.relay=Power-Blumen!
-achievement.relay.desc=Verbinde Energieeinsammler für noch mehr Energie.
+achievement.relay.desc=Verbinde Energiesammler für noch mehr Energie.
 achievement.portable_transmutation=Transmutation für Unterwegs!
 achievement.portable_transmutation.desc=Und jetzt dachtest du, dass es nicht besser werden könnte.
 achievement.dark_matter=All diese Materie
-achievement.dark_matter.desc=Sie schaut... komisch aus....
+achievement.dark_matter.desc=Sie schaut... komisch aus...
 achievement.red_matter=Noch bessere Materie!
 achievement.red_matter.desc=Das Raum-Kontinuum ist vielleicht kaputt.
 achievement.dm_block=Ein Block, der zählt!
@@ -145,7 +145,7 @@ achievement.rm_pick=Ist dieses Ding sicher?
 achievement.rm_pick.desc=Wahrscheinlich nicht.
 achievement.klein=EMC-Batterien
 achievement.klein.desc=Speichern EMC für einen regnerischen Tag.
-achievement.klein_big=GROSSE EMC-Batterien
+achievement.klein_big=Große EMC-Batterien
 achievement.klein_big.desc=Halte das Universum in deinem Inventar.
 
 pe.archangel.pedestal1=Schießt Pfeile auf nahe Mobs
@@ -162,7 +162,7 @@ pe.command.clearknowledge.error=Transmutationswissen von %s konnte nicht gelösc
 pe.command.clearknowledge.notify=Dein Transmutationswissen wurde von %s gelöscht!
 pe.command.clearknowledge.playernotfound=Der Spieler mit dem Namen %s wurde nicht gefunden
 pe.command.clearknowledge.success=Transmutationswissen von %s gelöscht
-pe.command.clearknowledge.usage=/projecte clearKnowledge [Benutzername]
+pe.command.clearknowledge.usage=/projecte clearKnowledge [Benutzername] (Keine Parameter, um sein eigenes Wissen zu löschen)
 
 pe.command.reload.started=Lade EMC-Registrierungen neu...
 pe.command.reload.success=Fertig! Sende aktualisierte Daten an Clients.
@@ -170,20 +170,19 @@ pe.command.reload.success=Fertig! Sende aktualisierte Daten an Clients.
 pe.command.remove.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.remove.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.remove.success=EMC-Wert von %s entfernt.
-pe.command.remove.usage=/projecte removeEMC <unlokalisierter | oredict-Name> [Meta-Wert]
+pe.command.remove.usage=/projecte removeEMC <unlokalisierter | OreDictionary-Name> [Meta-Wert] (Keine Parameter für in der Hand gehaltenes Item)
 
 pe.command.reset.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.reset.nochange=Der EMC-Wert von %s:%s wurde nicht modifiziert!
 pe.command.reset.success=EMC-Wert von %s zurückgesetzt.
-pe.command.reset.usage=/projecte resetEMC <unlokalisierter | oredict-Name> [Meta-Wert]
+pe.command.reset.usage=/projecte resetEMC <unlokalisierter | OreDictionary-Name> [Meta-Wert] (Keine Parameter für in der Hand gehaltenes Item)
 
 pe.command.set.invalidemc=Fehler: Der EMC-Wert "%s" ist nicht gültig!
 pe.command.set.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.set.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
 pe.command.set.invalidparams=Fehler: Keine Parameter!
 pe.command.set.success=EMC-Wert von %s zu %s gesetzt!
-pe.command.set.usage=/projecte setEMC [unlokalisierter | oredict-Name] [Meta-Wert] [EMC-Wert]
-
+pe.command.set.usage=/projecte setEMC [unlokalisierter | OreDictionary-Name] [Meta-Wert] [EMC-Wert], /projecte setEMC [EMC-Wert] (Für in der Hand gehaltenes Item)
 
 pe.darkpick.mode1=Standard
 pe.darkpick.mode2=3x Tallshot
@@ -223,7 +222,7 @@ pe.gem.stepassist_tooltip=Schrittunterstüzung:
 pe.gem.stepassist.prompt=Drücke %s um die Schrittunterstüzung umzuschalten
 
 pe.gemdensity.blacklist=Blacklist
-pe.gemdensity.mode_switch=Ziel zu %s gesetzt
+pe.gemdensity.mode_switch=Ziel gesetzt zu:
 pe.gemdensity.tooltip1=Kondensiert Items unterwegs
 pe.gemdensity.tooltip2=Aktuelles Ziel: %s
 pe.gemdensity.tooltip3=Drücke %s um das Ziel zu ändern
@@ -320,6 +319,16 @@ pe.transmutation.learned4=r
 pe.transmutation.learned5=n
 pe.transmutation.learned6=t
 pe.transmutation.learned7=!
+
+pe.transmutation.unlearned0=V
+pe.transmutation.unlearned1=e
+pe.transmutation.unlearned2=r
+pe.transmutation.unlearned3=g
+pe.transmutation.unlearned4=e
+pe.transmutation.unlearned5=s
+pe.transmutation.unlearned6=s
+pe.transmutation.unlearned7=e
+pe.transmutation.unlearned8=n
 
 pe.update.available=Neues ProjectE-Update verfügbar! Version: %s
 pe.update.changelog=Benutze /projecte changelog für die Versionsgeschichte!
