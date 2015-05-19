@@ -336,7 +336,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					
 					continue;
 				}
-				else if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null)
+				else if (FurnaceRecipes.instance().getSmeltingResult(stack) == null)
 				{
 					continue;
 				}
@@ -475,7 +475,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	private void smeltItem()
 	{
 		ItemStack toSmelt = inventory[1];
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
 		ItemStack currentSmelted = getStackInSlot(outputSlot);
 
 		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
@@ -504,7 +504,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			return false;
 		}
 		
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt);
 		if (smeltResult == null) 
 		{
 			return false;
@@ -693,7 +693,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		}
 		else if (slot >= 1 && slot <= 13)
 		{
-			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+			return FurnaceRecipes.instance().getSmeltingResult(stack) != null;
 		}
 		
 		return false;

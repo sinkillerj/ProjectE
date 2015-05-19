@@ -135,7 +135,7 @@ public class DMFurnaceContainer extends Container
 					return null;
 				}
 			}
-			else if (FurnaceRecipes.smelting().getSmeltingResult(newStack) != null)
+			else if (FurnaceRecipes.instance().getSmeltingResult(newStack) != null)
 			{
 				if (!this.mergeItemStack(stack, 1, 10, false))
 				{

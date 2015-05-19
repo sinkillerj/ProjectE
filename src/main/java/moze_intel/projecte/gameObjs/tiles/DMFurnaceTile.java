@@ -47,7 +47,7 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 		}
 		else if (slot >= 1 && slot <= 9)
 		{
-			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+			return FurnaceRecipes.instance().getSmeltingResult(stack) != null;
 		}
 		
 		return false;

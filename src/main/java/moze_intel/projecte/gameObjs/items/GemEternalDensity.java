@@ -394,7 +394,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	@Override
 	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
 	{
-		if (!tile.getWorldObj().isRemote && stack.getItemDamage() == 1)
+		if (!tile.getWorld().isRemote && stack.getItemDamage() == 1)
 		{
 			condense(stack, tile.getBackingInventoryArray());
 			tile.markDirty();

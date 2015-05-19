@@ -130,7 +130,7 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 
 	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
 	{
-		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorld(), tile);
 		for (TileEntity tileEntity : list)
 		{
 			if (tileEntity instanceof IInventory)
@@ -169,7 +169,7 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 			double centeredY = tile.yCoord + 0.5;
 			double centeredZ = tile.zCoord + 0.5;
 
-			for (EntityItem e : (List<EntityItem>) tile.getWorldObj().getEntitiesWithinAABB(EntityItem.class, aabb))
+			for (EntityItem e : (List<EntityItem>) tile.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
@@ -186,7 +186,7 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 				}
 			}
 
-			for (EntityLootBall e : (List<EntityLootBall>) tile.getWorldObj().getEntitiesWithinAABB(EntityLootBall.class, aabb))
+			for (EntityLootBall e : (List<EntityLootBall>) tile.getWorld().getEntitiesWithinAABB(EntityLootBall.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)

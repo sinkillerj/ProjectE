@@ -170,7 +170,7 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 	@Override
 	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
 	{
-		if (tile.getWorldObj().isRemote)
+		if (tile.getWorld().isRemote)
 		{
 			return;
 		}
