@@ -1,44 +1,37 @@
 package moze_intel.projecte.emc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import moze_intel.projecte.emc.arithmetics.IntArithmetic;
-
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@RunWith(value = Parameterized.class)
+import static org.junit.Assert.*;
+
+//@RunWith(value = Parameterized.class)
 public class GraphMapperTest {
 
-	@Parameters
+/*	@Parameterized.Parameters
 	public static Collection  parameters() {
-		Object[][] data = new Object[][] {
-				{ new SimpleGraphMapper<String, Integer>(new IntArithmetic())  },
-		};
+		Object[][] data = new Object[][] { { new ComplexGraphMapper<String, Integer>(new IntArithmetic())  }};
 		return Arrays.asList(data);
 	}
 
-	public GraphMapperTest(IValueGenerator<String, Integer> graphMapper) {
+	public GraphMapperTest(GraphMapper<String, Integer> graphMapper) {
 		this.graphMapper = graphMapper;
+	}*/
+	@Before
+	public void setup() {
+		graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 	}
 
 	@Rule
 	public Timeout timeout = new Timeout(3000);
 
-	public IValueGenerator<String, Integer> graphMapper;
+	public GraphMapper<String, Integer> graphMapper;
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {
