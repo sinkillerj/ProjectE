@@ -22,6 +22,8 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	@Override
 	public Fraction add(Fraction a, Fraction b)
 	{
+		if (isFree(a)) return b;
+		if (isFree(b)) return a;
 		return a.add(b);
 	}
 
@@ -48,12 +50,12 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	@Override
 	public boolean isFree(Fraction value)
 	{
-		return value.getNumerator() < 0;
+		return value.getNumerator() == Integer.MIN_VALUE;
 	}
 
 	protected Fraction zeroOrInt(Fraction value)
 	{
-		if (value.compareTo(Fraction.ONE) < 0) return Fraction.ZERO;
+		if (Fraction.ZERO.compareTo(value) <= 0 && value.compareTo(Fraction.ONE) < 0) return Fraction.ZERO;
 		return Fraction.getFraction(value.intValue(), 1);
 	}
 }
