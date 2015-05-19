@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappingCollector<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected static void debugFormat(String format, Object... args) {
