@@ -24,6 +24,7 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	{
 		if (isFree(a)) return b;
 		if (isFree(b)) return a;
+
 		return a.add(b);
 	}
 
@@ -38,7 +39,12 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	public Fraction div(Fraction a, int b)
 	{
 		if (this.isFree(a)) return getFree();
-		return a.divideBy(Fraction.getFraction(b, 1));
+		Fraction result = a.divideBy(Fraction.getFraction(b, 1));
+		if (Fraction.ZERO.compareTo(result) <= 0 && result.compareTo(Fraction.ONE) < 0)
+		{
+			return result;
+		}
+		return Fraction.getFraction(result.intValue(), 1);
 	}
 
 	@Override

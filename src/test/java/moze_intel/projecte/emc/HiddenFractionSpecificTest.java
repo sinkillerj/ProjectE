@@ -42,6 +42,26 @@ public class HiddenFractionSpecificTest
 
 	}
 
+	@Test
+	public void nuggetExploits()
+	{
+		graphMapper.setValue("ingot", 2048, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("melon", 16, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(9, "nugget", Arrays.asList("ingot"));
+		graphMapper.addConversion(1, "goldmelon", Arrays.asList(
+				"nugget", "nugget", "nugget",
+				"nugget", "melon", "nugget",
+				"nugget", "nugget", "nugget"
+		));
+
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(2048, getValue(values, "ingot"));
+		assertEquals(16, getValue(values, "melon"));
+		assertEquals(227, getValue(values, "nugget"));
+		assertEquals(8*227+16, getValue(values, "goldmelon"));
+	}
+
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
