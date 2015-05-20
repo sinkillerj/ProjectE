@@ -205,7 +205,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private void addKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -227,7 +227,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private void removeKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -248,7 +248,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		if (eye.hasTagCompound())
 		{
-			NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+			NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 			for (int i = 0; i < list.tagCount(); i++)
 			{

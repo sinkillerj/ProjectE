@@ -103,11 +103,11 @@ public class AlchemicalBag extends ItemPE
 		
 		if (rTalisman != null)
 		{
-			byte coolDown = rTalisman.stackTagCompound.getByte("Cooldown");
+			byte coolDown = rTalisman.getTagCompound().getByte("Cooldown");
 			
 			if (coolDown > 0)
 			{
-				rTalisman.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+				rTalisman.getTagCompound().setByte("Cooldown", (byte) (coolDown - 1));
 			}
 			else
 			{
@@ -136,7 +136,7 @@ public class AlchemicalBag extends ItemPE
 				
 				if (hasAction)
 				{
-					rTalisman.stackTagCompound.setByte("Cooldown", (byte) 19);
+					rTalisman.getTagCompound().setByte("Cooldown", (byte) 19);
 				}
 			}
 		}

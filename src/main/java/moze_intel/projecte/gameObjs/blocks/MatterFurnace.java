@@ -144,14 +144,14 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
-		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
+		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.stackTagCompound.setInteger("x", x);
-			stack.stackTagCompound.setInteger("y", y);
-			stack.stackTagCompound.setInteger("z", z);
-			stack.stackTagCompound.setInteger("EMC", 0);
-			stack.stackTagCompound.setShort("BurnTime", (short) 0);
-			stack.stackTagCompound.setShort("CookTime", (short) 0);
+			stack.getTagCompound().setInteger("x", x);
+			stack.getTagCompound().setInteger("y", y);
+			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("EMC", 0);
+			stack.getTagCompound().setShort("BurnTime", (short) 0);
+			stack.getTagCompound().setShort("CookTime", (short) 0);
 			
 			tile.readFromNBT(stack.stackTagCompound);
 		}

@@ -27,7 +27,7 @@ public abstract class ItemPE extends Item
 			stack.stackTagCompound = new NBTTagCompound();
 		}
 		
-		return stack.stackTagCompound.getDouble("StoredEMC");
+		return stack.getTagCompound().getDouble("StoredEMC");
 	}
 	
 	public static void setEmc(ItemStack stack, double amount)
@@ -37,7 +37,7 @@ public abstract class ItemPE extends Item
 			stack.stackTagCompound = new NBTTagCompound();
 		}
 		
-		stack.stackTagCompound.setDouble("StoredEMC", amount);
+		stack.getTagCompound().setDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmc(ItemStack stack, double amount)

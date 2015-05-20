@@ -188,25 +188,25 @@ public class ToolTipEvent
 
 		if (current.hasTagCompound())
 		{
-			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
+			if (current.getTagCompound().getBoolean("ProjectEBlock"))
 			{
 				event.toolTip.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.misc.wrenched_block"));
 				
-				if (current.stackTagCompound.getDouble("EMC") > 0)
+				if (current.getTagCompound().getDouble("EMC") > 0)
 				{
 					event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("EMC")));
+							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("EMC")));
 				}
 			}
 			
-			if (current.stackTagCompound.hasKey("StoredEMC"))
+			if (current.getTagCompound().hasKey("StoredEMC"))
 			{
 				event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("StoredEMC")));
+						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("StoredEMC")));
 			}
-			else if (current.stackTagCompound.hasKey("StoredXP"))
+			else if (current.getTagCompound().hasKey("StoredXP"))
 			{
-				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.stackTagCompound.getInteger("StoredXP")));
+				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.getTagCompound().getInteger("StoredXP")));
 			}
 		}
 	}

@@ -175,11 +175,11 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 			return;
 		}
 
-		byte coolDown = stack.stackTagCompound.getByte("Cooldown");
+		byte coolDown = stack.getTagCompound().getByte("Cooldown");
 
 		if (coolDown > 0)
 		{
-			stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+			stack.getTagCompound().setByte("Cooldown", (byte) (coolDown - 1));
 		}
 		else
 		{
@@ -208,7 +208,7 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 
 			if (hasAction)
 			{
-				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
+				stack.getTagCompound().setByte("Cooldown", (byte) 19);
 				tile.markDirty();
 			}
 		}

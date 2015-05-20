@@ -232,14 +232,14 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		
 		boolean value;
 		
-		if (boots.stackTagCompound.hasKey("StepAssist"))
+		if (boots.getTagCompound().hasKey("StepAssist"))
 		{
-			boots.stackTagCompound.setBoolean("StepAssist", !boots.stackTagCompound.getBoolean("StepAssist"));
-			value = boots.stackTagCompound.getBoolean("StepAssist");
+			boots.getTagCompound().setBoolean("StepAssist", !boots.getTagCompound().getBoolean("StepAssist"));
+			value = boots.getTagCompound().getBoolean("StepAssist");
 		}
 		else
 		{
-			boots.stackTagCompound.setBoolean("StepAssist", false);
+			boots.getTagCompound().setBoolean("StepAssist", false);
 			value = false;
 		}
 
@@ -258,14 +258,14 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 		
 		boolean value;
 		
-		if (helm.stackTagCompound.hasKey("NightVision"))
+		if (helm.getTagCompound().hasKey("NightVision"))
 		{
-			helm.stackTagCompound.setBoolean("NightVision", !helm.stackTagCompound.getBoolean("NightVision"));
-			value = helm.stackTagCompound.getBoolean("NightVision");
+			helm.getTagCompound().setBoolean("NightVision", !helm.getTagCompound().getBoolean("NightVision"));
+			value = helm.getTagCompound().getBoolean("NightVision");
 		}
 		else
 		{
-			helm.stackTagCompound.setBoolean("NightVision", false);
+			helm.getTagCompound().setBoolean("NightVision", false);
 			value = false;
 		}
 
@@ -277,13 +277,13 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 	
 	public static boolean isStepAssistEnabled(ItemStack boots)
 	{
-		return !boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist") || boots.stackTagCompound.getBoolean("StepAssist");
+		return !boots.hasTagCompound() || !boots.getTagCompound().hasKey("StepAssist") || boots.getTagCompound().getBoolean("StepAssist");
 
 	}
 	
 	public static boolean isNightVisionEnabled(ItemStack helm)
 	{
-		return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+		return !helm.hasTagCompound() || !helm.getTagCompound().hasKey("NightVision") || helm.getTagCompound().getBoolean("NightVision");
 
 	}
 	

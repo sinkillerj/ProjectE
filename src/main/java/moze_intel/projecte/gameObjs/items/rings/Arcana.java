@@ -40,7 +40,7 @@ public class Arcana extends ItemPE implements IModeChanger
 			stack.stackTagCompound = new NBTTagCompound();
 		}
 		
-		if (world.isRemote || slotIndex > 8 || !stack.stackTagCompound.getBoolean("Active") || !(entity instanceof EntityPlayer))
+		if (world.isRemote || slotIndex > 8 || !stack.getTagCompound().getBoolean("Active") || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -87,13 +87,13 @@ public class Arcana extends ItemPE implements IModeChanger
 	{
 		if (!world.isRemote)
 		{
-			if (stack.stackTagCompound.getBoolean("Active"))
+			if (stack.getTagCompound().getBoolean("Active"))
 			{
-				stack.stackTagCompound.setBoolean("Active", false);
+				stack.getTagCompound().setBoolean("Active", false);
 			}
 			else
 			{
-				stack.stackTagCompound.setBoolean("Active", true);
+				stack.getTagCompound().setBoolean("Active", true);
 			}
 		}
 		
@@ -104,7 +104,7 @@ public class Arcana extends ItemPE implements IModeChanger
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack) 
 	{
-		if (stack.stackTagCompound.getBoolean("Active"))
+		if (stack.getTagCompound().getBoolean("Active"))
 		{
 			int dmg = stack.getItemDamage();
 			
@@ -142,7 +142,7 @@ public class Arcana extends ItemPE implements IModeChanger
 	{
 		if (stack.hasTagCompound())
 		{
-			if (!stack.stackTagCompound.getBoolean("Active"))
+			if (!stack.getTagCompound().getBoolean("Active"))
 			{
 				list.add(EnumChatFormatting.RED+"Not active!");
 			}

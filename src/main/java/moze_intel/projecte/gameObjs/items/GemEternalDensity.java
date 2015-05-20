@@ -158,7 +158,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	
 	private String getTargetName(ItemStack stack)
 	{
-		switch(stack.stackTagCompound.getByte("Target"))
+		switch(stack.getTagCompound().getByte("Target"))
 		{
 			case 0:
 				return "item.ingotIron.name";
@@ -177,7 +177,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	
 	private static ItemStack getTarget(ItemStack stack)
 	{
-		switch (stack.stackTagCompound.getByte("Target"))
+		switch (stack.getTagCompound().getByte("Target"))
 		{
 			case 0:
 				return new ItemStack(Items.iron_ingot);
@@ -190,7 +190,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 			case 4:
 				return new ItemStack(ObjHandler.matter, 1, 1);
 			default:
-				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.stackTagCompound.getByte("Target"));
+				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.getTagCompound().getByte("Target"));
 				return null;
 		}
 	}
@@ -206,13 +206,13 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 			tList.appendTag(nbt);
 		}
 		
-		stack.stackTagCompound.setTag("Consumed", tList);
+		stack.getTagCompound().setTag("Consumed", tList);
 	}
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
 		List<ItemStack> list = Lists.newArrayList();
-		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
+		NBTTagList tList = stack.getTagCompound().getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
 		{
@@ -263,13 +263,13 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	
 	private static boolean isWhitelistMode(ItemStack stack)
 	{
-		return stack.stackTagCompound.getBoolean("Whitelist");
+		return stack.getTagCompound().getBoolean("Whitelist");
 	}
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
 		List<ItemStack> result = Lists.newArrayList();
-		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = stack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -297,7 +297,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 	{
 		if (stack.hasTagCompound())
 		{
-			return stack.stackTagCompound.getByte("Target");
+			return stack.getTagCompound().getByte("Target");
 		}
 
 		return 0;
@@ -310,11 +310,11 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 
 		if (oldMode == 4)
 		{
-			stack.stackTagCompound.setByte("Target", (byte) 0);
+			stack.getTagCompound().setByte("Target", (byte) 0);
 		}
 		else
 		{
-			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
+			stack.getTagCompound().setByte("Target", (byte) (oldMode + 1));
 		}
 
 		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));

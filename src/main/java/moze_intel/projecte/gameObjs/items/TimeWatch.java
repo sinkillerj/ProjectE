@@ -266,12 +266,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private byte getTimeBoost(ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("TimeMode");
+		return stack.getTagCompound().getByte("TimeMode");
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		stack.stackTagCompound.setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
+		stack.getTagCompound().setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)

@@ -136,7 +136,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return stack.stackTagCompound.getInteger("StoredXP");
+		return stack.getTagCompound().getInteger("StoredXP");
 	}
 	
 	private boolean canStore(ItemStack stack)
@@ -146,7 +146,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	private void setStoredXP(ItemStack stack, int XP) 
 	{
-		stack.stackTagCompound.setInteger("StoredXP", XP);
+		stack.getTagCompound().setInteger("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 
