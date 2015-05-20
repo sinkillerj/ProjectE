@@ -103,7 +103,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		if (numUsing > 0)
 		{
-			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this.xCoord, this.yCoord, this.zCoord),
+			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this),
 					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}

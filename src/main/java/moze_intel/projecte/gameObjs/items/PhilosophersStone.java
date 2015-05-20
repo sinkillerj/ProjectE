@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -250,7 +251,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			if (world.rand.nextInt(8) == 0)
 			{
-				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+				PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 			}
 		}
 	}

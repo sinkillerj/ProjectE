@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
@@ -51,7 +52,7 @@ public class EntityLensProjectile extends EntityThrowable
 		if (this.isInWater())
 		{
 			this.playSound("random.fizz", 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", posX, posY, posZ), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, posX, posY, posZ, 32));
+			PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, posX, posY, posZ, 32));
 			this.setDead();
 		}
 	}

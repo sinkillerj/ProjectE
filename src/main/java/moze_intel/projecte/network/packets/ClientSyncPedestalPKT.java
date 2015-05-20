@@ -1,29 +1,28 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSyncPedestalPKT, IMessage>
 {
 
-	public int x, y, z;
-	public boolean isActive;
-	public ItemStack itemStack;
+	private BlockPos pos;
+	private boolean isActive;
+	private ItemStack itemStack;
 
 	public ClientSyncPedestalPKT() {}
 
 	public ClientSyncPedestalPKT(DMPedestalTile tile)
 	{
-		x = tile.xCoord;
-		y = tile.yCoord;
-		z = tile.zCoord;
+		pos = tile.getPos();
 		isActive = tile.getActive();
 		itemStack = tile.getItemStack();
 	}
@@ -31,9 +30,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = BlockPos.fromLong(buf.readLong());
 		isActive = buf.readBoolean();
 		itemStack = ByteBufUtils.readItemStack(buf);
 	}
@@ -41,9 +38,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeLong(pos.toLong());
 		buf.writeBoolean(isActive);
 		ByteBufUtils.writeItemStack(buf, itemStack);
 	}
@@ -51,7 +46,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	@Override
 	public IMessage onMessage(ClientSyncPedestalPKT message, MessageContext ctx)
 	{
-		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
+		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
 
 		if (te instanceof DMPedestalTile)
 		{

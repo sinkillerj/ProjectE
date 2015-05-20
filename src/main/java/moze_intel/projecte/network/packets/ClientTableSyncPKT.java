@@ -1,41 +1,37 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientTableSyncPKT implements IMessage, IMessageHandler<ClientTableSyncPKT, IMessage>
 {
 	private double emc;
-	private int x;
-	private int y;
-	private int z;
+	private BlockPos pos;
 	
 	public ClientTableSyncPKT() {}
 	
-	public ClientTableSyncPKT(double emc, int x, int y, int z) 
+	public ClientTableSyncPKT(double emc, TileEmc tile)
 	{
 		this.emc = emc;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = tile.getPos();
 	}
 	
 	@Override
 	public IMessage onMessage(ClientTableSyncPKT pkt, MessageContext ctx) 
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
+		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
 		
 		if (tile == null)
 		{
 			PELogger.logFatal("NULL transmutation-tile reference! Please report to dev!");
-			PELogger.logFatal("Coords: "+new Coordinates(pkt.x, pkt.y, pkt.z));
+			PELogger.logFatal("Coords: " + pkt.pos.toString());
 		}
 		else if (tile instanceof TileEmc)
 		{
@@ -49,17 +45,13 @@ public class ClientTableSyncPKT implements IMessage, IMessageHandler<ClientTable
 	public void fromBytes(ByteBuf buf) 
 	{
 		emc = buf.readDouble();
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = BlockPos.fromLong(buf.readLong());
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeDouble(emc);
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeLong(pos.toLong());
 	}
 }

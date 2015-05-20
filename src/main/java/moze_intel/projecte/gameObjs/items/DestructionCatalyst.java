@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
@@ -86,7 +87,7 @@ public class DestructionCatalyst extends ItemCharge
 						
 						if (world.rand.nextInt(8) == 0)
 						{
-							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+							PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
 						}
 					}
 

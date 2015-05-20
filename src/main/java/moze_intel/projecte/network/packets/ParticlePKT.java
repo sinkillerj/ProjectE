@@ -1,15 +1,15 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 
 public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMessage>
 {
-	private String particleName;
+	private EnumParticleTypes particleName;
 	private double x;
 	private double y;
 	private double z;
@@ -20,7 +20,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	//Needs to have an empty constructor
 	public ParticlePKT() {}
 	
-	public ParticlePKT(String name, double x, double y, double z)
+	public ParticlePKT(EnumParticleTypes name, double x, double y, double z)
 	{
 		particleName = name;
 		this.x = x;
@@ -28,7 +28,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 		this.z = z;
 	}
 
-	public ParticlePKT(String name, double x, double y, double z, double velX, double velY, double velZ)
+	public ParticlePKT(EnumParticleTypes name, double x, double y, double z, double velX, double velY, double velZ)
 	{
 		this(name, x, y, z);
 		this.velX = velX;
@@ -46,7 +46,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	@Override
 	public void fromBytes(ByteBuf buffer) 
 	{
-		particleName = ByteBufUtils.readUTF8String(buffer);
+		particleName = EnumParticleTypes.func_179342_a(buffer.readInt()); // Deserialize from int
 		x = buffer.readDouble();
 		y = buffer.readDouble();
 		z = buffer.readDouble();
@@ -58,7 +58,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	@Override
 	public void toBytes(ByteBuf buffer) 
 	{
-		ByteBufUtils.writeUTF8String(buffer, particleName);
+		buffer.writeInt(particleName.func_179348_c()); // Serialize to int
 		buffer.writeDouble(x);
 		buffer.writeDouble(y);
 		buffer.writeDouble(z);

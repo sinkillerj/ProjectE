@@ -119,7 +119,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
+			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this));
 		}
 	}
 }
