@@ -20,9 +20,9 @@ public class NovaExplosion extends Explosion
 {
 	private World worldObj;
 	
-	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius) 
+	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius, boolean isFlaming, boolean isSmoking)
 	{
-		super(world, entity, x, y, z, radius);
+		super(world, entity, x, y, z, radius, isFlaming, isSmoking);
 		worldObj = world;
 	}
 	

@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class EntityHomingArrow extends EntityArrow
 				return;
 			}
 
-			world.spawnParticle("flame", box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
+			world.spawnParticle(EnumParticleTypes.FLAME, box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
 
 			double d5 = target.posX - this.posX;
 			double d6 = target.getEntityBoundingBox().minY + target.height - this.posY;
