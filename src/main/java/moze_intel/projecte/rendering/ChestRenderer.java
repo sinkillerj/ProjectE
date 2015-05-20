@@ -19,7 +19,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) 
+	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float par8, int par9)
 	{
 		if (!(tile instanceof AlchChestTile)) 
 		{

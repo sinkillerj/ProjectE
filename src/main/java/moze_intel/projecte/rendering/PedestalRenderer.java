@@ -29,7 +29,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f1)
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f1, int par9)
 	{
 		if (te instanceof DMPedestalTile)
 		{
