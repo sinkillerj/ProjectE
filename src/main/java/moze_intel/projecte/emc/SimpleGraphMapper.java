@@ -11,7 +11,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
 
-	private boolean logFoundExploits = true;
+	private static boolean logFoundExploits = true;
 	public SimpleGraphMapper(IValueArithmetic<V> arithmetic) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
@@ -21,7 +21,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		return (m.containsKey(key) && value.compareTo(m.get(key)) >= 0);
 	}
 
-	public void setLogFoundExploits(boolean log) {
+	public static void setLogFoundExploits(boolean log) {
 		logFoundExploits = log;
 	}
 
