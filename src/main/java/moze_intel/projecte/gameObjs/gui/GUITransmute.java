@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
+
 public class GUITransmute extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
@@ -40,7 +42,7 @@ public class GUITransmute extends GuiContainer
 		this.xLocation = (this.width - this.xSize) / 2;
 		this.yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
+		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10); // TODO: 1.8 Check the purpose of the 0
 		this.textBoxFilter.setText(tile.filter);
 
 		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
@@ -131,7 +133,7 @@ public class GUITransmute extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int mouseButton)
+	protected void mouseClicked(int x, int y, int mouseButton) throws IOException
 	{
 		super.mouseClicked(x, y, mouseButton);
 

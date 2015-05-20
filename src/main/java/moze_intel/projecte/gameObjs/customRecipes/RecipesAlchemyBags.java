@@ -6,6 +6,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class RecipesAlchemyBags implements IRecipe
 {
@@ -98,5 +99,11 @@ public class RecipesAlchemyBags implements IRecipe
 	public ItemStack getRecipeOutput() 
 	{
 		return output;
+	}
+
+	@Override
+	public ItemStack[] func_179532_b(InventoryCrafting inv) // See IRecipe
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }
