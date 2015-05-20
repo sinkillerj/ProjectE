@@ -35,7 +35,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 		if (effectBounds == null)
 		{
-			effectBounds = AxisAlignedBB.getBoundingBox(centeredX - 4.5, centeredY - 4.5, centeredZ - 4.5,
+			effectBounds = new AxisAlignedBB(centeredX - 4.5, centeredY - 4.5, centeredZ - 4.5,
 					centeredX + 4.5, centeredY + 4.5, centeredZ + 4.5);
 		}
 

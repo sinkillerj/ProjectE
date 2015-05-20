@@ -72,7 +72,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 			Vec3 look = player.getLookVec();
 
-			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+			AxisAlignedBB box = new AxisAlignedBB(
 					mop.blockX,
 					mop.blockY,
 					mop.blockZ,

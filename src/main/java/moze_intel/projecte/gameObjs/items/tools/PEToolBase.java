@@ -273,17 +273,17 @@ public abstract class PEToolBase extends ItemMode
 
 		if (mode == 1) // 3x Tallshot
 		{
-			box = AxisAlignedBB.getBoundingBox(x, y - 1, z, x, y + 1, z);
+			box = new AxisAlignedBB(x, y - 1, z, x, y + 1, z);
 		}
 		else if (mode == 2) // 3x Wideshot
 		{
 			if (direction.offsetX != 0)
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
+				box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
 			}
 			else if (direction.offsetZ != 0)
 			{
-				box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
+				box = new AxisAlignedBB(x - 1, y, z, x + 1, y, z);
 			}
 			else
 			{
@@ -291,11 +291,11 @@ public abstract class PEToolBase extends ItemMode
 
 				if (dir == 0 || dir == 2)
 				{
-					box = AxisAlignedBB.getBoundingBox(x, y, z - 1, x, y, z + 1);
+					box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
 				}
 				else
 				{
-					box = AxisAlignedBB.getBoundingBox(x - 1, y, z, x + 1, y, z);
+					box = new AxisAlignedBB(x - 1, y, z, x + 1, y, z);
 				}
 			}
 		}
@@ -303,27 +303,27 @@ public abstract class PEToolBase extends ItemMode
 		{
 			if (direction.offsetX == 1)
 			{
-				box = AxisAlignedBB.getBoundingBox(x - 2, y, z, x, y, z);
+				box = new AxisAlignedBB(x - 2, y, z, x, y, z);
 			}
 			else if (direction.offsetX == - 1)
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y, z, x + 2, y, z);
+				box = new AxisAlignedBB(x, y, z, x + 2, y, z);
 			}
 			else if (direction.offsetZ == 1)
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y, z - 2, x, y, z);
+				box = new AxisAlignedBB(x, y, z - 2, x, y, z);
 			}
 			else if (direction.offsetZ == -1)
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y, z + 2);
+				box = new AxisAlignedBB(x, y, z, x, y, z + 2);
 			}
 			else if (direction.offsetY == 1)
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y - 2, z, x, y, z);
+				box = new AxisAlignedBB(x, y - 2, z, x, y, z);
 			}
 			else
 			{
-				box = AxisAlignedBB.getBoundingBox(x, y, z, x, y + 2, z);
+				box = new AxisAlignedBB(x, y, z, x, y + 2, z);
 			}
 		}
 

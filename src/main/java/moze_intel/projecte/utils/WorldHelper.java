@@ -145,29 +145,29 @@ public final class WorldHelper
 	{
 		if (direction.offsetX > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
+			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetX < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
+			return new AxisAlignedBB(coords.x, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetY > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
+			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 		}
 		else if (direction.offsetY < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
+			return new AxisAlignedBB(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
 		else if (direction.offsetZ > 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z);
+			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z);
 		}
 		else if (direction.offsetZ < 0)
 		{
-			return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z + offset);
+			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z + offset);
 		}
-		return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+		return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 	}
 
 	/**
@@ -179,25 +179,25 @@ public final class WorldHelper
 		{
 			if (direction.offsetX > 0)
 			{
-				return AxisAlignedBB.getBoundingBox(coords.x - depth, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
+				return new AxisAlignedBB(coords.x - depth, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
 			}
-			else return AxisAlignedBB.getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
+			else return new AxisAlignedBB(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
 		}
 		else if (direction.offsetY != 0)
 		{
 			if (direction.offsetY > 0)
 			{
-				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - depth, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
+				return new AxisAlignedBB(coords.x - 1, coords.y - depth, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
 			}
-			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
+			else return new AxisAlignedBB(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
 		}
 		else
 		{
 			if (direction.offsetZ > 0)
 			{
-				return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - depth, coords.x + 1, coords.y + 1, coords.z);
+				return new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z - depth, coords.x + 1, coords.y + 1, coords.z);
 			}
-			else return AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
+			else return new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
 		}
 	}
 
@@ -207,7 +207,7 @@ public final class WorldHelper
 	 */
 	public static AxisAlignedBB getFlatYBox(Coordinates coords, int offset)
 	{
-		return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
+		return new AxisAlignedBB(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 	}
 
 	public static Entity getNewEntityInstance(Class c, World world)
@@ -317,7 +317,7 @@ public final class WorldHelper
 			return;
 		}
 
-		AxisAlignedBB b = AxisAlignedBB.getBoundingBox(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
+		AxisAlignedBB b = new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
 
 		for (int x = (int) b.minX; x <= b.maxX; x++)
 			for (int y = (int) b.minY; y <= b.maxY; y++)
@@ -364,11 +364,11 @@ public final class WorldHelper
 						{
 							continue;
 						}
-						Vec3 p = Vec3.createVectorHelper(x, y, z);
-						Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
+						Vec3 p = new Vec3(x, y, z);
+						Vec3 t = new Vec3(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
 
-						Vec3 r = Vec3.createVectorHelper(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
+						Vec3 r = new Vec3(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
 
 						ent.motionX += r.xCoord / 1.5D / distance;
 						ent.motionY += r.yCoord / 1.5D / distance;

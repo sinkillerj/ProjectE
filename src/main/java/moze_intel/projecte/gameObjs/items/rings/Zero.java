@@ -56,7 +56,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			return;
 		}
 
-		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
 		freezeInBoundingBox(world, box);
 
 	}
