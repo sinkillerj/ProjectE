@@ -12,7 +12,6 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -20,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -41,9 +39,6 @@ public class AlchemicalBag extends ItemPE
 			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
 			"item.fireworksCharge.brown", "item.fireworksCharge.green",
 			"item.fireworksCharge.red", "item.fireworksCharge.black"};
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
 	
 	public AlchemicalBag()
 	{
@@ -200,24 +195,6 @@ public class AlchemicalBag extends ItemPE
 	{
 		for (int i = 0; i < 16; ++i)
 			list.add(new ItemStack(item, 1, i));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
-	{
-		return icons[MathHelper.clamp_int(par1, 0, 15)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[16];
-		
-		for (int i = 0; i < 16; i++)
-		{
-			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
-		}
 	}
 
 	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)

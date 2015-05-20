@@ -3,9 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
@@ -17,7 +14,6 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,10 +22,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -38,11 +36,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeChanger, IBauble
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon gemOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon gemOn;
-	
 	public GemEternalDensity()
 	{
 		this.setUnlocalizedName("gem_density");
@@ -338,21 +331,6 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? gemOff : gemOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		gemOn = register.registerIcon(this.getTexture("dense_gem_on"));
-		gemOff = register.registerIcon(this.getTexture("dense_gem_off"));
 	}
 	
 	@Override

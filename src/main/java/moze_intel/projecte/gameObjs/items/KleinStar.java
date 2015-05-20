@@ -1,27 +1,21 @@
 package moze_intel.projecte.gameObjs.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class KleinStar extends ItemPE
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
-	
 	public KleinStar()
 	{
 		this.setUnlocalizedName("klein_star");
@@ -110,24 +104,6 @@ public class KleinStar extends ItemPE
 		for (int i = 0; i < 6; ++i)
 		{
 			list.add(new ItemStack(item, 1, i));
-		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
-	{
-		return icons[MathHelper.clamp_int(par1, 0, 6)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[6];
-		
-		for (int i = 0; i < 6; i++)
-		{
-			icons[i] = register.registerIcon(this.getTexture("stars", "klein_star_"+(i + 1)));
 		}
 	}
 }

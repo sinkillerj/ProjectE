@@ -11,7 +11,6 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,23 +21,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon[] ringOn;
 	private int lightningCooldown;
 
 	public SWRG()
@@ -293,33 +284,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		return false;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		if (dmg == 0)
-		{
-			return ringOff;
-		}
-		
-		else
-		{
-			return ringOn[MathHelper.clamp_int(dmg - 1, 0, 2)];
-		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOff = register.registerIcon(this.getTexture("rings", "swrg_off"));
-		ringOn = new IIcon[3];
-		
-		for (int i = 0; i < 3; i++)
-		{
-			ringOn[i] = register.registerIcon(this.getTexture("rings", "swrg_on"+(i+1)));
-		}
 	}
 	
 	@Override

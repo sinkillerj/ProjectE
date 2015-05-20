@@ -1,11 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -38,12 +35,5 @@ public class TransmutationTablet extends ItemPE
 		{
 			player.addStat(AchievementHandler.PORTABLE_TRANSMUTATION, 1);
 		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("transmute_tablet"));
 	}
 }

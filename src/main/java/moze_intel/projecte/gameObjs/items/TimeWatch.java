@@ -12,7 +12,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,7 +23,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -46,11 +44,6 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino"
 	);
-
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOn;
 	
 	public TimeWatch() 
 	{
@@ -309,25 +302,6 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public void playUnChargeSound(EntityPlayer player)
 	{
 		player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 0.85F);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		if (dmg == 0)
-		{
-			return ringOff;
-		}
-		
-		return ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOff = register.registerIcon(this.getTexture("rings", "time_watch_off"));
-		ringOn = register.registerIcon(this.getTexture("rings", "time_watch_on"));
 	}
 
 	@Override

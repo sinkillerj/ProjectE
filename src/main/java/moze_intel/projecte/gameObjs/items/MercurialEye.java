@@ -1,13 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -19,7 +16,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
@@ -270,11 +266,5 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	public int getMaxItemUseDuration(ItemStack stack) 
 	{
 		return 1; 
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("mercurial_eye"));
 	}
 }

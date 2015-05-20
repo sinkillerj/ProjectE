@@ -15,7 +15,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -108,12 +107,6 @@ public abstract class PEToolBase extends ItemMode
 			}
 		}
 		return 1.0F;
-	}
-
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture(peToolMaterial, pePrimaryToolClass));
 	}
 
 	/**

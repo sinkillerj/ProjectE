@@ -1,24 +1,16 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public abstract class RingToggle extends ItemPE implements IModeChanger
 {
 	private String name;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOn;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
 	
 	public RingToggle(String unlocalName)
 	{
@@ -42,20 +34,6 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		return false;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? ringOff : ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOn = register.registerIcon(this.getTexture("rings", name+"_on"));
-		ringOff = register.registerIcon(this.getTexture("rings", name+"_off"));
 	}
 
 	@Override

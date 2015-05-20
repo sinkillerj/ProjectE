@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -31,13 +30,6 @@ public class Tome extends ItemPE
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
 		super.onCreated(stack, world, player);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("tome"));
 	}
 
 	@Override

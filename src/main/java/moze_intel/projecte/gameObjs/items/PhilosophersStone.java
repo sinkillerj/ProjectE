@@ -19,18 +19,15 @@ import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -299,12 +296,5 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone"));
 	}
 }

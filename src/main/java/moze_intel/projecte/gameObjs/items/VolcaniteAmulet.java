@@ -14,7 +14,6 @@ import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -182,13 +181,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 
 		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("rings", "volcanite_amulet"));
 	}
 
 	@Override

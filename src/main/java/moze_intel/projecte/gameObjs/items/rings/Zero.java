@@ -10,7 +10,6 @@ import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,23 +19,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOn;
 	private int coolCooldown;
 
 	public Zero() 
@@ -119,20 +110,6 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	public void changeMode(EntityPlayer player, ItemStack stack) 
 	{
 		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? ringOff : ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOn = register.registerIcon(this.getTexture("rings", "zero_on"));
-		ringOff = register.registerIcon(this.getTexture("rings", "zero_off"));
 	}
 	
 	@Override
