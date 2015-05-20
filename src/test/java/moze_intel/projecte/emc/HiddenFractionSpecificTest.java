@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Test;
-import scala.Int;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -60,6 +60,24 @@ public class HiddenFractionSpecificTest
 		assertEquals(16, getValue(values, "melon"));
 		assertEquals(227, getValue(values, "nugget"));
 		assertEquals(8*227+16, getValue(values, "goldmelon"));
+	}
+
+	@Test
+	public void moltenEnderpearl()
+	{
+		graphMapper.setValue("enderpearl", 1024, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("bucket", 768, IMappingCollector.FixedValue.FixAndInherit);
+
+		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
+		graphMapper.addConversion(250*1000, "moltenEnder", Arrays.asList("enderpearl"));
+		graphMapper.addConversionMultiple(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000*1000, "bucket", 1));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1024, getValue(values, "enderpearl"));
+		assertEquals(0, getValue(values, "moltenEnder"));
+		assertEquals(768, getValue(values, "bucket"));
+		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
+
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
