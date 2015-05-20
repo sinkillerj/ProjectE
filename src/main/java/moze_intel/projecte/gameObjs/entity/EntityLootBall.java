@@ -66,7 +66,7 @@ public class EntityLootBall extends Entity
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+		this.noClip = this.func_145771_j(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
 		this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
 		
@@ -85,7 +85,7 @@ public class EntityLootBall extends Entity
 		float f = 0.98F;
 
 		if (this.onGround)
-			f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+			f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
 
 		this.motionX *= (double)f;
 		this.motionY *= 0.9800000190734863D;
@@ -105,7 +105,7 @@ public class EntityLootBall extends Entity
 			}
 			if (ticksExisted % 60 == 0 && !isDead)
 			{
-				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
+				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.getEntityBoundingBox().expand(1.0F, 1.0F, 1.0F));
 				for (EntityLootBall e : nearby)
 				{
 					mergeWith(e);
@@ -297,7 +297,7 @@ public class EntityLootBall extends Entity
 	@Override
 	public boolean handleWaterMovement()
 	{
-		return this.worldObj.handleMaterialAcceleration(this.boundingBox, Material.water, this);
+		return this.worldObj.handleMaterialAcceleration(this.getEntityBoundingBox(), Material.water, this);
 	}
 
 	@Override

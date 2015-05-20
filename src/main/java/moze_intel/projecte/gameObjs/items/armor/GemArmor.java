@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
@@ -21,12 +18,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
@@ -55,10 +56,11 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				int x = (int) Math.floor(player.posX);
 				int y = (int) (player.posY - player.getYOffset());
 				int z = (int) Math.floor(player.posZ);
-				
-				Block b = world.getBlock(x, y - 1, z);
+				BlockPos pos = new BlockPos(x, y, z);
+
+				Block b = world.getBlockState(pos.offsetDown()).getBlock();
 		
-				if ((b.equals(Blocks.water) || b.equals(Blocks.flowing_water) || b.equals(Blocks.lava) || b.equals(Blocks.flowing_lava)) && world.getBlock(x, y, z).equals(Blocks.air))
+				if ((b.equals(Blocks.water) || b.equals(Blocks.flowing_water) || b.equals(Blocks.lava) || b.equals(Blocks.flowing_lava)) && world.isAirBlock(pos))
 				{
 					if (!player.isSneaking())
 					{
@@ -127,7 +129,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				
 				if (isNightVisionEnabled(stack))
 				{
-					if (world.getBlockLightValue((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)) < 10)
+					if (world.getLight(new BlockPos(player)) < 10)
 					{
 						player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 220, 0));
 					}

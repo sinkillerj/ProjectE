@@ -155,7 +155,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			mobSlowdown = 0.12F;
 		}
 			
-		AxisAlignedBB bBox = player.boundingBox.expand(8, 8, 8);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(8, 8, 8);
 
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);

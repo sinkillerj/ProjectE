@@ -53,7 +53,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (world.isRemote)
@@ -307,7 +307,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (player.worldObj.isRemote)

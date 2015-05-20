@@ -55,7 +55,7 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(7, 7, 7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		
 		for (EntityItem item : itemList)

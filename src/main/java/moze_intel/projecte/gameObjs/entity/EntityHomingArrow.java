@@ -37,7 +37,7 @@ public class EntityHomingArrow extends EntityArrow
 		//TODO Create proper custom arrow. This one is duplicating because of the super call for onUpdate();
 		super.onUpdate();
 
-		AxisAlignedBB box = this.boundingBox;
+		AxisAlignedBB box = this.getEntityBoundingBox();
 		
 		if (target == null && !WorldHelper.isArrowInGround(this))
 		{
@@ -63,7 +63,7 @@ public class EntityHomingArrow extends EntityArrow
 			}
 
 			double d5 = target.posX - this.posX;
-			double d6 = target.boundingBox.minY + target.height - this.posY;
+			double d6 = target.getEntityBoundingBox().minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
@@ -79,7 +79,7 @@ public class EntityHomingArrow extends EntityArrow
 			world.spawnParticle("flame", box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
 
 			double d5 = target.posX - this.posX;
-			double d6 = target.boundingBox.minY + target.height - this.posY;
+			double d6 = target.getEntityBoundingBox().minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);

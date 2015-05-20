@@ -72,7 +72,7 @@ public class AlchemicalBag extends ItemPE
 		
 		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
-			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
+			AxisAlignedBB bBox = player.getEntityBoundingBox().expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 			
 			for (EntityItem item : itemList)
