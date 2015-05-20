@@ -47,32 +47,32 @@ public final class PlayerTimers
 
 	public static void registerPlayer(EntityPlayer player)
 	{
-		MAP.put(player.getName(), new TimerSet());
+		MAP.put(player.getCommandSenderName(), new TimerSet());
 	}
 
 	public static void removePlayer(EntityPlayer player)
 	{
-		MAP.remove(player.getName());
+		MAP.remove(player.getCommandSenderName());
 	}
 
 	public static void activateRepair(EntityPlayer player)
 	{
-		MAP.get(player.getName()).repair.shouldUpdate = true;
+		MAP.get(player.getCommandSenderName()).repair.shouldUpdate = true;
 	}
 
 	public static void activateHeal(EntityPlayer player)
 	{
-		MAP.get(player.getName()).heal.shouldUpdate = true;
+		MAP.get(player.getCommandSenderName()).heal.shouldUpdate = true;
 	}
 
 	public static void activateFeed(EntityPlayer player)
 	{
-		MAP.get(player.getName()).feed.shouldUpdate = true;
+		MAP.get(player.getCommandSenderName()).feed.shouldUpdate = true;
 	}
 
 	public static boolean canRepair(EntityPlayer player)
 	{
-		Timer timer = MAP.get(player.getName()).repair;
+		Timer timer = MAP.get(player.getCommandSenderName()).repair;
 
 		if (timer.tickCount >= 19)
 		{
@@ -86,7 +86,7 @@ public final class PlayerTimers
 
 	public static boolean canHeal(EntityPlayer player)
 	{
-		Timer timer = MAP.get(player.getName()).heal;
+		Timer timer = MAP.get(player.getCommandSenderName()).heal;
 
 		if (timer.tickCount >= 19)
 		{
@@ -100,7 +100,7 @@ public final class PlayerTimers
 
 	public static boolean canFeed(EntityPlayer player)
 	{
-		Timer timer = MAP.get(player.getName()).feed;
+		Timer timer = MAP.get(player.getCommandSenderName()).feed;
 
 		if (timer.tickCount >= 19)
 		{

@@ -59,13 +59,13 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getName()))
+		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.setAllKnowledge(player.getName());
+				Transmutation.setAllKnowledge(player.getCommandSenderName());
 			}
 			else
 			{
@@ -74,7 +74,7 @@ public class TransmuteTabletInventory implements IInventory
 					stack.setTagCompound(null);
 				}
 
-				Transmutation.addToKnowledge(player.getName(), stack);
+				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
 			}
 			
 			if (!player.worldObj.isRemote)
@@ -98,7 +98,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getName()))
+		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
 		{
 			unlearnFlag = 300;
 
@@ -107,7 +107,7 @@ public class TransmuteTabletInventory implements IInventory
 				stack.setTagCompound(null);
 			}
 
-			Transmutation.removeFromKnowledge(player.getName(), stack);
+			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
 			
 			if (!player.worldObj.isRemote)
 			{
@@ -133,7 +133,7 @@ public class TransmuteTabletInventory implements IInventory
 	
 	public void updateOutputs()
 	{
-		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getName()).clone();
+		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -426,7 +426,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public void openInventory() 
 	{
-		emc = Transmutation.getStoredEmc(player.getName());
+		emc = Transmutation.getStoredEmc(player.getCommandSenderName());
 		
 		updateOutputs();
 	}
@@ -437,7 +437,7 @@ public class TransmuteTabletInventory implements IInventory
 		if (player != null && player.getHeldItem() != null)
 		{
 			writeToNBT(player.getHeldItem().getTagCompound());
-			Transmutation.setStoredEmc(player.getName(), emc);
+			Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
 		}
 		else
 		{

@@ -21,7 +21,7 @@ public class ClientSyncTableEMCPKT implements IMessage, IMessageHandler<ClientSy
 	@Override
 	public IMessage onMessage(ClientSyncTableEMCPKT pkt, MessageContext ctx) 
 	{
-		Transmutation.setStoredEmc(Minecraft.getMinecraft().thePlayer.getName(), pkt.emc);
+		Transmutation.setStoredEmc(Minecraft.getMinecraft().theplayer.getCommandSenderName(), pkt.emc);
 		
 		return null;
 	}

@@ -31,13 +31,13 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 		{
 			if (sender instanceof EntityPlayerMP)
 			{
-				Transmutation.clearKnowledge(sender.getName());
-				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getName()), (EntityPlayerMP) sender);
-				sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", sender.getName()));
+				Transmutation.clearKnowledge(sender.getCommandSenderName());
+				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
+				sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", sender.getCommandSenderName()));
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("pe.command.clearknowledge.error", sender.getName()));
+				sendError(sender, new ChatComponentTranslation("pe.command.clearknowledge.error", sender.getCommandSenderName()));
 			}
 		}
 		else
@@ -46,15 +46,15 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 			{
 				EntityPlayer player = (EntityPlayer) obj;
 				
-				if (player.getName().equalsIgnoreCase(params[0]))
+				if (player.getCommandSenderName().equalsIgnoreCase(params[0]))
 				{
-					Transmutation.clearKnowledge(player.getName());
-					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getName()), (EntityPlayerMP) player);
-					sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", player.getName()));
+					Transmutation.clearKnowledge(player.getCommandSenderName());
+					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
+					sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", player.getCommandSenderName()));
 					
-					if (!player.getName().equals(sender.getName()))
+					if (!player.getCommandSenderName().equals(sender.getCommandSenderName()))
 					{
-						player.addChatComponentMessage(ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.clearknowledge.notify", sender.getName()), EnumChatFormatting.RED));
+						player.addChatComponentMessage(ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.clearknowledge.notify", sender.getCommandSenderName()), EnumChatFormatting.RED));
 					}
 					
 					return;

@@ -149,7 +149,7 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(EntityPlayer player, ItemStack stack)
 	{
-		for (ItemStack s : Transmutation.getKnowledge(player.getName()))
+		for (ItemStack s : Transmutation.getKnowledge(player.getCommandSenderName()))
 		{
 			if (s == null)
 			{
@@ -205,7 +205,7 @@ public final class Transmutation
 	
 	public static void sync(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(getPlayerNBT(player.getName())), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
 	}
 	
 	public static void clear()

@@ -84,7 +84,7 @@ public final class AlchemicalBags
 	
 	public static void sync(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getName())), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
 	}
 	
 	public static void clear()
