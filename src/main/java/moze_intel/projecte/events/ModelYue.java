@@ -12,7 +12,7 @@ public class ModelYue extends ModelBase
 
 	public ModelYue()
 	{
-		tessellator = Tessellator.instance;
+		tessellator = Tessellator.getInstance();
 	}
 
 	public void renderAll()

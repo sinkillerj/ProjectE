@@ -44,7 +44,7 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				RenderItem.getInstance().renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), transmutationResult.toItemStack(), 0, 0);
+				mc.getRenderItem().renderItemIntoGUI(transmutationResult.toItemStack(), 0, 0);
 			}
 		}
 	}

@@ -69,7 +69,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX() pos.getY(), pos.getZ());
+				player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 		}
 		
