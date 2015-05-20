@@ -95,7 +95,7 @@ public class EntityWaterProjectile extends EntityThrowable
 
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			BlockPos pos = mop.func_178782_a().offset(mop.field_178784_b);
+			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 			if (worldObj.isAirBlock(pos))
 			{
 				this.worldObj.setBlockState(pos, Blocks.flowing_water.getDefaultState());

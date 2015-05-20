@@ -46,7 +46,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	@Override
 	public void fromBytes(ByteBuf buffer) 
 	{
-		particleName = EnumParticleTypes.func_179342_a(buffer.readInt()); // Deserialize from int
+		particleName = EnumParticleTypes.getParticleFromId(buffer.readInt());
 		x = buffer.readDouble();
 		y = buffer.readDouble();
 		z = buffer.readDouble();
@@ -58,7 +58,7 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	@Override
 	public void toBytes(ByteBuf buffer) 
 	{
-		buffer.writeInt(particleName.func_179348_c()); // Serialize to int
+		buffer.writeInt(particleName.getParticleID());
 		buffer.writeDouble(x);
 		buffer.writeDouble(y);
 		buffer.writeDouble(z);
