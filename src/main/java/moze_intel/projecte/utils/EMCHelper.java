@@ -265,7 +265,7 @@ public final class EMCHelper
 	}
 
 	public static double getStoredEMCBonus(ItemStack stack) {
-		if (stack.stackTagCompound != null && stack.getTagCompound().hasKey("StoredEMC")) {
+		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
 			return stack.getTagCompound().getDouble("StoredEMC");
 		}
 		return 0;

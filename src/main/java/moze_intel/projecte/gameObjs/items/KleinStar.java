@@ -76,7 +76,7 @@ public class KleinStar extends ItemPE
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	

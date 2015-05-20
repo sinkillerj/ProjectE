@@ -95,7 +95,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 			stack.getTagCompound().setInteger("y", y);
 			stack.getTagCompound().setInteger("z", z);
 			
-			tile.readFromNBT(stack.stackTagCompound);
+			tile.readFromNBT(stack.getTagCompound());
 		}
 	}
 }

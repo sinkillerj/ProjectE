@@ -153,7 +153,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 			stack.getTagCompound().setShort("BurnTime", (short) 0);
 			stack.getTagCompound().setShort("CookTime", (short) 0);
 			
-			tile.readFromNBT(stack.stackTagCompound);
+			tile.readFromNBT(stack.getTagCompound());
 		}
 	}
 	

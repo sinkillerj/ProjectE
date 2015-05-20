@@ -74,7 +74,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
@@ -355,7 +355,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))

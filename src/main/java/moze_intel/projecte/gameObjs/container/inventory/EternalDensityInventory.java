@@ -24,7 +24,7 @@ public class EternalDensityInventory implements IInventory
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		readFromNBT(stack.stackTagCompound);
+		readFromNBT(stack.getTagCompound());
 		
 		this.player = player;
 	}
@@ -120,7 +120,7 @@ public class EternalDensityInventory implements IInventory
 		
 		if (player.getHeldItem() != null)
 		{
-			writeToNBT(player.getHeldItem().stackTagCompound);
+			writeToNBT(player.getHeldItem().getTagCompound());
 		}
 	}
 

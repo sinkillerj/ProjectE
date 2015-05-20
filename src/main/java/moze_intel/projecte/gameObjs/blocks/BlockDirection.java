@@ -36,7 +36,7 @@ public abstract class BlockDirection extends BlockContainer
 			stack.getTagCompound().setInteger("y", y);
 			stack.getTagCompound().setInteger("z", z);
 			
-			tile.readFromNBT(stack.stackTagCompound);
+			tile.readFromNBT(stack.getTagCompound());
 		}
 		
 		if (tile instanceof TileEmcDirection)

@@ -46,7 +46,7 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if (world.isRemote || !(entity instanceof EntityPlayer))

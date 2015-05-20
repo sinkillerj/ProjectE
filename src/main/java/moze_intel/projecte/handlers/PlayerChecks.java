@@ -34,7 +34,7 @@ public final class PlayerChecks
 				}
 
 				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
+				PELogger.logDebug("Removed " + player.getName() + " from flight checks.");
 			}
 		}
 
@@ -52,7 +52,7 @@ public final class PlayerChecks
 				}
 
 				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from fire checks.");
+				PELogger.logDebug("Removed " + player.getName() + " from fire checks.");
 			}
 		}
 
@@ -68,7 +68,7 @@ public final class PlayerChecks
 				PlayerHelper.updateClientStepHeight(player, 0.5F);
 
 				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
+				PELogger.logDebug("Removed " + player.getName() + " from step checks.");
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public final class PlayerChecks
 		if (!flyChecks.contains(player))
 		{
 			flyChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to flight checks.");
+			PELogger.logDebug("Added " + player.getName() + " to flight checks.");
 		}
 	}
 	
@@ -106,7 +106,7 @@ public final class PlayerChecks
 		if (!fireChecks.contains(player))
 		{
 			fireChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to fire checks.");
+			PELogger.logDebug("Added " + player.getName() + " to fire checks.");
 		}
 	}
 	
@@ -115,7 +115,7 @@ public final class PlayerChecks
 		if (!stepChecks.contains(player))
 		{
 			stepChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to step height checks.");
+			PELogger.logDebug("Added " + player.getName() + " to step height checks.");
 		}
 	}
 
@@ -130,7 +130,7 @@ public final class PlayerChecks
 				if (iterator.next().equals(player))
 				{
 					iterator.remove();
-					PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
+					PELogger.logDebug("Removed " + player.getName() + " from flight checks.");
 					return;
 				}
 			}
@@ -179,7 +179,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getCommandSenderName().equals(username))
+			if (iterator.next().getName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -190,7 +190,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getCommandSenderName().equals(username))
+			if (iterator.next().getName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -201,7 +201,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getCommandSenderName().equals(username))
+			if (iterator.next().getName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -215,7 +215,7 @@ public final class PlayerChecks
 
 		while (iter.hasNext())
 		{
-			if (iter.next().getCommandSenderName().equals(player))
+			if (iter.next().getName().equals(player))
 			{
 				return true;
 			}

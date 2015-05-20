@@ -71,7 +71,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			if (!stack.hasTagCompound())
 			{
-				stack.stackTagCompound = new NBTTagCompound();
+				stack.setTagCompound(new NBTTagCompound());
 			}
 
 			byte current = getTimeBoost(stack);

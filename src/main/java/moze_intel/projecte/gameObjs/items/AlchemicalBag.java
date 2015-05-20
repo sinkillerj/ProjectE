@@ -73,7 +73,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		ItemStack[] inv = AlchemicalBags.get(player.getName(), (byte) stack.getItemDamage());
 		
 		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
 		{
@@ -158,7 +158,7 @@ public class AlchemicalBag extends ItemPE
 			{
 				GemEternalDensity.condense(gemDensity, inv); 
 		
-				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
+				AlchemicalBags.set(entity.getName(), (byte) stack.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 			}
 		}
@@ -229,7 +229,7 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}

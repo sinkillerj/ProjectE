@@ -58,7 +58,7 @@ public class RecipesAlchemyBags implements IRecipe
 
 				if (bag.hasTagCompound())
 				{
-					output.stackTagCompound = bag.stackTagCompound;
+					output.setTagCompound(bag.getTagCompound());
 				}
 
 				return true;
@@ -69,7 +69,7 @@ public class RecipesAlchemyBags implements IRecipe
 
 				if (bag.hasTagCompound())
 				{
-					output.stackTagCompound = bag.stackTagCompound;
+					output.setTagCompound(bag.getTagCompound());
 				}
 
 				return true;

@@ -38,7 +38,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!world.isRemote)
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
@@ -47,7 +47,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	

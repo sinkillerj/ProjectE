@@ -27,8 +27,8 @@ public class ConnectionHandler
 	{
 		PlayerTimers.removePlayer(event.player);
 
-		PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled checklists: Player disconnected.");
-		PlayerChecks.removePlayerFromLists(event.player.getCommandSenderName());
+		PELogger.logInfo("Removing " + event.player.getName() + " from scheduled checklists: Player disconnected.");
+		PlayerChecks.removePlayerFromLists(event.player.getName());
 	}
 
 }

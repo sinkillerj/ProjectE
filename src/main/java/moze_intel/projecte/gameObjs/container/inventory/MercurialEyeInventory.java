@@ -22,7 +22,7 @@ public class MercurialEyeInventory implements IInventory
 			invItem.setTagCompound(new NBTTagCompound());
 		}
 		
-		readFromNBT(invItem.stackTagCompound);
+		readFromNBT(invItem.getTagCompound());
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class MercurialEyeInventory implements IInventory
 			target = null;
 		}
 		
-		writeToNBT(invItem.stackTagCompound);
+		writeToNBT(invItem.getTagCompound());
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class MercurialEyeInventory implements IInventory
 	
 	public void update()
 	{
-		readFromNBT(invItem.stackTagCompound);
+		readFromNBT(invItem.getTagCompound());
 	}
 	
 	public void readFromNBT(NBTTagCompound nbt)

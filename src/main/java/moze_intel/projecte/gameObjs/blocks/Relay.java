@@ -68,7 +68,7 @@ public class Relay extends BlockDirection
 			stack.getTagCompound().setInteger("y", y);
 			stack.getTagCompound().setInteger("z", z);
 			
-			tile.readFromNBT(stack.stackTagCompound);
+			tile.readFromNBT(stack.getTagCompound());
 		}
 	}
 	

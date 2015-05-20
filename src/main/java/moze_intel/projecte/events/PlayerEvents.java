@@ -38,7 +38,7 @@ public class PlayerEvents
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getName())), (EntityPlayerMP) event.entity);
 		}
 	}
 
@@ -48,7 +48,7 @@ public class PlayerEvents
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
 			IChatComponent prior = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.high_alchemist"), EnumChatFormatting.BLUE);
-			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getCommandSenderName() + " "), EnumChatFormatting.GOLD);
+			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getName() + " "), EnumChatFormatting.GOLD);
 			IChatComponent latter = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.has_joined"), EnumChatFormatting.BLUE);
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}
@@ -104,7 +104,7 @@ public class PlayerEvents
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+			ItemStack[] inv = AlchemicalBags.get(player.getName(), (byte) bag.getItemDamage());
 			
 			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
@@ -121,7 +121,7 @@ public class PlayerEvents
 					event.item.setEntityItemStack(remain);
 				}
 				
-				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
+				AlchemicalBags.set(player.getName(), (byte) bag.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 				
 				event.setCanceled(true);
