@@ -2,7 +2,10 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class NovaCataclysm extends NovaCatalyst
@@ -14,20 +17,27 @@ public class NovaCataclysm extends NovaCatalyst
 	}
 	
 	@Override
-	public void func_150114_a(World world, int x, int y, int z, int par5, EntityLivingBase entity)
+	public void func_180692_a(World world, BlockPos pos, IBlockState state, EntityLivingBase entity)
 	{
-		if (world.isRemote || par5 != 1)
+		if (!world.isRemote)
 		{
-			return;
+			if (((Boolean)state.getValue(EXPLODE_PROP)))
+			{
+				EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+				world.spawnEntityInWorld(cataclysmPrimed);
+				world.playSoundAtEntity(cataclysmPrimed, "game.tnt.primed", 1.0F, 1.0F);
+			}
 		}
-		
-		if (entity == null)
-		{
-			entity = world.getClosestPlayer(x, y, z, 64);
-		}
+	}
 
-		EntityNovaCataclysmPrimed ent = new EntityNovaCataclysmPrimed(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), entity); 
-		world.spawnEntityInWorld(ent);
-		world.playSoundAtEntity(ent, "game.tnt.primed", 1.0F, 1.0F);
+	@Override
+	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion)
+	{
+		if (!world.isRemote)
+		{
+			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
+			cataclysmPrimed.fuse = world.rand.nextInt(cataclysmPrimed.fuse / 4) + cataclysmPrimed.fuse / 8;
+			world.spawnEntityInWorld(cataclysmPrimed);
+		}
 	}
 }

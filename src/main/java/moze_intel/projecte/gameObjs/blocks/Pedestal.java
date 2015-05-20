@@ -37,10 +37,10 @@ public class Pedestal extends Block implements ITileEntityProvider {
 
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
-        DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+        DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
         if (tile.getItemStack() != null)
         {
-            WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), x, y, z);
+            WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), pos);
         }
         tile.invalidate();
         super.breakBlock(world, pos, state);
@@ -50,10 +50,10 @@ public class Pedestal extends Block implements ITileEntityProvider {
     {
         if (!world.isRemote)
         {
-            DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+            DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
             if (player.isSneaking())
             {
-                player.openGui(PECore.instance, Constants.PEDESTAL_GUI, world, x, y, z);
+                player.openGui(PECore.instance, Constants.PEDESTAL_GUI, world, pos.getX(), pos.getY(), pos.getZ());
             }
             else
             {
@@ -63,7 +63,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
                 }
                 PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
-            PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
+            PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 32));
         }
         return true;
     }
@@ -71,12 +71,12 @@ public class Pedestal extends Block implements ITileEntityProvider {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase ent, ItemStack stack)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.getTagCompound().setInteger("x", x);
-			stack.getTagCompound().setInteger("y", y);
-			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 
 			tile.readFromNBT(stack.getTagCompound());
 		}

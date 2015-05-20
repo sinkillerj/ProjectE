@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -18,10 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -51,7 +47,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		TransmuteTile tile = (TransmuteTile) world.getTileEntity(x, y, z);
+		TransmuteTile tile = (TransmuteTile) world.getTileEntity(pos);
 			
 		if (!tile.isUsed())
 		{
@@ -59,7 +55,7 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 			
 			if (!world.isRemote)
 			{
-				player.openGui(PECore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
+				player.openGui(PECore.MODID, Constants.TRANSMUTE_STONE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 		}
 		else
@@ -87,13 +83,13 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.getTagCompound().setInteger("x", x);
-			stack.getTagCompound().setInteger("y", y);
-			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 			
 			tile.readFromNBT(stack.getTagCompound());
 		}

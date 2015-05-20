@@ -42,6 +42,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -376,6 +377,11 @@ public final class WorldHelper
 				}
 			}
 		}
+	}
+
+	public static void spawnEntityItem(World world, ItemStack stack, BlockPos pos)
+	{
+		spawnEntityItem(world, stack, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	public static void spawnEntityItem(World world, ItemStack stack, double x, double y, double z)

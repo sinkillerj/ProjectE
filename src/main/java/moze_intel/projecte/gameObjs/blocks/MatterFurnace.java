@@ -70,11 +70,11 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		{
 			if (isHighTier)
 			{
-				player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, x, y, z);
+				player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, x, y, z);
+				player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX() pos.getY(), pos.getZ());
 			}
 		}
 		
@@ -86,45 +86,29 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	{
 		if (!isUpdating)
 		{
-			IInventory tile = (IInventory) world.getTileEntity(x, y, z);
-			if (tile == null) return;
-			for (int i = 0; i < tile.getSizeInventory(); i++)
-			{
-				ItemStack stack = tile.getStackInSlot(i);
-				
-				if (stack == null) 
-				{
-					continue;
-				}
-				
-				WorldHelper.spawnEntityItem(world, stack, x, y, z);
-			}
-			
-			world.func_147453_f(x, y, z, block);
+			super.breakBlock(world, pos, state);
 		}
-		
-		world.removeTileEntity(x, y, z);
 	}
 	
-	public void updateFurnaceBlockState(boolean isActive, World world, int x, int y, int z)
+	public void updateFurnaceBlockState(boolean isActive, World world, BlockPos pos)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		isUpdating = true;
 
 		if (isActive)
 		{
 			if (isHighTier)
-				world.setBlock(x, y, z, ObjHandler.rmFurnaceOn);
+				world.setBlock(pos, ObjHandler.rmFurnaceOn);
 			else
-				world.setBlock(x, y, z, ObjHandler.dmFurnaceOn);
+				world.setBlock(pos, ObjHandler.dmFurnaceOn);
 		}
 		else
 		{
 			if (isHighTier)
-				world.setBlock(x, y, z, ObjHandler.rmFurnaceOff);
+				world.setBlock(pos, ObjHandler.rmFurnaceOff);
 			else
-				world.setBlock(x, y, z, ObjHandler.dmFurnaceOff);
+				world.setBlock(pos, ObjHandler.dmFurnaceOff);
 		}
 
 		isUpdating = false;
@@ -133,7 +117,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		if (tile != null)
 		{
 			tile.validate();
-			world.setTileEntity(x, y, z, tile);
+			world.setTileEntity(pos, tile);
 		}
 	}
 	
@@ -142,13 +126,13 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	{
 		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
 		
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.getTagCompound().setInteger("x", x);
-			stack.getTagCompound().setInteger("y", y);
-			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 			stack.getTagCompound().setInteger("EMC", 0);
 			stack.getTagCompound().setShort("BurnTime", (short) 0);
 			stack.getTagCompound().setShort("CookTime", (short) 0);

@@ -28,13 +28,13 @@ public abstract class BlockDirection extends BlockContainer
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityLiving, ItemStack stack)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.getTagCompound().setInteger("x", x);
-			stack.getTagCompound().setInteger("y", y);
-			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 			
 			tile.readFromNBT(stack.getTagCompound());
 		}
@@ -48,7 +48,7 @@ public abstract class BlockDirection extends BlockContainer
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
+		IInventory tile = (IInventory) world.getTileEntity(pos);
 		
 		if (tile == null)
 		{
@@ -64,10 +64,10 @@ public abstract class BlockDirection extends BlockContainer
 				continue;
 			}
 			
-			WorldHelper.spawnEntityItem(world, stack, x, y, z);
+			WorldHelper.spawnEntityItem(world, stack, pos);
 		}
 		
-		world.func_147453_f(x, y, z, block);
+		world.notifyNeighborsOfStateChange(pos, state.getBlock());
 		super.breakBlock(world, pos, state);
 	}
 	
@@ -83,7 +83,7 @@ public abstract class BlockDirection extends BlockContainer
 		
 		if (stack != null && stack.getItem() == ObjHandler.philosStone)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(pos);
 			
 			if (tile instanceof TileEmcDirection)
 			{

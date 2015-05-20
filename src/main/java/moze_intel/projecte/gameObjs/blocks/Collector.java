@@ -36,6 +36,10 @@ public class Collector extends BlockDirection
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+
 		if (!world.isRemote)
 			switch (tier)
 			{
@@ -57,13 +61,13 @@ public class Collector extends BlockDirection
 	{
 		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
 		
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.getTagCompound().setInteger("x", x);
-			stack.getTagCompound().setInteger("y", y);
-			stack.getTagCompound().setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 			
 			tile.readFromNBT(stack.getTagCompound());
 		}

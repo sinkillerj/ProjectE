@@ -46,7 +46,7 @@ public class CondenserMK2 extends Condenser implements ITileEntityProvider
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
+			player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 
 		return true;

@@ -5,10 +5,8 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -17,8 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -53,7 +49,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	{
 		if (!world.isRemote) 
 		{
-			player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, x, y, z);
+			player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		
 		return true;
@@ -62,7 +58,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
+		IInventory tile = (IInventory) world.getTileEntity(pos);
 
 		if (tile == null)
 		{
@@ -78,10 +74,10 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 				continue;
 			}
 
-			WorldHelper.spawnEntityItem(world, stack, x, y, z);
+			WorldHelper.spawnEntityItem(world, stack, pos);
 		}
 
-		world.func_147453_f(x, y, z, block);
-		world.removeTileEntity(x, y, z);
+		world.notifyNeighborsOfStateChange(pos, state.getBlock());
+		world.removeTileEntity(pos);
 	}
 }

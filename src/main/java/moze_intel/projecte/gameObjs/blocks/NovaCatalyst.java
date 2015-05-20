@@ -20,24 +20,25 @@ public class NovaCatalyst extends BlockTNT
 	@Override
 	public void func_180692_a(World world, BlockPos pos, IBlockState state, EntityLivingBase entity)
 	{
-		if (world.isRemote || par5 != 1)
+		if (!world.isRemote)
 		{
-			return;
+			if (((Boolean)state.getValue(EXPLODE_PROP)))
+			{
+				EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+				world.spawnEntityInWorld(catalystPrimed);
+				world.playSoundAtEntity(catalystPrimed, "game.tnt.primed", 1.0F, 1.0F);
+			}
 		}
-		
-		if (entity == null)
-		{
-			entity = world.getClosestPlayer(x, y, z, 64);
-		}
-
-		EntityNovaCatalystPrimed ent = new EntityNovaCatalystPrimed(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), entity); 
-		world.spawnEntityInWorld(ent);
-		world.playSoundAtEntity(ent, "game.tnt.primed", 1.0F, 1.0F);
 	}
 	
 	@Override
 	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion)
 	{
-		func_180692_a(world, x, y, z, 1, null);
+		if (!world.isRemote)
+		{
+			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
+			catalystPrimed.fuse = world.rand.nextInt(catalystPrimed.fuse / 4) + catalystPrimed.fuse / 8;
+			world.spawnEntityInWorld(catalystPrimed);
+		}
 	}
 }

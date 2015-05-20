@@ -111,7 +111,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				
 				if (!this.worldObj.isRemote && block instanceof MatterFurnace)
 				{
-					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, getPos());
 				}
 			}
 		}
