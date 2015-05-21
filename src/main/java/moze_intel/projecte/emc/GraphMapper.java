@@ -114,7 +114,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
 				fixValueBeforeInherit.put(something, value);
 				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Removign fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
+					PELogger.logWarn("Removing fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
 				fixValueAfterInherit.remove(something);
 				break;
 			case FixAndDoNotInherit:
