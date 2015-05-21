@@ -1,25 +1,27 @@
 package moze_intel.projecte.events;
 
 import com.google.common.collect.Lists;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class TransmutationRenderingEvent
 	private double playerX;
 	private double playerY;
 	private double playerZ;
-	private MetaBlock transmutationResult;
+	private IBlockState transmutationResult;
 	
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
@@ -41,7 +43,7 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				mc.getRenderItem().renderItemIntoGUI(transmutationResult.toItemStack(), 0, 0);
+				mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
 			}
 		}
 	}
@@ -71,9 +73,14 @@ public class TransmutationRenderingEvent
 		
 		if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
-			MetaBlock current = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+			EnumFacing orientation = mop.sideHit;
+
+			IBlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+
+			int blockX = mop.getBlockPos().getX();
+			int blockY = mop.getBlockPos().getY();
+			int blockZ = mop.getBlockPos().getZ();
 
 			if (transmutationResult != null)
 			{
@@ -83,41 +90,39 @@ public class TransmutationRenderingEvent
 				{
 					case 0:
 					{
-						for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+						for (int x = blockX - charge; x <= blockX + charge; x++)
+							for (int y = blockY - charge; y <= blockY + charge; y++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, x, y, z);
+									addBlockToRenderList(world, current, new BlockPos(x, y, z));
 								}
 						
 						break;
 					}
 					case 1:
 					{
-						int side = orientation.offsetY != 0 ? 0 : orientation.offsetX != 0 ? 1 : 2;
-						
-						if (side == 0)
+						if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN)
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, x, mop.blockY, z);
+									addBlockToRenderList(world, current, new BlockPos(x, blockY, z));
 								}
 						}
-						else if (side == 1)
+						else if (orientation == EnumFacing.EAST || orientation == EnumFacing.WEST)
 						{
-							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int y = blockY - charge; y <= blockY + charge; y++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, mop.blockX, y, z);
+									addBlockToRenderList(world, current, new BlockPos(blockX, y, z));
 								}
 						}
-						else
+						else if (orientation == EnumFacing.SOUTH || orientation == EnumFacing.NORTH)
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-								for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
+								for (int y = blockY - charge; y <= blockY + charge; y++)
 								{
-									addBlockToRenderList(world, current, x, y, mop.blockZ);
+									addBlockToRenderList(world, current, new BlockPos(x, y, blockZ));
 								}
 						}
 						
@@ -125,21 +130,21 @@ public class TransmutationRenderingEvent
 					}
 					case 2:
 					{
-						String dir = Direction.directions[MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
-						int side = orientation.offsetX != 0 ? 0 : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
+						EnumFacing playerFacing = player.getHorizontalFacing();
+						int side = orientation.getAxis() == EnumFacing.Axis.X ? 0 : orientation.getAxis() == EnumFacing.Axis.Z ? 1 : playerFacing == EnumFacing.NORTH || playerFacing == EnumFacing.SOUTH ? 0 : 1; // TODO 1.8 rework to be clearer
 						
 						if (side == 0)
 						{
-							for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int z = blockZ - charge; z <= blockZ + charge; z++)
 							{
-								addBlockToRenderList(world, current, mop.blockX, mop.blockY, z);
+								addBlockToRenderList(world, current, new BlockPos(blockX, blockY, z));
 							}
 						}
 						else 
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
 							{
-								addBlockToRenderList(world, current, x, mop.blockY, mop.blockZ);
+								addBlockToRenderList(world, current, new BlockPos(x, blockY, blockZ));
 							}
 						}
 						
@@ -149,10 +154,6 @@ public class TransmutationRenderingEvent
 				
 				drawAll();
 				renderList.clear();
-			}
-			else if (transmutationResult != null)
-			{
-				transmutationResult = null;
 			}
 		}
 		else if (transmutationResult != null)
@@ -235,11 +236,11 @@ public class TransmutationRenderingEvent
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z)
+	private void addBlockToRenderList(World world, IBlockState current, BlockPos pos)
 	{
-		if (new MetaBlock(world, x, y, z).equals(current))
+		if (world.getBlockState(pos) == current)
 		{
-			AxisAlignedBB box = new AxisAlignedBB(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
+			AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
 			box = box.offset(-playerX, -playerY, -playerZ);
 			renderList.add(box);
 		}

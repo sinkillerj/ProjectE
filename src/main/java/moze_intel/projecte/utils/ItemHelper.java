@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -442,6 +443,11 @@ public final class ItemHelper
 		}
 
 		return stack.copy();
+	}
+
+	public static ItemStack stateToStack(IBlockState state, int stackSize)
+	{
+		return new ItemStack(state.getBlock(), stackSize, state.getBlock().getMetaFromState(state));
 	}
 
 	public static void trimItemList(List<ItemStack> list)
