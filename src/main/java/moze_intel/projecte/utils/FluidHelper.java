@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -12,15 +12,13 @@ import net.minecraftforge.fluids.IFluidHandler;
  */
 public final class FluidHelper
 {
-	public static boolean canFillTank(IFluidHandler tank, Fluid fluid, int side)
+	public static boolean canFillTank(IFluidHandler tank, Fluid fluid, EnumFacing side)
 	{
-		ForgeDirection dir = ForgeDirection.getOrientation(side);
-
-		if (tank.canFill(dir, fluid))
+		if (tank.canFill(side, fluid))
 		{
 			boolean canFill = false;
 
-			for (FluidTankInfo tankInfo : tank.getTankInfo(dir))
+			for (FluidTankInfo tankInfo : tank.getTankInfo(side))
 			{
 				if (tankInfo.fluid == null)
 				{
@@ -41,8 +39,8 @@ public final class FluidHelper
 		return false;
 	}
 
-	public static void fillTank(IFluidHandler tank, Fluid fluid, int side, int quantity)
+	public static void fillTank(IFluidHandler tank, Fluid fluid, EnumFacing side, int quantity)
 	{
-		tank.fill(ForgeDirection.getOrientation(side), new FluidStack(fluid, quantity), true);
+		tank.fill(side, new FluidStack(fluid, quantity), true);
 	}
 }

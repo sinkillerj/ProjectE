@@ -2,16 +2,12 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -30,6 +26,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -39,6 +36,9 @@ import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -355,8 +355,8 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
-				: WorldHelper.getFlatYBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), this.getCharge(stack));
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
+				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
 
 		List<ItemStack> drops = Lists.newArrayList();
 
@@ -546,7 +546,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(new Coordinates(mop.blockX, mop.blockY, mop.blockZ), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
 		Block target = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 		if (target.getBlockHardness(player.worldObj, mop.blockX, mop.blockY, mop.blockZ) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(target, player.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), stack)))
 		{
@@ -561,10 +561,11 @@ public abstract class PEToolBase extends ItemMode
 			{
 				for (int k = (int) aabb.minZ; k <= aabb.maxZ; k++)
 				{
+					BlockPos pos = new BlockPos(i, j, k);
 					Block b = player.worldObj.getBlock(i, j, k);
 					if (b == target)
 					{
-						WorldHelper.harvestVein(player.worldObj, player, stack, new Coordinates(i, j, k), b, drops, 0);
+						WorldHelper.harvestVein(player.worldObj, player, stack, pos, b, drops, 0);
 					}
 				}
 			}
@@ -595,11 +596,12 @@ public abstract class PEToolBase extends ItemMode
 			for (int y = (int) box.minY; y <= box.maxY; y++)
 				for (int z = (int) box.minZ; z <= box.maxZ; z++)
 				{
+					BlockPos pos = new BlockPos(x, y, z);
 					Block block = world.getBlock(x, y, z);
 
 					if (ItemHelper.isOre(block) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 					{
-						WorldHelper.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
+						WorldHelper.harvestVein(world, player, stack, pos, block, drops, 0);
 					}
 				}
 

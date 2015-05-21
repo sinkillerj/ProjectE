@@ -1,18 +1,22 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
+// TODO 1.8 get rid of this (World Transmutations will need to be reworked)
 public class MetaBlock
 {
 	private Block block;
 	private int meta;
 
-	public MetaBlock(World world, int x, int y, int z)
+	public MetaBlock(World world, BlockPos pos)
 	{
-		this.block = world.getBlock(x, y, z);
-		this.meta = world.getBlockMetadata(x, y, z);
+		IBlockState state = world.getBlockState(pos);
+		this.block = state.getBlock();
+		this.meta = this.block.getMetaFromState(state);
 	}
 
 	public MetaBlock(Block block)
@@ -37,10 +41,9 @@ public class MetaBlock
 		return new ItemStack(block, 1, meta);
 	}
 
-	public void setInWorld(World world, int x, int y, int z)
+	public void setInWorld(World world, BlockPos pos)
 	{
-		world.setBlock(x, y, z, block);
-		world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+		world.setBlockState(pos, this.getBlock().getStateFromMeta(meta), 2);
 	}
 
 	public Block getBlock()
@@ -80,11 +83,11 @@ public class MetaBlock
 	{
 		if (obj instanceof MetaBlock)
 		{
-			MetaBlock block = (MetaBlock) obj;
+			MetaBlock other = (MetaBlock) obj;
 
-			if (this.block == block.getBlock())
+			if (this.block == other.getBlock())
 			{
-				return this.meta == block.meta || this.block.damageDropped(this.meta) == block.block.damageDropped(block.meta);
+				return this.meta == other.meta || this.block.damageDropped(this.block.getStateFromMeta(meta)) == other.block.damageDropped(other.block.getStateFromMeta(other.meta));
 			}
 		}
 

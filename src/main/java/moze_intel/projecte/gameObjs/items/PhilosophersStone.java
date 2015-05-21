@@ -106,7 +106,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (result != null)
 		{
-			Coordinates pos = new Coordinates(blockX, blockY,blockZ);
 			int mode = this.getMode(stack);
 			int charge = this.getCharge(stack);			
 			ForgeDirection direction = ForgeDirection.getOrientation(sideHit);

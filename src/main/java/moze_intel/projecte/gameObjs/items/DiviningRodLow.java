@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Coordinates;
@@ -74,7 +72,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 			byte mode = getMode(stack);
 			int depth = getDepthFromMode(mode);
-			AxisAlignedBB box = WorldHelper.getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
+			AxisAlignedBB box = WorldHelper.getDeepBox(mop.getBlockPos(), ForgeDirection.getOrientation(mop.sideHit), depth);
 
 			for (int i = (int) box.minX; i <= box.maxX; i++)
 				for (int j = (int) box.minY; j <= box.maxY; j++)

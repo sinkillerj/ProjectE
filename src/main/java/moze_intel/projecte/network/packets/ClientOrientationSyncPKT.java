@@ -1,36 +1,33 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+// TODO 1.8 EnumFacing
 public class ClientOrientationSyncPKT implements IMessage, IMessageHandler<ClientOrientationSyncPKT, IMessage> 
 {
 	private int orientation;
-	private int x;
-	private int y;
-	private int z;
+	private BlockPos pos;
 	
 	public ClientOrientationSyncPKT() {}
 	
 	public ClientOrientationSyncPKT(TileEntity tile, int orientation) 
 	{
 		this.orientation = orientation;
-		this.x = tile.xCoord;
-		this.y = tile.yCoord;
-		this.z = tile.zCoord;
+		this.pos = tile.getPos();
 	}
 
 	@Override
 	public IMessage onMessage(ClientOrientationSyncPKT pkt, MessageContext ctx) 
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
+		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
 		
 		if (tile instanceof TileEmcDirection)
 		{
@@ -39,7 +36,7 @@ public class ClientOrientationSyncPKT implements IMessage, IMessageHandler<Clien
 		else
 		{
 			PELogger.logFatal("Couldn't find Tile Entity in passed in packet! Please report to dev!");
-			PELogger.logFatal("Coordinates: " + new Coordinates(pkt.x, pkt.y, pkt.z));
+			PELogger.logFatal("Coordinates: " + pos.toString());
 		}
 		
 		return null;
@@ -49,17 +46,13 @@ public class ClientOrientationSyncPKT implements IMessage, IMessageHandler<Clien
 	public void fromBytes(ByteBuf buf) 
 	{
 		orientation = buf.readInt();
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = BlockPos.fromLong(buf.readLong());
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(orientation);
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeLong(pos.toLong());
 	}
 }

@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -43,12 +43,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -108,96 +107,59 @@ public final class WorldHelper
 
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
-		int x = tile.xCoord;
-		int y = tile.yCoord;
-		int z = tile.zCoord;
-
 		List<TileEntity> list = Lists.newArrayList();
-		for (int i = 0; i <= 5; i++)
+		for (EnumFacing e : EnumFacing.VALUES)
 		{
-			ForgeDirection direction = ForgeDirection.getOrientation(i);
-			TileEntity te = world.getTileEntity(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
-			if (te != null)
+			TileEntity t = world.getTileEntity(tile.getPos().offset(e));
+			if (t != null)
 			{
-				list.add(te);
+				list.add(t);
 			}
 		}
 		return list;
 	}
 
-	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
+	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && block.canSilkHarvest(world, player, x, y, z, meta))
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
 		{
-			ArrayList<ItemStack> list = Lists.newArrayList(new ItemStack(block, 1, meta));
-			return list;
+			return Lists.newArrayList(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)));
 		}
 
-		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 	}
 
 	/**
 	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
-	public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int offset)
+	public static AxisAlignedBB getBroadDeepBox(BlockPos pos, EnumFacing direction, int offset)
 	{
-		if (direction.offsetX > 0)
+		switch (direction)
 		{
-			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x, coords.y + offset, coords.z + offset);
+			case EAST: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
+			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case UP: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
+			case DOWN: return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case SOUTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
+			case NORTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
-		else if (direction.offsetX < 0)
-		{
-			return new AxisAlignedBB(coords.x, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
-		}
-		else if (direction.offsetY > 0)
-		{
-			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
-		}
-		else if (direction.offsetY < 0)
-		{
-			return new AxisAlignedBB(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y + offset, coords.z + offset);
-		}
-		else if (direction.offsetZ > 0)
-		{
-			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z - offset, coords.x + offset, coords.y + offset, coords.z);
-		}
-		else if (direction.offsetZ < 0)
-		{
-			return new AxisAlignedBB(coords.x - offset, coords.y - offset, coords.z, coords.x + offset, coords.y + offset, coords.z + offset);
-		}
-		return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 	}
 
 	/**
 	 * Returns in AABB that is always 3x3 orthogonal to the side hit, but varies in depth in the direction of the side hit
 	 */
-	public static AxisAlignedBB getDeepBox(Coordinates coords, ForgeDirection direction, int depth)
+	public static AxisAlignedBB getDeepBox(BlockPos pos, EnumFacing direction, int depth)
 	{
-		if (direction.offsetX != 0)
+		switch (direction)
 		{
-			if (direction.offsetX > 0)
-			{
-				return new AxisAlignedBB(coords.x - depth, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
-			}
-			else return new AxisAlignedBB(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
-		}
-		else if (direction.offsetY != 0)
-		{
-			if (direction.offsetY > 0)
-			{
-				return new AxisAlignedBB(coords.x - 1, coords.y - depth, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
-			}
-			else return new AxisAlignedBB(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
-		}
-		else
-		{
-			if (direction.offsetZ > 0)
-			{
-				return new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z - depth, coords.x + 1, coords.y + 1, coords.z);
-			}
-			else return new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
+			case EAST: return new AxisAlignedBB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
+			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
+			case UP: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
+			case DOWN: return new AxisAlignedBB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
+			case SOUTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
+			case NORTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
+			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
 	}
 
@@ -205,17 +167,17 @@ public final class WorldHelper
 	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box.
 	 * Y level remains constant. As such, a direction hit is unneeded.
 	 */
-	public static AxisAlignedBB getFlatYBox(Coordinates coords, int offset)
+	public static AxisAlignedBB getFlatYBox(BlockPos pos, int offset)
 	{
-		return new AxisAlignedBB(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
+		return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
 	}
 
-	public static Entity getNewEntityInstance(Class c, World world)
+	public static Entity getNewEntityInstance(Class<? extends Entity> c, World world)
 	{
 		try
 		{
-			Constructor constr = c.getConstructor(World.class);
-			Entity ent = (Entity) constr.newInstance(world);
+			Constructor<? extends Entity> constr = c.getConstructor(World.class);
+			Entity ent = constr.newInstance(world);
 
 			if (ent instanceof EntitySkeleton)
 			{
@@ -275,7 +237,7 @@ public final class WorldHelper
 			for (int j = (int) bBox.minY; j <= bBox.maxY; j++)
 				for (int k = (int) bBox.minZ; k <= bBox.maxZ; k++)
 				{
-					TileEntity tile = world.getTileEntity(i, j, k);
+					TileEntity tile = world.getTileEntity(new BlockPos(i, j, k));
 					if (tile != null)
 					{
 						list.add(tile);
@@ -310,27 +272,28 @@ public final class WorldHelper
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
-	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, Coordinates coords, Block target, List<ItemStack> currentDrops, int numMined)
+	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, IBlockState target, List<ItemStack> currentDrops, int numMined)
 	{
 		if (numMined >= Constants.MAX_VEIN_SIZE)
 		{
 			return;
 		}
 
-		AxisAlignedBB b = new AxisAlignedBB(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
+		AxisAlignedBB b = new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 
 		for (int x = (int) b.minX; x <= b.maxX; x++)
 			for (int y = (int) b.minY; y <= b.maxY; y++)
 				for (int z = (int) b.minZ; z <= b.maxZ; z++)
 				{
-					Block block = world.getBlock(x, y, z);
+					BlockPos currentPos = new BlockPos(x, y, z);
+					IBlockState currentState = world.getBlockState(currentPos);
 
-					if (block == target)
+					if (currentState == target)
 					{
-						currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
-						world.setBlockToAir(x, y, z);
+						currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
+						world.setBlockToAir(pos);
 						numMined++;
-						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
+						harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 					}
 				}
 	}

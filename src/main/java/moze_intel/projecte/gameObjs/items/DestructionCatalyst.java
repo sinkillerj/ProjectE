@@ -1,11 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -14,9 +11,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class DestructionCatalyst extends ItemCharge
 			
 			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
-			Coordinates coords = new Coordinates(mop);
+			BlockPos coords = mop.getBlockPos();
 			AxisAlignedBB box = WorldHelper.getDeepBox(coords, direction, --numRows);
 			
 			List<ItemStack> drops = Lists.newArrayList();
