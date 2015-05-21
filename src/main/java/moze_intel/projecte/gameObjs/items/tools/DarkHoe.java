@@ -2,6 +2,8 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class DarkHoe extends PEToolBase
@@ -21,9 +23,9 @@ public class DarkHoe extends PEToolBase
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float par8, float par9, float par10)
 	{
-		tillAOE(stack, player, world, x, y, z, par7, 0);
+		tillAOE(stack, player, world, pos, sideHit, 0);
 		return true;
 	}
 }

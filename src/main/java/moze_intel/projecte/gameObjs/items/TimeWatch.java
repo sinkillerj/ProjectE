@@ -12,12 +12,14 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -201,9 +203,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
-				if (!tile.isInvalid())
+				if (!tile.isInvalid() && tile instanceof IUpdatePlayerListBox)
 				{
-					tile.updateEntity();
+					((IUpdatePlayerListBox) tile).update();
 				}
 			}
 		}
@@ -221,7 +223,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			{
 				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
 				{
-					Block block = world.getBlock(x, y, z);
+					BlockPos pos = new BlockPos(x, y, z);
+					IBlockState state = world.getBlockState(pos);
+					Block block = state.getBlock();
 
 					if (block.getTickRandomly()
 							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
@@ -232,7 +236,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 					{
 						for (int i = 0; i < bonusTicks; i++)
 						{
-							block.updateTick(world, x, y, z, itemRand);
+							block.updateTick(world, pos, state, itemRand);
 						}
 					}
 				}

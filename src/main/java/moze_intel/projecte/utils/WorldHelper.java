@@ -82,6 +82,11 @@ public final class WorldHelper
 		return false;
 	}
 
+	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
+	{
+		createLootDrop(drops, world, pos.getX(), pos.getY(), pos.getZ());
+	}
+
 	public static void createLootDrop(List<ItemStack> drops, World world, double x, double y, double z)
 	{
 		if (drops.isEmpty())

@@ -12,9 +12,9 @@ import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +24,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import sun.org.mozilla.javascript.internal.ast.Block;
 
 import java.util.List;
 
@@ -52,11 +55,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(pos);
 
 			if (tile instanceof IFluidHandler)
 			{
@@ -69,12 +72,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				}
 			}
 
-			Block block = world.getBlock(x, y, z);
-			int meta = world.getBlockMetadata(x, y, z);
-			if (block == Blocks.cauldron && meta < 3)
+			IBlockState state = world.getBlockState(pos);
+			int waterLevel = ((Integer) state.getValue(BlockCauldron.LEVEL));
+			if (state.getBlock() == Blocks.cauldron && waterLevel < 3)
 			{
-				((BlockCauldron) block).func_150024_a(world, x, y, z, meta + 1);
-				// Cauldron-specific setblock that has extra checks on metadata, called by vanilla water buckets
+				((BlockCauldron) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 			}
 		}
 
@@ -89,26 +91,14 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				int i = mop.blockX;
-				int j = mop.blockY;
-				int k = mop.blockZ;
-				if (!(world.getTileEntity(i, j, k) instanceof IFluidHandler))
-				{
-					switch(mop.sideHit) // Ripped from vanilla ItemBucket and simplified
-					{
-						case 0: --j; break;
-						case 1: ++j; break;
-						case 2: --k; break;
-						case 3: ++k; break;
-						case 4: --i; break;
-						case 5: ++i; break;
-						default: break;
-                    }
+				BlockPos blockPosHit = mop.getBlockPos();
 
-					if (world.isAirBlock(i, j, k))
+				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
+				{
+					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)))
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
-						placeWater(world, i, j, k);
+						placeWater(world, blockPosHit.offset(mop.sideHit));
 						PlayerHelper.swingItem(((EntityPlayerMP) player));
 					}
 				}
@@ -118,26 +108,26 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return stack;
 	}
 
-	private void placeWater(World world, int i, int j, int k)
+	private void placeWater(World world, BlockPos pos)
 	{
-		Material material = world.getBlock(i, j, k).getMaterial();
+		Material material = world.getBlockState(pos).getBlock().getMaterial();
 
 		if (world.provider.isHellWorld)
 		{
-			world.playSoundEffect((double)((float)i + 0.5F), (double)((float)j + 0.5F), (double)((float)k + 0.5F), "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+			world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
 			for (int l = 0; l < 8; ++l)
 			{
-				world.spawnParticle("largesmoke", (double)i + Math.random(), (double)j + Math.random(), (double)k + Math.random(), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 		else
 		{
 			if (!world.isRemote && !material.isSolid() && !material.isLiquid())
 			{
-				world.func_147480_a(i, j, k, true);
+				world.destroyBlock(pos, true);
 			}
-			world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
+			world.setBlockState(pos, Blocks.flowing_water.getDefaultState(), 3);
 		}
 
 	}
@@ -155,8 +145,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
-		
-		if ((world.getBlock(x, y - 1, z) == Blocks.water || world.getBlock(x, y - 1, z) == Blocks.flowing_water) && world.getBlock(x, y, z) == Blocks.air)
+		BlockPos pos = new BlockPos(x, y, z);
+
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.water || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_water) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{

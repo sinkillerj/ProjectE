@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -443,6 +444,18 @@ public final class ItemHelper
 		}
 
 		return stack.copy();
+	}
+
+	public static IBlockState stackToState(ItemStack stack)
+	{
+		if (stack.getItem() instanceof ItemBlock)
+		{
+			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getItemDamage());
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public static ItemStack stateToStack(IBlockState state, int stackSize)

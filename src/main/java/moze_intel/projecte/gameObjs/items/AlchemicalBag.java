@@ -77,7 +77,7 @@ public class AlchemicalBag extends ItemPE
 			
 			for (EntityItem item : itemList)
 			{
-				item.delayBeforeCanPickup = 0;
+				item.setPickupDelay(0);
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
 			
@@ -153,7 +153,7 @@ public class AlchemicalBag extends ItemPE
 			{
 				GemEternalDensity.condense(gemDensity, inv); 
 		
-				AlchemicalBags.set(entity.getName(), (byte) stack.getItemDamage(), inv);
+				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 			}
 		}

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,13 +46,14 @@ public class DarkHammer extends PEToolBase
 	}
 	
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
+		Block block = state.getBlock();
 		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata);
+		return super.getDigSpeed(stack, state);
 	}
 }

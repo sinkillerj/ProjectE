@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -11,6 +10,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -23,25 +23,25 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -90,18 +90,18 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
+			if (canHarvestBlock(state.getBlock(), stack)) // TODO 1.8 need a world to call this now || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 			{
 				return 14.0f + (12.0f * this.getCharge(stack));
 			}
 		}
 		else if ("rm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
+			if (canHarvestBlock(state.getBlock(), stack)) // TODO 1.8 need a world to call this now || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
 			{
 				return 16.0f + (14.0f * this.getCharge(stack));
 			}
@@ -126,7 +126,9 @@ public abstract class PEToolBase extends ItemMode
 			for (int y = (int) player.posY - (10 * charge); y <= player.posY + (10 * charge); y++)
 				for (int z = (int) player.posZ - (5 * charge); z <= player.posZ + (5 * charge); z++)
 				{
-					Block block = world.getBlock(x, y, z);
+					BlockPos pos = new BlockPos(x, y, z);
+					IBlockState state = world.getBlockState(pos);
+					Block block = state.getBlock();
 
 					if (block == Blocks.air)
 					{
@@ -145,12 +147,12 @@ public abstract class PEToolBase extends ItemMode
 
 					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
 					{
-						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
+						List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
 
 						if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
 						{
 							drops.addAll(blockDrops);
-							world.setBlockToAir(x, y, z);
+							world.setBlockToAir(pos);
 						}
 					}
 				}
@@ -162,84 +164,80 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, int emcCost)
+	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sidehit, int emcCost)
 	{
-		if (!player.canPlayerEdit(x, y, z, meta, stack))
+		if (!player.canPlayerEdit(pos, sidehit, stack))
 		{
 			return;
 		}
-		else
+		UseHoeEvent event = new UseHoeEvent(player, stack, world, pos);
+		if (MinecraftForge.EVENT_BUS.post(event))
 		{
-			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
-			if (MinecraftForge.EVENT_BUS.post(event))
-			{
-				return;
-			}
+			return;
+		}
 
-			if (event.getResult() == Event.Result.ALLOW)
-			{
-				return;
-			}
+		if (event.getResult() == Event.Result.ALLOW)
+		{
+			return;
+		}
 
-			byte charge = this.getCharge(stack);
-			boolean hasAction = false;
-			boolean hasSoundPlayed = false;
+		byte charge = this.getCharge(stack);
+		boolean hasAction = false;
+		boolean hasSoundPlayed = false;
 
-			for (int i = x - charge; i <= x + charge; i++)
+		for (int i = pos.getX() - charge; i <= pos.getX() + charge; i++)
+		{
+			for (int j = pos.getZ() - charge; j <= pos.getZ() + charge; j++)
 			{
-				for (int j = z - charge; j <= z + charge; j++)
+				BlockPos newPos = new BlockPos(i, pos.getY(), j);
+				Block block = world.getBlockState(newPos).getBlock();
+				Block blockAbove = world.getBlockState(newPos.up()).getBlock();
+
+				Block result = Blocks.farmland;
+				if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
 				{
-					Block block = world.getBlock(i, y, j);
-					Block blockAbove = world.getBlock(i, y + 1, j);
-
-					if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
+					if (!hasSoundPlayed)
 					{
-						Block block1 = Blocks.farmland;
+						world.playSoundEffect(i + 0.5F, pos.getY() + 0.5F, j + 0.5F, result.stepSound.getStepSound(), (result.stepSound.getVolume() + 1.0F) / 2.0F, result.stepSound.getFrequency() * 0.8F);
+						hasSoundPlayed = true;
+					}
 
-						if (!hasSoundPlayed)
+					if (world.isRemote)
+					{
+						return;
+					}
+					else
+					{
+						// The initial block we target is always free
+						if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || consumeFuel(player, stack, emcCost, true))
 						{
-							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
-							hasSoundPlayed = true;
-						}
+							world.setBlockState(newPos, result.getDefaultState());
 
-						if (world.isRemote)
-						{
-							return;
-						}
-						else
-						{
-							// The initial block we target is always free
-							if ((i == x && j == z) || consumeFuel(player, stack, emcCost, true))
+							if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
+									&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
+									) {
+								world.destroyBlock(newPos.up(), true);
+							}
+
+							if (!hasAction)
 							{
-								world.setBlock(i, y, j, block1);
-
-								if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
-										&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
-										) {
-									// Fancy break block - get rid of tall grass
-									world.func_147480_a(i, y + 1, j, true);
-								}
-
-								if (!hasAction)
-								{
-									hasAction = true;
-								}
+								hasAction = true;
 							}
 						}
 					}
 				}
 			}
-			if (hasAction)
-			{
-				player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
-			}
+		}
+		if (hasAction)
+		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
 		}
 	}
 
 	/**
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
-	protected void digBasedOnMode(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase living)
+	protected void digBasedOnMode(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase living)
 	{
 		if (world.isRemote || !(living instanceof EntityPlayer))
 		{
@@ -262,7 +260,10 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
+		EnumFacing direction = mop.sideHit;
+		int x = mop.getBlockPos().getX();
+		int y = mop.getBlockPos().getY();
+		int z = mop.getBlockPos().getZ();
 
 		if (mode == 1) // 3x Tallshot
 		{
@@ -270,11 +271,11 @@ public abstract class PEToolBase extends ItemMode
 		}
 		else if (mode == 2) // 3x Wideshot
 		{
-			if (direction.offsetX != 0)
+			if (direction.getAxis() == EnumFacing.Axis.X)
 			{
 				box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
 			}
-			else if (direction.offsetZ != 0)
+			else if (direction.getAxis() == EnumFacing.Axis.Y)
 			{
 				box = new AxisAlignedBB(x - 1, y, z, x + 1, y, z);
 			}
@@ -282,7 +283,7 @@ public abstract class PEToolBase extends ItemMode
 			{
 				int dir = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
-				if (dir == 0 || dir == 2)
+				if (dir == 0 || dir == 2) // TODO 1.8 what is this testing for
 				{
 					box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
 				}
@@ -294,29 +295,38 @@ public abstract class PEToolBase extends ItemMode
 		}
 		else // 3x Longshot
 		{
-			if (direction.offsetX == 1)
+			if (direction.getAxis() == EnumFacing.Axis.X)
 			{
-				box = new AxisAlignedBB(x - 2, y, z, x, y, z);
+				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
+				{
+					box = new AxisAlignedBB(x - 2, y, z, x, y, z);
+				}
+				else
+				{
+					box = new AxisAlignedBB(x, y, z, x + 2, y, z);
+				}
 			}
-			else if (direction.offsetX == - 1)
+			else if (direction.getAxis() == EnumFacing.Axis.Z)
 			{
-				box = new AxisAlignedBB(x, y, z, x + 2, y, z);
-			}
-			else if (direction.offsetZ == 1)
-			{
-				box = new AxisAlignedBB(x, y, z - 2, x, y, z);
-			}
-			else if (direction.offsetZ == -1)
-			{
-				box = new AxisAlignedBB(x, y, z, x, y, z + 2);
-			}
-			else if (direction.offsetY == 1)
-			{
-				box = new AxisAlignedBB(x, y - 2, z, x, y, z);
+				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
+				{
+					box = new AxisAlignedBB(x, y, z - 2, x, y, z);
+				}
+				else
+				{
+					box = new AxisAlignedBB(x, y, z, x, y, z + 2);
+				}
 			}
 			else
 			{
-				box = new AxisAlignedBB(x, y, z, x, y + 2, z);
+				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
+				{
+					box = new AxisAlignedBB(x, y - 2, z, x, y, z);
+				}
+				else
+				{
+					box = new AxisAlignedBB(x, y, z, x, y + 2, z);
+				}
 			}
 		}
 
@@ -326,16 +336,18 @@ public abstract class PEToolBase extends ItemMode
 			for (int j = (int) box.minY; j <= box.maxY; j++)
 				for (int k = (int) box.minZ; k <= box.maxZ; k++)
 				{
-					Block b = world.getBlock(i, j, k);
+					BlockPos digPos = new BlockPos(i, j, k);
+					IBlockState state = world.getBlockState(digPos);
+					Block b = state.getBlock();
 
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
+					if (b != Blocks.air && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
 					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
-						world.setBlockToAir(i, j, k);
+						drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
+						world.setBlockToAir(digPos);
 					}
 				}
 
-		WorldHelper.createLootDrop(drops, world, x, y, z);
+		WorldHelper.createLootDrop(drops, world, pos);
 	}
 
 	/**
@@ -355,7 +367,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), ForgeDirection.getOrientation(mop.sideHit), this.getCharge(stack))
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, this.getCharge(stack))
 				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
 
 		List<ItemStack> drops = Lists.newArrayList();
@@ -364,19 +376,21 @@ public abstract class PEToolBase extends ItemMode
 			for (int j = (int) box.minY; j <= box.maxY; j++)
 				for (int k = (int) box.minZ; k <= box.maxZ; k++)
 				{
-					Block b = world.getBlock(i, j, k);
+					BlockPos pos = new BlockPos(i, j, k);
+					IBlockState state = world.getBlockState(pos);
+					Block b = state.getBlock();
 
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1
+					if (!world.isAirBlock(pos) && b.getBlockHardness(world, pos) != -1
 							&& canHarvestBlock(b, stack)
 							&& consumeFuel(player, stack, emcCost, true)
 							)
 					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
-						world.setBlockToAir(i, j, k);
+						drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
+						world.setBlockToAir(pos);
 					}
 				}
 
-		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
+		WorldHelper.createLootDrop(drops, world, mop.getBlockPos());
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
 		if (!drops.isEmpty())
 		{
@@ -443,22 +457,22 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
-	protected void shearBlock(ItemStack stack, int x, int y, int z, EntityPlayer player)
+	protected void shearBlock(ItemStack stack, BlockPos pos, EntityPlayer player)
 	{
 		if (player.worldObj.isRemote)
 		{
 			return;
 		}
 
-		Block block = player.worldObj.getBlock(x, y, z);
+		Block block = player.worldObj.getBlockState(pos).getBlock();
 
 		if (block instanceof IShearable)
 		{
 			IShearable target = (IShearable) block;
 
-			if (target.isShearable(stack, player.worldObj, x, y, z))
+			if (target.isShearable(stack, player.worldObj, pos))
 			{
-				ArrayList<ItemStack> drops = target.onSheared(stack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 				Random rand = new Random();
 
 				for(ItemStack drop : drops)
@@ -467,8 +481,8 @@ public abstract class PEToolBase extends ItemMode
 					double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
 					double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
 					double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, drop);
-					entityitem.delayBeforeCanPickup = 10;
+					EntityItem entityitem = new EntityItem(player.worldObj, (double)pos.getX() + d, (double)pos.getY() + d1, (double)pos.getZ() + d2, drop);
+					entityitem.setPickupDelay(10);
 					player.worldObj.spawnEntityInWorld(entityitem);
 				}
 
@@ -499,11 +513,11 @@ public abstract class PEToolBase extends ItemMode
 			{
 				IShearable target = (IShearable) ent;
 
-				if (target.isShearable(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ)
+				if (target.isShearable(stack, ent.worldObj, new BlockPos(ent))
 						&& consumeFuel(player, stack, emcCost, true)
 						)
 				{
-					ArrayList<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+					List<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 
 					if (!entDrops.isEmpty())
 					{
@@ -518,10 +532,10 @@ public abstract class PEToolBase extends ItemMode
 				if (Math.random() < 0.01)
 				{
 					Entity e = EntityList.createEntityByName(EntityList.getEntityString(ent), world);
-					e.copyDataFrom(ent, true);
+					e.copyDataFromOld(ent);
 					if (e instanceof EntitySheep)
 					{
-						((EntitySheep) e).setFleeceColor(MathUtils.randomIntInRange(0, 16));
+						((EntitySheep) e).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
 					}
 					if (e instanceof EntityAgeable)
 					{
@@ -546,9 +560,9 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), ForgeDirection.getOrientation(mop.sideHit), getCharge(stack));
-		Block target = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-		if (target.getBlockHardness(player.worldObj, mop.blockX, mop.blockY, mop.blockZ) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(target, player.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), stack)))
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
+		IBlockState target = player.worldObj.getBlockState(mop.getBlockPos());
+		if (target.getBlock().getBlockHardness(player.worldObj, mop.getBlockPos()) <= -1 || !(canHarvestBlock(target.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(player.worldObj, mop.getBlockPos(), stack)))
 		{
 			return;
 		}
@@ -562,16 +576,16 @@ public abstract class PEToolBase extends ItemMode
 				for (int k = (int) aabb.minZ; k <= aabb.maxZ; k++)
 				{
 					BlockPos pos = new BlockPos(i, j, k);
-					Block b = player.worldObj.getBlock(i, j, k);
-					if (b == target)
+					IBlockState state = player.worldObj.getBlockState(pos);
+					if (state == target)
 					{
-						WorldHelper.harvestVein(player.worldObj, player, stack, pos, b, drops, 0);
+						WorldHelper.harvestVein(player.worldObj, player, stack, pos, state, drops, 0);
 					}
 				}
 			}
 		}
 
-		WorldHelper.createLootDrop(drops, player.worldObj, mop.blockX, mop.blockY, mop.blockZ);
+		WorldHelper.createLootDrop(drops, player.worldObj, mop.getBlockPos());
 		if (!drops.isEmpty())
 		{
 			player.worldObj.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
@@ -597,11 +611,11 @@ public abstract class PEToolBase extends ItemMode
 				for (int z = (int) box.minZ; z <= box.maxZ; z++)
 				{
 					BlockPos pos = new BlockPos(x, y, z);
-					Block block = world.getBlock(x, y, z);
+					IBlockState state = world.getBlockState(pos);
 
-					if (ItemHelper.isOre(block) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+					if (ItemHelper.isOre(state.getBlock()) && state.getBlock().getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 					{
-						WorldHelper.harvestVein(world, player, stack, pos, block, drops, 0);
+						WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
 					}
 				}
 

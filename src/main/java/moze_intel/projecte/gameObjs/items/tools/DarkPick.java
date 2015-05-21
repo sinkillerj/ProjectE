@@ -6,9 +6,11 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -51,7 +53,7 @@ public class DarkPick extends PEToolBase
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				Block b = world.getBlockState(mop.getBlockPos()).getBlock();
 				if (ItemHelper.isOre(b))
 				{
 					tryVeinMine(stack, player, mop);
@@ -63,21 +65,22 @@ public class DarkPick extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, x, y, z, eLiving);
+		digBasedOnMode(stack, world, block, pos, eLiving);
 		return true;
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
+		Block block = state.getBlock();
 		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata);
+		return super.getDigSpeed(stack, state);
 	}
 	
 	@Override

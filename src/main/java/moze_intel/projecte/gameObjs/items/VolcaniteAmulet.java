@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -48,11 +49,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(pos);
 
 			if (tile instanceof IFluidHandler)
 			{
@@ -80,25 +81,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				int i = mop.blockX;
-				int j = mop.blockY;
-				int k = mop.blockZ;
-				if (!(world.getTileEntity(i, j, k) instanceof IFluidHandler))
+				BlockPos blockPosHit = mop.getBlockPos();
+				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
 				{
-					switch(mop.sideHit) // Ripped from vanilla ItemBucket and simplified
+					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)) && consumeFuel(player, stack, 32, true))
 					{
-						case 0: --j; break;
-						case 1: ++j; break;
-						case 2: --k; break;
-						case 3: ++k; break;
-						case 4: --i; break;
-						case 5: ++i; break;
-						default: break;
-					}
-
-					if (world.isAirBlock(i, j, k) && consumeFuel(player, stack, 32, true))
-					{
-						placeLava(world, i, j, k);
+						placeLava(world, blockPosHit.offset(mop.sideHit));
 						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 						PlayerHelper.swingItem(((EntityPlayerMP) player));
 					}
@@ -110,14 +98,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 
-	private void placeLava(World world, int i, int j, int k)
+	private void placeLava(World world, BlockPos pos)
 	{
-		Material material = world.getBlock(i, j, k).getMaterial();
+		Material material = world.getBlockState(pos).getBlock().getMaterial();
 		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
 		{
-			world.func_147480_a(i, j, k, true);
+			world.destroyBlock(pos, true);
 		}
-		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
+		world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
 	}
 
 	@Override
@@ -130,8 +118,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
-		
-		if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava) && world.getBlock(x, y, z) == Blocks.air)
+		BlockPos pos = new BlockPos(x, y, z);
+
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -163,12 +152,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			PlayerChecks.addPlayerFireChecks((EntityPlayerMP) player);
 		}
 	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
-	}
+
+	// TODO 1.8 Gone in 1.8, what is the replacement?
+//	@Override
+//	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
+//	{
+//		return false;
+//	}
 	
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
@@ -218,8 +208,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
-		
-		if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava) && world.getBlock(x, y, z) == Blocks.air)
+		BlockPos pos = new BlockPos(x, y, z);
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{

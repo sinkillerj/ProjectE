@@ -37,7 +37,7 @@ public class DarkShovel extends PEToolBase
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-				&& world.getBlock(mop.blockX, mop.blockY, mop.blockZ) == Blocks.gravel)
+				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.gravel)
 		{
 			tryVeinMine(stack, player, mop);
 		}

@@ -9,9 +9,11 @@ import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGravel;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.StatCollector;
@@ -56,9 +58,9 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, x, y, z, eLiving);
+		digBasedOnMode(stack, world, block, pos, eLiving);
 		return true;
 	}
 
@@ -80,7 +82,7 @@ public class RedStar extends PEToolBase
 			}
 			else if (mop.typeOfHit == MovingObjectType.BLOCK)
 			{
-				Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				Block block = world.getBlockState(mop.getBlockPos()).getBlock();
 
 				if (block instanceof BlockGravel)
 				{
@@ -115,13 +117,14 @@ public class RedStar extends PEToolBase
 	}
 	
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
+		Block block = state.getBlock();
 		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata) + 48.0F;
+		return super.getDigSpeed(stack, state) + 48.0F;
 	}
 }
