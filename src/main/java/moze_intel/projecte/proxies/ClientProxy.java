@@ -9,8 +9,10 @@ import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
 import moze_intel.projecte.events.TransmutationRenderingEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
@@ -69,6 +71,8 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, new RenderSnowball(ObjHandler.lensExplosive));
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(ObjHandler.fireProjectile));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLightningProjectile.class, new RenderSnowball(ObjHandler.windProjectile));
 	}
 	
 	@Override

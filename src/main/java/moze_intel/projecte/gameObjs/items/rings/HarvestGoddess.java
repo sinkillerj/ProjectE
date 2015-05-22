@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
+
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockGrass;
@@ -55,13 +57,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			}
 			else
 			{
-				growNearbyRandomly(true, world, player);
+				WorldHelper.growNearbyRandomly(true, world, player);
 				removeEmc(stack, 0.32F);
 			}
 		}
 		else
 		{
-			growNearbyRandomly(false, world, player);
+			WorldHelper.growNearbyRandomly(false, world, player);
 		}
 	}
 	
@@ -232,98 +234,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return null;
 	}
 
-	private void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord)
-	{
-		int chance = harvest ? 16 : 32;
-
-		for (int x = (int) (xCoord - 5); x <= xCoord + 5; x++)
-			for (int y = (int) (yCoord - 3); y <= yCoord + 3; y++)
-				for (int z = (int) (zCoord - 5); z <= zCoord + 5; z++)
-				{
-					Block crop = world.getBlock(x, y, z);
-
-					// Vines, leaves, tallgrass, deadbush, doubleplants
-					if (crop instanceof IShearable)
-					{
-						if (harvest)
-						{
-							world.func_147480_a(x, y, z, true);
-						}
-					}
-					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
-					// Mushroom, potato, sapling, stems, tallgrass
-					else if (crop instanceof IGrowable)
-					{
-						IGrowable growable = (IGrowable) crop;
-						if(harvest && !growable.func_149851_a(world, x, y, z, false))
-						{
-							world.func_147480_a(x, y, z, true);
-						}
-						else if (world.rand.nextInt(chance) == 0)
-						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
-							{
-								growable.func_149853_b(world, world.rand, x, y, z);
-							}
-						}
-					}
-					// All modded
-					// Cactus, Reeds, Netherwart, Flower
-					else if (crop instanceof IPlantable)
-					{
-						if (world.rand.nextInt(chance / 4) == 0)
-						{
-							for (int i = 0; i < (harvest ? 8 : 4); i++)
-							{
-								crop.updateTick(world, x, y, z, world.rand);
-							}
-						}
-
-						if (harvest)
-						{
-							if (crop instanceof BlockFlower)
-							{
-								world.func_147480_a(x, y, z, true);
-							}
-							if (crop == Blocks.reeds || crop == Blocks.cactus)
-							{
-								boolean shouldHarvest = true;
-
-								for (int i = 1; i < 3; i++)
-								{
-									if (world.getBlock(x, y + i, z) != crop)
-									{
-										shouldHarvest = false;
-										break;
-									}
-								}
-
-								if (shouldHarvest)
-								{
-									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
-									{
-										world.func_147480_a(x, y + i, z, true);
-									}
-								}
-							}
-							if (crop == Blocks.nether_wart)
-							{
-								int meta = ((IPlantable) crop).getPlantMetadata(world, x, y, z);
-								if (meta == 3)
-								{
-									world.func_147480_a(x, y, z, true);
-								}
-							}
-						}
-					}
-				}
-	}
-
-	private void growNearbyRandomly(boolean harvest, World world, Entity player)
-	{
-		growNearbyRandomly(harvest, world, player.posX, player.posY, player.posZ);
-	}
-	
+		
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
@@ -351,7 +262,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			if (harvestCooldown == 0)
 			{
-				growNearbyRandomly(true, world, x, y, z);
+				WorldHelper.growNearbyRandomly(true, world, x, y, z);
 				harvestCooldown = ProjectEConfig.harvestPedCooldown;
 			}
 			else

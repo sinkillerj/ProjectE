@@ -2,12 +2,15 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
 import com.google.common.collect.Lists;
+
 import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -50,32 +53,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 			}
 			else 
 			{
-				setNearbyOnFlames(world, player);
+				WorldHelper.igniteNearby(world, player);
 				this.removeEmc(stack, 0.32F);
 			}
 		}
 		else 
 		{
-			extinguishNearby(world, player);
+			WorldHelper.extinguishNearby(world, player);
 		}
-	}
-	
-	private void extinguishNearby(World world, EntityPlayer player)
-	{
-		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
-			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
-				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-					if (world.getBlock(x, y, z) == Blocks.fire)
-						world.setBlockToAir(x, y, z);
-	}
-	
-	private void setNearbyOnFlames(World world, EntityPlayer player)
-	{
-		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
-			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
-					if (world.rand.nextInt(128) == 0 && world.getBlock(x, y, z) == Blocks.air)
-						world.setBlock(x, y, z, Blocks.fire);
 	}
 	
 	@Override
