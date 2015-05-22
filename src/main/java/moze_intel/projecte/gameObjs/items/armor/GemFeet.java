@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import com.google.common.collect.Multimap;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
@@ -16,8 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -91,10 +88,6 @@ public class GemFeet extends GemArmorBase
         {
             if (!player.onGround)
             {
-                if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed() && !player.capabilities.isFlying && !player.isSneaking())
-                {
-                    player.motionY += 0.12;
-                }
                 if (player.motionY <= 0)
                 {
                     player.motionY *= 0.90;

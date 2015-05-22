@@ -257,7 +257,13 @@ public final class PlayerChecks
 		{
 			return true;
 		}
-		
+
+		ItemStack armor = player.getCurrentArmor(0);
+		if (armor != null && armor.getItem() instanceof GemFeet)
+		{
+			return true;
+		}
+
 		for (int i = 0; i <= 8; i++)
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
