@@ -245,7 +245,7 @@ public final class EMCHelper
 		{
 			for (Map.Entry<Integer, Integer> entry : enchants.entrySet())
 			{
-				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
+				Enchantment ench = Enchantment.getEnchantmentById(entry.getKey());
 
 				if (ench.getWeight() == 0)
 				{

@@ -179,7 +179,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -190,7 +190,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -201,7 +201,7 @@ public final class PlayerChecks
 		
 		while (iterator.hasNext())
 		{
-			if (iterator.next().getName().equals(username))
+			if (iterator.next().getCommandSenderName().equals(username))
 			{
 				iterator.remove();
 				break;
@@ -215,7 +215,7 @@ public final class PlayerChecks
 
 		while (iter.hasNext())
 		{
-			if (iter.next().getName().equals(player))
+			if (iter.next().getCommandSenderName().equals(player))
 			{
 				return true;
 			}
