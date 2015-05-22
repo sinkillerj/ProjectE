@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs;
 
-import net.minecraftforge.fml.common.IFuelHandler;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
@@ -115,12 +112,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ObjHandler
@@ -607,9 +607,10 @@ public class ObjHandler
 	/**
 	 * Philosopher's stone smelting recipes, EE3 style
 	 */
+	@SuppressWarnings("unchecked")
 	public static void registerPhiloStoneSmelting()
 	{
-		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.instance().getSmeltingList()).entrySet()))
+		for (Entry<ItemStack, ItemStack> entry : (((Map<ItemStack, ItemStack>) FurnaceRecipes.instance().getSmeltingList()).entrySet()))
 		{
 			if (entry.getKey() == null || entry.getValue() == null)
 			{

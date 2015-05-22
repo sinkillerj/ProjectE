@@ -44,12 +44,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		this.setContainerItem(this);
 		this.setNoRepair();
 	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
-	}
 
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float px, float py, float pz)

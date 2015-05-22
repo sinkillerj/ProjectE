@@ -38,7 +38,7 @@ public class PlayerEvents
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getName())), (EntityPlayerMP) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
 		}
 	}
 
@@ -83,7 +83,7 @@ public class PlayerEvents
 				
 				if (remain == null)
 				{
-					event.item.delayBeforeCanPickup = 10;
+					event.item.setPickupDelay(10);
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}
@@ -112,7 +112,7 @@ public class PlayerEvents
 				
 				if (remain == null)
 				{
-					event.item.delayBeforeCanPickup = 10;
+					event.item.setPickupDelay(10);
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}

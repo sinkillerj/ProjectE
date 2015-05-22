@@ -10,15 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class NovaExplosion extends Explosion 
 {
@@ -33,7 +30,8 @@ public class NovaExplosion extends Explosion
 	@Override
 	public void doExplosionA()
 	{
-		float f = this.explosionSize;
+		float initialSize = ReflectionHelper.getExplosionSize(this);
+
 		HashSet<BlockPos> hashset = Sets.newHashSet();
 		int j;
 		int k;
@@ -53,10 +51,10 @@ public class NovaExplosion extends Explosion
 						d0 /= d3;
 						d1 /= d3;
 						d2 /= d3;
-						float f = this.explosionSize * (0.7F + this.worldObj.rand.nextFloat() * 0.6F);
-						double d4 = this.explosionX;
-						double d6 = this.explosionY;
-						double d8 = this.explosionZ;
+						float f = initialSize * (0.7F + this.worldObj.rand.nextFloat() * 0.6F);
+						double d4 = this.getPosition().xCoord;
+						double d6 = this.getPosition().yCoord;
+						double d8 = this.getPosition().zCoord;
 
 						for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
@@ -65,11 +63,11 @@ public class NovaExplosion extends Explosion
 
 							if (iblockstate.getBlock().getMaterial() != Material.air)
 							{
-								float f2 = this.exploder != null ? this.exploder.getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, (Entity)null, this);
+								float f2 = this.getExplosivePlacedBy() != null ? this.getExplosivePlacedBy().getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, null, this);
 								f -= (f2 + 0.3F) * 0.3F;
 							}
 
-							if (f > 0.0F && (this.exploder == null || this.exploder.verifyExplosion(this, this.worldObj, blockpos, iblockstate, f)))
+							if (f > 0.0F && (this.getExplosivePlacedBy() == null || this.getExplosivePlacedBy().verifyExplosion(this, this.worldObj, blockpos, iblockstate, f)))
 							{
 								hashset.add(blockpos);
 							}
@@ -83,35 +81,40 @@ public class NovaExplosion extends Explosion
 			}
 		}
 
-		this.affectedBlockPositions.addAll(hashset);
-		this.explosionSize = f;
+		this.func_180343_e().addAll(hashset);
+		ReflectionHelper.setExplosionSize(this, initialSize);
 	}
 	
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		this.worldObj.playSoundEffect(this.explosionX, this.explosionY, this.explosionZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+		float cachedExplosionSize = ReflectionHelper.getExplosionSize(this);
+		double x = getPosition().xCoord;
+		double y = getPosition().yCoord;
+		double z = getPosition().zCoord;
 
-		if (this.explosionSize >= 2.0F && this.isSmoking)
+		this.worldObj.playSoundEffect(x, y, z, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+
+		if (cachedExplosionSize >= 2.0F)
 		{
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, x, y, z, 1.0D, 0.0D, 0.0D);
 		}
 		else
 		{
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, x, y, z, 1.0D, 0.0D, 0.0D);
 		}
 
-		Iterator iterator;
+		Iterator<BlockPos> iterator;
 		BlockPos blockpos;
 		List<ItemStack> allDrops = Lists.newArrayList();
 
-		if (this.isSmoking)
+		if (true) //this.isSmoking) 1.8 - isSmoking is private and is always true for a Nova Explosion.
 		{
-			iterator = this.affectedBlockPositions.iterator();
+			iterator = this.func_180343_e().iterator();
 
 			while (iterator.hasNext())
 			{
-				blockpos = (BlockPos)iterator.next();
+				blockpos = iterator.next();
 				Block block = this.worldObj.getBlockState(blockpos).getBlock();
 
 				if (spawnParticles)
@@ -119,20 +122,20 @@ public class NovaExplosion extends Explosion
 					double d0 = (double)((float)blockpos.getX() + this.worldObj.rand.nextFloat());
 					double d1 = (double)((float)blockpos.getY() + this.worldObj.rand.nextFloat());
 					double d2 = (double)((float)blockpos.getZ() + this.worldObj.rand.nextFloat());
-					double d3 = d0 - this.explosionX;
-					double d4 = d1 - this.explosionY;
-					double d5 = d2 - this.explosionZ;
+					double d3 = d0 - x;
+					double d4 = d1 - y;
+					double d5 = d2 - z;
 					double d6 = (double)MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
 					d3 /= d6;
 					d4 /= d6;
 					d5 /= d6;
-					double d7 = 0.5D / (d6 / (double)this.explosionSize + 0.1D);
+					double d7 = 0.5D / (d6 / (double)cachedExplosionSize + 0.1D);
 					d7 *= (double)(this.worldObj.rand.nextFloat() * this.worldObj.rand.nextFloat() + 0.3F);
 					d3 *= d7;
 					d4 *= d7;
 					d5 *= d7;
-					this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX * 1.0D) / 2.0D, (d1 + this.explosionY * 1.0D) / 2.0D, (d2 + this.explosionZ * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
-					this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
+					this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + x * 1.0D) / 2.0D, (d1 + y * 1.0D) / 2.0D, (d2 + z * 1.0D) / 2.0D, d3, d4, d5);
+					this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
 				}
 
 				if (block.getMaterial() != Material.air)
@@ -146,7 +149,7 @@ public class NovaExplosion extends Explosion
 					block.onBlockExploded(worldObj, blockpos, this);
 				}
 			}
-		WorldHelper.createLootDrop(drops, world, explosionX, explosionY, explosionZ);
+			WorldHelper.createLootDrop(allDrops, this.worldObj, x, y, z);
 		}
 	}
 }

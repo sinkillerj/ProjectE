@@ -1,6 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import com.google.common.collect.Lists;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
@@ -49,7 +50,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void processCommand(ICommandSender sender, String[] params) throws CommandException
 	{
 		if (params.length < 1)
 		{

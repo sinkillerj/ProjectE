@@ -93,12 +93,6 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		
 		return stack;
 	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
-	}
 
 	@Override
 	public byte getMode(ItemStack stack)

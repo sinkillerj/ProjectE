@@ -152,13 +152,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			PlayerChecks.addPlayerFireChecks((EntityPlayerMP) player);
 		}
 	}
-
-	// TODO 1.8 Gone in 1.8, what is the replacement?
-//	@Override
-//	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-//	{
-//		return false;
-//	}
 	
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
