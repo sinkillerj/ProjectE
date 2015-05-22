@@ -12,6 +12,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.IChatComponent;
+
+import java.util.Arrays;
 
 public class DMPedestalTile extends TileEmc implements IInventory
 {
@@ -27,11 +32,11 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public void updateEntity()
+	public void update()
 	{
-		centeredX = xCoord + 0.5;
-		centeredY = yCoord + 0.5;
-		centeredZ = zCoord + 0.5;
+		centeredX = pos.getX() + 0.5;
+		centeredY = pos.getY() + 0.5;
+		centeredZ = pos.getZ() + 0.5;
 
 		if (effectBounds == null)
 		{
@@ -67,26 +72,30 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 	private void spawnParticles()
 	{
-		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.5, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.5, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.5, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.2, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.5, 0, 0, 0);
-		worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 0.3, zCoord + 0.8, 0, 0, 0);
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
+		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
 		for (int l = 0; l < 3; ++l) // Ripped from vanilla enderchest
 		{
-			double d1 = (double)((float)yCoord + worldObj.rand.nextFloat());
+			double d1 = (double)((float)y + worldObj.rand.nextFloat());
 			double d3, d4, d5;
 			int i1 = worldObj.rand.nextInt(2) * 2 - 1;
 			int j1 = worldObj.rand.nextInt(2) * 2 - 1;
 			d4 = ((double)worldObj.rand.nextFloat() - 0.5D) * 0.125D;
-			double d2 = (double)zCoord + 0.5D + 0.25D * (double)j1;
+			double d2 = (double)z + 0.5D + 0.25D * (double)j1;
 			d5 = (double)(worldObj.rand.nextFloat() * 1.0F * (float)j1);
-			double d0 = (double)xCoord + 0.5D + 0.25D * (double)i1;
+			double d0 = (double)z + 0.5D + 0.25D * (double)i1;
 			d3 = (double)(worldObj.rand.nextFloat() * 1.0F * (float)i1);
-			worldObj.spawnParticle("portal", d0, d1, d2, d3, d4, d5);
+			worldObj.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -199,15 +208,21 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getCommandSenderName()
 	{
 		return "pe.pedestal.shortname";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -223,10 +238,10 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public void openInventory() { }
+	public void openInventory(EntityPlayer player) { }
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		this.markDirty();
 	}
@@ -235,6 +250,27 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
 	{
 		return true;
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
 	}
 
 	@Override
@@ -257,8 +293,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 				worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.pecharge", 1.0F, 1.0F);
 				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
 				{
-					this.worldObj.spawnParticle("witchMagic", centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
@@ -268,8 +304,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 				worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.peuncharge", 1.0F, 1.0F);
 				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
 				{
-					this.worldObj.spawnParticle("smoke", centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}

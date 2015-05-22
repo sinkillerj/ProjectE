@@ -19,8 +19,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -306,13 +309,13 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+		return new S35PacketUpdateTileEntity(pos, 0, tag);
 	}
 	
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
-		this.readFromNBT(packet.func_148857_g());
+		this.readFromNBT(packet.getNbtCompound());
 	}
 	
 	@Override
@@ -416,15 +419,20 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "tile.pe_transmutation_stone.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return null;
 	}
 
 	@Override
@@ -440,7 +448,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openInventory(EntityPlayer player)
 	{
 		if (!this.worldObj.isRemote)
 		{
@@ -451,15 +459,15 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory(EntityPlayer player)
 	{
 		if (!this.worldObj.isRemote)
 		{
 			Transmutation.setStoredEmc(player.getCommandSenderName(), this.getStoredEmc());
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) player);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) this.player);
 		}
 		
-		player = null;
+		this.player = null;
 	}
 
 	@Override
@@ -469,26 +477,50 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	}
 
 	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
 	public boolean isRequestingEmc() 
 	{
 		return false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int par1)
+	public int[] getSlotsForFace(EnumFacing par1)
 	{
 		return new int[0];
 	}
 
 	@Override
-	public boolean canExtractItem(int par1, ItemStack stack, int par3)
+	public boolean canExtractItem(int par1, ItemStack stack, EnumFacing par3)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canInsertItem(int par1, ItemStack stack, int par3)
+	public boolean canInsertItem(int par1, ItemStack stack, EnumFacing par3)
 	{
 		return false;
 	}
+
+	@Override
+	public void update() {}
 }

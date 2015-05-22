@@ -38,7 +38,6 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import sun.org.mozilla.javascript.internal.ast.Block;
 
 import java.util.List;
 
@@ -112,7 +111,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		Material material = world.getBlockState(pos).getBlock().getMaterial();
 
-		if (world.provider.isHellWorld)
+		if (world.provider.doesWaterVaporize())
 		{
 			world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
@@ -180,7 +179,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		World world = player.worldObj;
 
-		if (!world.provider.isHellWorld)
+		if (!world.provider.doesWaterVaporize())
 		{
 			world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 			world.spawnEntityInWorld(new EntityWaterProjectile(world, player));

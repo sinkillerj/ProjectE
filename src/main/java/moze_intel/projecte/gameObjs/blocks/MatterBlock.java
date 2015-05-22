@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -99,9 +100,28 @@ public class MatterBlock extends Block
 		}
 	}
 
-	public enum EnumMatterBlockType
+	public enum EnumMatterBlockType implements IStringSerializable
 	{
-		DARK_MATTER,
-		RED_MATTER
+		DARK_MATTER("dark_matter"),
+		RED_MATTER("red_matter");
+
+		private final String name;
+
+		EnumMatterBlockType(String name)
+		{
+			this.name = name;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

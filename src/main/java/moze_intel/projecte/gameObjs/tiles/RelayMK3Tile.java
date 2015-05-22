@@ -10,7 +10,7 @@ public class RelayMK3Tile extends RelayMK1Tile
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getCommandSenderName()
 	{
 		return "pe.relay.mk3";
 	}

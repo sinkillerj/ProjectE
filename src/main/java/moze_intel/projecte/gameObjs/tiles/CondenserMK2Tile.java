@@ -92,7 +92,7 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getCommandSenderName()
 	{
 		return "tile.pe_condenser_mk2.name";
 	}

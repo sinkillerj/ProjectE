@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,10 +62,29 @@ public class FuelBlock extends Block
 		}
 	}
 
-	public enum EnumFuelType
+	public enum EnumFuelType implements IStringSerializable
 	{
-		ALCHEMICAL_COAL,
-		MOBIUS_FUEL,
-		AETERNALIS_FUEL
+		ALCHEMICAL_COAL("alchemical_coal"),
+		MOBIUS_FUEL("mobius_fuel"),
+		AETERNALIS_FUEL("aeternalis_fuel");
+
+		private final String name;
+
+		EnumFuelType(String name)
+		{
+			this.name = name;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

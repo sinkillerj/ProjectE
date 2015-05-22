@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -15,6 +14,11 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import java.util.Arrays;
 
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
@@ -70,7 +74,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 	
 	@Override
-	public void updateEntity()
+	public void update()
 	{
 		if (worldObj.isRemote) 
 		{
@@ -104,7 +108,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		if (numUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this),
-					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+					new TargetPoint(this.worldObj.provider.getDimensionId(), getPos().getX(), getPos().getY(), getPos().getZ(), 6));
 		}
 	}
 	
@@ -296,11 +300,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	
 	public int getSunLevel()
 	{
-		if (worldObj.provider.isHellWorld)
+		if (worldObj.provider.doesWaterVaporize())
 		{
 			return 16;
 		}
-		return worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
+		return worldObj.getLight(getPos().up()) + 1;
 	}
 	
 	public int getEmcScaled(int i)
@@ -457,15 +461,20 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "tile.pe_collector_MK1.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return null;
 	}
 
 	@Override
@@ -481,13 +490,13 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public void openInventory() 
+	public void openInventory(EntityPlayer player)
 	{
 		numUsing++;
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory(EntityPlayer player)
 	{
 		numUsing--;
 	}
@@ -499,9 +508,30 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int getField(int id)
 	{
-		if (side == 0 || side == 1)
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		if (side == EnumFacing.DOWN|| side == EnumFacing.UP)
 		{
 			return new int[] {upgradedSlot};
 		}
@@ -510,9 +540,9 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) 
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side)
 	{
-		if (side == 0 || side == 1)
+		if (side == EnumFacing.UP || side == EnumFacing.DOWN)
 		{
 			return false;
 		}
@@ -521,9 +551,9 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) 
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side)
 	{
-		if (side == 0 || side == 1)
+		if (side == EnumFacing.UP || side == EnumFacing.DOWN)
 		{
 			return slot == upgradedSlot;
 		}

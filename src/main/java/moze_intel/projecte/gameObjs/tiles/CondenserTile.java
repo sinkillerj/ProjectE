@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -15,6 +14,12 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import java.util.Arrays;
 
 public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory
 {
@@ -36,7 +41,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public void updateEntity()
+	public void update()
 	{
 		updateChest();
 
@@ -62,7 +67,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		if (numPlayersUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this),
-				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+				new TargetPoint(this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 6));
 		}
 	}
 
@@ -234,7 +239,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	
 	public void sendUpdate()
 	{
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(pos);
 	}
 
 	@Override
@@ -353,15 +358,21 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "tile.pe_condenser.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -380,7 +391,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+			worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
@@ -389,9 +400,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			adjustedXCoord = xCoord + 0.5D;
-			adjustedZCoord = zCoord + 0.5D;
-			worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			adjustedXCoord = pos.getX() + 0.5D;
+			adjustedZCoord = pos.getZ() + 0.5D;
+			worldObj.playSoundEffect(adjustedXCoord, pos.getY() + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -414,9 +425,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				adjustedXCoord = xCoord + 0.5D;
-				adjustedZCoord = zCoord + 0.5D;
-				worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				adjustedXCoord = pos.getX() + 0.5D;
+				adjustedZCoord = pos.getZ() + 0.5D;
+				worldObj.playSoundEffect(adjustedXCoord, pos.getY() + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)
@@ -438,17 +449,17 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 	
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		++numPlayersUsing;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+		worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
 	}
 	
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		--numPlayersUsing;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.condenser, 1, numPlayersUsing);
+		worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
 	}
 
 	@Override
@@ -461,9 +472,30 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		
 		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
 	}
-	
+
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		int[] slots = new int[inventory.length - 1];
 		
@@ -476,7 +508,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack item, int side) 
+	public boolean canInsertItem(int slot, ItemStack item, EnumFacing side)
 	{
 		if (slot == 0) 
 		{
@@ -487,7 +519,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack item, int side) 
+	public boolean canExtractItem(int slot, ItemStack item, EnumFacing side)
 	{
 		if (slot == 0) 
 		{

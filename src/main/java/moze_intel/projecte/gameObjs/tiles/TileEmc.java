@@ -6,9 +6,10 @@ import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileEmc extends TileEntity implements ITileEmc
+public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePlayerListBox
 {
 	private double emc;
 	private final int maxAmount;

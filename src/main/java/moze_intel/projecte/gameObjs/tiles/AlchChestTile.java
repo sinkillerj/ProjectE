@@ -2,21 +2,15 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Arrays;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory
 {
@@ -128,15 +122,21 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "tile.pe_alchemy_chest.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -157,13 +157,11 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 	
 	@Override
-	public void updateEntity()
+	public void update()
 	{
-		super.updateEntity();
-
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
+			worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
@@ -172,9 +170,9 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			adjustedXCoord = xCoord + 0.5D;
-			adjustedZCoord = zCoord + 0.5D;
-			worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			adjustedXCoord = getPos().getX() + 0.5D;
+			adjustedZCoord = getPos().getZ() + 0.5D;
+			worldObj.playSoundEffect(adjustedXCoord, getPos().getY() + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -197,9 +195,9 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				adjustedXCoord = xCoord + 0.5D;
-				adjustedZCoord = zCoord + 0.5D;
-				worldObj.playSoundEffect(adjustedXCoord, yCoord + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				adjustedXCoord = getPos().getX() + 0.5D;
+				adjustedZCoord = getPos().getZ() + 0.5D;
+				worldObj.playSoundEffect(adjustedXCoord, getPos().getY() + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)
@@ -229,23 +227,44 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	}
 	
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		++numPlayersUsing;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
+		worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
 	}
 	
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		--numPlayersUsing;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
+		worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
 	}
 
 	@Override

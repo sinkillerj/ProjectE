@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
@@ -14,6 +13,12 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import java.util.Arrays;
 
 public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
@@ -42,7 +47,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 	
 	@Override
-	public void updateEntity()
+	public void update()
 	{	
 		if (worldObj.isRemote) 
 		{
@@ -99,7 +104,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		if (numUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayKleinEmc, displayRawEmc, this),
-					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+					new TargetPoint(this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 6));
 		}
 	}
 	
@@ -323,15 +328,21 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "pe.relay.mk1";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -347,13 +358,13 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public void openInventory() 
+	public void openInventory(EntityPlayer player)
 	{
 		numUsing++;
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory(EntityPlayer player)
 	{
 		numUsing--;
 	}
@@ -365,13 +376,34 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
 	public boolean isRequestingEmc() 
 	{
 		return true;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		int indexes[] = new int[inventory.length - 2];
 		byte counter = 0;
@@ -386,13 +418,13 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side)
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side)
 	{
 		return EMCHelper.doesItemHaveEmc(stack);
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side)
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side)
 	{
 		return false;
 	}

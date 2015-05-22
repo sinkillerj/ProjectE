@@ -2,16 +2,13 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.ITileEmc;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class TileEmcProducer extends TileEmc
 {
 	public boolean[] areBlocksRequestingEmc = new boolean[6];
 	
-	public TileEmcProducer()
-	{
-		super();
-	}
+	public TileEmcProducer() {}
 	
 	public TileEmcProducer(int maxEmc)
 	{
@@ -22,9 +19,9 @@ public abstract class TileEmcProducer extends TileEmc
 	{
 		int result = 0;
 		
-		for (int i = 0; i < 6; i++)
+		for (EnumFacing e : EnumFacing.VALUES)
 		{
-			if (areBlocksRequestingEmc[i])
+			if (areBlocksRequestingEmc[e.getIndex()])
 			{
 				result++;
 			}
@@ -38,16 +35,14 @@ public abstract class TileEmcProducer extends TileEmc
 	 */
 	public void sendEmcToRequesting(double emc)
 	{
-		for (int i = 0; i < 6; i++)
+		for (EnumFacing dir : EnumFacing.VALUES)
 		{
-			if (!areBlocksRequestingEmc[i]) 
+			if (!areBlocksRequestingEmc[dir.getIndex()])
 			{
 				continue;
 			}
-			
-			ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
-			
-			TileEntity tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+
+			TileEntity tile = worldObj.getTileEntity(pos.offset(dir));
 			
 			if (tile instanceof ITileEmc)
 			{
@@ -58,42 +53,37 @@ public abstract class TileEmcProducer extends TileEmc
 	
 	public void checkSurroundingBlocks(boolean isFromRelay)
 	{
-		TileEmcProducer tile = (TileEmcProducer) worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		TileEmcProducer tile = (TileEmcProducer) worldObj.getTileEntity(pos);
 		
-		for (int i = 0; i < 6; i++)
+		for (EnumFacing dir : EnumFacing.VALUES)
 		{
-			ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
-			
-			TileEntity closeTileEnt = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+			TileEntity closeTileEnt = worldObj.getTileEntity(pos.offset(dir));
 			
 			if (closeTileEnt == null)
 			{
-				tile.areBlocksRequestingEmc[i] = false;
+				tile.areBlocksRequestingEmc[dir.getIndex()] = false;
 			}
 			else if (isFromRelay && closeTileEnt instanceof RelayMK1Tile)
 			{
-				tile.areBlocksRequestingEmc[i] = false;
+				tile.areBlocksRequestingEmc[dir.getIndex()] = false;
 			}
 			else if (closeTileEnt instanceof ITileEmc)
 			{
-				tile.areBlocksRequestingEmc[i] = ((ITileEmc) closeTileEnt).isRequestingEmc();
+				tile.areBlocksRequestingEmc[dir.getIndex()] = ((ITileEmc) closeTileEnt).isRequestingEmc();
 			}
 		}
 	}
 	
 	public void sendRelayBonus()
 	{
-		for (int i = 0; i < 6; i++)
+		for (EnumFacing dir : EnumFacing.VALUES)
 		{
-			if (!areBlocksRequestingEmc[i]) 
+			if (!areBlocksRequestingEmc[dir.getIndex()])
 			{
 				continue;
 			}
-			
-			ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
-			
-			TileEntity tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
-			
+
+			TileEntity tile = worldObj.getTileEntity(pos.offset(dir));
 			if (tile instanceof RelayMK3Tile)
 			{
 				((RelayMK3Tile) tile).addEmc(0.5F); //10 EMC/s -> 0.5 EMC/tick
