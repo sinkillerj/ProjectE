@@ -102,7 +102,7 @@ public class RecipesAlchemyBags implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] func_179532_b(InventoryCrafting inv) // See IRecipe
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

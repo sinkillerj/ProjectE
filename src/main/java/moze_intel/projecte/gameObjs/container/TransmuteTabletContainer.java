@@ -60,7 +60,7 @@ public class TransmuteTabletContainer extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
 		
-		table.openInventory();
+		table.openInventory(invPlayer.player);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class TransmuteTabletContainer extends Container
 	@Override
 	public void onContainerClosed(EntityPlayer player)
 	{
-		table.closeInventory();
+		table.closeInventory(player);
 		
 		super.onContainerClosed(player);
 	}

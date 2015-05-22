@@ -60,7 +60,7 @@ public class TransmuteContainer extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
 
-		this.tile.openInventory();
+		this.tile.openInventory(invPlayer.player);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class TransmuteContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory();
+		tile.closeInventory(player);
 	}
 	
 	@Override

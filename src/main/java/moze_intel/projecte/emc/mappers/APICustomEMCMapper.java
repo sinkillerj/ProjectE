@@ -105,7 +105,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem)stack;
-			itemName = Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
+			itemName = (String) Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
 		} else {
 			return false;
 		}

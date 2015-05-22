@@ -15,8 +15,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -400,15 +403,21 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -424,7 +433,7 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openInventory(EntityPlayer player)
 	{
 		emc = Transmutation.getStoredEmc(player.getCommandSenderName());
 		
@@ -432,27 +441,48 @@ public class TransmuteTabletInventory implements IInventory
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory(EntityPlayer player)
 	{
-		if (player != null && player.getHeldItem() != null)
+		if (this.player != null && this.player.getHeldItem() != null)
 		{
 			writeToNBT(player.getHeldItem().getTagCompound());
-			Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+			Transmutation.setStoredEmc(this.player.getCommandSenderName(), emc);
 		}
 		else
 		{
 			PELogger.logFatal("Failed to write NBT data for transmutation tablet!");
-			PELogger.logFatal("Player: " + player);
+			PELogger.logFatal("Player: " + this.player);
 			PELogger.logFatal("Please report this to the developer!");
 		}
 		
-		player = null;
+		this.player = null;
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return false;
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
 	}
 
 	@Override
