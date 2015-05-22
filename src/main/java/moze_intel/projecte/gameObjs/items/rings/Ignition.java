@@ -6,16 +6,24 @@ import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -27,7 +35,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Ignition extends RingToggle implements IBauble, IPedestalItem
+public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtectionItem, IProjectileShooter
 {
 	private int torchCooldown;
 
@@ -43,7 +51,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
 		
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
-		EntityPlayer player = (EntityPlayer) entity;
+		EntityPlayerMP player = (EntityPlayerMP)entity;
+		
+		if(!player.capabilities.isCreativeMode && !player.isImmuneToFire())
+		{
+			//System.out.println("Immunising against fire");
+			PlayerHelper.setPlayerFireImmunity(player, true);
+			PlayerChecks.addPlayerFireChecks(player);
+		}
 
 		if (stack.getItemDamage() != 0)
 		{
@@ -175,5 +190,17 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 					StatCollector.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
 		}
 		return list;
+	}
+	
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
+	{
+		World world = player.worldObj;
+		
+		if(world.isRemote) return false;
+		
+		EntityFireProjectile fire = new EntityFireProjectile(world, player);
+		world.spawnEntityInWorld(fire);
+		
+		return true;
 	}
 }
