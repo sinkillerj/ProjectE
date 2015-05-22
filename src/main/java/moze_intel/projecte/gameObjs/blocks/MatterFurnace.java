@@ -24,11 +24,9 @@ import java.util.Random;
 
 public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 {
-	private String textureName;
 	private boolean isActive;
 	private boolean isHighTier;
 	private static boolean isUpdating;
-	private Random rand = new Random();
 
 	public MatterFurnace(boolean active, boolean isRM) 
 	{
@@ -36,8 +34,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		this.setCreativeTab(ObjHandler.cTab);
 		isActive = active;
 		isHighTier = isRM;
-		textureName = isHighTier ? "rm" : "dm";
-		this.setUnlocalizedName("pe_" + textureName + "_furnace");
+		this.setUnlocalizedName("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
 		
 		if (isActive) 
 		{
@@ -49,7 +46,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public float getBlockHardness(World world, BlockPos pos)
 	{
-		return world.getBlockMetadata(x, y, z) == 0 ? 1000000F : 2000000F;
+		return isHighTier ? 2000000F : 1000000F;
 	}
 	
 	@Override

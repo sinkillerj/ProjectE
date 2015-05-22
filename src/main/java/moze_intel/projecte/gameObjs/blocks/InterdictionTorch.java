@@ -35,7 +35,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
-		EnumFacing enumfacing = (EnumFacing)state.getValue(FACING_PROP);
+		EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
 		double d0 = (double)pos.getX() + 0.5D;
 		double d1 = (double)pos.getY() + 0.7D;
 		double d2 = (double)pos.getZ() + 0.5D;
@@ -49,7 +49,7 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 		}
 		else
 		{
-			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D);
 		}
 	}
 }
