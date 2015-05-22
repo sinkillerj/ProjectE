@@ -218,11 +218,11 @@ public final class WorldHelper
 
 		if (peacefuls.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
 		}
 		else if (mobs.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{

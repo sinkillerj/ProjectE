@@ -7,60 +7,41 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
+// TODO 1.8 TE's really should be using the blockstate too for rotation...this may go away as it exists only for rendering (?!)
 public abstract class TileEmcDirection extends TileEmc
 {
-	private ForgeDirection orientation;
+	private EnumFacing orientation;
 	
 	public TileEmcDirection()
 	{
-		this.orientation = ForgeDirection.SOUTH;
+		this.orientation = EnumFacing.SOUTH;
 	}
 	
-	public ForgeDirection getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return orientation;
 	}
 
-	public void setOrientation(ForgeDirection orientation)
+	public void setOrientation(EnumFacing orientation)
 	{
 		this.orientation = orientation;
 	}
 
 	public void setOrientation(int orientation)
 	{
-		this.orientation = ForgeDirection.getOrientation(orientation);
+		this.orientation = EnumFacing.getFront(orientation);
 	}
 	
 	public void setRelativeOrientation(EntityLivingBase ent, boolean sendPacket)
 	{
-		int direction = 0;
-		int facing = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
-		if (facing == 0)
-		{
-			direction = ForgeDirection.NORTH.ordinal();
-		}
-		else if (facing == 1)
-		{
-			direction = ForgeDirection.EAST.ordinal();
-		}
-		else if (facing == 2)
-		{
-			direction = ForgeDirection.SOUTH.ordinal();
-		}
-		else if (facing == 3)
-		{
-			direction = ForgeDirection.WEST.ordinal();
-		}
-		
+		EnumFacing direction = ent.getHorizontalFacing();
 		setOrientation(direction);
 		
 		if (sendPacket)
 		{
-			PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction));
+			PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction.getIndex()));
 		}
 	}
 	
@@ -71,7 +52,7 @@ public abstract class TileEmcDirection extends TileEmc
 
 		if (nbtTagCompound.hasKey("Direction"))
 		{
-			this.orientation = ForgeDirection.getOrientation(nbtTagCompound.getByte("Direction"));
+			this.orientation = EnumFacing.getFront(nbtTagCompound.getByte("Direction"));
 		}
 	}
 
@@ -80,7 +61,7 @@ public abstract class TileEmcDirection extends TileEmc
 	{
 		super.writeToNBT(nbtTagCompound);
 
-		nbtTagCompound.setByte("Direction", (byte) orientation.ordinal());
+		nbtTagCompound.setByte("Direction", (byte) orientation.getIndex());
 	}
 	
 	@Override
@@ -88,12 +69,12 @@ public abstract class TileEmcDirection extends TileEmc
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+		return new S35PacketUpdateTileEntity(pos, 0, tag);
 	}
 		
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
-		this.readFromNBT(packet.func_148857_g());
+		this.readFromNBT(packet.getNbtCompound());
 	}
 }

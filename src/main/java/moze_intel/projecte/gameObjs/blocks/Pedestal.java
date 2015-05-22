@@ -96,12 +96,6 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public int getRenderType()
-    {
-        return Constants.PEDESTAL_RENDER_ID;
-    }
-
-    @Override
     public int getLightValue(IBlockAccess world, BlockPos pos)
     {
         return 12;

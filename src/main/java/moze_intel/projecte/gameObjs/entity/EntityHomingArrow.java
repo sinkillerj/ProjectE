@@ -31,7 +31,8 @@ public class EntityHomingArrow extends EntityArrow
 		super(world, par2, par3);
 		init(world);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onUpdate()
 	{

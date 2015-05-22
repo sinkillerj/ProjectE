@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
@@ -60,19 +61,18 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			{
 				for (int z = (int) box.minZ; z <= box.maxZ; z++)
 				{
-					Block b = world.getBlock(x, y, z);
+					BlockPos pos = new BlockPos(x, y, z);
+					Block b = world.getBlockState(pos).getBlock();
 
 					if (b == Blocks.water || b == Blocks.flowing_water)
 					{
-						world.setBlock(x, y, z, Blocks.ice);
+						world.setBlockState(pos, Blocks.ice.getDefaultState());
 					}
-					else if (b.isSideSolid(world, x, y, z, ForgeDirection.UP))
+					else if (b.isSideSolid(world, pos, EnumFacing.UP))
 					{
-						Block b2 = world.getBlock(x, y + 1, z);
-
-						if (b2 == Blocks.air)
+						if (world.isAirBlock(pos.up()))
 						{
-							world.setBlock(x, y + 1, z, Blocks.snow_layer);
+							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
 						}
 					}
 				}

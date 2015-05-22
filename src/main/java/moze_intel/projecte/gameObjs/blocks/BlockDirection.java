@@ -8,6 +8,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public abstract class BlockDirection extends BlockContainer
@@ -26,12 +26,30 @@ public abstract class BlockDirection extends BlockContainer
 	{
 		super(material);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH));
 	}
-	
+
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockState(this, FACING);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return ((EnumFacing) state.getValue(FACING)).getIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getFront(meta));
+	}
+
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityLiving, ItemStack stack)
 	{
+		setFacingMeta(world, pos, ((EntityPlayer) entityLiving));
 		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
@@ -91,25 +109,15 @@ public abstract class BlockDirection extends BlockContainer
 			
 			if (tile instanceof TileEmcDirection)
 			{
-				((TileEmcDirection) tile).setRelativeOrientation(player, true);
+				((TileEmcDirection) tile).setRelativeOrientation(player, true); // TODO 1.8 TE's really should be using the blockstate too for rotation...
 			}
-			else
-			{
-				setFacingMeta(world, x, y, z, player);
-			}
+			setFacingMeta(world, pos, player);
 		}
 	}
 
-	protected void setFacingMeta(World world, int x, int y, int z, EntityPlayer player)
+	protected void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
-		switch (MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3)
-		{
-			case 0: world.setBlockMetadataWithNotify(x, y, z, 2, 2); break;
-			case 1: world.setBlockMetadataWithNotify(x, y, z, 5, 2); break;
-			case 2: world.setBlockMetadataWithNotify(x, y, z, 3, 2); break;
-			case 3: world.setBlockMetadataWithNotify(x, y, z, 4, 2); break;
-			default: world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		}
+		world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, player.getHorizontalFacing().getOpposite()));
 	}
 
 }

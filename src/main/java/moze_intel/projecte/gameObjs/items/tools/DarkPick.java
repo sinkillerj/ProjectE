@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
@@ -75,7 +76,7 @@ public class DarkPick extends PEToolBase
 	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		if ((block == ObjHandler.matterBlock && state.getValue(MatterBlock.TIER_PROP) == MatterBlock.EnumMatterBlockType.DARK_MATTER) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}

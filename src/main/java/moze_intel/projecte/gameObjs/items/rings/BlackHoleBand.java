@@ -164,10 +164,11 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 	{
 		if (stack.getItemDamage() == 1)
 		{
-			AxisAlignedBB aabb = new AxisAlignedBB(tile.xCoord - 5, tile.yCoord - 5, tile.zCoord - 5, tile.xCoord + 5, tile.yCoord + 5, tile.zCoord + 5);
-			double centeredX = tile.xCoord + 0.5;
-			double centeredY = tile.yCoord + 0.5;
-			double centeredZ = tile.zCoord + 0.5;
+			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
+					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
+			double centeredX = tile.getPos().getX() + 0.5;
+			double centeredY = tile.getPos().getY() + 0.5;
+			double centeredZ = tile.getPos().getZ() + 0.5;
 
 			for (EntityItem e : (List<EntityItem>) tile.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb))
 			{

@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
 
@@ -58,11 +57,7 @@ public final class Constants
 	public static final int PEDESTAL_GUI = 17;
 
 	public static final int MAX_CONDENSER_PROGRESS = 102;
-	
-	public static final int CHEST_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static final int CONDENSER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static final int PEDESTAL_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+
 	public static final ResourceLocation PEDESTAL_MODELTEX_LOCATION = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/models/pedestaltexmap.png");
 
 	public static final int MAX_VEIN_SIZE = 250;

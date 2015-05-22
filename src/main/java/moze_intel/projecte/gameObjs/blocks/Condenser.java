@@ -31,12 +31,6 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	{
 		return Item.getItemFromBlock(ObjHandler.condenser);
 	}
-	
-	@Override
-	public int getRenderType()
-	{
-		return Constants.CONDENSER_RENDER_ID;
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 

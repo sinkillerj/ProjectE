@@ -30,12 +30,6 @@ public class CondenserMK2 extends Condenser implements ITileEntityProvider
 	}
 
 	@Override
-	public int getRenderType()
-	{
-		return Constants.CONDENSER_MK2_RENDER_ID;
-	}
-
-	@Override
 	public TileEntity createNewTileEntity(World var1, int var2)
 	{
 		return new CondenserMK2Tile();

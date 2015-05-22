@@ -4,13 +4,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -52,23 +49,6 @@ public class Relay extends BlockDirection
 			}
 		}
 		return true;
-	}
-	
-	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
-	{
-		setFacingMeta(world, x, y, z, ((EntityPlayer) entLiving));
-		
-		TileEntity tile = world.getTileEntity(pos);
-		
-		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
-			stack.getTagCompound().setInteger("x", pos.getX());
-			stack.getTagCompound().setInteger("y", pos.getY());
-			stack.getTagCompound().setInteger("z", pos.getZ());
-			
-			tile.readFromNBT(stack.getTagCompound());
-		}
 	}
 
 	@Override

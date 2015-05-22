@@ -24,6 +24,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		this.setUnlocalizedName("pe_alchemy_chest");
 		this.setBlockBounds(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
 		this.setHardness(10.0f);
+		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 	
 	@Override
@@ -47,7 +48,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	@Override
 	public int getRenderType()
 	{
-		return Constants.CHEST_RENDER_ID;
+		return 2;
 	}
 	
 	@Override

@@ -58,7 +58,7 @@ public class GemArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGo
 				int z = (int) Math.floor(player.posZ);
 				BlockPos pos = new BlockPos(x, y, z);
 
-				Block b = world.getBlockState(pos.offsetDown()).getBlock();
+				Block b = world.getBlockState(pos.down()).getBlock();
 		
 				if ((b.equals(Blocks.water) || b.equals(Blocks.flowing_water) || b.equals(Blocks.lava) || b.equals(Blocks.flowing_lava)) && world.isAirBlock(pos))
 				{
