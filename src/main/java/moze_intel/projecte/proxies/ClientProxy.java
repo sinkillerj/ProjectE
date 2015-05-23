@@ -17,21 +17,18 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.rendering.ChestItemRenderer;
 import moze_intel.projecte.rendering.ChestRenderer;
-import moze_intel.projecte.rendering.CondenserItemRenderer;
-import moze_intel.projecte.rendering.CondenserMK2ItemRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
 import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
-import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -52,12 +49,13 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderers() 
 	{
 		//Items
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.alchChest), new ChestItemRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.condenser), new CondenserItemRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.condenserMk2), new CondenserMK2ItemRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.dmPedestal), new PedestalItemRenderer());
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.alchChest), 0, new ModelResourceLocation("projecte:alchchest", "inventory"));
+//		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.alchChest), new ChestItemRenderer());
+//		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.condenser), new CondenserItemRenderer());
+//		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.condenserMk2), new CondenserMK2ItemRenderer());
+//		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ObjHandler.dmPedestal), new PedestalItemRenderer());
 
-		//Blocks
+		// Tile Entity
 		ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new CondenserRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new CondenserMK2Renderer());

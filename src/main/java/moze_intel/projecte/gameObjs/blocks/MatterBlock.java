@@ -29,7 +29,7 @@ public class MatterBlock extends Block
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(TIER_PROP, EnumMatterBlockType.DARK_MATTER));
 	}
-	
+
 	@Override
 	public float getBlockHardness(World world, BlockPos pos)
 	{
