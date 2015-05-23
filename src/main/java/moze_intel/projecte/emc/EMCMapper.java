@@ -111,7 +111,6 @@ public final class EMCMapper
 
 	/**
 	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
-	 * @param map
 	 */
 	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {

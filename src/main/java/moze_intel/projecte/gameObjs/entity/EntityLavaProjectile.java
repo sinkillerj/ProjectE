@@ -88,7 +88,7 @@ public class EntityLavaProjectile extends EntityThrowable
 
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			this.worldObj.setBlockState(mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_water.getDefaultState());
+			this.worldObj.setBlockState(mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
 			this.setDead();
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)
