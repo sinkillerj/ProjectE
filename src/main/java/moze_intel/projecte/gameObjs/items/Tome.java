@@ -20,13 +20,6 @@ public class Tome extends ItemPE
 		this.setMaxDamage(0);
 	}
 
-	// TODO 1.8 Gone in 1.8, what is the replacement?
-//	@Override
-//	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-//	{
-//		return false;
-//	}
-
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{

@@ -22,20 +22,20 @@ import java.util.List;
 
 public class MatterBlock extends Block
 {
-	public static final IProperty TIER_PROP = PropertyEnum.create("tier", EnumMatterBlockType.class);
+	public static final IProperty TIER_PROP = PropertyEnum.create("tier", EnumMatterType.class);
 	public MatterBlock() 
 	{
 		super(Material.iron);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(TIER_PROP, EnumMatterBlockType.DARK_MATTER));
+		this.setDefaultState(this.blockState.getBaseState().withProperty(TIER_PROP, EnumMatterType.DARK_MATTER));
 	}
 
 	@Override
 	public float getBlockHardness(World world, BlockPos pos)
 	{
-		EnumMatterBlockType type = ((EnumMatterBlockType) world.getBlockState(pos).getValue(TIER_PROP));
+		EnumMatterType type = ((EnumMatterType) world.getBlockState(pos).getValue(TIER_PROP));
 
-		if (type == EnumMatterBlockType.DARK_MATTER)
+		if (type == EnumMatterType.DARK_MATTER)
 		{
 			return 1000000.0F;
 		}
@@ -49,11 +49,11 @@ public class MatterBlock extends Block
 	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
 	{
 		ItemStack stack = player.getHeldItem();
-		EnumMatterBlockType type = ((EnumMatterBlockType) world.getBlockState(pos).getValue(TIER_PROP));
+		EnumMatterType type = ((EnumMatterType) world.getBlockState(pos).getValue(TIER_PROP));
 
 		if (stack != null)
 		{
-			if (type == EnumMatterBlockType.RED_MATTER)
+			if (type == EnumMatterType.RED_MATTER)
 			{
 				return stack.getItem() == ObjHandler.rmPick;
 			}
@@ -75,13 +75,13 @@ public class MatterBlock extends Block
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return ((EnumMatterBlockType) state.getValue(TIER_PROP)).ordinal();
+		return ((EnumMatterType) state.getValue(TIER_PROP)).ordinal();
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return getDefaultState().withProperty(TIER_PROP, EnumMatterBlockType.values()[meta]);
+		return getDefaultState().withProperty(TIER_PROP, EnumMatterType.values()[meta]);
 	}
 
 	@Override
@@ -100,14 +100,14 @@ public class MatterBlock extends Block
 		}
 	}
 
-	public enum EnumMatterBlockType implements IStringSerializable
+	public enum EnumMatterType implements IStringSerializable
 	{
 		DARK_MATTER("dark_matter"),
 		RED_MATTER("red_matter");
 
 		private final String name;
 
-		EnumMatterBlockType(String name)
+		EnumMatterType(String name)
 		{
 			this.name = name;
 		}

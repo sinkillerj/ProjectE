@@ -106,4 +106,20 @@ public class KleinStar extends ItemPE
 			list.add(new ItemStack(item, 1, i));
 		}
 	}
+
+	public enum EnumKleinTier
+	{
+		EIN("ein"),
+		ZWEI("zwei"),
+		DREI("drei"),
+		VIER("vier"),
+		SPHERE("sphere"),
+		OMEGA("omega");
+
+		public final String name;
+		EnumKleinTier(String name)
+		{
+			this.name = name;
+		}
+	}
 }
