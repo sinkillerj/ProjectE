@@ -65,17 +65,22 @@ public class ClientProxy extends CommonProxy
 				(new StateMap.Builder()).addPropertiesToIgnore(NovaCataclysm.EXPLODE).build()
 		);
 
-		registerItem(ObjHandler.waterOrb);
-		registerItem(ObjHandler.lavaOrb);
-		registerItem(ObjHandler.lootBall);
-		registerItem(ObjHandler.mobRandomizer);
-		registerItem(ObjHandler.lensExplosive);
-
+		// Items that have different properties or textures per meta value.
 		registerCovalenceDust();
 		registerBags();
 		registerFuels();
 		registerMatter();
 		registerKlein();
+		registerPowerStones();
+		registerPowerItems();
+
+		// Normal items that have no variants / meta values. The json models are named "item.pe_<name>" because we register items with unlocal name.
+		// Which was a dumb decision made by somebody way back when. Oh well.
+		registerItem(ObjHandler.waterOrb);
+		registerItem(ObjHandler.lavaOrb);
+		registerItem(ObjHandler.lootBall);
+		registerItem(ObjHandler.mobRandomizer);
+		registerItem(ObjHandler.lensExplosive);
 
 		registerItem(ObjHandler.philosStone);
 		registerItem(ObjHandler.repairTalisman);
@@ -90,6 +95,8 @@ public class ClientProxy extends CommonProxy
 		registerItem(ObjHandler.dRod1);
 		registerItem(ObjHandler.dRod2);
 		registerItem(ObjHandler.dRod3);
+		registerItem(ObjHandler.angelSmite);
+		registerItem(ObjHandler.mercEye);
 
 		registerItem(ObjHandler.dmPick);
 		registerItem(ObjHandler.dmAxe);
@@ -124,22 +131,23 @@ public class ClientProxy extends CommonProxy
 		registerItem(ObjHandler.gemLegs);
 		registerItem(ObjHandler.gemFeet);
 
-		registerBlock(ObjHandler.rmFurnaceOff);
-		registerBlock(ObjHandler.dmFurnaceOff);
-		registerBlock(ObjHandler.novaCatalyst);
-		registerBlock(ObjHandler.novaCataclysm);
+		// Item models for blocks
 		registerBlock(ObjHandler.alchChest);
-		registerBlock(ObjHandler.condenser);
-		registerBlock(ObjHandler.condenserMk2);
-		registerBlock(ObjHandler.transmuteStone);
-		registerBlock(ObjHandler.confuseTorch);
-		registerBlock(ObjHandler.energyCollector);
 		registerBlock(ObjHandler.collectorMK2);
 		registerBlock(ObjHandler.collectorMK3);
+		registerBlock(ObjHandler.condenser);
+		registerBlock(ObjHandler.condenserMk2);
+		registerBlock(ObjHandler.confuseTorch);
+		registerBlock(ObjHandler.dmFurnaceOff);
+		registerBlock(ObjHandler.dmPedestal);
+		registerBlock(ObjHandler.energyCollector);
+		registerBlock(ObjHandler.novaCatalyst);
+		registerBlock(ObjHandler.novaCataclysm);
 		registerBlock(ObjHandler.relay);
 		registerBlock(ObjHandler.relayMK2);
 		registerBlock(ObjHandler.relayMK3);
-		registerBlock(ObjHandler.dmPedestal);
+		registerBlock(ObjHandler.rmFurnaceOff);
+		registerBlock(ObjHandler.transmuteStone);
 	}
 
 	private void registerBlock(Block b)
@@ -204,6 +212,58 @@ public class ClientProxy extends CommonProxy
 			ModelLoader.addVariantName(ObjHandler.kleinStars, "projecte:stars/klein_star_" + e.name);
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.kleinStars, e.ordinal(), new ModelResourceLocation("projecte:stars/klein_star_" + e.name, "inventory"));
 		}
+	}
+
+	private void registerPowerStones()
+	{
+		ModelLoader.addVariantName(ObjHandler.bodyStone, "projecte:body_stone_off", "projecte:body_stone_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation("projecte:body_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation("projecte:body_stone_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.soulStone, "projecte:soul_stone_off", "projecte:soul_stone_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 0, new ModelResourceLocation("projecte:soul_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 1, new ModelResourceLocation("projecte:soul_stone_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.mindStone, "projecte:mind_stone_off", "projecte:mind_stone_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 0, new ModelResourceLocation("projecte:mind_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 1, new ModelResourceLocation("projecte:mind_stone_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.lifeStone, "projecte:life_stone_off", "projecte:life_stone_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 0, new ModelResourceLocation("projecte:life_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation("projecte:life_stone_on", "inventory"));
+	}
+
+	private void registerPowerItems()
+	{
+		ModelLoader.addVariantName(ObjHandler.blackHole, "projecte:bhb_off", "projecte:bhb_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation("projecte:bhb_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation("projecte:bhb_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.harvestGod, "projecte:harvgod_off", "projecte:harvgod_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 0, new ModelResourceLocation("projecte:harvgod_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 1, new ModelResourceLocation("projecte:harvgod_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.eternalDensity, "projecte:goed_off", "projecte:goed_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 0, new ModelResourceLocation("projecte:goed_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 1, new ModelResourceLocation("projecte:goed_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.timeWatch, "projecte:timewatch_off", "projecte:timewatch_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 0, new ModelResourceLocation("projecte:timewatch_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 1, new ModelResourceLocation("projecte:timewatch_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.ignition, "projecte:ignition_off", "projecte:ignition_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 0, new ModelResourceLocation("projecte:ignition_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 1, new ModelResourceLocation("projecte:ignition_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.zero, "projecte:zero_off", "projecte:zero_on");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 0, new ModelResourceLocation("projecte:zero_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 1, new ModelResourceLocation("projecte:zero_on", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.swrg, "projecte:swrg_off", "projecte:swrg_fly", "projecte:swrg_repel", "projecte:swrg_both");
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 0, new ModelResourceLocation("projecte:swrg_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation("projecte:swrg_fly", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation("projecte:swrg_repel", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation("projecte:swrg_both", "inventory"));
 	}
 
 	@Override
