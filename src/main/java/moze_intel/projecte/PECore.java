@@ -93,17 +93,18 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
-		
-		proxy.registerClientOnlyEvents();
-		proxy.registerRenderers();
-
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
+
+		proxy.registerClientOnlyEvents();
+		proxy.registerModels();
+
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
+		proxy.registerRenderers();
 		proxy.registerKeyBinds();
 		AchievementHandler.init();
 	}
