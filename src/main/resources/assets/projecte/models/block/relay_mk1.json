@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "projecte:blocks/relays/top_1",
+    "front": "projecte:blocks/relays/front",
+    "side": "projecte:blocks/relays/other"
+  }
+}

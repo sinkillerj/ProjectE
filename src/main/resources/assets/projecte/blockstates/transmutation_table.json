@@ -1,0 +1,5 @@
+{
+  "variants" : {
+    "normal" : { "model" : "projecte:transmutation_table" }
+  }
+}

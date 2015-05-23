@@ -2,13 +2,14 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class NovaCataclysm extends NovaCatalyst
+public class NovaCataclysm extends BlockTNT
 {
 	public NovaCataclysm()
 	{

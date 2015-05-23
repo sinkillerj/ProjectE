@@ -29,6 +29,12 @@ public abstract class BlockDirection extends BlockContainer
 	}
 
 	@Override
+	public int getRenderType()
+	{
+		return 3;
+	}
+
+	@Override
 	public BlockState createBlockState()
 	{
 		return new BlockState(this, FACING);

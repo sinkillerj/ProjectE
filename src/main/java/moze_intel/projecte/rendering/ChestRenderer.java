@@ -1,6 +1,7 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,10 +28,9 @@ public class ChestRenderer extends TileEntitySpecialRenderer
 		
 		AlchChestTile chestTile = (AlchChestTile) tile;
 		EnumFacing direction = null;
-		// TODO 1.8 write and read from blockstate
 		if (chestTile.getWorld() != null)
 		{
-			direction = chestTile.getOrientation();
+			direction = ((EnumFacing) chestTile.getWorld().getBlockState(chestTile.getPos()).getValue(AlchemicalChest.FACING));
 		}
 		
 		this.bindTexture(texture);

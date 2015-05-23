@@ -1,0 +1,6 @@
+{
+  "parent": "block/torch",
+  "textures": {
+    "torch": "projecte:blocks/interdiction_torch"
+  }
+}

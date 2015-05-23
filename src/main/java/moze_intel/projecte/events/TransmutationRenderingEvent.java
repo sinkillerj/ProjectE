@@ -7,6 +7,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +24,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -165,13 +165,13 @@ public class TransmutationRenderingEvent
 	
 	private void drawAll()
 	{
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableCull();
+		GlStateManager.disableLighting();
+		GlStateManager.depthMask(false);
 
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 0.35f);
 		
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer r = tessellator.getWorldRenderer();
@@ -231,11 +231,11 @@ public class TransmutationRenderingEvent
 			tessellator.draw();
 		}
 
-		GL11.glDepthMask(true);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.depthMask(true);
+		GlStateManager.enableCull();
+		GlStateManager.enableLighting();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 	
 	private void addBlockToRenderList(World world, IBlockState current, BlockPos pos)

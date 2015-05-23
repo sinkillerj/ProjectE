@@ -43,7 +43,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 			this.setLightLevel(0.875F);
 		}
 	}
-	
+
 	@Override
 	public float getBlockHardness(World world, BlockPos pos)
 	{

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "projecte:dm_furnace_lit" },
+    "facing=south": { "model": "projecte:dm_furnace_lit", "y": 180 },
+    "facing=west":  { "model": "projecte:dm_furnace_lit", "y": 270 },
+    "facing=east":  { "model": "projecte:dm_furnace_lit", "y": 90 }
+  }
+}

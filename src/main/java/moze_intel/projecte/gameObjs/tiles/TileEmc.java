@@ -5,9 +5,12 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePlayerListBox
 {
@@ -23,7 +26,13 @@ public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePla
 	{
 		this.maxAmount = maxAmount;
 	}
-	
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState state, IBlockState newState)
+	{
+		return state.getBlock() != newState.getBlock();
+	}
+
 	@Override
 	public void setEmc(double value) 
 	{

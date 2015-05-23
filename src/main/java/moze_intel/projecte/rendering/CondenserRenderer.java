@@ -1,6 +1,7 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,10 +28,9 @@ public class CondenserRenderer extends TileEntitySpecialRenderer
 		
 		CondenserTile condenser = (CondenserTile) tile;
 		EnumFacing direction = null;
-		// TODO 1.8 write and read from blockstate
 		if (condenser.getWorld() != null)
 		{
-			direction = condenser.getOrientation();
+			direction = ((EnumFacing) condenser.getWorld().getBlockState(condenser.getPos()).getValue(Condenser.FACING));
 		}
 
 		this.bindTexture(texture);

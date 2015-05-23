@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "projecte:blocks/collectors/top_1",
+    "front": "projecte:blocks/collectors/front",
+    "side": "projecte:blocks/collectors/other"
+  }
+}
