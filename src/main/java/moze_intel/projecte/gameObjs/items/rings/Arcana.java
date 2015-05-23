@@ -48,16 +48,19 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		setContainerItem(this);
 	}
 	
+	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
 		return false;
 	}
-	
+
+	@Override
 	public byte getMode(ItemStack stack)
 	{
 		return (byte)stack.getItemDamage();
 	}
-	
+
+	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		stack.setItemDamage((stack.getItemDamage() + 1) % 4);
@@ -101,7 +104,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 			}
 		}
 	}
-	
+
+	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
 		if(stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound());
@@ -110,13 +114,15 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		
 		tick(stack, world, (EntityPlayerMP)entity);
 	}
-	
+
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public BaubleType getBaubleType(ItemStack stack)
 	{
 		return BaubleType.RING;
 	}
 
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase entity)
 	{
@@ -127,41 +133,48 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		tick(stack, entity.worldObj, (EntityPlayerMP)entity);
 	}
 
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public void onEquipped(ItemStack stack, EntityLivingBase player)
 	{
 		
 	}
 
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public void onUnequipped(ItemStack stack, EntityLivingBase player)
 	{
 		
 	}
 
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public boolean canEquip(ItemStack stack, EntityLivingBase player)
 	{
 		return true;
 	}
 
+	@Override
 	@Optional.Method(modid = "Baubles")
 	public boolean canUnequip(ItemStack stack, EntityLivingBase player)
 	{
 		return true;
 	}
-	
+
+	@Override
 	public IIcon getIcon(ItemStack stack, int pass)
 	{
 		return getIconIndex(stack);
 	}
-	
+
+	@Override
 	public IIcon getIconIndex(ItemStack stack)
 	{
 		boolean active = (stack.hasTagCompound() ? stack.getTagCompound().getBoolean("Active") : false);
 		return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
 	}
-	
+
+	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		for(int i = 0; i < 4; i++)
@@ -176,7 +189,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		
 		itemIcon = icons[0];
 	}
-	
+
+	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b)
 	{
 		if(stack.hasTagCompound())
@@ -191,7 +205,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 			}
 		}
 	}
-	
+
+	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(!world.isRemote)
@@ -203,7 +218,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		
 		return stack;
 	}
-	
+
+	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player) // GIANT FIRE ROW OF DEATH
 	{
 		World world = player.worldObj;
@@ -235,7 +251,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 				break;
 		}
 	}
-	
+
+	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
 	{
 		World world = player.worldObj;

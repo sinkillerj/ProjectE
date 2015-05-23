@@ -29,6 +29,7 @@ public class EntityLightningProjectile extends EntityThrowable
 		this.ring = ring;
 	}
 	
+	@Override
 	protected void onImpact(MovingObjectPosition mop)
 	{
 		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)

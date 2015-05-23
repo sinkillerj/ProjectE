@@ -13,7 +13,8 @@ public class LightningProjectile extends ItemPE
 		setUnlocalizedName("wind_projectile");
 		setMaxStackSize(1);
 	}
-	
+
+	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon(getTexture("entities", "lightning"));

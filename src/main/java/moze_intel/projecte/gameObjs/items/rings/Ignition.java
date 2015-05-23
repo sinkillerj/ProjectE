@@ -192,6 +192,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		return list;
 	}
 	
+	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
 	{
 		World world = player.worldObj;

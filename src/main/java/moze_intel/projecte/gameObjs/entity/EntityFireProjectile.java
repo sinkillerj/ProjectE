@@ -18,7 +18,8 @@ public class EntityFireProjectile extends EntityThrowable
 	{
 		super(world, player);
 	}
-	
+
+	@Override
 	protected void onImpact(MovingObjectPosition mop)
 	{
 		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)

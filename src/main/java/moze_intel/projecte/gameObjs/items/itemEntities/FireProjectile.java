@@ -13,7 +13,8 @@ public class FireProjectile extends ItemPE
 		setUnlocalizedName("fire_projectile");
 		setMaxStackSize(1);
 	}
-	
+
+	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon(getTexture("entities", "fireball"));
