@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.AchievementHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,5 +33,16 @@ public class RedPick extends DarkPick
 		{
 			player.addStat(AchievementHandler.RM_PICK, 1);
 		}
+	}
+
+	@Override
+	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	{
+		if ((block == ObjHandler.matterBlock && metadata == 1) || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
+		{
+			return 1200000.0F;
+		}
+		
+		return super.getDigSpeed(stack, block, metadata);
 	}
 }
