@@ -24,7 +24,6 @@ public final class WorldTransmutations
 
 	static
 	{
-		// TODO 1.8 States should exist when this class initializes - this message is here to be seen if it crashes
 		register(Blocks.stone.getDefaultState(), Blocks.cobblestone.getDefaultState(), Blocks.grass.getDefaultState());
 		register(Blocks.cobblestone.getDefaultState(), Blocks.stone.getDefaultState(), Blocks.grass.getDefaultState());
 		register(Blocks.grass.getDefaultState(), Blocks.sand.getDefaultState(), Blocks.cobblestone.getDefaultState());
@@ -134,7 +133,7 @@ public final class WorldTransmutations
 	{
 		if (MAP.containsKey(current))
 		{
-			return isSneaking ? MAP.get(current).getLeft() : MAP.get(current).getRight();
+			return isSneaking ? MAP.get(current).getRight() : MAP.get(current).getLeft();
 		}
 
 		return null;
