@@ -11,34 +11,39 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 // TODO 1.8 EnumFacing
-public class ClientOrientationSyncPKT implements IMessage, IMessageHandler<ClientOrientationSyncPKT, IMessage> 
+public class OrientationSyncPKT implements IMessage, IMessageHandler<OrientationSyncPKT, IMessage>
 {
 	private int orientation;
 	private BlockPos pos;
 	
-	public ClientOrientationSyncPKT() {}
+	public OrientationSyncPKT() {}
 	
-	public ClientOrientationSyncPKT(TileEntity tile, int orientation) 
+	public OrientationSyncPKT(TileEntity tile, int orientation)
 	{
 		this.orientation = orientation;
 		this.pos = tile.getPos();
 	}
 
 	@Override
-	public IMessage onMessage(ClientOrientationSyncPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(final OrientationSyncPKT pkt, MessageContext ctx)
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
-		
-		if (tile instanceof TileEmcDirection)
-		{
-			((TileEmcDirection) tile).setOrientation(pkt.orientation);
-		}
-		else
-		{
-			PELogger.logFatal("Couldn't find Tile Entity in passed in packet! Please report to dev!");
-			PELogger.logFatal("Coordinates: " + pos.toString());
-		}
-		
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+				if (tile instanceof TileEmcDirection)
+				{
+					((TileEmcDirection) tile).setOrientation(pkt.orientation);
+				}
+				else
+				{
+					PELogger.logFatal("Couldn't find Tile Entity in passed in packet! Please report to dev!");
+					PELogger.logFatal("Coordinates: " + pos.toString());
+				}
+			}
+		});
+
 		return null;
 	}
 

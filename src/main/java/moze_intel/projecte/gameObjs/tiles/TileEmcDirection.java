@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
+import moze_intel.projecte.network.packets.OrientationSyncPKT;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -41,7 +41,7 @@ public abstract class TileEmcDirection extends TileEmc
 		
 		if (sendPacket)
 		{
-			PacketHandler.sendToAll(new ClientOrientationSyncPKT(this, direction.getIndex()));
+			PacketHandler.sendToAll(new OrientationSyncPKT(this, direction.getIndex()));
 		}
 	}
 	

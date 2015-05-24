@@ -11,16 +11,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSyncPedestalPKT, IMessage>
+public class SyncPedestalPKT implements IMessage, IMessageHandler<SyncPedestalPKT, IMessage>
 {
 
 	private BlockPos pos;
 	private boolean isActive;
 	private ItemStack itemStack;
 
-	public ClientSyncPedestalPKT() {}
+	public SyncPedestalPKT() {}
 
-	public ClientSyncPedestalPKT(DMPedestalTile tile)
+	public SyncPedestalPKT(DMPedestalTile tile)
 	{
 		pos = tile.getPos();
 		isActive = tile.getActive();
@@ -44,17 +44,22 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncPedestalPKT message, MessageContext ctx)
+	public IMessage onMessage(final SyncPedestalPKT message, MessageContext ctx)
 	{
-		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
 
-		if (te instanceof DMPedestalTile)
-		{
-			DMPedestalTile pedestal = ((DMPedestalTile) te);
-			pedestal.setActive(message.isActive);
-			pedestal.setInventorySlotContents(0, message.itemStack);
-			pedestal.checkGhostItem();
-		}
+				if (te instanceof DMPedestalTile)
+				{
+					DMPedestalTile pedestal = ((DMPedestalTile) te);
+					pedestal.setActive(message.isActive);
+					pedestal.setInventorySlotContents(0, message.itemStack);
+					pedestal.checkGhostItem();
+				}
+			}
+		});
 
 		return null;
 	}

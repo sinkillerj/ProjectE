@@ -1,11 +1,11 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class UpdateGemModePKT implements IMessage, IMessageHandler<UpdateGemModePKT, IMessage>
 {
@@ -20,15 +20,20 @@ public class UpdateGemModePKT implements IMessage, IMessageHandler<UpdateGemMode
 	}
 	
 	@Override
-	public IMessage onMessage(UpdateGemModePKT pkt, MessageContext ctx) 
+	public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx)
 	{
-		ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
-		
-		if (stack != null && stack.getItem() == ObjHandler.eternalDensity)
-		{
-			stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
-		}
-		
+		ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
+
+				if (stack != null && stack.getItem() == ObjHandler.eternalDensity)
+				{
+					stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
+				}
+			}
+		});
+
 		return null;
 	}
 

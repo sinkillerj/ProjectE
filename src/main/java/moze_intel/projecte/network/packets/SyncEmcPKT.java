@@ -13,21 +13,21 @@ import moze_intel.projecte.utils.PELogger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmcPKT, IMessage>
+public class SyncEmcPKT implements IMessage, IMessageHandler<SyncEmcPKT, IMessage>
 {
 	private int packetNum;
 	private Object[] data;
 
-	public ClientSyncEmcPKT() {}
+	public SyncEmcPKT() {}
 
-	public ClientSyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
+	public SyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
 	{
 		this.packetNum = packetNum;
 		data = arrayList.toArray();
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncEmcPKT pkt, MessageContext ctx)
+	public IMessage onMessage(SyncEmcPKT pkt, MessageContext ctx)
 	{
 		if (pkt.packetNum == 0)
 		{

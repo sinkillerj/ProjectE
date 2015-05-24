@@ -26,20 +26,25 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 	}
 	
 	@Override
-	public IMessage onMessage(CollectorSyncPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(final CollectorSyncPKT pkt, MessageContext ctx)
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in Collector sync packet! Please report to dev!");
-		}
-		else
-		{
-			CollectorMK1Tile collector = (CollectorMK1Tile) tile;
-			collector.displayEmc = pkt.displayEmc;
-			collector.displayKleinCharge = pkt.displayKleinCharge;
-		}
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+				if (tile == null)
+				{
+					PELogger.logFatal("NULL tile entity reference in Collector sync packet! Please report to dev!");
+				}
+				else
+				{
+					CollectorMK1Tile collector = (CollectorMK1Tile) tile;
+					collector.displayEmc = pkt.displayEmc;
+					collector.displayKleinCharge = pkt.displayKleinCharge;
+				}
+			}
+		});
 		
 		return null;
 	}

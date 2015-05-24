@@ -7,22 +7,21 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.playerData.Transmutation;
 
-public class ClientKnowledgeClearPKT implements IMessage, IMessageHandler<ClientKnowledgeClearPKT, IMessage> 
+public class KnowledgeClearPKT implements IMessage, IMessageHandler<KnowledgeClearPKT, IMessage>
 {
 	private String username;
 	
-	public ClientKnowledgeClearPKT() {}
+	public KnowledgeClearPKT() {}
 	
-	public ClientKnowledgeClearPKT(String username) 
+	public KnowledgeClearPKT(String username)
 	{
 		this.username = username;
 	}
 	
 	@Override
-	public IMessage onMessage(ClientKnowledgeClearPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(KnowledgeClearPKT pkt, MessageContext ctx)
 	{
 		Transmutation.clearKnowledge(pkt.username);
-		
 		return null;
 	}
 

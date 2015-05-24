@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
+import moze_intel.projecte.network.packets.SyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
@@ -464,7 +464,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 		if (!this.worldObj.isRemote)
 		{
 			Transmutation.setStoredEmc(player.getCommandSenderName(), this.getStoredEmc());
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) this.player);
+			PacketHandler.sendTo(new SyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) this.player);
 		}
 		
 		this.player = null;

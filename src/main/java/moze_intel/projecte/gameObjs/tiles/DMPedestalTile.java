@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -316,7 +316,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketHandler.getMCPacket(new ClientSyncPedestalPKT(this));
+		return PacketHandler.getMCPacket(new SyncPedestalPKT(this));
 	}
 
 	public boolean getActive()

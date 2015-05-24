@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientKnowledgeClearPKT;
+import moze_intel.projecte.network.packets.KnowledgeClearPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.ICommandSender;
@@ -32,7 +32,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 			if (sender instanceof EntityPlayerMP)
 			{
 				Transmutation.clearKnowledge(sender.getCommandSenderName());
-				PacketHandler.sendTo(new ClientKnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
+				PacketHandler.sendTo(new KnowledgeClearPKT(sender.getCommandSenderName()), (EntityPlayerMP) sender);
 				sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", sender.getCommandSenderName()));
 			}
 			else
@@ -49,7 +49,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 				if (player.getCommandSenderName().equalsIgnoreCase(params[0]))
 				{
 					Transmutation.clearKnowledge(player.getCommandSenderName());
-					PacketHandler.sendTo(new ClientKnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
+					PacketHandler.sendTo(new KnowledgeClearPKT(player.getCommandSenderName()), (EntityPlayerMP) player);
 					sendSuccess(sender, new ChatComponentTranslation("pe.command.clearknowledge.success", player.getCommandSenderName()));
 					
 					if (!player.getCommandSenderName().equals(sender.getCommandSenderName()))

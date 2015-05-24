@@ -28,21 +28,26 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 	}
 	
 	@Override
-	public IMessage onMessage(RelaySyncPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(final RelaySyncPKT pkt, MessageContext ctx)
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
-		}
-		else
-		{
-			RelayMK1Tile relay = (RelayMK1Tile) tile;
-			relay.displayEmc = pkt.displayEmc;
-			relay.displayKleinEmc = pkt.displayKleinEmc;
-			relay.displayRawEmc = pkt.displayRawEmc;
-		}
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+				if (tile == null)
+				{
+					PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
+				}
+				else
+				{
+					RelayMK1Tile relay = (RelayMK1Tile) tile;
+					relay.displayEmc = pkt.displayEmc;
+					relay.displayKleinEmc = pkt.displayKleinEmc;
+					relay.displayRawEmc = pkt.displayRawEmc;
+				}
+			}
+		});
 		
 		return null;
 	}

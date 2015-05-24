@@ -37,9 +37,14 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	}
 
 	@Override
-	public IMessage onMessage(ParticlePKT message, MessageContext ctx) 
+	public IMessage onMessage(final ParticlePKT message, MessageContext ctx)
 	{
-		Minecraft.getMinecraft().theWorld.spawnParticle(message.particleName, message.x, message.y, message.z, message.velX, message.velY, message.velZ);
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				Minecraft.getMinecraft().theWorld.spawnParticle(message.particleName, message.x, message.y, message.z, message.velX, message.velY, message.velZ);
+			}
+		});
 		return null;
 	}
 

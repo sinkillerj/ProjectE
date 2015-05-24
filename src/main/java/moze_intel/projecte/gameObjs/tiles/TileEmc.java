@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientTableSyncPKT;
+import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.state.IBlockState;
@@ -129,7 +129,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePla
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this));
+			PacketHandler.sendToAll(new TileEmcSyncPKT(emc, this));
 		}
 	}
 }

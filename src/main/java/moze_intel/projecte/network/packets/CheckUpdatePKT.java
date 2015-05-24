@@ -6,10 +6,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 
-public class ClientCheckUpdatePKT implements IMessage, IMessageHandler<ClientCheckUpdatePKT, IMessage> 
+public class CheckUpdatePKT implements IMessage, IMessageHandler<CheckUpdatePKT, IMessage>
 {
 	@Override
-	public IMessage onMessage(ClientCheckUpdatePKT message, MessageContext ctx)
+	public IMessage onMessage(CheckUpdatePKT message, MessageContext ctx)
 	{
 		if (!ThreadCheckUpdate.hasRunClient())
 		{

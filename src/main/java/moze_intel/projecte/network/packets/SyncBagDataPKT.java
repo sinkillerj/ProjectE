@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -8,23 +9,27 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyncBagDataPKT, IMessage>
+public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT, IMessage>
 {
 	private NBTTagCompound nbt;
 	
-	public ClientSyncBagDataPKT() {}
+	public SyncBagDataPKT() {}
 	
-	public ClientSyncBagDataPKT(NBTTagCompound nbt) 
+	public SyncBagDataPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
+	public IMessage onMessage(final SyncBagDataPKT message, MessageContext ctx)
 	{
-		AlchemicalBags.clear();
-		
-		AlchemicalBags.loadFromNBT(message.nbt);
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				AlchemicalBags.clear();
+				AlchemicalBags.loadFromNBT(message.nbt);
+			}
+		});
 		
 		return null;
 	}

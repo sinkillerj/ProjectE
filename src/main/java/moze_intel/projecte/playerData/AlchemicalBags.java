@@ -2,7 +2,7 @@ package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Maps;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
+import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -84,7 +83,7 @@ public final class AlchemicalBags
 	
 	public static void sync(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new SyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
 	}
 	
 	public static void clear()
