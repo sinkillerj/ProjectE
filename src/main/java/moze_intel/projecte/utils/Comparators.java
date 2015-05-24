@@ -41,23 +41,30 @@ public final class Comparators
 			}
 			if (o1 == null)
 			{
-				return Integer.MAX_VALUE;
+				return 1;
 			}
 			if (o2 == null)
 			{
-				return Integer.MIN_VALUE;
+				return -1;
 			}
 			if (ItemHelper.areItemStacksEqualIgnoreNBT(o1, o2))
 			{
-				return 0;
-			}
-			if (o1.getItem() == o2.getItem())
-			{
+				// Same item id, same meta
 				return o1.stackSize - o2.stackSize;
 			}
-			else
+			else // Different id or different meta
 			{
-				return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
+				// Different id
+				if (o1.getItem() != o2.getItem())
+				{
+					return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
+				}
+				else
+				{
+					// Different meta
+					return o1.getItemDamage() - o2.getItemDamage();
+				}
+
 			}
 		}
 	};
