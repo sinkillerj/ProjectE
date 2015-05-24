@@ -27,6 +27,7 @@ import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -57,6 +58,7 @@ public class PECore
 
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
+	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 	@Instance(MODID)
 	public static PECore instance;

@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class PlayerEvents
@@ -55,8 +54,6 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
-
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 
@@ -95,7 +92,7 @@ public class PlayerEvents
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagWithBlackHole(player, player.inventory.mainInventory);
 			
 			if (bag == null)
 			{

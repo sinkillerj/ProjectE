@@ -83,6 +83,7 @@ public class ClientProxy extends CommonProxy
 				ObjHandler.condenserMk2,
 				(new StateMap.Builder()).addPropertiesToIgnore(CondenserMK2.FACING).build()
 		);
+
 		// Items that have different properties or textures per meta value.
 		registerCovalenceDust();
 		registerBags();

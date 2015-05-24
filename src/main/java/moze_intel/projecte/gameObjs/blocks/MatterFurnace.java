@@ -77,6 +77,8 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
+		// isUpdating is true if this breakBlock is being called as a result of updateFurnaceBlockState
+		// It prevents items from dropping out of the furnace when switching on/off state
 		if (!isUpdating)
 		{
 			super.breakBlock(world, pos, state);

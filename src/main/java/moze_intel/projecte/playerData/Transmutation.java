@@ -1,5 +1,7 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
@@ -21,10 +23,10 @@ import java.util.Map.Entry;
 
 public final class Transmutation 
 {
-	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap<String, LinkedList<ItemStack>>();
-	private static final LinkedHashMap<String, Double> EMC_STORAGE = new LinkedHashMap<String, Double>();
-	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
-	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = new LinkedList<ItemStack>();
+	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = Maps.newLinkedHashMap();
+	private static final LinkedHashMap<String, Double> EMC_STORAGE = Maps.newLinkedHashMap();
+	private static final LinkedList<String> TOME_KNOWLEDGE = Lists.newLinkedList();
+	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newLinkedList();
 	
 	public static void loadCompleteKnowledge()
 	{

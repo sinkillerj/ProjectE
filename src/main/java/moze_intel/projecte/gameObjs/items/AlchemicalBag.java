@@ -197,7 +197,7 @@ public class AlchemicalBag extends ItemPE
 			list.add(new ItemStack(item, 1, i));
 	}
 
-	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	public static ItemStack getFirstBagWithBlackHole(EntityPlayer player, ItemStack[] inventory)
 	{
 		for (ItemStack stack : inventory)
 		{

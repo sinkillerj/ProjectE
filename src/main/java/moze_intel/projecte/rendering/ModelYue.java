@@ -1,4 +1,4 @@
-package moze_intel.projecte.events;
+package moze_intel.projecte.rendering;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.Tessellator;

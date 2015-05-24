@@ -1,5 +1,7 @@
 package moze_intel.projecte.events;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.rendering.ModelYue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -17,7 +19,8 @@ public class PlayerRender
 	@SubscribeEvent
 	public void playerRender(RenderPlayerEvent.Specials.Pre evt)
 	{
-		if(evt.entityPlayer.getUniqueID().toString().equals("5f86012c-ca4b-451a-989c-8fab167af647"))
+		if(evt.entityPlayer.getUniqueID().toString().equals("5f86012c-ca4b-451a-989c-8fab167af647")
+				|| PECore.DEV_ENVIRONMENT)
 		{
 			GlStateManager.pushMatrix();
 			// evt.renderermodelBipedMain.bipedBody.postRender(0.0625f);

@@ -39,6 +39,7 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -47,6 +48,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -58,17 +60,19 @@ import java.util.Set;
  */
 public final class WorldHelper
 {
+	@SuppressWarnings("unchecked")
 	public static final ImmutableList<? extends Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
 			EntityWolf.class, EntityHorse.class, EntityRabbit.class
 	);
+	@SuppressWarnings("unchecked")
 	public static final ImmutableList<? extends Class<? extends EntityLiving>> mobs = ImmutableList.of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
-			EntitySlime.class, EntityWitch.class
+			EntitySlime.class, EntityWitch.class, EntityRabbit.class
 	);
 
 	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
@@ -201,6 +205,26 @@ public final class WorldHelper
 			{
 				ent.setCurrentItemOrArmor(0, new ItemStack(Items.golden_sword));
 			}
+			else if (ent instanceof EntitySheep)
+			{
+				((EntitySheep) ent).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
+			}
+			else if (ent instanceof EntityVillager)
+			{
+				VillagerRegistry.setRandomProfession(((EntityVillager) ent), world.rand);
+			}
+			else if (ent instanceof EntityRabbit)
+			{
+				((EntityRabbit) ent).setRabbitType(world.rand.nextInt(6));
+			}
+			else if (ent instanceof EntityHorse)
+			{
+				((EntityHorse) ent).setHorseType(MathUtils.randomIntInRange(0, 2));
+				if (((EntityHorse) ent).getHorseType() == 0)
+				{
+					((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
+				}
+			}
 
 			return ent;
 		}
@@ -223,15 +247,20 @@ public final class WorldHelper
 		}
 		else if (mobs.contains(entClass))
 		{
-			return getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			Entity ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			if (ent instanceof EntityRabbit)
+			{
+				((EntityRabbit) ent).setRabbitType(99);
+			}
+			return ent;
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
-			return new EntitySlime(world);
+			return getNewEntityInstance(EntitySlime.class, world);
 		}
 		else
 		{
-			return new EntitySheep(world);
+			return getNewEntityInstance(EntitySheep.class, world);
 		}
 	}
 
