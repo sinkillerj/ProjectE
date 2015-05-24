@@ -28,7 +28,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer
 		
 		AlchChestTile chestTile = (AlchChestTile) tile;
 		EnumFacing direction = null;
-		if (chestTile.getWorld() != null)
+		if (chestTile.getWorld() != null && !chestTile.isInvalid())
 		{
 			direction = ((EnumFacing) chestTile.getWorld().getBlockState(chestTile.getPos()).getValue(AlchemicalChest.FACING));
 		}

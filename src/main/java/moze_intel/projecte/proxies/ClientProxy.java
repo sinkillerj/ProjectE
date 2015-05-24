@@ -6,12 +6,16 @@ import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
 import moze_intel.projecte.events.TransmutationRenderingEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
+import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
 import moze_intel.projecte.gameObjs.blocks.FuelBlock;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
 import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
@@ -65,6 +69,20 @@ public class ClientProxy extends CommonProxy
 				(new StateMap.Builder()).addPropertiesToIgnore(NovaCataclysm.EXPLODE).build()
 		);
 
+		ModelLoader.setCustomStateMapper(
+				ObjHandler.alchChest,
+				(new StateMap.Builder()).addPropertiesToIgnore(AlchemicalChest.FACING).build()
+		);
+
+		ModelLoader.setCustomStateMapper(
+				ObjHandler.condenser,
+				(new StateMap.Builder()).addPropertiesToIgnore(Condenser.FACING).build()
+		);
+
+		ModelLoader.setCustomStateMapper(
+				ObjHandler.condenserMk2,
+				(new StateMap.Builder()).addPropertiesToIgnore(CondenserMK2.FACING).build()
+		);
 		// Items that have different properties or textures per meta value.
 		registerCovalenceDust();
 		registerBags();
@@ -280,6 +298,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lavaOrb, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.mobRandomizer, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lensExplosive, mc.getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLootBall.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lootBall, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer(mc.getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer(mc.getRenderManager()));
 	}

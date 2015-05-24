@@ -4,6 +4,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -25,6 +26,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
 	public double centeredX, centeredY, centeredZ;
+	private EntityItem ghost;
+
 
 	public DMPedestalTile()
 	{
@@ -42,6 +45,11 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		{
 			effectBounds = new AxisAlignedBB(centeredX - 4.5, centeredY - 4.5, centeredZ - 4.5,
 					centeredX + 4.5, centeredY + 4.5, centeredZ + 4.5);
+		}
+
+		if (worldObj.isRemote)
+		{
+			checkGhostItem();
 		}
 
 		if (getActive())
@@ -67,6 +75,39 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			{
 				setActive(false);
 			}
+		}
+	}
+
+	public void checkGhostItem()
+	{
+		if (!worldObj.isRemote)
+		{
+			return;
+		}
+		if (inventory[0] == null && ghost != null)
+		{
+			ghost.setDead();
+			ghost = null;
+		}
+		if (inventory[0] != null && ghost == null)
+		{
+			ghost = new EntityItem(worldObj, pos.getX() + 0.5, pos.getY() + 0.751, pos.getZ() + 0.5, inventory[0].copy());
+			ghost.setNoDespawn();
+			ghost.setInfinitePickupDelay();
+			ghost.motionX = 0;
+			ghost.motionY = 0;
+			ghost.motionZ = 0;
+			worldObj.spawnEntityInWorld(ghost);
+		}
+	}
+
+	@Override
+	public void invalidate()
+	{
+		if (ghost != null && worldObj.isRemote)
+		{
+			ghost.setDead();
+			ghost = null;
 		}
 	}
 
@@ -203,7 +244,6 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		{
 			itemStack.stackSize = this.getInventoryStackLimit();
 		}
-
 		this.markDirty();
 	}
 

@@ -1,0 +1,11 @@
+Welcome to ProjectE version 2.0.0 for Minecraft 1.8!
+
+This is mainly a straight port.
+
+Known issues:
+- Alchemical Chest, Condenser, and Condenser MK2 render as a vanilla chest in the inventory
+- Pedestal does not update clientside on login / chunk reload until it is opened. Seems to be a 1.8 change.
+- Items that continually consume emc (swrg, ignition, etc.) will repeatedly play the "item switchout" animation.
+This is 1.8 being overly eager to play the animation, and there's nothing I can do
+- Lootball renders a bit too low in the ground
+- Please report all crashes or undocumented changes!

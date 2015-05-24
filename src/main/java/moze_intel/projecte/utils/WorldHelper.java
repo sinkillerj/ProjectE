@@ -31,6 +31,7 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
@@ -61,7 +62,7 @@ public final class WorldHelper
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
-			EntityWolf.class, EntityHorse.class
+			EntityWolf.class, EntityHorse.class, EntityRabbit.class
 	);
 	public static final ImmutableList<? extends Class<? extends EntityLiving>> mobs = ImmutableList.of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,

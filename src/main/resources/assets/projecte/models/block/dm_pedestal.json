@@ -1,7 +1,8 @@
 {
   "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "textures": {
-    "pedestal" : "projecte:models/pedestaltexmap"
+    "pedestal" : "projecte:blocks/dm",
+    "particle" : "projecte:blocks/dm"
   },
   "elements": [
     {
@@ -18,7 +19,7 @@
       }
     },
     {
-      "name": "Cube",
+      "name": "Post",
       "from": [ 6.0, 2.0, 6.0 ],
       "to": [ 10.0, 9.0, 10.0 ],
       "faces": {
@@ -31,7 +32,7 @@
       }
     },
     {
-      "name": "Cube",
+      "name": "Top",
       "from": [ 5.0, 9.0, 5.0 ],
       "to": [ 11.0, 10.0, 11.0 ],
       "faces": {

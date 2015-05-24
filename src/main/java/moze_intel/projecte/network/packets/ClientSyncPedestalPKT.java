@@ -53,6 +53,7 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 			DMPedestalTile pedestal = ((DMPedestalTile) te);
 			pedestal.setActive(message.isActive);
 			pedestal.setInventorySlotContents(0, message.itemStack);
+			pedestal.checkGhostItem();
 		}
 
 		return null;
