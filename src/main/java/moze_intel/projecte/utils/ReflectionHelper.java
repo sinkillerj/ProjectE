@@ -15,7 +15,7 @@ public final class ReflectionHelper
 	private static final String[] arrowInGroundNames = new String[] {"inGround", "i", "field_70254_i"};
 	private static final String[] entityFireImmuneNames = new String[] {"isImmuneToFire", "ae", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = new String[] {"walkSpeed", "g", "field_75097_g"};
-	private static final String[] explosionSizeNames = new String[] {"explosionSize", "", ""};
+	private static final String[] explosionSizeNames = new String[] {"explosionSize", "i", "field_77280_f"};
 
 	protected static boolean getArrowInGround(EntityArrow instance)
 	{
