@@ -1,9 +1,13 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
@@ -25,11 +29,12 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	{
 		super(name, numcharges, modeDesc);
 	}
-	
+
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, DARKSWORD_BASE_ATTACK);
+		boolean flag = ProjectEConfig.useOldDamage;
+		attackWithCharge(stack, damaged, damager, flag ? DARKSWORD_BASE_ATTACK : 1.0F);
 		return true;
 	}
 
@@ -76,5 +81,21 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
 		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack)
+	{
+		if (ProjectEConfig.useOldDamage)
+		{
+			return super.getAttributeModifiers(stack);
+		}
+
+		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
+
+		Multimap multimap = super.getAttributeModifiers(stack);
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		return multimap;
 	}
 }
