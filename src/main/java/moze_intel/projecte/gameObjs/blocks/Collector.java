@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -108,5 +109,17 @@ public class Collector extends BlockDirection
 			default:
 				return null;
 		}
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return ComparatorHelper.getForCollector(world, x, y, z);
 	}
 }
