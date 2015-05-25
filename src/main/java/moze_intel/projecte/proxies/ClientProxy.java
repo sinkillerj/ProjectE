@@ -1,9 +1,9 @@
 package moze_intel.projecte.proxies;
 
+import com.google.common.collect.Sets;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -30,20 +30,21 @@ import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.Set;
+
 public class ClientProxy extends CommonProxy
-{	
+{
+	@Override
 	public void registerKeyBinds()
 	{
-		for (int i = 0; i < KeyHelper.array.length; i++)
-		{
-			ClientRegistry.registerKeyBinding(KeyHelper.array[i]);
-		}
+		ClientKeyHelper.registerMCBindings();
 	}
 
 	@Override
@@ -74,7 +75,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerClientOnlyEvents() 
 	{
-		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 		FMLCommonHandler.instance().bus().register(new KeyPressEvent());

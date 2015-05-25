@@ -50,7 +50,10 @@ import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.items.TransmutationTablet;
 import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
 import moze_intel.projecte.gameObjs.items.armor.DMArmor;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemChest;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
+import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
+import moze_intel.projecte.gameObjs.items.armor.GemLegs;
 import moze_intel.projecte.gameObjs.items.armor.RMArmor;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemAlchemyChestBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCollectorBlock;
@@ -108,6 +111,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EnumArmorType;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -173,21 +177,21 @@ public class ObjHandler
 	public static Item rmKatar = new RedKatar();
 	public static Item rmStar = new RedStar();
 	
-	public static Item dmHelmet = new DMArmor(0);
-	public static Item dmChest = new DMArmor(1);
-	public static Item dmLegs = new DMArmor(2);
-	public static Item dmFeet = new DMArmor(3);
+	public static Item dmHelmet = new DMArmor(EnumArmorType.HEAD);
+	public static Item dmChest = new DMArmor(EnumArmorType.CHEST);
+	public static Item dmLegs = new DMArmor(EnumArmorType.LEGS);
+	public static Item dmFeet = new DMArmor(EnumArmorType.FEET);
 	
-	public static Item rmHelmet = new RMArmor(0);
-	public static Item rmChest = new RMArmor(1);
-	public static Item rmLegs = new RMArmor(2);
-	public static Item rmFeet = new RMArmor(3);
+	public static Item rmHelmet = new RMArmor(EnumArmorType.HEAD);
+	public static Item rmChest = new RMArmor(EnumArmorType.CHEST);
+	public static Item rmLegs = new RMArmor(EnumArmorType.LEGS);
+	public static Item rmFeet = new RMArmor(EnumArmorType.FEET);
 	
-	public static Item gemHelmet = new GemArmor(0);
-	public static Item gemChest = new GemArmor(1);
-	public static Item gemLegs = new GemArmor(2);
-	public static Item gemFeet = new GemArmor(3);
-	
+	public static Item gemHelmet = new GemHelmet();
+	public static Item gemChest = new GemChest();
+	public static Item gemLegs = new GemLegs();
+	public static Item gemFeet = new GemFeet();
+
 	public static Item ironBand = new IronBand();
 	public static Item blackHole = new BlackHoleBand();
 	public static Item angelSmite = new ArchangelSmite();
