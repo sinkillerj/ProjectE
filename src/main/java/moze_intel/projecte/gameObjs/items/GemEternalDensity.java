@@ -109,7 +109,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		
 		while (ItemPE.getEmc(gem) >= value)
 		{
-			ItemStack remain = ItemHelper.pushStackInInv(inv, target);
+			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
 			
 			if (remain != null)
 			{

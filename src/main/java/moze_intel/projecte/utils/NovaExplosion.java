@@ -135,7 +135,7 @@ public class NovaExplosion extends Explosion
 
 				if (block.getMaterial() != Material.air)
 				{
-					ArrayList<ItemStack> drops = block.getDrops(worldObj, (int) this.explosionX, (int) this.explosionY, (int) this.explosionZ, worldObj.getBlockMetadata((int) this.explosionX, (int) this.explosionY, (int) this.explosionZ), 0);
+					ArrayList<ItemStack> drops = block.getDrops(worldObj, i, j, k, worldObj.getBlockMetadata(i, j, k), 0);
 					if (drops != null && drops.size() > 0)
 						list.addAll(drops);
 
