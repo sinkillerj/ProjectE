@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
@@ -42,7 +43,8 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		boolean flag = ProjectEConfig.useOldDamage;
+		attackWithCharge(stack, damaged, damager, flag ? KATAR_BASE_ATTACK : 1.0F);
 		return true;
 	}
 
@@ -110,6 +112,11 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
+		if (ProjectEConfig.useOldDamage)
+		{
+			return super.getAttributeModifiers(stack);
+		}
+
 		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 

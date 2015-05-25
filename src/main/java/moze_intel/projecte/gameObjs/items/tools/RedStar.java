@@ -54,7 +54,8 @@ public class RedStar extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		boolean flag = ProjectEConfig.useOldDamage;
+		attackWithCharge(stack, damaged, damager, flag ? STAR_BASE_ATTACK : 1.0F);
 		return true;
 	}
 
@@ -131,6 +132,11 @@ public class RedStar extends PEToolBase
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
+		if (ProjectEConfig.useOldDamage)
+		{
+			return super.getAttributeModifiers(stack);
+		}
+
 		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
 		float damage = STAR_BASE_ATTACK + charge;
 

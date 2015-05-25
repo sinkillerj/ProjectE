@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -36,7 +37,8 @@ public class DarkHammer extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		boolean flag = ProjectEConfig.useOldDamage;
+		attackWithCharge(stack, damaged, damager, flag ? HAMMER_BASE_ATTACK : 1.0F);
 		return true;
 	}
 
@@ -61,6 +63,11 @@ public class DarkHammer extends PEToolBase
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
+		if (ProjectEConfig.useOldDamage)
+		{
+			return super.getAttributeModifiers(stack);
+		}
+
 		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
 		float damage = HAMMER_BASE_ATTACK + charge;
 
