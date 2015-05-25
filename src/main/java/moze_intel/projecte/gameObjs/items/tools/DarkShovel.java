@@ -1,6 +1,9 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -46,5 +49,13 @@ public class DarkShovel extends PEToolBase
 			digAOE(stack, world, player, false, 0);
 		}
 		return stack;
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack)
+	{
+		Multimap multimap = super.getAttributeModifiers(stack);
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
+		return multimap;
 	}
 }

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Multimap;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
@@ -9,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
@@ -93,5 +96,13 @@ public class DarkPick extends PEToolBase
 		{
 			player.addStat(AchievementHandler.DM_PICK, 1);
 		}
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack)
+	{
+		Multimap multimap = super.getAttributeModifiers(stack);
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
+		return multimap;
 	}
 }

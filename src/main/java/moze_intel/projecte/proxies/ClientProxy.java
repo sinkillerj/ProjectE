@@ -1,6 +1,5 @@
 package moze_intel.projecte.proxies;
 
-import moze_intel.projecte.events.FovChangeEvent;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -29,7 +28,7 @@ import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
 import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
@@ -46,13 +45,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ClientProxy extends CommonProxy
-{	
+{
+	@Override
 	public void registerKeyBinds()
 	{
-		for (int i = 0; i < KeyHelper.array.length; i++)
-		{
-			ClientRegistry.registerKeyBinding(KeyHelper.array[i]);
-		}
+		ClientKeyHelper.registerMCBindings();
 	}
 
 	@Override
@@ -307,7 +304,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerClientOnlyEvents() 
 	{
-		MinecraftForge.EVENT_BUS.register(new FovChangeEvent());
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 		FMLCommonHandler.instance().bus().register(new KeyPressEvent());

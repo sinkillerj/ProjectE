@@ -77,7 +77,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			
 			if (playerMP.capabilities.allowFlying)
 			{
-				disableFlight(playerMP);
+				PlayerHelper.disableFlight(playerMP);
 			}
 			
 			return;
@@ -85,7 +85,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			enableFlight(playerMP);
+			PlayerHelper.enableFlight(playerMP);
 		}
 
 		if (playerMP.capabilities.isFlying)
@@ -191,34 +191,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		}
 	}
 	
-	public void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, true);
-			PlayerChecks.addPlayerFlyChecks(playerMP);
-		}
-	}
-	
-	public void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
-		}
-	}
-	
 	public void enableFlightNoChecks(EntityPlayerMP playerMP)
 	{
 		if (playerMP.capabilities.isCreativeMode)
@@ -228,7 +200,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, true);
+			PlayerHelper.updateClientServerFlight(playerMP, true);
 		}
 	}
 	
@@ -241,7 +213,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, false);
+			PlayerHelper.updateClientServerFlight(playerMP, false);
 		}
 	}
 	

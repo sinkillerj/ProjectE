@@ -7,9 +7,10 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.BlockCauldron;
@@ -37,7 +38,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -192,7 +192,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return false;
 	}
 
-	//Start IFluidContainerItem
+	/** Start IFluidContainerItem **/
 	@Override
 	public FluidStack getFluid(ItemStack container)
 	{
@@ -216,17 +216,14 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 	}
-	//End IFluidContainerItem
+
+	/** End IFluidContainerItem **/
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
-		{
-			list.add(String.format(
-					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
-		}
+		list.add(String.format(StatCollector.translateToLocal("pe.evertide.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));

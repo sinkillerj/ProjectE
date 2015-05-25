@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -66,5 +67,17 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
 		return new AlchChestTile();
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, BlockPos pos)
+	{
+		return ComparatorHelper.getForAlchChest(world, pos);
 	}
 }

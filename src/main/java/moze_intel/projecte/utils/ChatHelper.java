@@ -7,7 +7,7 @@ import net.minecraft.util.IChatComponent;
  * Helper class for chat messages and formatting
  * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
-public class ChatHelper
+public final class ChatHelper
 {
 	/**
 	 * Alters color of a IChatComponent and returns it.

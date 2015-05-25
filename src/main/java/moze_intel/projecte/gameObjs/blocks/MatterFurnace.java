@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -184,5 +185,17 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
 		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, BlockPos pos)
+	{
+		return ComparatorHelper.getForMatterFurnace(world, pos);
 	}
 }

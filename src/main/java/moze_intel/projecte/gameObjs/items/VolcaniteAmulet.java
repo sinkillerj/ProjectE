@@ -8,9 +8,10 @@ import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
@@ -32,7 +33,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -170,10 +170,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
-		{
-			list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
-		}
+		list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip3"));
 		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip4"));

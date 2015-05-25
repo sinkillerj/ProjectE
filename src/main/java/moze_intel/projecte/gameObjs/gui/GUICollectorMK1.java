@@ -19,7 +19,7 @@ public class GUICollectorMK1 extends GuiContainer
 		super(new CollectorMK1Container(invPlayer, tile));
 		this.tile = tile;
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{

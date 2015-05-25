@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.ITileEntityProvider;
@@ -73,5 +74,11 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 
 		world.notifyNeighborsOfStateChange(pos, state.getBlock());
 		world.removeTileEntity(pos);
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, BlockPos pos)
+	{
+		return ComparatorHelper.getForCondenser(world, pos);
 	}
 }

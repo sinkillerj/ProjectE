@@ -5,8 +5,11 @@ import net.minecraft.item.ItemStack;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private static final int INPUT_SLOTS[] = {1, 42};
-	private static final int OUTPUT_SLOTS[] = {43, 84};
+	private static final int LOCK_SLOT = 0;
+	private static final int INPUT_SLOTS_LOWER = 1;
+	private static final int INPUT_SLOTS_UPPER = 42;
+	private static final int OUTPUT_SLOTS_LOWER = 43;
+	private static final int OUTPUT_SLOTS_UPPER = 84;
 
 	public CondenserMK2Tile()
 	{
@@ -17,7 +20,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected void condense()
 	{
-		for (int i = INPUT_SLOTS[0]; i <= INPUT_SLOTS[1]; i++)
+		for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
 		{
 			ItemStack stack = inventory[i];
 
@@ -41,7 +44,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected boolean hasSpace()
 	{
-		for (int i = OUTPUT_SLOTS[0]; i <= OUTPUT_SLOTS[1]; i++)
+		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
 		{
 			ItemStack stack = inventory[i];
 
@@ -62,7 +65,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected int getSlotForStack()
 	{
-		for (int i = OUTPUT_SLOTS[0]; i <= OUTPUT_SLOTS[1]; i++)
+		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
 		{
 			ItemStack stack = inventory[i];
 
@@ -83,7 +86,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		if (slot == 0 || slot >= OUTPUT_SLOTS[0])
+		if (slot == LOCK_SLOT || slot >= OUTPUT_SLOTS_LOWER)
 		{
 			return false;
 		}

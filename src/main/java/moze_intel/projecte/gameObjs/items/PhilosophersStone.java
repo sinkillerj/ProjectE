@@ -9,9 +9,10 @@ import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
@@ -29,7 +30,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -273,11 +273,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
-		{
-			list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), Keyboard.getKeyName(KeyHelper.getExtraFuncKeyCode())));
-		}
-		
+		list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
 		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));

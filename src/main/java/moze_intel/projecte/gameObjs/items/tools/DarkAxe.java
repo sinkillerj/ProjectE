@@ -1,6 +1,9 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -29,5 +32,13 @@ public class DarkAxe extends PEToolBase
 	{
 		deforestAOE(world, stack, player, 0);
 		return stack;
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack)
+	{
+		Multimap multimap = super.getAttributeModifiers(stack);
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedAxe ? 9 : 8, 0));
+		return multimap;
 	}
 }

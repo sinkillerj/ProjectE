@@ -165,6 +165,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		{
 			inventory[slot].stackSize += 1;
 		}
+		this.markDirty();
 	}
 	
 	protected int getSlotForStack()
