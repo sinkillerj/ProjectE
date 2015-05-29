@@ -135,6 +135,7 @@ public final class NBTWhitelistParser
 			writer.println("#This file is used for items that should keep NBT data when condensed/transmuted.");
 			writer.println("#To add an item, just put it's unlocalized name on a new line. Here's some examples:");
 			writer.println("TConstruct:pickaxe");
+			writer.println("ExtraUtilities:unstableingot");
 			writer.println("ExtraUtilities:unstableIngot");
 			writer.println("Botania:specialFlower");
 		}
