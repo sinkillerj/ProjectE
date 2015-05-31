@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EntityLootBall extends Entity
 {
-	private final int lifespan = 300; // Why in the world was this 6000?
+	private final int lifespan = 6000;
 	private List<ItemStack> items;
 	private int age;
 
