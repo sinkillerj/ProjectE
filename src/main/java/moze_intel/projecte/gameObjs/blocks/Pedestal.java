@@ -4,7 +4,9 @@ package moze_intel.projecte.gameObjs.blocks;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
@@ -19,6 +21,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -57,7 +60,12 @@ public class Pedestal extends Block implements ITileEntityProvider {
             {
                 if (tile.getItemStack() != null && tile.getItemStack().getItem() instanceof IPedestalItem)
                 {
-                    tile.setActive(!tile.getActive());
+                    if(!ProjectEConfig.enableTimeWatch && tile.getItemStack().getItem() instanceof TimeWatch) {
+                        player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.disabled"));
+                        PELogger.logDebug("Pedestal: Attempt to use a TimeWatch with Pedestal. TiemWatch is Disabled");
+                    } else {
+                        tile.setActive(!tile.getActive());
+                    }
                 }
                 PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
