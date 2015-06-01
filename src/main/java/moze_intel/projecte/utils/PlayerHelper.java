@@ -47,7 +47,7 @@ public final class PlayerHelper
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
@@ -60,7 +60,11 @@ public final class PlayerHelper
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return new Tuple(src, dest);
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> fa903da0d9fd2ad62f1ef4d4469e6e7e1aa6712a
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{
 		ReflectionHelper.setEntityFireImmunity(player, value);
