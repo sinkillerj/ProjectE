@@ -7,6 +7,9 @@ import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.Vec3;
 
 /**
  * Helper class for player-related methods.
@@ -14,18 +17,48 @@ import net.minecraft.entity.player.EntityPlayerMP;
  */
 public final class PlayerHelper
 {
+	public static void disableFlight(EntityPlayerMP playerMP)
+	{
+		if (!playerMP.capabilities.isCreativeMode)
+		{
+			updateClientServerFlight(playerMP, false);
+			PlayerChecks.removePlayerFlyChecks(playerMP);
+		}
+	}
+
 	public static void enableFlight(EntityPlayerMP playerMP)
 	{
 		if (playerMP.capabilities.isCreativeMode)
 		{
 			return;
 		}
-		
-		if (!playerMP.capabilities.allowFlying)
+
+		updateClientServerFlight(playerMP, true);
+		PlayerChecks.addPlayerFlyChecks(playerMP);
+	}
+
+	public static Coordinates getBlockLookingAt(EntityPlayer player, double maxDistance)
+	{
+		Tuple vecs = getLookVec(player, maxDistance);
+		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(((Vec3) vecs.getFirst()), ((Vec3) vecs.getSecond()));
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
-			updateClientFlight(playerMP, true);
-			PlayerChecks.addPlayerFlyChecks(playerMP);
+			return new Coordinates(mop.blockX, mop.blockY, mop.blockZ);
 		}
+		return null;
+	}
+	
+	/**
+	 * Returns a vec representing where the player is looking, capped at maxDistance away.
+	 */
+	public static Tuple getLookVec(EntityPlayer player, double maxDistance)
+	{
+		// Thank you ForgeEssentials
+		Vec3 look = player.getLook(1.0F);
+		Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
+		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+		return new Tuple(src, dest);
 	}
 	
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
@@ -43,7 +76,7 @@ public final class PlayerHelper
 		PacketHandler.sendTo(new SwingItemPKT(), player);
 	}
 
-	public static void updateClientFlight(EntityPlayerMP player, boolean state)
+	public static void updateClientServerFlight(EntityPlayerMP player, boolean state)
 	{
 		PacketHandler.sendTo(new SetFlyPKT(state), player);
 		player.capabilities.allowFlying = state;

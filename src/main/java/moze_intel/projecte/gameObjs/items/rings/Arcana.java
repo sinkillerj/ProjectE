@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IFireProtectionItem;
@@ -34,8 +35,6 @@ import moze_intel.projecte.utils.WorldHelper;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter
 {
-	private static final String[] MODES = new String[]{"Zero", "Ignition", "Harvest", "SWRG"};
-
 	private IIcon[] icons = new IIcon[4];
 	private IIcon[] iconsOn = new IIcon[4];
 	
@@ -197,11 +196,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		{
 			if(!stack.stackTagCompound.getBoolean("Active"))
 			{
-				list.add(EnumChatFormatting.RED + "Inactive!");
+				list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
 			}
 			else
 			{
-				list.add("Mode: " + EnumChatFormatting.AQUA + MODES[stack.getItemDamage()]);
+				list.add(StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
 			}
 		}
 	}

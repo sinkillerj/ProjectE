@@ -42,6 +42,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		{
 			emc = 0;
 		}
+		this.markDirty();
 	}
 	
 	public void addEmcWithPKT(double amount)
@@ -65,6 +66,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		{
 			emc = 0;
 		}
+		this.markDirty();
 	}
 	
 	public void removeEmcWithPKT(double amount)
@@ -106,6 +108,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	public void setEmcValue(double value)
 	{
 		emc = value;
+		this.markDirty();
 	}
 	
 	public void setEmcValueWithPKT(double value)

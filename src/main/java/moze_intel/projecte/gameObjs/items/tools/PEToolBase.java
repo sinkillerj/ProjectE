@@ -392,7 +392,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Attacks. Charge affects damage. Free operation.
+	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
 	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
 	{
