@@ -19,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySilverfish;
@@ -46,7 +47,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -79,7 +79,7 @@ public final class WorldHelper
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
-			EntitySlime.class, EntityWitch.class, EntityRabbit.class
+			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class
 	);
 
 	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
@@ -292,7 +292,7 @@ public final class WorldHelper
 			}
 			else if (ent instanceof EntitySheep)
 			{
-				((EntitySheep) ent).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
+				((EntitySheep) ent).setFleeceColor(EnumDyeColor.byMetadata(MathUtils.randomIntInRange(0, 15)));
 			}
 			else if (ent instanceof EntityVillager)
 			{
@@ -576,27 +576,11 @@ public final class WorldHelper
 	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
 		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-		EntityItem entityitem;
-
-		for (float f2 = world.rand.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
-		{
-			int j1 = world.rand.nextInt(21) + 10;
-
-			if (j1 > stack.stackSize)
-				j1 = stack.stackSize;
-
-			stack.stackSize -= j1;
-			entityitem = new EntityItem(world, (double)((float) x + f), (double)((float) y + f1), (double)((float) z + f2), new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
-			float f3 = 0.05F;
-			entityitem.motionX = (double)((float) world.rand.nextGaussian() * f3);
-			entityitem.motionY = (double)((float) world.rand.nextGaussian() * f3 + 0.2F);
-			entityitem.motionZ = (double)((float) world.rand.nextGaussian() * f3);
-
-			if (stack.hasTagCompound())
-			{
-				entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-			}
-		}
-
+		float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
+		EntityItem entityitem = new EntityItem(world, x + f, y + f1, z + f2, stack.copy());
+		entityitem.motionX = world.rand.nextGaussian() * 0.05;
+		entityitem.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
+		entityitem.motionZ = world.rand.nextGaussian() * 0.05;
+		world.spawnEntityInWorld(entityitem);
 	}
 }

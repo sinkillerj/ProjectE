@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -13,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -76,25 +76,13 @@ public abstract class BlockDirection extends BlockContainer
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		IInventory tile = (IInventory) world.getTileEntity(pos);
+		TileEntity tile = world.getTileEntity(pos);
 		
-		if (tile == null)
+		if (tile instanceof IInventory)
 		{
-			return;
+			InventoryHelper.dropInventoryItems(world, pos, ((IInventory) tile));
 		}
-		
-		for (int i = 0; i < tile.getSizeInventory(); i++)
-		{
-			ItemStack stack = tile.getStackInSlot(i);
-			
-			if (stack == null)
-			{
-				continue;
-			}
-			
-			WorldHelper.spawnEntityItem(world, stack, pos);
-		}
-		
+
 		world.notifyNeighborsOfStateChange(pos, state.getBlock());
 		super.breakBlock(world, pos, state);
 	}
