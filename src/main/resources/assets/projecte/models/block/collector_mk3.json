@@ -1,8 +1,9 @@
 {
-  "parent": "block/orientable",
+  "parent": "projecte:block/orientable_horizontal",
   "textures": {
     "top": "projecte:blocks/collectors/top_3",
     "front": "projecte:blocks/collectors/front",
-    "side": "projecte:blocks/collectors/other"
+    "side": "projecte:blocks/collectors/other",
+    "bottom": "projecte:blocks/collectors/other"
   }
 }
