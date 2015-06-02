@@ -3,17 +3,23 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
@@ -26,7 +32,7 @@ import net.minecraftforge.fml.common.Optional;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Ignition extends RingToggle implements IBauble, IPedestalItem
+public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtectionItem, IProjectileShooter
 {
 	private int torchCooldown;
 
@@ -42,7 +48,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
 		
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
-		EntityPlayer player = (EntityPlayer) entity;
+		EntityPlayerMP player = (EntityPlayerMP)entity;
+		
+		if(!player.capabilities.isCreativeMode && !player.isImmuneToFire())
+		{
+			//System.out.println("Immunising against fire");
+			PlayerHelper.setPlayerFireImmunity(player, true);
+			PlayerChecks.addPlayerFireChecks(player);
+		}
 
 		if (stack.getItemDamage() != 0)
 		{
@@ -52,40 +65,16 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 			}
 			else 
 			{
-				setNearbyOnFlames(world, player);
+				WorldHelper.igniteNearby(world, player);
 				this.removeEmc(stack, 0.32F);
 			}
 		}
 		else 
 		{
-			extinguishNearby(world, player);
+			WorldHelper.extinguishNearby(world, player);
 		}
 	}
-	
-	private void extinguishNearby(World world, EntityPlayer player)
-	{
-		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
-			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
-				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					if (world.getBlockState(pos).getBlock() == Blocks.fire)
-						world.setBlockToAir(pos);
-				}
-	}
-	
-	private void setNearbyOnFlames(World world, EntityPlayer player)
-	{
-		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
-			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
-						world.setBlockState(pos, Blocks.fire.getDefaultState());
-				}
-	}
-	
+
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
@@ -199,5 +188,18 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem
 					StatCollector.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
 		}
 		return list;
+	}
+	
+	@Override
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
+	{
+		World world = player.worldObj;
+		
+		if(world.isRemote) return false;
+		
+		EntityFireProjectile fire = new EntityFireProjectile(world, player);
+		world.spawnEntityInWorld(fire);
+		
+		return true;
 	}
 }

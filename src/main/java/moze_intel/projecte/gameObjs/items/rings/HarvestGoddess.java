@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
+
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockNetherWart;
@@ -57,13 +59,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			}
 			else
 			{
-				growNearbyRandomly(true, world, player);
+				WorldHelper.growNearbyRandomly(true, world, player);
 				removeEmc(stack, 0.32F);
 			}
 		}
 		else
 		{
-			growNearbyRandomly(false, world, player);
+			WorldHelper.growNearbyRandomly(false, world, player);
 		}
 	}
 	
@@ -235,100 +237,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return null;
 	}
 
-	private void growNearbyRandomly(boolean harvest, World world, BlockPos pos)
-	{
-		int chance = harvest ? 16 : 32;
-
-		for (int x = pos.getX() - 5; x <= pos.getX() + 5; x++)
-			for (int y = pos.getY() - 3; y <= pos.getY() + 3; y++)
-				for (int z = pos.getZ() - 5; z <= pos.getZ() + 5; z++)
-				{
-					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(currentPos);
-					Block crop = state.getBlock();
-
-					// Vines, leaves, tallgrass, deadbush, doubleplants
-					if (crop instanceof IShearable)
-					{
-						if (harvest)
-						{
-							world.destroyBlock(currentPos, true);
-						}
-					}
-					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
-					// Mushroom, potato, sapling, stems, tallgrass
-					else if (crop instanceof IGrowable)
-					{
-						IGrowable growable = (IGrowable) crop;
-						if(harvest && !growable.canGrow(world, currentPos, state, false))
-						{
-							world.destroyBlock(currentPos, true);
-						}
-						else if (world.rand.nextInt(chance) == 0)
-						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
-							{
-								growable.grow(world, world.rand, currentPos, state);
-							}
-						}
-					}
-					// All modded
-					// Cactus, Reeds, Netherwart, Flower
-					else if (crop instanceof IPlantable)
-					{
-						if (world.rand.nextInt(chance / 4) == 0)
-						{
-							for (int i = 0; i < (harvest ? 8 : 4); i++)
-							{
-								crop.updateTick(world, currentPos, state, world.rand);
-							}
-						}
-
-						if (harvest)
-						{
-							if (crop instanceof BlockFlower)
-							{
-								world.destroyBlock(currentPos, true);
-							}
-							if (crop == Blocks.reeds || crop == Blocks.cactus)
-							{
-								boolean shouldHarvest = true;
-
-								for (int i = 1; i < 3; i++)
-								{
-									if (world.getBlockState(currentPos.up()).getBlock() != crop)
-									{
-										shouldHarvest = false;
-										break;
-									}
-								}
-
-								if (shouldHarvest)
-								{
-									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
-									{
-										world.destroyBlock(pos.up(i), true);
-									}
-								}
-							}
-							if (crop == Blocks.nether_wart)
-							{
-								IBlockState wart = ((IPlantable) crop).getPlant(world, pos);
-								if (((Integer) wart.getValue(BlockNetherWart.AGE)) == 3)
-								{
-									world.destroyBlock(currentPos, true);
-								}
-							}
-						}
-					}
-				}
-	}
-
-	private void growNearbyRandomly(boolean harvest, World world, Entity player)
-	{
-		growNearbyRandomly(harvest, world, new BlockPos(player));
-	}
-	
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
@@ -356,7 +264,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			if (harvestCooldown == 0)
 			{
-				growNearbyRandomly(true, world, pos);
+				WorldHelper.growNearbyRandomly(true, world, pos);
 				harvestCooldown = ProjectEConfig.harvestPedCooldown;
 			}
 			else

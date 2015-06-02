@@ -9,17 +9,15 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.block.Block;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
@@ -49,36 +47,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		}
 
 		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		freezeInBoundingBox(world, box);
-
+		WorldHelper.freezeInBoundingBox(world, box);
 	}
 
-	public void freezeInBoundingBox(World world, AxisAlignedBB box)
-	{
-		for (int x = (int) box.minX; x <= box.maxX; x++)
-		{
-			for (int y = (int) box.minY; y <= box.maxY; y++)
-			{
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					Block b = world.getBlockState(pos).getBlock();
-
-					if (b == Blocks.water || b == Blocks.flowing_water)
-					{
-						world.setBlockState(pos, Blocks.ice.getDefaultState());
-					}
-					else if (b.isSideSolid(world, pos, EnumFacing.UP))
-					{
-						if (world.isAirBlock(pos.up()))
-						{
-							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
-						}
-					}
-				}
-			}
-		}
-	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -88,7 +59,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
 			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
-			freezeInBoundingBox(world, box);
+			WorldHelper.freezeInBoundingBox(world, box);
 		}
 		
 		return stack;
@@ -115,7 +86,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
+	public void onWornTick(ItemStack stack, EntityLivingBase player)
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
@@ -150,7 +121,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			if (coolCooldown == 0) {
 				TileEntity tile = world.getTileEntity(pos);
 				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
-				freezeInBoundingBox(world, aabb);
+				WorldHelper.freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
 				{

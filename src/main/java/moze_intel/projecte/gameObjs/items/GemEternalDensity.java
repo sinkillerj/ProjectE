@@ -4,6 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
 {
 	public GemEternalDensity()
 	{
@@ -99,8 +100,13 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		}
 		
 		int value = EMCHelper.getEmcValue(target);
-		
-		while (ItemPE.getEmc(gem) >= value)
+
+		if (!EMCHelper.doesItemHaveEmc(target))
+		{
+			return;
+		}
+
+		while (getEmc(gem) >= value)
 		{
 			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
 			
@@ -110,7 +116,7 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, new ArrayList<ItemStack>());
+			setItems(gem, Lists.<ItemStack>newArrayList());
 		}
 	}
 	
@@ -371,6 +377,15 @@ public class GemEternalDensity extends ItemPE implements IAlchChestItem, IModeCh
 		{
 			condense(stack, tile.getBackingInventoryArray());
 			tile.markDirty();
+		}
+	}
+
+	@Override
+	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		if (!player.worldObj.isRemote)
+		{
+			condense(stack, inv);
 		}
 	}
 }

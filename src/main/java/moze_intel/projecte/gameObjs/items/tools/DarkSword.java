@@ -5,6 +5,7 @@ import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -39,15 +40,15 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack p_150893_1_, Block p_150893_2_)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
-		if (p_150893_2_ == Blocks.web)
+		if (state.getBlock() == Blocks.web)
 		{
 			return 15.0F;
 		}
 		else
 		{
-			Material material = p_150893_2_.getMaterial();
+			Material material = state.getBlock().getMaterial();
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
 		}
 	}
@@ -72,7 +73,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block p_150897_1_)
+	public boolean canHarvestBlock(Block p_150897_1_, ItemStack stack)
 	{
 		return p_150897_1_ == Blocks.web;
 	}

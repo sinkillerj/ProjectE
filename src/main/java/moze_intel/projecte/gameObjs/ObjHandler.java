@@ -18,9 +18,11 @@ import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
@@ -61,11 +63,14 @@ import moze_intel.projecte.gameObjs.items.itemBlocks.ItemMatterBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRMFurnaceBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRelayBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemTransmutationBlock;
+import moze_intel.projecte.gameObjs.items.itemEntities.FireProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
 import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
+import moze_intel.projecte.gameObjs.items.itemEntities.LightningProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.LootBallItem;
 import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
+import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.BodyStone;
@@ -207,7 +212,7 @@ public class ObjHandler
 	public static Item dRod2 = new DiviningRodMedium();
 	public static Item dRod3 = new DiviningRodHigh();
 	public static Item mercEye = new MercurialEye();
-	//public static Item arcana = new Arcana();
+	public static Item arcana = new Arcana();
 	
 	public static Item dCatalyst = new DestructionCatalyst();
 	public static Item hyperLens = new HyperkineticLens();
@@ -225,6 +230,8 @@ public class ObjHandler
 	public static Item lootBall = new LootBallItem();
 	public static Item mobRandomizer = new RandomizerProjectile();
 	public static Item lensExplosive = new LensExplosive();
+	public static Item fireProjectile = new FireProjectile();
+	public static Item windProjectile = new LightningProjectile();
 	
 	public static Item transmutationTablet = new TransmutationTablet();
 	
@@ -309,7 +316,7 @@ public class ObjHandler
 		GameRegistry.registerItem(dRod2, dRod2.getUnlocalizedName());
 		GameRegistry.registerItem(dRod3, dRod3.getUnlocalizedName());
 		GameRegistry.registerItem(mercEye, mercEye.getUnlocalizedName());
-		//GameRegistry.registerItem(arcana, arcana.getUnlocalizedName());
+		GameRegistry.registerItem(arcana, arcana.getUnlocalizedName());
 		
 		GameRegistry.registerItem(bodyStone, bodyStone.getUnlocalizedName());
 		GameRegistry.registerItem(soulStone, soulStone.getUnlocalizedName());
@@ -324,6 +331,8 @@ public class ObjHandler
 		GameRegistry.registerItem(lootBall, lootBall.getUnlocalizedName());
 		GameRegistry.registerItem(mobRandomizer, mobRandomizer.getUnlocalizedName());
 		GameRegistry.registerItem(lensExplosive, lensExplosive.getUnlocalizedName());
+		GameRegistry.registerItem(fireProjectile, fireProjectile.getUnlocalizedName());
+		GameRegistry.registerItem(windProjectile, windProjectile.getUnlocalizedName());
 		
 		GameRegistry.registerItem(dCatalyst, dCatalyst.getUnlocalizedName());
 		GameRegistry.registerItem(hyperLens, hyperLens.getUnlocalizedName());
@@ -357,6 +366,8 @@ public class ObjHandler
 		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "NovaCatalystPrimed", 6, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(EntityNovaCataclysmPrimed.class, "NovaCataclysmPrimed", 7, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(EntityHomingArrow.class, "HomingArrow", 8, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityFireProjectile.class, "FireProjectile", 9, PECore.instance, 256, 10, true);
+		EntityRegistry.registerModEntity(EntityLightningProjectile.class, "LightningProjectile", 10, PECore.instance, 256, 10, true);
 	}
 	
 	public static void addRecipes()
@@ -516,7 +527,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(volcanite), "LLL", "DDD", "LLL", 'L', Items.lava_bucket, 'D', matter);
 		GameRegistry.addRecipe(new ItemStack(eternalDensity), "DOD", "MDM", "DOD", 'D', Items.diamond, 'O', Blocks.obsidian, 'M', matter);
 		GameRegistry.addRecipe(new ItemStack(zero), "SBS", "MIM", "SBS", 'S', Blocks.snow, 'B', Items.snowball, 'M', matter, 'I', ironBand);
-		//GameRegistry.addRecipe(new ItemStack(arcana), new Object[]{"ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1)});
+		GameRegistry.addRecipe(new ItemStack(arcana), new Object[]{"ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1)});
 		
 		//Watch of flowing time
 		GameRegistry.addRecipe(new ItemStack(timeWatch), "DOD", "GCG", "DOD", 'D', matter, 'O', Blocks.obsidian, 'G', Blocks.glowstone, 'C', Items.clock);
@@ -595,6 +606,17 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 0), new ItemStack(fuelBlock, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 1), new ItemStack(fuelBlock, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
+		
+		// need a recipe for each arcana mode, there's probably a better way to do this
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 0), Items.water_bucket);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 1), Items.water_bucket);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 2), Items.water_bucket);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 3), Items.water_bucket);
+
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 0), Blocks.dirt);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 1), Blocks.dirt);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 2), Blocks.dirt);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 3), Blocks.dirt);
 		
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());

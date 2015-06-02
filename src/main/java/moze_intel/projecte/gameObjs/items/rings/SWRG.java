@@ -2,12 +2,13 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.common.Optional;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
 	private int lightningCooldown;
 

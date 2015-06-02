@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -27,7 +28,7 @@ import net.minecraftforge.fml.common.Optional;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble, IPedestalItem
+public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
 	public BlackHoleBand()
 	{
@@ -194,6 +195,24 @@ public class BlackHoleBand extends RingToggle implements IAlchChestItem, IBauble
 				{
 					ItemHelper.pushLootBallInInv(tile, e);
 				}
+			}
+		}
+	}
+
+	@Override
+	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		if (stack.getItemDamage() == 1)
+		{
+
+			for (EntityItem e : (List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
+			{
+				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
+			}
+
+			for (EntityLootBall e : (List<EntityLootBall>) player.worldObj.getEntitiesWithinAABB(EntityLootBall.class, player.getEntityBoundingBox().expand(5, 5, 5)))
+			{
+				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}
 		}
 	}

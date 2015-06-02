@@ -150,6 +150,13 @@ achievement.klein.desc=Storing EMC for a rainy day.
 achievement.klein_big=BIG EMC Batteries
 achievement.klein_big.desc=Holding the universe in your pocket.
 
+pe.arcana.mode=Mode: 
+pe.arcana.mode.0=Zero
+pe.arcana.mode.1=Ignition
+pe.arcana.mode.2=Harvest
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Inactive!
+
 pe.archangel.pedestal1=Fires arrows at nearby mobs
 pe.archangel.pedestal2=Triggers every %s
 

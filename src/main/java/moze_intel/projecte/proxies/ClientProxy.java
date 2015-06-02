@@ -12,8 +12,10 @@ import moze_intel.projecte.gameObjs.blocks.FuelBlock;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
 import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
@@ -31,11 +33,13 @@ import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -97,6 +101,8 @@ public class ClientProxy extends CommonProxy
 		registerItem(ObjHandler.lootBall);
 		registerItem(ObjHandler.mobRandomizer);
 		registerItem(ObjHandler.lensExplosive);
+		registerItem(ObjHandler.windProjectile);
+		registerItem(ObjHandler.fireProjectile);
 
 		registerItem(ObjHandler.philosStone);
 		registerItem(ObjHandler.repairTalisman);
@@ -280,6 +286,27 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation("projecte:swrg_fly", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation("projecte:swrg_repel", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation("projecte:swrg_both", "inventory"));
+
+		ModelLoader.addVariantName(ObjHandler.arcana, "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
+				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on");
+		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				String modelName;
+				boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
+
+				switch (stack.getItemDamage())
+				{
+					case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
+					case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
+					case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
+					case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
+					default: modelName = "";
+				}
+				return new ModelResourceLocation("projecte:" + modelName, "inventory");
+			}
+		});
 	}
 
 	@Override
@@ -299,6 +326,8 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityLootBall.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lootBall, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer(mc.getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer(mc.getRenderManager()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.fireProjectile, mc.getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLightningProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.windProjectile, mc.getRenderItem()));
 	}
 
 	@Override

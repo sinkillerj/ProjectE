@@ -5,12 +5,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
+import net.minecraft.block.BlockNetherWart;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -39,6 +42,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -49,6 +53,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 import java.lang.reflect.Constructor;
@@ -113,9 +119,87 @@ public final class WorldHelper
 				spawnEntityItem(world, drop, x, y, z);
 			}
 		}
-
 	}
+	
+	public static void extinguishNearby(World world, EntityPlayer player)
+	{
+		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
+			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
+				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
+				{
+					BlockPos pos = new BlockPos(x, y, z);
+					if (world.getBlockState(pos).getBlock() == Blocks.fire)
+					{
+						world.setBlockToAir(pos);
+					}
+				}
+	}
+	
+	public static void freezeNearby(World world, EntityPlayer player)
+	{
+		freezeInBoundingBox(world, player.getEntityBoundingBox().expand(5, 5, 5));
+	}
+	
+	public static void freezeInBoundingBox(World world, AxisAlignedBB box)
+	{
+		for (int x = (int) box.minX; x <= box.maxX; x++)
+		{
+			for (int y = (int) box.minY; y <= box.maxY; y++)
+			{
+				for (int z = (int) box.minZ; z <= box.maxZ; z++)
+				{
+					BlockPos pos = new BlockPos(x, y, z);
 
+					Block b = world.getBlockState(pos).getBlock();
+
+					if (b == Blocks.water || b == Blocks.flowing_water)
+					{
+						world.setBlockState(pos, Blocks.ice.getDefaultState());
+					}
+					else if (b.isSideSolid(world, pos, EnumFacing.UP))
+					{
+						if (world.isAirBlock(pos.up()))
+						{
+							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
+						}
+					}
+				}
+			}
+		}
+	}
+		
+	public static void freezeNearbyRandomly(World world, EntityPlayer player)
+	{
+		freezeInBoundingBoxRandomly(world, player.getEntityBoundingBox().expand(5, 5, 5));
+	}
+	
+	public static void freezeInBoundingBoxRandomly(World world, AxisAlignedBB box)
+	{
+		for (int x = (int) box.minX; x <= box.maxX; x++)
+		{
+			for (int y = (int) box.minY; y <= box.maxY; y++)
+			{
+				for (int z = (int) box.minZ; z <= box.maxZ; z++)
+				{
+					BlockPos pos = new BlockPos(x, y, z);
+					Block b = world.getBlockState(pos).getBlock();
+
+					if ((b == Blocks.water || b == Blocks.flowing_water) && world.rand.nextInt(128) == 0)
+					{
+						world.setBlockState(pos, Blocks.ice.getDefaultState());
+					}
+					else if (b.isSideSolid(world, pos, EnumFacing.UP))
+					{
+						if (world.isAirBlock(pos.up()) && world.rand.nextInt(128) == 0)
+						{
+							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
 		List<TileEntity> list = Lists.newArrayList();
@@ -304,6 +388,99 @@ public final class WorldHelper
 			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
 		}
 	}
+	
+	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos)
+	{
+		int chance = harvest ? 16 : 32;
+
+		for (int x = (int) (pos.getX() - 5); x <= pos.getX() + 5; x++)
+			for (int y = (int) (pos.getY() - 3); y <= pos.getY() + 3; y++)
+				for (int z = (int) (pos.getZ() - 5); z <= pos.getZ() + 5; z++)
+				{
+					BlockPos currentPos = new BlockPos(x, y, z);
+					IBlockState state = world.getBlockState(currentPos);
+					Block crop = state.getBlock();
+
+					// Vines, leaves, tallgrass, deadbush, doubleplants
+					if (crop instanceof IShearable)
+					{
+						if (harvest)
+						{
+							world.destroyBlock(currentPos, true);
+						}
+					}
+					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
+					// Mushroom, potato, sapling, stems, tallgrass
+					else if (crop instanceof IGrowable)
+					{
+						IGrowable growable = (IGrowable) crop;
+						if(harvest && !growable.canGrow(world, currentPos, state, false))
+						{
+							world.destroyBlock(pos, true);
+						}
+						else if (world.rand.nextInt(chance) == 0)
+						{
+							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
+							{
+								growable.grow(world, world.rand, currentPos, state);
+							}
+						}
+					}
+					// All modded
+					// Cactus, Reeds, Netherwart, Flower
+					else if (crop instanceof IPlantable)
+					{
+						if (world.rand.nextInt(chance / 4) == 0)
+						{
+							for (int i = 0; i < (harvest ? 8 : 4); i++)
+							{
+								crop.updateTick(world, currentPos, state, world.rand);
+							}
+						}
+
+						if (harvest)
+						{
+							if (crop instanceof BlockFlower)
+							{
+								world.destroyBlock(currentPos, true);
+							}
+							if (crop == Blocks.reeds || crop == Blocks.cactus)
+							{
+								boolean shouldHarvest = true;
+
+								for (int i = 1; i < 3; i++)
+								{
+									if (world.getBlockState(currentPos.up(i)).getBlock() != crop)
+									{
+										shouldHarvest = false;
+										break;
+									}
+								}
+
+								if (shouldHarvest)
+								{
+									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
+									{
+										world.destroyBlock(currentPos.up(i), true);
+									}
+								}
+							}
+							if (crop == Blocks.nether_wart)
+							{
+								if (((Integer) state.getValue(BlockNetherWart.AGE)) == 3)
+								{
+									world.destroyBlock(currentPos, true);
+								}
+							}
+						}
+					}
+				}
+	}
+
+	public static void growNearbyRandomly(boolean harvest, World world, Entity player)
+	{
+		growNearbyRandomly(harvest, world, new BlockPos(player.posX, player.posY, player.posZ));
+	}
 
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
@@ -331,6 +508,18 @@ public final class WorldHelper
 						numMined++;
 						harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 					}
+				}
+	}
+	
+	public static void igniteNearby(World world, EntityPlayer player)
+	{
+		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
+			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
+				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
+				{
+					BlockPos pos = new BlockPos(x, y, z);
+					if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
+						world.setBlockState(pos, Blocks.fire.getDefaultState());
 				}
 	}
 
