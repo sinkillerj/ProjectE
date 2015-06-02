@@ -8,14 +8,11 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
@@ -81,25 +78,18 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			Vec3 vec  = ((Vec3) PlayerHelper.getLookVec(player, 32).getSecond());
 			c = new Coordinates(((int) vec.xCoord), ((int) vec.yCoord), ((int) vec.zCoord));
 		}
-		for (int i = 0; i < 32; ++i)
-		{
-			PacketHandler.sendTo(new ParticlePKT("portal", c.x, c.y + itemRand.nextDouble() * 2.0D, c.z, itemRand.nextGaussian(), 0.0D, itemRand.nextGaussian()), ((EntityPlayerMP) player));
-		}
 
-		if (!player.worldObj.isRemote)
+		EnderTeleportEvent event = new EnderTeleportEvent(player, c.x, c.y + 1, c.z, 5.0F);
+		if (!MinecraftForge.EVENT_BUS.post(event))
 		{
-			EnderTeleportEvent event = new EnderTeleportEvent(player, c.x, c.y + 1, c.z, 5.0F);
-			if (!MinecraftForge.EVENT_BUS.post(event))
+			if (player.isRiding())
 			{
-				if (player.isRiding())
-				{
-					player.mountEntity(null);
-				}
-
-				player.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-				player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-				player.fallDistance = 0.0F;
+				player.mountEntity(null);
 			}
+
+			player.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+			player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+			player.fallDistance = 0.0F;
 		}
 	}
 
