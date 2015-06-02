@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,7 +45,9 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
+				RenderHelper.enableStandardItemLighting();
 				mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+				RenderHelper.disableStandardItemLighting();
 			}
 		}
 	}
