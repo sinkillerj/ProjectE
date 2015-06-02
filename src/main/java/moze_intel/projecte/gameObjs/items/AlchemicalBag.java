@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
+import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
@@ -75,7 +76,8 @@ public class AlchemicalBag extends ItemPE
 		EntityPlayer player = (EntityPlayer) entity;
 		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
 		
-		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
+		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
+				|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
 		{
 			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
 			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
@@ -144,20 +146,33 @@ public class AlchemicalBag extends ItemPE
 		if (player.openContainer instanceof AlchBagContainer)
 		{
 			ItemStack gemDensity = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			
+			ItemStack voidRing = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.voidRing, 1, 1));
+
 			if (gemDensity != null)
 			{
 				GemEternalDensity.condense(gemDensity, ((AlchBagContainer) player.openContainer).inventory.getInventory());
+			}
+			else if (voidRing != null)
+			{
+				VoidRing.condense(voidRing, ((AlchBagContainer) player.openContainer).inventory.getInventory());
 			}
 		}
 		else
 		{
 			ItemStack gemDensity = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			
+			ItemStack voidRing = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.voidRing, 1, 1));
+
 			if (gemDensity != null)
 			{
 				GemEternalDensity.condense(gemDensity, inv); 
 		
+				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
+				AlchemicalBags.sync(player);
+			}
+			else if (voidRing != null)
+			{
+				VoidRing.condense(voidRing, inv);
+
 				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 			}
@@ -220,7 +235,7 @@ public class AlchemicalBag extends ItemPE
 		}
 	}
 
-	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, ItemStack[] inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
@@ -229,8 +244,12 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+
+			if (stack.getItem() == ObjHandler.alchBag)
 			{
+				ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), ((byte) stack.getItemDamage()));
+				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
+						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
 				return stack;
 			}
 		}

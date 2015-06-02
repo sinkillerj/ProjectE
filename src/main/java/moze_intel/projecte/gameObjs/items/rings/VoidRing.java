@@ -1,4 +1,4 @@
-package moze_intel.projecte.gameObjs.items;
+package moze_intel.projecte.gameObjs.items.rings;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -6,6 +6,7 @@ import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
