@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
@@ -30,7 +31,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, IPedestalItem
+public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
 	private int repairCooldown;
 
@@ -209,6 +210,51 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 			{
 				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
 				tile.markDirty();
+			}
+		}
+	}
+
+	@Override
+	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		if (player.worldObj.isRemote)
+		{
+			return;
+		}
+
+		byte coolDown = stack.stackTagCompound.getByte("Cooldown");
+
+		if (coolDown > 0)
+		{
+			stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+		}
+		else
+		{
+			boolean hasAction = false;
+
+			for (int i = 0; i < inv.length; i++)
+			{
+				ItemStack invStack = inv[i];
+
+				if (invStack == null || invStack.getItem() instanceof RingToggle)
+				{
+					continue;
+				}
+
+				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				{
+					invStack.setItemDamage(invStack.getItemDamage() - 1);
+
+					if (!hasAction)
+					{
+						hasAction = true;
+					}
+				}
+			}
+
+			if (hasAction)
+			{
+				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
 			}
 		}
 	}
