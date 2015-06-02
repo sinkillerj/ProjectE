@@ -107,8 +107,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 		
 		int value = EMCHelper.getEmcValue(target);
-		
-		while (ItemPE.getEmc(gem) >= value)
+
+		if (!EMCHelper.doesItemHaveEmc(target))
+		{
+			return;
+		}
+
+		while (getEmc(gem) >= value)
 		{
 			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
 			
@@ -118,7 +123,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, new ArrayList<ItemStack>());
+			setItems(gem, Lists.<ItemStack>newArrayList());
 		}
 	}
 	

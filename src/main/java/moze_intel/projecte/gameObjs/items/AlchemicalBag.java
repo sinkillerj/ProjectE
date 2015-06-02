@@ -74,7 +74,7 @@ public class AlchemicalBag extends ItemPE
 		if (player.openContainer instanceof AlchBagContainer)
 		{
 			ItemStack[] openContainerInv = ((AlchBagContainer) player.openContainer).inventory.getInventory();
-			for (int i = 0; i < openContainerInv.length; i++) // Do not use foreach - to avoid CME
+			for (int i = 0; i < openContainerInv.length; i++) // Do not use foreach - to avoid desync
 			{
 				ItemStack current = openContainerInv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
@@ -82,10 +82,11 @@ public class AlchemicalBag extends ItemPE
 					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
 				}
 			}
+			// Do not AlchemicalBags.set/sync here - vanilla handles it because it's the open container
 		}
 		else
 		{
-			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid CME
+			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid desync
 			{
 				ItemStack current = inv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
