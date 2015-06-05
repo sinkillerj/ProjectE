@@ -17,7 +17,6 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	private double velY;
 	private double velZ;
 
-	//Needs to have an empty constructor
 	public ParticlePKT() {}
 	
 	public ParticlePKT(EnumParticleTypes name, double x, double y, double z)

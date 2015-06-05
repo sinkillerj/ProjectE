@@ -393,9 +393,9 @@ public final class WorldHelper
 	{
 		int chance = harvest ? 16 : 32;
 
-		for (int x = (int) (pos.getX() - 5); x <= pos.getX() + 5; x++)
-			for (int y = (int) (pos.getY() - 3); y <= pos.getY() + 3; y++)
-				for (int z = (int) (pos.getZ() - 5); z <= pos.getZ() + 5; z++)
+		for (int x = pos.getX() - 5; x <= pos.getX() + 5; x++)
+			for (int y = pos.getY() - 3; y <= pos.getY() + 3; y++)
+				for (int z = pos.getZ(); z <= pos.getZ() + 5; z++)
 				{
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState state = world.getBlockState(currentPos);
