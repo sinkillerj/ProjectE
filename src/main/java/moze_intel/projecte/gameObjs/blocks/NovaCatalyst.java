@@ -36,7 +36,7 @@ public class NovaCatalyst extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
+			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
 			catalystPrimed.fuse = world.rand.nextInt(catalystPrimed.fuse / 4) + catalystPrimed.fuse / 8;
 			world.spawnEntityInWorld(catalystPrimed);
 		}

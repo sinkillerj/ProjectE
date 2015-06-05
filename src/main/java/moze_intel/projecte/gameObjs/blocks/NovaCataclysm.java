@@ -36,7 +36,7 @@ public class NovaCataclysm extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
+			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
 			cataclysmPrimed.fuse = world.rand.nextInt(cataclysmPrimed.fuse / 4) + cataclysmPrimed.fuse / 8;
 			world.spawnEntityInWorld(cataclysmPrimed);
 		}

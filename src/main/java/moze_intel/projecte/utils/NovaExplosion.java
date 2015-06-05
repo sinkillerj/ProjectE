@@ -149,7 +149,14 @@ public class NovaExplosion extends Explosion
 					block.onBlockExploded(worldObj, blockpos, this);
 				}
 			}
-			WorldHelper.createLootDrop(allDrops, this.worldObj, x, y, z);
+			if (getExplosivePlacedBy() != null)
+			{
+				WorldHelper.createLootDrop(allDrops, this.worldObj, new BlockPos(getExplosivePlacedBy()));
+			}
+			else
+			{
+				WorldHelper.createLootDrop(allDrops, this.worldObj, x, y, z);
+			}
 		}
 	}
 }

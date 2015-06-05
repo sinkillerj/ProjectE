@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
@@ -75,6 +76,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					else if (state.getBlock() == ObjHandler.rmFurnaceOn)
 					{
 						s = new ItemStack(ObjHandler.rmFurnaceOff);
+					}
+					else if (state.getBlock() instanceof BlockDirection)
+					{
+						s = ItemHelper.stateToStack(state.withProperty(BlockDirection.FACING, EnumFacing.SOUTH), 1);
 					}
 					else
 					{

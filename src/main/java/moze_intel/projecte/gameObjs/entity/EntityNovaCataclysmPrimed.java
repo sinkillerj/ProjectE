@@ -56,7 +56,7 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 
 	private void explode()
 	{
-		NovaExplosion explosion = new NovaExplosion(worldObj, this, this.posX, this.posY, this.posZ, 48.0F, true, true);
+		NovaExplosion explosion = new NovaExplosion(worldObj, getTntPlacedBy(), this.posX, this.posY, this.posZ, 48.0F, true, true);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
 	}
