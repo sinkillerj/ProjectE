@@ -130,7 +130,7 @@ public abstract class PEToolBase extends ItemMode
 					IBlockState state = world.getBlockState(pos);
 					Block block = state.getBlock();
 
-					if (block == Blocks.air)
+					if (block.isAir(world, pos))
 					{
 						continue;
 					}
@@ -340,7 +340,7 @@ public abstract class PEToolBase extends ItemMode
 					IBlockState state = world.getBlockState(digPos);
 					Block b = state.getBlock();
 
-					if (b != Blocks.air && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
+					if (!b.isAir(world, digPos) && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
 					{
 						drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
 						world.setBlockToAir(digPos);

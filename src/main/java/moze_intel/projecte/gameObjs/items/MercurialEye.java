@@ -150,7 +150,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							}
 							else if (mode == TRANSMUTATION_MODE)
 							{
-								if (newState == state || oldBlock == Blocks.air || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
+								if (newState == state || oldBlock.isAir(world, currentPos) || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
 								{
 									continue;
 								}

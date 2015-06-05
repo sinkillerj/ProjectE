@@ -11,7 +11,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -82,7 +81,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 						IBlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
 
-						if (block == Blocks.air)
+						if (block.isAir(world, pos))
 						{
 							continue;
 						}
