@@ -33,7 +33,7 @@ public final class Constants
 	public static final int COAL_BURN_TIME = 1600;
 	public static final int ALCH_BURN_TIME = COAL_BURN_TIME * 4;
 	public static final int MOBIUS_BURN_TIME = ALCH_BURN_TIME * 4;
-	public static final int AETERNALIS_BUR_TIME = MOBIUS_BURN_TIME * 4;
+	public static final int AETERNALIS_BURN_TIME = MOBIUS_BURN_TIME * 4;
 	
 	public static final int ALCH_CHEST_GUI = 0;
 	public static final int ALCH_BAG_GUI = 1;

@@ -665,7 +665,7 @@ public class ObjHandler
 					case 1:
 						return Constants.MOBIUS_BURN_TIME;
 					case 2:
-						return Constants.AETERNALIS_BUR_TIME;
+						return Constants.AETERNALIS_BURN_TIME;
 				}
 			}
 			else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
@@ -677,7 +677,7 @@ public class ObjHandler
 					case 1:
 						return Constants.MOBIUS_BURN_TIME * 9;
 					case 2:
-						return Constants.AETERNALIS_BUR_TIME * 9;
+						return Constants.AETERNALIS_BURN_TIME * 9;
 				}
 			}
 			

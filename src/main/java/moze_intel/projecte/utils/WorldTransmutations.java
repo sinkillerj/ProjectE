@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockNewLog;
@@ -8,6 +9,7 @@ import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockOldLog;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
@@ -24,15 +26,15 @@ public final class WorldTransmutations
 
 	static
 	{
-		register(Blocks.stone.getDefaultState(), Blocks.cobblestone.getDefaultState(), Blocks.grass.getDefaultState());
-		register(Blocks.cobblestone.getDefaultState(), Blocks.stone.getDefaultState(), Blocks.grass.getDefaultState());
-		register(Blocks.grass.getDefaultState(), Blocks.sand.getDefaultState(), Blocks.cobblestone.getDefaultState());
-		register(Blocks.dirt.getDefaultState(), Blocks.sand.getDefaultState(), Blocks.cobblestone.getDefaultState());
-		register(Blocks.sand.getDefaultState(), Blocks.grass.getDefaultState(), Blocks.cobblestone.getDefaultState());
-		register(Blocks.gravel.getDefaultState(), Blocks.sandstone.getDefaultState(), null);
-		register(Blocks.water.getDefaultState(), Blocks.ice.getDefaultState(), null);
-		register(Blocks.lava.getDefaultState(), Blocks.obsidian.getDefaultState(), null);
-		register(Blocks.melon_block.getDefaultState(), Blocks.pumpkin.getDefaultState(), null);
+		registerDefault(Blocks.stone, Blocks.cobblestone, Blocks.grass);
+		registerDefault(Blocks.cobblestone, Blocks.stone, Blocks.grass);
+		registerDefault(Blocks.grass, Blocks.sand, Blocks.cobblestone);
+		registerDefault(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
+		registerDefault(Blocks.sand, Blocks.grass, Blocks.cobblestone);
+		registerDefault(Blocks.gravel, Blocks.sandstone, null);
+		registerDefault(Blocks.water, Blocks.ice, null);
+		registerDefault(Blocks.lava, Blocks.obsidian, null);
+		registerDefault(Blocks.melon_block, Blocks.pumpkin, null);
 
 		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
 				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE),
@@ -44,7 +46,7 @@ public final class WorldTransmutations
 				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
 		);
 
-		for (int i = 1; i < 3; i++) // TODO 1.8 Find better way :( (besides typing them all out)
+		for (int i = 1; i < 3; i++)
 		{
 			register(Blocks.log.getStateFromMeta(i),
 					Blocks.log.getStateFromMeta(i + 1),
@@ -87,41 +89,27 @@ public final class WorldTransmutations
 				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
 		);
 
-		register(Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.OAK),
-				Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.SPRUCE),
-				Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.DARK_OAK)
-		);
-
-		for (int i = 1; i < 5; i++) // TODO 1.8 Find better way :( (besides typing them all out)
+		for (BlockPlanks.EnumType e : BlockPlanks.EnumType.values())
 		{
-			register(Blocks.sapling.getStateFromMeta(i),
-					Blocks.sapling.getStateFromMeta(i + 1),
-					Blocks.sapling.getStateFromMeta(i - 1)
-			);
+			IBlockState state = Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, e);
+			register(state, state.cycleProperty(BlockSapling.TYPE), cyclePropertyBackwards(state, BlockSapling.TYPE));
 		}
 
-		register(Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.DARK_OAK),
-				Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.OAK),
-				Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.ACACIA)
-		);
-
-		register(Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.WHITE),
-				Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.ORANGE),
-				Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.BLACK)
-		);
-
-		for (int i = 1; i < 15; i++) // TODO 1.8 Find better way :( (besides typing them all out)
+		for (EnumDyeColor e : EnumDyeColor.values())
 		{
-			register(Blocks.wool.getStateFromMeta(i),
-					Blocks.wool.getStateFromMeta(i + 1),
-					Blocks.wool.getStateFromMeta(i - 1)
-			);
+			IBlockState state = Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, e);
+			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
 		}
+	}
 
-		register(Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.BLACK),
-				Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.WHITE),
-				Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.RED)
-		);
+	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty property)
+	{
+		IBlockState result = state;
+		for (int i = 0; i < property.getAllowedValues().size() - 1; i++)
+		{
+			result = result.cycleProperty(property);
+		}
+		return result;
 	}
 
 	public static IBlockState getWorldTransmutation(World world, BlockPos pos, boolean isSneaking)
@@ -142,5 +130,10 @@ public final class WorldTransmutations
 	public static void register(IBlockState from, IBlockState result, IBlockState altResult)
 	{
 		MAP.put(from, ImmutablePair.of(result, altResult));
+	}
+
+	public static void registerDefault(Block from, Block result, Block altResult)
+	{
+		MAP.put(from.getDefaultState(), ImmutablePair.of(result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 }
