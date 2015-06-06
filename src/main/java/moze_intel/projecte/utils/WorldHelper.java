@@ -416,7 +416,7 @@ public final class WorldHelper
 						IGrowable growable = (IGrowable) crop;
 						if(harvest && !growable.canGrow(world, currentPos, state, false))
 						{
-							world.destroyBlock(pos, true);
+							world.destroyBlock(currentPos, true);
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
