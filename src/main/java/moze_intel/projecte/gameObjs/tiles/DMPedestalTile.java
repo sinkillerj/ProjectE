@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -99,7 +98,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	{
 		if (effectBounds == null)
 		{
-			PELogger.logWarn("Returned null effectbounds for pedestal!");
+			// Chunk is still loading weirdness, return an empty box just for this tick.
+			return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 		}
 		return effectBounds;
 	}
