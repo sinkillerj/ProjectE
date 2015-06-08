@@ -53,7 +53,7 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 		{
 			PELogger.logInfo("Received all packets!");
 
-			Transmutation.loadCompleteKnowledge();
+			Transmutation.cacheFullKnowledge();
 			FuelMapper.loadMap();
 		}
 

@@ -3,6 +3,7 @@ package moze_intel.projecte.playerData;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -10,16 +11,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import moze_intel.projecte.utils.PELogger;
 
 public final class AlchemicalBags 
 {
 	private static Map<String, Map<Byte, ItemStack[]>> MAP = Maps.newLinkedHashMap();
-	
+
+	public static ItemStack[] newGet(EntityPlayer player, byte color)
+	{
+		return PEAlchBags.getDataFor(player).getInv(color).clone();
+	}
+
+	public static void newSet(EntityPlayer player, byte color, ItemStack[] inv)
+	{
+		PEAlchBags.getDataFor(player).setInv(color, inv);
+	}
+
 	public static ItemStack[] get(String player, byte bagColour)
 	{
 		Map<Byte, ItemStack[]> colorToInvMap;
@@ -84,9 +92,11 @@ public final class AlchemicalBags
 	
 	public static void sync(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new ClientSyncBagDataPKT(getPlayerNBT(player.getCommandSenderName())), (EntityPlayerMP) player);
+		NBTTagCompound tag = new NBTTagCompound();
+		PEAlchBags.getDataFor(player).saveNBTData(tag);
+		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
-	
+
 	public static void clear()
 	{
 		MAP.clear();

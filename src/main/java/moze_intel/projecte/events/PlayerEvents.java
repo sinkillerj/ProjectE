@@ -11,6 +11,8 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
+import moze_intel.projecte.playerData.PEAlchBags;
+import moze_intel.projecte.playerData.PETransmutation;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -25,6 +27,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -38,7 +41,17 @@ public class PlayerEvents
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.newGetEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
+		}
+	}
+
+	@SubscribeEvent
+	public void onConstruct(EntityEvent.EntityConstructing evt)
+	{
+		if (evt.entity instanceof EntityPlayer)
+		{
+			PETransmutation.register(((EntityPlayer) evt.entity));
+			PEAlchBags.register(((EntityPlayer) evt.entity));
 		}
 	}
 
@@ -104,7 +117,7 @@ public class PlayerEvents
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+			ItemStack[] inv = AlchemicalBags.newGet(player, ((byte) bag.getItemDamage()));
 			
 			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
@@ -121,7 +134,7 @@ public class PlayerEvents
 					event.item.setEntityItemStack(remain);
 				}
 				
-				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
+				AlchemicalBags.newSet(player, (byte) bag.getItemDamage(), inv);
 				AlchemicalBags.sync(player);
 				
 				event.setCanceled(true);

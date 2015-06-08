@@ -21,9 +21,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 public class TransmuteTile extends TileEmc implements ISidedInventory
 {
@@ -36,7 +37,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
+	public List<ItemStack> knowledge = Lists.newArrayList();
 	
 	public void handleKnowledge(ItemStack stack)
 	{
@@ -50,13 +51,13 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.newHasKnowledgeForStack(player, stack) && !Transmutation.newHasFullKnowledge(player))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.setAllKnowledge(player.getCommandSenderName());
+				Transmutation.newSetFullKnowledge(player);
 			}
 			else
 			{
@@ -65,7 +66,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 					stack.stackTagCompound = null;
 				}
 
-				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
+				Transmutation.newAddKnowledge(stack, player);
 			}
 			
 			if (!this.worldObj.isRemote)
@@ -89,7 +90,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (Transmutation.newHasKnowledgeForStack(player, stack) && !Transmutation.newHasFullKnowledge(player))
 		{
 			unlearnFlag = 300;
 
@@ -98,7 +99,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 				stack.stackTagCompound = null;
 			}
 
-			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
+			Transmutation.newRemoveKnowledge(stack, player);
 			
 			if (!this.worldObj.isRemote)
 			{
@@ -121,10 +122,11 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			updateOutputs();
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.newGetKnowledge(player)).clone()); // double cast because of clone
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -444,7 +446,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			this.setEmcValueWithPKT(Transmutation.getStoredEmc(player.getCommandSenderName()));
+			this.setEmcValueWithPKT(Transmutation.newGetEmc(player));
 		}
 		
 		updateOutputs();
@@ -455,7 +457,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			Transmutation.setStoredEmc(player.getCommandSenderName(), this.getStoredEmc());
+			Transmutation.newSetEmc(player, this.getStoredEmc());
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) player);
 		}
 		
