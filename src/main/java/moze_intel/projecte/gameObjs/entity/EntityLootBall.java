@@ -205,7 +205,7 @@ public class EntityLootBall extends Entity
 			
 			if (bag != null)
 			{
-				ItemStack[] inv = AlchemicalBags.newGet(player, (byte) bag.getItemDamage());
+				ItemStack[] inv = AlchemicalBags.get(player, (byte) bag.getItemDamage());
 				
 				for (ItemStack stack : items)
 				{
@@ -247,7 +247,7 @@ public class EntityLootBall extends Entity
 				
 				if (playSound)
 				{
-					AlchemicalBags.newSet(player, (byte) bag.getItemDamage(), inv);
+					AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);
 					AlchemicalBags.sync(player);
 				}
 			}

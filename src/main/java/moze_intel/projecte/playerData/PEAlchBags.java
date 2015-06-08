@@ -19,7 +19,8 @@ public class PEAlchBags implements IExtendedEntityProperties
 	public static final String PROP_NAME = "PEAlchBag";
 
 	private final EntityPlayer thePlayer;
-	private final Map<Byte, ItemStack[]> bagData = Maps.newHashMap();
+	private final Map<Integer, ItemStack[]> bagData = Maps.newHashMap();
+	private boolean hasMigratedData = false;
 
 	public static void register(EntityPlayer player)
 	{
@@ -36,7 +37,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		thePlayer = player;
 	}
 
-	public ItemStack[] getInv(byte color)
+	public ItemStack[] getInv(int color)
 	{
 		if (bagData.get(color) == null)
 		{
@@ -46,7 +47,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		return bagData.get(color).clone();
 	}
 
-	public void setInv(byte color, ItemStack[] inv)
+	public void setInv(int color, ItemStack[] inv)
 	{
 		bagData.put(color, inv);
 	}
@@ -59,17 +60,18 @@ public class PEAlchBags implements IExtendedEntityProperties
 		NBTTagList listOfInventories = new NBTTagList();
 		for (int i = 0; i < 16; i++)
 		{
-			if (bagData.get(((byte) i)) == null)
+			if (bagData.get(i) == null)
 			{
 				continue;
 			}
 			NBTTagCompound inventory = new NBTTagCompound();
-			inventory.setByte("color", ((byte) i));
-			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(((byte) i))));
+			inventory.setInteger("color", i);
+			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(i)));
 			listOfInventories.appendTag(inventory);
 		}
 
 		properties.setTag("data", listOfInventories);
+		properties.setBoolean("migrated", hasMigratedData);
 		compound.setTag(PROP_NAME, properties);
 	}
 
@@ -77,11 +79,17 @@ public class PEAlchBags implements IExtendedEntityProperties
 	public void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
+
 		NBTTagList listOfInventoies = properties.getTagList("data", Constants.NBT.TAG_COMPOUND);
+		if (!properties.getBoolean("migrated") && !thePlayer.worldObj.isRemote)
+		{
+			listOfInventoies = AlchemicalBags.migratePlayerData(thePlayer);
+			hasMigratedData = true;
+		}
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)
 		{
 			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
-			bagData.put(inventory.getByte("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
+			bagData.put(inventory.getInteger("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
 		}
 	}
 

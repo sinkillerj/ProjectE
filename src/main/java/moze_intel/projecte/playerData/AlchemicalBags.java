@@ -16,26 +16,72 @@ import java.util.Map.Entry;
 
 public final class AlchemicalBags 
 {
+	@Deprecated
 	private static Map<String, Map<Byte, ItemStack[]>> MAP = Maps.newLinkedHashMap();
 
-	public static ItemStack[] newGet(EntityPlayer player, byte color)
+	public static ItemStack[] get(EntityPlayer player, byte color)
 	{
 		return PEAlchBags.getDataFor(player).getInv(color).clone();
 	}
 
-	public static void newSet(EntityPlayer player, byte color, ItemStack[] inv)
+	public static void set(EntityPlayer player, byte color, ItemStack[] inv)
 	{
 		PEAlchBags.getDataFor(player).setInv(color, inv);
 	}
 
-	public static ItemStack[] get(String player, byte bagColour)
+	public static void sync(EntityPlayer player)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		PEAlchBags.getDataFor(player).saveNBTData(tag);
+		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
+	}
+
+	/**
+	 * @return NBTTagList of inventories for use in the new saving system
+	 */
+	public static NBTTagList migratePlayerData(EntityPlayer player)
+	{
+		Map<Byte, ItemStack[]> data = MAP.get(player.getCommandSenderName());
+
+		NBTTagList list = new NBTTagList();
+
+		for (Entry<Byte, ItemStack[]> entry : data.entrySet())
+		{
+			NBTTagCompound subNbt = new NBTTagCompound();
+			subNbt.setByte("color", entry.getKey());
+
+			NBTTagList subList = new NBTTagList();
+
+			ItemStack[] inv = entry.getValue();
+
+			for (int i = 0; i < inv.length; i++)
+			{
+				ItemStack stack = inv[i];
+
+				if (stack != null)
+				{
+					NBTTagCompound subNbt2 = new NBTTagCompound();
+					subNbt2.setByte("index", (byte) i);
+					stack.writeToNBT(subNbt2);
+					subList.appendTag(subNbt2);
+				}
+			}
+
+			subNbt.setTag("inv", subList);
+			list.appendTag(subNbt);
+		}
+		return list;
+	}
+
+	@Deprecated
+	public static ItemStack[] legacyGet(String player, byte bagColour)
 	{
 		Map<Byte, ItemStack[]> colorToInvMap;
 
 		if (MAP.containsKey(player))
 		{
 			colorToInvMap = MAP.get(player);
-			
+
 
 			if (colorToInvMap == null) // Should not happen, diagnostic / debug code.
 			{
@@ -50,7 +96,7 @@ public final class AlchemicalBags
 					return MAP.get(player).get(bagColour).clone();
 				}
 			}
-			
+
 			if (!colorToInvMap.containsKey(bagColour))
 			{
 				PELogger.logDebug(String.format("Created inventory array for existing player %s, new bag color %s", player, Byte.toString(bagColour)));
@@ -66,8 +112,9 @@ public final class AlchemicalBags
 			return MAP.get(player).get(bagColour).clone();
 		}
 	}
-	
-	public static void set(String player, byte bagColour, ItemStack[] inv)
+
+	@Deprecated
+	public static void legacySet(String player, byte bagColour, ItemStack[] inv)
 	{
 		Map<Byte, ItemStack[]> setdata;
 
@@ -86,22 +133,17 @@ public final class AlchemicalBags
 			MAP.put(player, setdata);
 		}
 		setdata.put(bagColour, inv);
-		
+
 		IOHandler.markDirty();
 	}
-	
-	public static void sync(EntityPlayer player)
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		PEAlchBags.getDataFor(player).saveNBTData(tag);
-		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
-	}
 
+	@Deprecated
 	public static void clear()
 	{
 		MAP.clear();
 	}
-	
+
+	@Deprecated
 	public static void loadFromNBT(NBTTagCompound nbt)
 	{
 		NBTTagList list = nbt.getTagList("data", NBT.TAG_COMPOUND);
@@ -120,10 +162,11 @@ public final class AlchemicalBags
 				inv[subNbt3.getByte("index")] = ItemStack.loadItemStackFromNBT(subNbt3);
 			}
 			
-			set(nbt.getString("player"), subNbt.getByte("color"), inv);
+			legacySet(nbt.getString("player"), subNbt.getByte("color"), inv);
 		}
 	}
-	
+
+	@Deprecated
 	private static NBTTagCompound getPlayerNBT(String player)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -167,7 +210,8 @@ public final class AlchemicalBags
 		
 		return nbt;
 	}
-	
+
+	@Deprecated
 	public static NBTTagCompound getAsNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
