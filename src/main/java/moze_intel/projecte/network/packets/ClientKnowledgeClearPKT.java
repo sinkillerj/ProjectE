@@ -14,7 +14,7 @@ public class ClientKnowledgeClearPKT implements IMessage, IMessageHandler<Client
 	@Override
 	public IMessage onMessage(ClientKnowledgeClearPKT pkt, MessageContext ctx) 
 	{
-		Transmutation.newClearKnowledge(FMLClientHandler.instance().getClientPlayerEntity());
+		Transmutation.clearKnowledge(FMLClientHandler.instance().getClientPlayerEntity());
 		return null;
 	}
 

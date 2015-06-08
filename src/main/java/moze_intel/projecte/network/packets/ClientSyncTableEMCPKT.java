@@ -21,7 +21,7 @@ public class ClientSyncTableEMCPKT implements IMessage, IMessageHandler<ClientSy
 	@Override
 	public IMessage onMessage(ClientSyncTableEMCPKT pkt, MessageContext ctx) 
 	{
-		Transmutation.newSetEmc(FMLClientHandler.instance().getClientPlayerEntity(), pkt.emc);
+		Transmutation.setEmc(FMLClientHandler.instance().getClientPlayerEntity(), pkt.emc);
 		
 		return null;
 	}

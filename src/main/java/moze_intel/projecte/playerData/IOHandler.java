@@ -79,7 +79,7 @@ public final class IOHandler
 
 				if (!username.isEmpty())
 				{
-					Transmutation.setAllKnowledge(username);
+					Transmutation.legacySetAllKnowledge(username);
 				}
 			}
 
@@ -103,7 +103,7 @@ public final class IOHandler
 					}
 				}
 
-				Transmutation.setKnowledge(subTag.getString("player"), stackList);
+				Transmutation.legacySetKnowledge(subTag.getString("player"), stackList);
 			}
 
 			NBTTagList emc = knowledge.getTagList("playerEMC", Constants.NBT.TAG_COMPOUND);
@@ -112,7 +112,7 @@ public final class IOHandler
 			{
 				NBTTagCompound tag = emc.getCompoundTagAt(i);
 
-				Transmutation.setStoredEmc(tag.getString("player"), tag.getDouble("emc"));
+				Transmutation.legacySetStoredEmc(tag.getString("player"), tag.getDouble("emc"));
 			}
 		}
 
@@ -159,9 +159,9 @@ public final class IOHandler
 		}
 	}
 
-	@Deprecated
 	public static void saveData()
 	{
+//      NO-OP data now saved by extended properties
 //		try
 //		{
 //			CompressedStreamTools.write(Transmutation.getAsNBT(), knowledgeFile);
@@ -170,7 +170,7 @@ public final class IOHandler
 //		{
 //			e.printStackTrace();
 //		}
-		
+//
 //		try
 //		{
 //			CompressedStreamTools.write(AlchemicalBags.getAsNBT(), bagDataFile);
@@ -181,7 +181,6 @@ public final class IOHandler
 //		}
 	}
 
-	@Deprecated
 	public static void markDirty()
 	{
 		if (!markedDirty)

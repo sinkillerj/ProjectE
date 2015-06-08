@@ -51,13 +51,13 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.newHasKnowledgeForStack(player, stack) && !Transmutation.newHasFullKnowledge(player))
+		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.newSetFullKnowledge(player);
+				Transmutation.setFullKnowledge(player);
 			}
 			else
 			{
@@ -66,7 +66,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 					stack.stackTagCompound = null;
 				}
 
-				Transmutation.newAddKnowledge(stack, player);
+				Transmutation.addKnowledge(stack, player);
 			}
 			
 			if (!this.worldObj.isRemote)
@@ -90,7 +90,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.newHasKnowledgeForStack(player, stack) && !Transmutation.newHasFullKnowledge(player))
+		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player))
 		{
 			unlearnFlag = 300;
 
@@ -99,7 +99,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 				stack.stackTagCompound = null;
 			}
 
-			Transmutation.newRemoveKnowledge(stack, player);
+			Transmutation.removeKnowledge(stack, player);
 			
 			if (!this.worldObj.isRemote)
 			{
@@ -126,7 +126,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.newGetKnowledge(player)).clone()); // double cast because of clone
+		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because of clone
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -446,7 +446,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			this.setEmcValueWithPKT(Transmutation.newGetEmc(player));
+			this.setEmcValueWithPKT(Transmutation.getEmc(player));
 		}
 		
 		updateOutputs();
@@ -457,7 +457,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			Transmutation.newSetEmc(player, this.getStoredEmc());
+			Transmutation.setEmc(player, this.getStoredEmc());
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) player);
 		}
 		

@@ -22,7 +22,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
@@ -154,8 +153,8 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
-		IOHandler.saveData();
-		PELogger.logInfo("Saved transmutation and alchemical bag data.");
+//		IOHandler.saveData();
+//		PELogger.logInfo("Saved transmutation and alchemical bag data.");
 	}
 	
 	@Mod.EventHandler

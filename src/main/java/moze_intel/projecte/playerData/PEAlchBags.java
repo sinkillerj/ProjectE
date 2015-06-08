@@ -18,9 +18,9 @@ public class PEAlchBags implements IExtendedEntityProperties
 {
 	public static final String PROP_NAME = "PEAlchBag";
 
-	private final EntityPlayer thePlayer;
+	private final EntityPlayer player;
 	private final Map<Integer, ItemStack[]> bagData = Maps.newHashMap();
-	private boolean hasMigratedData = false;
+	private boolean hasMigrated = false;
 
 	public static void register(EntityPlayer player)
 	{
@@ -34,7 +34,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 
 	public PEAlchBags(EntityPlayer player)
 	{
-		thePlayer = player;
+		this.player = player;
 	}
 
 	public ItemStack[] getInv(int color)
@@ -42,7 +42,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		if (bagData.get(color) == null)
 		{
 			bagData.put(color, new ItemStack[104]);
-			PELogger.logInfo("Created new inventory array for color " + color + " and player " + thePlayer.getCommandSenderName());
+			PELogger.logInfo("Created new inventory array for color " + color + " and player " + player.getCommandSenderName());
 		}
 		return bagData.get(color).clone();
 	}
@@ -71,7 +71,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		}
 
 		properties.setTag("data", listOfInventories);
-		properties.setBoolean("migrated", hasMigratedData);
+		properties.setBoolean("migrated", hasMigrated);
 		compound.setTag(PROP_NAME, properties);
 	}
 
@@ -81,10 +81,12 @@ public class PEAlchBags implements IExtendedEntityProperties
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
 
 		NBTTagList listOfInventoies = properties.getTagList("data", Constants.NBT.TAG_COMPOUND);
-		if (!properties.getBoolean("migrated") && !thePlayer.worldObj.isRemote)
+		hasMigrated = properties.getBoolean("migrated");
+		if (!hasMigrated && !player.worldObj.isRemote)
 		{
-			listOfInventoies = AlchemicalBags.migratePlayerData(thePlayer);
-			hasMigratedData = true;
+			listOfInventoies = AlchemicalBags.migratePlayerData(player);
+			PELogger.logInfo("Migrated data for player: " + player.getCommandSenderName());
+			hasMigrated = true;
 		}
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)
 		{

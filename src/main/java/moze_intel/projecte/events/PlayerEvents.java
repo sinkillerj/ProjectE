@@ -10,13 +10,11 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.PEAlchBags;
 import moze_intel.projecte.playerData.PETransmutation;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -30,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerEvents
 {
@@ -41,7 +38,7 @@ public class PlayerEvents
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.sync((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.newGetEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
 		}
 	}
 
@@ -139,18 +136,6 @@ public class PlayerEvents
 				
 				event.setCanceled(true);
 			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void playerSaveData(PlayerEvent.SaveToFile event)
-	{
-		if (IOHandler.markedDirty)
-		{
-			IOHandler.saveData();
-			PELogger.logInfo("Saved transmutation and alchemical bag data.");
-			
-			IOHandler.markedDirty = false;
 		}
 	}
 }

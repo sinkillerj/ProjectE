@@ -133,8 +133,6 @@ public final class AlchemicalBags
 			MAP.put(player, setdata);
 		}
 		setdata.put(bagColour, inv);
-
-		IOHandler.markDirty();
 	}
 
 	@Deprecated

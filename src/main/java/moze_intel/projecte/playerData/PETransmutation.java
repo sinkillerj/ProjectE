@@ -1,8 +1,8 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,16 +14,15 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class PETransmutation implements IExtendedEntityProperties
 {
-	private final EntityPlayer thePlayer;
+	private final EntityPlayer player;
 
 	private double transmutationEmc;
 	private List<ItemStack> knowledge = Lists.newArrayList();
 	private boolean hasFullKnowledge;
-	private Map<Byte, ItemStack[]> bagData = Maps.newHashMap();
+	private boolean hasMigrated = false;
 
 	public static final String PROP_NAME = "PETransmutation";
 
@@ -39,7 +38,7 @@ public class PETransmutation implements IExtendedEntityProperties
 
 	public PETransmutation(EntityPlayer player)
 	{
-		thePlayer = player;
+		this.player = player;
 	}
 
 	public boolean hasFullKnowledge()
@@ -90,6 +89,7 @@ public class PETransmutation implements IExtendedEntityProperties
 			knowledgeWrite.appendTag(tag);
 		}
 		properties.setTag("knowledge", knowledgeWrite);
+		properties.setBoolean("migrated", hasMigrated);
 		compound.setTag(PROP_NAME, properties);
 	}
 
@@ -97,6 +97,13 @@ public class PETransmutation implements IExtendedEntityProperties
 	public void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
+		hasMigrated = properties.getBoolean("migrated");
+		if (!hasMigrated && !player.worldObj.isRemote)
+		{
+			properties = Transmutation.migratePlayerData(player);
+			PELogger.logInfo("Migrated transmutation data for player: " + player.getCommandSenderName());
+			hasMigrated = true;
+		}
 
 		transmutationEmc = properties.getDouble("transmutationEmc");
 		hasFullKnowledge = properties.getBoolean("tome");
