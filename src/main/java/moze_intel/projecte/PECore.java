@@ -32,7 +32,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
@@ -163,10 +162,9 @@ public class PECore
 		TileEntityHandler.clearAll();
 		PELogger.logDebug("Cleared tile entity maps.");
 
-		Transmutation.clear();
-		AlchemicalBags.clear();
-		PELogger.logDebug("Cleared player data.");
-		
+		Transmutation.clearCache();
+		PELogger.logDebug("Cleared cached tome knowledge");
+
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
 		

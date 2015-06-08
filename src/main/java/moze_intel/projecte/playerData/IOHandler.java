@@ -19,41 +19,41 @@ public final class IOHandler
 	
 	public static void init(File knowledge, File bagData)
 	{
-		markedDirty = false;
-		
 		if (!knowledge.exists())
 		{
-			try 
-			{
-				knowledge.createNewFile();
-			}
-			catch (IOException e) 
-			{
-				PELogger.logFatal("Couldn't create transmutation knowledge file!");
-				e.printStackTrace();
-			}
+//			try
+//			{
+//				knowledge.createNewFile();
+//			}
+//			catch (IOException e)
+//			{
+//				PELogger.logFatal("Couldn't create transmutation knowledge file!");
+//				e.printStackTrace();
+//			}
+			return;
 		}
 		
 		if (!bagData.exists())
 		{
-			try 
-			{
-				bagData.createNewFile();
-			}
-			catch (IOException e) 
-			{
-				PELogger.logFatal("Couldn't create alchemical bag data file!");
-				e.printStackTrace();
-			}
+//			try
+//			{
+//				bagData.createNewFile();
+//			}
+//			catch (IOException e)
+//			{
+//				PELogger.logFatal("Couldn't create alchemical bag data file!");
+//				e.printStackTrace();
+//			}
+			return;
 		}
 		
 		knowledgeFile = knowledge;
 		bagDataFile = bagData;
 		
-		readData();
+		readLegacyData();
 	}
 	
-	private static void readData()
+	private static void readLegacyData()
 	{
 		NBTTagCompound knowledge = null;
 
@@ -159,33 +159,8 @@ public final class IOHandler
 		}
 	}
 
-	public static void saveData()
-	{
-//      NO-OP data now saved by extended properties
-//		try
-//		{
-//			CompressedStreamTools.write(Transmutation.getAsNBT(), knowledgeFile);
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//
-//		try
-//		{
-//			CompressedStreamTools.write(AlchemicalBags.getAsNBT(), bagDataFile);
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-	}
-
 	public static void markDirty()
 	{
-		if (!markedDirty)
-		{
-			markedDirty = true;
-		}
+		// NO-OP - Remove in future
 	}
 }

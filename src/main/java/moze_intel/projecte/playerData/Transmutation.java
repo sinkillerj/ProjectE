@@ -1,5 +1,6 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
@@ -12,13 +13,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 
 public final class Transmutation 
 {
@@ -29,7 +28,7 @@ public final class Transmutation
 	@Deprecated
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
 
-	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = new LinkedList<ItemStack>();
+	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newLinkedList();
 	
 	public static void cacheFullKnowledge()
 	{
@@ -145,12 +144,12 @@ public final class Transmutation
 		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(tag), (EntityPlayerMP) player);
 	}
 
-	public static void clear()
+	public static void clearCache()
 	{
 		MAP.clear();
 		TOME_KNOWLEDGE.clear();
-		CACHED_TOME_KNOWLEDGE.clear();
 		EMC_STORAGE.clear();
+		CACHED_TOME_KNOWLEDGE.clear();
 	}
 
 	public static NBTTagCompound migratePlayerData(EntityPlayer player)
@@ -199,52 +198,6 @@ public final class Transmutation
 	}
 
 	@Deprecated
-	public static void legacyAddToKnowledge(String username, ItemStack stack)
-	{
-		if (TOME_KNOWLEDGE.contains(username))
-		{
-			return;
-		}
-
-		if (MAP.containsKey(username))
-		{
-			MAP.get(username).add(stack);
-		}
-		else
-		{
-			LinkedList<ItemStack> list = new LinkedList<ItemStack>();
-			list.add(stack);
-			MAP.put(username, list);
-		}
-	}
-
-	@Deprecated
-	public static void legacyRemoveFromKnowledge(String username, ItemStack stack)
-	{
-		if (TOME_KNOWLEDGE.contains(username))
-		{
-			return;
-		}
-
-		if (MAP.containsKey(username))
-		{
-			Iterator<ItemStack> iter = MAP.get(username).iterator();
-
-			while (iter.hasNext())
-			{
-				ItemStack knownstack = iter.next();
-
-				if (knownstack.areItemStacksEqual(knownstack, stack))
-				{
-					MAP.get(username).remove(knownstack);
-					break;
-				}
-			}
-		}
-
-	}
-
-	@Deprecated
 	public static void legacySetAllKnowledge(String username)
 	{
 		if (!TOME_KNOWLEDGE.contains(username))
@@ -265,42 +218,9 @@ public final class Transmutation
 	}
 
 	@Deprecated
-	public static boolean legacyHasKnowledgeForStack(EntityPlayer player, ItemStack stack)
-	{
-		for (ItemStack s : Transmutation.legacyGetKnowledge(player.getCommandSenderName()))
-		{
-			if (s == null)
-			{
-				continue;
-			}
-
-			if (stack.getItem().equals(s.getItem()) && stack.getItemDamage() == s.getItemDamage())
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Deprecated
 	public static boolean legacyHasFullKnowledge(String username)
 	{
 		return TOME_KNOWLEDGE.contains(username);
-	}
-
-	@Deprecated
-	public static void legacyClearKnowledge(String username)
-	{
-		if (TOME_KNOWLEDGE.contains(username))
-		{
-			TOME_KNOWLEDGE.remove(username);
-		}
-
-		if (MAP.containsKey(username))
-		{
-			MAP.remove(username);
-		}
 	}
 
 	@Deprecated
@@ -318,122 +238,5 @@ public final class Transmutation
 	public static void legacySetStoredEmc(String username, double emc)
 	{
 		EMC_STORAGE.put(username, emc);
-	}
-
-	@Deprecated
-	public static void loadFromNBT(NBTTagCompound playerKnowledge)
-	{
-		String player = playerKnowledge.getString("player");
-		
-		legacyClearKnowledge(player);
-		
-		if (playerKnowledge.getBoolean("tome"))
-		{
-			cacheFullKnowledge();
-			
-			legacySetAllKnowledge(player);
-		}
-		else
-		{
-			NBTTagList list = playerKnowledge.getTagList("data", NBT.TAG_COMPOUND);
-			
-			LinkedList<ItemStack> itemList = new LinkedList<ItemStack>(); 
-			
-			for (int i = 0; i < list.tagCount(); i++)
-			{
-				ItemStack stack = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-				
-				if (stack != null)
-				{
-					itemList.add(stack);
-				}
-			}
-			
-			legacySetKnowledge(player, itemList);
-		}
-	}
-
-	@Deprecated
-	private static NBTTagCompound getPlayerNBT(String username)
-	{
-		NBTTagCompound knowledge = new NBTTagCompound();
-		
-		knowledge.setString("player", username);
-		
-		knowledge.setBoolean("tome", TOME_KNOWLEDGE.contains(username));
-		
-		NBTTagList list = new NBTTagList();
-		
-		for (ItemStack stack : legacyGetKnowledge(username))
-		{
-			if (stack != null)
-			{
-				NBTTagCompound nbt = new NBTTagCompound();
-				stack.writeToNBT(nbt);
-				list.appendTag(nbt);
-			}
-		}
-		
-		knowledge.setTag("data", list);
-		
-		return knowledge;
-	}
-
-	@Deprecated
-	public static NBTTagCompound getAsNBT()
-	{
-		NBTTagCompound knowledge = new NBTTagCompound();
-		
-		NBTTagList tomeKnowledge = new NBTTagList();
-		
-		for (String username : TOME_KNOWLEDGE)
-		{
-			NBTTagCompound usernameNBT = new NBTTagCompound();
-			usernameNBT.setString("player", username);
-			tomeKnowledge.appendTag(usernameNBT);
-		}
-		
-		knowledge.setTag("Tome Knowledge", tomeKnowledge);
-		
-		NBTTagList list = new NBTTagList();
-		
-		for (Entry<String, LinkedList<ItemStack>> entry : MAP.entrySet())
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			
-			nbt.setString("player", entry.getKey());
-			
-			NBTTagList items = new NBTTagList();
-			
-			for (ItemStack stack : entry.getValue())
-			{
-				if (stack != null)
-				{
-					NBTTagCompound itemNbt = new NBTTagCompound();
-					stack.writeToNBT(itemNbt);
-					items.appendTag(itemNbt);
-				}
-			}
-			
-			nbt.setTag("data", items);
-			list.appendTag(nbt);
-		}
-		
-		knowledge.setTag("knowledge", list);
-		
-		NBTTagList playerEMC = new NBTTagList();
-		
-		for (Entry<String, Double> entry : EMC_STORAGE.entrySet())
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setString("player", entry.getKey());
-			nbt.setDouble("emc", entry.getValue());
-			
-			playerEMC.appendTag(nbt);
-		}
-		
-		knowledge.setTag("playerEMC", playerEMC);
-		
-		return knowledge;
 	}
 }

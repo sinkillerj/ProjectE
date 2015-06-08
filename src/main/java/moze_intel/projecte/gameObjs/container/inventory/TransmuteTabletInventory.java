@@ -135,7 +135,7 @@ public class TransmuteTabletInventory implements IInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because of clone
+		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because List is not cloneable and clone() returns Object
 
 		for (int i : MATTER_INDEXES)
 		{
