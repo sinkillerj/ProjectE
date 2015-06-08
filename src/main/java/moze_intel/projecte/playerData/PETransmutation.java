@@ -109,6 +109,7 @@ public class PETransmutation implements IExtendedEntityProperties
 		hasFullKnowledge = properties.getBoolean("tome");
 
 		NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+		knowledge.clear();
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
