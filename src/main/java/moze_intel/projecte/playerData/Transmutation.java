@@ -97,7 +97,7 @@ public final class Transmutation
 		}
 	}
 
-	public static boolean hasKnowledgeForStack(EntityPlayer player, ItemStack stack)
+	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
 		PETransmutation data = PETransmutation.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())

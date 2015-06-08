@@ -114,7 +114,7 @@ public class PlayerEvents
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBags.get(player, ((byte) bag.getItemDamage()));
+			ItemStack[] inv = AlchemicalBags.get(player, (byte) bag.getItemDamage());
 			
 			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{

@@ -60,7 +60,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player))
+		if (!Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			learnFlag = 300;
 			
@@ -99,7 +99,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player))
+		if (Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			unlearnFlag = 300;
 
