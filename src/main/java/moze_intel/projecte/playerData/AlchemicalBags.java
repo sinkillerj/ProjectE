@@ -19,25 +19,25 @@ public final class AlchemicalBags
 
 	public static ItemStack[] get(EntityPlayer player, byte color)
 	{
-		return PEAlchBags.getDataFor(player).getInv(color);
+		return AlchBagProps.getDataFor(player).getInv(color);
 	}
 
 	public static void set(EntityPlayer player, byte color, ItemStack[] inv)
 	{
-		PEAlchBags.getDataFor(player).setInv(color, inv);
+		AlchBagProps.getDataFor(player).setInv(color, inv);
 	}
 
 	public static void syncFull(EntityPlayer player)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		PEAlchBags.getDataFor(player).saveNBTData(tag);
+		AlchBagProps.getDataFor(player).saveNBTData(tag);
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
 
 	public static void syncPartial(EntityPlayer player, int color)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		PEAlchBags.getDataFor(player).saveSingleNBTData(tag, color);
+		AlchBagProps.getDataFor(player).savePartial(tag, color);
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
 

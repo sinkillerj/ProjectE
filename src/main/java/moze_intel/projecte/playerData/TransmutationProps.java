@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.Constants;
 import java.util.Iterator;
 import java.util.List;
 
-public class PETransmutation implements IExtendedEntityProperties
+public class TransmutationProps implements IExtendedEntityProperties
 {
 	private final EntityPlayer player;
 
@@ -24,39 +24,44 @@ public class PETransmutation implements IExtendedEntityProperties
 	private boolean hasFullKnowledge;
 	private boolean hasMigrated = false;
 
-	public static final String PROP_NAME = "PETransmutation";
+	public static final String PROP_NAME = "ProjectETransmutation";
 
 	public static void register(EntityPlayer player)
 	{
-		player.registerExtendedProperties(PROP_NAME, new PETransmutation(player));
+		player.registerExtendedProperties(PROP_NAME, new TransmutationProps(player));
 	}
 
-	public static PETransmutation getDataFor(EntityPlayer player)
+	public static TransmutationProps getDataFor(EntityPlayer player)
 	{
-		return ((PETransmutation) player.getExtendedProperties(PROP_NAME));
+		return ((TransmutationProps) player.getExtendedProperties(PROP_NAME));
 	}
 
-	public PETransmutation(EntityPlayer player)
+	public TransmutationProps(EntityPlayer player)
 	{
 		this.player = player;
 	}
 
-	public boolean hasFullKnowledge()
+	protected boolean hasFullKnowledge()
 	{
 		return hasFullKnowledge;
 	}
 
-	public double getTransmutationEmc()
+	protected void setFullKnowledge(boolean fullKnowledge)
+	{
+		this.hasFullKnowledge = fullKnowledge;
+	}
+
+	protected double getTransmutationEmc()
 	{
 		return transmutationEmc;
 	}
 
-	public void setTransmutationEmc(double transmutationEmc)
+	protected void setTransmutationEmc(double transmutationEmc)
 	{
 		this.transmutationEmc = transmutationEmc;
 	}
 
-	public List<ItemStack> getKnowledge()
+	protected List<ItemStack> getKnowledge()
 	{
 		pruneStaleKnowledge();
 		return knowledge;
@@ -124,13 +129,5 @@ public class PETransmutation implements IExtendedEntityProperties
 	}
 
 	@Override
-	public void init(Entity entity, World world)
-	{
-
-	}
-
-	public void setFullKnowledge(boolean fullKnowledge)
-	{
-		this.hasFullKnowledge = fullKnowledge;
-	}
+	public void init(Entity entity, World world) {}
 }

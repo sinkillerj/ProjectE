@@ -14,9 +14,9 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.Map;
 
-public class PEAlchBags implements IExtendedEntityProperties
+public class AlchBagProps implements IExtendedEntityProperties
 {
-	public static final String PROP_NAME = "PEAlchBag";
+	public static final String PROP_NAME = "ProjectEAlchBag";
 
 	private final EntityPlayer player;
 	private final Map<Integer, ItemStack[]> bagData = Maps.newHashMap();
@@ -24,20 +24,20 @@ public class PEAlchBags implements IExtendedEntityProperties
 
 	public static void register(EntityPlayer player)
 	{
-		player.registerExtendedProperties(PROP_NAME, new PEAlchBags(player));
+		player.registerExtendedProperties(PROP_NAME, new AlchBagProps(player));
 	}
 
-	public static PEAlchBags getDataFor(EntityPlayer player)
+	public static AlchBagProps getDataFor(EntityPlayer player)
 	{
-		return ((PEAlchBags) player.getExtendedProperties(PROP_NAME));
+		return ((AlchBagProps) player.getExtendedProperties(PROP_NAME));
 	}
 
-	public PEAlchBags(EntityPlayer player)
+	public AlchBagProps(EntityPlayer player)
 	{
 		this.player = player;
 	}
 
-	public ItemStack[] getInv(int color)
+	protected ItemStack[] getInv(int color)
 	{
 		if (bagData.get(color) == null)
 		{
@@ -47,7 +47,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		return bagData.get(color).clone();
 	}
 
-	public void setInv(int color, ItemStack[] inv)
+	protected void setInv(int color, ItemStack[] inv)
 	{
 		bagData.put(color, inv);
 	}
@@ -76,9 +76,9 @@ public class PEAlchBags implements IExtendedEntityProperties
 	}
 
 	/**
-	 * Performs what is structured like a full save, but only write one bag's data. Used for sync packets
+	 * Performs what is structured like a full save, but only write one bag's data. Used for partial sync packets
 	 */
-	protected void saveSingleNBTData(NBTTagCompound compound, int color)
+	protected void savePartial(NBTTagCompound compound, int color)
 	{
 		NBTTagCompound properties = new NBTTagCompound();
 

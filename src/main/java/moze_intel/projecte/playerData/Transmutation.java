@@ -59,7 +59,7 @@ public final class Transmutation
 
 	public static List<ItemStack> getKnowledge(EntityPlayer player)
 	{
-		PETransmutation data = PETransmutation.getDataFor(player);
+		TransmutationProps data = TransmutationProps.getDataFor(player);
 		if (data.hasFullKnowledge())
 		{
 			return CACHED_TOME_KNOWLEDGE;
@@ -72,7 +72,7 @@ public final class Transmutation
 
 	public static void addKnowledge(ItemStack stack, EntityPlayer player)
 	{
-		PETransmutation data = PETransmutation.getDataFor(player);
+		TransmutationProps data = TransmutationProps.getDataFor(player);
 		if (!data.hasFullKnowledge())
 		{
 			data.getKnowledge().add(stack);
@@ -81,7 +81,7 @@ public final class Transmutation
 
 	public static void removeKnowledge(ItemStack stack, EntityPlayer player)
 	{
-		PETransmutation data = PETransmutation.getDataFor(player);
+		TransmutationProps data = TransmutationProps.getDataFor(player);
 		if (!data.hasFullKnowledge())
 		{
 			Iterator<ItemStack> iter = data.getKnowledge().iterator();
@@ -99,7 +99,7 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
-		PETransmutation data = PETransmutation.getDataFor(player);
+		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
 			if (ItemStack.areItemStacksEqual(s, stack))
@@ -112,35 +112,35 @@ public final class Transmutation
 
 	public static boolean hasFullKnowledge(EntityPlayer player)
 	{
-		return PETransmutation.getDataFor(player).hasFullKnowledge();
+		return TransmutationProps.getDataFor(player).hasFullKnowledge();
 	}
 
 	public static void setFullKnowledge(EntityPlayer player)
 	{
-		PETransmutation.getDataFor(player).setFullKnowledge(true);
+		TransmutationProps.getDataFor(player).setFullKnowledge(true);
 	}
 
 	public static void clearKnowledge(EntityPlayer player)
 	{
-		PETransmutation data = PETransmutation.getDataFor(player);
+		TransmutationProps data = TransmutationProps.getDataFor(player);
 		data.setFullKnowledge(false);
 		data.getKnowledge().clear();
 	}
 
 	public static double getEmc(EntityPlayer player)
 	{
-		return PETransmutation.getDataFor(player).getTransmutationEmc();
+		return TransmutationProps.getDataFor(player).getTransmutationEmc();
 	}
 
 	public static void setEmc(EntityPlayer player, double emc)
 	{
-		PETransmutation.getDataFor(player).setTransmutationEmc(emc);
+		TransmutationProps.getDataFor(player).setTransmutationEmc(emc);
 	}
 
 	public static void sync(EntityPlayer player)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		PETransmutation.getDataFor(player).saveNBTData(tag);
+		TransmutationProps.getDataFor(player).saveNBTData(tag);
 		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(tag), (EntityPlayerMP) player);
 	}
 

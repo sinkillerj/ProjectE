@@ -10,8 +10,8 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.playerData.PEAlchBags;
-import moze_intel.projecte.playerData.PETransmutation;
+import moze_intel.projecte.playerData.AlchBagProps;
+import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -47,8 +47,8 @@ public class PlayerEvents
 	{
 		if (evt.entity instanceof EntityPlayer)
 		{
-			PETransmutation.register(((EntityPlayer) evt.entity));
-			PEAlchBags.register(((EntityPlayer) evt.entity));
+			TransmutationProps.register(((EntityPlayer) evt.entity));
+			AlchBagProps.register(((EntityPlayer) evt.entity));
 		}
 	}
 
