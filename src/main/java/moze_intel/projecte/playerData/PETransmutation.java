@@ -98,10 +98,13 @@ public class PETransmutation implements IExtendedEntityProperties
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
 		hasMigrated = properties.getBoolean("migrated");
-		if (!hasMigrated && !player.worldObj.isRemote)
+		if (!hasMigrated && !player.worldObj.isRemote) // hasMigrated is also false if tag was not present
 		{
-			properties = Transmutation.migratePlayerData(player);
-			PELogger.logInfo("Migrated transmutation data for player: " + player.getCommandSenderName());
+			if (Transmutation.hasLegacyData(player))
+			{
+				properties = Transmutation.migratePlayerData(player);
+				PELogger.logInfo("Migrated transmutation data for player: " + player.getCommandSenderName());
+			}
 			hasMigrated = true;
 		}
 

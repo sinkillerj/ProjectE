@@ -82,10 +82,13 @@ public class PEAlchBags implements IExtendedEntityProperties
 
 		NBTTagList listOfInventoies = properties.getTagList("data", Constants.NBT.TAG_COMPOUND);
 		hasMigrated = properties.getBoolean("migrated");
-		if (!hasMigrated && !player.worldObj.isRemote)
+		if (!hasMigrated && !player.worldObj.isRemote) // hasMigrated is also false if tag was not present
 		{
-			listOfInventoies = AlchemicalBags.migratePlayerData(player);
-			PELogger.logInfo("Migrated data for player: " + player.getCommandSenderName());
+			if (AlchemicalBags.hasLegacyData(player))
+			{
+				listOfInventoies = AlchemicalBags.migratePlayerData(player);
+				PELogger.logInfo("Migrated data for player: " + player.getCommandSenderName());
+			}
 			hasMigrated = true;
 		}
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)

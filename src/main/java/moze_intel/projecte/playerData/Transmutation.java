@@ -152,6 +152,13 @@ public final class Transmutation
 		CACHED_TOME_KNOWLEDGE.clear();
 	}
 
+	public static boolean hasLegacyData(EntityPlayer player)
+	{
+		return MAP.containsKey(player.getCommandSenderName())
+				|| TOME_KNOWLEDGE.contains(player.getCommandSenderName())
+				|| EMC_STORAGE.containsKey(player.getCommandSenderName());
+	}
+
 	public static NBTTagCompound migratePlayerData(EntityPlayer player)
 	{
 		NBTTagCompound properties = new NBTTagCompound();

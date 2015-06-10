@@ -35,6 +35,14 @@ public final class AlchemicalBags
 	}
 
 	/**
+	 * @return If legacy data exists for this player
+	 */
+	public static boolean hasLegacyData(EntityPlayer player)
+	{
+		return MAP.containsKey(player.getCommandSenderName());
+	}
+
+	/**
 	 * @return NBTTagList of inventories for use in the new saving system
 	 */
 	public static NBTTagList migratePlayerData(EntityPlayer player)
@@ -46,7 +54,7 @@ public final class AlchemicalBags
 		for (Entry<Byte, ItemStack[]> entry : data.entrySet())
 		{
 			NBTTagCompound subNbt = new NBTTagCompound();
-			subNbt.setByte("color", entry.getKey());
+			subNbt.setInteger("color", entry.getKey());
 
 			NBTTagList subList = new NBTTagList();
 
