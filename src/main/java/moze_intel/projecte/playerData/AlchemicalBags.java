@@ -30,14 +30,14 @@ public final class AlchemicalBags
 	public static void syncFull(EntityPlayer player)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		AlchBagProps.getDataFor(player).saveNBTData(tag);
+		AlchBagProps.getDataFor(player).saveForPacket(tag);
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
 
 	public static void syncPartial(EntityPlayer player, int color)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		AlchBagProps.getDataFor(player).savePartial(tag, color);
+		AlchBagProps.getDataFor(player).saveForPartialPacket(tag, color);
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
 

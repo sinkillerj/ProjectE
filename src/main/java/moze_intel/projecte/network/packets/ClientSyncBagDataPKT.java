@@ -23,7 +23,7 @@ public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyn
 	@Override
 	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
 	{
-		AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity()).loadNBTData(message.nbt);
+		AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity()).readFromPacket(message.nbt);
 		return null;
 	}
 

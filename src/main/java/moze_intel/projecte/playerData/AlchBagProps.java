@@ -52,6 +52,60 @@ public class AlchBagProps implements IExtendedEntityProperties
 		bagData.put(color, inv);
 	}
 
+	protected void saveForPacket(NBTTagCompound compound)
+	{
+		NBTTagList listOfInventories = new NBTTagList();
+		for (int i = 0; i < 16; i++)
+		{
+			if (bagData.get(i) == null)
+			{
+				continue;
+			}
+			NBTTagCompound inventory = new NBTTagCompound();
+			inventory.setInteger("color", i);
+			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(i)));
+			listOfInventories.appendTag(inventory);
+		}
+		compound.setTag("data", listOfInventories);
+	}
+	/**
+	 * Only write one bag's data. Used for partial sync packets
+	 */
+	protected void saveForPartialPacket(NBTTagCompound compound, int color)
+	{
+		NBTTagList listOfInventories = new NBTTagList();
+		if (bagData.get(color) == null)
+		{
+			return;
+		}
+		NBTTagCompound inventory = new NBTTagCompound();
+		inventory.setInteger("color", color);
+		inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(color)));
+		listOfInventories.appendTag(inventory);
+		compound.setTag("data", listOfInventories);
+	}
+
+	public void readFromPacket(NBTTagCompound compound)
+	{
+		NBTTagList listOfInventoies = compound.getTagList("data", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < listOfInventoies.tagCount(); i++)
+		{
+			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
+			bagData.put(inventory.getInteger("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
+		}
+	}
+
+	private ItemStack[] copyNBTToArray(NBTTagList list)
+	{
+		ItemStack[] s = new ItemStack[104];
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			NBTTagCompound entry = list.getCompoundTagAt(i);
+			s[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
+		}
+		return s;
+	}
+
 	@Override
 	public void saveNBTData(NBTTagCompound compound)
 	{
@@ -69,28 +123,6 @@ public class AlchBagProps implements IExtendedEntityProperties
 			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(i)));
 			listOfInventories.appendTag(inventory);
 		}
-
-		properties.setTag("data", listOfInventories);
-		properties.setBoolean("migrated", hasMigrated);
-		compound.setTag(PROP_NAME, properties);
-	}
-
-	/**
-	 * Performs what is structured like a full save, but only write one bag's data. Used for partial sync packets
-	 */
-	protected void savePartial(NBTTagCompound compound, int color)
-	{
-		NBTTagCompound properties = new NBTTagCompound();
-
-		NBTTagList listOfInventories = new NBTTagList();
-		if (bagData.get(color) == null)
-		{
-			return;
-		}
-		NBTTagCompound inventory = new NBTTagCompound();
-		inventory.setInteger("color", color);
-		inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(color)));
-		listOfInventories.appendTag(inventory);
 
 		properties.setTag("data", listOfInventories);
 		properties.setBoolean("migrated", hasMigrated);
@@ -118,17 +150,6 @@ public class AlchBagProps implements IExtendedEntityProperties
 			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
 			bagData.put(inventory.getInteger("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
 		}
-	}
-
-	private ItemStack[] copyNBTToArray(NBTTagList list)
-	{
-		ItemStack[] s = new ItemStack[104];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound entry = list.getCompoundTagAt(i);
-			s[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
-		}
-		return s;
 	}
 
 	@Override

@@ -79,6 +79,38 @@ public class TransmutationProps implements IExtendedEntityProperties
 		}
 	}
 
+	protected void saveForPacket(NBTTagCompound compound)
+	{
+		compound.setDouble("transmutationEmc", transmutationEmc);
+		compound.setBoolean("tome", hasFullKnowledge);
+
+		pruneStaleKnowledge();
+		NBTTagList knowledgeWrite = new NBTTagList();
+		for (ItemStack i : knowledge)
+		{
+			NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
+			knowledgeWrite.appendTag(tag);
+		}
+		compound.setTag("knowledge", knowledgeWrite);
+	}
+
+	public void readFromPacket(NBTTagCompound compound)
+	{
+		transmutationEmc = compound.getDouble("transmutationEmc");
+		hasFullKnowledge = compound.getBoolean("tome");
+
+		NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+		knowledge.clear();
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+			if (item != null)
+			{
+				knowledge.add(item);
+			}
+		}
+	}
+
 	@Override
 	public void saveNBTData(NBTTagCompound compound)
 	{
@@ -117,7 +149,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 		hasFullKnowledge = properties.getBoolean("tome");
 
 		NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-		knowledge.clear();
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
