@@ -124,7 +124,7 @@ public class AlchBagInventory implements IInventory
 		if (!player.worldObj.isRemote)
 		{
 			AlchemicalBags.set(player, (byte) invItem.getItemDamage(), inventory);
-			AlchemicalBags.sync(player);
+			AlchemicalBags.syncPartial(player, invItem.getItemDamage());
 		}
 	}
 	

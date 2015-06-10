@@ -27,10 +27,17 @@ public final class AlchemicalBags
 		PEAlchBags.getDataFor(player).setInv(color, inv);
 	}
 
-	public static void sync(EntityPlayer player)
+	public static void syncFull(EntityPlayer player)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		PEAlchBags.getDataFor(player).saveNBTData(tag);
+		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
+	}
+
+	public static void syncPartial(EntityPlayer player, int color)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		PEAlchBags.getDataFor(player).saveSingleNBTData(tag, color);
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(tag), (EntityPlayerMP) player);
 	}
 

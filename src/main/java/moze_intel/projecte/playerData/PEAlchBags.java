@@ -75,6 +75,28 @@ public class PEAlchBags implements IExtendedEntityProperties
 		compound.setTag(PROP_NAME, properties);
 	}
 
+	/**
+	 * Performs what is structured like a full save, but only write one bag's data. Used for sync packets
+	 */
+	protected void saveSingleNBTData(NBTTagCompound compound, int color)
+	{
+		NBTTagCompound properties = new NBTTagCompound();
+
+		NBTTagList listOfInventories = new NBTTagList();
+		if (bagData.get(color) == null)
+		{
+			return;
+		}
+		NBTTagCompound inventory = new NBTTagCompound();
+		inventory.setInteger("color", color);
+		inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(color)));
+		listOfInventories.appendTag(inventory);
+
+		properties.setTag("data", listOfInventories);
+		properties.setBoolean("migrated", hasMigrated);
+		compound.setTag(PROP_NAME, properties);
+	}
+
 	@Override
 	public void loadNBTData(NBTTagCompound compound)
 	{

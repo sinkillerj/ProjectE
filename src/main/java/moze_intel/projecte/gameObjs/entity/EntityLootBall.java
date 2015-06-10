@@ -248,7 +248,7 @@ public class EntityLootBall extends Entity
 				if (playSound)
 				{
 					AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);
-					AlchemicalBags.sync(player);
+					AlchemicalBags.syncPartial(player, bag.getItemDamage());
 				}
 			}
 			else

@@ -82,7 +82,7 @@ public class AlchemicalBag extends ItemPE
 					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
 				}
 			}
-			// Do not AlchemicalBags.set/sync here - vanilla handles it because it's the open container
+			// Do not AlchemicalBags.set/syncPartial here - vanilla handles it because it's the open container
 		}
 		else
 		{
@@ -98,7 +98,7 @@ public class AlchemicalBag extends ItemPE
 			if (!player.worldObj.isRemote)
 			{
 				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
-				AlchemicalBags.sync(player);
+				AlchemicalBags.syncPartial(player, stack.getItemDamage());
 			}
 		}
 	}

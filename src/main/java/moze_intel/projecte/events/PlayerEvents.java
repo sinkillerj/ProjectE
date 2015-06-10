@@ -37,7 +37,7 @@ public class PlayerEvents
 		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
-			AlchemicalBags.sync((EntityPlayer) event.entity);
+			AlchemicalBags.syncFull((EntityPlayer) event.entity);
 			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
 		}
 	}
@@ -132,7 +132,7 @@ public class PlayerEvents
 				}
 				
 				AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);
-				AlchemicalBags.sync(player);
+				AlchemicalBags.syncPartial(player, bag.getItemDamage());
 				
 				event.setCanceled(true);
 			}
