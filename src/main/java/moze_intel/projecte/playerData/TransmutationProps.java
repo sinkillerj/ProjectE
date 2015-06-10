@@ -79,8 +79,9 @@ public class TransmutationProps implements IExtendedEntityProperties
 		}
 	}
 
-	protected void saveForPacket(NBTTagCompound compound)
+	protected NBTTagCompound saveForPacket()
 	{
+		NBTTagCompound compound = new NBTTagCompound();
 		compound.setDouble("transmutationEmc", transmutationEmc);
 		compound.setBoolean("tome", hasFullKnowledge);
 
@@ -92,6 +93,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 			knowledgeWrite.appendTag(tag);
 		}
 		compound.setTag("knowledge", knowledgeWrite);
+		return compound;
 	}
 
 	public void readFromPacket(NBTTagCompound compound)

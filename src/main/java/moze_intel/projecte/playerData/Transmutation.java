@@ -139,9 +139,7 @@ public final class Transmutation
 
 	public static void sync(EntityPlayer player)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		TransmutationProps.getDataFor(player).saveForPacket(tag);
-		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(tag), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
 	}
 
 	public static void clearCache()

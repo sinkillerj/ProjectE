@@ -52,8 +52,9 @@ public class AlchBagProps implements IExtendedEntityProperties
 		bagData.put(color, inv);
 	}
 
-	protected void saveForPacket(NBTTagCompound compound)
+	protected NBTTagCompound saveForPacket()
 	{
+		NBTTagCompound compound = new NBTTagCompound();
 		NBTTagList listOfInventories = new NBTTagList();
 		for (int i = 0; i < 16; i++)
 		{
@@ -67,22 +68,25 @@ public class AlchBagProps implements IExtendedEntityProperties
 			listOfInventories.appendTag(inventory);
 		}
 		compound.setTag("data", listOfInventories);
+		return compound;
 	}
 	/**
 	 * Only write one bag's data. Used for partial sync packets
 	 */
-	protected void saveForPartialPacket(NBTTagCompound compound, int color)
+	protected NBTTagCompound saveForPartialPacket(int color)
 	{
+		NBTTagCompound compound = new NBTTagCompound();
 		NBTTagList listOfInventories = new NBTTagList();
 		if (bagData.get(color) == null)
 		{
-			return;
+			return compound;
 		}
 		NBTTagCompound inventory = new NBTTagCompound();
 		inventory.setInteger("color", color);
 		inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(color)));
 		listOfInventories.appendTag(inventory);
 		compound.setTag("data", listOfInventories);
+		return compound;
 	}
 
 	public void readFromPacket(NBTTagCompound compound)
