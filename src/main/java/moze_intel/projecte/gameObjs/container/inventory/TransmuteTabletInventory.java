@@ -436,8 +436,11 @@ public class TransmuteTabletInventory implements IInventory
 	{
 		if (player != null && player.getHeldItem() != null)
 		{
-			writeToNBT(player.getHeldItem().stackTagCompound);
-			Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+			if (!player.worldObj.isRemote)
+			{
+				writeToNBT(player.getHeldItem().stackTagCompound);
+				Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+			}
 		}
 		else
 		{
