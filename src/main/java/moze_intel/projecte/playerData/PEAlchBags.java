@@ -37,7 +37,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		this.player = player;
 	}
 
-	protected ItemStack[] getInv(int color)
+	public ItemStack[] getInv(int color)
 	{
 		if (bagData.get(color) == null)
 		{
@@ -47,7 +47,7 @@ public class PEAlchBags implements IExtendedEntityProperties
 		return bagData.get(color).clone();
 	}
 
-	protected void setInv(int color, ItemStack[] inv)
+	public void setInv(int color, ItemStack[] inv)
 	{
 		bagData.put(color, inv);
 	}
