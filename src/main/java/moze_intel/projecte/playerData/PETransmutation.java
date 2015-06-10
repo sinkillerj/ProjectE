@@ -1,6 +1,6 @@
 package moze_intel.projecte.playerData;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.Entity;
@@ -13,14 +13,14 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 public class PETransmutation implements IExtendedEntityProperties
 {
 	private final EntityPlayer player;
 
 	private double transmutationEmc;
-	private List<ItemStack> knowledge = Lists.newArrayList();
+	private Set<ItemStack> knowledge = Sets.newHashSet();
 	private boolean hasFullKnowledge;
 	private boolean hasMigrated = false;
 
@@ -41,22 +41,27 @@ public class PETransmutation implements IExtendedEntityProperties
 		this.player = player;
 	}
 
-	public boolean hasFullKnowledge()
+	protected boolean hasFullKnowledge()
 	{
 		return hasFullKnowledge;
 	}
 
-	public double getTransmutationEmc()
+	protected void setFullKnowledge(boolean fullKnowledge)
+	{
+		this.hasFullKnowledge = fullKnowledge;
+	}
+
+	protected double getTransmutationEmc()
 	{
 		return transmutationEmc;
 	}
 
-	public void setTransmutationEmc(double transmutationEmc)
+	protected void setTransmutationEmc(double transmutationEmc)
 	{
 		this.transmutationEmc = transmutationEmc;
 	}
 
-	public List<ItemStack> getKnowledge()
+	protected Set<ItemStack> getKnowledge()
 	{
 		pruneStaleKnowledge();
 		return knowledge;
@@ -112,7 +117,6 @@ public class PETransmutation implements IExtendedEntityProperties
 		hasFullKnowledge = properties.getBoolean("tome");
 
 		NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-		knowledge.clear();
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
@@ -124,13 +128,5 @@ public class PETransmutation implements IExtendedEntityProperties
 	}
 
 	@Override
-	public void init(Entity entity, World world)
-	{
-
-	}
-
-	public void setFullKnowledge(boolean fullKnowledge)
-	{
-		this.hasFullKnowledge = fullKnowledge;
-	}
+	public void init(Entity entity, World world) {}
 }

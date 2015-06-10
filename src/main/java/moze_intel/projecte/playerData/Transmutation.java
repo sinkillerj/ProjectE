@@ -66,7 +66,9 @@ public final class Transmutation
 		}
 		else
 		{
-			return data.getKnowledge();
+			List<ItemStack> list = Lists.newArrayList();
+			list.addAll(data.getKnowledge());
+			return list;
 		}
 	}
 
