@@ -2,10 +2,13 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
 import com.google.common.collect.Lists;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -32,7 +35,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;

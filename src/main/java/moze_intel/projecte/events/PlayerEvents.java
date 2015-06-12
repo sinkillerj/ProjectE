@@ -10,11 +10,11 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.playerData.IOHandler;
+import moze_intel.projecte.playerData.AlchBagProps;
+import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -25,9 +25,9 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerEvents
 {
@@ -37,8 +37,18 @@ public class PlayerEvents
 		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
-			AlchemicalBags.sync((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getStoredEmc(event.entity.getCommandSenderName())), (EntityPlayerMP) event.entity);
+			AlchemicalBags.syncFull((EntityPlayer) event.entity);
+			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
+		}
+	}
+
+	@SubscribeEvent
+	public void onConstruct(EntityEvent.EntityConstructing evt)
+	{
+		if (evt.entity instanceof EntityPlayer)
+		{
+			TransmutationProps.register(((EntityPlayer) evt.entity));
+			AlchBagProps.register(((EntityPlayer) evt.entity));
 		}
 	}
 
@@ -104,7 +114,7 @@ public class PlayerEvents
 				return;
 			}
 			
-			ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) bag.getItemDamage());
+			ItemStack[] inv = AlchemicalBags.get(player, (byte) bag.getItemDamage());
 			
 			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
@@ -121,23 +131,11 @@ public class PlayerEvents
 					event.item.setEntityItemStack(remain);
 				}
 				
-				AlchemicalBags.set(player.getCommandSenderName(), (byte) bag.getItemDamage(), inv);
-				AlchemicalBags.sync(player);
+				AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);
+				AlchemicalBags.syncPartial(player, bag.getItemDamage());
 				
 				event.setCanceled(true);
 			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void playerSaveData(PlayerEvent.SaveToFile event)
-	{
-		if (IOHandler.markedDirty)
-		{
-			IOHandler.saveData();
-			PELogger.logInfo("Saved transmutation and alchemical bag data.");
-			
-			IOHandler.markedDirty = false;
 		}
 	}
 }

@@ -1,3 +1,17 @@
+###Version 1.7.10-PE1.5.0
+* NEW: Ring of Arcana
+* NEW: Gem armor improvements and missing features addressed
+* NEW: Comparator support
+* NEW: German language file updates
+* FIXED: Gem of Eternal Density dupe bug
+* FIXED: Certain items lacking fire protection
+* FIXED: Lootball logic issues
+* FIXED: Sword dig speed
+* FIXED: Unstable ingot unlocalized name corrected in default NBT whitelist. You will need to regenerate this file or add the changes manually
+* FIXED: Red Matter Pick now properly mines Red Matter Blocks and Furnaces
+* FIXED: Explosion items drop proper metadata
+* FIXED: Minor typos
+
 ###Version 1.7.10-PE1.4.7
 * NOTICE: A longstanding internal issue of spaces in unlocalized names has been corrected. World conversion code has been added and extensively tested but as always when updating a mod it would be wise to backup your world
 * NEW: Unlearn item slot added to transmutation GUI. If you are using a resource pack it will need to be updated

@@ -105,7 +105,7 @@ public final class EMCMapper
 			}
 		}
 
-		Transmutation.loadCompleteKnowledge();
+		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
 	}
 
