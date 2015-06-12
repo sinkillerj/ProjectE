@@ -1,12 +1,11 @@
 package moze_intel.projecte.network.packets;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.AlchBagProps;
+import moze_intel.projecte.PECore;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyncBagDataPKT, IMessage>
@@ -23,7 +22,7 @@ public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyn
 	@Override
 	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
 	{
-		AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity()).readFromPacket(message.nbt);
+		PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
 		return null;
 	}
 

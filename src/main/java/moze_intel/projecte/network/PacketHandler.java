@@ -15,7 +15,6 @@ import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
 import moze_intel.projecte.network.packets.ClientSyncEmcPKT;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
-import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
@@ -59,8 +58,7 @@ public final class PacketHandler
 		HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
 		HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
-		HANDLER.registerMessage(ClientSyncTableEMCPKT.class, ClientSyncTableEMCPKT.class, 17, Side.CLIENT);
-		HANDLER.registerMessage(ClientSyncPedestalPKT.class, ClientSyncPedestalPKT.class, 18, Side.CLIENT);
+		HANDLER.registerMessage(ClientSyncPedestalPKT.class, ClientSyncPedestalPKT.class, 17, Side.CLIENT);
 	}
 
 	public static Packet getMCPacket(IMessage message)
