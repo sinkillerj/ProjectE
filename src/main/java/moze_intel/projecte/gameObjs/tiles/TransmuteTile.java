@@ -3,15 +3,12 @@ package moze_intel.projecte.gameObjs.tiles;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -458,7 +455,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 		if (!this.worldObj.isRemote)
 		{
 			Transmutation.setEmc(player, this.getStoredEmc());
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) player);
+			Transmutation.sync(player);
 		}
 		
 		player = null;

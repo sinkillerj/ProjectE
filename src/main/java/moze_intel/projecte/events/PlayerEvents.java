@@ -7,12 +7,10 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.AlchBagProps;
-import moze_intel.projecte.playerData.TransmutationProps;
+import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +36,6 @@ public class PlayerEvents
 		{
 			Transmutation.sync((EntityPlayer) event.entity);
 			AlchemicalBags.syncFull((EntityPlayer) event.entity);
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(Transmutation.getEmc(((EntityPlayer) event.entity))), (EntityPlayerMP) event.entity);
 		}
 	}
 
