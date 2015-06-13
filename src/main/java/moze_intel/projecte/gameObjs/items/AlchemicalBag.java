@@ -69,7 +69,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		ItemStack[] inv = AlchemicalBags.get(player, (byte) stack.getItemDamage());
 
 		if (player.openContainer instanceof AlchBagContainer)
 		{
@@ -82,7 +82,7 @@ public class AlchemicalBag extends ItemPE
 					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
 				}
 			}
-			// Do not AlchemicalBags.set/sync here - vanilla handles it because it's the open container
+			// Do not AlchemicalBags.set/syncPartial here - vanilla handles it because it's the open container
 		}
 		else
 		{
@@ -97,8 +97,8 @@ public class AlchemicalBag extends ItemPE
 
 			if (!player.worldObj.isRemote)
 			{
-				AlchemicalBags.set(player.getCommandSenderName(), ((byte) stack.getItemDamage()), inv);
-				AlchemicalBags.sync(player);
+				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
+				AlchemicalBags.syncPartial(player, stack.getItemDamage());
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player, (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
 			{
 				return stack;
 			}
