@@ -96,7 +96,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
 	{
-		super.updateInAlchChest(tile, stack);
+		super.updateInAlchChest(tile, stack); // Gem of Eternal Density
 		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(tile, stack);
 	}
 }

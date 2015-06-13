@@ -2,10 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
 import com.google.common.collect.Lists;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -36,7 +39,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtectionItem
 {
 	private int stopRainCooldown;
 

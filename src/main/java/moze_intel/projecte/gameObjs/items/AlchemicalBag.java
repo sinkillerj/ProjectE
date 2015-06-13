@@ -3,24 +3,19 @@ package moze_intel.projecte.gameObjs.items;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
@@ -75,105 +70,33 @@ public class AlchemicalBag extends ItemPE
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
-		
-		if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
-				|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-		{
-			AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
-			List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
-			
-			for (EntityItem item : itemList)
-			{
-				item.delayBeforeCanPickup = 0;
-				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
-			}
-			
-			List<EntityLootBall> lootBallList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
-			
-			for (EntityLootBall ball : lootBallList)
-			{
-				WorldHelper.gravitateEntityTowards(ball, player.posX, player.posY, player.posZ);
-			}
-		}
 
-		if (world.isRemote)
-		{
-			return;
-		}
-
-		ItemStack rTalisman = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.repairTalisman));
-		
-		if (rTalisman != null)
-		{
-			byte coolDown = rTalisman.stackTagCompound.getByte("Cooldown");
-			
-			if (coolDown > 0)
-			{
-				rTalisman.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
-			}
-			else
-			{
-				boolean hasAction = false;
-				
-				for (int i = 0; i < inv.length; i++)
-				{
-					ItemStack invStack = inv[i];
-				
-					if (invStack == null || invStack.getItem() instanceof RingToggle) 
-					{
-						continue;
-					}
-				
-					if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-					{
-						invStack.setItemDamage(invStack.getItemDamage() - 1);
-						inv[i] = invStack;
-						
-						if (!hasAction)
-						{
-							hasAction = true;
-						}
-					}
-				}
-				
-				if (hasAction)
-				{
-					rTalisman.stackTagCompound.setByte("Cooldown", (byte) 19);
-				}
-			}
-		}
-		
 		if (player.openContainer instanceof AlchBagContainer)
 		{
-			ItemStack gemDensity = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			ItemStack voidRing = ItemHelper.getStackFromInv(((AlchBagContainer) player.openContainer).inventory, new ItemStack(ObjHandler.voidRing, 1, 1));
-
-			if (gemDensity != null)
+			ItemStack[] openContainerInv = ((AlchBagContainer) player.openContainer).inventory.getInventory();
+			for (int i = 0; i < openContainerInv.length; i++) // Do not use foreach - to avoid desync
 			{
-				GemEternalDensity.condense(gemDensity, ((AlchBagContainer) player.openContainer).inventory.getInventory());
+				ItemStack current = openContainerInv[i];
+				if (current != null && current.getItem() instanceof IAlchBagItem)
+				{
+					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
+				}
 			}
-			else if (voidRing != null)
-			{
-				VoidRing.condense(voidRing, ((AlchBagContainer) player.openContainer).inventory.getInventory());
-			}
+			// Do not AlchemicalBags.set/sync here - vanilla handles it because it's the open container
 		}
 		else
 		{
-			ItemStack gemDensity = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.eternalDensity, 1, 1));
-			ItemStack voidRing = ItemHelper.getStackFromInv(inv, new ItemStack(ObjHandler.voidRing, 1, 1));
-
-			if (gemDensity != null)
+			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid desync
 			{
-				GemEternalDensity.condense(gemDensity, inv); 
-		
-				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
-				AlchemicalBags.sync(player);
+				ItemStack current = inv[i];
+				if (current != null && current.getItem() instanceof IAlchBagItem)
+				{
+					((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
+				}
 			}
-			else if (voidRing != null)
+			if (!player.worldObj.isRemote)
 			{
-				VoidRing.condense(voidRing, inv);
-
-				AlchemicalBags.set(entity.getCommandSenderName(), (byte) stack.getItemDamage(), inv);
+				AlchemicalBags.set(player.getCommandSenderName(), ((byte) stack.getItemDamage()), inv);
 				AlchemicalBags.sync(player);
 			}
 		}
