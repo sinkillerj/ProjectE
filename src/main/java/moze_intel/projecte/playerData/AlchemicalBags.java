@@ -3,6 +3,7 @@ package moze_intel.projecte.playerData;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -30,11 +31,13 @@ public final class AlchemicalBags
 	public static void syncFull(EntityPlayer player)
 	{
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(AlchBagProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
+		PELogger.logInfo("** SENT FULL BAG DATA **");
 	}
 
 	public static void syncPartial(EntityPlayer player, int color)
 	{
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(AlchBagProps.getDataFor(player).saveForPartialPacket(color)), (EntityPlayerMP) player);
+		PELogger.logInfo("** SENT PARTIAL BAG DATA **");
 	}
 
 	/**
