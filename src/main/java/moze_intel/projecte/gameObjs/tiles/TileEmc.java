@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.api.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
@@ -122,7 +123,8 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAll(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord));
+			PacketHandler.sendToAllAround(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord),
+					new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
 		}
 	}
 }
