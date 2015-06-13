@@ -11,6 +11,7 @@ import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePlayerListBox
 {
@@ -132,7 +133,8 @@ public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePla
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAll(new TileEmcSyncPKT(emc, this));
+			PacketHandler.sendToAllAround(new TileEmcSyncPKT(emc, this),
+					new NetworkRegistry.TargetPoint(worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 64));
 		}
 	}
 }

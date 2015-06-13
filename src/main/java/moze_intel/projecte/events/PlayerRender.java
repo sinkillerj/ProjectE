@@ -1,11 +1,13 @@
 package moze_intel.projecte.events;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.rendering.ModelYue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,6 +42,15 @@ public class PlayerRender
 			yuemodel.renderAll();
 			GlStateManager.enableLighting();
 			GlStateManager.popMatrix();
+		}
+	}
+
+	@SubscribeEvent
+	public void onFOVUpdateEvent(FOVUpdateEvent evt)
+	{
+		if (evt.entity.getCurrentArmor(0) != null && evt.entity.getCurrentArmor(0).getItem() instanceof GemFeet)
+		{
+			evt.newfov = evt.fov - 0.4F;
 		}
 	}
 }

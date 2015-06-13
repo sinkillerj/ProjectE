@@ -180,7 +180,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = tile.getStackInSlot(i);
 
-				if (invStack == null || invStack.getItem() instanceof RingToggle)
+				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}
@@ -227,7 +227,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = inv[i];
 
-				if (invStack == null || invStack.getItem() instanceof RingToggle)
+				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}

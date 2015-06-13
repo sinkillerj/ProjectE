@@ -365,7 +365,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		Now the same as activated watch in hand but more powerful.
 		Can be changed at sinkillerj's discretion. */
 
-		if (!world.isRemote)
+		if (!world.isRemote && ProjectEConfig.enableTimeWatch)
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(pos)).getEffectBounds();
 			if (ProjectEConfig.timePedBonus > 0) {

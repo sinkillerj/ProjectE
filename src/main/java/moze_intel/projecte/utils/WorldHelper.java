@@ -501,7 +501,7 @@ public final class WorldHelper
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState currentState = world.getBlockState(currentPos);
 
-					if (currentState == target)
+					if (currentState == target || (target.getBlock() == Blocks.lit_redstone_ore && currentState.getBlock() == Blocks.redstone_ore))
 					{
 						currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
 						world.setBlockToAir(pos);
