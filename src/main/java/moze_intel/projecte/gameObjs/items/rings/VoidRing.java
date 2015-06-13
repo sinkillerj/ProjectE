@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IPedestalItem;
@@ -91,6 +92,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 			player.fallDistance = 0.0F;
 		}
+	}
+
+	@Override
+	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
+		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 	}
 
 	@Override
