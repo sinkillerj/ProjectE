@@ -145,7 +145,11 @@ public class AlchBagProps implements IExtendedEntityProperties
 			if (AlchemicalBags.hasLegacyData(player))
 			{
 				listOfInventoies = AlchemicalBags.migratePlayerData(player);
-				PELogger.logInfo("Migrated data for player: " + player.getCommandSenderName());
+				PELogger.logInfo("** MIGRATED BAG DATA for player: " + player.getCommandSenderName() + " **");
+			}
+			else
+			{
+				PELogger.logInfo("** LEGACY BAG DATA NOT FOUND. NOW USING NEW SAVING for player: " + player.getCommandSenderName() + " **");
 			}
 			hasMigrated = true;
 		}

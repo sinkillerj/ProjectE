@@ -114,6 +114,7 @@ public final class IOHandler
 
 				Transmutation.legacySetStoredEmc(tag.getString("player"), tag.getDouble("emc"));
 			}
+			PELogger.logInfo("** LOADED LEGACY TRANSMUTATION DATA **");
 		}
 
 		NBTTagCompound bagData = null;
@@ -154,6 +155,7 @@ public final class IOHandler
 					}
 
 					AlchemicalBags.legacySet(nbt.getString("player"), subNbt.getByte("color"), inv);
+					PELogger.logInfo("** LOADED LEGACY BAG DATA **");
 				}
 			}
 		}

@@ -142,8 +142,13 @@ public class TransmutationProps implements IExtendedEntityProperties
 			if (Transmutation.hasLegacyData(player))
 			{
 				properties = Transmutation.migratePlayerData(player);
-				PELogger.logInfo("Migrated transmutation data for player: " + player.getCommandSenderName());
+				PELogger.logInfo("** MIGRATED TRANSMUTE DATA for player: " + player.getCommandSenderName() + " **");
 			}
+			else
+			{
+				PELogger.logInfo("** LEGACY TRANSMUTE DATA NOT FOUND. NOW USING NEW SAVING for player: " + player.getCommandSenderName() + " **");
+			}
+
 			hasMigrated = true;
 		}
 
