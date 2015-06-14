@@ -50,6 +50,7 @@ import moze_intel.projecte.gameObjs.items.RepairTalisman;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.items.TransmutationTablet;
+import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
 import moze_intel.projecte.gameObjs.items.armor.DMArmor;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
@@ -212,8 +213,9 @@ public class ObjHandler
 	public static Item dRod2 = new DiviningRodMedium();
 	public static Item dRod3 = new DiviningRodHigh();
 	public static Item mercEye = new MercurialEye();
+	public static Item voidRing = new VoidRing();
 	public static Item arcana = new Arcana();
-	
+
 	public static Item dCatalyst = new DestructionCatalyst();
 	public static Item hyperLens = new HyperkineticLens();
 	public static Item cataliticLens = new CataliticLens();
@@ -316,8 +318,9 @@ public class ObjHandler
 		GameRegistry.registerItem(dRod2, dRod2.getUnlocalizedName());
 		GameRegistry.registerItem(dRod3, dRod3.getUnlocalizedName());
 		GameRegistry.registerItem(mercEye, mercEye.getUnlocalizedName());
+		GameRegistry.registerItem(voidRing, voidRing.getUnlocalizedName());
 		GameRegistry.registerItem(arcana, arcana.getUnlocalizedName());
-		
+
 		GameRegistry.registerItem(bodyStone, bodyStone.getUnlocalizedName());
 		GameRegistry.registerItem(soulStone, soulStone.getUnlocalizedName());
 		GameRegistry.registerItem(mindStone, mindStone.getUnlocalizedName());
@@ -527,8 +530,9 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(volcanite), "LLL", "DDD", "LLL", 'L', Items.lava_bucket, 'D', matter);
 		GameRegistry.addRecipe(new ItemStack(eternalDensity), "DOD", "MDM", "DOD", 'D', Items.diamond, 'O', Blocks.obsidian, 'M', matter);
 		GameRegistry.addRecipe(new ItemStack(zero), "SBS", "MIM", "SBS", 'S', Blocks.snow, 'B', Items.snowball, 'M', matter, 'I', ironBand);
-		GameRegistry.addRecipe(new ItemStack(arcana), new Object[]{"ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1)});
-		
+		GameRegistry.addShapelessRecipe(new ItemStack(voidRing), blackHole, eternalDensity, new ItemStack(matter, 1, 1), new ItemStack(matter, 1, 1));
+		GameRegistry.addRecipe(new ItemStack(arcana), "ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1));
+
 		//Watch of flowing time
 		GameRegistry.addRecipe(new ItemStack(timeWatch), "DOD", "GCG", "DOD", 'D', matter, 'O', Blocks.obsidian, 'G', Blocks.glowstone, 'C', Items.clock);
 		GameRegistry.addRecipe(new ItemStack(timeWatch), "DGD", "OCO", "DGD", 'D', matter, 'O', Blocks.obsidian, 'G', Blocks.glowstone, 'C', Items.clock);

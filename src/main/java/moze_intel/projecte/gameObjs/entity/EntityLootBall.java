@@ -201,7 +201,7 @@ public class EntityLootBall extends Entity
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 			
 			if (bag != null)
 			{

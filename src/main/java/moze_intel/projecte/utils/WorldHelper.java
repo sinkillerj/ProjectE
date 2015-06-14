@@ -3,7 +3,6 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
@@ -13,7 +12,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -497,7 +495,7 @@ public final class WorldHelper
 				{
 					Block block = world.getBlock(x, y, z);
 
-					if (block == target)
+					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
 						currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
 						world.setBlockToAir(x, y, z);

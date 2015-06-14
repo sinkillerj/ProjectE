@@ -1,3 +1,13 @@
+###Version 1.7.10-PE1.6.0
+* NEW: Void Ring
+* NEW: German language file updates
+* FIXED: FoV issues with Gem Boots
+* FIXED: Talisman of Repair not obeying noRepair in some situations
+* FIXED: Vein mining not working properly on redstone
+* FIXED: Null tile references
+* FIXED: A Transmutation Tablet crash
+* FIXED: Watch of Flowing Time now obeys config while on the pedestal
+
 ###Version 1.7.10-PE1.5.0
 * NEW: Ring of Arcana
 * NEW: Gem armor improvements and missing features addressed

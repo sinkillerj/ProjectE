@@ -94,7 +94,6 @@ public class AlchemicalBag extends ItemPE
 					((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
 				}
 			}
-
 			if (!player.worldObj.isRemote)
 			{
 				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
@@ -159,7 +158,7 @@ public class AlchemicalBag extends ItemPE
 		}
 	}
 
-	public static ItemStack getFirstBagItem(EntityPlayer player, ItemStack[] inventory)
+	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, ItemStack[] inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
@@ -168,8 +167,11 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-			if (stack.getItem() == ObjHandler.alchBag && ItemHelper.invContainsItem(AlchemicalBags.get(player, (byte) stack.getItemDamage()), new ItemStack(ObjHandler.blackHole, 1, 1)))
+			if (stack.getItem() == ObjHandler.alchBag)
 			{
+				ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
+				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
+						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
 				return stack;
 			}
 		}
