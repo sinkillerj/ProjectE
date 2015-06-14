@@ -20,18 +20,19 @@ IRC Client: \#ProjectE on irc.esper.net
 
 Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
-#The Team
-SinKillerJ - Current developer: https://twitter.com/sinkillerj
+#Current Team Members
+SinKillerJ - Head of Alchemical Studies - Current lead developer: https://twitter.com/sinkillerj
 
-MozeIntel - Original developer: https://twitter.com/Moze_Intel
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer
 
-MaPePeR - Assistant developer
+Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
 
-Kolatra - Assistant developer: https://twitter.com/ItsKolatra
+#Former Team Members
+MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
 
-Williewillus - Assistant developer: https://twitter.com/williewillus
+Magic Banana - Former texture artist: https://twitter.com/Magic_Banana_
 
-Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
+Kolatra - Former collaborator: https://twitter.com/ItsKolatra
 
 #Thanks To
 x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x
