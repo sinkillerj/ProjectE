@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.EnumArmorType;
@@ -72,10 +73,13 @@ public class GemChest extends GemArmorBase
 
     public static void doExplode(EntityPlayer player)
     {
-        NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
-        explosion.isFlaming = true;
-        explosion.isSmoking = true;
-        explosion.doExplosionA();
-        explosion.doExplosionB(true);
+        if (ProjectEConfig.gemArmorOffensiveAbilities)
+        {
+            NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
+            explosion.isFlaming = true;
+            explosion.isSmoking = true;
+            explosion.doExplosionA();
+            explosion.doExplosionB(true);
+        }
     }
 }
