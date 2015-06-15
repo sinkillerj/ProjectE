@@ -1,10 +1,13 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
+
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.IGrowable;
 import net.minecraft.entity.Entity;
@@ -46,21 +49,21 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		if (stack.getItemDamage() != 0)
 		{
-			double storedEmc = this.getEmc(stack);
+			double storedEmc = getEmc(stack);
 			
-			if (storedEmc == 0 && !this.consumeFuel(player, stack, 64, true))
+			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
 				stack.setItemDamage(0);
 			}
 			else
 			{
-				growNearbyRandomly(true, world, player);
-				this.removeEmc(stack, 0.32F);
+				WorldHelper.growNearbyRandomly(true, world, player);
+				removeEmc(stack, 0.32F);
 			}
 		}
 		else
 		{
-			growNearbyRandomly(false, world, player);
+			WorldHelper.growNearbyRandomly(false, world, player);
 		}
 	}
 	
@@ -212,43 +215,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(ItemStack[] inv, Class<?> type)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && type.isInstance(stack.getItem()))
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		return null;
-	}
-	
-	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta)
-	{
-		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.length;i++)
-		{
-			ItemStack stack = inv[i];
-			
-			if (stack != null && stack.getItem() == item && stack.getItemDamage() == meta)
-			{
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		
-		return null;
-	}
-	
 	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
@@ -268,85 +234,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return null;
 	}
 
-	private void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord)
-	{
-		int chance = harvest ? 16 : 32;
-
-		for (int x = (int) (xCoord - 5); x <= xCoord + 5; x++)
-			for (int y = (int) (yCoord - 3); y <= yCoord + 3; y++)
-				for (int z = (int) (zCoord - 5); z <= zCoord + 5; z++)
-				{
-					Block crop = world.getBlock(x, y, z);
-
-					if (crop instanceof IShearable)
-					{
-						if (harvest)
-						{
-							world.func_147480_a(x, y, z, true);
-						}
-					}
-					else if (crop instanceof IGrowable)
-					{
-						IGrowable growable = (IGrowable) crop;
-
-						if(harvest && !growable.func_149851_a(world, x, y, z, false))
-						{
-							world.func_147480_a(x, y, z, true);
-						}
-						else if (world.rand.nextInt(chance) == 0)
-						{
-							growable.func_149853_b(world, world.rand, x, y, z);
-						}
-					}
-					else if (crop instanceof IPlantable)
-					{
-						if (world.rand.nextInt(chance / 4) == 0)
-						{
-							for (int i = 0; i < (harvest ? 8 : 4); i++)
-							{
-								crop.updateTick(world, x, y, z, world.rand);
-							}
-						}
-
-						if (harvest)
-						{
-							if (crop == Blocks.reeds || crop == Blocks.cactus)
-							{
-								boolean shouldHarvest = true;
-
-								for (int i = 1; i < 3; i++)
-								{
-									if (world.getBlock(x, y + i, z) != crop)
-									{
-										shouldHarvest = false;
-										break;
-									}
-								}
-
-								if (shouldHarvest)
-								{
-									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
-									{
-										world.func_147480_a(x, y + i, z, true);
-									}
-								}
-							}
-						}
-					}
-				}
-	}
-
-	private void growNearbyRandomly(boolean harvest, World world, Entity player)
-	{
-		growNearbyRandomly(harvest, world, player.posX, player.posY, player.posZ);
-	}
-	
+		
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, true))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, true))
 			{
 				//NOOP (used to be sounds)
 			}
@@ -368,7 +262,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			if (harvestCooldown == 0)
 			{
-				growNearbyRandomly(true, world, x, y, z);
+				WorldHelper.growNearbyRandomly(true, world, x, y, z);
 				harvestCooldown = ProjectEConfig.harvestPedCooldown;
 			}
 			else

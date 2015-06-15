@@ -35,6 +35,12 @@ public class EntityWaterProjectile extends EntityThrowable
 
 		if (!this.worldObj.isRemote)
 		{
+			if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+			{
+				this.setDead();
+				return;
+			}
+
 			for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
 				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
 					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
@@ -89,8 +95,10 @@ public class EntityWaterProjectile extends EntityThrowable
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-
-			this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+			if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ))
+			{
+				this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+			}
 			this.setDead();
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)

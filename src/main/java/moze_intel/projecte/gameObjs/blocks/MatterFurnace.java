@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -45,6 +46,7 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		
 		if (isActive) 
 		{
+			this.setCreativeTab(null);
 			this.setLightLevel(0.875F);
 		}
 	}
@@ -114,13 +116,15 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 		{
 			if (isHighTier)
 				world.setBlock(x, y, z, ObjHandler.rmFurnaceOn);
-			else world.setBlock(x, y, z, ObjHandler.dmFurnaceOn);
+			else
+				world.setBlock(x, y, z, ObjHandler.dmFurnaceOn);
 		}
 		else
 		{
 			if (isHighTier)
 				world.setBlock(x, y, z, ObjHandler.rmFurnaceOff);
-			else world.setBlock(x, y, z, ObjHandler.dmFurnaceOff);
+			else
+				world.setBlock(x, y, z, ObjHandler.dmFurnaceOff);
 		}
 
 		isUpdating = false;
@@ -191,8 +195,8 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		this.blockIcon = register.registerIcon("projecte:"+textureName);
-		front = register.registerIcon("projecte:matter_furnace/"+(isActive ? (textureName+"_on") : (textureName + "_off")));
+		this.blockIcon = register.registerIcon("projecte:" + textureName);
+		front = register.registerIcon("projecte:matter_furnace/" + (isActive ? (textureName + "_on") : (textureName + "_off")));
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -209,12 +213,24 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int x, int y, int z)
 	{
-		return isHighTier ? isActive ? Item.getItemFromBlock(ObjHandler.rmFurnaceOn) : Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
 		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return ComparatorHelper.getForMatterFurnace(world, x, y, z);
 	}
 }

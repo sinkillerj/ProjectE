@@ -42,7 +42,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, new ChatComponentTranslation("pe.command.reset.notholding"));
+				sendError(sender, new ChatComponentTranslation("pe.command.reset.usage"));
 				return;
 			}
 

@@ -28,8 +28,9 @@ public class TransmuteTabletInventory implements IInventory
 	private static final int LOCK_INDEX = 8;
 	private static final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
 	private static final int[] FUEL_INDEXES = new int[] {22, 23, 24, 25};
-	private ItemStack[] inventory = new ItemStack[26];
+	private ItemStack[] inventory = new ItemStack[27];
 	public int learnFlag = 0;
+	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
 	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
@@ -84,6 +85,38 @@ public class TransmuteTabletInventory implements IInventory
 		
 		updateOutputs();
 	}
+
+	public void handleUnlearn(ItemStack stack)
+	{
+		if (stack.stackSize > 1)
+		{
+			stack.stackSize = 1;
+		}
+
+		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		{
+			stack.setItemDamage(0);
+		}
+		
+		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		{
+			unlearnFlag = 300;
+
+			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			{
+				stack.stackTagCompound = null;
+			}
+
+			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
+			
+			if (!player.worldObj.isRemote)
+			{
+				Transmutation.sync(player);
+			}
+		}
+		
+		updateOutputs();
+	}
 	
 	public void checkForUpdates()
 	{
@@ -114,7 +147,7 @@ public class TransmuteTabletInventory implements IInventory
 		
 		ItemStack lockCopy = null;
 
-		Collections.sort(knowledge, Comparators.ITEMSTACK_DESCENDING);
+		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
 		
 		if (inventory[LOCK_INDEX] != null)
 		{
@@ -403,8 +436,11 @@ public class TransmuteTabletInventory implements IInventory
 	{
 		if (player != null && player.getHeldItem() != null)
 		{
-			writeToNBT(player.getHeldItem().stackTagCompound);
-			Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+			if (!player.worldObj.isRemote)
+			{
+				writeToNBT(player.getHeldItem().stackTagCompound);
+				Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+			}
 		}
 		else
 		{

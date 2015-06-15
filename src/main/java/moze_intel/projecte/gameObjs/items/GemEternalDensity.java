@@ -7,12 +7,16 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.IAlchBagItem;
+import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.KeyHelper;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -28,13 +32,12 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
@@ -87,27 +90,32 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
 				ItemStack copy = s.copy();
-				copy.stackSize = 1;
-				
+				copy.stackSize = s.stackSize == 1 ? 1 : s.stackSize / 2;
+
 				addToList(gem, copy);
 				
-				inv[i].stackSize--;
+				s.stackSize -= copy.stackSize;
 				
-				if (inv[i].stackSize <= 0)
+				if (s.stackSize <= 0)
 				{
 					inv[i] = null;
 				}
 				
-				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy));
+				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
 				break;
 			}
 		}
 		
 		int value = EMCHelper.getEmcValue(target);
-		
-		while (ItemPE.getEmc(gem) >= value)
+
+		if (!EMCHelper.doesItemHaveEmc(target))
 		{
-			ItemStack remain = ItemHelper.pushStackInInv(inv, target);
+			return;
+		}
+
+		while (getEmc(gem) >= value)
+		{
+			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
 			
 			if (remain != null)
 			{
@@ -115,7 +123,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, new ArrayList<ItemStack>());
+			setItems(gem, Lists.<ItemStack>newArrayList());
 		}
 	}
 	
@@ -315,8 +323,7 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch")
-				.appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
+		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
 	}
 	
 	@Override
@@ -327,14 +334,9 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), getTargetName(stack)));
+			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), StatCollector.translateToLocal(getTargetName(stack))));
 		}
-		
-		if (KeyHelper.getModeKeyCode() >= 0 && KeyHelper.getModeKeyCode() < Keyboard.getKeyCount())
-		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), Keyboard.getKeyName(KeyHelper.getModeKeyCode())));
-		}
-		
+		list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
 		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
 	}
@@ -388,5 +390,24 @@ public class GemEternalDensity extends ItemPE implements IModeChanger, IBauble
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
+	}
+
+	@Override
+	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	{
+		if (!tile.getWorldObj().isRemote && stack.getItemDamage() == 1)
+		{
+			condense(stack, tile.getBackingInventoryArray());
+			tile.markDirty();
+		}
+	}
+
+	@Override
+	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		if (!player.worldObj.isRemote)
+		{
+			condense(stack, inv);
+		}
 	}
 }

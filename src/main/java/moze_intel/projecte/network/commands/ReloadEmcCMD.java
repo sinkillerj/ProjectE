@@ -15,7 +15,7 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-		return "/projecte_reloadEMC";
+		return "/projecte reloadEMC";
 	}
 
 	@Override

@@ -1,3 +1,66 @@
+###Version 1.7.10-PE1.6.0
+* NEW: Void Ring
+* NEW: German language file updates
+* FIXED: FoV issues with Gem Boots
+* FIXED: Talisman of Repair not obeying noRepair in some situations
+* FIXED: Vein mining not working properly on redstone
+* FIXED: Null tile references
+* FIXED: A Transmutation Tablet crash
+* FIXED: Watch of Flowing Time now obeys config while on the pedestal
+
+###Version 1.7.10-PE1.5.0
+* NEW: Ring of Arcana
+* NEW: Gem armor improvements and missing features addressed
+* NEW: Comparator support
+* NEW: German language file updates
+* FIXED: Gem of Eternal Density dupe bug
+* FIXED: Certain items lacking fire protection
+* FIXED: Lootball logic issues
+* FIXED: Sword dig speed
+* FIXED: Unstable ingot unlocalized name corrected in default NBT whitelist. You will need to regenerate this file or add the changes manually
+* FIXED: Red Matter Pick now properly mines Red Matter Blocks and Furnaces
+* FIXED: Explosion items drop proper metadata
+* FIXED: Minor typos
+
+###Version 1.7.10-PE1.4.7
+* NOTICE: A longstanding internal issue of spaces in unlocalized names has been corrected. World conversion code has been added and extensively tested but as always when updating a mod it would be wise to backup your world
+* NEW: Unlearn item slot added to transmutation GUI. If you are using a resource pack it will need to be updated
+* NEW: Chinese language file updates
+* NEW: German language file updates
+* FIXED: A mod interaction issue with the Transmutation Table
+* FIXED: ingotCyanite has been registered in the oreDict mapper to provide a saner EMC value
+* FIXED: Ores from the DenseOres mod are now properly recognized
+* FIXED: A issue preventing ProjectE projectiles from despawning in some situations
+* CHANGE: ProjectE commands have been unified
+* CHANGE: Harvest Goddess Band no longer passively grows flowers and tall grass on grass blocks by default. A config option has been added to revert this
+* CHANGE: Gem of Eternal Density is now faster thanks to a change that makes it work more like its EE2 counterpart
+* CHANGE: Pick AOE config now applies to the Morning Star as well 
+
+###Version 1.7.10-PE1.4.6
+* NEW: More EE2 sounds added
+* NEW: EMC values can now be pregenerated via config. Pack authors can use this feature to decrease load times
+* NEW: Config option to log possible EMC exploits
+* NEW: Italian language file
+* NEW: German language file updates
+* NEW: Config option to use old PE vein mining instead of the EE2 accurate version
+* NEW: Test rendering code for future Patreon/code contributor cosmetics. Look for sinkillerj on your server to see it in action
+* FIXED: Collector log spam caused by a naughty mod not checking if a inventory can accept a item
+* FIXED: Possible workaround for the rare alchemical bag issues
+* CHANGE: Lootballs have been optimized further
+* CHANGE: Lootballs can be disabled via config
+* CHANGE: Minimum Forge version bumped to 1291
+
+###Version 1.7.10-PE1.4.5
+* NEW: registerCustomEMC has returned to the API. If a mod sets values maliciously or undesirably it can be blocked in the mapping config
+* NEW: EMC remapping sends a chat message upon completion
+* NEW: Chinese language file updates
+* FIXED: A crash when using the SWRG in a Bauble slot
+* FIXED: Watch of Flowing Time missing localization
+* FIXED: Watch of Flowing obeys doDaylightCycle
+* FIXED: Vein mining mistargeting
+* FIXED: A dupe bug with the Black Hole Band on the pedestal
+* FIXED: Reverted tool costs from 1.4.4. This will be a config option in the future
+
 ###Version 1.7.10-PE1.4.4
 * NEW: Transmutation GUI now has pages
 * NEW: Mind Stone can now absorb nearby XP while on a pedestal
@@ -216,7 +279,6 @@
 * NEW: Philosopher's stone AOE higlight
 * NEW: /projecte changelog command
 * NEW: /projecte reloadcfg (allows for editing custom EMC values without reloading the world)
-
 * FIX: Optimized Update Checker
 * FIX: Tool silk-touch enchantment
 * FIX: Transmutation table dupe bug
@@ -226,23 +288,18 @@
 * FIX: Incorrect Thread starting. Sorry for that one.
 
 ###Version Alpha 0.1d
-
 * NEW: Update checker
 * NEW: Added reverse recipes for matter/fuel blocks
 * NEW: zh_CN.lang
-
 * FIX: Transmutation table knowledge reset on player death
 * FIX: Fuel mapping initialization 
 
 ###Version Alpha 0.1c
-
 * FIX: Major client-packet leak
 
 ###Version Alpha 0.1b
-
 * NEW: custom EMC mapping file
 * NEW: basic configuration file
-
 * FIX: Fixed Transmutation Table knowledge saving/syncing
 * FIX: Fixed Katar right click bug
 * FIX: Fixed bug with auto-step assist

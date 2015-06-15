@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container;
 import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletConsume;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletInput;
+import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletUnlearn;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletLock;
 import moze_intel.projecte.gameObjs.container.slots.transmuteportable.SlotTabletOutput;
 import moze_intel.projecte.utils.EMCHelper;
@@ -48,6 +49,7 @@ public class TransmuteTabletContainer extends Container
 		this.addSlotToContainer(new SlotTabletOutput(table, 23, 139, 50));
 		this.addSlotToContainer(new SlotTabletOutput(table, 24, 177, 50));
 		this.addSlotToContainer(new SlotTabletOutput(table, 25, 158, 69));
+		this.addSlotToContainer(new SlotTabletUnlearn(table, 26, 89, 97));
 		
 		//Player Inventory
 		for(int i = 0; i < 3; i++)

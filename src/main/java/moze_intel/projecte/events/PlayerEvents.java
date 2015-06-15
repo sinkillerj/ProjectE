@@ -77,7 +77,8 @@ public class PlayerEvents
 		{
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
 			
-			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) && ItemHelper.hasSpace(inv, event.item.getEntityItem()))
+			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) || ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1))
+					&& ItemHelper.hasSpace(inv, event.item.getEntityItem()))
 			{
 				ItemStack remain = ItemHelper.pushStackInInv(inv, event.item.getEntityItem());
 				
@@ -97,7 +98,7 @@ public class PlayerEvents
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 			
 			if (bag == null)
 			{

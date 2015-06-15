@@ -42,6 +42,12 @@ public class EntityLensProjectile extends EntityThrowable
 			return;
 		}
 
+		if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+		{
+			this.setDead();
+			return;
+		}
+
 		if (this.isInWater())
 		{
 			this.playSound("random.fizz", 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);

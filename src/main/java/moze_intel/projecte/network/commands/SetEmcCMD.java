@@ -35,7 +35,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, new ChatComponentTranslation("pe.command.set.invalidparams"));
+			sendError(sender, new ChatComponentTranslation("pe.command.set.usage"));
 			return;
 		}
 
