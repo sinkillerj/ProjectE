@@ -85,7 +85,8 @@ item.pe_gem_armor_1.name=炼狱胸甲
 item.pe_gem_armor_2.name=重力护腿
 item.pe_gem_armor_3.name=飓风长靴
 item.pe_arcana_ring.name=奥术指环
-item.pe_zero_ring.name=零度指环
+item.pe_void_ring.name=虚空指环
+item.pe_zero_ring.name=寒冰指环
 item.pe_tome.name=炼金术秘卷
 item.pe_transmutation_tablet.name=便携式转化桌
 
@@ -110,6 +111,8 @@ tile.pe_fuel_block_0.name=炼金煤炭块
 tile.pe_fuel_block_1.name=莫比乌斯燃料块
 tile.pe_fuel_block_2.name=永恒燃料块
 tile.pe_dmPedestal.name=暗物质台座
+
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=炼金术师的挚友
 achievement.phil_stone.desc=用贤者之石开启你的炼金之旅!
@@ -148,6 +151,13 @@ achievement.klein.desc=储存EMC以备不时之需
 achievement.klein_big=大容量能量电池
 achievement.klein_big.desc=它能容得下整个宇宙
 
+pe.arcana.mode=模式: 
+pe.arcana.mode.0=寒冰
+pe.arcana.mode.1=烈焰
+pe.arcana.mode.2=丰收
+pe.arcana.mode.3=疾风
+pe.arcana.inactive=关闭!
+
 pe.archangel.pedestal1=射击附近的怪物
 pe.archangel.pedestal2=每%s射击一次
 
@@ -156,6 +166,8 @@ pe.bhb.pedestal2=可存入邻接的容器中
 
 pe.body.pedestal1=恢复玩家的饥饿度
 pe.body.pedestal2=每%s恢复半格饥饿值
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
 
 pe.command.changelog.uptodate=当前使用的ProjectE为最新版本.
 pe.command.clearknowledge.error=无法清空玩家 %s 的转化知识.
@@ -215,6 +227,15 @@ pe.evertide.pedestal2=每%s激活一次
 
 pe.gem.disabled=关闭
 pe.gem.enabled=启用
+
+pe.gem.activate=启用炼狱套装被动技能
+pe.gem.deactivate=禁用炼狱套装被动技能
+
+pe.gem.helm.lorename=深渊头盔
+pe.gem.chest.lorename=炼狱胸甲
+pe.gem.legs.lorename=重力护腿
+pe.gem.feet.lorename=飓风长靴
+
 pe.gem.nightvision_tooltip=夜视模式:
 pe.gem.nightvision.prompt=按[Shift+%s]键切换夜视模式
 pe.gem.stepassist_tooltip=自动跳跃:
@@ -242,6 +263,12 @@ pe.item.mode_switch=切换为 %s 模式
 pe.katar.mode1=虐杀敌对生物
 pe.katar.mode2=虐杀一切生物
 
+pe.key.armor_toggle=护甲效果
+pe.key.charge=充能
+pe.key.extra_function=其他功能
+pe.key.fire_projectile=开火
+pe.key.mode=转换模式
+
 pe.life.pedestal1=恢复生命与饥饿度
 pe.life.pedestal2=每%s恢复半格生命值及饥饿值
 
@@ -249,7 +276,7 @@ pe.mind.pedestal1=将周围的经验球吸入念之宝石
 
 pe.misc.every_tick=/tick
 pe.misc.seconds=秒
-pe.misc.storedxp_tooltip=Stored XP:
+pe.misc.storedxp_tooltip=XP储存:
 pe.misc.wrenched_block=扳动方块!
 
 pe.morningstar.mode1=普通模式
