@@ -86,15 +86,17 @@ public class AlchemicalBag extends ItemPE
 		}
 		else
 		{
+			boolean hasChanged = false;
 			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid desync
 			{
 				ItemStack current = inv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
 				{
-					((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
+					hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
 				}
 			}
-			if (!player.worldObj.isRemote)
+
+			if (!player.worldObj.isRemote && hasChanged)
 			{
 				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
 				AlchemicalBags.syncPartial(player, stack.getItemDamage());
