@@ -86,7 +86,7 @@ item.pe_gem_armor_2.name=重力护腿
 item.pe_gem_armor_3.name=飓风长靴
 item.pe_arcana_ring.name=奥术指环
 item.pe_void_ring.name=虚空指环
-item.pe_zero_ring.name=寒冰指环
+item.pe_zero_ring.name=零度指环
 item.pe_tome.name=炼金术秘卷
 item.pe_transmutation_tablet.name=便携式转化桌
 
@@ -152,7 +152,7 @@ achievement.klein_big=大容量能量电池
 achievement.klein_big.desc=它能容得下整个宇宙
 
 pe.arcana.mode=模式: 
-pe.arcana.mode.0=寒冰
+pe.arcana.mode.0=零度
 pe.arcana.mode.1=烈焰
 pe.arcana.mode.2=丰收
 pe.arcana.mode.3=疾风
@@ -266,7 +266,7 @@ pe.katar.mode2=虐杀一切生物
 pe.key.armor_toggle=护甲效果
 pe.key.charge=充能
 pe.key.extra_function=其他功能
-pe.key.fire_projectile=开火
+pe.key.fire_projectile=发射宝珠
 pe.key.mode=转换模式
 
 pe.life.pedestal1=恢复生命与饥饿度
@@ -276,7 +276,7 @@ pe.mind.pedestal1=将周围的经验球吸入念之宝石
 
 pe.misc.every_tick=/tick
 pe.misc.seconds=秒
-pe.misc.storedxp_tooltip=XP储存:
+pe.misc.storedxp_tooltip=存储经验:
 pe.misc.wrenched_block=扳动方块!
 
 pe.morningstar.mode1=普通模式
