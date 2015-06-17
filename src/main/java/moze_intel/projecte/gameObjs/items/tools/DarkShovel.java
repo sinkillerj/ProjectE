@@ -14,7 +14,7 @@ public class DarkShovel extends PEToolBase
 {
 	public DarkShovel() 
 	{
-		super("dm_shovel", (byte)1, new String[]{});
+		super("dm_shovel", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "shovel";

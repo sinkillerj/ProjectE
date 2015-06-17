@@ -53,4 +53,10 @@ public class EntitySWRGProjectile extends EntityThrowable
 			setDead();
 		}
 	}
+
+	@Override
+	protected float getGravityVelocity()
+	{
+		return 0;
+	}
 }
