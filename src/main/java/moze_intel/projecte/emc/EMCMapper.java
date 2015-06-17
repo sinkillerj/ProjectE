@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
@@ -35,10 +36,10 @@ public final class EMCMapper
 
 	public static void map()
 	{
-
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
 				new LazyMapper(),
+				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
 				new CustomEMCMapper(),
 				new CraftingMapper(),
