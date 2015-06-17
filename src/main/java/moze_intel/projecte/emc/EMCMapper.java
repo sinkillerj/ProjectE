@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.arithmetics.IntArithmetic;
+import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
@@ -10,6 +10,7 @@ import moze_intel.projecte.emc.mappers.LazyMapper;
 import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
 import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
+import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
@@ -17,6 +18,7 @@ import moze_intel.projecte.utils.PrefixConfiguration;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.math.Fraction;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +45,7 @@ public final class EMCMapper
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper()
 		);
-		SimpleGraphMapper<NormalizedSimpleStack, Integer> graphMapper = new SimpleGraphMapper<NormalizedSimpleStack, Integer>(new IntArithmetic());
+		IValueGenerator<NormalizedSimpleStack, Integer> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
@@ -59,7 +61,7 @@ public final class EMCMapper
 		{
 
 
-			graphMapper.setLogFoundExploits(config.getBoolean("logEMCExploits", "general", true,
+			SimpleGraphMapper.setLogFoundExploits(config.getBoolean("logEMCExploits", "general", true,
 					"Log known EMC Exploits. This can not and will not find all possible exploits. " +
 							"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
 							"Exploits that derive from conversions that are unknown to ProjectE will not be found."
