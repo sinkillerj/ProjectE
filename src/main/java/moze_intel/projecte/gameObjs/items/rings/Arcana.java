@@ -1,11 +1,19 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.List;
-
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
-import net.minecraft.client.Minecraft;
+import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.api.IFireProtectionItem;
+import moze_intel.projecte.api.IFlightItem;
+import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,17 +28,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.api.IFireProtectionItem;
-import moze_intel.projecte.api.IFlightItem;
-import moze_intel.projecte.api.IModeChanger;
-import moze_intel.projecte.api.IProjectileShooter;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
+
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter
@@ -269,7 +268,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 				world.spawnEntityInWorld(fire);
 				break;
 			case 3: // swrg
-				EntityLightningProjectile lightning = new EntityLightningProjectile(world, player, stack);
+				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player, stack);
 				world.spawnEntityInWorld(lightning);
 				break;
 		}

@@ -11,18 +11,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class EntityLightningProjectile extends EntityThrowable
+public class EntitySWRGProjectile extends EntityThrowable
 {
 	private final ItemStack ring;
 	
-	public EntityLightningProjectile(World world)
+	public EntitySWRGProjectile(World world)
 	{
 		super(world);
 		
 		this.ring = null;
 	}
 	
-	public EntityLightningProjectile(World world, EntityLivingBase player, ItemStack ring)
+	public EntitySWRGProjectile(World world, EntityLivingBase player, ItemStack ring)
 	{
 		super(world, player);
 		

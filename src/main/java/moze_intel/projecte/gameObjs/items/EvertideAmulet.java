@@ -106,7 +106,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 						default: break;
                     }
 
-					if (world.isAirBlock(i, j, k))
+					if (world.isAirBlock(i, j, k) || FluidRegistry.lookupFluidForBlock(world.getBlock(i, j, k)) != null)
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 						placeWater(world, i, j, k);
