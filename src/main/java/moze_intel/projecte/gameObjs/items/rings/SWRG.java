@@ -2,10 +2,13 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
 import com.google.common.collect.Lists;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -32,7 +35,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
@@ -85,7 +88,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			
 			if (playerMP.capabilities.allowFlying)
 			{
-				disableFlight(playerMP);
+				PlayerHelper.disableFlight(playerMP);
 			}
 			
 			return;
@@ -93,7 +96,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			enableFlight(playerMP);
+			PlayerHelper.enableFlight(playerMP);
 		}
 
 		if (playerMP.capabilities.isFlying)
@@ -199,34 +202,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		}
 	}
 	
-	public void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, true);
-			PlayerChecks.addPlayerFlyChecks(playerMP);
-		}
-	}
-	
-	public void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
-		}
-	}
-	
 	public void enableFlightNoChecks(EntityPlayerMP playerMP)
 	{
 		if (playerMP.capabilities.isCreativeMode)
@@ -236,7 +211,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, true);
+			PlayerHelper.updateClientServerFlight(playerMP, true);
 		}
 	}
 	
@@ -249,7 +224,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, false);
+			PlayerHelper.updateClientServerFlight(playerMP, false);
 		}
 	}
 	

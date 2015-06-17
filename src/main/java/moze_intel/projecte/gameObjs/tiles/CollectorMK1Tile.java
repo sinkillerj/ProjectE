@@ -233,6 +233,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else if (hasFuel)
 		{
+			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			{
+				this.setInventorySlotContents(0, null);
+			}
+
 			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
 			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
@@ -268,7 +273,24 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		return (float) getSunLevel() * emc / 16;
 	}
-	
+
+	public ItemStack getChargingItem()
+	{
+		return inventory[0];
+	}
+
+	public double getEmcToNextGoal()
+	{
+		if (inventory[lockSlot] != null)
+		{
+			return EMCHelper.getEmcValue(inventory[lockSlot]) - EMCHelper.getEmcValue(inventory[0]);
+		}
+		else
+		{
+			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+		}
+	}
+
 	public int getKleinStarCharge()
 	{
 		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))
@@ -332,7 +354,16 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 		else
 		{
-			reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			{
+				this.setInventorySlotContents(0, null);
+				return 0;
+			}
+			else
+			{
+				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+			}
+
 		}
 		
 		if (this.getStoredEmc() >= reqEmc)

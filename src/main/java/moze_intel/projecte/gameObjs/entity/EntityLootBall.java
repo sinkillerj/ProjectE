@@ -35,15 +35,7 @@ public class EntityLootBall extends Entity
 	
 	public EntityLootBall(World world, ItemStack[] drops, double x, double y, double z)
 	{
-		super(world);
-		items = Arrays.asList(drops);
-		
-		this.setSize(0.25F, 0.25F);
-		this.yOffset = this.height / 2.0F;
-		this.setPosition(x, y, z);
-		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
-		this.motionY = 0.20000000298023224D;
-		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		this(world, Arrays.asList(drops), x, y, z);
 	}
 	
 	public EntityLootBall(World world, List<ItemStack> drops, double x, double y, double z)
@@ -57,6 +49,7 @@ public class EntityLootBall extends Entity
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
 		this.motionZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+		ItemHelper.compactItemList(items);
 	}
 	
 	public List<ItemStack> getItemList()
@@ -106,18 +99,34 @@ public class EntityLootBall extends Entity
 		
 		if (!this.worldObj.isRemote)
 		{
-			if (age > lifespan)
+			if (age > lifespan || items.isEmpty())
 			{
 				this.setDead();
 			}
-			
-			if (this.items.isEmpty())
+			if (ticksExisted % 60 == 0 && !isDead)
 			{
-				this.setDead();
+				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
+				for (EntityLootBall e : nearby)
+				{
+					mergeWith(e);
+				}
 			}
+
 		}
 	}
-	
+
+	public void mergeWith(EntityLootBall other)
+	{
+		if (other == this)
+		{
+			return;
+		}
+		other.setDead();
+		items.addAll(Lists.newArrayList(other.getItemList()));
+		other.getItemList().clear();
+		ItemHelper.compactItemList(items);
+	}
+
 	@Override
 	public void onCollideWithPlayer(EntityPlayer player)
 	{
@@ -192,7 +201,7 @@ public class EntityLootBall extends Entity
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagItem(player, player.inventory.mainInventory);
+			ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 			
 			if (bag != null)
 			{
@@ -330,4 +339,9 @@ public class EntityLootBall extends Entity
 
 	@Override
 	protected void entityInit() {}
+
+	public void setItemList(List<ItemStack> itemList)
+	{
+		this.items = itemList;
+	}
 }

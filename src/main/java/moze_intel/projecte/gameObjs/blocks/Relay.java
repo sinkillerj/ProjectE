@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -101,21 +102,24 @@ public class Relay extends BlockDirection
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) 
 	{
-		if (tier == 1)
+		switch (tier)
 		{
-			return new RelayMK1Tile();
+			case 1: return new RelayMK1Tile();
+			case 2: return new RelayMK2Tile();
+			case 3: return new RelayMK3Tile();
+			default: return null;
 		}
-		
-		if (tier == 2) 
-		{
-			return new RelayMK2Tile();
-		}
-		
-		if (tier == 3) 
-		{
-			return new RelayMK3Tile();
-		}
-		
-		return null;
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return ComparatorHelper.getForRelay(world, x, y, z);
 	}
 }

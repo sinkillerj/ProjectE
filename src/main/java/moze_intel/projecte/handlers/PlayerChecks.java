@@ -1,8 +1,14 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import moze_intel.projecte.api.IFireProtectionItem;
+import moze_intel.projecte.api.IFlightItem;
+import moze_intel.projecte.api.IStepAssistItem;
+
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.armor.GemArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,12 +17,31 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public final class PlayerChecks
 {
-	private static List<EntityPlayerMP> flyChecks = Lists.newArrayList();
-	private static List<EntityPlayerMP> fireChecks = Lists.newArrayList();
-	private static List<EntityPlayerMP> stepChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> flyChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> fireChecks = Lists.newArrayList();
+	private static final List<EntityPlayerMP> stepChecks = Lists.newArrayList();
+	public static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+
+	public static void setGemState(EntityPlayerMP player, boolean state)
+	{
+		if (state)
+		{
+			gemArmorReadyChecks.add(player);
+		}
+		else
+		{
+			gemArmorReadyChecks.remove(player);
+		}
+	}
+
+	public static boolean getGemState(EntityPlayerMP player)
+	{
+		return gemArmorReadyChecks.contains(player);
+	}
 
 	public static void update()
 	{
@@ -30,7 +55,7 @@ public final class PlayerChecks
 			{
 				if (player.capabilities.allowFlying)
 				{
-					PlayerHelper.updateClientFlight(player, false);
+					PlayerHelper.updateClientServerFlight(player, false);
 				}
 
 				iter.remove();
@@ -77,7 +102,7 @@ public final class PlayerChecks
 	{
 		if (canPlayerFly(playerMP))
 		{
-			PlayerHelper.updateClientFlight(playerMP, true);
+			PlayerHelper.updateClientServerFlight(playerMP, true);
 		}
 
 		if (isPlayerFireImmune(playerMP))
@@ -237,19 +262,18 @@ public final class PlayerChecks
 		{
 			return true;
 		}
-		
-		ItemStack boots = player.getCurrentArmor(0);
-		
-		if (boots != null && boots.getItem() == ObjHandler.gemFeet)
+
+		ItemStack armor = player.getCurrentArmor(0);
+		if (armor != null && armor.getItem() instanceof GemFeet)
 		{
 			return true;
 		}
-		
+
 		for (int i = 0; i <= 8; i++)
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			
-			if (stack != null && stack.getItem() == ObjHandler.swrg)
+			if (stack != null && stack.getItem() instanceof IFlightItem)
 			{
 				return true;
 			}
@@ -276,7 +300,7 @@ public final class PlayerChecks
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			
-			if (stack != null && stack.getItem() == ObjHandler.volcanite)
+			if (stack != null && stack.getItem() instanceof IFireProtectionItem)
 			{
 				return true;
 			}
@@ -289,6 +313,21 @@ public final class PlayerChecks
 	{
 		ItemStack boots = player.getCurrentArmor(0);
 		
-		return (boots != null && boots.getItem() == ObjHandler.gemFeet && GemArmor.isStepAssistEnabled(boots));
+		return ((boots != null && boots.getItem() == ObjHandler.gemFeet && GemFeet.isStepAssistEnabled(boots)) || hasPlayerEquippedStepAssist(player));
+	}
+	
+	private static boolean hasPlayerEquippedStepAssist(EntityPlayer player)
+	{
+		for (int i = 0; i <= 8; i++)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+			
+			if (stack != null && stack.getItem() instanceof IStepAssistItem)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

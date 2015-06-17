@@ -165,6 +165,9 @@ public final class EMCHelper
 		return 0;
 	}
 
+	/**
+	 * Does not consider stack size
+	 */
 	public static int getEmcValue(ItemStack stack)
 	{
 		if (stack == null)

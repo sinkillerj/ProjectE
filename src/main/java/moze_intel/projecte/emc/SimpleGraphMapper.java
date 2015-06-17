@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
+import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Map;
 public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
+
+	private static boolean logFoundExploits = true;
 	public SimpleGraphMapper(IValueArithmetic<V> arithmetic) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
@@ -16,6 +19,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 
 	protected static<K,V extends Comparable<V>> boolean hasSmaller(Map<K,V> m, K key, V value) {
 		return (m.containsKey(key) && value.compareTo(m.get(key)) >= 0);
+	}
+
+	public static void setLogFoundExploits(boolean log) {
+		logFoundExploits = log;
 	}
 
 	protected static<K, V extends Comparable<V>> boolean updateMapWithMinimum(Map<K,V> m, K key, V value) {
@@ -101,10 +108,14 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					}
 					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
 					//This is a Loophole. We remove it by setting the value to 0.
-					if (canOverride(entry.getKey(),ZERO) && ZERO.compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
-						debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValue, conversionValue, conversion);
-						newValueFor.put(conversion.output, ZERO);
-						reasonForChange.put(conversion.output, "exploit recipe");
+					if (ZERO.compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
+						if (canOverride(entry.getKey(), ZERO)) {
+							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValue, conversionValue, conversion);
+							newValueFor.put(conversion.output, ZERO);
+							reasonForChange.put(conversion.output, "exploit recipe");
+						} else if (logFoundExploits) {
+							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s fixed value of result: %s", conversion, conversionValue, resultValue));
+						}
 					}
 				}
 				if (minConversionValue == null || minConversionValue.equals(ZERO)) {
@@ -144,11 +155,17 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		boolean hasPositiveIngredientValues = false;
 		for (Map.Entry<T, Integer> entry:conversion.ingredientsWithAmount.entrySet()) {
 			if (values.containsKey(entry.getKey())) {
+				//The ingredient has a value
+				if (entry.getValue() == 0)
+				{
+					//Ingredients with an amount of 'zero' do not need to be handled.
+					continue;
+				}
 				//value = value + amount * ingredientcost
-				V ingredientValue = values.get(entry.getKey());
+				V ingredientValue = arithmetic.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
 					if (!arithmetic.isFree(ingredientValue)) {
-						value = arithmetic.add(value, arithmetic.mul(entry.getValue(), ingredientValue));
+						value = arithmetic.add(value, ingredientValue);
 						if (ingredientValue.compareTo(ZERO) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
 						allIngredientsAreFree = false;
 					}

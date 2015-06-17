@@ -59,8 +59,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    //Disabled for now because it caused my game to not start because CodeChickenCore missing version...
-    //compile "mcp.mobius.waila:Waila:1.5.8a_1.7.10"
+    //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
 }
 

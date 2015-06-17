@@ -33,6 +33,23 @@ public final class MathUtils
 		return rand.nextInt((max - min) + 1) + min;
 	}
 
+	/**
+	 * Scales this proportion into redstone, where 0 means none, 15 means full, and the rest are an appropriate scaling.
+	 */
+	public static int scaleToRedstone(double currentAmount, double max)
+	{
+		double proportion = currentAmount / max;
+		if (currentAmount <= 0)
+		{
+			return 0;
+		}
+		if (currentAmount >= max)
+		{
+			return 15;
+		}
+		return (int) Math.round(proportion * 13 + 1);
+	}
+
 	public static double tickToSec(int ticks)
 	{
 		return ticks / 20.0D;

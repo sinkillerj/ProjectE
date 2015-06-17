@@ -436,8 +436,8 @@ public final class CustomEMCParser
 
 			writer.println(VERSION);
 			writer.println("Custom EMC file");
-			writer.println("This file is used for custom EMC registration: do NOT modify it manually.");
-			writer.println("Use the in-game commands (projecte_setEMC/removeEMC/resetEMC).");
+			writer.println("This file is used for custom EMC registration, it is recommended that you do not modify it manually.");
+			writer.println("In game commands are avaliable to set custom values. Type /projecte in game for usage info.");
 		}
 		catch (IOException e)
 		{
