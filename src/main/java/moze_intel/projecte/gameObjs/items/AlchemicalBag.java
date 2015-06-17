@@ -69,7 +69,7 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), (byte) stack.getItemDamage());
+		ItemStack[] inv = AlchemicalBags.get(player, (byte) stack.getItemDamage());
 
 		if (player.openContainer instanceof AlchBagContainer)
 		{
@@ -82,22 +82,24 @@ public class AlchemicalBag extends ItemPE
 					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
 				}
 			}
-			// Do not AlchemicalBags.set/sync here - vanilla handles it because it's the open container
+			// Do not AlchemicalBags.set/syncPartial here - vanilla handles it because it's the open container
 		}
 		else
 		{
+			boolean hasChanged = false;
 			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid desync
 			{
 				ItemStack current = inv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
 				{
-					((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
+					hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
 				}
 			}
-			if (!player.worldObj.isRemote)
+
+			if (!player.worldObj.isRemote && hasChanged)
 			{
-				AlchemicalBags.set(player.getCommandSenderName(), ((byte) stack.getItemDamage()), inv);
-				AlchemicalBags.sync(player);
+				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
+				AlchemicalBags.syncPartial(player, stack.getItemDamage());
 			}
 		}
 	}
@@ -167,10 +169,9 @@ public class AlchemicalBag extends ItemPE
 				continue;
 			}
 
-
 			if (stack.getItem() == ObjHandler.alchBag)
 			{
-				ItemStack[] inv = AlchemicalBags.get(player.getCommandSenderName(), ((byte) stack.getItemDamage()));
+				ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
 				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
 						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
 				return stack;

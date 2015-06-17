@@ -3,15 +3,12 @@ package moze_intel.projecte.gameObjs.tiles;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncTableEMCPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,9 +18,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 public class TransmuteTile extends TileEmc implements ISidedInventory
 {
@@ -36,7 +34,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
+	public List<ItemStack> knowledge = Lists.newArrayList();
 	
 	public void handleKnowledge(ItemStack stack)
 	{
@@ -50,13 +48,13 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.setAllKnowledge(player.getCommandSenderName());
+				Transmutation.setFullKnowledge(player);
 			}
 			else
 			{
@@ -65,7 +63,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 					stack.stackTagCompound = null;
 				}
 
-				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
+				Transmutation.addKnowledge(stack, player);
 			}
 			
 			if (!this.worldObj.isRemote)
@@ -89,7 +87,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			unlearnFlag = 300;
 
@@ -98,7 +96,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 				stack.stackTagCompound = null;
 			}
 
-			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
+			Transmutation.removeKnowledge(stack, player);
 			
 			if (!this.worldObj.isRemote)
 			{
@@ -121,10 +119,11 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			updateOutputs();
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
+		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because List is not cloneable and clone() returns Object
 		
 		for (int i : MATTER_INDEXES)
 		{
@@ -444,7 +443,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			this.setEmcValueWithPKT(Transmutation.getStoredEmc(player.getCommandSenderName()));
+			this.setEmcValueWithPKT(Transmutation.getEmc(player));
 		}
 		
 		updateOutputs();
@@ -455,8 +454,8 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	{
 		if (!this.worldObj.isRemote)
 		{
-			Transmutation.setStoredEmc(player.getCommandSenderName(), this.getStoredEmc());
-			PacketHandler.sendTo(new ClientSyncTableEMCPKT(this.getStoredEmc()), (EntityPlayerMP) player);
+			Transmutation.setEmc(player, this.getStoredEmc());
+			Transmutation.sync(player);
 		}
 		
 		player = null;

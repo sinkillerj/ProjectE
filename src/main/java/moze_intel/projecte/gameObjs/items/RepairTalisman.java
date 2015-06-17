@@ -215,11 +215,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
 		if (player.worldObj.isRemote)
 		{
-			return;
+			return false;
 		}
 
 		byte coolDown = stack.stackTagCompound.getByte("Cooldown");
@@ -255,7 +255,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			if (hasAction)
 			{
 				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
+				return true;
 			}
 		}
+		return false;
 	}
 }
