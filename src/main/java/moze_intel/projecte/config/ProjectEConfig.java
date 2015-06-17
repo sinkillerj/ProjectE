@@ -54,6 +54,7 @@ public final class ProjectEConfig
 	public static boolean pickaxeAoeVeinMining;
 	public static boolean harvBandGrass;
 	public static boolean useLootBalls;
+	public static boolean gemArmorOffensiveAbilities;
 
 	public static void init(File configFile)
 	{
@@ -98,6 +99,7 @@ public final class ProjectEConfig
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
 			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from 1.4.7 and before will be used for weapons.");
+			gemArmorOffensiveAbilities = config.getBoolean("gemArmorOffensiveAbilities", "difficulty", true, "If false, then gem armor offensive abilities (helmet zap, chestplate pow) will be disabled.");
 
 			config.getCategory("pedestalcooldown").setComment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.\n" +
 					"A cooldown of 0 will cause the actions happens every tick. Use caution as a very low value could cause TPS issues.");
