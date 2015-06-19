@@ -1,13 +1,14 @@
 package moze_intel.projecte.network.packets;
 
+import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.AlchemicalBags;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT, IMessage>
 {
@@ -26,8 +27,8 @@ public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT,
 		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
-				AlchemicalBags.clear();
-				AlchemicalBags.loadFromNBT(message.nbt);
+				PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
+				PELogger.logInfo("** RECEIVED BAGS CLIENTSIDE **");
 			}
 		});
 		

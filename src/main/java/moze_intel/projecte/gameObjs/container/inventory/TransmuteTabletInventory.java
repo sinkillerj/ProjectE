@@ -20,9 +20,10 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 public class TransmuteTabletInventory implements IInventory
 {
@@ -36,7 +37,7 @@ public class TransmuteTabletInventory implements IInventory
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public LinkedList<ItemStack> knowledge = Lists.newLinkedList();
+	public List<ItemStack> knowledge = Lists.newArrayList();
 	
 	public TransmuteTabletInventory(ItemStack stack, EntityPlayer player)
 	{
@@ -62,13 +63,13 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (!Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.setAllKnowledge(player.getCommandSenderName());
+				Transmutation.setFullKnowledge(player);
 			}
 			else
 			{
@@ -77,7 +78,7 @@ public class TransmuteTabletInventory implements IInventory
 					stack.setTagCompound(null);
 				}
 
-				Transmutation.addToKnowledge(player.getCommandSenderName(), stack);
+				Transmutation.addKnowledge(stack, player);
 			}
 			
 			if (!player.worldObj.isRemote)
@@ -101,7 +102,7 @@ public class TransmuteTabletInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(player, stack) && !Transmutation.hasFullKnowledge(player.getCommandSenderName()))
+		if (Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
 		{
 			unlearnFlag = 300;
 
@@ -110,7 +111,7 @@ public class TransmuteTabletInventory implements IInventory
 				stack.setTagCompound(null);
 			}
 
-			Transmutation.removeFromKnowledge(player.getCommandSenderName(), stack);
+			Transmutation.removeKnowledge(stack, player);
 			
 			if (!player.worldObj.isRemote)
 			{
@@ -133,11 +134,12 @@ public class TransmuteTabletInventory implements IInventory
 			updateOutputs();
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = (LinkedList<ItemStack>) Transmutation.getKnowledge(player.getCommandSenderName()).clone();
-		
+		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because List is not cloneable and clone() returns Object
+
 		for (int i : MATTER_INDEXES)
 		{
 			inventory[i] = null;
@@ -435,7 +437,7 @@ public class TransmuteTabletInventory implements IInventory
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		emc = Transmutation.getStoredEmc(player.getCommandSenderName());
+		emc = Transmutation.getEmc(player);
 		
 		updateOutputs();
 	}
@@ -448,7 +450,7 @@ public class TransmuteTabletInventory implements IInventory
 			if (!player.worldObj.isRemote)
 			{
 				writeToNBT(player.getHeldItem().getTagCompound());
-				Transmutation.setStoredEmc(player.getCommandSenderName(), emc);
+				Transmutation.setEmc(player, emc);
 			}
 		}
 		else

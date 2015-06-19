@@ -1,7 +1,8 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -26,8 +27,8 @@ public class KnowledgeSyncPKT implements IMessage, IMessageHandler<KnowledgeSync
 		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
-				Transmutation.clear();
-				Transmutation.loadFromNBT(message.nbt);
+				PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
+				PELogger.logInfo("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 			}
 		});
 		

@@ -381,11 +381,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
 		if (!player.worldObj.isRemote)
 		{
 			condense(stack, inv);
+			return true;
 		}
+		return false;
 	}
 }

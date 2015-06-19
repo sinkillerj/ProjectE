@@ -39,6 +39,10 @@ repositories {
         name 'CB Repo'
         url "http://chickenbones.net/maven/"
     }
+    maven {
+        name 'Chisel'
+        url "http://coloredlightscore.us.to/maven/chisel-2-dev/"
+    }
 }
  
 dependencies {
@@ -55,7 +59,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
+    compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
 }
 
 processResources

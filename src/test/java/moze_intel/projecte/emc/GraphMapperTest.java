@@ -1,11 +1,12 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetics.IntArithmetic;
+import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
+import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
+
+import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.util.*;
 
@@ -25,13 +26,14 @@ public class GraphMapperTest {
 	}*/
 	@Before
 	public void setup() {
-		graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
+		//graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
+		graphMapper = new FractionToIntegerTranslator<String>(new SimpleGraphMapper<String, Fraction>(new HiddenFractionArithmetic()));
 	}
 
 	@Rule
 	public Timeout timeout = new Timeout(3000);
 
-	public GraphMapper<String, Integer> graphMapper;
+	public IValueGenerator<String, Integer> graphMapper;
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {

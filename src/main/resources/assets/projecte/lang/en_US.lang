@@ -85,6 +85,7 @@ item.pe_gem_armor_1.name=Gem Chestplate
 item.pe_gem_armor_2.name=Gem Leggings
 item.pe_gem_armor_3.name=Gem Boots
 item.pe_arcana_ring.name=Ring of Arcana
+item.pe_void_ring.name=Void Ring
 item.pe_zero_ring.name=Zero Ring
 item.pe_tome.name=Tome of Knowledge
 item.pe_transmutation_tablet.name=Transmutation Tablet

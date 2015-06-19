@@ -71,10 +71,10 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
-		super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
+		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 	}
 
 	@Override

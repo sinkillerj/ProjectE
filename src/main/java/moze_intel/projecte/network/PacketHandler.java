@@ -1,36 +1,35 @@
 package moze_intel.projecte.network;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.network.packets.SyncPedestalPKT;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
-import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.OrientationSyncPKT;
-import moze_intel.projecte.network.packets.SyncBagDataPKT;
-import moze_intel.projecte.network.packets.SyncEmcPKT;
-import moze_intel.projecte.network.packets.SyncTableEMCPKT;
-import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
+import moze_intel.projecte.network.packets.KnowledgeClearPKT;
+import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.OrientationSyncPKT;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.RelaySyncPKT;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import moze_intel.projecte.network.packets.SyncBagDataPKT;
+import moze_intel.projecte.network.packets.SyncEmcPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
+import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -59,8 +58,7 @@ public final class PacketHandler
 		HANDLER.registerMessage(KnowledgeClearPKT.class, KnowledgeClearPKT.class, 14, Side.CLIENT);
 		HANDLER.registerMessage(OrientationSyncPKT.class, OrientationSyncPKT.class, 15, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
-		HANDLER.registerMessage(SyncTableEMCPKT.class, SyncTableEMCPKT.class, 17, Side.CLIENT);
-		HANDLER.registerMessage(SyncPedestalPKT.class, SyncPedestalPKT.class, 18, Side.CLIENT);
+		HANDLER.registerMessage(SyncPedestalPKT.class, SyncPedestalPKT.class, 17, Side.CLIENT);
 	}
 
 	public static Packet getMCPacket(IMessage message)

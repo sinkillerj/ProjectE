@@ -25,6 +25,9 @@ import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.playerData.AlchBagProps;
+import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
@@ -50,6 +53,27 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ClientProxy extends CommonProxy
 {
+	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received
+	// and the wrapped methods are called directly.
+
+	@Override
+	public void clearClientKnowledge()
+	{
+		Transmutation.clearKnowledge(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
+	@Override
+	public TransmutationProps getClientTransmutationProps()
+	{
+		return TransmutationProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
+	@Override
+	public AlchBagProps getClientBagProps()
+	{
+		return AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
 	@Override
 	public void registerKeyBinds()
 	{

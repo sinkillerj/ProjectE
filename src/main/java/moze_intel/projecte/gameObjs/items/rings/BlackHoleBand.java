@@ -200,7 +200,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 1)
 		{
@@ -215,5 +215,6 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}
 		}
+		return false;
 	}
 }

@@ -11,7 +11,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
 
-	private boolean logFoundExploits = true;
+	private static boolean logFoundExploits = true;
 	public SimpleGraphMapper(IValueArithmetic<V> arithmetic) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
@@ -21,7 +21,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		return (m.containsKey(key) && value.compareTo(m.get(key)) >= 0);
 	}
 
-	public void setLogFoundExploits(boolean log) {
+	public static void setLogFoundExploits(boolean log) {
 		logFoundExploits = log;
 	}
 
@@ -155,11 +155,17 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		boolean hasPositiveIngredientValues = false;
 		for (Map.Entry<T, Integer> entry:conversion.ingredientsWithAmount.entrySet()) {
 			if (values.containsKey(entry.getKey())) {
+				//The ingredient has a value
+				if (entry.getValue() == 0)
+				{
+					//Ingredients with an amount of 'zero' do not need to be handled.
+					continue;
+				}
 				//value = value + amount * ingredientcost
-				V ingredientValue = values.get(entry.getKey());
+				V ingredientValue = arithmetic.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
 					if (!arithmetic.isFree(ingredientValue)) {
-						value = arithmetic.add(value, arithmetic.mul(entry.getValue(), ingredientValue));
+						value = arithmetic.add(value, ingredientValue);
 						if (ingredientValue.compareTo(ZERO) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
 						allIngredientsAreFree = false;
 					}

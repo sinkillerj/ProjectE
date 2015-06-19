@@ -1,11 +1,12 @@
 package moze_intel.projecte.network.packets;
 
+import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.PECore;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.playerData.Transmutation;
 
 public class KnowledgeClearPKT implements IMessage, IMessageHandler<KnowledgeClearPKT, IMessage>
 {
@@ -21,7 +22,13 @@ public class KnowledgeClearPKT implements IMessage, IMessageHandler<KnowledgeCle
 	@Override
 	public IMessage onMessage(KnowledgeClearPKT pkt, MessageContext ctx)
 	{
-		Transmutation.clearKnowledge(pkt.username);
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run()
+			{
+				PECore.proxy.clearClientKnowledge();
+			}
+		});
 		return null;
 	}
 
