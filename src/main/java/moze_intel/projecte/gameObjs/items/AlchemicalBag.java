@@ -54,7 +54,6 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			AlchemicalBags.syncPartial(player, stack.getItemDamage());
 			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 		

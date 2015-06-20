@@ -36,6 +36,9 @@ public final class PELogger
 		{
 			logger.info(msg);
 		}
-		logger.debug(msg); // fml log
+		else
+		{
+			logger.debug(msg); // fml log
+		}
 	}
 }
