@@ -140,7 +140,7 @@ public final class Transmutation
 	public static void sync(EntityPlayer player)
 	{
 		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
-		PELogger.logInfo("** SENT TRANSMUTATION DATA **");
+		PELogger.logDebug("** SENT TRANSMUTATION DATA **");
 	}
 
 	public static void clearCache()
