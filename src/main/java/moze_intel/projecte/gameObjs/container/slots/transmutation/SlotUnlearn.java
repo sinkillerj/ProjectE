@@ -1,17 +1,15 @@
-package moze_intel.projecte.gameObjs.container.slots.transmuteportable;
+package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotTabletUnlearn extends Slot
+public class SlotUnlearn extends Slot
 {
-	private TransmuteTabletInventory table;
+	private TransmutationInventory table;
 	
-	public SlotTabletUnlearn(TransmuteTabletInventory table, int par2, int par3, int par4) 
+	public SlotUnlearn(TransmutationInventory table, int par2, int par3, int par4)
 	{
 		super(table, par2, par3, par4);
 		this.table = table;
