@@ -45,7 +45,7 @@ public class PedestalContainer extends Container
 
 		if (slotIndex == 0)
 		{
-			if (!this.mergeItemStack(stack, 1, this.inventorySlots.size(), true))
+			if (!this.mergeItemStack(stack, 1, this.inventorySlots.size(), false))
 				return null;
 			slot.onSlotChanged();
 		}
