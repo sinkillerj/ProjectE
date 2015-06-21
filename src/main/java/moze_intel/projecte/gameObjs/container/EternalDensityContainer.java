@@ -36,8 +36,19 @@ public class EternalDensityContainer extends Container
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot) 
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
+		Slot slot = getSlot(slotIndex);
+		if (slotIndex > 8)
+		{
+			int index = inventory.findFirstEmptySlot();
+			if (index != -1)
+			{
+				ItemStack toSet = slot.getStack().copy();
+				toSet.stackSize = 1;
+				inventory.setInventorySlotContents(index, toSet);
+			}
+		}
 		return null;
 	}
 
