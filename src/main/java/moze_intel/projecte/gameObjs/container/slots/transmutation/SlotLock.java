@@ -11,12 +11,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotLock extends Slot
 {
-	private TransmutationInventory table;
+	private TransmutationInventory inv;
 	
-	public SlotLock(TransmutationInventory table, int par2, int par3, int par4)
+	public SlotLock(TransmutationInventory inv, int par2, int par3, int par4)
 	{
-		super(table, par2, par3, par4);
-		this.table = table;
+		super(inv, par2, par3, par4);
+		this.inv = inv;
 	}
 	
 	@Override
@@ -37,30 +37,30 @@ public class SlotLock extends Slot
 		
 		if (stack.getItem() == ObjHandler.kleinStars)
 		{
-			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(table.emc);
+			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.emc);
 			
 			if (ItemPE.getEmc(stack) >= remainEmc)
 			{
-				table.addEmc(remainEmc);
+				inv.addEmc(remainEmc);
 				ItemPE.removeEmc(stack, remainEmc);
 			}
 			else
 			{
-				table.addEmc(ItemPE.getEmc(stack));
+				inv.addEmc(ItemPE.getEmc(stack));
 				ItemPE.setEmc(stack, 0);
 			}
 			
-			table.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack.copy());
 			return;
 		}
 		
 		if (stack.getItem() != ObjHandler.tome)
 		{
-			table.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack.copy());
 		}
 		else
 		{
-			table.updateOutputs();
+			inv.updateOutputs();
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class SlotLock extends Slot
 	{
 		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
 		
-		table.updateOutputs();
+		inv.updateOutputs();
 	}
 	
 	@Override

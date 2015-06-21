@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotUnlearn extends Slot
 {
-	private TransmutationInventory table;
+	private TransmutationInventory inv;
 	
-	public SlotUnlearn(TransmutationInventory table, int par2, int par3, int par4)
+	public SlotUnlearn(TransmutationInventory inv, int par2, int par3, int par4)
 	{
-		super(table, par2, par3, par4);
-		this.table = table;
+		super(inv, par2, par3, par4);
+		this.inv = inv;
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class SlotUnlearn extends Slot
 			return;
 		}
 
-		table.handleUnlearn(stack.copy());
+		inv.handleUnlearn(stack.copy());
 
 		super.putStack(stack);
 	}

@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -176,7 +177,7 @@ public class TransmutationInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
+				String displayName;
 
 				try
 				{
@@ -380,6 +381,8 @@ public class TransmutationInventory implements IInventory
 	public void openInventory() 
 	{
 		emc = Transmutation.getEmc(player);
+		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
+		System.arraycopy(inputLocks, 0, inventory, 0, 9);
 		updateOutputs();
 	}
 
@@ -389,6 +392,7 @@ public class TransmutationInventory implements IInventory
 		if (!player.worldObj.isRemote)
 		{
 			Transmutation.setEmc(player, emc);
+			Transmutation.setInputsAndLocks(Arrays.copyOfRange(inventory, 0, 9), player);
 			Transmutation.sync(player);
 		}
 	}

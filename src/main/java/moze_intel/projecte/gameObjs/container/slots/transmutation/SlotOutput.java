@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotOutput extends Slot
 {
-	private TransmutationInventory table;
+	private TransmutationInventory inv;
 	
-	public SlotOutput(TransmutationInventory table, int par2, int par3, int par4)
+	public SlotOutput(TransmutationInventory inv, int par2, int par3, int par4)
 	{
-		super(table, par2, par3, par4);
-		this.table = table;
+		super(inv, par2, par3, par4);
+		this.inv = inv;
 	}
 	
 	@Override
@@ -21,8 +21,8 @@ public class SlotOutput extends Slot
 	{
 		ItemStack stack = getStack().copy();
 		stack.stackSize = slot;
-		table.removeEmc(EMCHelper.getEmcValue(stack));
-		table.checkForUpdates();
+		inv.removeEmc(EMCHelper.getEmcValue(stack));
+		inv.checkForUpdates();
 		
 		return stack;
 	}

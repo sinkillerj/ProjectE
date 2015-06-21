@@ -132,14 +132,6 @@ public class TransmutationContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		for (int i = 0; i < 9; i++)
-		{
-			ItemStack s = transmutationInventory.getStackInSlotOnClosing(i);
-			if (s != null)
-			{
-				player.dropPlayerItemWithRandomChoice(s, false);
-			}
-		}
 		transmutationInventory.closeInventory();
 	}
 	
@@ -151,7 +143,6 @@ public class TransmutationContainer extends Container
 			if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
 				&& getSlot(slot).getStack() == player.getHeldItem())
 			{
-				System.out.println("Catching slotclick and disallowing");
 				return null;
 			}
 		}

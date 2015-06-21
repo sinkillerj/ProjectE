@@ -9,12 +9,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotInput extends Slot
 {
-	private TransmutationInventory table;
+	private TransmutationInventory inv;
 	
-	public SlotInput(TransmutationInventory table, int par2, int par3, int par4)
+	public SlotInput(TransmutationInventory inv, int par2, int par3, int par4)
 	{
-		super(table, par2, par3, par4);
-		this.table = table;
+		super(inv, par2, par3, par4);
+		this.inv = inv;
 	}
 	
 	@Override
@@ -37,25 +37,25 @@ public class SlotInput extends Slot
 		{
 			int remainingEmc = EMCHelper.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemPE.getEmc(stack));
 			
-			if (table.emc >= remainingEmc)
+			if (inv.emc >= remainingEmc)
 			{
 				ItemPE.addEmc(stack, remainingEmc);
-				table.removeEmc(remainingEmc);
+				inv.removeEmc(remainingEmc);
 			}
 			else
 			{
-				ItemPE.addEmc(stack, table.emc);
-				table.emc = 0;
+				ItemPE.addEmc(stack, inv.emc);
+				inv.emc = 0;
 			}
 		}
 		
 		if (stack.getItem() != ObjHandler.tome)
 		{
-			table.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack.copy());
 		}
 		else
 		{
-			table.updateOutputs();
+			inv.updateOutputs();
 		}
 	}
 	

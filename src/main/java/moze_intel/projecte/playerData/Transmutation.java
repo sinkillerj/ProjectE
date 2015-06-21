@@ -97,6 +97,17 @@ public final class Transmutation
 		}
 	}
 
+	public static void setInputsAndLocks(ItemStack[] stacks, EntityPlayer player)
+	{
+		TransmutationProps data = TransmutationProps.getDataFor(player);
+		data.setInputLocks(stacks);
+	}
+
+	public static ItemStack[] getInputsAndLock(EntityPlayer player)
+	{
+		return TransmutationProps.getDataFor(player).getInputLocks().clone();
+	}
+
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
