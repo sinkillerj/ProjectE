@@ -49,7 +49,37 @@ public class RelayMK3Container extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
-		return null;
+		Slot slot = this.getSlot(slotIndex);
+
+		if (slot == null || !slot.getHasStack())
+		{
+			return null;
+		}
+
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+
+		if (slotIndex < 22)
+		{
+			if (!this.mergeItemStack(stack, 22, this.inventorySlots.size(), true))
+				return null;
+			slot.onSlotChanged();
+		}
+		else if (!this.mergeItemStack(stack, 0, 21, false))
+		{
+			return null;
+		}
+		if (stack.stackSize == 0)
+		{
+			slot.putStack(null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+
+		slot.onPickupFromSlot(player, newStack);
+		return newStack;
 	}
 
 	@Override
