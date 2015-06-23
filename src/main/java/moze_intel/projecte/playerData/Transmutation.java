@@ -28,7 +28,7 @@ public final class Transmutation
 	@Deprecated
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
 
-	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newLinkedList();
+	private static final List<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newArrayList();
 	
 	public static void cacheFullKnowledge()
 	{
@@ -178,7 +178,7 @@ public final class Transmutation
 	}
 
 	@Deprecated
-	public static LinkedList<ItemStack> legacyGetKnowledge(String username)
+	public static List<ItemStack> legacyGetKnowledge(String username)
 	{
 		if (TOME_KNOWLEDGE.contains(username))
 		{
