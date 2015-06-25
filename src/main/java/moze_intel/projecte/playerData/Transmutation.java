@@ -102,7 +102,7 @@ public final class Transmutation
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
-			if (ItemStack.areItemStacksEqual(s, stack))
+			if (ItemHelper.basicAreStacksEqual(s, stack))
 			{
 				return true;
 			}
