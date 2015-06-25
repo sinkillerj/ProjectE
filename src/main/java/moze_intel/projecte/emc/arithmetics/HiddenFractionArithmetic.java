@@ -32,7 +32,7 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	public Fraction mul(int a, Fraction b)
 	{
 		if (this.isFree(b)) return getFree();
-		return zeroOrInt(b.multiplyBy(Fraction.getFraction(a, 1)));
+		return b.multiplyBy(Fraction.getFraction(a, 1));
 	}
 
 	@Override
