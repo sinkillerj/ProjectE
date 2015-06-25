@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,12 @@ public abstract class ItemPE extends Item
 	public Item setUnlocalizedName(String message)
 	{
 		return super.setUnlocalizedName("pe_" + message);
+	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChange)
+	{
+		return !ItemHelper.basicAreStacksEqual(oldStack, newStack);
 	}
 
 	public static double getEmc(ItemStack stack)

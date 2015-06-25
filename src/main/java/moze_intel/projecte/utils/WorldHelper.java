@@ -123,16 +123,13 @@ public final class WorldHelper
 	
 	public static void extinguishNearby(World world, EntityPlayer player)
 	{
-		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
-			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
-				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					if (world.getBlockState(pos).getBlock() == Blocks.fire)
-					{
-						world.setBlockToAir(pos);
-					}
-				}
+		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
+		{
+			if (world.getBlockState(pos).getBlock() == Blocks.fire)
+			{
+				world.setBlockToAir(pos);
+			}
+		}
 	}
 	
 	public static void freezeNearby(World world, EntityPlayer player)
@@ -142,27 +139,18 @@ public final class WorldHelper
 	
 	public static void freezeInBoundingBox(World world, AxisAlignedBB box)
 	{
-		for (int x = (int) box.minX; x <= box.maxX; x++)
+		for (BlockPos pos : getPositionsFromBox(box))
 		{
-			for (int y = (int) box.minY; y <= box.maxY; y++)
+			Block b = world.getBlockState(pos).getBlock();
+			if (b == Blocks.water || b == Blocks.flowing_water)
 			{
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
+				world.setBlockState(pos, Blocks.ice.getDefaultState());
+			}
+			else if (b.isSideSolid(world, pos, EnumFacing.UP))
+			{
+				if (world.isAirBlock(pos.up()))
 				{
-					BlockPos pos = new BlockPos(x, y, z);
-
-					Block b = world.getBlockState(pos).getBlock();
-
-					if (b == Blocks.water || b == Blocks.flowing_water)
-					{
-						world.setBlockState(pos, Blocks.ice.getDefaultState());
-					}
-					else if (b.isSideSolid(world, pos, EnumFacing.UP))
-					{
-						if (world.isAirBlock(pos.up()))
-						{
-							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
-						}
-					}
+					world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
 				}
 			}
 		}
@@ -175,26 +163,19 @@ public final class WorldHelper
 	
 	public static void freezeInBoundingBoxRandomly(World world, AxisAlignedBB box)
 	{
-		for (int x = (int) box.minX; x <= box.maxX; x++)
+		for (BlockPos pos : getPositionsFromBox(box))
 		{
-			for (int y = (int) box.minY; y <= box.maxY; y++)
-			{
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					Block b = world.getBlockState(pos).getBlock();
+			Block b = world.getBlockState(pos).getBlock();
 
-					if ((b == Blocks.water || b == Blocks.flowing_water) && world.rand.nextInt(128) == 0)
-					{
-						world.setBlockState(pos, Blocks.ice.getDefaultState());
-					}
-					else if (b.isSideSolid(world, pos, EnumFacing.UP))
-					{
-						if (world.isAirBlock(pos.up()) && world.rand.nextInt(128) == 0)
-						{
-							world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
-						}
-					}
+			if ((b == Blocks.water || b == Blocks.flowing_water) && world.rand.nextInt(128) == 0)
+			{
+				world.setBlockState(pos, Blocks.ice.getDefaultState());
+			}
+			else if (b.isSideSolid(world, pos, EnumFacing.UP))
+			{
+				if (world.isAirBlock(pos.up()) && world.rand.nextInt(128) == 0)
+				{
+					world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
 				}
 			}
 		}
@@ -322,6 +303,24 @@ public final class WorldHelper
 		return null;
 	}
 
+	/**
+	 * Wrapper around BlockPos.getAllInBox() with an AABB
+	 */
+	@SuppressWarnings("unchecked")
+	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
+	{
+		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
+	}
+
+	/**
+	 * No-warnings wrapper around BlockPos.getAllInBox
+	 */
+	@SuppressWarnings("unchecked")
+	public static Iterable<BlockPos> getPositionsFromCorners(BlockPos corner1, BlockPos corner2)
+	{
+		return BlockPos.getAllInBox(corner1, corner2);
+	}
+
 	public static Entity getRandomEntity(World world, Entity toRandomize)
 	{
 		Class entClass = toRandomize.getClass();
@@ -353,16 +352,14 @@ public final class WorldHelper
 	{
 		List<TileEntity> list = Lists.newArrayList();
 
-		for (int i = (int) bBox.minX; i <= bBox.maxX; i++)
-			for (int j = (int) bBox.minY; j <= bBox.maxY; j++)
-				for (int k = (int) bBox.minZ; k <= bBox.maxZ; k++)
-				{
-					TileEntity tile = world.getTileEntity(new BlockPos(i, j, k));
-					if (tile != null)
-					{
-						list.add(tile);
-					}
-				}
+		for (BlockPos pos : getPositionsFromBox(bBox))
+		{
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile != null)
+			{
+				list.add(tile);
+			}
+		}
 
 		return list;
 	}
@@ -393,88 +390,85 @@ public final class WorldHelper
 	{
 		int chance = harvest ? 16 : 32;
 
-		for (int x = pos.getX() - 5; x <= pos.getX() + 5; x++)
-			for (int y = pos.getY() - 3; y <= pos.getY() + 3; y++)
-				for (int z = pos.getZ(); z <= pos.getZ() + 5; z++)
+		for (BlockPos currentPos : getPositionsFromCorners(pos.add(-5, -3, -5), pos.add(5, 3, 5)))
+		{
+			IBlockState state = world.getBlockState(currentPos);
+			Block crop = state.getBlock();
+
+			// Vines, leaves, tallgrass, deadbush, doubleplants
+			if (crop instanceof IShearable)
+			{
+				if (harvest)
 				{
-					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(currentPos);
-					Block crop = state.getBlock();
-
-					// Vines, leaves, tallgrass, deadbush, doubleplants
-					if (crop instanceof IShearable)
+					world.destroyBlock(currentPos, true);
+				}
+			}
+			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
+			// Mushroom, potato, sapling, stems, tallgrass
+			else if (crop instanceof IGrowable)
+			{
+				IGrowable growable = (IGrowable) crop;
+				if(harvest && !growable.canGrow(world, currentPos, state, false))
+				{
+					world.destroyBlock(currentPos, true);
+				}
+				else if (world.rand.nextInt(chance) == 0)
+				{
+					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
 					{
-						if (harvest)
+						growable.grow(world, world.rand, currentPos, state);
+					}
+				}
+			}
+			// All modded
+			// Cactus, Reeds, Netherwart, Flower
+			else if (crop instanceof IPlantable)
+			{
+				if (world.rand.nextInt(chance / 4) == 0)
+				{
+					for (int i = 0; i < (harvest ? 8 : 4); i++)
+					{
+						crop.updateTick(world, currentPos, state, world.rand);
+					}
+				}
+
+				if (harvest)
+				{
+					if (crop instanceof BlockFlower)
+					{
+						world.destroyBlock(currentPos, true);
+					}
+					if (crop == Blocks.reeds || crop == Blocks.cactus)
+					{
+						boolean shouldHarvest = true;
+
+						for (int i = 1; i < 3; i++)
 						{
-							world.destroyBlock(currentPos, true);
+							if (world.getBlockState(currentPos.up(i)).getBlock() != crop)
+							{
+								shouldHarvest = false;
+								break;
+							}
+						}
+
+						if (shouldHarvest)
+						{
+							for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
+							{
+								world.destroyBlock(currentPos.up(i), true);
+							}
 						}
 					}
-					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
-					// Mushroom, potato, sapling, stems, tallgrass
-					else if (crop instanceof IGrowable)
+					if (crop == Blocks.nether_wart)
 					{
-						IGrowable growable = (IGrowable) crop;
-						if(harvest && !growable.canGrow(world, currentPos, state, false))
+						if (((Integer) state.getValue(BlockNetherWart.AGE)) == 3)
 						{
 							world.destroyBlock(currentPos, true);
-						}
-						else if (world.rand.nextInt(chance) == 0)
-						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
-							{
-								growable.grow(world, world.rand, currentPos, state);
-							}
-						}
-					}
-					// All modded
-					// Cactus, Reeds, Netherwart, Flower
-					else if (crop instanceof IPlantable)
-					{
-						if (world.rand.nextInt(chance / 4) == 0)
-						{
-							for (int i = 0; i < (harvest ? 8 : 4); i++)
-							{
-								crop.updateTick(world, currentPos, state, world.rand);
-							}
-						}
-
-						if (harvest)
-						{
-							if (crop instanceof BlockFlower)
-							{
-								world.destroyBlock(currentPos, true);
-							}
-							if (crop == Blocks.reeds || crop == Blocks.cactus)
-							{
-								boolean shouldHarvest = true;
-
-								for (int i = 1; i < 3; i++)
-								{
-									if (world.getBlockState(currentPos.up(i)).getBlock() != crop)
-									{
-										shouldHarvest = false;
-										break;
-									}
-								}
-
-								if (shouldHarvest)
-								{
-									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
-									{
-										world.destroyBlock(currentPos.up(i), true);
-									}
-								}
-							}
-							if (crop == Blocks.nether_wart)
-							{
-								if (((Integer) state.getValue(BlockNetherWart.AGE)) == 3)
-								{
-									world.destroyBlock(currentPos, true);
-								}
-							}
 						}
 					}
 				}
+			}
+		}
 	}
 
 	public static void growNearbyRandomly(boolean harvest, World world, Entity player)
@@ -494,33 +488,29 @@ public final class WorldHelper
 
 		AxisAlignedBB b = new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 
-		for (int x = (int) b.minX; x <= b.maxX; x++)
-			for (int y = (int) b.minY; y <= b.maxY; y++)
-				for (int z = (int) b.minZ; z <= b.maxZ; z++)
-				{
-					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState currentState = world.getBlockState(currentPos);
+		for (BlockPos currentPos : getPositionsFromBox(b))
+		{
+			IBlockState currentState = world.getBlockState(currentPos);
 
-					if (currentState == target || (target.getBlock() == Blocks.lit_redstone_ore && currentState.getBlock() == Blocks.redstone_ore))
-					{
-						currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
-						world.setBlockToAir(pos);
-						numMined++;
-						harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
-					}
-				}
+			if (currentState == target || (target.getBlock() == Blocks.lit_redstone_ore && currentState.getBlock() == Blocks.redstone_ore))
+			{
+				currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
+				world.setBlockToAir(pos);
+				numMined++;
+				harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
+			}
+		}
 	}
 	
 	public static void igniteNearby(World world, EntityPlayer player)
 	{
-		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
-			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
-						world.setBlockState(pos, Blocks.fire.getDefaultState());
-				}
+		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
+		{
+			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
+			{
+				world.setBlockState(pos, Blocks.fire.getDefaultState());
+			}
+		}
 	}
 
 	public static boolean isArrowInGround(EntityArrow arrow)

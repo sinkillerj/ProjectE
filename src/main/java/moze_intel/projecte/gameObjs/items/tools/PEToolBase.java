@@ -122,40 +122,40 @@ public abstract class PEToolBase extends ItemMode
 
 		List<ItemStack> drops = Lists.newArrayList();
 
-		for (int x = (int) player.posX - (5 * charge); x <= player.posX + (5 * charge); x++)
-			for (int y = (int) player.posY - (10 * charge); y <= player.posY + (10 * charge); y++)
-				for (int z = (int) player.posZ - (5 * charge); z <= player.posZ + (5 * charge); z++)
+		int scaled1 = 5 * charge;
+		int scaled2 = 10 * charge;
+
+		for (BlockPos pos : WorldHelper.getPositionsFromCorners(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
+		{
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+
+			if (block.isAir(world, pos))
+			{
+				continue;
+			}
+
+			ItemStack s = new ItemStack(block);
+			int[] oreIds = OreDictionary.getOreIDs(s);
+
+			if (oreIds.length == 0)
+			{
+				continue;
+			}
+
+			String oreName = OreDictionary.getOreName(oreIds[0]);
+
+			if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
+			{
+				List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
+
+				if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
 				{
-					BlockPos pos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(pos);
-					Block block = state.getBlock();
-
-					if (block.isAir(world, pos))
-					{
-						continue;
-					}
-
-					ItemStack s = new ItemStack(block);
-					int[] oreIds = OreDictionary.getOreIDs(s);
-
-					if (oreIds.length == 0)
-					{
-						continue;
-					}
-
-					String oreName = OreDictionary.getOreName(oreIds[0]);
-
-					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
-					{
-						List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
-
-						if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
-						{
-							drops.addAll(blockDrops);
-							world.setBlockToAir(pos);
-						}
-					}
+					drops.addAll(blockDrops);
+					world.setBlockToAir(pos);
 				}
+			}
+		}
 
 		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
@@ -185,49 +185,47 @@ public abstract class PEToolBase extends ItemMode
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
-		for (int i = pos.getX() - charge; i <= pos.getX() + charge; i++)
+		for (BlockPos newPos : WorldHelper.getPositionsFromCorners(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
 		{
-			for (int j = pos.getZ() - charge; j <= pos.getZ() + charge; j++)
+			Block block = world.getBlockState(newPos).getBlock();
+			Block blockAbove = world.getBlockState(newPos.up()).getBlock();
+
+			Block result = Blocks.farmland;
+			if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
 			{
-				BlockPos newPos = new BlockPos(i, pos.getY(), j);
-				Block block = world.getBlockState(newPos).getBlock();
-				Block blockAbove = world.getBlockState(newPos.up()).getBlock();
-
-				Block result = Blocks.farmland;
-				if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
+				if (!hasSoundPlayed)
 				{
-					if (!hasSoundPlayed)
-					{
-						world.playSoundEffect(i + 0.5F, pos.getY() + 0.5F, j + 0.5F, result.stepSound.getStepSound(), (result.stepSound.getVolume() + 1.0F) / 2.0F, result.stepSound.getFrequency() * 0.8F);
-						hasSoundPlayed = true;
-					}
+					world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, result.stepSound.getStepSound(), (result.stepSound.getVolume() + 1.0F) / 2.0F, result.stepSound.getFrequency() * 0.8F);
+					hasSoundPlayed = true;
+				}
 
-					if (world.isRemote)
+				if (world.isRemote)
+				{
+					return;
+				}
+				else
+				{
+					// The initial block we target is always free
+					if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || consumeFuel(player, stack, emcCost, true))
 					{
-						return;
-					}
-					else
-					{
-						// The initial block we target is always free
-						if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || consumeFuel(player, stack, emcCost, true))
+						world.setBlockState(newPos, result.getDefaultState());
+
+						if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
+								&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
+								) {
+							world.destroyBlock(newPos.up(), true);
+						}
+
+						if (!hasAction)
 						{
-							world.setBlockState(newPos, result.getDefaultState());
-
-							if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
-									&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
-									) {
-								world.destroyBlock(newPos.up(), true);
-							}
-
-							if (!hasAction)
-							{
-								hasAction = true;
-							}
+							hasAction = true;
 						}
 					}
 				}
 			}
+
 		}
+
 		if (hasAction)
 		{
 			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
@@ -332,20 +330,17 @@ public abstract class PEToolBase extends ItemMode
 
 		List<ItemStack> drops = Lists.newArrayList();
 
-		for (int i = (int) box.minX; i <= box.maxX; i++)
-			for (int j = (int) box.minY; j <= box.maxY; j++)
-				for (int k = (int) box.minZ; k <= box.maxZ; k++)
-				{
-					BlockPos digPos = new BlockPos(i, j, k);
-					IBlockState state = world.getBlockState(digPos);
-					Block b = state.getBlock();
+		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
+		{
+			IBlockState state = world.getBlockState(digPos);
+			Block b = state.getBlock();
 
-					if (!b.isAir(world, digPos) && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
-					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
-						world.setBlockToAir(digPos);
-					}
-				}
+			if (!b.isAir(world, digPos) && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
+			{
+				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
+				world.setBlockToAir(digPos);
+			}
+		}
 
 		WorldHelper.createLootDrop(drops, world, pos);
 	}
@@ -372,23 +367,20 @@ public abstract class PEToolBase extends ItemMode
 
 		List<ItemStack> drops = Lists.newArrayList();
 
-		for (int i = (int) box.minX; i <= box.maxX; i++)
-			for (int j = (int) box.minY; j <= box.maxY; j++)
-				for (int k = (int) box.minZ; k <= box.maxZ; k++)
-				{
-					BlockPos pos = new BlockPos(i, j, k);
-					IBlockState state = world.getBlockState(pos);
-					Block b = state.getBlock();
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+		{
+			IBlockState state = world.getBlockState(pos);
+			Block b = state.getBlock();
 
-					if (!world.isAirBlock(pos) && b.getBlockHardness(world, pos) != -1
-							&& canHarvestBlock(b, stack)
-							&& consumeFuel(player, stack, emcCost, true)
-							)
-					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
-						world.setBlockToAir(pos);
-					}
-				}
+			if (!world.isAirBlock(pos) && b.getBlockHardness(world, pos) != -1
+					&& canHarvestBlock(b, stack)
+					&& consumeFuel(player, stack, emcCost, true)
+					)
+			{
+				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
+				world.setBlockToAir(pos);
+			}
+		}
 
 		WorldHelper.createLootDrop(drops, world, mop.getBlockPos());
 		PlayerHelper.swingItem(((EntityPlayerMP) player));
@@ -569,19 +561,12 @@ public abstract class PEToolBase extends ItemMode
 
 		List<ItemStack> drops = Lists.newArrayList();
 
-		for (int i = (int) aabb.minX; i <= aabb.maxX; i++)
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
-			for (int j = (int) aabb.minY; j <= aabb.maxY; j++)
+			IBlockState state = player.worldObj.getBlockState(pos);
+			if (state == target)
 			{
-				for (int k = (int) aabb.minZ; k <= aabb.maxZ; k++)
-				{
-					BlockPos pos = new BlockPos(i, j, k);
-					IBlockState state = player.worldObj.getBlockState(pos);
-					if (state == target)
-					{
-						WorldHelper.harvestVein(player.worldObj, player, stack, pos, state, drops, 0);
-					}
-				}
+				WorldHelper.harvestVein(player.worldObj, player, stack, pos, state, drops, 0);
 			}
 		}
 
@@ -606,18 +591,15 @@ public abstract class PEToolBase extends ItemMode
 		List<ItemStack> drops = Lists.newArrayList();
 		World world = player.worldObj;
 
-		for (int x = (int) box.minX; x <= box.maxX; x++)
-			for (int y = (int) box.minY; y <= box.maxY; y++)
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(pos);
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+		{
+			IBlockState state = world.getBlockState(pos);
 
-					if (ItemHelper.isOre(state.getBlock()) && state.getBlock().getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
-					{
-						WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
-					}
-				}
+			if (ItemHelper.isOre(state.getBlock()) && state.getBlock().getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
+			{
+				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
+			}
+		}
 
 		if (!drops.isEmpty())
 		{
