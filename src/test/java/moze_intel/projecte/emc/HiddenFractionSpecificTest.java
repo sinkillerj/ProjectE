@@ -82,7 +82,7 @@ public class HiddenFractionSpecificTest
 
 
 	@Test
-	public void fractionPropagation()
+	public void reliquaryVials()
 	{
 		graphMapper.setValue("glass", 1, IMappingCollector.FixedValue.FixAndInherit);
 
@@ -99,6 +99,23 @@ public class HiddenFractionSpecificTest
 		assertEquals(0, getValue(values, "vial"));
 		assertEquals(1, getValue(values, "testItem1"));
 		assertEquals(1, getValue(values, "testItem2"));
+	}
+
+	@Test
+	public void propagation()
+	{
+		graphMapper.setValue("a", 1, IMappingCollector.FixedValue.FixAndInherit);
+
+		graphMapper.addConversionMultiple(2, "ahalf", ImmutableMap.of("a", 1));
+		graphMapper.addConversionMultiple(1, "ahalf2", ImmutableMap.of("ahalf", 1));
+		graphMapper.addConversionMultiple(1, "2ahalf2", ImmutableMap.of("ahalf2", 2));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a"));
+		assertEquals(0, getValue(values, "ahalf"));
+		assertEquals(0, getValue(values, "ahalf2"));
+		assertEquals(1, getValue(values, "2ahalf2"));
+
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
