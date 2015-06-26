@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import net.minecraft.entity.player.EntityPlayer;

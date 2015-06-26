@@ -3,9 +3,9 @@ package moze_intel.projecte.handlers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import moze_intel.projecte.api.IFireProtectionItem;
-import moze_intel.projecte.api.IFlightItem;
-import moze_intel.projecte.api.IStepAssistItem;
+import moze_intel.projecte.utils.IFireProtectionItem;
+import moze_intel.projecte.utils.IFlightItem;
+import moze_intel.projecte.utils.IStepAssistItem;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;

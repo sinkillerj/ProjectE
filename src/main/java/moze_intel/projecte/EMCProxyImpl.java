@@ -1,6 +1,6 @@
 package moze_intel.projecte;
 
-import moze_intel.projecte.api.IEMCProxy;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;

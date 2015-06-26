@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.proxy;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

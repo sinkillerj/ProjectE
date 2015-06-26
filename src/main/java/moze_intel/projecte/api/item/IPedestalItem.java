@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;

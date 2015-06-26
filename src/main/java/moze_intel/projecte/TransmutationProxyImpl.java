@@ -1,6 +1,6 @@
 package moze_intel.projecte;
 
-import moze_intel.projecte.api.ITransmutationProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
 import java.util.UUID;
 

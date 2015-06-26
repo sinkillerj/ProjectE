@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

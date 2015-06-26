@@ -1,7 +1,7 @@
 package moze_intel.projecte;
 
 import cpw.mods.fml.common.Loader;
-import moze_intel.projecte.api.IExtraProxy;
+import moze_intel.projecte.api.proxy.IExtraProxy;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;

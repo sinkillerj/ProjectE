@@ -1,6 +1,9 @@
 package moze_intel.projecte.api;
 
 import cpw.mods.fml.common.FMLLog;
+import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.IExtraProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
 /**
  * Class for basic mod interactions with ProjectE.<br>

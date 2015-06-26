@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.ITileEmc;
+import moze_intel.projecte.api.tile.ITileEmc;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 

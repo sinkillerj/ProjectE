@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.item.ItemStack;

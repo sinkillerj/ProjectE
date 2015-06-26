@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.tile;
 
 /**
  * Interface for TileEntities with an EMC buffer.<br>
