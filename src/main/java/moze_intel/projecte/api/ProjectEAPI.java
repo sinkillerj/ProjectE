@@ -1,8 +1,6 @@
 package moze_intel.projecte.api;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * Class for basic mod interactions with ProjectE.<br>
@@ -10,42 +8,42 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public final class ProjectEAPI
 {
-	public static interface IRegisterCustomEMC {
-		public void registerCustomEMC(ItemStack stack, int emcValue);
-	}
-	/**
-	 * Register an EMC value for the specified itemstack.<br>
-	 * If the emcValue is <= 0, then the ItemStack will be blacklisted from any EMC mapping.<br>
-	 * The ItemStack's NBT data is completely ignored in registration.<br>
-	 * Users can still modify inter-mod EMC registration via command/configuration file.<br>
-	 * Can be called during pre-init, init or post-init.
-	 */
-	public static void registerCustomEMC(ItemStack stack, int emcValue)
+	public IEMCProxy getEMCProxy()
 	{
-		try {
-			Class<?> clazz = Class.forName("moze_intel.projecte.emc.mappers.APICustomEMCMapper");
-			IRegisterCustomEMC instance = (IRegisterCustomEMC)clazz.getField("instance").get(null);
-			instance.registerCustomEMC(stack, emcValue);
-		} catch (Throwable t) {
-
+		try
+		{
+			Class<?> clazz = Class.forName("moze_intel.projecte.EMCProxyImpl");
+			return (IEMCProxy) clazz.getField("instance").get(null);
+		} catch (ReflectiveOperationException ex)
+		{
+			FMLLog.info("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
 		}
+		return null;
 	}
 
-	/**
-	 * Blacklist an entity for the interdiction torches.<br> 
-	 * Can be called during pre-init, init or post-init.
-	 */
-	public static void registerInterdictionBlacklist(Class entityClass)
+	public ITransmutationProxy getTransmutationProxy()
 	{
-		FMLInterModComms.sendMessage("ProjectE", "interdictionblacklist", entityClass.getCanonicalName());
+		try
+		{
+			Class<?> clazz = Class.forName("moze_intel.projecte.TransmutationProxyImpl");
+			return (ITransmutationProxy) clazz.getField("instance").get(null);
+		} catch (ReflectiveOperationException ex)
+		{
+			FMLLog.info("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+		}
+		return null;
 	}
 
-	/**
-	 * Make an ItemStack keep it's NBT data when condensed.<br>
-	 * Can be called during pre-init, init or post-init.
-	 */
-	public static void registerCondenserNBTException(ItemStack stack)
+	public IExtraProxy getMiscellaneousProxy()
 	{
-		FMLInterModComms.sendMessage("ProjectE", "condensernbtcopy", stack);
+		try
+		{
+			Class<?> clazz = Class.forName("moze_intel.projecte.ExtraProxyImpl");
+			return (IExtraProxy) clazz.getField("instance").get(null);
+		} catch (ReflectiveOperationException ex)
+		{
+			FMLLog.info("[ProjectEAPI] Error retrieving ExtraProxyImpl, ProjectE may be absent, damaged, or outdated.");
+		}
+		return null;
 	}
 }
