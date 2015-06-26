@@ -10,7 +10,7 @@ public final class ProjectEAPI
 	/**
 	 * @return The proxy for EMC-based API queries
 	 */
-	public IEMCProxy getEMCProxy()
+	public static IEMCProxy getEMCProxy()
 	{
 		try
 		{
@@ -26,7 +26,7 @@ public final class ProjectEAPI
 	/**
 	 * @return The proxy for Transmutation-based API queries
 	 */
-	public ITransmutationProxy getTransmutationProxy()
+	public static ITransmutationProxy getTransmutationProxy()
 	{
 		try
 		{
@@ -42,7 +42,7 @@ public final class ProjectEAPI
 	/**
 	 * @return The proxy for miscellaneous API queries
 	 */
-	public IExtraProxy getMiscellaneousProxy()
+	public static IExtraProxy getMiscellaneousProxy()
 	{
 		try
 		{
