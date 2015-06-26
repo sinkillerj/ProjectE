@@ -39,6 +39,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         if (player != null)
         {
             Transmutation.addKnowledge(stack, player);
+            Transmutation.sync(player);
         }
     }
 
@@ -49,6 +50,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         if (player != null)
         {
             Transmutation.removeKnowledge(stack, player);
+            Transmutation.sync(player);
         }
     }
 
