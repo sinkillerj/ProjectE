@@ -1,4 +1,4 @@
-package moze_intel.projecte;
+package moze_intel.projecte.proxies;
 
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;

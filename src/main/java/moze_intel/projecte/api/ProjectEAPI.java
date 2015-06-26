@@ -14,7 +14,7 @@ public final class ProjectEAPI
 	{
 		try
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.EMCProxyImpl");
+			Class<?> clazz = Class.forName("moze_intel.projecte.proxies.EMCProxyImpl");
 			return (IEMCProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
@@ -30,7 +30,7 @@ public final class ProjectEAPI
 	{
 		try
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.TransmutationProxyImpl");
+			Class<?> clazz = Class.forName("moze_intel.projecte.proxies.TransmutationProxyImpl");
 			return (ITransmutationProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
@@ -46,7 +46,7 @@ public final class ProjectEAPI
 	{
 		try
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.ExtraProxyImpl");
+			Class<?> clazz = Class.forName("moze_intel.projecte.proxies.ExtraProxyImpl");
 			return (IExtraProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{

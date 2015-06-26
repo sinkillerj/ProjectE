@@ -1,4 +1,4 @@
-package moze_intel.projecte;
+package moze_intel.projecte.proxies;
 
 import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.api.proxy.IExtraProxy;

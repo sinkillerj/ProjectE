@@ -1,4 +1,4 @@
-package moze_intel.projecte;
+package moze_intel.projecte.proxies;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +21,15 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     public boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack)
     {
         EntityPlayer player = findOnlinePlayer(playerUUID);
-        return player != null && Transmutation.hasKnowledgeForStack(stack, player);
+        if (player != null)
+        {
+            return Transmutation.hasKnowledgeForStack(stack, player);
+        }
+        else
+        {
+            // todo offline
+            return false;
+        }
     }
 
     @Override

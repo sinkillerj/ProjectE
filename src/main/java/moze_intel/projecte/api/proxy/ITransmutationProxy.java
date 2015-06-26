@@ -15,14 +15,14 @@ public interface ITransmutationProxy
     boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack);
 
     /**
-     * Adds to the knowledge of the provided player
+     * Adds to the knowledge of the provided player. Only works if player is online (for now)
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to add
      */
     void addKnowledge(UUID playerUUID, ItemStack stack);
 
     /**
-     * Removes from the knowledge of the provided player
+     * Removes from the knowledge of the provided player. Only works if player is online (for now)
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to remove
      */
