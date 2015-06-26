@@ -48,6 +48,11 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 			}
 			return Fraction.getFraction(result.intValue(), 1);
 		} catch (ArithmeticException e) {
+			//The documentation for Fraction.divideBy states, that this Exception is only thrown if
+			// * you try to divide by `null` (We are not doing this)
+			// * the numerator or denumerator exceeds Integer.MAX_VALUE.
+			// Because we only divide by values > 1 it means the denumerator overflowed.
+			// This means we reached something/infinity, which is basically 0.
 			return Fraction.ZERO;
 		}
 	}
