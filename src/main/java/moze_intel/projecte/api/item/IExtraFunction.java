@@ -4,14 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Used by items that trigger with the extra function key (C by default)
+ * This interface specifies items that perform a specific function when the Extra Function key is activated (default C)
  */
 public interface IExtraFunction 
 {
 	/**
-	 * Do our extra function. Called serverside only.
-	 * @param stack The ItemStack the player is pressing C on
-	 * @param player The player
+	 * Called serverside when the server receives a Extra Function key packet
+	 * @param stack The ItemStack performing this function
+	 * @param player The player performing this function
 	 */
 	void doExtraFunction(ItemStack stack, EntityPlayer player);
 }

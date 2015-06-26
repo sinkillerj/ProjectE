@@ -1,10 +1,19 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.List;
-
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.utils.IFireProtectionItem;
+import moze_intel.projecte.utils.IFlightItem;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,17 +28,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.utils.IFireProtectionItem;
-import moze_intel.projecte.utils.IFlightItem;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
+
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter

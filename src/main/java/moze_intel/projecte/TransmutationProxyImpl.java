@@ -1,7 +1,14 @@
 package moze_intel.projecte;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
+import moze_intel.projecte.playerData.Transmutation;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TransmutationProxyImpl implements ITransmutationProxy
@@ -11,23 +18,45 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     private TransmutationProxyImpl() {}
 
     @Override
-    public boolean hasKnowledgeFor(UUID playerUUID, Object obj)
+    public boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack)
     {
-        // todo
-        return false;
+        EntityPlayer player = findOnlinePlayer(playerUUID);
+        return player != null && Transmutation.hasKnowledgeForStack(stack, player);
     }
 
     @Override
-    public boolean addKnowledge(UUID playerUUID, Object obj)
+    public void addKnowledge(UUID playerUUID, ItemStack stack)
     {
-        // todo
-        return false;
+        EntityPlayer player = findOnlinePlayer(playerUUID);
+        if (player != null)
+        {
+            Transmutation.addKnowledge(stack, player);
+        }
     }
 
     @Override
-    public boolean removeKnowledge(UUID playerUUID, Object obj)
+    public void removeKnowledge(UUID playerUUID, ItemStack stack)
     {
-        // todo
-        return false;
+        EntityPlayer player = findOnlinePlayer(playerUUID);
+        if (player != null)
+        {
+            Transmutation.removeKnowledge(stack, player);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private EntityPlayer findOnlinePlayer(UUID playerUUID)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            for (EntityPlayer player : (List<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+            {
+                if (player.getGameProfile().getId().equals(playerUUID))
+                {
+                    return player;
+                }
+            }
+        }
+        return null;
     }
 }

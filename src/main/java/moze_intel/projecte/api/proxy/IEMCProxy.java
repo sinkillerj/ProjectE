@@ -4,9 +4,24 @@ import net.minecraft.item.ItemStack;
 
 public interface IEMCProxy
 {
+    /**
+     * Registers a custom EMC value for this ItemStack
+     * @param stack The stack we want to define EMC for
+     * @param value The value to define. Values below 0 are changed to 0
+     */
     void registerCustomEmc(ItemStack stack, int value);
 
+    /**
+     * Queries the EMC value registry if the object has an EMC value
+     * @param obj A Block, Item, or ItemStack we want to query
+     * @return Whether the object has an emc value
+     */
     boolean hasValue(Object obj);
 
+    /**
+     * Queries the EMC value for the provided object
+     * @param obj A Block, Item, or ItemStack we want to query
+     * @return The object's EMC value, or 0 if there is none
+     */
     int getValue(Object obj);
 }

@@ -14,7 +14,6 @@ public class ExtraProxyImpl implements IExtraProxy
 
     private ExtraProxyImpl() {}
 
-
     @Override
     public void registerInterdictionBlacklist(Class<? extends Entity> clazz)
     {

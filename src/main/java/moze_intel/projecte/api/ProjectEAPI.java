@@ -5,12 +5,11 @@ import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.IExtraProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
-/**
- * Class for basic mod interactions with ProjectE.<br>
- * For now, it's very simplistic, will be expanded in the future.<br>
- */
 public final class ProjectEAPI
 {
+	/**
+	 * @return The proxy for EMC-based API queries
+	 */
 	public IEMCProxy getEMCProxy()
 	{
 		try
@@ -24,6 +23,9 @@ public final class ProjectEAPI
 		return null;
 	}
 
+	/**
+	 * @return The proxy for Transmutation-based API queries
+	 */
 	public ITransmutationProxy getTransmutationProxy()
 	{
 		try
@@ -37,6 +39,9 @@ public final class ProjectEAPI
 		return null;
 	}
 
+	/**
+	 * @return The proxy for miscellaneous API queries
+	 */
 	public IExtraProxy getMiscellaneousProxy()
 	{
 		try

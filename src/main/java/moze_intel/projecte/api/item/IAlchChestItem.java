@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 public interface IAlchChestItem
 {
     /**
-     * Called on both client and server every time the alchemical chest ticks this item.
+     * Called on both client and server every time the alchemical chest ticks this item
      * Implementers that modify the chest inventory (serverside) MUST call markDirty() on the tile entity. 
      * If you do not, your changes may not be saved when the world/chunk unloads!
      *
