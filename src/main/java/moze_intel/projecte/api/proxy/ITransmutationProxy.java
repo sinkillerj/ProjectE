@@ -30,4 +30,20 @@ public interface ITransmutationProxy
      * @param stack The ItemStack to remove
      */
     void removeKnowledge(UUID playerUUID, ItemStack stack);
+
+    /**
+     * Sets the player's personal transmutation emc to that provided. Only works if player is online (for now)
+     * Calls may only be issued if the server is running
+     * @param playerUUID The Player to modify
+     * @param emc The value to set
+     */
+    void setEMC(UUID playerUUID, double emc);
+
+    /**
+     * Gets the player's personal transmutation emc to that provided. Only works if player is online (for now)
+     * Calls may only be issued if the server is running
+     * @param playerUUID The Player to modify
+     * @return The emc, or NaN if player is not found
+     */
+    double getEMC(UUID playerUUID);
 }
