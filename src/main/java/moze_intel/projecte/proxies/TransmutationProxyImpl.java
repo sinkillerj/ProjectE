@@ -1,7 +1,8 @@
 package moze_intel.projecte.proxies;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
@@ -35,6 +37,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public void addKnowledge(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
@@ -46,6 +49,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public void removeKnowledge(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
@@ -57,14 +61,11 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @SuppressWarnings("unchecked")
     private EntityPlayer findOnlinePlayer(UUID playerUUID)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        for (EntityPlayer player : (List<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
-            for (EntityPlayer player : (List<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+            if (player.getUniqueID().equals(playerUUID))
             {
-                if (player.getGameProfile().getId().equals(playerUUID))
-                {
-                    return player;
-                }
+                return player;
             }
         }
         return null;

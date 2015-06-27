@@ -31,7 +31,6 @@ import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.IOHandler;
-import moze_intel.projecte.playerData.OfflineTransmutationHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
 import moze_intel.projecte.utils.AchievementHandler;
