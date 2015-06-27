@@ -1,26 +1,30 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class EntityFireProjectile extends EntityThrowable
+public class EntityFireProjectile extends PEProjectile
 {
 	public EntityFireProjectile(World world)
 	{
 		super(world);
 	}
-	
-	public EntityFireProjectile(World world, EntityLivingBase player)
+
+	public EntityFireProjectile(World world, EntityPlayer entity)
 	{
-		super(world, player);
+		super(world, entity);
+	}
+
+	public EntityFireProjectile(World world, double x, double y, double z)
+	{
+		super(world, x, y, z);
 	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition mop)
+	protected void apply(MovingObjectPosition mop)
 	{
 		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
@@ -50,8 +54,6 @@ public class EntityFireProjectile extends EntityThrowable
 							if(worldObj.getBlock(x1, y1, z1) == Blocks.air)
 								worldObj.setBlock(x1, y1, z1, Blocks.fire);
 			}
-			
-			setDead();
 		}
 	}
 }
