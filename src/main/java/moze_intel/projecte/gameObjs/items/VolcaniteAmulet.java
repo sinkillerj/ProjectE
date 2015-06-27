@@ -176,14 +176,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
-		if (consumeFuel(player, stack, 32, true))
-		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-			player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
-			return true;
-		}
-
-		return false;
+		player.worldObj.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+		player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
+		return true;
 	}
 
 	@Override

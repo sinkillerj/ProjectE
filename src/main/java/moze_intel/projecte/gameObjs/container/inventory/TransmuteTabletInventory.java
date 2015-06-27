@@ -442,6 +442,7 @@ public class TransmuteTabletInventory implements IInventory
 			{
 				writeToNBT(player.getHeldItem().stackTagCompound);
 				Transmutation.setEmc(player, emc);
+				Transmutation.sync(player);
 			}
 		}
 		else

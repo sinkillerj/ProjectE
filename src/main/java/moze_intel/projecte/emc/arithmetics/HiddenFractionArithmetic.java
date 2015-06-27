@@ -32,19 +32,29 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 	public Fraction mul(int a, Fraction b)
 	{
 		if (this.isFree(b)) return getFree();
-		return zeroOrInt(b.multiplyBy(Fraction.getFraction(a, 1)));
+		return b.multiplyBy(Fraction.getFraction(a, 1));
 	}
 
 	@Override
 	public Fraction div(Fraction a, int b)
 	{
-		if (this.isFree(a)) return getFree();
-		Fraction result = a.divideBy(Fraction.getFraction(b, 1));
-		if (Fraction.ZERO.compareTo(result) <= 0 && result.compareTo(Fraction.ONE) < 0)
+		try
 		{
-			return result;
+			if (this.isFree(a)) return getFree();
+			Fraction result = a.divideBy(Fraction.getFraction(b, 1));
+			if (Fraction.ZERO.compareTo(result) <= 0 && result.compareTo(Fraction.ONE) < 0)
+			{
+				return result;
+			}
+			return Fraction.getFraction(result.intValue(), 1);
+		} catch (ArithmeticException e) {
+			//The documentation for Fraction.divideBy states, that this Exception is only thrown if
+			// * you try to divide by `null` (We are not doing this)
+			// * the numerator or denumerator exceeds Integer.MAX_VALUE.
+			// Because we only divide by values > 1 it means the denumerator overflowed.
+			// This means we reached something/infinity, which is basically 0.
+			return Fraction.ZERO;
 		}
-		return Fraction.getFraction(result.intValue(), 1);
 	}
 
 	@Override

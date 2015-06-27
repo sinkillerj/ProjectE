@@ -7,7 +7,7 @@ import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.IFireProtectionItem;
@@ -262,14 +262,17 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
 				world.spawnEntityInWorld(snowball);
+				world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);
 				world.spawnEntityInWorld(fire);
+				world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 				break;
 			case 3: // swrg
-				EntityLightningProjectile lightning = new EntityLightningProjectile(world, player, stack);
+				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player);
 				world.spawnEntityInWorld(lightning);
+				// world.playSoundAtEntity(player, "projecte:item.pewindmagic", 1.0F, 1.0F);
 				break;
 		}
 		

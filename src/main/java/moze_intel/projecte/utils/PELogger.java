@@ -32,10 +32,13 @@ public final class PELogger
 
 	public static void logDebug(String msg)
 	{
-		if (ProjectEConfig.enableDebugLog)
+		if (ProjectEConfig.enableDebugLog) // visible in main console
 		{
-			//logger.debug() doesn't seem to work
 			logger.info(msg);
+		}
+		else
+		{
+			logger.debug(msg); // fml log
 		}
 	}
 }
