@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
@@ -8,6 +9,7 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
@@ -36,6 +38,18 @@ public final class PlayerHelper
 
 		updateClientServerFlight(playerMP, true);
 		PlayerChecks.addPlayerFlyChecks(playerMP);
+	}
+
+	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
+	{
+		for (ItemStack s : player.inventory.mainInventory)
+		{
+			if (s != null && s.getItem() == consumeFrom)
+			{
+				return s;
+			}
+		}
+		return null;
 	}
 
 	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)

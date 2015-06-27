@@ -4,8 +4,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.NovaExplosion;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
@@ -13,7 +12,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class EntityLensProjectile extends EntityThrowable
+public class EntityLensProjectile extends PEProjectile
 {
 	private byte charge;
 	
@@ -22,7 +21,7 @@ public class EntityLensProjectile extends EntityThrowable
 		super(world);
 	}
 
-	public EntityLensProjectile(World world, EntityLivingBase entity, byte charge) 
+	public EntityLensProjectile(World world, EntityPlayer entity, byte charge)
 	{
 		super(world, entity);
 		this.charge = charge;
@@ -57,21 +56,14 @@ public class EntityLensProjectile extends EntityThrowable
 			this.setDead();
 		}
 	}
-	
-	@Override
-	protected float getGravityVelocity()
-	{	
-		return 0;
-	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition mop) 
+	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote) return;
 		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge], true, true);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
-		this.setDead();
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)

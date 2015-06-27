@@ -13,37 +13,13 @@ import java.util.LinkedList;
 
 public final class IOHandler
 {
-	public static boolean markedDirty;
 	private static File knowledgeFile;
 	private static File bagDataFile;
 	
 	public static void init(File knowledge, File bagData)
 	{
-		if (!knowledge.exists())
+		if (!knowledge.exists() || !bagData.exists())
 		{
-//			try
-//			{
-//				knowledge.createNewFile();
-//			}
-//			catch (IOException e)
-//			{
-//				PELogger.logFatal("Couldn't create transmutation knowledge file!");
-//				e.printStackTrace();
-//			}
-			return;
-		}
-		
-		if (!bagData.exists())
-		{
-//			try
-//			{
-//				bagData.createNewFile();
-//			}
-//			catch (IOException e)
-//			{
-//				PELogger.logFatal("Couldn't create alchemical bag data file!");
-//				e.printStackTrace();
-//			}
 			return;
 		}
 		
@@ -64,7 +40,6 @@ public final class IOHandler
 		catch (IOException e)
 		{
 			PELogger.logFatal("Error loading legacy knowledge file");
-			e.printStackTrace();
 		}
 
 		if (knowledge != null)
@@ -114,7 +89,7 @@ public final class IOHandler
 
 				Transmutation.legacySetStoredEmc(tag.getString("player"), tag.getDouble("emc"));
 			}
-			PELogger.logInfo("** LOADED LEGACY TRANSMUTATION DATA **");
+			PELogger.logDebug("** LOADED LEGACY TRANSMUTATION DATA **");
 		}
 
 		NBTTagCompound bagData = null;
@@ -126,7 +101,6 @@ public final class IOHandler
 		catch (Exception e)
 		{
 			PELogger.logFatal("Error loading legacy bag file");
-			e.printStackTrace();
 		}
 
 		if (bagData != null)
@@ -155,14 +129,9 @@ public final class IOHandler
 					}
 
 					AlchemicalBags.legacySet(nbt.getString("player"), subNbt.getByte("color"), inv);
-					PELogger.logInfo("** LOADED LEGACY BAG DATA **");
 				}
 			}
+			PELogger.logDebug("** LOADED LEGACY BAG DATA **");
 		}
-	}
-
-	public static void markDirty()
-	{
-		// NO-OP - Remove in future
 	}
 }

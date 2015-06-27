@@ -7,7 +7,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
@@ -15,10 +14,8 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class EntityMobRandomizer extends EntityThrowable
+public class EntityMobRandomizer extends PEProjectile
 {
-	private EntityPlayer shooter;
-	
 	public EntityMobRandomizer(World world) 
 	{
 		super(world);
@@ -27,7 +24,6 @@ public class EntityMobRandomizer extends EntityThrowable
 	public EntityMobRandomizer(World world, EntityPlayer entity) 
 	{
 		super(world, entity);
-		shooter = entity;
 	}
 	
 	@Override
@@ -37,25 +33,19 @@ public class EntityMobRandomizer extends EntityThrowable
 		
 		if (!this.worldObj.isRemote)
 		{
-			if (ticksExisted > 400 || this.isInWater() || shooter == null || !this.worldObj.isBlockLoaded(new BlockPos(this)))
+			if (ticksExisted > 400 || this.isInWater() || !this.worldObj.isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 			}
 		}
 	}
-	
-	@Override
-	protected float getGravityVelocity()
-	{
-		return 0.0F;
-	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition mop) 
+	protected void apply(MovingObjectPosition mop)
 	{
 		if (!this.worldObj.isRemote)
 		{
-			if (this.isInWater() || shooter == null)
+			if (this.isInWater())
 			{
 				this.setDead();
 				return;
@@ -70,9 +60,8 @@ public class EntityMobRandomizer extends EntityThrowable
 		Entity ent = mop.entityHit;
 		Entity randomized = WorldHelper.getRandomEntity(this.worldObj, ent);
 		
-		if (ent instanceof EntityLiving && randomized != null && EMCHelper.consumePlayerFuel(shooter, 384) != -1)
+		if (ent instanceof EntityLiving && randomized != null && EMCHelper.consumePlayerFuel(((EntityPlayer) getThrower()), 384) != -1)
 		{
-			this.setDead();
 			ent.setDead();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
 			this.worldObj.spawnEntityInWorld(randomized);

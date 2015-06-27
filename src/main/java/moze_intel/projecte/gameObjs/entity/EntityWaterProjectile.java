@@ -2,8 +2,7 @@ package moze_intel.projecte.gameObjs.entity;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -11,23 +10,23 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-public class EntityWaterProjectile extends EntityThrowable
+public class EntityWaterProjectile extends PEProjectile
 {
-	public EntityWaterProjectile(World world) 
+	public EntityWaterProjectile(World world)
 	{
 		super(world);
 	}
 
-	public EntityWaterProjectile(World world, EntityLivingBase entity) 
+	public EntityWaterProjectile(World world, EntityPlayer entity)
 	{
 		super(world, entity);
 	}
 
-	public EntityWaterProjectile(World world, double x, double y, double z) 
+	public EntityWaterProjectile(World world, double x, double y, double z)
 	{
 		super(world, x, y, z);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -80,13 +79,7 @@ public class EntityWaterProjectile extends EntityThrowable
 	}
 
 	@Override
-	protected float getGravityVelocity()
-	{
-		return 0;
-	}
-	
-	@Override
-	protected void onImpact(MovingObjectPosition mop) 
+	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote)
 		{
@@ -100,7 +93,6 @@ public class EntityWaterProjectile extends EntityThrowable
 			{
 				this.worldObj.setBlockState(pos, Blocks.flowing_water.getDefaultState());
 			}
-			this.setDead();
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
@@ -112,7 +104,6 @@ public class EntityWaterProjectile extends EntityThrowable
 			}
 
 			ent.addVelocity(this.motionX * 2, this.motionY * 2, this.motionZ * 2);
-			this.setDead();
 		}
 	}
 }

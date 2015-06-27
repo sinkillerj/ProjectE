@@ -11,10 +11,12 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -25,16 +27,34 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerEvents
 {
+	// Handles playerData props from being wiped on death
+	@SubscribeEvent
+	public void cloneEvent(PlayerEvent.Clone evt)
+	{
+		NBTTagCompound bag = new NBTTagCompound();
+		NBTTagCompound transmute = new NBTTagCompound();
+
+		AlchBagProps.getDataFor(evt.original).saveNBTData(bag); // Cache old
+		TransmutationProps.getDataFor(evt.original).saveNBTData(transmute);
+
+		AlchBagProps.getDataFor(evt.entityPlayer).loadNBTData(bag); // Reapply on new
+		TransmutationProps.getDataFor(evt.entityPlayer).loadNBTData(transmute);
+
+		PELogger.logDebug("Reapplied bag and knowledge on player respawning");
+	}
+
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{
-		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
+		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayerMP)
 		{
-			Transmutation.sync((EntityPlayer) event.entity);
-			AlchemicalBags.syncFull((EntityPlayer) event.entity);
+			EntityPlayerMP player = ((EntityPlayerMP) event.entity);
+			Transmutation.sync(player);
+			AlchemicalBags.syncFull(player);
 		}
 	}
 

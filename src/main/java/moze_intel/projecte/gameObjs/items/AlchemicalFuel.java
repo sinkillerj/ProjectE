@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,7 +23,12 @@ public class AlchemicalFuel extends ItemPE
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName()+ "_"+names[stack.getItemDamage()];
+		if (stack.getItemDamage() > 2)
+		{
+			return "pe.debug.metainvalid";
+		}
+
+		return super.getUnlocalizedName()+ "_" + names[MathHelper.clamp_int(stack.getItemDamage(), 0, 2)];
 	}
 	
 	@SideOnly(Side.CLIENT)

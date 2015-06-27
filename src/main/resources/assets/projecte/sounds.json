@@ -1,4 +1,12 @@
 {
+    "item.pewindmagic":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "item/pewindmagic"
+        ]
+    },
     "item.pewatermagic":
     {
         "category": "master",

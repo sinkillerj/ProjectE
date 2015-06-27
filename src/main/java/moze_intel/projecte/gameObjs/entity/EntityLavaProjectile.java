@@ -1,25 +1,25 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-public class EntityLavaProjectile extends EntityThrowable
+public class EntityLavaProjectile extends PEProjectile
 {
 	public EntityLavaProjectile(World world) 
 	{
 		super(world);
 	}
 
-	public EntityLavaProjectile(World world, EntityLivingBase entity) 
+	public EntityLavaProjectile(World world, EntityPlayer entity)
 	{
 		super(world, entity);
 	}
@@ -73,32 +73,25 @@ public class EntityLavaProjectile extends EntityThrowable
 	}
 
 	@Override
-	protected float getGravityVelocity()
-	{	
-		return 0;
-	}
-	
-	@Override
-	protected void onImpact(MovingObjectPosition mop) 
+	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote)
 		{
 			return;
 		}
 
-		if (mop.typeOfHit == MovingObjectType.BLOCK)
+		if (tryConsumeEmc(((ItemPE) ObjHandler.volcanite), 32))
 		{
-			this.worldObj.setBlockState(mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
-			this.setDead();
-		}
-		else if (mop.typeOfHit == MovingObjectType.ENTITY)
-		{
-			Entity ent = mop.entityHit;
-
-			ent.setFire(5);
-			ent.attackEntityFrom(DamageSource.inFire, 5);
-
-			this.setDead();
+			switch (mop.typeOfHit)
+			{
+				case BLOCK:
+					this.worldObj.setBlockState(mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
+					break;
+				case ENTITY:
+					Entity ent = mop.entityHit;
+					ent.setFire(5);
+					ent.attackEntityFrom(DamageSource.inFire, 5);
+			}
 		}
 	}
 }

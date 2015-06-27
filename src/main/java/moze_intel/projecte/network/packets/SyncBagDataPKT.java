@@ -28,7 +28,7 @@ public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT,
 			@Override
 			public void run() {
 				PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
-				PELogger.logInfo("** RECEIVED BAGS CLIENTSIDE **");
+				PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
 			}
 		});
 		

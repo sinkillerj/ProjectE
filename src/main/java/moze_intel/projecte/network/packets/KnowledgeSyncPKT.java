@@ -28,7 +28,7 @@ public class KnowledgeSyncPKT implements IMessage, IMessageHandler<KnowledgeSync
 			@Override
 			public void run() {
 				PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
-				PELogger.logInfo("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
+				PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 			}
 		});
 		
