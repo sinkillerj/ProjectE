@@ -2,6 +2,7 @@ package moze_intel.projecte.proxies;
 
 import com.google.common.base.Preconditions;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.EMCHelper;
@@ -19,41 +20,45 @@ public class EMCProxyImpl implements IEMCProxy
     @Override
     public void registerCustomEmc(ItemStack stack, int value)
     {
+        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
+        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(stack, value);
         PELogger.logInfo(String.format("Mod %s registered emc value %d for itemstack %s", Loader.instance().activeModContainer().getModId(), value, stack.toString()));
     }
 
     @Override
-    public boolean hasValue(Object obj)
+    public boolean hasValue(Block block)
     {
-        Preconditions.checkArgument(obj instanceof Block || obj instanceof Item || obj instanceof ItemStack, "What are you giving me?! >:(");
-        if (obj instanceof Item)
-        {
-            return EMCHelper.doesItemHaveEmc(((Item) obj));
-        } else if (obj instanceof Block)
-        {
-            return EMCHelper.doesBlockHaveEmc(((Block) obj));
-        } else if (obj instanceof ItemStack)
-        {
-            return EMCHelper.doesItemHaveEmc(((ItemStack) obj));
-        }
-        return false;
+        return EMCHelper.doesBlockHaveEmc(block);
     }
 
     @Override
-    public int getValue(Object obj)
+    public boolean hasValue(Item item)
     {
-        Preconditions.checkArgument(obj instanceof Block || obj instanceof Item || obj instanceof ItemStack, "What are you giving me?! >:(");
-        if (obj instanceof Item)
-        {
-            return EMCHelper.getEmcValue(((Item) obj));
-        } else if (obj instanceof Block)
-        {
-            return EMCHelper.getEmcValue(((Block) obj));
-        } else if (obj instanceof ItemStack)
-        {
-            return EMCHelper.getEmcValue(((ItemStack) obj));
-        }
-        return 0;
+        return EMCHelper.doesItemHaveEmc(item);
+    }
+
+    @Override
+    public boolean hasValue(ItemStack stack)
+    {
+        return EMCHelper.doesItemHaveEmc(stack);
+    }
+
+    @Override
+    public int getValue(Block block)
+    {
+        return EMCHelper.getEmcValue(block);
+    }
+
+    @Override
+    public int getValue(Item item)
+    {
+        return EMCHelper.getEmcValue(item);
+    }
+
+    @Override
+    public int getValue(ItemStack stack)
+    {
+        return EMCHelper.getEmcValue(stack);
     }
 }

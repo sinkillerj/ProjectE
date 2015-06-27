@@ -42,7 +42,7 @@ public final class ProjectEAPI
 	/**
 	 * @return The proxy for miscellaneous API queries
 	 */
-	public static IExtraProxy getMiscellaneousProxy()
+	public static IExtraProxy getExtraProxy()
 	{
 		try
 		{

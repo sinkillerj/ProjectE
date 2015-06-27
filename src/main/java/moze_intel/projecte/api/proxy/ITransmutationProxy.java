@@ -8,7 +8,7 @@ public interface ITransmutationProxy
 {
     /**
      * Queries the knowledge of the provided player
-     * Calls may only be issued if the server is running
+     * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to query
      * @param stack The ItemStack to query
      * @return Whether the player has knowledge for this ItemStack
@@ -17,7 +17,7 @@ public interface ITransmutationProxy
 
     /**
      * Adds to the knowledge of the provided player. Only works if player is online (for now)
-     * Calls may only be issued if the server is running
+     * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to add
      */
@@ -25,7 +25,7 @@ public interface ITransmutationProxy
 
     /**
      * Removes from the knowledge of the provided player. Only works if player is online (for now)
-     * Calls may only be issued if the server is running
+     * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to remove
      */
@@ -33,7 +33,7 @@ public interface ITransmutationProxy
 
     /**
      * Sets the player's personal transmutation emc to that provided. Only works if player is online (for now)
-     * Calls may only be issued if the server is running
+     * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param emc The value to set
      */
@@ -41,7 +41,7 @@ public interface ITransmutationProxy
 
     /**
      * Gets the player's personal transmutation emc to that provided. Only works if player is online (for now)
-     * Calls may only be issued if the server is running
+     * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @return The emc, or NaN if player is not found
      */

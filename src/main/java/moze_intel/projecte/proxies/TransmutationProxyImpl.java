@@ -61,7 +61,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public void setEMC(UUID playerUUID, double emc)
     {
-        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify player EMC!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
@@ -73,13 +73,17 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public double getEMC(UUID playerUUID)
     {
-        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query player EMC!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
             return Transmutation.getEmc(player);
         }
-        return Double.NaN;
+        else
+        {
+            // todo offline
+            return Double.NaN;
+        }
     }
 
     @SuppressWarnings("unchecked")
