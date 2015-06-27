@@ -89,7 +89,6 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
-		FMLCommonHandler.instance().bus().register(OfflineTransmutationHandler.instance);
 
 		proxy.registerClientOnlyEvents();
 
@@ -145,14 +144,11 @@ public class PECore
 		}
 		
 		IOHandler.init(new File(dir, "knowledge.dat"), new File(dir, "bagdata.dat"));
-
-		OfflineTransmutationHandler.instance.setServer(event.getServer());
 	}
 
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
-		OfflineTransmutationHandler.instance.cleanUp();
 	}
 	
 	@Mod.EventHandler
