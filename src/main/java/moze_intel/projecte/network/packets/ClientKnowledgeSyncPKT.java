@@ -24,7 +24,7 @@ public class ClientKnowledgeSyncPKT implements IMessage, IMessageHandler<ClientK
 	public IMessage onMessage(ClientKnowledgeSyncPKT message, MessageContext ctx) 
 	{
 		PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
-		PELogger.logInfo("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
+		PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 		return null;
 	}
 

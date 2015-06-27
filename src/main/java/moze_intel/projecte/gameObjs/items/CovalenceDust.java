@@ -27,7 +27,12 @@ public class CovalenceDust extends ItemPE
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
-		return super.getUnlocalizedName()+"_"+names[stack.getItemDamage()];
+		if (stack.getItemDamage() > 2)
+		{
+			return "pe.debug.metainvalid";
+		}
+
+		return super.getUnlocalizedName()+ "_" + names[MathHelper.clamp_int(stack.getItemDamage(), 0, 2)];
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -40,7 +45,7 @@ public class CovalenceDust extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int par1)
 	{
-		return icons[MathHelper.clamp_int(par1, 0, 3)];
+		return icons[MathHelper.clamp_int(par1, 0, 2)];
 	}
 	
 	@Override
