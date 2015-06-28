@@ -2,9 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
-
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,7 +11,6 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -41,7 +38,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] ringOn;
-	private int lightningCooldown;
 
 	public SWRG()
 	{
@@ -421,19 +417,19 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 	{
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
-			if (lightningCooldown <= 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() <= 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				lightningCooldown = ProjectEConfig.swrgPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
 			}
 			else
 			{
-				lightningCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

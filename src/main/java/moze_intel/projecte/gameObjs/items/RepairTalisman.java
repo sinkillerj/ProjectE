@@ -33,8 +33,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
-	private int repairCooldown;
-
 	public RepairTalisman()
 	{
 		this.setUnlocalizedName("repair_talisman");
@@ -137,19 +135,19 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	{
 		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
 		{
-			if (repairCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityPlayerMP> list = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 				for (EntityPlayerMP player : list)
 				{
 					repairAllItems(player);
 				}
-				repairCooldown = ProjectEConfig.repairPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
 			}
 			else
 			{
-				repairCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

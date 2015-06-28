@@ -18,6 +18,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	private ItemStack[] inventory = new ItemStack[1];
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
+	private int activityCooldown = 0;
 	public double centeredX, centeredY, centeredZ;
 
 	public DMPedestalTile()
@@ -89,6 +90,21 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		}
 	}
 
+	public int getActivityCooldown()
+	{
+		return activityCooldown;
+	}
+
+	public void setActivityCooldown(int i)
+	{
+		activityCooldown = i;
+	}
+
+	public void decrementActivityCooldown()
+	{
+		activityCooldown--;
+	}
+
 	public ItemStack getItemStack()
 	{
 		return getStackInSlot(0);
@@ -121,6 +137,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			}
 		}
 		setActive(tag.getBoolean("isActive"));
+		activityCooldown = tag.getInteger("activityCooldown");
 	}
 
 	@Override
@@ -143,6 +160,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 		tag.setTag("Items", tagList);
 		tag.setBoolean("isActive", getActive());
+		tag.setInteger("activityCooldown", activityCooldown);
 	}
 
 	@Override
