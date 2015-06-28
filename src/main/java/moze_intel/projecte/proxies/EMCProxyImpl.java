@@ -11,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class EMCProxyImpl implements IEMCProxy
 {
     public static final IEMCProxy instance = new EMCProxyImpl();
@@ -18,7 +20,7 @@ public class EMCProxyImpl implements IEMCProxy
     private EMCProxyImpl() {}
 
     @Override
-    public void registerCustomEmc(ItemStack stack, int value)
+    public void registerCustomEmc(@Nonnull ItemStack stack, int value)
     {
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
@@ -27,37 +29,37 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
-    public boolean hasValue(Block block)
+    public boolean hasValue(@Nonnull Block block)
     {
         return EMCHelper.doesBlockHaveEmc(block);
     }
 
     @Override
-    public boolean hasValue(Item item)
+    public boolean hasValue(@Nonnull Item item)
     {
         return EMCHelper.doesItemHaveEmc(item);
     }
 
     @Override
-    public boolean hasValue(ItemStack stack)
+    public boolean hasValue(@Nonnull ItemStack stack)
     {
         return EMCHelper.doesItemHaveEmc(stack);
     }
 
     @Override
-    public int getValue(Block block)
+    public int getValue(@Nonnull Block block)
     {
         return EMCHelper.getEmcValue(block);
     }
 
     @Override
-    public int getValue(Item item)
+    public int getValue(@Nonnull Item item)
     {
         return EMCHelper.getEmcValue(item);
     }
 
     @Override
-    public int getValue(ItemStack stack)
+    public int getValue(@Nonnull ItemStack stack)
     {
         return EMCHelper.getEmcValue(stack);
     }

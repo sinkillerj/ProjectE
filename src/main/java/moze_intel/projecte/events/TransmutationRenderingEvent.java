@@ -172,6 +172,8 @@ public class TransmutationRenderingEvent
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
 
+		mc.theWorld.getWorldTime();
+
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
 		
 		Tessellator tessellator = Tessellator.instance;

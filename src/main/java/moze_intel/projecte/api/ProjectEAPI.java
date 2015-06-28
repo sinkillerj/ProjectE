@@ -2,7 +2,7 @@ package moze_intel.projecte.api;
 
 import cpw.mods.fml.common.FMLLog;
 import moze_intel.projecte.api.proxy.IEMCProxy;
-import moze_intel.projecte.api.proxy.IExtraProxy;
+import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
 public final class ProjectEAPI
@@ -40,17 +40,17 @@ public final class ProjectEAPI
 	}
 
 	/**
-	 * @return The proxy for miscellaneous API queries
+	 * @return The proxy for whitelisting or blacklisting things
 	 */
-	public static IExtraProxy getExtraProxy()
+	public static IBlacklistProxy getBlacklistProxy()
 	{
 		try
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.proxies.ExtraProxyImpl");
-			return (IExtraProxy) clazz.getField("instance").get(null);
+			Class<?> clazz = Class.forName("moze_intel.projecte.proxies.BlacklistProxyImpl");
+			return (IBlacklistProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
-			FMLLog.info("[ProjectEAPI] Error retrieving ExtraProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			FMLLog.info("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
 		}
 		return null;
 	}
