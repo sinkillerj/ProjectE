@@ -10,6 +10,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
@@ -42,8 +43,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
 {
-	private int startRainCooldown;
-
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
@@ -285,18 +284,20 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
 		{
-			if (startRainCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+
+			if (tile.getActivityCooldown() == 0)
 			{
 				int i = (300 + world.rand.nextInt(600)) * 20;
 				world.getWorldInfo().setRainTime(i);
 				world.getWorldInfo().setThunderTime(i);
 				world.getWorldInfo().setRaining(true);
 
-				startRainCooldown = ProjectEConfig.evertidePedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.evertidePedCooldown);
 			}
 			else
 			{
-				startRainCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
