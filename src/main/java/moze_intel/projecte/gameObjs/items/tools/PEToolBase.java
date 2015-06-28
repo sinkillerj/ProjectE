@@ -11,7 +11,6 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -26,7 +25,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
@@ -163,7 +161,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 
 		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
-		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		PlayerHelper.swingItem(player);
 	}
 
 	/**
@@ -384,7 +382,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 
 		WorldHelper.createLootDrop(drops, world, mop.blockX, mop.blockY, mop.blockZ);
-		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		PlayerHelper.swingItem(player);
 		if (!drops.isEmpty())
 		{
 			world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
@@ -444,7 +442,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 		}
 		player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
-		PlayerHelper.swingItem(((EntityPlayerMP) player));
+		PlayerHelper.swingItem(player);
 	}
 
 	/**
@@ -539,7 +537,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 		}
 	}
 
@@ -613,7 +611,7 @@ public abstract class PEToolBase extends ItemMode
 		if (!drops.isEmpty())
 		{
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ );
-			PlayerHelper.swingItem((EntityPlayerMP)player);
+			PlayerHelper.swingItem(player);
 		}
 	}
 }
