@@ -38,7 +38,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!world.isRemote)
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
@@ -47,14 +47,14 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
 	@Override
 	public byte getCharge(ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("Charge");
+		return stack.getTagCompound().getByte("Charge");
 	}
 	
 	@Override
@@ -67,13 +67,13 @@ public class ItemCharge extends ItemPE implements IItemCharge
 			if (currentCharge > 0)
 			{
 				player.worldObj.playSoundAtEntity(player, "projecte:item.peuncharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-				stack.stackTagCompound.setByte("Charge", (byte) (currentCharge - 1));
+				stack.getTagCompound().setByte("Charge", (byte) (currentCharge - 1));
 			}
 		}
 		else if (currentCharge < numCharges)
 		{
 			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-			stack.stackTagCompound.setByte("Charge", (byte) (currentCharge + 1));
+			stack.getTagCompound().setByte("Charge", (byte) (currentCharge + 1));
 		}
 	}
 }

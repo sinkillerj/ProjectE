@@ -3,8 +3,10 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -50,14 +52,17 @@ public class DarkHammer extends PEToolBase
 	}
 	
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
-		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		Block block = state.getBlock();
+		if ((block == ObjHandler.matterBlock && state.getValue(MatterBlock.TIER_PROP) == MatterBlock.EnumMatterType.DARK_MATTER)
+				|| block == ObjHandler.dmFurnaceOff
+				|| block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata);
+		return super.getDigSpeed(stack, state);
 	}
 
 	@Override
@@ -68,11 +73,11 @@ public class DarkHammer extends PEToolBase
 			return super.getAttributeModifiers(stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = HAMMER_BASE_ATTACK + charge;
 
 		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 }

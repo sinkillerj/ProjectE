@@ -6,6 +6,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class RecipesAlchemyBags implements IRecipe
 {
@@ -58,7 +59,7 @@ public class RecipesAlchemyBags implements IRecipe
 
 				if (bag.hasTagCompound())
 				{
-					output.stackTagCompound = bag.stackTagCompound;
+					output.setTagCompound(bag.getTagCompound());
 				}
 
 				return true;
@@ -69,7 +70,7 @@ public class RecipesAlchemyBags implements IRecipe
 
 				if (bag.hasTagCompound())
 				{
-					output.stackTagCompound = bag.stackTagCompound;
+					output.setTagCompound(bag.getTagCompound());
 				}
 
 				return true;
@@ -98,5 +99,11 @@ public class RecipesAlchemyBags implements IRecipe
 	public ItemStack getRecipeOutput() 
 	{
 		return output;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }

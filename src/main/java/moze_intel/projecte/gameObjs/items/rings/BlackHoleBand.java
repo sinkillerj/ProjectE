@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IPedestalItem;
@@ -20,9 +19,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AxisAlignedBB bBox = player.boundingBox.expand(7, 7, 7);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(7, 7, 7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		
 		for (EntityItem item : itemList)
@@ -111,16 +112,16 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
-		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 		if (tile != null)
 		{
 			List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, tile.getEffectBounds());
 			for (EntityItem item : list)
 			{
-				WorldHelper.gravitateEntityTowards(item, x + 0.5, y + 0.5, z + 0.5);
-				if (!world.isRemote && item.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) < 1.21 && !item.isDead)
+				WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && !item.isDead)
 				{
 					suckDumpItem(item, tile);
 				}
@@ -130,7 +131,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
 	{
-		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorldObj(), tile);
+		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorld(), tile);
 		for (TileEntity tileEntity : list)
 		{
 			if (tileEntity instanceof IInventory)
@@ -164,12 +165,13 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (stack.getItemDamage() == 1)
 		{
-			AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(tile.xCoord - 5, tile.yCoord - 5, tile.zCoord - 5, tile.xCoord + 5, tile.yCoord + 5, tile.zCoord + 5);
-			double centeredX = tile.xCoord + 0.5;
-			double centeredY = tile.yCoord + 0.5;
-			double centeredZ = tile.zCoord + 0.5;
+			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
+					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
+			double centeredX = tile.getPos().getX() + 0.5;
+			double centeredY = tile.getPos().getY() + 0.5;
+			double centeredZ = tile.getPos().getZ() + 0.5;
 
-			for (EntityItem e : (List<EntityItem>) tile.getWorldObj().getEntitiesWithinAABB(EntityItem.class, aabb))
+			for (EntityItem e : (List<EntityItem>) tile.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
@@ -186,7 +188,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				}
 			}
 
-			for (EntityLootBall e : (List<EntityLootBall>) tile.getWorldObj().getEntitiesWithinAABB(EntityLootBall.class, aabb))
+			for (EntityLootBall e : (List<EntityLootBall>) tile.getWorld().getEntitiesWithinAABB(EntityLootBall.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
@@ -203,12 +205,12 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		if (stack.getItemDamage() == 1)
 		{
 
-			for (EntityItem e : (List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, player.boundingBox.expand(5, 5, 5)))
+			for (EntityItem e : (List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}
 
-			for (EntityLootBall e : (List<EntityLootBall>) player.worldObj.getEntitiesWithinAABB(EntityLootBall.class, player.boundingBox.expand(5, 5, 5)))
+			for (EntityLootBall e : (List<EntityLootBall>) player.worldObj.getEntitiesWithinAABB(EntityLootBall.class, player.getEntityBoundingBox().expand(5, 5, 5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

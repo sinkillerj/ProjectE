@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -41,16 +41,6 @@ public final class IMCHandler
 				{
 					emc = 0;
 				}
-				
-				/*if (EMCMapper.addIMCRegistration(stack, emc))
-				{
-					PELogger.logInfo("Mod "+ msg.getSender() +" registered and EMC value from IMC message (" + stack + "," + emc + ").");
-				}
-				else
-				{
-					PELogger.logFatal("Failed to register EMC value from IMC message for: " + stack);
-					PELogger.logFatal("The ItemStack has probably already been registered.");
-				}*/
 			}
 			else
 			{

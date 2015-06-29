@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,9 +60,9 @@ public class RMFurnaceContainer extends Container
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
+	public void onCraftGuiOpened(ICrafting par1ICrafting)
 	{
-		super.addCraftingToCrafters(par1ICrafting);
+		super.onCraftGuiOpened(par1ICrafting);
 		par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
 		par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
 		par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
@@ -135,7 +135,7 @@ public class RMFurnaceContainer extends Container
 					return null;
 				}
 			}
-			else if (FurnaceRecipes.smelting().getSmeltingResult(newStack) != null)
+			else if (FurnaceRecipes.instance().getSmeltingResult(newStack) != null)
 			{
 				if (!this.mergeItemStack(stack, 1, 14, false))
 				{

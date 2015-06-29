@@ -41,7 +41,7 @@ public class DarkShovel extends PEToolBase
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-				&& world.getBlock(mop.blockX, mop.blockY, mop.blockZ) == Blocks.gravel)
+				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.gravel)
 		{
 			tryVeinMine(stack, player, mop);
 		}
@@ -56,7 +56,7 @@ public class DarkShovel extends PEToolBase
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
 		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
 		return multimap;
 	}
 }

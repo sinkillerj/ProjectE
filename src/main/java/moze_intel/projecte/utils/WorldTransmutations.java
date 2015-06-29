@@ -2,104 +2,138 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.BlockNewLeaf;
+import net.minecraft.block.BlockNewLog;
+import net.minecraft.block.BlockOldLeaf;
+import net.minecraft.block.BlockOldLog;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockSapling;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 
 public final class WorldTransmutations
 {
-	private static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
+	private static final HashMap<IBlockState, Pair<IBlockState, IBlockState>> MAP = Maps.newHashMap();
 
 	static
 	{
-		register(Blocks.stone, Blocks.cobblestone, Blocks.grass);
-		register(Blocks.cobblestone, Blocks.stone, Blocks.grass);
-		register(Blocks.grass, Blocks.sand, Blocks.cobblestone);
-		register(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
-		register(Blocks.sand, Blocks.grass, Blocks.cobblestone);
-		register(Blocks.gravel, Blocks.sandstone);
-		register(Blocks.water, Blocks.ice);
-		register(Blocks.lava, Blocks.obsidian);
-		register(Blocks.melon_block, Blocks.pumpkin);
+		registerDefault(Blocks.stone, Blocks.cobblestone, Blocks.grass);
+		registerDefault(Blocks.cobblestone, Blocks.stone, Blocks.grass);
+		registerDefault(Blocks.grass, Blocks.sand, Blocks.cobblestone);
+		registerDefault(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
+		registerDefault(Blocks.sand, Blocks.grass, Blocks.cobblestone);
+		registerDefault(Blocks.gravel, Blocks.sandstone, null);
+		registerDefault(Blocks.water, Blocks.ice, null);
+		registerDefault(Blocks.lava, Blocks.obsidian, null);
+		registerDefault(Blocks.melon_block, Blocks.pumpkin, null);
 
+		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
+				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE),
+				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
+		);
 
-		register(new MetaBlock(Blocks.log, 0), new MetaBlock[] {new MetaBlock(Blocks.log, 1), new MetaBlock(Blocks.log2, 1)});
-		register(new MetaBlock(Blocks.leaves, 0), new MetaBlock[] {new MetaBlock(Blocks.leaves, 1), new MetaBlock(Blocks.leaves, 1)});
+		register(Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK),
+				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.SPRUCE),
+				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
+		);
 
 		for (int i = 1; i < 3; i++)
 		{
-			register(new MetaBlock(Blocks.log, i), new MetaBlock[]{new MetaBlock(Blocks.log, i + 1), new MetaBlock(Blocks.log, i - 1)});
-			register(new MetaBlock(Blocks.leaves, i), new MetaBlock[] {new MetaBlock(Blocks.leaves, i + 1), new MetaBlock(Blocks.leaves, i - 1)});
+			register(Blocks.log.getStateFromMeta(i),
+					Blocks.log.getStateFromMeta(i + 1),
+					Blocks.log.getStateFromMeta(i - 1)
+			);
+
+			register(Blocks.leaves.getStateFromMeta(i),
+					Blocks.leaves.getStateFromMeta(i + 1),
+					Blocks.leaves.getStateFromMeta(i - 1)
+			);
 		}
 
-		register(new MetaBlock(Blocks.log, 3), new MetaBlock[]{new MetaBlock(Blocks.log2, 0), new MetaBlock(Blocks.log, 2)});
-		register(new MetaBlock(Blocks.leaves, 3), new MetaBlock[]{new MetaBlock(Blocks.leaves2, 0), new MetaBlock(Blocks.leaves, 2)});
-		register(new MetaBlock(Blocks.log2, 0), new MetaBlock[] {new MetaBlock(Blocks.log2, 1), new MetaBlock(Blocks.log, 3)});
-		register(new MetaBlock(Blocks.leaves2, 0), new MetaBlock[] {new MetaBlock(Blocks.leaves2, 1), new MetaBlock(Blocks.leaves, 3)});
-		register(new MetaBlock(Blocks.log2, 1), new MetaBlock[] {new MetaBlock(Blocks.log, 0), new MetaBlock(Blocks.log2, 0)});
-		register(new MetaBlock(Blocks.leaves2, 1), new MetaBlock[] {new MetaBlock(Blocks.leaves, 0), new MetaBlock(Blocks.leaves2, 0)});
+		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE),
+				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA),
+				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.BIRCH)
+		);
 
-		register(new MetaBlock(Blocks.sapling, 0), new MetaBlock[] {new MetaBlock(Blocks.sapling, 1), new MetaBlock(Blocks.sapling, 5)});
+		register(Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE),
+				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA),
+				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)
+		);
 
-		for (int i = 1; i < 5; i++)
+		register(Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA),
+				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK),
+				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE)
+		);
+
+		register(Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA),
+				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK),
+				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
+		);
+
+		register(Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK),
+				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
+				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
+		);
+
+		register(Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK),
+				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK),
+				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
+		);
+
+		for (BlockPlanks.EnumType e : BlockPlanks.EnumType.values())
 		{
-			register(new MetaBlock(Blocks.sapling, i), new MetaBlock[] {new MetaBlock(Blocks.sapling, i + 1), new MetaBlock(Blocks.sapling, i - 1)});
+			IBlockState state = Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, e);
+			register(state, state.cycleProperty(BlockSapling.TYPE), cyclePropertyBackwards(state, BlockSapling.TYPE));
 		}
 
-		register(new MetaBlock(Blocks.sapling, 5), new MetaBlock[] {new MetaBlock(Blocks.sapling, 0), new MetaBlock(Blocks.sapling, 4)});
-
-		register(new MetaBlock(Blocks.wool, 0), new MetaBlock[] {new MetaBlock(Blocks.wool, 1), new MetaBlock(Blocks.wool, 15)});
-
-		for (int i = 1; i < 15; i++)
+		for (EnumDyeColor e : EnumDyeColor.values())
 		{
-			register(new MetaBlock(Blocks.wool, i), new MetaBlock[] {new MetaBlock(Blocks.wool, i + 1), new MetaBlock(Blocks.wool, i - 1)});
+			IBlockState state = Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, e);
+			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
 		}
-
-		register(new MetaBlock(Blocks.wool, 15), new MetaBlock[] {new MetaBlock(Blocks.wool, 0), new MetaBlock(Blocks.wool, 14)});
 	}
 
-	public static MetaBlock getWorldTransmutation(World world, int x, int y, int z, boolean isSneaking)
+	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty property)
 	{
-		MetaBlock block = new MetaBlock(world, x, y, z);
-
-		if (MAP.containsKey(block))
+		IBlockState result = state;
+		for (int i = 0; i < property.getAllowedValues().size() - 1; i++)
 		{
-			return MAP.get(block)[isSneaking ? 1 : 0];
+			result = result.cycleProperty(property);
+		}
+		return result;
+	}
+
+	public static IBlockState getWorldTransmutation(World world, BlockPos pos, boolean isSneaking)
+	{
+		return getWorldTransmutation(world.getBlockState(pos), isSneaking);
+	}
+
+	public static IBlockState getWorldTransmutation(IBlockState current, boolean isSneaking)
+	{
+		if (MAP.containsKey(current))
+		{
+			return isSneaking ? MAP.get(current).getRight() : MAP.get(current).getLeft();
 		}
 
 		return null;
 	}
 
-	public static MetaBlock getWorldTransmutation(MetaBlock block, boolean isSneaking)
+	public static void register(IBlockState from, IBlockState result, IBlockState altResult)
 	{
-		if (MAP.containsKey(block))
-		{
-			return MAP.get(block)[isSneaking ? 1 : 0];
-		}
-
-		return null;
+		MAP.put(from, ImmutablePair.of(result, altResult));
 	}
 
-	private static void register(Block block, Block result)
+	public static void registerDefault(Block from, Block result, Block altResult)
 	{
-		MAP.put(new MetaBlock(block), new MetaBlock[] {new MetaBlock(result), new MetaBlock(result)});
-		MAP.put(new MetaBlock(result), new MetaBlock[] {new MetaBlock(block), new MetaBlock(block)});
-	}
-
-	private static void register(MetaBlock block, MetaBlock result)
-	{
-		MAP.put(block, new MetaBlock[] {result, result});
-		MAP.put(result, new MetaBlock[] {block, block});
-	}
-
-	private static void register(Block block, Block b1, Block b2)
-	{
-		MAP.put(new MetaBlock(block), new MetaBlock[] {new MetaBlock(b1), new MetaBlock(b2)});
-	}
-
-	private static void register(MetaBlock block, MetaBlock[] result)
-	{
-		MAP.put(block, result);
+		MAP.put(from.getDefaultState(), ImmutablePair.of(result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 }

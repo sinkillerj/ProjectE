@@ -2,10 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
@@ -17,17 +14,20 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			WorldHelper.extinguishNearby(world, player);
 		}
 	}
-	
+
 	@Override
 	public void changeMode(EntityPlayer player, ItemStack stack)
 	{
@@ -102,11 +102,12 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT)
+				IBlockState state = world.getBlockState(mop.getBlockPos());
+				if (state.getBlock() instanceof BlockTNT)
 				{
 					// Ignite TNT or derivatives
-					((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
-					world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+					((BlockTNT) state.getBlock()).explode(world, mop.getBlockPos(), state.withProperty(BlockTNT.EXPLODE, true), player);
+					world.setBlockToAir(mop.getBlockPos());
 				}
 			}
 			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
@@ -151,11 +152,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());

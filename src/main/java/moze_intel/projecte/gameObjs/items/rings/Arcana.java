@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IFlightItem;
@@ -14,7 +13,6 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,20 +21,17 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter
 {
-	private IIcon[] icons = new IIcon[4];
-	private IIcon[] iconsOn = new IIcon[4];
-	
 	public Arcana()
 	{
 		super();
@@ -44,12 +39,6 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
-	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
 	}
 
 	@Override
@@ -70,19 +59,17 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		{
 			if(!player.capabilities.allowFlying)
 			{
-				//System.out.println("Enabling flight");
 				PlayerHelper.enableFlight(player);
 				PlayerChecks.addPlayerFlyChecks(player);
 			}
 			
 			if(!player.isImmuneToFire())
 			{
-				//System.out.println("Immunising against fire");
 				PlayerHelper.setPlayerFireImmunity(player, true);
 				PlayerChecks.addPlayerFireChecks(player);
 			}
 		}
-		
+
 		if(stack.getTagCompound().getBoolean("Active"))
 		{
 			switch(stack.getItemDamage())
@@ -97,7 +84,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 					WorldHelper.growNearbyRandomly(true, world, player);
 					break;
 				case 3:
-					WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
+					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
 					break;
 			}
 		}
@@ -106,7 +93,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if(stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound());
+		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		
 		if(world.isRemote || slot > 8 || !(entity instanceof EntityPlayerMP)) return;
 		
@@ -124,7 +111,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase entity)
 	{
-		if(stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound());
+		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		
 		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayerMP)) return;
 		
@@ -160,40 +147,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	}
 
 	@Override
-	public IIcon getIcon(ItemStack stack, int pass)
-	{
-		return getIconIndex(stack);
-	}
-
-	@Override
-	public IIcon getIconIndex(ItemStack stack)
-	{
-		boolean active = (stack.hasTagCompound() ? stack.getTagCompound().getBoolean("Active") : false);
-		return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
-	}
-
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		for(int i = 0; i < 4; i++)
-		{
-			icons[i] = register.registerIcon(this.getTexture("rings", "arcana_" + i));
-		}
-		
-		for(int i = 0; i < 4; i++)
-		{
-			iconsOn[i] = register.registerIcon(this.getTexture("rings", "arcana_" + i + "_on"));
-		}
-		
-		itemIcon = icons[0];
-	}
-
-	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b)
 	{
 		if(stack.hasTagCompound())
 		{
-			if(!stack.stackTagCompound.getBoolean("Active"))
+			if(!stack.getTagCompound().getBoolean("Active"))
 			{
 				list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
 			}
@@ -227,25 +185,32 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 		switch(stack.getItemDamage())
 		{
 			case 1: // ignition
-				switch(MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5) & 3)
+				switch(player.getHorizontalFacing())
 				{
-					case 0: // south, -z
-					case 2: // north, +z
+					case SOUTH: // south, -z
+					case NORTH: // north, +z
 						for(int x = (int) (player.posX - 30); x <= player.posX + 30; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+								{
+									BlockPos pos = new BlockPos(x, y, z);
+									if(world.isAirBlock(pos))
+										world.setBlockState(pos, Blocks.fire.getDefaultState());
+								}
 						break;
-					case 1: // west, -x
-					case 3: // east, +x
+					case WEST: // west, -x
+					case EAST: // east, +x
 						for(int x = (int) (player.posX - 3); x <= player.posX + 3; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+								{
+									BlockPos pos = new BlockPos(x, y, z);
+									if(world.isAirBlock(pos))
+										world.setBlockState(pos, Blocks.fire.getDefaultState());
+								}
 						break;
 				}
+				world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 				break;
 		}
 	}

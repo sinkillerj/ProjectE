@@ -2,22 +2,6 @@ package moze_intel.projecte;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -42,7 +26,24 @@ import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
 import java.util.List;
@@ -56,6 +57,7 @@ public class PECore
 
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
+	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -92,18 +94,19 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
-		
-		proxy.registerClientOnlyEvents();
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
+
+		proxy.registerClientOnlyEvents();
+		proxy.registerModels();
+
 	}
 	
 	@EventHandler
-	public void load(FMLInitializationEvent event)
-	{
-		proxy.registerKeyBinds();
+	public void load(FMLInitializationEvent event) {
 		proxy.registerRenderers();
+		proxy.registerKeyBinds();
 		AchievementHandler.init();
 	}
 	

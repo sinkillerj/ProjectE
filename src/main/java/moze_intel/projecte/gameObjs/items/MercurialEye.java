@@ -1,25 +1,24 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
@@ -53,14 +52,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return stack;
 			}
 
-			Block newBlock = Block.getBlockFromItem(inventory[1].getItem());
-
-			if (newBlock == Blocks.air)
+			IBlockState newState = ItemHelper.stackToState(inventory[1]);
+			if (newState == null || newState.getBlock() == Blocks.air)
 			{
 				return stack;
 			}
-
-			int newMeta = inventory[1].getItemDamage();
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
 			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
@@ -69,17 +65,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			byte mode = this.getMode(stack);
 
 			int facing = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
-			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
 			Vec3 look = player.getLookVec();
-
-			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
-					mop.blockX,
-					mop.blockY,
-					mop.blockZ,
-					mop.blockX,
-					mop.blockY,
-					mop.blockZ
-			);
 
 			int dX = 0, dY = 0, dZ = 0;
 
@@ -88,7 +74,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			boolean lookingAlongZ = facing == 0 || facing == 2;
 
-			switch (dir) {
+			BlockPos pos = mop.getBlockPos();
+			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+			switch (mop.sideHit) {
 				case UP:
 					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
@@ -148,25 +136,26 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					{
 						for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
 						{
-							Block oldBlock = world.getBlock(x, y, z);
-							int oldMeta = oldBlock.getDamageValue(world, x, y, z);
+							BlockPos currentPos = new BlockPos(x, y, z);
+							IBlockState state = world.getBlockState(currentPos);
+							Block oldBlock = state.getBlock();
 
-							if (mode == NORMAL_MODE && oldBlock == Blocks.air)
+							if (mode == NORMAL_MODE && world.isAirBlock(currentPos))
 							{
 								if (kleinEmc < reqEmc)
 									break;
-								world.setBlock(x, y, z, newBlock, newMeta, 3);
+								world.setBlockState(pos, newState, 3);
 								removeKleinEMC(stack, reqEmc);
 								kleinEmc -= reqEmc;
 							}
 							else if (mode == TRANSMUTATION_MODE)
 							{
-								if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
+								if (newState == state || oldBlock.isAir(world, currentPos) || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
 								{
 									continue;
 								}
 
-								int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+								int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(state, 1));
 
 								if (emc > reqEmc)
 								{
@@ -175,7 +164,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 									kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
 
 									addKleinEMC(stack, difference);
-									world.setBlock(x, y, z, newBlock, newMeta, 3);
+									world.setBlockState(pos, newState, 3);
 								}
 								else if (emc < reqEmc)
 								{
@@ -185,12 +174,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 									{
 										kleinEmc -= difference;
 										removeKleinEMC(stack, difference);
-										world.setBlock(x, y, z, newBlock, newMeta, 3);
+										world.setBlockState(pos, newState, 3);
 									}
 								}
 								else
 								{
-									world.setBlock(x, y, z, newBlock, newMeta, 3);
+									world.setBlockState(pos, newState, 3);
 								}
 							}
 						}
@@ -205,7 +194,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private void addKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -227,7 +216,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private void removeKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -248,7 +237,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		if (eye.hasTagCompound())
 		{
-			NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+			NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 
 			for (int i = 0; i < list.tagCount(); i++)
 			{
@@ -270,11 +259,5 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	public int getMaxItemUseDuration(ItemStack stack) 
 	{
 		return 1; 
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("mercurial_eye"));
 	}
 }

@@ -1,10 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EnumArmorType;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +9,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {
@@ -82,14 +81,6 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister par1IconRegister)
-	{
-		String type = this.armorPiece.name.toLowerCase();
-		this.itemIcon = par1IconRegister.registerIcon("projecte:gem_armor/" + type);
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)

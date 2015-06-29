@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "normal": [
+      { "model": "projecte:nova_catalyst" },
+      { "model": "projecte:nova_catalyst", "y": 90 },
+      { "model": "projecte:nova_catalyst", "y": 180 },
+      { "model": "projecte:nova_catalyst", "y": 270 }
+    ]
+  }
+}

@@ -1,21 +1,17 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class CovalenceDust extends ItemPE
 {
 	private final String[] names = new String[] {"low", "medium", "high"};
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
 	
 	public CovalenceDust()
 	{
@@ -40,20 +36,5 @@ public class CovalenceDust extends ItemPE
 	{
 		for (int i = 0; i < 3; ++i)
 			list.add(new ItemStack(item, 1, i));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
-	{
-		return icons[MathHelper.clamp_int(par1, 0, 2)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[3];
-		for (int i = 0; i < 3; i++)
-			icons[i] = register.registerIcon(this.getTexture("covalence_dust", names[i]));
 	}
 }

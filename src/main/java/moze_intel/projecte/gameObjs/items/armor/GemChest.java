@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.EnumArmorType;
@@ -12,8 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -39,10 +40,11 @@ public class GemChest extends GemArmorBase
             int x = (int) Math.floor(player.posX);
             int y = (int) (player.posY - player.getYOffset());
             int z = (int) Math.floor(player.posZ);
+            BlockPos pos = new BlockPos(x, y, z);
 
-            Block b = world.getBlock(x, y - 1, z);
+            Block b = world.getBlockState(pos.down()).getBlock();
 
-            if ((b == Blocks.lava || b == Blocks.flowing_lava) && world.getBlock(x, y, z).equals(Blocks.air))
+            if ((b == Blocks.lava || b == Blocks.flowing_lava) && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {
@@ -72,9 +74,7 @@ public class GemChest extends GemArmorBase
 
     public static void doExplode(EntityPlayer player)
     {
-        NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
-        explosion.isFlaming = true;
-        explosion.isSmoking = true;
+        NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F, true, true);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
     }

@@ -1,18 +1,16 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -42,20 +40,13 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 
 		return stack;
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("rings", "archangel_smite"));
-	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())

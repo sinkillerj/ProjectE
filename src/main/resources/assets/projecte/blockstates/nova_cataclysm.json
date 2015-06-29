@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "normal": [
+      { "model": "projecte:nova_cataclysm" },
+      { "model": "projecte:nova_cataclysm", "y": 90 },
+      { "model": "projecte:nova_cataclysm", "y": 180 },
+      { "model": "projecte:nova_cataclysm", "y": 270 }
+    ]
+  }
+}

@@ -5,6 +5,7 @@ import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -39,15 +40,15 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack p_150893_1_, Block p_150893_2_, int meta)
+	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
-		if (p_150893_2_ == Blocks.web)
+		if (state.getBlock() == Blocks.web)
 		{
 			return 15.0F;
 		}
 		else
 		{
-			Material material = p_150893_2_.getMaterial();
+			Material material = state.getBlock().getMaterial();
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
 		}
 	}
@@ -55,7 +56,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
-		return EnumAction.block;
+		return EnumAction.BLOCK;
 	}
 	
 	@Override
@@ -91,11 +92,11 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
 		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 }

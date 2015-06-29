@@ -133,8 +133,8 @@ public class PhilosStoneContainer extends Container
 	}
 	
 	@Override
-	public boolean func_94530_a(ItemStack stack, Slot slot)
+	public boolean canMergeSlot(ItemStack stack, Slot slot)
 	{
-		return slot.inventory != this.craftResult && super.func_94530_a(stack, slot);
+		return slot.inventory != this.craftResult && super.canMergeSlot(stack, slot);
 	}
 }

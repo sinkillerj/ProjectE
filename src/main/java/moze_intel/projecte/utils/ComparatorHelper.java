@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -16,14 +17,14 @@ import net.minecraft.world.World;
  */
 public final class ComparatorHelper
 {
-	public static int getForAlchChest(World world, int x, int y, int z)
+	public static int getForAlchChest(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((AlchChestTile) world.getTileEntity(x, y, z)));
+		return Container.calcRedstoneFromInventory(((AlchChestTile) world.getTileEntity(pos)));
 	}
 
-	public static int getForCollector(World world, int x, int y, int z)
+	public static int getForCollector(World world, BlockPos pos)
 	{
-		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(x, y, z));
+		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
 		ItemStack charging = tile.getChargingItem();
 		if (charging != null)
 		{
@@ -45,19 +46,19 @@ public final class ComparatorHelper
 		}
 	}
 
-	public static int getForCondenser(World world, int x, int y, int z)
+	public static int getForCondenser(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((CondenserTile) world.getTileEntity(x, y, z)));
+		return Container.calcRedstoneFromInventory(((CondenserTile) world.getTileEntity(pos)));
 	}
 
-	public static int getForMatterFurnace(World world, int x, int y, int z)
+	public static int getForMatterFurnace(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((RMFurnaceTile) world.getTileEntity(x, y, z)));
+		return Container.calcRedstoneFromInventory(((RMFurnaceTile) world.getTileEntity(pos)));
 	}
 
-	public static int getForRelay(World world, int x, int y, int z)
+	public static int getForRelay(World world, BlockPos pos)
 	{
-		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(x, y, z));
+		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(pos));
 		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaxEmc());
 	}
 }

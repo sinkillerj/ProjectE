@@ -4,9 +4,6 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -15,23 +12,27 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,11 +46,6 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino"
 	);
-
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOn;
 	
 	public TimeWatch() 
 	{
@@ -70,7 +66,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			if (!stack.hasTagCompound())
 			{
-				stack.stackTagCompound = new NBTTagCompound();
+				stack.setTagCompound(new NBTTagCompound());
 			}
 
 			byte current = getTimeBoost(stack);
@@ -161,7 +157,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			mobSlowdown = 0.12F;
 		}
 			
-		AxisAlignedBB bBox = player.boundingBox.expand(8, 8, 8);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(8, 8, 8);
 
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);
@@ -207,9 +203,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
-				if (!tile.isInvalid())
+				if (!tile.isInvalid() && tile instanceof IUpdatePlayerListBox)
 				{
-					tile.updateEntity();
+					((IUpdatePlayerListBox) tile).update();
 				}
 			}
 		}
@@ -227,7 +223,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			{
 				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
 				{
-					Block block = world.getBlock(x, y, z);
+					BlockPos pos = new BlockPos(x, y, z);
+					IBlockState state = world.getBlockState(pos);
+					Block block = state.getBlock();
 
 					if (block.getTickRandomly()
 							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
@@ -238,7 +236,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 					{
 						for (int i = 0; i < bonusTicks; i++)
 						{
-							block.updateTick(world, x, y, z, itemRand);
+							block.updateTick(world, pos, state, itemRand);
 						}
 					}
 				}
@@ -265,12 +263,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private byte getTimeBoost(ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("TimeMode");
+		return stack.getTagCompound().getByte("TimeMode");
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		stack.stackTagCompound.setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
+		stack.getTagCompound().setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)
@@ -308,25 +306,6 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public void playUnChargeSound(EntityPlayer player)
 	{
 		player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 0.85F);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		if (dmg == 0)
-		{
-			return ringOff;
-		}
-		
-		return ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOff = register.registerIcon(this.getTexture("rings", "time_watch_off"));
-		ringOn = register.registerIcon(this.getTexture("rings", "time_watch_on"));
 	}
 
 	@Override
@@ -380,7 +359,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		/* Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		Now the same as activated watch in hand but more powerful.
@@ -388,7 +367,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		if (!world.isRemote && ProjectEConfig.enableTimeWatch)
 		{
-			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(pos)).getEffectBounds();
 			if (ProjectEConfig.timePedBonus > 0) {
 				speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
 				speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);

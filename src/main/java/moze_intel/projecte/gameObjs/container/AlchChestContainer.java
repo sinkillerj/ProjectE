@@ -16,7 +16,7 @@ public class AlchChestContainer extends Container
 	public AlchChestContainer(InventoryPlayer invPlayer, AlchChestTile tile)
 	{
 		this.tile = tile;
-		tile.openInventory();
+		tile.openInventory(invPlayer.player);
 		
 		//Chest Inventory
 		for (int i = 0; i < 8; i++)
@@ -80,6 +80,6 @@ public class AlchChestContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory();
+		tile.closeInventory(player);
 	}
 }

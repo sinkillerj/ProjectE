@@ -1,0 +1,8 @@
+{
+  "variants" :
+  {
+    "fueltype=alchemical_coal" : { "model" : "projecte:alchemical_coal_block" },
+    "fueltype=mobius_fuel" : { "model" : "projecte:mobius_fuel_block" },
+    "fueltype=aeternalis_fuel" : { "model" : "projecte:aeternalis_fuel_block" }
+  }
+}

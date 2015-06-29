@@ -3,9 +3,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -13,27 +10,22 @@ import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOn;
-
 	public Zero() 
 	{
 		super("zero_ring", (byte)4);
@@ -51,11 +43,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			return;
 		}
 
-		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
 		WorldHelper.freezeInBoundingBox(world, box);
 	}
 
-	
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -63,18 +54,12 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		if (!world.isRemote)
 		{
 			int offset = 3 + this.getCharge(stack);
-			AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
+			AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
 			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box);
 		}
 		
 		return stack;
-	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
 	}
 
 	@Override
@@ -89,20 +74,6 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
 	}
 	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? ringOff : ringOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOn = register.registerIcon(this.getTexture("rings", "zero_on"));
-		ringOff = register.registerIcon(this.getTexture("rings", "zero_off"));
-	}
-	
 	@Override
 	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -112,7 +83,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
+	public void onWornTick(ItemStack stack, EntityLivingBase player)
 	{
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
@@ -140,11 +111,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0) {
 				AxisAlignedBB aabb = tile.getEffectBounds();
 				WorldHelper.freezeInBoundingBox(world, aabb);

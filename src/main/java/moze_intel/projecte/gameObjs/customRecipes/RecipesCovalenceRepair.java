@@ -17,6 +17,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class RecipesCovalenceRepair implements IRecipe
 {
@@ -175,7 +176,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		}
 		else if (item instanceof ItemHoe)
 		{
-			name = ((ItemHoe) item).getToolMaterialName();
+			name = ((ItemHoe) item).getMaterialName();
 		}
 		else if (item instanceof ItemArmor)
 		{
@@ -211,5 +212,11 @@ public class RecipesCovalenceRepair implements IRecipe
 	public ItemStack getRecipeOutput() 
 	{
 		return output;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }

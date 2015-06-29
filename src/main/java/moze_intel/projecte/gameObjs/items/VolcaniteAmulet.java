@@ -4,10 +4,6 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 
 import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
@@ -22,7 +18,6 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,12 +25,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -50,11 +50,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(pos);
 
 			if (tile instanceof IFluidHandler)
 			{
@@ -82,25 +82,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				int i = mop.blockX;
-				int j = mop.blockY;
-				int k = mop.blockZ;
-				if (!(world.getTileEntity(i, j, k) instanceof IFluidHandler))
+				BlockPos blockPosHit = mop.getBlockPos();
+				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
 				{
-					switch(mop.sideHit) // Ripped from vanilla ItemBucket and simplified
+					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)) && consumeFuel(player, stack, 32, true))
 					{
-						case 0: --j; break;
-						case 1: ++j; break;
-						case 2: --k; break;
-						case 3: ++k; break;
-						case 4: --i; break;
-						case 5: ++i; break;
-						default: break;
-					}
-
-					if (world.isAirBlock(i, j, k) && consumeFuel(player, stack, 32, true))
-					{
-						placeLava(world, i, j, k);
+						placeLava(world, blockPosHit.offset(mop.sideHit));
 						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 						PlayerHelper.swingItem(player);
 					}
@@ -112,14 +99,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 
-	private void placeLava(World world, int i, int j, int k)
+	private void placeLava(World world, BlockPos pos)
 	{
-		Material material = world.getBlock(i, j, k).getMaterial();
+		Material material = world.getBlockState(pos).getBlock().getMaterial();
 		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
 		{
-			world.func_147480_a(i, j, k, true);
+			world.destroyBlock(pos, true);
 		}
-		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
+		world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
 	}
 
 	@Override
@@ -132,8 +119,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
-		
-		if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava) && world.getBlock(x, y, z) == Blocks.air)
+		BlockPos pos = new BlockPos(x, y, z);
+
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -167,24 +155,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 	
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return false;
-	}
-	
-	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
 		player.worldObj.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 		player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
 		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("rings", "volcanite_amulet"));
 	}
 
 	@Override
@@ -219,8 +194,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
-		
-		if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava) && world.getBlock(x, y, z) == Blocks.air)
+		BlockPos pos = new BlockPos(x, y, z);
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -277,11 +252,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				world.getWorldInfo().setRainTime(0);

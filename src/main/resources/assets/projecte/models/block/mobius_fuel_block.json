@@ -1,0 +1,6 @@
+{
+  "parent" : "block/cube_all",
+  "textures" : {
+    "all" : "projecte:blocks/fuels_1"
+  }
+}

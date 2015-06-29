@@ -1,38 +1,57 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.IStringSerializable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class FuelBlock extends Block 
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon icons[];
-	
+	public static final IProperty FUEL_PROP = PropertyEnum.create("fueltype", EnumFuelType.class);
 	public FuelBlock() 
 	{
 		super(Material.rock);
-		this.setBlockName("pe_fuel_block");
+		this.setUnlocalizedName("pe_fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(FUEL_PROP, EnumFuelType.ALCHEMICAL_COAL));
 	}
 	
 	@Override
-	public int damageDropped(int meta)
+	public int damageDropped(IBlockState state)
 	{
-		return meta;
+		return this.getMetaFromState(state);
 	}
-	
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return ((EnumFuelType) state.getValue(FUEL_PROP)).ordinal();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(FUEL_PROP, EnumFuelType.values()[meta]);
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockState(this, FUEL_PROP);
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
@@ -42,23 +61,30 @@ public class FuelBlock extends Block
 			list.add(new ItemStack(item , 1, i));
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+
+	public enum EnumFuelType implements IStringSerializable
 	{
-		icons = new IIcon[3];
-		
-		for (int i = 0; i < 3; i++)
+		ALCHEMICAL_COAL("alchemical_coal"),
+		MOBIUS_FUEL("mobius_fuel"),
+		AETERNALIS_FUEL("aeternalis_fuel");
+
+		private final String name;
+
+		EnumFuelType(String name)
 		{
-			icons[i] = register.registerIcon("projecte:fuels_"+i);
+			this.name = name;
 		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		return icons[MathHelper.clamp_int(meta, 0, 2)];
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

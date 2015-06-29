@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class RecipesKleinStars implements IRecipe
 {
@@ -88,5 +89,11 @@ public class RecipesKleinStars implements IRecipe
 	public ItemStack getRecipeOutput() 
 	{
 		return output;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }

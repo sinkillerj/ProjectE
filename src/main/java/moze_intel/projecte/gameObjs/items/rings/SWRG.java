@@ -3,9 +3,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -14,7 +11,6 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,22 +19,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon ringOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon[] ringOn;
-
 	public SWRG()
 	{
 		this.setUnlocalizedName("swrg");
@@ -60,7 +51,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (world.isRemote)
@@ -72,7 +63,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
@@ -265,33 +256,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		return false;
 	}
 	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		if (dmg == 0)
-		{
-			return ringOff;
-		}
-		
-		else
-		{
-			return ringOn[MathHelper.clamp_int(dmg - 1, 0, 2)];
-		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		ringOff = register.registerIcon(this.getTexture("rings", "swrg_off"));
-		ringOn = new IIcon[3];
-		
-		for (int i = 0; i < 3; i++)
-		{
-			ringOn[i] = register.registerIcon(this.getTexture("rings", "swrg_on"+(i+1)));
-		}
-	}
-	
 	@Override
 	@Optional.Method(modid = "Baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -313,7 +277,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.boundingBox.expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (player.worldObj.isRemote)
@@ -325,7 +289,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
@@ -413,11 +377,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() <= 0)
 			{
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());

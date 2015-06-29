@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.items.KleinStar;
@@ -16,8 +14,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.Facing;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Arrays;
 
 public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory
 {
@@ -38,7 +40,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 	
 	@Override
-	public void updateEntity()
+	public void update()
 	{
 		boolean flag = furnaceBurnTime > 0;
 		boolean flag1 = false;
@@ -107,11 +109,11 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
-				Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+				Block block = worldObj.getBlockState(pos).getBlock();
 				
 				if (!this.worldObj.isRemote && block instanceof MatterFurnace)
 				{
-					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, getPos());
 				}
 			}
 		}
@@ -214,15 +216,15 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	
 	private void pullFromInventories()
 	{
-		TileEntity tile = this.worldObj.getTileEntity(this.xCoord, this.yCoord + 1, this.zCoord);
+		TileEntity tile = this.worldObj.getTileEntity(pos.up());
 		
 		if (tile instanceof ISidedInventory)
 		{
 			//The bottom side of the tile pulling from (ForgeDirection.DOWN)
-			final int side = 0;
+			final EnumFacing side = EnumFacing.DOWN;
 			ISidedInventory inv = (ISidedInventory) tile;
 			
-			int[] slots = inv.getAccessibleSlotsFromSide(side);
+			int[] slots = inv.getSlotsForFace(side);
 			
 			if (slots.length > 0)
 			{
@@ -336,7 +338,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					
 					continue;
 				}
-				else if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null)
+				else if (FurnaceRecipes.instance().getSmeltingResult(stack) == null)
 				{
 					continue;
 				}
@@ -374,20 +376,11 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	
 	private void pushToInventories()
 	{
-		int iSide = 0;
+		EnumFacing iSide = EnumFacing.DOWN;
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for (EnumFacing dir : EnumFacing.HORIZONTALS)
 		{
-			if (dir.offsetY > 0)
-			{
-				continue;
-			}
-			
-			int x = this.xCoord + dir.offsetX;
-			int y = this.yCoord + dir.offsetY;
-			int z = this.zCoord + dir.offsetZ;
-			
-			TileEntity tile = this.worldObj.getTileEntity(x, y, z);
+			TileEntity tile = this.worldObj.getTileEntity(pos.offset(dir));
 			
 			if (tile == null)
 			{
@@ -400,7 +393,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				
 				if (inv != null)
 				{
-					int[] slots = inv.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[iSide]);
+					int[] slots = inv.getSlotsForFace(iSide.getOpposite());
 					
 					if (slots.length > 0)
 					{
@@ -415,7 +408,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 							
 							for (int k : slots)
 							{
-								if (inv.canInsertItem(k, stack, Facing.oppositeSide[iSide]))
+								if (inv.canInsertItem(k, stack, iSide.getOpposite()))
 								{
 									ItemStack otherStack = inv.getStackInSlot(k);
 									
@@ -475,7 +468,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	private void smeltItem()
 	{
 		ItemStack toSmelt = inventory[1];
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
 		ItemStack currentSmelted = getStackInSlot(outputSlot);
 
 		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
@@ -504,7 +497,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 			return false;
 		}
 		
-		ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
+		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt);
 		if (smeltResult == null) 
 		{
 			return false;
@@ -644,15 +637,20 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "pe.rmfurnace.shortname";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return null;
 	}
 
 	@Override
@@ -668,16 +666,10 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public void openInventory() 
-	{
-		
-	}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() 
-	{
-		
-	}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
@@ -693,36 +685,57 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		}
 		else if (slot >= 1 && slot <= 13)
 		{
-			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+			return FurnaceRecipes.instance().getSmeltingResult(stack) != null;
 		}
 		
 		return false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		switch(side)
 		{
-			case 0: return new int[] {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Outputs accessible from bottom
-			case 1: return new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Inputs accessible from top
-			case 2: // Fall through
-			case 3:
-			case 4:
-			case 5: return new int[] {0, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Fuel and output accessible from all sides
-			default: return new int[] {};
+			case DOWN: return new int[] {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Outputs accessible from bottom
+			case UP: return new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Inputs accessible from top
+			case NORTH: // Fall through
+			case SOUTH:
+			case WEST:
+			case EAST: return new int[] {0, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}; // Fuel and output accessible from all sides
+			default: return new int[0];
 		}
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) 
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side)
 	{
-		if (side == 0)
+		if (side == EnumFacing.DOWN)
 		{
 			return false;
 		}
 
-		if (side == 1)
+		if (side == EnumFacing.UP)
 		{
 			return slot <= inputStorage[1] && slot >= inputStorage[0];
 		}
@@ -733,7 +746,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) 
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side)
 	{
 		return slot >= outputStorage[0];
 	}

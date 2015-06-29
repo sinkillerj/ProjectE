@@ -1,27 +1,22 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class KleinStar extends ItemPE
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
-	
 	public KleinStar()
 	{
 		this.setUnlocalizedName("klein_star");
@@ -54,29 +49,20 @@ public class KleinStar extends ItemPE
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		/*if (!world.isRemote)
+		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
 		{
-			this.setEmc(stack, Utils.GetKleinStarMaxEmc(stack));
-		}*/
+			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+		}
 		
 		return stack;
 	}
-	
-	/*@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (!world.isRemote)
-		{
-			stack.stackTagCompound = new NBTTagCompound();
-		}
-	}*/
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
@@ -117,22 +103,20 @@ public class KleinStar extends ItemPE
 			list.add(new ItemStack(item, 1, i));
 		}
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
+
+	public enum EnumKleinTier
 	{
-		return icons[MathHelper.clamp_int(par1, 0, 5)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[6];
-		
-		for (int i = 0; i < 6; i++)
+		EIN("ein"),
+		ZWEI("zwei"),
+		DREI("drei"),
+		VIER("vier"),
+		SPHERE("sphere"),
+		OMEGA("omega");
+
+		public final String name;
+		EnumKleinTier(String name)
 		{
-			icons[i] = register.registerIcon(this.getTexture("stars", "klein_star_"+(i + 1)));
+			this.name = name;
 		}
 	}
 }

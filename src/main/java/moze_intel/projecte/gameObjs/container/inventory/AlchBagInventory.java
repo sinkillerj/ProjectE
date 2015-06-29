@@ -4,6 +4,10 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
+
+import java.util.Arrays;
 
 public class AlchBagInventory implements IInventory
 {
@@ -78,15 +82,20 @@ public class AlchBagInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "item.pe_alchemical_bag_white.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -114,12 +123,10 @@ public class AlchBagInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
-	{
-	}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory(EntityPlayer player)
 	{
 		if (!player.worldObj.isRemote)
 		{
@@ -137,5 +144,26 @@ public class AlchBagInventory implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
 	}
 }

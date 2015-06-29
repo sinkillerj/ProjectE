@@ -1,8 +1,8 @@
 package moze_intel.projecte.events;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -188,25 +188,25 @@ public class ToolTipEvent
 
 		if (current.hasTagCompound())
 		{
-			if (current.stackTagCompound.getBoolean("ProjectEBlock"))
+			if (current.getTagCompound().getBoolean("ProjectEBlock"))
 			{
 				event.toolTip.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.misc.wrenched_block"));
 				
-				if (current.stackTagCompound.getDouble("EMC") > 0)
+				if (current.getTagCompound().getDouble("EMC") > 0)
 				{
 					event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("EMC")));
+							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("EMC")));
 				}
 			}
 			
-			if (current.stackTagCompound.hasKey("StoredEMC"))
+			if (current.getTagCompound().hasKey("StoredEMC"))
 			{
 				event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("StoredEMC")));
+						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("StoredEMC")));
 			}
-			else if (current.stackTagCompound.hasKey("StoredXP"))
+			else if (current.getTagCompound().hasKey("StoredXP"))
 			{
-				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.stackTagCompound.getInteger("StoredXP")));
+				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.getTagCompound().getInteger("StoredXP")));
 			}
 		}
 	}

@@ -5,8 +5,8 @@ import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -38,7 +38,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	}
 
 	protected String serializeToString(ItemStack stack) {
-		String name = Item.itemRegistry.getNameForObject(stack.getItem());
+		String name = (String) Item.itemRegistry.getNameForObject(stack.getItem());
 		return String.format("%d@%s", stack.getItemDamage(), name);
 	}
 	protected NormalizedSimpleStack deserializeFromString(String s) {
@@ -105,7 +105,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem)stack;
-			itemName = Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
+			itemName = (String) Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
 		} else {
 			return false;
 		}

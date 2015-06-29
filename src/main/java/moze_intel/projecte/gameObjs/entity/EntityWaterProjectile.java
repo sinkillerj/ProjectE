@@ -4,11 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class EntityWaterProjectile extends PEProjectile
 {
@@ -34,7 +34,7 @@ public class EntityWaterProjectile extends PEProjectile
 
 		if (!this.worldObj.isRemote)
 		{
-			if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+			if (ticksExisted > 400 || !this.worldObj.isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 				return;
@@ -44,16 +44,17 @@ public class EntityWaterProjectile extends PEProjectile
 				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
 					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
 					{
-						Block block = this.worldObj.getBlock(x, y, z);
+						BlockPos pos = new BlockPos(x, y, z);
+						Block block = this.worldObj.getBlockState(pos).getBlock();
 						boolean flag = false;
 						
 						if (block == Blocks.lava)
 						{
-							this.worldObj.setBlock(x, y, z, Blocks.obsidian);
+							this.worldObj.setBlockState(pos, Blocks.obsidian.getDefaultState());
 						}
 						else if (block == Blocks.flowing_lava)
 						{
-							this.worldObj.setBlock(x, y, z, Blocks.cobblestone);
+							this.worldObj.setBlockState(pos, Blocks.cobblestone.getDefaultState());
 						}
 						else
 						{
@@ -87,10 +88,10 @@ public class EntityWaterProjectile extends PEProjectile
 
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-			if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ))
+			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
+			if (worldObj.isAirBlock(pos))
 			{
-				this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+				this.worldObj.setBlockState(pos, Blocks.flowing_water.getDefaultState());
 			}
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)

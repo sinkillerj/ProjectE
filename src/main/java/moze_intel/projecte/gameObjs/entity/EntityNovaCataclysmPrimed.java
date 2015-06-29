@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.entity;
 import moze_intel.projecte.utils.NovaExplosion;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
@@ -47,14 +48,15 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 				this.explode();
 		}
 		else
-			this.worldObj.spawnParticle("smoke", this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+		{
+			this.handleWaterMovement();
+			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+		}
 	}
 
 	private void explode()
 	{
-		NovaExplosion explosion = new NovaExplosion(worldObj, this, this.posX, this.posY, this.posZ, 48.0F);
-		explosion.isFlaming = true;
-		explosion.isSmoking = true;
+		NovaExplosion explosion = new NovaExplosion(worldObj, getTntPlacedBy(), this.posX, this.posY, this.posZ, 48.0F, true, true);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
 	}

@@ -23,7 +23,7 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 			Object itemObject = Item.itemRegistry.getObjectById(item.id);
 			if (itemObject != null)
 			{
-				String itemName = Item.itemRegistry.getNameForObject(itemObject);
+				String itemName = (String) Item.itemRegistry.getNameForObject(itemObject);
 				if (itemName != null)
 				{
 					out.value(String.format("%s|%d", itemName, item.damage));

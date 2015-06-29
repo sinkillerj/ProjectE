@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
@@ -21,7 +21,7 @@ public class CollectorMK2Container extends Container
 	public CollectorMK2Container(InventoryPlayer invPlayer, CollectorMK2Tile collector)
 	{
 		this.tile = collector;
-		tile.openInventory();
+		tile.openInventory(invPlayer.player);
 		
 		//Klein Star Slot
 		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 140, 58));
@@ -48,9 +48,9 @@ public class CollectorMK2Container extends Container
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
+	public void onCraftGuiOpened(ICrafting par1ICrafting)
 	{
-		super.addCraftingToCrafters(par1ICrafting);
+		super.onCraftGuiOpened(par1ICrafting);
 		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
 	}
 	
@@ -80,7 +80,7 @@ public class CollectorMK2Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory();
+		tile.closeInventory(player);
 	}
 	
 	@Override

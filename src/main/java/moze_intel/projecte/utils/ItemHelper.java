@@ -3,10 +3,12 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -467,6 +469,23 @@ public final class ItemHelper
 		}
 
 		return stack.copy();
+	}
+
+	public static IBlockState stackToState(ItemStack stack)
+	{
+		if (stack.getItem() instanceof ItemBlock)
+		{
+			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getItemDamage());
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public static ItemStack stateToStack(IBlockState state, int stackSize)
+	{
+		return new ItemStack(state.getBlock(), stackSize, state.getBlock().getMetaFromState(state));
 	}
 
 	/**

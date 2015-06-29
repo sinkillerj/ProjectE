@@ -8,12 +8,14 @@ import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -49,10 +51,10 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player)
 	{
 		// Shear
-		shearBlock(stack, x, y, z, player);
+		shearBlock(stack, pos, player);
 		return false;
 	}
 	
@@ -69,11 +71,12 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		{
 			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				Block blockHit = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				IBlockState state = world.getBlockState(mop.getBlockPos());
+				Block blockHit = state.getBlock();
 				if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt)
 				{
 					// Hoe
-					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), 0);
+					tillAOE(stack, player, world, mop.getBlockPos(), mop.sideHit, 0);
 				}
 				else if (blockHit instanceof BlockLog)
 				{
@@ -100,7 +103,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
-		return EnumAction.block;
+		return EnumAction.BLOCK;
 	}
 
 	@Override
@@ -117,11 +120,11 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 

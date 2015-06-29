@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.entity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -28,31 +29,34 @@ public class EntityFireProjectile extends PEProjectile
 	{
 		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
-			int x = mop.blockX;
-			int y = mop.blockY;
-			int z = mop.blockZ;
-			
-			Block block = worldObj.getBlock(x, y, z);
+			BlockPos pos = mop.getBlockPos();
+			Block block = worldObj.getBlockState(pos).getBlock();
 			
 			if(block == Blocks.obsidian)
 			{
-				worldObj.setBlock(x, y, z, Blocks.flowing_lava);
+				worldObj.setBlockState(pos, Blocks.flowing_lava.getDefaultState());
 			}
 			else if(block == Blocks.sand)
 			{
-				for(int x1 = x - 2; x1 <= x + 2; x1++)
-					for(int y1 = y - 2; y1 <= y + 2; y1++)
-						for(int z1 = z - 2; z1 <= z + 2; z1++)
-							if(worldObj.getBlock(x1, y1, z1) == Blocks.sand)
-								worldObj.setBlock(x1, y1, z1, Blocks.glass);
+				for(int x1 = pos.getX() - 2; x1 <= pos.getX() + 2; x1++)
+					for(int y1 = pos.getY() - 2; y1 <= pos.getY() + 2; y1++)
+						for(int z1 = pos.getZ() - 2; z1 <= pos.getZ() + 2; z1++)
+						{
+							BlockPos currentPos = new BlockPos(x1, y1, z1);
+							if(worldObj.getBlockState(currentPos) == Blocks.sand)
+								worldObj.setBlockState(currentPos, Blocks.glass.getDefaultState());
+						}
 			}
 			else
 			{
-				for(int x1 = x - 1; x1 <= x + 1; x1++)
-					for(int y1 = y - 1; y1 <= y + 1; y1++)
-						for(int z1 = z - 1; z1 <= z + 1; z1++)
-							if(worldObj.getBlock(x1, y1, z1) == Blocks.air)
-								worldObj.setBlock(x1, y1, z1, Blocks.fire);
+				for(int x1 = pos.getX() - 1; x1 <= pos.getX() + 1; x1++)
+					for(int y1 = pos.getY() - 1; y1 <= pos.getY() + 1; y1++)
+						for(int z1 = pos.getZ() - 1; z1 <= pos.getZ() + 1; z1++)
+						{
+							BlockPos currentPos = new BlockPos(x1, y1, z1);
+							if(worldObj.isAirBlock(currentPos))
+								worldObj.setBlockState(currentPos, Blocks.fire.getDefaultState());
+						}
 			}
 		}
 	}

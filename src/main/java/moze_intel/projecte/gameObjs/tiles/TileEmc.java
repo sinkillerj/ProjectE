@@ -1,15 +1,19 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.api.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientTableSyncPKT;
+import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public abstract class TileEmc extends TileEntity implements ITileEmc
+public abstract class TileEmc extends TileEntity implements ITileEmc, IUpdatePlayerListBox
 {
 	private double emc;
 	private final int maxAmount;
@@ -23,7 +27,13 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		this.maxAmount = maxAmount;
 	}
-	
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState state, IBlockState newState)
+	{
+		return state.getBlock() != newState.getBlock();
+	}
+
 	@Override
 	public void setEmc(double value) 
 	{
@@ -123,8 +133,8 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		if (this.worldObj != null && !this.worldObj.isRemote)
 		{
-			PacketHandler.sendToAllAround(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord),
-					new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
+			PacketHandler.sendToAllAround(new TileEmcSyncPKT(emc, this),
+					new NetworkRegistry.TargetPoint(worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 64));
 		}
 	}
 }

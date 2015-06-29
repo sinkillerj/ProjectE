@@ -245,7 +245,7 @@ public final class EMCHelper
 		{
 			for (Map.Entry<Integer, Integer> entry : enchants.entrySet())
 			{
-				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
+				Enchantment ench = Enchantment.getEnchantmentById(entry.getKey());
 
 				if (ench.getWeight() == 0)
 				{
@@ -265,8 +265,8 @@ public final class EMCHelper
 	}
 
 	public static double getStoredEMCBonus(ItemStack stack) {
-		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
-			return stack.stackTagCompound.getDouble("StoredEMC");
+		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
+			return stack.getTagCompound().getDouble("StoredEMC");
 		}
 		return 0;
 	}

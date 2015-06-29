@@ -1,29 +1,30 @@
 package moze_intel.projecte.events;
 
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Direction;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class TransmutationRenderingEvent
 	private double playerX;
 	private double playerY;
 	private double playerZ;
-	private MetaBlock transmutationResult;
+	private IBlockState transmutationResult;
 	
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
@@ -44,7 +45,9 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				RenderItem.getInstance().renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), transmutationResult.toItemStack(), 0, 0);
+				RenderHelper.enableStandardItemLighting();
+				mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+				RenderHelper.disableStandardItemLighting();
 			}
 		}
 	}
@@ -74,9 +77,14 @@ public class TransmutationRenderingEvent
 		
 		if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
-			MetaBlock current = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
+			EnumFacing orientation = mop.sideHit;
+
+			IBlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+
+			int blockX = mop.getBlockPos().getX();
+			int blockY = mop.getBlockPos().getY();
+			int blockZ = mop.getBlockPos().getZ();
 
 			if (transmutationResult != null)
 			{
@@ -86,41 +94,39 @@ public class TransmutationRenderingEvent
 				{
 					case 0:
 					{
-						for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+						for (int x = blockX - charge; x <= blockX + charge; x++)
+							for (int y = blockY - charge; y <= blockY + charge; y++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, x, y, z);
+									addBlockToRenderList(world, current, new BlockPos(x, y, z));
 								}
 						
 						break;
 					}
 					case 1:
 					{
-						int side = orientation.offsetY != 0 ? 0 : orientation.offsetX != 0 ? 1 : 2;
-						
-						if (side == 0)
+						if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN)
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, x, mop.blockY, z);
+									addBlockToRenderList(world, current, new BlockPos(x, blockY, z));
 								}
 						}
-						else if (side == 1)
+						else if (orientation == EnumFacing.EAST || orientation == EnumFacing.WEST)
 						{
-							for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
-								for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int y = blockY - charge; y <= blockY + charge; y++)
+								for (int z = blockZ - charge; z <= blockZ + charge; z++)
 								{
-									addBlockToRenderList(world, current, mop.blockX, y, z);
+									addBlockToRenderList(world, current, new BlockPos(blockX, y, z));
 								}
 						}
-						else
+						else if (orientation == EnumFacing.SOUTH || orientation == EnumFacing.NORTH)
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
-								for (int y = mop.blockY - charge; y <= mop.blockY + charge; y++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
+								for (int y = blockY - charge; y <= blockY + charge; y++)
 								{
-									addBlockToRenderList(world, current, x, y, mop.blockZ);
+									addBlockToRenderList(world, current, new BlockPos(x, y, blockZ));
 								}
 						}
 						
@@ -128,21 +134,21 @@ public class TransmutationRenderingEvent
 					}
 					case 2:
 					{
-						String dir = Direction.directions[MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
-						int side = orientation.offsetX != 0 ? 0 : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
+						EnumFacing playerFacing = player.getHorizontalFacing();
+						int side = orientation.getAxis() == EnumFacing.Axis.X ? 0 : orientation.getAxis() == EnumFacing.Axis.Z ? 1 : playerFacing == EnumFacing.NORTH || playerFacing == EnumFacing.SOUTH ? 0 : 1; // TODO 1.8 rework to be clearer
 						
 						if (side == 0)
 						{
-							for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++)
+							for (int z = blockZ - charge; z <= blockZ + charge; z++)
 							{
-								addBlockToRenderList(world, current, mop.blockX, mop.blockY, z);
+								addBlockToRenderList(world, current, new BlockPos(blockX, blockY, z));
 							}
 						}
 						else 
 						{
-							for (int x = mop.blockX - charge; x <= mop.blockX + charge; x++)
+							for (int x = blockX - charge; x <= blockX + charge; x++)
 							{
-								addBlockToRenderList(world, current, x, mop.blockY, mop.blockZ);
+								addBlockToRenderList(world, current, new BlockPos(x, blockY, blockZ));
 							}
 						}
 						
@@ -153,10 +159,6 @@ public class TransmutationRenderingEvent
 				drawAll();
 				renderList.clear();
 			}
-			else if (transmutationResult != null)
-			{
-				transmutationResult = null;
-			}
 		}
 		else if (transmutationResult != null)
 		{
@@ -166,15 +168,16 @@ public class TransmutationRenderingEvent
 	
 	private void drawAll()
 	{
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableCull();
+		GlStateManager.disableLighting();
+		GlStateManager.depthMask(false);
 
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 0.35f);
 		
-		Tessellator tessellator = Tessellator.instance;
+		Tessellator tessellator = Tessellator.getInstance();
+		WorldRenderer r = tessellator.getWorldRenderer();
 		
 		float colorR = 1.0f;
 		float colorG = 1.0f;
@@ -183,66 +186,66 @@ public class TransmutationRenderingEvent
 		for (AxisAlignedBB b : renderList)
 		{
 			//Top
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.minX, b.maxY, b.minZ);
-			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+			r.startDrawingQuads();
+			r.addVertex(b.minX, b.maxY, b.minZ);
+			r.addVertex(b.maxX, b.maxY, b.minZ);
+			r.addVertex(b.maxX, b.maxY, b.maxZ);
+			r.addVertex(b.minX, b.maxY, b.maxZ);
 			tessellator.draw();
 			
 			//Bottom 
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.minX, b.minY, b.minZ);
-			tessellator.addVertex(b.maxX, b.minY, b.minZ);
-			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-			tessellator.addVertex(b.minX, b.minY, b.maxZ);
+			r.startDrawingQuads();
+			r.addVertex(b.minX, b.minY, b.minZ);
+			r.addVertex(b.maxX, b.minY, b.minZ);
+			r.addVertex(b.maxX, b.minY, b.maxZ);
+			r.addVertex(b.minX, b.minY, b.maxZ);
 			tessellator.draw();
 			
 			//Front
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-			tessellator.addVertex(b.minX, b.minY, b.maxZ);
-			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+			r.startDrawingQuads();
+			r.addVertex(b.maxX, b.maxY, b.maxZ);
+			r.addVertex(b.minX, b.maxY, b.maxZ);
+			r.addVertex(b.minX, b.minY, b.maxZ);
+			r.addVertex(b.maxX, b.minY, b.maxZ);
 			tessellator.draw();
 			
 			//Back
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.maxX, b.minY, b.minZ);
-			tessellator.addVertex(b.minX, b.minY, b.minZ);
-			tessellator.addVertex(b.minX, b.maxY, b.minZ);
-			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+			r.startDrawingQuads();
+			r.addVertex(b.maxX, b.minY, b.minZ);
+			r.addVertex(b.minX, b.minY, b.minZ);
+			r.addVertex(b.minX, b.maxY, b.minZ);
+			r.addVertex(b.maxX, b.maxY, b.minZ);
 			tessellator.draw();
 			
 			//Left
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-			tessellator.addVertex(b.minX, b.maxY, b.minZ);
-			tessellator.addVertex(b.minX, b.minY, b.minZ);
-			tessellator.addVertex(b.minX, b.minY, b.maxZ);
+			r.startDrawingQuads();
+			r.addVertex(b.minX, b.maxY, b.maxZ);
+			r.addVertex(b.minX, b.maxY, b.minZ);
+			r.addVertex(b.minX, b.minY, b.minZ);
+			r.addVertex(b.minX, b.minY, b.maxZ);
 			tessellator.draw();
 			
 			//Right
-			tessellator.startDrawingQuads();
-			tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-			tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-			tessellator.addVertex(b.maxX, b.minY, b.minZ);
-			tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+			r.startDrawingQuads();
+			r.addVertex(b.maxX, b.maxY, b.maxZ);
+			r.addVertex(b.maxX, b.maxY, b.minZ);
+			r.addVertex(b.maxX, b.minY, b.minZ);
+			r.addVertex(b.maxX, b.minY, b.maxZ);
 			tessellator.draw();
 		}
 
-		GL11.glDepthMask(true);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.depthMask(true);
+		GlStateManager.enableCull();
+		GlStateManager.enableLighting();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 	
-	private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z)
+	private void addBlockToRenderList(World world, IBlockState current, BlockPos pos)
 	{
-		if (new MetaBlock(world, x, y, z).equals(current))
+		if (world.getBlockState(pos) == current)
 		{
-			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
+			AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
 			box = box.offset(-playerX, -playerY, -playerZ);
 			renderList.add(box);
 		}

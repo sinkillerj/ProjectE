@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IExtraFunction;
@@ -9,13 +7,11 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,11 +21,6 @@ import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon void_off;
-	@SideOnly(Side.CLIENT)
-	private IIcon void_on;
-
 	public VoidRing()
 	{
 		this.setUnlocalizedName("void_ring");
@@ -44,9 +35,9 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(World world, BlockPos pos)
 	{
-		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, x, y, z);
+		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
 	}
 
 	@Override
@@ -56,31 +47,16 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? void_off : void_on;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		void_off = register.registerIcon(this.getTexture("rings", "void_off"));
-		void_on = register.registerIcon(this.getTexture("rings", "void_on"));
-	}
-
-	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		Coordinates c = PlayerHelper.getBlockLookingAt(player, 64);
-		if (c == null)
+		BlockPos pos = PlayerHelper.getBlockLookingAt(player, 64);
+		if (pos == null)
 		{
 			Vec3 vec  = ((Vec3) PlayerHelper.getLookVec(player, 32).getSecond());
-			c = new Coordinates(((int) vec.xCoord), ((int) vec.yCoord), ((int) vec.zCoord));
+			pos = new BlockPos(vec);
 		}
 
-		EnderTeleportEvent event = new EnderTeleportEvent(player, c.x, c.y + 1, c.z, 5.0F);
+		EnderTeleportEvent event = new EnderTeleportEvent(player, pos.getX(), pos.getY() + 1, pos.getZ(), 5.0F);
 		if (!MinecraftForge.EVENT_BUS.post(event))
 		{
 			if (player.isRiding())

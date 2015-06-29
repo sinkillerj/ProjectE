@@ -1,30 +1,25 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,20 +70,22 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 			byte mode = getMode(stack);
 			int depth = getDepthFromMode(mode);
-			AxisAlignedBB box = WorldHelper.getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
+			AxisAlignedBB box = WorldHelper.getDeepBox(mop.getBlockPos(), mop.sideHit, depth);
 
 			for (int i = (int) box.minX; i <= box.maxX; i++)
 				for (int j = (int) box.minY; j <= box.maxY; j++)
 					for (int k = (int) box.minZ; k <= box.maxZ; k++)
 					{
-						Block block = world.getBlock(i, j, k);
+						BlockPos pos = new BlockPos(i, j, k);
+						IBlockState state = world.getBlockState(pos);
+						Block block = state.getBlock();
 
-						if (block == Blocks.air)
+						if (block.isAir(world, pos))
 						{
 							continue;
 						}
 
-						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+						List<ItemStack> drops = block.getDrops(world, pos, state, 0);
 
 						if (drops.size() == 0)
 						{
@@ -99,7 +96,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 						if (blockEmc == 0)
 						{
-							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.instance().getSmeltingList();
 
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
@@ -187,16 +184,9 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("divining1"));
-	}
-
-	@Override
 	public byte getMode(ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("Mode");
+		return stack.getTagCompound().getByte("Mode");
 	}
 
 	@Override
@@ -208,11 +198,11 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			stack.stackTagCompound.setByte("Mode", ((byte) 0));
+			stack.getTagCompound().setByte("Mode", ((byte) 0));
 		}
 		else
 		{
-			stack.stackTagCompound.setByte("Mode", ((byte) (getMode(stack) + 1)));
+			stack.getTagCompound().setByte("Mode", ((byte) (getMode(stack) + 1)));
 		}
 
 		player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));

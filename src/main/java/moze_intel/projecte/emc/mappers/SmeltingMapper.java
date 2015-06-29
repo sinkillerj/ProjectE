@@ -12,7 +12,7 @@ import java.util.Map;
 public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.smelting().getSmeltingList();
+		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.instance().getSmeltingList();
 		for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
 			ItemStack input = entry.getKey();
 			ItemStack output = entry.getValue();

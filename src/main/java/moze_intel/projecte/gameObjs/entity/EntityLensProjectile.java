@@ -1,14 +1,16 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.NovaExplosion;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class EntityLensProjectile extends PEProjectile
 {
@@ -41,7 +43,7 @@ public class EntityLensProjectile extends PEProjectile
 			return;
 		}
 
-		if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+		if (ticksExisted > 400 || !this.worldObj.isBlockLoaded(new BlockPos(this)))
 		{
 			this.setDead();
 			return;
@@ -50,7 +52,7 @@ public class EntityLensProjectile extends PEProjectile
 		if (this.isInWater())
 		{
 			this.playSound("random.fizz", 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", posX, posY, posZ), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, posX, posY, posZ, 32));
+			PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ), new NetworkRegistry.TargetPoint(worldObj.provider.getDimensionId(), posX, posY, posZ, 32));
 			this.setDead();
 		}
 	}
@@ -59,7 +61,7 @@ public class EntityLensProjectile extends PEProjectile
 	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote) return;
-		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge], true, true);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
 	}

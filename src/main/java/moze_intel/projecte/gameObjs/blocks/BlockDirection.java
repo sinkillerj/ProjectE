@@ -3,38 +3,68 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
-import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public abstract class BlockDirection extends BlockContainer
 {
+	public static final IProperty FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public BlockDirection(Material material)
 	{
 		super(material);
 		this.setCreativeTab(ObjHandler.cTab);
 	}
-	
+
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack stack)
+	public int getRenderType()
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		return 3;
+	}
+
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockState(this, FACING);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityLiving, ItemStack stack)
+	{
+		setFacingMeta(world, pos, ((EntityPlayer) entityLiving));
+		TileEntity tile = world.getTileEntity(pos);
 		
-		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
+		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
 		{
-			stack.stackTagCompound.setInteger("x", x);
-			stack.stackTagCompound.setInteger("y", y);
-			stack.stackTagCompound.setInteger("z", z);
+			stack.getTagCompound().setInteger("x", pos.getX());
+			stack.getTagCompound().setInteger("y", pos.getY());
+			stack.getTagCompound().setInteger("z", pos.getZ());
 			
-			tile.readFromNBT(stack.stackTagCompound);
+			tile.readFromNBT(stack.getTagCompound());
 		}
 		
 		if (tile instanceof TileEmcDirection)
@@ -44,33 +74,21 @@ public abstract class BlockDirection extends BlockContainer
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int noclue)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		IInventory tile = (IInventory) world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
-		if (tile == null)
+		if (tile instanceof IInventory)
 		{
-			return;
+			InventoryHelper.dropInventoryItems(world, pos, ((IInventory) tile));
 		}
-		
-		for (int i = 0; i < tile.getSizeInventory(); i++)
-		{
-			ItemStack stack = tile.getStackInSlot(i);
-			
-			if (stack == null)
-			{
-				continue;
-			}
-			
-			WorldHelper.spawnEntityItem(world, stack, x, y, z);
-		}
-		
-		world.func_147453_f(x, y, z, block);
-		super.breakBlock(world, x, y, z, block, noclue);
+
+		world.notifyNeighborsOfStateChange(pos, state.getBlock());
+		super.breakBlock(world, pos, state);
 	}
 	
 	@Override
-	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) 
+	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
 	{
 		if (world.isRemote)
 		{
@@ -81,29 +99,19 @@ public abstract class BlockDirection extends BlockContainer
 		
 		if (stack != null && stack.getItem() == ObjHandler.philosStone)
 		{
-			TileEntity tile = world.getTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(pos);
 			
 			if (tile instanceof TileEmcDirection)
 			{
-				((TileEmcDirection) tile).setRelativeOrientation(player, true);
+				((TileEmcDirection) tile).setRelativeOrientation(player, true); // TODO 1.8 TE's really should be using the blockstate too for rotation...
 			}
-			else
-			{
-				setFacingMeta(world, x, y, z, player);
-			}
+			setFacingMeta(world, pos, player);
 		}
 	}
 
-	protected void setFacingMeta(World world, int x, int y, int z, EntityPlayer player)
+	protected void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
-		switch (MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3)
-		{
-			case 0: world.setBlockMetadataWithNotify(x, y, z, 2, 2); break;
-			case 1: world.setBlockMetadataWithNotify(x, y, z, 5, 2); break;
-			case 2: world.setBlockMetadataWithNotify(x, y, z, 3, 2); break;
-			case 3: world.setBlockMetadataWithNotify(x, y, z, 4, 2); break;
-			default: world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		}
+		world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, player.getHorizontalFacing().getOpposite()));
 	}
 
 }

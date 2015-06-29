@@ -8,6 +8,7 @@ import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Tuple;
@@ -51,13 +52,13 @@ public final class PlayerHelper
 		return null;
 	}
 
-	public static Coordinates getBlockLookingAt(EntityPlayer player, double maxDistance)
+	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
 	{
 		Tuple vecs = getLookVec(player, maxDistance);
 		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(((Vec3) vecs.getFirst()), ((Vec3) vecs.getSecond()));
 		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
-			return new Coordinates(mop.blockX, mop.blockY, mop.blockZ);
+			return mop.getBlockPos();
 		}
 		return null;
 	}
@@ -69,7 +70,7 @@ public final class PlayerHelper
 	{
 		// Thank you ForgeEssentials
 		Vec3 look = player.getLook(1.0F);
-		Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+		Vec3 playerPos = new Vec3(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
 		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return new Tuple(src, dest);

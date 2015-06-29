@@ -1,0 +1,6 @@
+{
+  "parent": "projecte:item/standard_tool",
+  "textures": {
+    "layer0": "projecte:items/dm_tools/hoe"
+  }
+}

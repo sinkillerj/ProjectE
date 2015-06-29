@@ -49,32 +49,44 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
 					if (craftingIngredientIterable != null) {
 						for (CraftingIngredients variation : craftingIngredientIterable) {
+
+							// TODO 1.8 verify container item values with 1.7 (old code commented out below)
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
 							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
-								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
-									if (stack.getItem().hasContainerItem(stack)) {
-										ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
-									}
-									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
-								} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
-									//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0);
+								ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+								if (stack.getItem().hasContainerItem(stack)) {
+									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
 								}
 							}
+
+//							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
+//							for (ItemStack stack : variation.fixedIngredients) {
+//								if (stack == null || stack.getItem() == null) continue;
+//								if (stack.getItem().hasContainerItem(stack)) {
+//									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), 1);
+//									if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
+//										//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
+//										ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0);
+//									}
+//								} else {
+//									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+//								}
+//							}
+
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
 								ingredientMap.addIngredient(normalizedSimpleStack,1);
 								for (ItemStack stack: multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
-									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
+									//if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
 										if (stack.getItem().hasContainerItem(stack)) {
 											groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
 										}
 										groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
 										mapper.addConversionMultiple(1, normalizedSimpleStack, groupIngredientMap.getMap());
-									}
+									//} TODO 1.8 check effects of removing this check as the method in question is now gone
 								}
 							}
 							if (recipeOutput.stackSize > 0) {

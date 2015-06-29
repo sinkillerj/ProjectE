@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -10,16 +8,16 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -37,9 +35,6 @@ public class AlchemicalBag extends ItemPE
 			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
 			"item.fireworksCharge.brown", "item.fireworksCharge.green",
 			"item.fireworksCharge.red", "item.fireworksCharge.black"};
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
 	
 	public AlchemicalBag()
 	{
@@ -141,24 +136,6 @@ public class AlchemicalBag extends ItemPE
 	{
 		for (int i = 0; i < 16; ++i)
 			list.add(new ItemStack(item, 1, i));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
-	{
-		return icons[MathHelper.clamp_int(par1, 0, 15)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[16];
-		
-		for (int i = 0; i < 16; i++)
-		{
-			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
-		}
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, ItemStack[] inventory)

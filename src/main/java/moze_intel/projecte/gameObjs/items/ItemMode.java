@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IModeChanger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,18 +25,18 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	
 	public byte getMode(ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("Mode");
+		return stack.getTagCompound().getByte("Mode");
 	}
 	
 	public String getModeDescription(ItemStack stack)
 	{
-		return modes[stack.stackTagCompound.getByte("Mode")];
+		return modes[stack.getTagCompound().getByte("Mode")];
 	}
 	
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.stackTagCompound.setByte("Mode", (newMode > numModes - 1 ? 0 : newMode));
+		stack.getTagCompound().setByte("Mode", (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override

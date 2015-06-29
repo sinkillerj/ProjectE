@@ -1,14 +1,8 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -22,11 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
@@ -42,7 +39,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static boolean isNightVisionEnabled(ItemStack helm)
     {
-        return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+        return !helm.hasTagCompound() || !helm.getTagCompound().hasKey("NightVision") || helm.getTagCompound().getBoolean("NightVision");
 
     }
 
@@ -55,14 +52,14 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
         boolean value;
 
-        if (helm.stackTagCompound.hasKey("NightVision"))
+        if (helm.getTagCompound().hasKey("NightVision"))
         {
-            helm.stackTagCompound.setBoolean("NightVision", !helm.stackTagCompound.getBoolean("NightVision"));
-            value = helm.stackTagCompound.getBoolean("NightVision");
+            helm.getTagCompound().setBoolean("NightVision", !helm.getTagCompound().getBoolean("NightVision"));
+            value = helm.getTagCompound().getBoolean("NightVision");
         }
         else
         {
-            helm.stackTagCompound.setBoolean("NightVision", false);
+            helm.getTagCompound().setBoolean("NightVision", false);
             value = false;
         }
 
@@ -96,10 +93,10 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             int x = (int) Math.floor(player.posX);
             int y = (int) (player.posY - player.getYOffset());
             int z = (int) Math.floor(player.posZ);
+            BlockPos pos = new BlockPos(x, y, z);
+            Block b = world.getBlockState(pos.down()).getBlock();
 
-            Block b = world.getBlock(x, y - 1, z);
-
-            if ((b == Blocks.water || b == Blocks.flowing_water) && world.getBlock(x, y, z).equals(Blocks.air))
+            if ((b == Blocks.water || b == Blocks.flowing_water) && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {
@@ -150,10 +147,10 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static void doZap(EntityPlayer player)
     {
-        Coordinates strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
+        BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
         if (strikePos != null)
         {
-            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.x, strikePos.y, strikePos.z));
+            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ()));
         }
     }
 }

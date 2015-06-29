@@ -1,9 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -22,22 +21,9 @@ public class Tome extends ItemPE
 	}
 
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack)
-	{
-		return false; 
-	}
-
-	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
 		super.onCreated(stack, world, player);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("tome"));
 	}
 
 	@Override

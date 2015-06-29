@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import com.google.common.collect.Multimap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -19,6 +17,8 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class GemFeet extends GemArmorBase
 
     public static boolean isStepAssistEnabled(ItemStack boots)
     {
-        return !boots.hasTagCompound() || !boots.stackTagCompound.hasKey("StepAssist") || boots.stackTagCompound.getBoolean("StepAssist");
+        return !boots.hasTagCompound() || !boots.getTagCompound().hasKey("StepAssist") || boots.getTagCompound().getBoolean("StepAssist");
 
     }
 
@@ -44,14 +44,14 @@ public class GemFeet extends GemArmorBase
 
         boolean value;
 
-        if (boots.stackTagCompound.hasKey("StepAssist"))
+        if (boots.getTagCompound().hasKey("StepAssist"))
         {
-            boots.stackTagCompound.setBoolean("StepAssist", !boots.stackTagCompound.getBoolean("StepAssist"));
-            value = boots.stackTagCompound.getBoolean("StepAssist");
+            boots.getTagCompound().setBoolean("StepAssist", !boots.getTagCompound().getBoolean("StepAssist"));
+            value = boots.getTagCompound().getBoolean("StepAssist");
         }
         else
         {
-            boots.stackTagCompound.setBoolean("StepAssist", false);
+            boots.getTagCompound().setBoolean("StepAssist", false);
             value = false;
         }
 
@@ -119,7 +119,7 @@ public class GemFeet extends GemArmorBase
     public Multimap getAttributeModifiers(ItemStack stack)
     {
         Multimap multimap = super.getAttributeModifiers(stack);
-        multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Armor modifier", 1.0, 2));
+        multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Armor modifier", 1.0, 2));
         return multimap;
     }
 }

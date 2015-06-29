@@ -13,6 +13,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -30,7 +31,7 @@ public class EntityLootBall extends Entity
 	{
 		super(world);
 		this.setSize(0.25F, 0.25F);
-		this.yOffset = this.height / 2.0F;
+		// TODO: Exists in 1.8? this.yOffset = this.height / 2.0F;
 	}
 	
 	public EntityLootBall(World world, ItemStack[] drops, double x, double y, double z)
@@ -44,7 +45,7 @@ public class EntityLootBall extends Entity
 		items = drops;
 		
 		this.setSize(0.25F, 0.25F);
-		this.yOffset = this.height / 2.0F;
+		// TODO: Exists in 1.8? this.yOffset = this.height / 2.0F;
 		this.setPosition(x, y, z);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
@@ -61,19 +62,18 @@ public class EntityLootBall extends Entity
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+		this.noClip = this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
 		this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
-		
-		 
+
 		if (flag || this.ticksExisted % 25 == 0)
 		{
-			if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava)
+			if (this.worldObj.getBlockState(new BlockPos(this)).getBlock().getMaterial() == Material.lava)
 			{
 				this.motionY = 0.20000000298023224D;
 				this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
@@ -81,22 +81,25 @@ public class EntityLootBall extends Entity
 				this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
 			}
 		}
-		 
+
 		float f = 0.98F;
 
 		if (this.onGround)
-			f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+		{
+			f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.98F;
+		}
 
 		this.motionX *= (double)f;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= (double)f;
 
 		if (this.onGround)
+		{
 			this.motionY *= -0.5D;
+		}
 
 		++this.age;
 
-		
 		if (!this.worldObj.isRemote)
 		{
 			if (age > lifespan || items.isEmpty())
@@ -105,7 +108,7 @@ public class EntityLootBall extends Entity
 			}
 			if (ticksExisted % 60 == 0 && !isDead)
 			{
-				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
+				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.getEntityBoundingBox().expand(1.0F, 1.0F, 1.0F));
 				for (EntityLootBall e : nearby)
 				{
 					mergeWith(e);
@@ -297,7 +300,7 @@ public class EntityLootBall extends Entity
 	@Override
 	public boolean handleWaterMovement()
 	{
-		return this.worldObj.handleMaterialAcceleration(this.boundingBox, Material.water, this);
+		return this.worldObj.handleMaterialAcceleration(this.getEntityBoundingBox(), Material.water, this);
 	}
 
 	@Override

@@ -13,9 +13,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +65,7 @@ public class TransmutationInventory implements IInventory
 			{
 				if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 				{
-					stack.stackTagCompound = null;
+					stack.setTagCompound(null);
 				}
 
 				Transmutation.addKnowledge(stack, player);
@@ -96,7 +98,7 @@ public class TransmutationInventory implements IInventory
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
-				stack.stackTagCompound = null;
+				stack.setTagCompound(null);
 			}
 
 			Transmutation.removeKnowledge(stack, player);
@@ -354,15 +356,21 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName() 
+	public String getCommandSenderName()
 	{
 		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() 
+	public boolean hasCustomName()
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentTranslation(getCommandSenderName());
 	}
 
 	@Override
@@ -378,7 +386,7 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory() 
+	public void openInventory(EntityPlayer player)
 	{
 		emc = Transmutation.getEmc(player);
 		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
@@ -387,7 +395,7 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		if (!player.worldObj.isRemote)
 		{
@@ -404,8 +412,29 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		Arrays.fill(inventory, null);
+	}
+
+	@Override
 	public void markDirty() {}
-	
+
 	public void addEmc(double value)
 	{
 		emc += value;

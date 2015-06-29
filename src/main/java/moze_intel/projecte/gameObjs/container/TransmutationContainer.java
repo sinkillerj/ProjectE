@@ -61,7 +61,7 @@ public class TransmutationContainer extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
 		
-		transmutationInventory.openInventory();
+		transmutationInventory.openInventory(invPlayer.player);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class TransmutationContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		transmutationInventory.closeInventory();
+		transmutationInventory.closeInventory(player);
 	}
 	
 	@Override

@@ -11,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
+
 public class GUIEternalDensity extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/eternal_density.png");
@@ -35,7 +37,7 @@ public class GUIEternalDensity extends GuiContainer
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton button) 
+	protected void actionPerformed(GuiButton button) throws IOException
 	{
 		super.actionPerformed(button);
 		

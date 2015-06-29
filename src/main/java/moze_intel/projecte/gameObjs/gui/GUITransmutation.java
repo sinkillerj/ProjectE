@@ -9,10 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 public class GUITransmutation extends GuiContainer
 {
@@ -39,7 +41,7 @@ public class GUITransmutation extends GuiContainer
 		this.xLocation = (this.width - this.xSize) / 2;
 		this.yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
+		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10); // TODO 1.8 check purpose of 0
 		this.textBoxFilter.setText(inv.filter);
 
 		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
@@ -56,7 +58,7 @@ public class GUITransmutation extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
-		GL11.glColor4f(1F, 1F, 1F, 1F);
+		GlStateManager.color(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
@@ -130,7 +132,7 @@ public class GUITransmutation extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int mouseButton)
+	protected void mouseClicked(int x, int y, int mouseButton) throws IOException
 	{
 		super.mouseClicked(x, y, mouseButton);
 

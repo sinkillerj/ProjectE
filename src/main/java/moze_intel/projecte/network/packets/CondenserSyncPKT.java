@@ -1,49 +1,51 @@
 package moze_intel.projecte.network.packets;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSyncPKT, IMessage>
 {
 	private int displayEmc;
 	private int requiredEmc;
-	private int x;
-	private int y;
-	private int z;
+	private BlockPos pos;
 	
 	public CondenserSyncPKT() {}
 	
-	public CondenserSyncPKT(int displayEmc, int requiredEmc, int x, int y, int z) 
+	public CondenserSyncPKT(int displayEmc, int requiredEmc, CondenserTile tile)
 	{
 		this.displayEmc = displayEmc;
 		this.requiredEmc = requiredEmc;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = tile.getPos();
 	}
 	
 	@Override
-	public IMessage onMessage(CondenserSyncPKT pkt, MessageContext ctx) 
+	public IMessage onMessage(final CondenserSyncPKT pkt, MessageContext ctx)
 	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
-		}
-		else
-		{
-			CondenserTile cond = (CondenserTile) tile;
-			cond.displayEmc = pkt.displayEmc;
-			cond.requiredEmc = pkt.requiredEmc;
-		}
-		
+		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+				if (tile == null)
+				{
+					PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
+				}
+				else
+				{
+					CondenserTile cond = (CondenserTile) tile;
+					cond.displayEmc = pkt.displayEmc;
+					cond.requiredEmc = pkt.requiredEmc;
+				}
+			}
+		});
+
 		return null;
 	}
 
@@ -52,9 +54,7 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 	{
 		displayEmc = buf.readInt();
 		requiredEmc = buf.readInt();
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = BlockPos.fromLong(buf.readLong());
 	}
 
 	@Override
@@ -62,8 +62,6 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 	{
 		buf.writeInt(displayEmc);
 		buf.writeInt(requiredEmc);
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeLong(pos.toLong());
 	}
 }

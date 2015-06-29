@@ -3,6 +3,7 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,7 +31,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void processCommand(ICommandSender sender, String[] params) throws CommandException
 	{
 		if (params.length < 1)
 		{
@@ -52,7 +53,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 
-			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
+			name = (String) Item.itemRegistry.getNameForObject(heldItem.getItem());
 			meta = heldItem.getItemDamage();
 			emc = MathUtils.parseInteger(params[0]);
 

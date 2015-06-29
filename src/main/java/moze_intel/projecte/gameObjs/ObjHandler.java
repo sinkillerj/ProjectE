@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs;
 
-import cpw.mods.fml.common.IFuelHandler;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
@@ -124,12 +121,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ObjHandler
@@ -635,9 +635,10 @@ public class ObjHandler
 	/**
 	 * Philosopher's stone smelting recipes, EE3 style
 	 */
+	@SuppressWarnings("unchecked")
 	public static void registerPhiloStoneSmelting()
 	{
-		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))
+		for (Entry<ItemStack, ItemStack> entry : (((Map<ItemStack, ItemStack>) FurnaceRecipes.instance().getSmeltingList()).entrySet()))
 		{
 			if (entry.getKey() == null || entry.getValue() == null)
 			{
@@ -666,7 +667,7 @@ public class ObjHandler
 					case 1:
 						return Constants.MOBIUS_BURN_TIME;
 					case 2:
-						return Constants.AETERNALIS_BUR_TIME;
+						return Constants.AETERNALIS_BURN_TIME;
 				}
 			}
 			else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
@@ -678,7 +679,7 @@ public class ObjHandler
 					case 1:
 						return Constants.MOBIUS_BURN_TIME * 9;
 					case 2:
-						return Constants.AETERNALIS_BUR_TIME * 9;
+						return Constants.AETERNALIS_BURN_TIME * 9;
 				}
 			}
 			

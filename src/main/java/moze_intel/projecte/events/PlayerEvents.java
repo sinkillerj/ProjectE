@@ -1,7 +1,5 @@
 package moze_intel.projecte.events;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -28,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerEvents
@@ -70,7 +69,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
+	public void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
@@ -82,10 +81,8 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+	public void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
-
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 
@@ -111,7 +108,7 @@ public class PlayerEvents
 				
 				if (remain == null)
 				{
-					event.item.delayBeforeCanPickup = 10;
+					event.item.setPickupDelay(10);
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}
@@ -140,7 +137,7 @@ public class PlayerEvents
 				
 				if (remain == null)
 				{
-					event.item.delayBeforeCanPickup = 10;
+					event.item.setPickupDelay(10);
 					event.item.setDead();
 					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}

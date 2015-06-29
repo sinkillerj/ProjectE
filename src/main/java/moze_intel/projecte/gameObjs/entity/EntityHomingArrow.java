@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -30,14 +31,15 @@ public class EntityHomingArrow extends EntityArrow
 		super(world, par2, par3);
 		init(world);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onUpdate()
 	{
 		//TODO Create proper custom arrow. This one is duplicating because of the super call for onUpdate();
 		super.onUpdate();
 
-		AxisAlignedBB box = this.boundingBox;
+		AxisAlignedBB box = this.getEntityBoundingBox();
 		
 		if (target == null && !WorldHelper.isArrowInGround(this))
 		{
@@ -63,7 +65,7 @@ public class EntityHomingArrow extends EntityArrow
 			}
 
 			double d5 = target.posX - this.posX;
-			double d6 = target.boundingBox.minY + target.height - this.posY;
+			double d6 = target.getEntityBoundingBox().minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
@@ -76,10 +78,10 @@ public class EntityHomingArrow extends EntityArrow
 				return;
 			}
 
-			world.spawnParticle("flame", box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
+			world.spawnParticle(EnumParticleTypes.FLAME, box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
 
 			double d5 = target.posX - this.posX;
-			double d6 = target.boundingBox.minY + target.height - this.posY;
+			double d6 = target.getEntityBoundingBox().minY + target.height - this.posY;
 			double d7 = target.posZ - this.posZ;
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);

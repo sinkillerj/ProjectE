@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
@@ -31,11 +32,11 @@ public class DarkShears extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase ent)
+	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase ent)
 	{
 		if (block.getMaterial() != Material.leaves && block != Blocks.web && block != Blocks.tallgrass && block != Blocks.vine && block != Blocks.tripwire && !(block instanceof IShearable))
 		{
-			return super.onBlockDestroyed(stack, world, block, x, y, z, ent);
+			return super.onBlockDestroyed(stack, world, block, pos, ent);
 		}
 		else
 		{
@@ -57,9 +58,9 @@ public class DarkShears extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player)
 	{
-		shearBlock(stack, x, y, z, player);
+		shearBlock(stack, pos, player);
 		return false;
 	}
 }
