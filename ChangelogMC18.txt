@@ -1,0 +1,4 @@
+###Version 1.8-PE1.0.0B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* NEW: Initial 1.8 version. Mostly feature complete with 1.7.10-PE1.7.1
+* NOTICE: Sin is too lazy to write a proper changelog
