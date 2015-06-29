@@ -23,7 +23,7 @@ public class TransmutationTablet extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.TRANSMUTE_TABLET_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 		
 		return stack;

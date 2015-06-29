@@ -64,7 +64,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 			}
 			NBTTagCompound inventory = new NBTTagCompound();
 			inventory.setInteger("color", i);
-			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(i)));
+			inventory.setTag("inv", ItemHelper.toIndexedNBTList(bagData.get(i)));
 			listOfInventories.appendTag(inventory);
 		}
 		compound.setTag("data", listOfInventories);
@@ -83,7 +83,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 		}
 		NBTTagCompound inventory = new NBTTagCompound();
 		inventory.setInteger("color", color);
-		inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(color)));
+		inventory.setTag("inv", ItemHelper.toIndexedNBTList(bagData.get(color)));
 		listOfInventories.appendTag(inventory);
 		compound.setTag("data", listOfInventories);
 		return compound;
@@ -95,19 +95,8 @@ public class AlchBagProps implements IExtendedEntityProperties
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)
 		{
 			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
-			bagData.put(inventory.getInteger("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
+			bagData.put(inventory.getInteger("color"), ItemHelper.copyIndexedNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND), new ItemStack[104]));
 		}
-	}
-
-	private ItemStack[] copyNBTToArray(NBTTagList list)
-	{
-		ItemStack[] s = new ItemStack[104];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound entry = list.getCompoundTagAt(i);
-			s[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
-		}
-		return s;
 	}
 
 	@Override
@@ -124,7 +113,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 			}
 			NBTTagCompound inventory = new NBTTagCompound();
 			inventory.setInteger("color", i);
-			inventory.setTag("inv", ItemHelper.toNbtList(bagData.get(i)));
+			inventory.setTag("inv", ItemHelper.toIndexedNBTList(bagData.get(i)));
 			listOfInventories.appendTag(inventory);
 		}
 
@@ -156,7 +145,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)
 		{
 			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
-			bagData.put(inventory.getInteger("color"), copyNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND)));
+			bagData.put(inventory.getInteger("color"), ItemHelper.copyIndexedNBTToArray(inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND), new ItemStack[104]));
 		}
 	}
 

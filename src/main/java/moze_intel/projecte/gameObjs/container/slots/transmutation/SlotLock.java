@@ -1,21 +1,22 @@
-package moze_intel.projecte.gameObjs.container.slots.trasmute;
+package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotTableLock extends Slot
+public class SlotLock extends Slot
 {
-	private TransmuteTile tile;
+	private TransmutationInventory inv;
 	
-	public SlotTableLock(TransmuteTile tile, int par2, int par3, int par4) 
+	public SlotLock(TransmutationInventory inv, int par2, int par3, int par4)
 	{
-		super(tile, par2, par3, par4);
-		this.tile = tile;
+		super(inv, par2, par3, par4);
+		this.inv = inv;
 	}
 	
 	@Override
@@ -36,30 +37,30 @@ public class SlotTableLock extends Slot
 		
 		if (stack.getItem() == ObjHandler.kleinStars)
 		{
-			int remainEmc = tile.getMaxEmc() - (int) Math.ceil(tile.getStoredEmc());
+			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.emc);
 			
 			if (ItemPE.getEmc(stack) >= remainEmc)
 			{
-				tile.addEmcWithPKT(remainEmc);
+				inv.addEmc(remainEmc);
 				ItemPE.removeEmc(stack, remainEmc);
 			}
 			else
 			{
-				tile.addEmcWithPKT(ItemPE.getEmc(stack));
+				inv.addEmc(ItemPE.getEmc(stack));
 				ItemPE.setEmc(stack, 0);
 			}
 			
-			tile.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack.copy());
 			return;
 		}
 		
 		if (stack.getItem() != ObjHandler.tome)
 		{
-			tile.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack.copy());
 		}
 		else
 		{
-			tile.updateOutputs();
+			inv.updateOutputs();
 		}
 	}
 	
@@ -68,7 +69,7 @@ public class SlotTableLock extends Slot
 	{
 		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
 		
-		tile.updateOutputs();
+		inv.updateOutputs();
 	}
 	
 	@Override

@@ -1,30 +1,28 @@
-package moze_intel.projecte.gameObjs.tiles;
+package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class TransmuteTile extends TileEmc implements ISidedInventory
+public class TransmutationInventory implements IInventory
 {
+	public double emc;
 	private EntityPlayer player = null;
 	private static final int LOCK_INDEX = 8;
 	private static final int[] MATTER_INDEXES = new int[] {12, 11, 13, 10, 14, 21, 15, 20, 16, 19, 17, 18};
@@ -36,13 +34,18 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	public int searchpage = 0;
 	public List<ItemStack> knowledge = Lists.newArrayList();
 	
+	public TransmutationInventory(EntityPlayer player)
+	{
+		this.player = player;
+	}
+	
 	public void handleKnowledge(ItemStack stack)
 	{
 		if (stack.stackSize > 1)
 		{
 			stack.stackSize = 1;
 		}
-
+		
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
 		{
 			stack.setItemDamage(0);
@@ -66,7 +69,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 				Transmutation.addKnowledge(stack, player);
 			}
 			
-			if (!this.worldObj.isRemote)
+			if (!player.worldObj.isRemote)
 			{
 				Transmutation.sync(player);
 			}
@@ -98,7 +101,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 
 			Transmutation.removeKnowledge(stack, player);
 			
-			if (!this.worldObj.isRemote)
+			if (!player.worldObj.isRemote)
 			{
 				Transmutation.sync(player);
 			}
@@ -114,7 +117,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
-		if (maxEmc > this.getStoredEmc())
+		if (maxEmc > emc)
 		{
 			updateOutputs();
 		}
@@ -124,7 +127,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	public void updateOutputs()
 	{
 		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because List is not cloneable and clone() returns Object
-		
+
 		for (int i : MATTER_INDEXES)
 		{
 			inventory[i] = null;
@@ -138,12 +141,12 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 		ItemStack lockCopy = null;
 
 		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
-
+		
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
-			if (this.getStoredEmc() < reqEmc)
+			if (this.emc < reqEmc)
 			{
 				return;
 			}
@@ -154,10 +157,10 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 			{
 				lockCopy.setTagCompound(new NBTTagCompound());
 			}
-
+			
 			Iterator<ItemStack> iter = knowledge.iterator();
 			int pagecounter = 0;
-
+			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
@@ -174,7 +177,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 					continue;
 				}
 
-				String displayName = "";
+				String displayName;
 
 				try
 				{
@@ -208,12 +211,12 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 		{
 			Iterator<ItemStack> iter = knowledge.iterator();
 			int pagecounter = 0;
-
+			
 			while (iter.hasNext())
 			{
 				ItemStack stack = iter.next();
 				
-				if (this.getStoredEmc() < EMCHelper.getEmcValue(stack))
+				if (emc < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;
@@ -266,7 +269,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 				matterCounter++;
 			}
 		}
-
+		
 		for (ItemStack stack : knowledge)
 		{
 			if (FuelMapper.isStackFuel(stack))
@@ -288,70 +291,6 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
  				}
 			}
 		}
-	}
-
-	public boolean isUsed()
-	{
-		return player != null;
-	}
-	
-	public void setPlayer(EntityPlayer player)
-	{
-		this.player = player;
-	}
-	
-	@Override	
-	public Packet getDescriptionPacket() 
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
-	}
-	
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
-	{
-		this.readFromNBT(packet.func_148857_g());
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
-		
-		//this.setEmcValue(nbt.getDouble("EMC"));
-		
-		NBTTagList items = nbt.getTagList("Items", NBT.TAG_COMPOUND);
-		
-		for (int i = 0; i < items.tagCount(); i++)
-		{
-			NBTTagCompound tag = items.getCompoundTagAt(i);
-			
-			inventory[tag.getByte("Slot")] = ItemStack.loadItemStackFromNBT(tag);
-		}
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-		
-		//nbt.setDouble("EMC", this.getStoredEmc());
-		
-		NBTTagList items = new NBTTagList();
-		
-		for (int i = 0; i <= 8; i++)
-		{
-			if (inventory[i] != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				inventory[i].writeToNBT(tag);
-				items.appendTag(tag);
-			}
-		}
-		
-		nbt.setTag("Items", items);
 	}
 	
 	@Override
@@ -417,7 +356,7 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	@Override
 	public String getInventoryName() 
 	{
-		return "tile.pe_transmutation_stone.name";
+		return "item.pe_transmutation_tablet.name";
 	}
 
 	@Override
@@ -441,24 +380,21 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	@Override
 	public void openInventory() 
 	{
-		if (!this.worldObj.isRemote)
-		{
-			this.setEmcValueWithPKT(Transmutation.getEmc(player));
-		}
-		
+		emc = Transmutation.getEmc(player);
+		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
+		System.arraycopy(inputLocks, 0, inventory, 0, 9);
 		updateOutputs();
 	}
 
 	@Override
-	public void closeInventory() 
+	public void closeInventory()
 	{
-		if (!this.worldObj.isRemote)
+		if (!player.worldObj.isRemote)
 		{
-			Transmutation.setEmc(player, this.getStoredEmc());
+			Transmutation.setEmc(player, emc);
+			Transmutation.setInputsAndLocks(Arrays.copyOfRange(inventory, 0, 9), player);
 			Transmutation.sync(player);
 		}
-		
-		player = null;
 	}
 
 	@Override
@@ -468,26 +404,30 @@ public class TransmuteTile extends TileEmc implements ISidedInventory
 	}
 
 	@Override
-	public boolean isRequestingEmc() 
+	public void markDirty() {}
+	
+	public void addEmc(double value)
 	{
-		return false;
+		emc += value;
+		
+		if (emc >= Constants.TILE_MAX_EMC || emc < 0)
+		{
+			emc = Constants.TILE_MAX_EMC;
+		}
+	}
+	
+	public void removeEmc(double value) 
+	{
+		emc -= value;
+		
+		if (emc < 0)
+		{
+			emc = 0;
+		}
 	}
 
-	@Override
-	public int[] getAccessibleSlotsFromSide(int par1)
+	public boolean hasMaxedEmc()
 	{
-		return new int[0];
-	}
-
-	@Override
-	public boolean canExtractItem(int par1, ItemStack stack, int par3)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canInsertItem(int par1, ItemStack stack, int par3)
-	{
-		return false;
+		return emc >= Constants.TILE_MAX_EMC;
 	}
 }

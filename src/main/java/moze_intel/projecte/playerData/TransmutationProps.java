@@ -2,6 +2,7 @@ package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +22,9 @@ public class TransmutationProps implements IExtendedEntityProperties
 
 	private double transmutationEmc;
 	private List<ItemStack> knowledge = Lists.newArrayList();
+	private ItemStack[] inputLocks = new ItemStack[9];
 	private boolean hasFullKnowledge;
 	private boolean hasMigrated = false;
-
 	public static final String PROP_NAME = "ProjectETransmutation";
 
 	public static void register(EntityPlayer player)
@@ -39,6 +40,16 @@ public class TransmutationProps implements IExtendedEntityProperties
 	public TransmutationProps(EntityPlayer player)
 	{
 		this.player = player;
+	}
+
+	public ItemStack[] getInputLocks()
+	{
+		return inputLocks;
+	}
+
+	public void setInputLocks(ItemStack[] inputLocks)
+	{
+		this.inputLocks = inputLocks;
 	}
 
 	protected boolean hasFullKnowledge()
@@ -92,7 +103,10 @@ public class TransmutationProps implements IExtendedEntityProperties
 			NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
 			knowledgeWrite.appendTag(tag);
 		}
+
+		NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
 		compound.setTag("knowledge", knowledgeWrite);
+		compound.setTag("inputlocks", inputLockWrite);
 		return compound;
 	}
 
@@ -111,6 +125,9 @@ public class TransmutationProps implements IExtendedEntityProperties
 				knowledge.add(item);
 			}
 		}
+
+		NBTTagList list2 = compound.getTagList("inputlocks", Constants.NBT.TAG_COMPOUND);
+		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
 	}
 
 	@Override
@@ -127,7 +144,10 @@ public class TransmutationProps implements IExtendedEntityProperties
 			NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
 			knowledgeWrite.appendTag(tag);
 		}
+
+		NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
 		properties.setTag("knowledge", knowledgeWrite);
+		properties.setTag("inputlock", inputLockWrite);
 		properties.setBoolean("migrated", hasMigrated);
 		compound.setTag(PROP_NAME, properties);
 	}
@@ -164,6 +184,9 @@ public class TransmutationProps implements IExtendedEntityProperties
 				knowledge.add(item);
 			}
 		}
+
+		NBTTagList list2 = properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND);
+		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
 	}
 
 	@Override
