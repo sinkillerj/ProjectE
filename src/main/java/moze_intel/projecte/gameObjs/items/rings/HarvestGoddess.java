@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
-
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -24,8 +24,6 @@ import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	private int harvestCooldown;
-
 	public HarvestGoddess()
 	{
 		super("harvest_god");
@@ -257,14 +255,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.harvestPedCooldown != -1)
 		{
-			if (harvestCooldown == 0)
+			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(x, y, z);
+			if (tile.getActivityCooldown() == 0)
 			{
 				WorldHelper.growNearbyRandomly(true, world, x, y, z);
-				harvestCooldown = ProjectEConfig.harvestPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.harvestPedCooldown);
 			}
 			else
 			{
-				harvestCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

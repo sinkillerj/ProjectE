@@ -13,7 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -69,7 +68,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 			List<Integer> emcValues = Lists.newArrayList();
 			long totalEmc = 0;
 			int numBlocks = 0;

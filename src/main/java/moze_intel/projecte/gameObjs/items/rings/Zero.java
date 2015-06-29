@@ -2,9 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
-
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +18,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
@@ -36,7 +33,6 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOn;
-	private int coolCooldown;
 
 	public Zero() 
 	{
@@ -148,9 +144,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
-			if (coolCooldown == 0) {
-				TileEntity tile = world.getTileEntity(x, y, z);
-				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() == 0) {
+				AxisAlignedBB aabb = tile.getEffectBounds();
 				WorldHelper.freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
@@ -160,11 +156,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 						ent.extinguish();
 					}
 				}
-				coolCooldown = ProjectEConfig.zeroPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.zeroPedCooldown);
 			}
 			else
 			{
-				coolCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

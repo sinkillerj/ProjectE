@@ -8,7 +8,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -27,7 +26,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		
 		if (shootProjectile(player, stack))
 		{
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 		}
 		
 		return stack;

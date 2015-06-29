@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
@@ -14,19 +14,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
-public class GUITransmuteTablet extends GuiContainer
+public class GUITransmutation extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
-	TransmuteTabletInventory table;
+	TransmutationInventory inv;
 	private GuiTextField textBoxFilter;
 
 	int xLocation;
 	int yLocation;
 
-	public GUITransmuteTablet(InventoryPlayer invPlayer, TransmuteTabletInventory inventory) 
+	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory)
 	{
-		super(new TransmuteTabletContainer(invPlayer, inventory));
-		this.table = inventory;
+		super(new TransmutationContainer(invPlayer, inventory));
+		this.inv = inventory;
 		this.xSize = 228;
 		this.ySize = 196;
 	}
@@ -34,14 +34,13 @@ public class GUITransmuteTablet extends GuiContainer
 	@Override
 	public void initGui() 
 	{
-		table.setPlayer(Minecraft.getMinecraft().thePlayer);
 		super.initGui();
 
 		this.xLocation = (this.width - this.xSize) / 2;
 		this.yLocation = (this.height - this.ySize) / 2;
 
 		this.textBoxFilter = new GuiTextField(this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
-		this.textBoxFilter.setText(table.filter);
+		this.textBoxFilter.setText(inv.filter);
 
 		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
 		this.buttonList.add(new GuiButton(2, this.xLocation + 193, this.yLocation + 100, 14, 14, ">"));
@@ -66,10 +65,10 @@ public class GUITransmuteTablet extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.transmute"), 6, 8, 4210752);
-		String emc = String.format(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) table.emc);
+		String emc = String.format(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) inv.emc);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 
-		if (table.learnFlag > 0)
+		if (inv.learnFlag > 0)
 		{
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned0"), 98, 30, 4210752);
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned1"), 99, 38, 4210752);
@@ -80,10 +79,10 @@ public class GUITransmuteTablet extends GuiContainer
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned6"), 104, 78, 4210752);
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.learned7"), 107, 86, 4210752);
 			
-			table.learnFlag--;
+			inv.learnFlag--;
 		}
 
-		if (table.unlearnFlag > 0)
+		if (inv.unlearnFlag > 0)
 		{
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned0"), 97, 22, 4210752);
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned1"), 98, 30, 4210752);
@@ -95,7 +94,7 @@ public class GUITransmuteTablet extends GuiContainer
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned7"), 104, 78, 4210752);
 			this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.unlearned8"), 107, 86, 4210752);
 			
-			table.unlearnFlag--;
+			inv.unlearnFlag--;
 		}
 	}
 	
@@ -115,12 +114,12 @@ public class GUITransmuteTablet extends GuiContainer
 
 			String srch = this.textBoxFilter.getText().toLowerCase();
 
-			if (!table.filter.equals(srch)) 
+			if (!inv.filter.equals(srch))
 			{
 				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
-				table.filter = srch;
-				table.searchpage = 0;
-				table.updateOutputs();
+				inv.filter = srch;
+				inv.searchpage = 0;
+				inv.updateOutputs();
 			}
 		}
 
@@ -143,9 +142,9 @@ public class GUITransmuteTablet extends GuiContainer
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
 			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
-			table.filter = "";
-			table.searchpage = 0;
-			table.updateOutputs();
+			inv.filter = "";
+			inv.searchpage = 0;
+			inv.updateOutputs();
 			this.textBoxFilter.setText("");
 		}
 
@@ -156,8 +155,8 @@ public class GUITransmuteTablet extends GuiContainer
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		table.learnFlag = 0;
-		table.unlearnFlag = 0;
+		inv.learnFlag = 0;
+		inv.unlearnFlag = 0;
 	}
 
 	@Override
@@ -167,20 +166,20 @@ public class GUITransmuteTablet extends GuiContainer
 
 		if (button.id == 1)
 		{
-			if (table.searchpage != 0)
+			if (inv.searchpage != 0)
 			{
-				table.searchpage--;
+				inv.searchpage--;
 			}
 		}
 		else if (button.id == 2)
 		{
-			if (!(table.knowledge.size() <= 12))
+			if (!(inv.knowledge.size() <= 12))
 			{
-				table.searchpage++;
+				inv.searchpage++;
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(srch, table.searchpage));
-		table.filter = srch;
-		table.updateOutputs();
+		PacketHandler.sendToServer(new SearchUpdatePKT(srch, inv.searchpage));
+		inv.filter = srch;
+		inv.updateOutputs();
 	}
 }

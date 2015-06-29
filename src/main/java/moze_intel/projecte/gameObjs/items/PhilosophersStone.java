@@ -15,14 +15,13 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -128,7 +127,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 		}
 		
 		return true;
