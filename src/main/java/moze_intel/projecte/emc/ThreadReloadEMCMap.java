@@ -29,7 +29,6 @@ public class ThreadReloadEMCMap extends Thread {
 	@Override
 	public void run() {
 		long start = System.currentTimeMillis();
-		EMCMapper.clearMaps();
 		CustomEMCParser.readUserData();
 		EMCMapper.map();
 		TileEntityHandler.checkAllCondensers();
