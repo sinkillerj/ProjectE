@@ -1,2 +1,0 @@
-###Version Release
-* NEW: Dev builds deprecated. See main changelog
