@@ -21,8 +21,6 @@ import java.util.List;
 
 public final class Transmutation 
 {
-	// TODO 1.8 fix this 
-
 	@Deprecated
 	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap<String, LinkedList<ItemStack>>();
 	@Deprecated
