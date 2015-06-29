@@ -124,9 +124,9 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.soulPedCooldown != -1)
 		{
-			if (healCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 
 				for (EntityPlayerMP player : players)
@@ -138,11 +138,11 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				healCooldown = ProjectEConfig.soulPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.soulPedCooldown);
 			}
 			else
 			{
-				healCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

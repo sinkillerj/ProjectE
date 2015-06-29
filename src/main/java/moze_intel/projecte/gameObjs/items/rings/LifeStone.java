@@ -24,8 +24,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 {
-	private int healCooldown;
-
 	public LifeStone()
 	{
 		super("life_stone");
@@ -136,9 +134,9 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.lifePedCooldown != -1)
 		{
-			if (healCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 
 				for (EntityPlayerMP player : players)
@@ -155,11 +153,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				healCooldown = ProjectEConfig.lifePedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.lifePedCooldown);
 			}
 			else
 			{
-				healCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

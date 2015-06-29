@@ -7,7 +7,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -88,7 +87,7 @@ public class DestructionCatalyst extends ItemCharge
 						}
 					}
 
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 			if (hasAction)
 			{
 				WorldHelper.createLootDrop(drops, world, mop.getBlockPos());

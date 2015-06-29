@@ -21,8 +21,6 @@ import java.util.List;
 
 public class ArchangelSmite extends ItemPE implements IPedestalItem
 {
-	private int arrowCooldown;
-
 	public ArchangelSmite()
 	{
 		this.setUnlocalizedName("archangel_smite");
@@ -48,9 +46,9 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
 		{
-			if (arrowCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
 				{
 					for (int i = 0; i < 3; i++)
@@ -62,11 +60,11 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 						world.spawnEntityInWorld(arrow);
 					}
 				}
-				arrowCooldown = ProjectEConfig.archangelPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.archangelPedCooldown);
 			}
 			else
 			{
-				arrowCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

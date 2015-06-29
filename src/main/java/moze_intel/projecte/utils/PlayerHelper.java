@@ -86,9 +86,12 @@ public final class PlayerHelper
 		ReflectionHelper.setPlayerCapabilityWalkspeed(player.capabilities, value);
 	}
 
-	public static void swingItem(EntityPlayerMP player)
+	public static void swingItem(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new SwingItemPKT(), player);
+		if (player instanceof EntityPlayerMP)
+		{
+			PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
+		}
 	}
 
 	public static void updateClientServerFlight(EntityPlayerMP player, boolean state)

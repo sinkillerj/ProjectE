@@ -1,7 +1,6 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.CommandException;
@@ -68,7 +67,8 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			ThreadReloadEMCMap.runEMCRemap(sender, ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.remove.success", name), EnumChatFormatting.GREEN));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.remove.success", name));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{

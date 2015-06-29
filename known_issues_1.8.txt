@@ -7,5 +7,6 @@ Known issues:
 - Lootball renders a bit too low in the ground
 - Due to vanilla's removal of a method used in mapping emc values, some of the values may be incorrect. Please report if so!
 - ModelYue needs to be migrated to LayerRenderers.
+- Transmutation is completely broken.
 
 - Please report all crashes or undocumented changes!

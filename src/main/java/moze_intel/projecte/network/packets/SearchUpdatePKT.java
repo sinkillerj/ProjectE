@@ -1,11 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.gameObjs.container.TransmuteContainer;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import net.minecraft.inventory.Container;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -30,45 +26,26 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 		ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
-				Container cont = ctx.getServerHandler().playerEntity.openContainer;
-
-				if (cont instanceof TransmuteContainer)
+				if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
 				{
-					TransmuteTile tile = ((TransmuteContainer) cont).tile;
+					TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
 
 					if (pkt.search != null)
 					{
-						tile.filter = pkt.search;
+						container.transmutationInventory.filter = pkt.search;
 					}
 					else
 					{
-						tile.filter = "";
+						container.transmutationInventory.filter = "";
 					}
 
-					tile.searchpage = pkt.searchpage;
+					container.transmutationInventory.searchpage = pkt.searchpage;
 
-					tile.updateOutputs();
-				}
-				else if (cont instanceof TransmuteTabletContainer)
-				{
-					TransmuteTabletInventory inv = ((TransmuteTabletContainer) cont).table;
-
-					if (pkt.search != null)
-					{
-						inv.filter = pkt.search;
-					}
-					else
-					{
-						inv.filter = "";
-					}
-
-					inv.searchpage = pkt.searchpage;
-
-					inv.updateOutputs();
+					container.transmutationInventory.updateOutputs();
 				}
 			}
 		});
-		
+
 		return null;
 	}
 

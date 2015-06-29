@@ -1,5 +1,7 @@
 package moze_intel.projecte.network.commands;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -43,7 +45,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	{
 		if (params.length == 1)
 		{
-			return commands;
+			return Lists.newArrayList(Iterables.filter(commands, new LowerCasePrefixPredicate(params[0])));
 		}
 
 		return null;
@@ -132,5 +134,21 @@ public class ProjectECMD extends ProjectEBaseCMD
 			}
 		}
 
+	}
+
+
+	private static class LowerCasePrefixPredicate implements Predicate<String>
+	{
+		private final String prefix;
+		public LowerCasePrefixPredicate(String prefix)
+		{
+			this.prefix = prefix;
+		}
+
+		@Override
+		public boolean apply(String input)
+		{
+			return input.toLowerCase().startsWith(prefix.toLowerCase());
+		}
 	}
 }

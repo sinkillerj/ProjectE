@@ -34,8 +34,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtectionItem, IProjectileShooter
 {
-	private int torchCooldown;
-
 	public Ignition()
 	{
 		super("ignition");
@@ -158,9 +156,9 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	{
 		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
 		{
-			if (torchCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
@@ -168,11 +166,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 					living.setFire(8);
 				}
 
-				torchCooldown = ProjectEConfig.ignitePedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.ignitePedCooldown);
 			}
 			else
 			{
-				torchCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

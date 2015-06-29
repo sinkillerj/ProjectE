@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
@@ -31,8 +30,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
-	private int lightningCooldown;
-
 	public SWRG()
 	{
 		this.setUnlocalizedName("swrg");
@@ -384,19 +381,19 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 	{
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
-			if (lightningCooldown <= 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() <= 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				lightningCooldown = ProjectEConfig.swrgPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
 			}
 			else
 			{
-				lightningCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

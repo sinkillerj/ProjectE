@@ -9,15 +9,12 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class TransmuteTabletInventory implements IInventory
+public class TransmutationInventory implements IInventory
 {
 	public double emc;
 	private EntityPlayer player = null;
@@ -39,16 +36,9 @@ public class TransmuteTabletInventory implements IInventory
 	public int searchpage = 0;
 	public List<ItemStack> knowledge = Lists.newArrayList();
 	
-	public TransmuteTabletInventory(ItemStack stack, EntityPlayer player)
+	public TransmutationInventory(EntityPlayer player)
 	{
 		this.player = player;
-		
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		readFromNBT(stack.getTagCompound());
 	}
 	
 	public void handleKnowledge(ItemStack stack)
@@ -189,7 +179,7 @@ public class TransmuteTabletInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
+				String displayName;
 
 				try
 				{
@@ -305,45 +295,6 @@ public class TransmuteTabletInventory implements IInventory
 		}
 	}
 	
-	public void setPlayer(EntityPlayer player)
-	{
-		this.player = player;
-	}
-	
-	
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		NBTTagList list = nbt.getTagList("Items", NBT.TAG_COMPOUND);
-		
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound tag = list.getCompoundTagAt(i);
-			
-			ItemStack stack = ItemStack.loadItemStackFromNBT(tag);
-			
-			inventory[tag.getByte("slot")] = stack;
-		}
-	}
-	
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		NBTTagList list = new NBTTagList();
-		
-		for (int i = 0; i <= 8; i++)
-		{
-			if (inventory[i] != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				inventory[i].writeToNBT(tag);
-				tag.setByte("slot", (byte) i);
-				
-				list.appendTag(tag);
-			}
-		}
-		
-		nbt.setTag("Items", list);
-	}
-	
 	@Override
 	public int getSizeInventory() 
 	{
@@ -438,30 +389,20 @@ public class TransmuteTabletInventory implements IInventory
 	public void openInventory(EntityPlayer player)
 	{
 		emc = Transmutation.getEmc(player);
-		
+		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
+		System.arraycopy(inputLocks, 0, inventory, 0, 9);
 		updateOutputs();
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player)
 	{
-		if (this.player != null && this.player.getHeldItem() != null)
+		if (!player.worldObj.isRemote)
 		{
-			if (!player.worldObj.isRemote)
-			{
-				writeToNBT(player.getHeldItem().getTagCompound());
-				Transmutation.setEmc(player, emc);
-				Transmutation.sync(player);
-			}
+			Transmutation.setEmc(player, emc);
+			Transmutation.setInputsAndLocks(Arrays.copyOfRange(inventory, 0, 9), player);
+			Transmutation.sync(player);
 		}
-		else
-		{
-			PELogger.logFatal("Failed to write NBT data for transmutation tablet!");
-			PELogger.logFatal("Player: " + this.player);
-			PELogger.logFatal("Please report this to the developer!");
-		}
-		
-		this.player = null;
 	}
 
 	@Override
@@ -493,7 +434,7 @@ public class TransmuteTabletInventory implements IInventory
 
 	@Override
 	public void markDirty() {}
-	
+
 	public void addEmc(double value)
 	{
 		emc += value;

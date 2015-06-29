@@ -19,7 +19,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -117,7 +116,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 
-			PlayerHelper.swingItem(((EntityPlayerMP) player));
+			PlayerHelper.swingItem(player);
 		}
 		
 		return true;

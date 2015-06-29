@@ -161,8 +161,9 @@ pe.command.clearknowledge.playernotfound=Couldn't find player named: %s
 pe.command.clearknowledge.success=Cleared knowledge for: %s
 pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (no params to target self)
 
-pe.command.reload.started=Reloading EMC registrations...
-pe.command.reload.success=Done! Sending updated data to clients.
+pe.command.reload.started=Reloading EMC values, expect lag.
+pe.command.reload.success=EMC reload complete. Sending updated data to clients.
+pe.command.reload.notice=Restart or use "/projecte reloadEMC" when all changes are complete.
 
 pe.command.remove.invaliditem=Error: The item "%s" was not found!
 pe.command.remove.invalidmeta=Error: The meta value "%s" is not valid!

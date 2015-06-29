@@ -9,6 +9,7 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
@@ -41,8 +42,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtectionItem
 {
-	private int stopRainCooldown;
-
 	public VolcaniteAmulet()
 	{
 		this.setUnlocalizedName("volcanite_amulet");
@@ -90,7 +89,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 					{
 						placeLava(world, blockPosHit.offset(mop.sideHit));
 						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-						PlayerHelper.swingItem(((EntityPlayerMP) player));
+						PlayerHelper.swingItem(player);
 					}
 				}
 			}
@@ -257,18 +256,19 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			if (stopRainCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0)
 			{
 				world.getWorldInfo().setRainTime(0);
 				world.getWorldInfo().setThunderTime(0);
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
 
-				stopRainCooldown = ProjectEConfig.volcanitePedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.volcanitePedCooldown);
 			}
 			else
 			{
-				stopRainCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

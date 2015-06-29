@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
@@ -27,8 +26,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
-	private int coolCooldown;
-
 	public Zero() 
 	{
 		super("zero_ring", (byte)4);
@@ -118,9 +115,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
-			if (coolCooldown == 0) {
-				TileEntity tile = world.getTileEntity(pos);
-				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			if (tile.getActivityCooldown() == 0) {
+				AxisAlignedBB aabb = tile.getEffectBounds();
 				WorldHelper.freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
@@ -130,11 +127,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 						ent.extinguish();
 					}
 				}
-				coolCooldown = ProjectEConfig.zeroPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.zeroPedCooldown);
 			}
 			else
 			{
-				coolCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

@@ -1,19 +1,16 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
-
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,14 +20,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.IShearable;
 
 import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	private int harvestCooldown;
-
 	public HarvestGoddess()
 	{
 		super("harvest_god");
@@ -262,14 +256,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.harvestPedCooldown != -1)
 		{
-			if (harvestCooldown == 0)
+			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
+			if (tile.getActivityCooldown() == 0)
 			{
 				WorldHelper.growNearbyRandomly(true, world, pos);
-				harvestCooldown = ProjectEConfig.harvestPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.harvestPedCooldown);
 			}
 			else
 			{
-				harvestCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

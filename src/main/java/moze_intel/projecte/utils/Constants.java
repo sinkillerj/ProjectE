@@ -37,6 +37,7 @@ public final class Constants
 	
 	public static final int ALCH_CHEST_GUI = 0;
 	public static final int ALCH_BAG_GUI = 1;
+	@Deprecated
 	public static final int TRANSMUTE_STONE_GUI = 2;
 	public static final int CONDENSER_GUI = 3;
 	public static final int RM_FURNACE_GUI = 4;
@@ -49,7 +50,7 @@ public final class Constants
 	public static final int RELAY3_GUI = 11;
 	public static final int MERCURIAL_GUI = 12;
 	public static final int PHILOS_STONE_GUI = 13;
-	public static final int TRANSMUTE_TABLET_GUI = 14;
+	public static final int TRANSMUTATION_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
 	public static final int CONDENSER_MK2_GUI = 16;
 	public static final int PEDESTAL_GUI = 17;

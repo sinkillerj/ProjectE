@@ -21,6 +21,8 @@ import java.util.List;
 
 public final class Transmutation 
 {
+	// TODO 1.8 fix this 
+
 	@Deprecated
 	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap<String, LinkedList<ItemStack>>();
 	@Deprecated
@@ -95,6 +97,17 @@ public final class Transmutation
 				}
 			}
 		}
+	}
+
+	public static void setInputsAndLocks(ItemStack[] stacks, EntityPlayer player)
+	{
+		TransmutationProps data = TransmutationProps.getDataFor(player);
+		data.setInputLocks(stacks);
+	}
+
+	public static ItemStack[] getInputsAndLock(EntityPlayer player)
+	{
+		return TransmutationProps.getDataFor(player).getInputLocks().clone();
 	}
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)

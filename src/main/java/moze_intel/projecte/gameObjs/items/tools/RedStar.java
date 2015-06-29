@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGravel;
+import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -38,7 +39,8 @@ public class RedStar extends PEToolBase
 		this.harvestMaterials.add(Material.ground);
 		this.harvestMaterials.add(Material.sand);
 		this.harvestMaterials.add(Material.snow);
-
+		this.harvestMaterials.add(Material.clay);
+		
 		this.harvestMaterials.add(Material.iron);
 		this.harvestMaterials.add(Material.anvil);
 		this.harvestMaterials.add(Material.rock);
@@ -88,7 +90,7 @@ public class RedStar extends PEToolBase
 			{
 				Block block = world.getBlockState(mop.getBlockPos()).getBlock();
 
-				if (block instanceof BlockGravel)
+				if (block instanceof BlockGravel || block instanceof BlockClay)
 				{
 					if (ProjectEConfig.pickaxeAoeVeinMining)
 					{
