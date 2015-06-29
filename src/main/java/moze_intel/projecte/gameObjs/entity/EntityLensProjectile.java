@@ -5,13 +5,12 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.NovaExplosion;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class EntityLensProjectile extends EntityThrowable
+public class EntityLensProjectile extends PEProjectile
 {
 	private byte charge;
 	
@@ -20,7 +19,7 @@ public class EntityLensProjectile extends EntityThrowable
 		super(world);
 	}
 
-	public EntityLensProjectile(World world, EntityLivingBase entity, byte charge) 
+	public EntityLensProjectile(World world, EntityPlayer entity, byte charge)
 	{
 		super(world, entity);
 		this.charge = charge;
@@ -42,6 +41,12 @@ public class EntityLensProjectile extends EntityThrowable
 			return;
 		}
 
+		if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+		{
+			this.setDead();
+			return;
+		}
+
 		if (this.isInWater())
 		{
 			this.playSound("random.fizz", 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
@@ -49,21 +54,14 @@ public class EntityLensProjectile extends EntityThrowable
 			this.setDead();
 		}
 	}
-	
-	@Override
-	protected float getGravityVelocity()
-	{	
-		return 0;
-	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition mop) 
+	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote) return;
 		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
-		this.setDead();
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)

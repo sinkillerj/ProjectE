@@ -1,73 +1,36 @@
 package moze_intel.projecte.handlers;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PELogger;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 public class TileEntityHandler
 {
-	private static final List<Coordinates> CONDENSERS = Lists.newArrayList();
+	// The set of all (chunk)loaded condensers on the server.
+	private static final Set<CondenserTile> CONDENSERS = Sets.newHashSet();
 
 	public static void addCondenser(CondenserTile tile)
 	{
-		Coordinates coords = new Coordinates(tile);
-
-		if (!CONDENSERS.contains(coords))
-		{
-			PELogger.logDebug("Added condenser at coords: " + coords);
-			CONDENSERS.add(coords);
-		}
+		PELogger.logDebug(String.format("Added condenser at coords %s, %s, %s", Integer.toString(tile.xCoord), Integer.toString(tile.yCoord), Integer.toString(tile.zCoord)));
+		CONDENSERS.add(tile);
 	}
 
 	public static void removeCondenser(CondenserTile tile)
 	{
-		Coordinates coords = new Coordinates(tile);
-
-		if (CONDENSERS.contains(coords))
+		if (CONDENSERS.remove(tile))
 		{
-			Iterator<Coordinates> iter = CONDENSERS.iterator();
-
-			while (iter.hasNext())
-			{
-				if (iter.next().equals(coords))
-				{
-					iter.remove();
-					PELogger.logDebug("Condenser at " + coords + " has been removed.");
-					return;
-				}
-			}
-		}
-		else
-		{
-			PELogger.logFatal("Condenser at coordinates: " + coords + " hasn't been mapped!");
+			PELogger.logDebug(String.format("Removed condenser at coords %s, %s, %s", Integer.toString(tile.xCoord), Integer.toString(tile.yCoord), Integer.toString(tile.zCoord)));
 		}
 	}
 
-	public static void checkAllCondensers(World world)
+	public static void checkAllCondensers()
 	{
-		Iterator<Coordinates> iter = CONDENSERS.iterator();
-
-		while (iter.hasNext())
+		for (CondenserTile t : CONDENSERS)
 		{
-			Coordinates coords = iter.next();
-
-			TileEntity tile = world.getTileEntity(coords.x, coords.y, coords.z);
-
-			if (tile instanceof CondenserTile)
-			{
-				((CondenserTile) tile).checkLockAndUpdate();
-			}
-			else
-			{
-				PELogger.logFatal("Condenser not found at coordinates: " + coords);
-				iter.remove();
-			}
+			t.checkLockAndUpdate();
 		}
 	}
 

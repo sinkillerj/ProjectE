@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappingCollector<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected static void debugFormat(String format, Object... args) {
@@ -114,7 +114,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IMappin
 					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
 				fixValueBeforeInherit.put(something, value);
 				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Removign fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
+					PELogger.logWarn("Removing fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
 				fixValueAfterInherit.remove(something);
 				break;
 			case FixAndDoNotInherit:

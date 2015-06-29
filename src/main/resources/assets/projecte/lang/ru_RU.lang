@@ -1,20 +1,5 @@
 item.pe_philosophers_stone.name=Философский камень
-item.pe_alchemical_bag_black.name=Алхимический мешок
-item.pe_alchemical_bag_red.name=Алхимический мешок
-item.pe_alchemical_bag_green.name=Алхимический мешок
-item.pe_alchemical_bag_brown.name=Алхимический мешок
-item.pe_alchemical_bag_blue.name=Алхимический мешок
-item.pe_alchemical_bag_purple.name=Алхимический мешок
-item.pe_alchemical_bag_cyan.name=Алхимический мешок
-item.pe_alchemical_bag_silver.name=Алхимический мешок
-item.pe_alchemical_bag_gray.name=Алхимический мешок
-item.pe_alchemical_bag_pink.name=Алхимический мешок
-item.pe_alchemical_bag_lime.name=Алхимический мешок
-item.pe_alchemical_bag_yellow.name=Алхимический мешок
-item.pe_alchemical_bag_lightBlue.name=Алхимический мешок
-item.pe_alchemical_bag_magenta.name=Алхимический мешок
-item.pe_alchemical_bag_orange.name=Алхимический мешок
-item.pe_alchemical_bag_white.name=Алхимический мешок
+item.pe_alchemical_bag.name=Алхимический мешок
 item.pe_repair_talisman.name=Талисман восстановления
 item.pe_klein_star_1.name=Звезда Клейна 1
 item.pe_klein_star_2.name=Звезда Клейна 2
@@ -111,8 +96,6 @@ tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
 tile.pe_dmPedestal.name=Пьедестал из тёмной материи
 
-itemGroup.ProjectE=ProjectE
-
 achievement.phil_stone=Лучший друг алхимиков!
 achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень
 achievement.alch_chest=Улучшение хранилища!
@@ -178,7 +161,6 @@ pe.emc.maxoutrate_tooltip=Максимальная скорость выхода
 pe.emc.maxstorage_tooltip=Максимальное хранилище:
 pe.emc.name=EMC
 pe.emc.rate=EMC/сек
-pe.emc.stackemc_tooltip_prefix=Stack EMC:
 pe.emc.storedemc_tooltip=Накоплено EMC:
 pe.emc.too_much=СЛИШКОМ МНОГО
 
@@ -272,7 +254,6 @@ pe.timewatch.rw=Перемотка
 pe.timewatch.tooltip1=Станьте хозяином времени
 pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
 pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
-pe.timewatch.pedestal2=Each tick, nearby mobs move %.3f times the speed
 
 pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
 

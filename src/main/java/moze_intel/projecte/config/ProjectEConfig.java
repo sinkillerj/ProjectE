@@ -35,6 +35,7 @@ public final class ProjectEConfig
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
+	public static boolean useOldDamage;
 	public static int archangelPedCooldown;
 	public static int bodyPedCooldown;
 	public static int evertidePedCooldown;
@@ -45,12 +46,13 @@ public final class ProjectEConfig
 	public static int swrgPedCooldown;
 	public static int soulPedCooldown;
 	public static int volcanitePedCooldown;
-	public static int zeroPedCooldown;
 
+	public static int zeroPedCooldown;
 	public static int timePedBonus;
 	public static float timePedMobSlowness;
 	public static boolean interdictionMode;
 	public static boolean pickaxeAoeVeinMining;
+	public static boolean harvBandGrass;
 	public static boolean useLootBalls;
 
 	public static void init(File configFile)
@@ -95,6 +97,7 @@ public final class ProjectEConfig
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
+			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from 1.4.7 and before will be used for weapons.");
 
 			config.getCategory("pedestalcooldown").setComment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.\n" +
 					"A cooldown of 0 will cause the actions happens every tick. Use caution as a very low value could cause TPS issues.");
@@ -126,7 +129,8 @@ public final class ProjectEConfig
 			timePedMobSlowness = config.getFloat("timePedMobSlowness", "effects", 0.10F, 0.0F, 1.0F, "Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.");
 			interdictionMode = config.getBoolean("interdictionMode", "effects", true, "If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.");
 
-			pickaxeAoeVeinMining = config.getBoolean("pickaxeAoeVeinMining", "items", false, "Instead of vein mining the ore you right click with your Dark/Red Matter Pick it vein mines all ores in an AOE around you like it did in ProjectE before version 1.4.4.");
+			pickaxeAoeVeinMining = config.getBoolean("pickaxeAoeVeinMining", "items", false, "Instead of vein mining the ore you right click with your Dark/Red Matter Pick/Star it vein mines all ores in an AOE around you like it did in ProjectE before version 1.4.4.");
+			harvBandGrass = config.getBoolean("harvBandGrass", "items", false, "Allows the Harvest Goddess Band to passively grow tall grass, flowers, etc, on top of grass blocks.");
 			PELogger.logInfo("Loaded configuration file.");
 		}
 		catch (Exception e)

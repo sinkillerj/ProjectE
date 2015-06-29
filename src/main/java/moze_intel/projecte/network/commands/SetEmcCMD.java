@@ -1,7 +1,6 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.ICommandSender;
@@ -35,7 +34,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, new ChatComponentTranslation("pe.command.set.invalidparams"));
+			sendError(sender, new ChatComponentTranslation("pe.command.set.usage"));
 			return;
 		}
 
@@ -113,7 +112,8 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, emc))
 		{
-			ThreadReloadEMCMap.runEMCRemap(sender, ChatHelper.modifyColor(new ChatComponentTranslation("pe.command.set.success", name, emc), EnumChatFormatting.GREEN));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.set.success", name, emc));
+			sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{

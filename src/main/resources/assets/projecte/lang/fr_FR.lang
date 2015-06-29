@@ -1,20 +1,5 @@
 item.pe_philosophers_stone.name=Pierre philosophale
-item.pe_alchemical_bag_black.name=Sac alchimique
-item.pe_alchemical_bag_red.name=Sac alchimique
-item.pe_alchemical_bag_green.name=Sac alchimique
-item.pe_alchemical_bag_brown.name=Sac alchimique
-item.pe_alchemical_bag_blue.name=Sac alchimique
-item.pe_alchemical_bag_purple.name=Sac alchimique
-item.pe_alchemical_bag_cyan.name=Sac alchimique
-item.pe_alchemical_bag_silver.name=Sac alchimique
-item.pe_alchemical_bag_gray.name=Sac alchimique
-item.pe_alchemical_bag_pink.name=Sac alchimique
-item.pe_alchemical_bag_lime.name=Sac alchimique
-item.pe_alchemical_bag_yellow.name=Sac alchimique
-item.pe_alchemical_bag_lightBlue.name=Sac alchimique
-item.pe_alchemical_bag_magenta.name=Sac alchimique
-item.pe_alchemical_bag_orange.name=Sac alchimique
-item.pe_alchemical_bag_white.name=Sac alchimique
+item.pe_alchemical_bag.name=Sac alchimique
 item.pe_repair_talisman.name=Talisman réparateur
 item.pe_klein_star_1.name=Etoile Klein Ein
 item.pe_klein_star_2.name=Etoile Klein Zwei
@@ -109,8 +94,6 @@ tile.pe_fuel_block_0.name=Bloc de charbon alchimique
 tile.pe_fuel_block_1.name=Bloc de combustible de Mœbius
 tile.pe_fuel_block_2.name=Bloc de combustible d'Æternalis
 tile.pe_dmPedestal.name=Piédestal de matière noire
-
-itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=Le meilleur ami des alchimistes !
 achievement.phil_stone.desc=Commençons donc ! Fabriquons une pierre philosophale...

@@ -2,7 +2,7 @@
 
 Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions.
 
-This mod may only be redistributed as part of a modpack, both public and private modpacks are allowed. Beware of download locations which are not listed on this page as they are often fake updates which could contain malware.
+This mod may be redistributed as part of a modpack, both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer", legal action will be taken against sites found violating this. Beware of download locations which are not listed on this page as they are often fake updates which could contain malware.
 
 If you have a bug to report, open an issue. Please try the latest release build before reporting, be sure to also include any logs or steps to reproduce you may have. When submitting logs please use a service such as Pastebin, do not paste the log directly into the issue.
 
@@ -20,18 +20,19 @@ IRC Client: \#ProjectE on irc.esper.net
 
 Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
-#The Team
-SinKillerJ - Current developer: https://twitter.com/sinkillerj
+#Current Team Members
+SinKillerJ - Head of Alchemical Studies - Current lead developer: https://twitter.com/sinkillerj
 
-MozeIntel - Original developer: https://twitter.com/Moze_Intel
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer
 
-MaPePeR - Assistant developer
+Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
 
-Kolatra - Assistant developer: https://twitter.com/ItsKolatra
+#Former Team Members
+MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
 
-Williewillus - Assistant developer: https://twitter.com/williewillus
+Magic Banana - Former texture artist: https://twitter.com/Magic_Banana_
 
-Magic Banana - Texture artist: https://twitter.com/Magic_Banana_
+Kolatra - Former collaborator: https://twitter.com/ItsKolatra
 
 #Thanks To
 x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x

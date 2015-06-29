@@ -1,5 +1,6 @@
 package moze_intel.projecte;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -21,7 +22,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
@@ -31,20 +31,16 @@ import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.ChangelogCMD;
-import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
-import moze_intel.projecte.network.commands.ReloadEmcCMD;
-import moze_intel.projecte.network.commands.RemoveEmcCMD;
-import moze_intel.projecte.network.commands.ResetEmcCMD;
-import moze_intel.projecte.network.commands.SetEmcCMD;
-import moze_intel.projecte.playerData.AlchemicalBags;
+import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
 import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -121,12 +117,7 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		event.registerServerCommand(new ChangelogCMD());
-		event.registerServerCommand(new ReloadEmcCMD());
-		event.registerServerCommand(new SetEmcCMD());
-		event.registerServerCommand(new RemoveEmcCMD());
-		event.registerServerCommand(new ResetEmcCMD());
-		event.registerServerCommand(new ClearKnowledgeCMD());
+		event.registerServerCommand(new ProjectECMD());
 
 		if (!ThreadCheckUpdate.hasRunServer())
 		{
@@ -161,8 +152,8 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
-		IOHandler.saveData();
-		PELogger.logInfo("Saved transmutation and alchemical bag data.");
+//		IOHandler.saveData();
+//		PELogger.logInfo("Saved transmutation and alchemical bag data.");
 	}
 	
 	@Mod.EventHandler
@@ -171,10 +162,9 @@ public class PECore
 		TileEntityHandler.clearAll();
 		PELogger.logDebug("Cleared tile entity maps.");
 
-		Transmutation.clear();
-		AlchemicalBags.clear();
-		PELogger.logDebug("Cleared player data.");
-		
+		Transmutation.clearCache();
+		PELogger.logDebug("Cleared cached tome knowledge");
+
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
 		
@@ -193,16 +183,56 @@ public class PECore
 
 	@Mod.EventHandler
 	public void remap(FMLMissingMappingsEvent event) {
-		for (FMLMissingMappingsEvent.MissingMapping mapping : event.getAll()) {
-			if (mapping.name.startsWith("ProjectE:")) {
-				try {
-					if (mapping.type == GameRegistry.Type.ITEM) {
-						Item remappedItem = GameRegistry.findItem("ProjectE", "item.pe_" + mapping.name.split(":")[1].substring(5));
-						if (remappedItem != null) mapping.remap(remappedItem);
+		for (FMLMissingMappingsEvent.MissingMapping mapping : event.get())
+		{
+			try
+			{
+				String subName = mapping.name.split(":")[1];
+				if (mapping.type == GameRegistry.Type.ITEM)
+				{
+					Item remappedItem = GameRegistry.findItem(PECore.MODID, "item.pe_" + subName.substring(5)); // strip "item." off of subName
+					if (remappedItem != null)
+					{
+						// legacy remap (adding pe_ prefix)
+						mapping.remap(remappedItem);
 					}
-				} catch (Throwable t) {
-					// safety check ^_^
+					else
+					{
+						// Space strip remap - ItemBlocks
+						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
+						remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
+
+						if (remappedItem != null)
+						{
+							mapping.remap(remappedItem);
+							PELogger.logInfo(String.format("Remapped ProjectE ItemBlock from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
+						}
+						else
+						{
+							PELogger.logFatal("Failed to remap ProjectE ItemBlock: " + mapping.name);
+						}
+					}
 				}
+				if (mapping.type == GameRegistry.Type.BLOCK)
+				{
+					// Space strip remap - Blocks
+					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
+					Block remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
+
+					if (remappedBlock != null)
+					{
+						mapping.remap(remappedBlock);
+						PELogger.logInfo(String.format("Remapped ProjectE Block from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
+					}
+					else
+					{
+						PELogger.logFatal("Failed to remap PE Block: " + mapping.name);
+					}
+				}
+			} catch (Throwable t)
+			{
+				// Should never happen
+				throw Throwables.propagate(t);
 			}
 		}
 	}

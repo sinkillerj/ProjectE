@@ -5,10 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,13 +14,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class TransmutationStone extends Block implements ITileEntityProvider
+public class TransmutationStone extends Block
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icon;
@@ -43,31 +40,11 @@ public class TransmutationStone extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
-	{
-		return new TransmuteTile();
-	}
-	
-	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		TransmuteTile tile = (TransmuteTile) world.getTileEntity(x, y, z);
-			
-		if (!tile.isUsed())
+		if (!world.isRemote)
 		{
-			tile.setPlayer(player);
-			
-			if (!world.isRemote)
-			{
-				player.openGui(PECore.MODID, Constants.TRANSMUTE_STONE_GUI, world, x, y, z);
-			}
-		}
-		else
-		{
-			if (!world.isRemote)
-			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.transmutation.already_using"));
-			}
+			player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, x, y, z);
 		}
 		return true;
 	}

@@ -1,3 +1,6 @@
+###Version 1.2
+* VERSION: Compatible with ProjectE 1.4.7+
+
 ###Version 1.1
 * NEW: Dark Matter Pedestal texture
 * VERSION: Compatible with ProjectE 1.4.0+

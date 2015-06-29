@@ -1,20 +1,5 @@
 item.pe_philosophers_stone.name=賢者の石
-item.pe_alchemical_bag_black.name=錬金バッグ
-item.pe_alchemical_bag_red.name=錬金バッグ
-item.pe_alchemical_bag_green.name=錬金バッグ
-item.pe_alchemical_bag_brown.name=錬金バッグ
-item.pe_alchemical_bag_blue.name=錬金バッグ
-item.pe_alchemical_bag_purple.name=錬金バッグ
-item.pe_alchemical_bag_cyan.name=錬金バッグ
-item.pe_alchemical_bag_silver.name=錬金バッグ
-item.pe_alchemical_bag_gray.name=錬金バッグ
-item.pe_alchemical_bag_pink.name=錬金バッグ
-item.pe_alchemical_bag_lime.name=錬金バッグ
-item.pe_alchemical_bag_yellow.name=錬金バッグ
-item.pe_alchemical_bag_lightBlue.name=錬金バッグ
-item.pe_alchemical_bag_magenta.name=錬金バッグ
-item.pe_alchemical_bag_orange.name=錬金バッグ
-item.pe_alchemical_bag_white.name=錬金バッグ
+item.pe_alchemical_bag.name=錬金バッグ
 item.pe_repair_talisman.name=補修のお守り
 item.pe_klein_star_1.name=クラインの星 Ein
 item.pe_klein_star_2.name=クラインの星 Zwei
@@ -108,8 +93,6 @@ tile.pe_nova_cataclysm.name=スーパーノヴァTNT
 tile.pe_fuel_block_0.name=錬金炭ブロック
 tile.pe_fuel_block_1.name=メビウス燃料ブロック
 tile.pe_fuel_block_2.name=エターナリス燃料ブロック
-
-itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=錬金術士の右手！
 achievement.phil_stone.desc=さあ始めよう！ 賢者の石を作る

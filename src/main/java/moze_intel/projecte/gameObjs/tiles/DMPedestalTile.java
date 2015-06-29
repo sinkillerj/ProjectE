@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -19,6 +18,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	private ItemStack[] inventory = new ItemStack[1];
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
+	private int activityCooldown = 0;
 	public double centeredX, centeredY, centeredZ;
 
 	public DMPedestalTile()
@@ -90,6 +90,21 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		}
 	}
 
+	public int getActivityCooldown()
+	{
+		return activityCooldown;
+	}
+
+	public void setActivityCooldown(int i)
+	{
+		activityCooldown = i;
+	}
+
+	public void decrementActivityCooldown()
+	{
+		activityCooldown--;
+	}
+
 	public ItemStack getItemStack()
 	{
 		return getStackInSlot(0);
@@ -99,7 +114,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	{
 		if (effectBounds == null)
 		{
-			PELogger.logWarn("Returned null effectbounds for pedestal!");
+			// Chunk is still loading weirdness, return an empty box just for this tick.
+			return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 		}
 		return effectBounds;
 	}
@@ -121,6 +137,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			}
 		}
 		setActive(tag.getBoolean("isActive"));
+		activityCooldown = tag.getInteger("activityCooldown");
 	}
 
 	@Override
@@ -143,6 +160,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 		tag.setTag("Items", tagList);
 		tag.setBoolean("isActive", getActive());
+		tag.setInteger("activityCooldown", activityCooldown);
 	}
 
 	@Override

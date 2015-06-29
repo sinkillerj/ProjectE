@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IFlightItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -32,13 +32,12 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] ringOn;
-	private int lightningCooldown;
 
 	public SWRG()
 	{
@@ -85,7 +84,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 			
 			if (playerMP.capabilities.allowFlying)
 			{
-				disableFlight(playerMP);
+				PlayerHelper.disableFlight(playerMP);
 			}
 			
 			return;
@@ -93,7 +92,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			enableFlight(playerMP);
+			PlayerHelper.enableFlight(playerMP);
 		}
 
 		if (playerMP.capabilities.isFlying)
@@ -199,34 +198,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		}
 	}
 	
-	public void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, true);
-			PlayerChecks.addPlayerFlyChecks(playerMP);
-		}
-	}
-	
-	public void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
-		}
-	}
-	
 	public void enableFlightNoChecks(EntityPlayerMP playerMP)
 	{
 		if (playerMP.capabilities.isCreativeMode)
@@ -236,7 +207,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (!playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, true);
+			PlayerHelper.updateClientServerFlight(playerMP, true);
 		}
 	}
 	
@@ -249,7 +220,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 		
 		if (playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.updateClientFlight(playerMP, false);
+			PlayerHelper.updateClientServerFlight(playerMP, false);
 		}
 	}
 	
@@ -446,19 +417,19 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem
 	{
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
-			if (lightningCooldown <= 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() <= 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				lightningCooldown = ProjectEConfig.swrgPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
 			}
 			else
 			{
-				lightningCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

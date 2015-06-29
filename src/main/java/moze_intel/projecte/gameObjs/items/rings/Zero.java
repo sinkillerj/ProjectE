@@ -12,20 +12,17 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.block.Block;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
@@ -36,7 +33,6 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	private IIcon ringOff;
 	@SideOnly(Side.CLIENT)
 	private IIcon ringOn;
-	private int coolCooldown;
 
 	public Zero() 
 	{
@@ -56,37 +52,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		}
 
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		freezeInBoundingBox(world, box);
-
+		WorldHelper.freezeInBoundingBox(world, box);
 	}
 
-	public void freezeInBoundingBox(World world, AxisAlignedBB box)
-	{
-		for (int x = (int) box.minX; x <= box.maxX; x++)
-		{
-			for (int y = (int) box.minY; y <= box.maxY; y++)
-			{
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
-				{
-					Block b = world.getBlock(x, y, z);
-
-					if (b == Blocks.water || b == Blocks.flowing_water)
-					{
-						world.setBlock(x, y, z, Blocks.ice);
-					}
-					else if (b.isSideSolid(world, x, y, z, ForgeDirection.UP))
-					{
-						Block b2 = world.getBlock(x, y + 1, z);
-
-						if (b2 == Blocks.air)
-						{
-							world.setBlock(x, y + 1, z, Blocks.snow_layer);
-						}
-					}
-				}
-			}
-		}
-	}
+	
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -96,7 +65,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.boundingBox.expand(offset, offset, offset);
 			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
-			freezeInBoundingBox(world, box);
+			WorldHelper.freezeInBoundingBox(world, box);
 		}
 		
 		return stack;
@@ -175,10 +144,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
-			if (coolCooldown == 0) {
-				TileEntity tile = world.getTileEntity(x, y, z);
-				AxisAlignedBB aabb = ((DMPedestalTile) tile).getEffectBounds();
-				freezeInBoundingBox(world, aabb);
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() == 0) {
+				AxisAlignedBB aabb = tile.getEffectBounds();
+				WorldHelper.freezeInBoundingBox(world, aabb);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
 				{
@@ -187,11 +156,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 						ent.extinguish();
 					}
 				}
-				coolCooldown = ProjectEConfig.zeroPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.zeroPedCooldown);
 			}
 			else
 			{
-				coolCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -87,5 +88,11 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon("obsidian");
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
+	{
+		return ComparatorHelper.getForCondenser(world, x, y, z);
 	}
 }

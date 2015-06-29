@@ -1,11 +1,12 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetics.IntArithmetic;
+import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
+import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
+
+import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.util.*;
 
@@ -25,13 +26,14 @@ public class GraphMapperTest {
 	}*/
 	@Before
 	public void setup() {
-		graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
+		//graphMapper = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
+		graphMapper = new FractionToIntegerTranslator<String>(new SimpleGraphMapper<String, Fraction>(new HiddenFractionArithmetic()));
 	}
 
 	@Rule
 	public Timeout timeout = new Timeout(3000);
 
-	public GraphMapper<String, Integer> graphMapper;
+	public IValueGenerator<String, Integer> graphMapper;
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {
@@ -442,6 +444,20 @@ public class GraphMapperTest {
 		assertEquals(1, getValue(values, "a1"));
 		assertEquals(0, getValue(values, "exploitable"));
 		assertEquals(1, getValue(values, "notExploitable"));
+	}
+
+	@org.junit.Test
+	public void testGenerateValuesDelayedCycleRecipeExploit() throws Exception {
+		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		//Exploitable Cycle Recype
+		graphMapper.addConversion(1, "exploitable1", Arrays.asList("a1"));
+		graphMapper.addConversion(2, "exploitable2", Arrays.asList("exploitable1"));
+		graphMapper.addConversion(1, "exploitable1", Arrays.asList("exploitable2"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a1"));
+		assertEquals(0, getValue(values, "exploitable1"));
+		assertEquals(0, getValue(values, "exploitable2"));
 	}
 
 	@org.junit.Test

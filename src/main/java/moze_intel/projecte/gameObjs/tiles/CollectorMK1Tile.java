@@ -273,7 +273,24 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		return (float) getSunLevel() * emc / 16;
 	}
-	
+
+	public ItemStack getChargingItem()
+	{
+		return inventory[0];
+	}
+
+	public double getEmcToNextGoal()
+	{
+		if (inventory[lockSlot] != null)
+		{
+			return EMCHelper.getEmcValue(inventory[lockSlot]) - EMCHelper.getEmcValue(inventory[0]);
+		}
+		else
+		{
+			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+		}
+	}
+
 	public int getKleinStarCharge()
 	{
 		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))

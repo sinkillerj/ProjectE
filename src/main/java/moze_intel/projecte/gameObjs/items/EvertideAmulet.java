@@ -10,10 +10,12 @@ import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.KeyHelper;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -22,7 +24,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -35,20 +36,18 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
 {
-	private int startRainCooldown;
-
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
+		this.setContainerItem(this);
 	}
 
 	@Override
@@ -109,7 +108,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 						placeWater(world, i, j, k);
-						PlayerHelper.swingItem(((EntityPlayerMP) player));
+						PlayerHelper.swingItem(player);
 					}
 				}
 			}
@@ -199,7 +198,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return false;
 	}
 
-	//Start IFluidContainerItem
+	/** Start IFluidContainerItem **/
 	@Override
 	public FluidStack getFluid(ItemStack container)
 	{
@@ -223,7 +222,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 	}
-	//End IFluidContainerItem
+	/** End IFluidContainerItem **/
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -236,11 +235,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		if (KeyHelper.getExtraFuncKeyCode() >= 0 && KeyHelper.getExtraFuncKeyCode() < Keyboard.getKeyCount())
-		{
-			list.add(String.format(
-					StatCollector.translateToLocal("pe.evertide.tooltip1"), Keyboard.getKeyName(KeyHelper.getProjectileKeyCode())));
-		}
+		list.add(String.format(StatCollector.translateToLocal("pe.evertide.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
@@ -288,18 +283,20 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
 		{
-			if (startRainCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+
+			if (tile.getActivityCooldown() == 0)
 			{
 				int i = (300 + world.rand.nextInt(600)) * 20;
 				world.getWorldInfo().setRainTime(i);
 				world.getWorldInfo().setThunderTime(i);
 				world.getWorldInfo().setRaining(true);
 
-				startRainCooldown = ProjectEConfig.evertidePedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.evertidePedCooldown);
 			}
 			else
 			{
-				startRainCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}

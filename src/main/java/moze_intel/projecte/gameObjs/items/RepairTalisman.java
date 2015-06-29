@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
@@ -30,10 +31,8 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, IPedestalItem
+public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
-	private int repairCooldown;
-
 	public RepairTalisman()
 	{
 		this.setUnlocalizedName("repair_talisman");
@@ -136,19 +135,19 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 	{
 		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
 		{
-			if (repairCooldown == 0)
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			if (tile.getActivityCooldown() == 0)
 			{
-				DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 				List<EntityPlayerMP> list = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 				for (EntityPlayerMP player : list)
 				{
 					repairAllItems(player);
 				}
-				repairCooldown = ProjectEConfig.repairPedCooldown;
+				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
 			}
 			else
 			{
-				repairCooldown--;
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
@@ -188,7 +187,7 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 			{
 				ItemStack invStack = tile.getStackInSlot(i);
 
-				if (invStack == null || invStack.getItem() instanceof RingToggle)
+				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}
@@ -211,5 +210,52 @@ public class RepairTalisman extends ItemPE implements IAlchChestItem, IBauble, I
 				tile.markDirty();
 			}
 		}
+	}
+
+	@Override
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	{
+		if (player.worldObj.isRemote)
+		{
+			return false;
+		}
+
+		byte coolDown = stack.stackTagCompound.getByte("Cooldown");
+
+		if (coolDown > 0)
+		{
+			stack.stackTagCompound.setByte("Cooldown", (byte) (coolDown - 1));
+		}
+		else
+		{
+			boolean hasAction = false;
+
+			for (int i = 0; i < inv.length; i++)
+			{
+				ItemStack invStack = inv[i];
+
+				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
+				{
+					continue;
+				}
+
+				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				{
+					invStack.setItemDamage(invStack.getItemDamage() - 1);
+
+					if (!hasAction)
+					{
+						hasAction = true;
+					}
+				}
+			}
+
+			if (hasAction)
+			{
+				stack.stackTagCompound.setByte("Cooldown", (byte) 19);
+				return true;
+			}
+		}
+		return false;
 	}
 }
