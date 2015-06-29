@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
@@ -41,6 +42,6 @@ public class SlotConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !inv.hasMaxedEmc() && EMCHelper.doesItemHaveEmc(stack);
+		return !inv.hasMaxedEmc() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
 	}
 }

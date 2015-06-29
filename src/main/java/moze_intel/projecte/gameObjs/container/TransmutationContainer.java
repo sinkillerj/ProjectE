@@ -106,7 +106,7 @@ public class TransmutationContainer extends Container
 		{
 			int emc = EMCHelper.getEmcValue(stack);
 			
-			if (emc == 0)
+			if (emc == 0 && stack.getItem() != ObjHandler.tome)
 			{
 				return null;
 			}
