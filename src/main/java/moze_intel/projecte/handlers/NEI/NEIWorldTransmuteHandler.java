@@ -1,4 +1,4 @@
-package moze_intel.projecte.handlers;
+package moze_intel.projecte.handlers.NEI;
 
 import java.util.List;
 import java.util.Map.Entry;

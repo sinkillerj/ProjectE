@@ -23,6 +23,7 @@ archivesBaseName = "ProjectE"
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
+    //version = "1.7.10-10.13.4.1448-1.7.10" //This version is required for the codechicken files
     runDir = "eclipse"
 
     replace "@VERSION@", project.version
@@ -42,6 +43,10 @@ repositories {
         name 'Chisel'
         url "http://coloredlightscore.us.to/maven/chisel-2-dev/"
     }
+	maven {
+		name = "chickenbones"
+		url = "http://chickenbones.net/maven"
+	}
 }
  
 dependencies {
@@ -61,6 +66,10 @@ dependencies {
 
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
+	
+	// These require the newer version of forge
+    //compile "codechicken:CodeChickenCore:1.7.10-1.0.7.46:dev"
+    //compile "codechicken:NotEnoughItems:1.7.10-1.0.5.111:dev"
 }
 
 processResources

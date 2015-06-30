@@ -1,8 +1,7 @@
-package moze_intel.projecte.handlers;
+package moze_intel.projecte.handlers.NEI;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
-
 import moze_intel.projecte.PECore;
 
 public class NEIPEConfig implements IConfigureNEI {

@@ -10,7 +10,7 @@ import java.util.HashMap;
 public final class WorldTransmutations
 {
 	public static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
-	
+
 	static
 	{
 		register(Blocks.stone, Blocks.cobblestone, Blocks.grass);
