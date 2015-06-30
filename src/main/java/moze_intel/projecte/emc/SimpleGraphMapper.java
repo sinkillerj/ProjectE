@@ -149,7 +149,18 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 	 * @param conversion The Conversion for which to calculate the combined ingredient cost.
 	 * @return The combined ingredient value, ZERO or arithmetic.getFree()
 	 */
-	protected V valueForConversion(Map<T, V> values, Conversion conversion) {
+	protected V valueForConversion(Map<T, V> values, Conversion conversion)
+	{
+		try {
+			return valueForConversionUnsafe(values, conversion);
+		} catch (Exception e) {
+			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
+			return ZERO;
+		}
+	}
+
+	protected V valueForConversionUnsafe(Map<T, V> values, Conversion conversion) throws Exception
+	{
 		V value = conversion.value;
 		boolean allIngredientsAreFree = true;
 		boolean hasPositiveIngredientValues = false;
