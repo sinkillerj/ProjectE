@@ -1,133 +1,360 @@
-item.pe_philosophers_stone.name=Pierre philosophale
-item.pe_alchemical_bag.name=Sac alchimique
-item.pe_repair_talisman.name=Talisman réparateur
-item.pe_klein_star_1.name=Etoile Klein Ein
-item.pe_klein_star_2.name=Etoile Klein Zwei
-item.pe_klein_star_3.name=Etoile Klein Drei
-item.pe_klein_star_4.name=Etoile Klein Vier
-item.pe_klein_star_5.name=Etoile Klein Sphère
-item.pe_klein_star_6.name=Etoile Klein Oméga
-item.pe_fuel_alchemical_coal.name=Charbon alchimique
-item.pe_fuel_mobius.name=Combustible de Mœbius
-item.pe_fuel_aeternalis.name=Combustible d'Æternalis
-item.pe_covalence_dust_low.name=Poudre de basse covalence
-item.pe_covalence_dust_medium.name=Poudre de moyenne covalence
-item.pe_covalence_dust_high.name=Poudre de haute covalence
+item.pe_philosophers_stone.name=Pierre Philosophale
+item.pe_alchemical_bag.name=Sac d'Alchimie
+item.pe_repair_talisman.name=Talisman de réparation
+item.pe_klein_star_1.name=Klein Star Ein
+item.pe_klein_star_2.name=Klein Star Zwei
+item.pe_klein_star_3.name=Klein Star Drei
+item.pe_klein_star_4.name=Klein Star Vier
+item.pe_klein_star_5.name=Klein Star Sphere
+item.pe_klein_star_6.name=Klein Star Omega
+item.pe_fuel_alchemical_coal.name=Charbon Alchimique
+item.pe_fuel_mobius.name=Carburant Mobius
+item.pe_fuel_aeternalis.name=Carburant Aeternalis
+item.pe_covalence_dust_low.name=Poudre de Covalence basse
+item.pe_covalence_dust_medium.name=Pour de Covalence moyenne
+item.pe_covalence_dust_high.name=Poubre de Covalence haute
 item.pe_matter_dark.name=Matière noire
 item.pe_matter_red.name=Matière rouge
-item.pe_ring_iron_band.name=Bande de fer
-item.pe_black_hole.name=Bande du trou noir
-item.pe_harvest_god.name=Bande de la déesse de la moisson
-item.pe_archangel_smite.name=Coup de l'archange [WIP]
-item.pe_ignition.name=Anneau d'embrasement
-item.pe_body_stone.name=Pierre de corps
-item.pe_soul_stone.name=Pierre d'âme
-item.pe_mind_stone.name=Pierre d'esprit
-item.pe_life_stone.name=Pierre de vie
-item.pe_evertide_amulet.name=Amulette maréternelle
-item.pe_volcanite_amulet.name=Amulette volcanite
-item.pe_swrg.name=Souffle déchirant du loup agile
-item.pe_mercurial_eye.name=Œil de Mercure
-item.pe_time_watch.name=Montre du temps fuyant
-item.pe_gem_density.name=Gemme de l'éternelle densité
-item.pe_divining_rod_1.name=Bâton de sourcier (Faible)
-item.pe_divining_rod_2.name=Bâton de sourcier (Moyen)
-item.pe_divining_rod_3.name=Bâton de sourcier (Haut)
-item.pe_destruction_catalyst.name=Catalyseur de destruction
-item.pe_hyperkinetic_lens.name=Lentille hypercinétique
-item.pe_catalitic_lens.name=Lentille catalytique
-item.pe_lens_explosive.name=Lentille explosive
-item.pe_Lava_orb.name=Orbe de lave
+item.pe_ring_iron_band.name=Bracelet de fer
+item.pe_black_hole.name=Bracelet à trou noir
+item.pe_harvest_god.name=Bracelet de la déesse des récoltes
+item.pe_archangel_smite.name=Châtiment de l'Archange [WIP]
+item.pe_ignition.name=Anneau de feu
+item.pe_body_stone.name=Pierre du corp
+item.pe_soul_stone.name=Pierre de l'âme
+item.pe_mind_stone.name=Pierre de l'esprit
+item.pe_life_stone.name=Pierre de la vie
+item.pe_evertide_amulet.name=Amulette d'Evertide
+item.pe_volcanite_amulet.name=Amulette volcanique
+item.pe_swrg.name=Fissure de rapidité du loup enragé
+item.pe_mercurial_eye.name=Oeil Mercuriel
+item.pe_time_watch.name=Montre du temps flottant
+item.pe_gem_density.name=Gemme de la densité eternel
+item.pe_divining_rod_1.name=Baguette de sourcier (basse)
+item.pe_divining_rod_2.name=Baguette de sourcier (moyenne)
+item.pe_divining_rod_3.name=Baguette de sourcier (haute)
+item.pe_destruction_catalyst.name=Cataliseur de déstruction
+item.pe_hyperkinetic_lens.name=Objectif hyperkinétique
+item.pe_catalitic_lens.name=Objectif catalytique
+item.pe_lens_explosive.name=Objectif explosive
 item.pe_water_orb.name=Orbe d'eau
-item.pe_loot_orb.name=Orbe du butin
-item.pe_Randomizer_orb_orb.name=Orbe aléatoire
-item.pe_dm_pick.name=Pioche en matière noire
-item.pe_dm_axe.name=Hâche en matière noire
-item.pe_dm_shovel.name=Pelle en matière noire
-item.pe_dm_sword.name=Epée en matière noire
-item.pe_dm_hoe.name=Houe en matière noire
-item.pe_dm_shears.name=Cisailles en matière noire
-item.pe_dm_hammer.name=Marteau en matière noire
-item.pe_rm_pick.name=Pioche en matière rouge
-item.pe_rm_axe.name=Hâche en matière rouge
-item.pe_rm_shovel.name=Pelle en matière rouge
-item.pe_rm_sword.name=Epée en Matière Rouge
-item.pe_rm_hoe.name=Houe en matière rouge
-item.pe_rm_shears.name=Cisailles en matière rouge
-item.pe_rm_hammer.name=Marteau en matière rouge
+item.pe_lava_orb.name=Orbe de lave
+item.pe_randomizer.name=Orbe de la RANDOMISATION
+item.pe_loot_ball.name=Boulle de loot
+item.pe_dm_pick.name=Pioche de matière noire
+item.pe_dm_axe.name=Hache de matière noire
+item.pe_dm_shovel.name=Pelle de matière noire
+item.pe_dm_sword.name=Epée de matière noire
+item.pe_dm_hoe.name=Houe de matière noire
+item.pe_dm_shears.name=Cisaille de matière noire
+item.pe_dm_hammer.name=Marteau de matière noire
+item.pe_rm_pick.name=Pioche de matière rouge
+item.pe_rm_axe.name=Hache de matière rouge
+item.pe_rm_shovel.name=Pelle de matière rouge
+item.pe_rm_sword.name=Epée de matière rouge
+item.pe_rm_hoe.name=Houe de matière rouge
+item.pe_rm_shears.name=Cisaille de matière rouge
+item.pe_rm_hammer.name=Marteau de matière rouge
 item.pe_rm_katar.name=Katar rouge
-item.pe_rm_morning_star.name=Etoile du matin rouge
-item.pe_dm_armor_0.name=Casque en matière noire
-item.pe_dm_armor_1.name=Plastron en matière noire
-item.pe_dm_armor_2.name=Jambières en matière noire
-item.pe_dm_armor_3.name=Bottes en matière noire
-item.pe_rm_armor_0.name=Casque en matière rouge
-item.pe_rm_armor_1.name=Plastron en matière rouge
-item.pe_rm_armor_2.name=Jambières en matière rouge
-item.pe_rm_armor_3.name=Bottes en matière rouge
-item.pe_gem_armor_0.name=Casque des gemmes
-item.pe_gem_armor_1.name=Plastron des gemmes
-item.pe_gem_armor_2.name=Jambières des gemmes
-item.pe_gem_armor_3.name=Bottes des gemmes
-item.pe_arcana_ring.name=Anneau de l'arcane
-item.pe_zero_ring.name=Anneau zéro
-item.pe_tome.name=Tome alchimique
+item.pe_rm_morning_star.name=L'étoiledumatin rouge
+item.pe_dm_armor_0.name=Casque de matière noire
+item.pe_dm_armor_1.name=Plastron de matière noire
+item.pe_dm_armor_2.name=Jambières de matière noire
+item.pe_dm_armor_3.name=Bottes de matière noire
+item.pe_rm_armor_0.name=Casque de matière rouge
+item.pe_rm_armor_1.name=Plastron de matière rouge
+item.pe_rm_armor_2.name=Jambières de matière rouge
+item.pe_rm_armor_3.name=Bottes de matière rouge
+item.pe_gem_armor_0.name=Casque de gem
+item.pe_gem_armor_1.name=Plastron de gem
+item.pe_gem_armor_2.name=Jambières de gem
+item.pe_gem_armor_3.name=Bottes de gem
+item.pe_arcana_ring.name=Anneau des arcanes
+item.pe_void_ring.name=Anneau du vide
+item.pe_zero_ring.name=Anneau Zero
+item.pe_tome.name=Tome de la connaissance
 item.pe_transmutation_tablet.name=Tablette de transmutation
 
 tile.pe_alchemy_chest.name=Coffre alchimique
 tile.pe_interdiction_torch.name=Torche d'interdiction
 tile.pe_transmutation_stone.name=Table de transmutation
-tile.pe_condenser.name=Condensateur à Energie
-tile.pe_rm_furnace.name=Fourneau à matière rouge
-tile.pe_dm_furnace.name=Fourneau à matière noire
+tile.pe_condenser.name=Condenseur d'énergie
+tile.pe_condenser_mk2.name=Condenseur d'énergie MK2
+tile.pe_rm_furnace.name=Four de matière rouge
+tile.pe_dm_furnace.name=Four de matière noire
 tile.pe_rm_block.name=Bloc de matière rouge
 tile.pe_dm_block.name=Bloc de matière noire
 tile.pe_collector_MK1.name=Collecteur d'énergie MK1
 tile.pe_collector_MK2.name=Collecteur d'énergie MK2
 tile.pe_collector_MK3.name=Collecteur d'énergie MK3
-tile.pe_relay_MK1.name=Relais anti-matière MK1
-tile.pe_relay_MK2.name=Relais anti-matière MK2
-tile.pe_relay_MK3.name=Relais anti-matière MK3
-tile.pe_nova_catalyst.name=Catalyseur nova
-tile.pe_nova_cataclysm.name=Cataclysme nova
+tile.pe_relay_MK1.name=Relais d'anti-matière MK1
+tile.pe_relay_MK2.name=Relais d'anti-matière MK2
+tile.pe_relay_MK3.name=Relais d'anti-matière MK3
+tile.pe_nova_catalyst.name=Nova Catalyseur
+tile.pe_nova_cataclysm.name=Nova cataclysme
 tile.pe_fuel_block_0.name=Bloc de charbon alchimique
-tile.pe_fuel_block_1.name=Bloc de combustible de Mœbius
-tile.pe_fuel_block_2.name=Bloc de combustible d'Æternalis
-tile.pe_dmPedestal.name=Piédestal de matière noire
+tile.pe_fuel_block_1.name=Bloc de carburant Mobius
+tile.pe_fuel_block_2.name=Bloc de carburant Aeternalis
+tile.pe_dmPedestal.name=Piédestal en matière noire
 
-achievement.phil_stone=Le meilleur ami des alchimistes !
-achievement.phil_stone.desc=Commençons donc ! Fabriquons une pierre philosophale...
-achievement.alch_chest=Amélioration du rangement !
-achievement.alch_chest.desc=Une "petite" amélioration pour vos coffres.
-achievement.alch_bag=Rangement de poche !
-achievement.alch_bag.desc=Toutes les merveilles d'un coffre alchimique, dans l'espace d'un mouchoir de poche.
-achievement.transmutation=Transmutez ceci en cela !
-achievement.transmutation.desc=Le début (et la fin) de toutes choses.
-achievement.condenser=Condensez le monde !
-achievement.condenser.desc=PLUS DE DIAMANTS !
-achievement.collector=Le pouvoir du soleil !
-achievement.collector.desc=Les choses amusantes commencent enfin.
-achievement.relay=Fleurs de puisance !
-achievement.relay.desc=Lier les collecteurs entre eux pour encore plus de puissance.
-achievement.portable_transmutation=Transmutation sur le pouce !
-achievement.portable_transmutation.desc=Et vous pensiez que les choses ne pouvaient pas être plus belles.
-achievement.dark_matter=Toute cette matière !
-achievement.dark_matter.desc=Ca a l'air... bizarre....
-achievement.red_matter=De la matière encore meilleure !
-achievement.red_matter.desc=L'espace-temps est peut-être brisé...
-achievement.dm_block=Un bloc bien fier !
-achievement.dm_block.desc=Bourrer la matière ensemble. Parce que c'est une bonne idée !
-achievement.rm_block=Rouge et brillant !
-achievement.rm_block.desc=Maintenant nous arrivons quelque part !
-achievement.dm_furnace=Matière chaude !
-achievement.dm_furnace.desc=Un fourneau est encore meilleur en matière noire.
-achievement.rm_furnace=De la matière encore plus chaude !
-achievement.rm_furnace.desc=Wow, cette chose est rapide.
-achievement.dm_pick=Utiliser la matière sur la matière
-achievement.dm_pick.desc=Parce que pourquoi pas ?
-achievement.rm_pick=Cette chose est-elle sûre ??
+itemGroup.ProjectE=ProjectE
+
+achievement.phil_stone=Le meilleur ami des alchimistes!
+achievement.phil_stone.desc=Disons que les choses ont commencées! Fabrique une pierre philosophale
+achievement.alch_chest=Amélioration du stockage!
+achievement.alch_chest.desc=Une "petite" amélioration du coffre.
+achievement.alch_bag=Amélioration de poche!
+achievement.alch_bag.desc=Toutes la magie d'un coffre alchimique, dans ta poche.
+achievement.transmutation=Tramuste ceci en cela!
+achievement.transmutation.desc=Le commencement (et la fin) de tout.
+achievement.condenser=Condenser le monde!
+achievement.condenser.desc=PLUS DE DIAMANT!
+achievement.collector=Le pouvoir du soleil!
+achievement.collector.desc=Maintenant ont va s'amuser.
+achievement.relay=Puissance des fleurs!
+achievement.relay.desc=Relie les collecteurs entrent eux pour plus de puissance.
+achievement.portable_transmutation=Transmustation sur la route!
+achievement.portable_transmutation.desc=Et maintenant tu sait que les choses ne pouvait être meilleur.
+achievement.dark_matter=Toutes cette matière.
+achievement.dark_matter.desc=Sa à l'air... bizarre....
+achievement.red_matter=Encore plus de matières!
+achievement.red_matter.desc=L'espace-temps peut être brisé.
+achievement.dm_block=Une bloc de matière!
+achievement.dm_block.desc=Bourée la matière ensemble. Parceque c'est fun.
+achievement.rm_block=Rouge et brillant!
+achievement.rm_block.desc=Maintenant tu va quelque part!
+achievement.dm_furnace=Matière chaude!
+achievement.dm_furnace.desc=Un four c'est mieux quand c'est fait avec de la matière noire.
+achievement.rm_furnace=Matière très chaude!
+achievement.rm_furnace.desc=Waw, cette chose est rapide.
+achievement.dm_pick=Utiliser de la matière sur de la matière
+achievement.dm_pick.desc=Parceque pourquoi pas?
+achievement.rm_pick=Est-ce que c'est sur?
 achievement.rm_pick.desc=Probablement pas.
-achievement.klein=Batteries à CME
-achievement.klein.desc=Ranger l'CME pour les jours de grisailles.
-achievement.klein_big=Grosses Batteries à CME
-achievement.klein_big.desc=Retient l'univers dans votre poche.
+achievement.klein=Batteries à EMC
+achievement.klein.desc=Stocker de l'EMC pendant une journée de pluie.
+achievement.klein_big=Très grosse batterie à EMC
+achievement.klein_big.desc=L'univers dans ta poche.
+
+pe.arcana.mode=Mode: 
+pe.arcana.mode.0=Zero
+pe.arcana.mode.1=Arcanes
+pe.arcana.mode.2=Récolte
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Inactive!
+
+pe.archangel.pedestal1=Lance des flèches sur les monstres à proximité
+pe.archangel.pedestal2=Tirs toutes les %s
+
+pe.bhb.pedestal1=Aspire les items à proximité
+pe.bhb.pedestal2=Les éjectent dans un stockage à côté
+
+pe.body.pedestal1=Restaure la faim des joueurs à proximité
+pe.body.pedestal2=Un demi gigot chaque %s
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
+pe.command.changelog.uptodate=ProjectE est à jour.
+pe.command.clearknowledge.error=Impossible d'effacer les connaissances pour: %s
+pe.command.clearknowledge.notify=Vos connaissances de transmutation ont été éffacées par %s!
+pe.command.clearknowledge.playernotfound=Impossible de trouver le nom du joueur: %s
+pe.command.clearknowledge.success=Connaissances éffacées pour: %s
+pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (no params to target self)
+
+pe.command.reload.started=Rechargement des EMC enregistrés...
+pe.command.reload.success=Voila! Envoie des données à jour au client.
+pe.command.reload.notice=Redémarrer ou utiliser "/projecte reloadEMC" quand tout les changements sont complets.
+
+pe.command.remove.invaliditem=Error: L'item "%s" n'a pas été trouvé!
+pe.command.remove.invalidmeta=Error: La valeur meta de "%s" n'est pas valide!
+pe.command.remove.success=La valeur EMC de %s a été retirée.
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.reset.invalidmeta=Error: La valeur meta de "%s" n'est pas valide!
+pe.command.reset.nochange=La valeur EMC de %s:%s n'à pas été modifiée!
+pe.command.reset.success=Mise à zero de la valeur EMC de %s.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.set.invalidemc=Error: La valeur EMC de "%s" n'est pas valide!
+pe.command.set.invaliditem=Error: L'item "%s" n'à pas été trouvé!
+pe.command.set.invalidmeta=Error: La valeur meta de "%s" n'est pas valide!
+pe.command.set.success=Les EMC passe de %s à %s!
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)
+
+pe.darkpick.mode1=Standard
+pe.darkpick.mode2=3x TirHaut
+pe.darkpick.mode3=3x TirLarge
+pe.darkpick.mode4=3x TirLong
+
+pe.divining.avgemc=EMC moyen pour %s blocs: %s
+pe.divining.maxemc=EMC Max: %s
+pe.divining.secondmax=EMC Max 2: %s
+pe.divining.thirdmax=EMC Max 3: %s
+
+pe.dmfurnace.shortname=Four MN
+pe.rmfurnace.shortname=Four MR
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Taux de génération maximum:
+pe.emc.maxoutrate_tooltip=Taux de sortit maximum:
+pe.emc.maxstorage_tooltip=Quantité maximum:
+pe.emc.name=EMC
+pe.emc.rate=EMC/s
+pe.emc.stackemc_tooltip_prefix=Stack d'EMC:
+pe.emc.storedemc_tooltip=EMC stockés:
+pe.emc.too_much=BEAUCOUP TROP
+
+pe.evertide.tooltip1=Appuyez sur %s pour tirer un projectile d'eau
+pe.evertide.tooltip2=Agit comme un seau d'eau infinie
+pe.evertide.tooltip3=Faites un clic droit pour remplir les réservoirs et les chaudrons
+pe.evertide.tooltip4=Toutes les opérations sont totalement gratuites !
+pe.evertide.pedestal1=Créer des tempêtes de pluie/neige
+pe.evertide.pedestal2=Tentatives de démarrage de pluie chaque %s
+
+pe.gem.disabled=DESACTIVER
+pe.gem.enabled=ACTIVER
+
+pe.gem.activate=Activé les capacités offensives de l'armure de gem
+pe.gem.deactivate=Desactivé les capacités offensives de l'armure de gem
+
+pe.gem.helm.lorename=Casque de l'abîme
+pe.gem.chest.lorename=Armure de l'enfer
+pe.gem.legs.lorename=Cretons de gravité
+pe.gem.feet.lorename=Bottes de l'ouragan
+
+pe.gem.nightvision_tooltip=Vision nocturne:
+pe.gem.nightvision.prompt=Appuyez sur %s + %s pour alterner la vision nocturne
+pe.gem.stepassist_tooltip=Aide à la marche:
+pe.gem.stepassist.prompt=Appuyez sur %s pour alterner l'aide à la marche
+
+pe.gemdensity.blacklist=Liste noire
+pe.gemdensity.mode_switch=Mettre la cible à
+pe.gemdensity.tooltip1=Condense les items sur le pouce
+pe.gemdensity.tooltip2=Cible courrante: %s
+pe.gemdensity.tooltip3=Appuyez sur %s pour changer de cible
+pe.gemdensity.tooltip4=Faites un clic droit pour mettre en place une liste noire/blanche
+pe.gemdensity.tooltip5=Maj + clic droit pour activer/désactiver
+pe.gemdensity.whitelist=Liste blanche
+
+pe.harvestgod.pedestal1=Accélère la croissance des cultures proches
+pe.harvestgod.pedestal2=Récoltes des cultures à proximité
+pe.harvestgod.pedestal3=Active tous les %s
+
+pe.ignition.pedestal1=Les montres proches prennent feu
+pe.ignition.pedestal2=Active tous les %s
+
+pe.item.mode=Mode
+pe.item.mode_switch=Passer en Mode %s
+
+pe.katar.mode1=Tuez les hostiles
+pe.katar.mode2=Tuez tout
+
+pe.key.armor_toggle=Effets de l'armure
+pe.key.charge=Charge
+pe.key.extra_function=Extra Fonction
+pe.key.fire_projectile=Projectiles enflammés
+pe.key.mode=Changer de mode
+
+pe.life.pedestal1=Restaure la faim et la vie
+pe.life.pedestal2=La moitié d'un cœur et d'un jambon chaque %s
+
+pe.mind.pedestal1=Aspire les orbes d'XP à proximité dans la pierre d'esprit
+
+pe.misc.every_tick=chaque tick
+pe.misc.seconds=secondes
+pe.misc.storedxp_tooltip=XP stockés:
+pe.misc.wrenched_block=Bloc arraché!
+
+pe.morningstar.mode1=Standard
+pe.morningstar.mode2=3x TirHaut
+pe.morningstar.mode3=3x TirLarge
+pe.morningstar.mode4=3x TirLong
+
+pe.pedestal.item_disabled=Les fonctions du piédestal ont été désactivée!
+pe.pedestal.on_pedestal=Sur le piédestal:
+pe.pedestal.shortname=MR Piédestal
+pe.pedestal.tooltip1=Maj + clic droit pour ouvrir l'interface
+pe.pedestal.tooltip2=Clic droit pour activer!
+
+pe.philstone.mode1=Cube
+pe.philstone.mode2=Plat
+pe.philstone.mode3=Ligne
+pe.philstone.tooltip1=Appuyez sur %s pour ouvrir une grille de craft
+pe.philstone.tooltip2=Agit comme une clé à molette pour les blocs de ProjectE
+pe.philstone.tooltip3=Clic gauche change l'orientation du bloc
+pe.philstone.tooltip4=Maj + clic droit prendra le bloc
+
+pe.redpick.mode1=Standard
+pe.redpick.mode2=3x TirHaut
+pe.redpick.mode3=3x TirLarge
+pe.redpick.mode4=3x TirLong
+
+pe.redsword.mode1=Tuez les hostiles
+pe.redsword.mode2=Tuez tout
+
+pe.relay.mk1=Relais MKI
+pe.relay.mk2=Relais MKII
+pe.relay.mk3=Relais MKIII
+
+pe.repairtalisman.pedestal1=Répares les items des joueurs à proximité
+pe.repairtalisman.pedestal2=Restaure 1 durabilité chaque %s
+
+pe.server.high_alchemist=Le Full Metal Alchimiste
+pe.server.has_joined=a rejoint le serveur
+
+pe.soul.pedestal1=Soigne les joueurs proches
+pe.soul.pedestal2=La moitié d'un cœur chaque %s
+
+pe.swrg.pedestal1=Foudroie les monstres proches
+pe.swrg.pedestal2=Activé chaque %s
+
+pe.timewatch.disabled=Item désactivé par l'administrateur du serveur
+pe.timewatch.ff=Avance rapide
+pe.timewatch.mode=Mode de commande de temps : %s
+pe.timewatch.mode_switch=Mode de contrôle de temps sur : %s
+pe.timewatch.off=Off
+pe.timewatch.rw=Rembobinage
+pe.timewatch.tooltip1=Devenir le maître du temps
+pe.timewatch.tooltip2=Clic droit pour changer de mode
+pe.timewatch.pedestal1=Donne %d ticks de bonus aux blocs proches, chaque tick
+pe.timewatch.pedestal2=Chaque tick, les monstres à proximité se déplacent %.3f plus vite
+
+pe.tome.tooltip1=Déverrouille toutes les connaissances de transmutation quand appris
+
+pe.transmutation.already_using=Quelqu'un est déjà entrain d'utiliser cette table de transmutation
+pe.transmutation.transmute=Transmutation
+pe.transmutation.learned0=A
+pe.transmutation.learned1=p
+pe.transmutation.learned2=p
+pe.transmutation.learned3=r
+pe.transmutation.learned4=i
+pe.transmutation.learned5=s
+pe.transmutation.learned6=!
+pe.transmutation.learned7=!
+
+pe.transmutation.unlearned0=D
+pe.transmutation.unlearned1=é
+pe.transmutation.unlearned2=s
+pe.transmutation.unlearned3=a
+pe.transmutation.unlearned4=p
+pe.transmutation.unlearned5=p
+pe.transmutation.unlearned6=r
+pe.transmutation.unlearned7=i
+pe.transmutation.unlearned8=s
+
+pe.update.available=Nouvelle version de ProjectE disponible! Version: %s
+pe.update.changelog=Utilise /projecte changelog pour les changements!
+pe.update.getit=Obtenez le ici!
+
+pe.volcanite.tooltip1=Appuyez sur %s pour tirer un projectile de lave
+pe.volcanite.tooltip2=Agit comme seau de lave infini
+pe.volcanite.tooltip3=Faites un clic droit pour remplir les réservoirs
+pe.volcanite.tooltip4=Toutes les opérations coûtent 32 EMC !
+pe.volcanite.pedestal1=Empêche les tempêtes de pluie/neige
+pe.volcanite.pedestal2=Tentatives d'arrêter le temps chaque %s
+
+pe.zero.pedestal1=Eteint les entités
+pe.zero.pedestal2=Gèle les environs
+pe.zero.pedestal3=Active chaque %s
+
+pe.debug.metainvalid.name=Ensemble de métadonnées non valide
