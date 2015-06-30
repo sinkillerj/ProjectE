@@ -1,10 +1,8 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -12,13 +10,6 @@ import java.util.HashMap;
 public final class WorldTransmutations
 {
 	public static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
-	public ItemStack result;
-	public ItemStack parent;
-	
-	public WorldTransmutations(ItemStack parent,ItemStack result){
-		this.parent= parent;		
-		this.result = result;
-	}
 	
 	static
 	{
