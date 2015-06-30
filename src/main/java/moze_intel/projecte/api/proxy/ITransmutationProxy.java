@@ -1,12 +1,13 @@
 package moze_intel.projecte.api.proxy;
 
 import com.sun.javafx.beans.annotations.NonNull;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 public interface ITransmutationProxy
 {
@@ -31,6 +32,14 @@ public interface ITransmutationProxy
      * @return Whether the player has knowledge for this ItemStack
      */
     boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @NonNull ItemStack stack);
+
+    /**
+     * Queries the knowledge of the provided player
+     * Calls may only be issued on the server side, and if the server is running
+     * @param playerUUID The Player to query
+     * @return Whether the player has full/override knowledge from the Tome
+     */
+    boolean hasFullKnowledge(@Nonnull UUID playerUUID);
 
     /**
      * Adds to the knowledge of the provided player. Only works if player is online (for now)

@@ -1,21 +1,23 @@
 package moze_intel.projecte.proxies;
 
 import com.google.common.base.Preconditions;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 
 public class TransmutationProxyImpl implements ITransmutationProxy
 {
@@ -50,8 +52,22 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
-            // todo offline
-            return false;
+            return TransmutationOffline.hasKnowledgeForStack(playerUUID);
+        }
+    }
+
+    @Override
+    public boolean hasFullKnowledge(@Nonnull UUID playerUUID)
+    {
+        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
+        EntityPlayer player = findOnlinePlayer(playerUUID);
+        if (player != null)
+        {
+            return Transmutation.hasFullKnowledge(player);
+        }
+        else
+        {
+            return TransmutationOffline.hasFullKnowledge(playerUUID);
         }
     }
 
@@ -102,8 +118,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
-            // Offline -> No-op
-            return Double.NaN;
+            return TransmutationOffline.getEmc(playerUUID);
         }
     }
 
