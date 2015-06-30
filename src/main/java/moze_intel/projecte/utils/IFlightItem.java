@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-public interface IFlightItem // Marker interface for PlayerChecks
-{
-	
-}
+/**
+ * Internal marker interface for PlayerChecks. Addon-makers: DO NOT USE.
+ */
+public interface IFlightItem {}

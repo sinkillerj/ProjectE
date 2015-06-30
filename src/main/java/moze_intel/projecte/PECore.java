@@ -149,6 +149,7 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
+		Transmutation.OfflineHandler.cleanAll();
 	}
 	
 	@Mod.EventHandler

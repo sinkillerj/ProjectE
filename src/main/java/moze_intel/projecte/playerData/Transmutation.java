@@ -1,6 +1,7 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
@@ -14,10 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class Transmutation 
 {
@@ -186,6 +190,34 @@ public final class Transmutation
 
 		properties.setTag("knowledge", list);
 		return properties;
+	}
+
+	public static class OfflineHandler
+	{
+		private static Map<UUID, NBTTagCompound> cachedOfflineKnowledge = Maps.newHashMap();
+
+		public static void cleanAll()
+		{
+			cachedOfflineKnowledge.clear();
+		}
+
+		public static void clear(UUID playerUUID)
+		{
+			cachedOfflineKnowledge.remove(playerUUID);
+		}
+
+		public static List<ItemStack> getOfflineKnowledge(UUID playerUUID)
+		{
+			cacheOfflineData(playerUUID);
+		}
+
+		private static void cacheOfflineData(UUID playerUUID)
+		{
+			if (!cachedOfflineKnowledge.containsKey(playerUUID))
+			{
+
+			}
+		}
 	}
 
 	@Deprecated

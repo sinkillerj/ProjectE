@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-public interface IStepAssistItem
-{
-	
-}
+/**
+ * Internal marker interface for PlayerChecks. Addon-makers: DO NOT USE.
+ */
+public interface IStepAssistItem {}

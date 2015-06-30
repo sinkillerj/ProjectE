@@ -102,7 +102,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
-            // todo offline
+            // Offline -> No-op
             return Double.NaN;
         }
     }
