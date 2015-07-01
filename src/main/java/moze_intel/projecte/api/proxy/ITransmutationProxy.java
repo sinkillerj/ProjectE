@@ -13,7 +13,7 @@ public interface ITransmutationProxy
 {
     /**
      * Register a world transmutation with the Philosopher's Stone
-     * Calls may be issued during the loading stages (preinit, init, postinit)
+     * Calls this during the postinit phase
      * @param origin Original block when targeting world transmutation
      * @param originMeta Original metadata
      * @param result1 First result block

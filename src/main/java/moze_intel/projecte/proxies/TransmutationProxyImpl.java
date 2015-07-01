@@ -28,8 +28,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public boolean registerWorldTransmutation(@Nonnull Block origin, int originMeta, @Nonnull Block result1, int result1Meta, @Nullable Block result2, int result2meta)
     {
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
-        Preconditions.checkState(flag, String.format("Mod %s tried to register world transmutation at an invalid time!", Loader.instance().activeModContainer().getModId()));
+        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), String.format("Mod %s tried to register world transmutation at an invalid time!", Loader.instance().activeModContainer().getModId()));
         if (WorldTransmutations.getWorldTransmutation(new MetaBlock(origin, originMeta), false) != null)
         {
             return false;
