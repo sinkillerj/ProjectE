@@ -5,6 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.IGrowable;
@@ -14,29 +20,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
@@ -51,24 +36,19 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Helper class for anything that touches a World.
  * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
 public final class WorldHelper
 {
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
 			EntityWolf.class, EntityHorse.class
 	);
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> mobs = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
@@ -287,12 +267,12 @@ public final class WorldHelper
 		return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 	}
 
-	public static Entity getNewEntityInstance(Class c, World world)
+	public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world)
 	{
 		try
 		{
-			Constructor constr = c.getConstructor(World.class);
-			Entity ent = (Entity) constr.newInstance(world);
+			Constructor<T> constr = c.getConstructor(World.class);
+			T ent = constr.newInstance(world);
 
 			if (ent instanceof EntitySkeleton)
 			{
@@ -322,17 +302,17 @@ public final class WorldHelper
 		return null;
 	}
 
-	public static Entity getRandomEntity(World world, Entity toRandomize)
+	public static <T extends Entity> EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
 	{
-		Class entClass = toRandomize.getClass();
+		Class<? extends EntityLiving> entClass = toRandomize.getClass();
 
 		if (peacefuls.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
 		}
 		else if (mobs.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
