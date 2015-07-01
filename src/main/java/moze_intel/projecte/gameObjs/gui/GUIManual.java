@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import moze_intel.projecte.manual.ManualPageHandler;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -61,8 +61,8 @@ public class GUIManual extends GuiScreen {
 		    this.drawTexturedModalRect(k, 5, 0, 0, 256, 180);
 		    
 		    if(this.currentPage > -1){
-		    	this.fontRendererObj.drawString(PECore.instance.manualPages.get(currentPage).getItemName(), k + 39, 27, 0, false);	
-		    	this.fontRendererObj.drawSplitString(PECore.instance.manualPages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
+		    	this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getItemName(), k + 39, 27, 0, false);
+		    	this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
 		    }
 		    
 		    for(int i = 0; i < this.buttonList.size(); i++){
@@ -70,7 +70,7 @@ public class GUIManual extends GuiScreen {
 	        }
 		    
 		    if(this.currentPage > -1){
-		    	drawItemStackToGui(mc, PECore.instance.manualPages.get(currentPage).getItem(), k + 19, 22, !(PECore.instance.manualPages.get(currentPage).getItem() instanceof ItemBlock));
+		    	drawItemStackToGui(mc, ManualPageHandler.pages.get(currentPage).getItem(), k + 19, 22, !(ManualPageHandler.pages.get(currentPage).getItem() instanceof ItemBlock));
 		    }
 		    
 		    this.updateButtons();
@@ -99,7 +99,7 @@ public class GUIManual extends GuiScreen {
 	    		((PageTurnButton) this.buttonList.get(0)).visible = true;
 	    		((PageTurnButton) this.buttonList.get(1)).visible = false;
 	    		((TocButton) this.buttonList.get(2)).visible = false;
-	    	}else if(this.currentPage == PECore.instance.manualPages.size() - 1){
+	    	}else if(this.currentPage == ManualPageHandler.pages.size() - 1){
 	    		((PageTurnButton) this.buttonList.get(0)).visible = false;
 	    		((PageTurnButton) this.buttonList.get(1)).visible = true;
 	    		((TocButton) this.buttonList.get(2)).visible = true;

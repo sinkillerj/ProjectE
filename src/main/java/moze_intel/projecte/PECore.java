@@ -2,6 +2,33 @@ package moze_intel.projecte;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.config.NBTWhitelistParser;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.events.ConnectionHandler;
+import moze_intel.projecte.events.PlayerEvents;
+import moze_intel.projecte.events.TickEvents;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.manual.ManualPageHandler;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.ThreadCheckUUID;
+import moze_intel.projecte.network.ThreadCheckUpdate;
+import moze_intel.projecte.network.commands.ProjectECMD;
+import moze_intel.projecte.playerData.IOHandler;
+import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.proxies.CommonProxy;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.GuiHandler;
+import moze_intel.projecte.utils.IMCHandler;
+import moze_intel.projecte.utils.PELogger;
+
+import java.io.File;
+import java.util.List;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -18,37 +45,9 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.config.NBTWhitelistParser;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.PlayerEvents;
-import moze_intel.projecte.events.TickEvents;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.handlers.ManualPageHandler;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.ThreadCheckUUID;
-import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.ProjectECMD;
-import moze_intel.projecte.playerData.IOHandler;
-import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.proxies.CommonProxy;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.GuiHandler;
-import moze_intel.projecte.utils.IMCHandler;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.PEManualPage;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
@@ -67,8 +66,6 @@ public class PECore
 	public static CommonProxy proxy;
 
 	public static final List<String> uuids = Lists.newArrayList();
-	
-	public ArrayList<PEManualPage> manualPages = new ArrayList<PEManualPage>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -102,7 +99,7 @@ public class PECore
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
-		ManualPageHandler.registerPages(manualPages);
+		ManualPageHandler.init();
 	}
 	
 	@EventHandler
