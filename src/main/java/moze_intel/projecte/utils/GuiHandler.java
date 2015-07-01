@@ -17,12 +17,11 @@ import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.container.RelayMK3Container;
-import moze_intel.projecte.gameObjs.container.TransmuteContainer;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
 import moze_intel.projecte.gameObjs.gui.GUICollectorMK1;
 import moze_intel.projecte.gameObjs.gui.GUICollectorMK2;
@@ -38,8 +37,7 @@ import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK3;
-import moze_intel.projecte.gameObjs.gui.GUITransmute;
-import moze_intel.projecte.gameObjs.gui.GUITransmuteTablet;
+import moze_intel.projecte.gameObjs.gui.GUITransmutation;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
@@ -52,7 +50,6 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -73,9 +70,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.ALCH_BAG_GUI:
 				return new AlchBagContainer(player.inventory, new AlchBagInventory(player, player.getHeldItem()));
 			case Constants.TRANSMUTE_STONE_GUI:
-				if (tile != null && tile instanceof TransmuteTile)
-					return new TransmuteContainer(player.inventory, (TransmuteTile) tile);
-				break;
+				return null;
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);
@@ -116,8 +111,8 @@ public class GuiHandler implements IGuiHandler
 				return new MercurialEyeContainer(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
 			case Constants.PHILOS_STONE_GUI:
 				return new PhilosStoneContainer(player.inventory);
-			case Constants.TRANSMUTE_TABLET_GUI:
-				return new TransmuteTabletContainer(player.inventory, new TransmuteTabletInventory(player.getHeldItem(), player));
+			case Constants.TRANSMUTATION_GUI:
+				return new TransmutationContainer(player.inventory, new TransmutationInventory(player));
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
 			case Constants.CONDENSER_MK2_GUI:
@@ -142,10 +137,6 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.ALCH_BAG_GUI:
 				return new GUIAlchChest(player.inventory, new AlchBagInventory(player, player.getHeldItem()));
-			case Constants.TRANSMUTE_STONE_GUI:
-				if (tile != null && tile instanceof TransmuteTile)
-					return new GUITransmute(player.inventory, (TransmuteTile) tile);
-				break;
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new GUICondenser(player.inventory, (CondenserTile) tile);
@@ -186,8 +177,8 @@ public class GuiHandler implements IGuiHandler
 				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem()));
 			case Constants.PHILOS_STONE_GUI:
 				return new GUIPhilosStone(player.inventory);
-			case Constants.TRANSMUTE_TABLET_GUI:
-				return new GUITransmuteTablet(player.inventory, new TransmuteTabletInventory(player.getHeldItem(), player));
+			case Constants.TRANSMUTATION_GUI:
+				return new GUITransmutation(player.inventory, new TransmutationInventory(player));
 			case Constants.ETERNAL_DENSITY_GUI:
 				player.getHeldItem();
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));

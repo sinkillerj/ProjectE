@@ -109,17 +109,18 @@ public class AlchemicalBag extends ItemPE
 	{
 		return 1; 
 	}
-	
+
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
-	{	
-		return super.getUnlocalizedName()+ "_" +colors[MathHelper.clamp_int(stack.getItemDamage(), 0, 15)];
-	}
-	
 	public String getItemStackDisplayName(ItemStack stack)
 	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
+
+		if (stack.getItemDamage() > 15)
+		{
+			return name + " (" + StatCollector.translateToLocal("pe.debug.metainvalid.name") + ")";
+		}
+
 		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}

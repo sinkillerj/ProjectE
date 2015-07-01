@@ -80,6 +80,44 @@ public class HiddenFractionSpecificTest
 
 	}
 
+
+	@Test
+	public void reliquaryVials()
+	{
+		graphMapper.setValue("glass", 1, IMappingCollector.FixedValue.FixAndInherit);
+
+		graphMapper.addConversionMultiple(16, "pane", ImmutableMap.of("glass", 6));
+		graphMapper.addConversionMultiple(5, "vial", ImmutableMap.of("pane", 5));
+		//Internal EMC of pane and vial: 3/8 = 0.375
+		//So 8 * vial should have an emc of 3 => testItem should have emc of 1
+		graphMapper.addConversionMultiple(3, "testItem1", ImmutableMap.of("pane", 8));
+		graphMapper.addConversionMultiple(3, "testItem2", ImmutableMap.of("vial", 8));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "glass"));
+		assertEquals(0, getValue(values, "pane"));
+		assertEquals(0, getValue(values, "vial"));
+		assertEquals(1, getValue(values, "testItem1"));
+		assertEquals(1, getValue(values, "testItem2"));
+	}
+
+	@Test
+	public void propagation()
+	{
+		graphMapper.setValue("a", 1, IMappingCollector.FixedValue.FixAndInherit);
+
+		graphMapper.addConversionMultiple(2, "ahalf", ImmutableMap.of("a", 1));
+		graphMapper.addConversionMultiple(1, "ahalf2", ImmutableMap.of("ahalf", 1));
+		graphMapper.addConversionMultiple(1, "2ahalf2", ImmutableMap.of("ahalf2", 2));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a"));
+		assertEquals(0, getValue(values, "ahalf"));
+		assertEquals(0, getValue(values, "ahalf2"));
+		assertEquals(1, getValue(values, "2ahalf2"));
+
+	}
+
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;

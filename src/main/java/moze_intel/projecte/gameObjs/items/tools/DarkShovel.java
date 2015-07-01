@@ -22,6 +22,7 @@ public class DarkShovel extends PEToolBase
 		this.harvestMaterials.add(Material.ground);
 		this.harvestMaterials.add(Material.sand);
 		this.harvestMaterials.add(Material.snow);
+		this.harvestMaterials.add(Material.clay);
 	}
 
 	// Only for RedShovel

@@ -31,13 +31,13 @@ public final class AlchemicalBags
 	public static void syncFull(EntityPlayer player)
 	{
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(AlchBagProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
-		PELogger.logInfo("** SENT FULL BAG DATA **");
+		PELogger.logDebug("** SENT FULL BAG DATA **");
 	}
 
 	public static void syncPartial(EntityPlayer player, int color)
 	{
 		PacketHandler.sendTo(new ClientSyncBagDataPKT(AlchBagProps.getDataFor(player).saveForPartialPacket(color)), (EntityPlayerMP) player);
-		PELogger.logInfo("** SENT PARTIAL BAG DATA **");
+		PELogger.logDebug("** SENT PARTIAL BAG DATA **");
 	}
 
 	/**

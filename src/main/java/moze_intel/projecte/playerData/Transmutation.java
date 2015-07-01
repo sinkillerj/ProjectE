@@ -28,7 +28,7 @@ public final class Transmutation
 	@Deprecated
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
 
-	private static final LinkedList<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newLinkedList();
+	private static final List<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newArrayList();
 	
 	public static void cacheFullKnowledge()
 	{
@@ -97,12 +97,23 @@ public final class Transmutation
 		}
 	}
 
+	public static void setInputsAndLocks(ItemStack[] stacks, EntityPlayer player)
+	{
+		TransmutationProps data = TransmutationProps.getDataFor(player);
+		data.setInputLocks(stacks);
+	}
+
+	public static ItemStack[] getInputsAndLock(EntityPlayer player)
+	{
+		return TransmutationProps.getDataFor(player).getInputLocks().clone();
+	}
+
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
-			if (ItemStack.areItemStacksEqual(s, stack))
+			if (ItemHelper.basicAreStacksEqual(s, stack))
 			{
 				return true;
 			}
@@ -140,7 +151,7 @@ public final class Transmutation
 	public static void sync(EntityPlayer player)
 	{
 		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
-		PELogger.logInfo("** SENT TRANSMUTATION DATA **");
+		PELogger.logDebug("** SENT TRANSMUTATION DATA **");
 	}
 
 	public static void clearCache()
@@ -178,7 +189,7 @@ public final class Transmutation
 	}
 
 	@Deprecated
-	public static LinkedList<ItemStack> legacyGetKnowledge(String username)
+	public static List<ItemStack> legacyGetKnowledge(String username)
 	{
 		if (TOME_KNOWLEDGE.contains(username))
 		{

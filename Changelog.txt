@@ -1,3 +1,20 @@
+###Version 1.7.10-PE1.7.1
+* NOTICE: It is recommended that you take a world backup prior to updating to 1.7.1 or higher
+* NOTICE: Remove all items from the left side and lock slots of the transmutation GUI prior to updating or they will be lost
+* CHANGE: Bag data and knowledge have been rewritten and are now stored in the player dat. This should resolve countless data loss issues. Conversion code has been added
+* NOTICE: If data does not seem to be migrated when logging in, relog once and it should happen. Please contact the devs using the issue tracker if this happens to you
+* CHANGE: Transmutation GUI has been optimized. Both tablet and table share the same left and lock slots
+* CHANGE: Further improvements to tab autocompletion of PE commands
+* CHANGE: EMC no longer remaps after each and every change command. You must now use the reload command when you are finished with all changes
+* NEW: Fractional mapping code for items with EMC values less than 1
+* NEW: Mapping code for Chisel mod compatibility
+* NEW: Chinese language file updates
+* NEW: Clay can be vein and AOE mined much like gravel
+* FIXED: Tome can be learned even when the recipe is disabled
+* FIXED: Workaround for a crash caused by /give allowing invalid metadata
+* FIXED: Various projectile issues
+* FIXED: A pedestal issue caused by using multiple of the same item in a world
+
 ###Version 1.7.10-PE1.6.0
 * NEW: Void Ring
 * NEW: German language file updates

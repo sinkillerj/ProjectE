@@ -124,6 +124,19 @@ public final class ItemHelper
 	}
 
 	/**
+	 * Copy an NBTTagList that has inventory indices into the appropriate positions of provided array.
+	 */
+	public static ItemStack[] copyIndexedNBTToArray(NBTTagList list, ItemStack[] dest)
+	{
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			NBTTagCompound entry = list.getCompoundTagAt(i);
+			dest[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
+		}
+		return dest;
+	}
+
+	/**
 	 * Returns an ItemStack with stacksize 1.
 	 */
 	public static ItemStack getNormalizedStack(ItemStack stack)
@@ -457,9 +470,9 @@ public final class ItemHelper
 	}
 
 	/**
-	 * Takes an array of ItemStacks and turns it into an NBTTaglist
+	 * Takes an array of ItemStacks and turns it into an NBTTaglist.
 	 */
-	public static NBTTagList toNbtList(ItemStack[] stacks)
+	public static NBTTagList toIndexedNBTList(ItemStack[] stacks)
 	{
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < stacks.length; i++)

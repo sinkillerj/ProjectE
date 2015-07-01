@@ -447,6 +447,20 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
+	public void testGenerateValuesDelayedCycleRecipeExploit() throws Exception {
+		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		//Exploitable Cycle Recype
+		graphMapper.addConversion(1, "exploitable1", Arrays.asList("a1"));
+		graphMapper.addConversion(2, "exploitable2", Arrays.asList("exploitable1"));
+		graphMapper.addConversion(1, "exploitable1", Arrays.asList("exploitable2"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a1"));
+		assertEquals(0, getValue(values, "exploitable1"));
+		assertEquals(0, getValue(values, "exploitable2"));
+	}
+
+	@org.junit.Test
 	public void testGenerateValuesCycleRecipeExploit2() throws Exception {
 		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
 		//Exploitable Cycle Recype
