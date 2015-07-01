@@ -74,6 +74,7 @@ import moze_intel.projecte.gameObjs.items.itemEntities.LightningProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.LootBallItem;
 import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
+import moze_intel.projecte.gameObjs.items.manual.PEManual;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
@@ -236,6 +237,8 @@ public class ObjHandler
 	
 	public static Item transmutationTablet = new TransmutationTablet();
 	
+	public static Item manual = new PEManual();
+	
 	public static void register()
 	{
 		// Blocks without ItemBlock
@@ -342,6 +345,7 @@ public class ObjHandler
 		
 		GameRegistry.registerItem(tome, tome.getUnlocalizedName());
 		GameRegistry.registerItem(transmutationTablet, transmutationTablet.getUnlocalizedName());
+		GameRegistry.registerItem(manual, manual.getUnlocalizedName());
 		
 		//Tile Entities
 		GameRegistry.registerTileEntityWithAlternatives(AlchChestTile.class, "AlchChestTile", "Alchemical Chest Tile");
@@ -583,6 +587,9 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 0), Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, new ItemStack(Items.coal, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 1), Items.iron_ingot, Items.redstone);
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 2), Items.diamond, Items.coal);
+		
+		//Manual RECIPE NEEDS APPROVAL/ADJUSTMENT
+		GameRegistry.addShapelessRecipe(new ItemStack(manual,1,0), Items.book,matter);
 		
 		//Klein Stars
 		for (int i = 1; i < 6; i++)

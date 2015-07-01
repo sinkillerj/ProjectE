@@ -26,6 +26,7 @@ import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.ManualPageHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -40,11 +41,13 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.PEManualPage;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
@@ -64,6 +67,8 @@ public class PECore
 	public static CommonProxy proxy;
 
 	public static final List<String> uuids = Lists.newArrayList();
+	
+	public ArrayList<PEManualPage> manualPages = new ArrayList<PEManualPage>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -97,6 +102,7 @@ public class PECore
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
+		ManualPageHandler.registerPages(manualPages);
 	}
 	
 	@EventHandler
