@@ -209,8 +209,7 @@ public final class WorldHelper
 
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && block.canSilkHarvest(world, player, x, y, z, meta))
 		{
-			ArrayList<ItemStack> list = Lists.newArrayList(new ItemStack(block, 1, meta));
-			return list;
+			return Lists.newArrayList(new ItemStack(block, 1, meta));
 		}
 
 		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
