@@ -1,4 +1,4 @@
-package moze_intel.projecte.gameObjs.items.manual;
+package moze_intel.projecte.gameObjs.items;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
