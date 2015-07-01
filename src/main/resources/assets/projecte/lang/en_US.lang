@@ -360,4 +360,4 @@ pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
 
-help.pe_philosophers_stone.info=ExampleInfo
+pe.manual.pe_philosophers_stone=ExampleInfo
