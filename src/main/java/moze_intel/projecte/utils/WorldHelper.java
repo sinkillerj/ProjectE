@@ -302,7 +302,7 @@ public final class WorldHelper
 		return null;
 	}
 
-	public static <T extends Entity> EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
+	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
 	{
 		Class<? extends EntityLiving> entClass = toRandomize.getClass();
 
