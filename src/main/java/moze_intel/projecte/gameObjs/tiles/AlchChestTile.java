@@ -202,7 +202,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		{
 			if (stack != null && stack.getItem() instanceof IAlchChestItem)
 			{
-				((IAlchChestItem) stack.getItem()).updateInAlchChest(this, stack);
+				((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, xCoord, yCoord, zCoord, stack);
 			}
 		}
 	}
