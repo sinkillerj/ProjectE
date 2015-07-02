@@ -61,7 +61,8 @@ public class GUIManual extends GuiScreen {
 		    this.drawTexturedModalRect(k, 5, 0, 0, 256, 180);
 		    
 		    if(this.currentPage > -1){
-		    	this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getItemName(), k + 39, 27, 0, false);
+		    	if(ManualPageHandler.pages.get(currentPage).textPage==false)this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getItemName(), k + 39, 27, 0, false);
+		    	else this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getTitle(), k + 39, 27, 0, false);
 		    	this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
 		    }
 		    
@@ -69,7 +70,7 @@ public class GUIManual extends GuiScreen {
 	            ((GuiButton) this.buttonList.get(i)).drawButton(this.mc, par1, par2);
 	        }
 		    
-		    if(this.currentPage > -1){
+		    if(this.currentPage > -1 && ManualPageHandler.pages.get(currentPage).getItem() != null){
 		    	drawItemStackToGui(mc, ManualPageHandler.pages.get(currentPage).getItem(), k + 19, 22, !(ManualPageHandler.pages.get(currentPage).getItem() instanceof ItemBlock));
 		    }
 		    
