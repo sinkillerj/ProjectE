@@ -1,11 +1,12 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import moze_intel.projecte.utils.PELogger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -13,48 +14,86 @@ import java.util.UUID;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.Constants;
 
-public class TransmutationOffline {
-    private static Map<UUID, NBTTagCompound> cachedOfflineKnowledge = Maps.newHashMap();
+public class TransmutationOffline
+{
+    private static Map<UUID, List<ItemStack>> cachedKnowledge = Maps.newHashMap();
+    private static Map<UUID, Double> cachedEmc = Maps.newHashMap();
+    private static Map<UUID, Boolean> cachedFullKnowledge = Maps.newHashMap();
 
-    public static void cleanAll() {
-        cachedOfflineKnowledge.clear();
+    public static void cleanAll()
+    {
+        cachedKnowledge.clear();
+        cachedEmc.clear();
+        cachedFullKnowledge.clear();
     }
 
-    public static void clear(UUID playerUUID) {
-        cachedOfflineKnowledge.remove(playerUUID);
+    public static void clear(UUID playerUUID)
+    {
+        cachedKnowledge.remove(playerUUID);
+        cachedEmc.remove(playerUUID);
+        cachedFullKnowledge.remove(playerUUID);
     }
 
-    public static List<ItemStack> getKnowledge(UUID playerUUID) {
-        cacheOfflineData(playerUUID);
+    public static List<ItemStack> getKnowledge(UUID playerUUID)
+    {
+        if (!cachedKnowledge.containsKey(playerUUID))
+        {
+            cacheOfflineData(playerUUID);
+        }
+        return cachedKnowledge.get(playerUUID);
     }
 
-    public static boolean hasKnowledgeForStack(UUID playerUUID) {
-        cacheOfflineData(playerUUID);
+    public static boolean hasKnowledgeForStack(ItemStack stack, UUID playerUUID)
+    {
+        return getKnowledge(playerUUID).contains(stack);
     }
 
-    public static boolean hasFullKnowledge(UUID playerUUID) {
-        cacheOfflineData(playerUUID);
+    public static boolean hasFullKnowledge(UUID playerUUID)
+    {
+        if (!cachedFullKnowledge.containsKey(playerUUID))
+        {
+            cacheOfflineData(playerUUID);
+        }
+        return cachedFullKnowledge.get(playerUUID);
     }
 
-    public static double getEmc(UUID playerUUID) {
-        cacheOfflineData(playerUUID);
+    public static double getEmc(UUID playerUUID)
+    {
+        if (!cachedEmc.containsKey(playerUUID))
+        {
+            cacheOfflineData(playerUUID);
+        }
+        return cachedEmc.get(playerUUID);
     }
 
     private static void cacheOfflineData(UUID playerUUID) {
-        if (!cachedOfflineKnowledge.containsKey(playerUUID)) {
-            File playerData = new File(MinecraftServer.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "playerdata");
-            if (playerData.exists())
-            {
-                File player = new File(playerData, playerUUID.toString() + ".dat");
-                if (player.exists() && player.isFile()) {
-                    try {
-                        NBTTagCompound tag = CompressedStreamTools.readCompressed(new FileInputStream(player));
-                        cachedOfflineKnowledge.put(playerUUID, tag.getCompoundTag(TransmutationProps.PROP_NAME));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
+        if (playerData.exists())
+        {
+            File player = new File(playerData, playerUUID.toString() + ".dat");
+            if (player.exists() && player.isFile()) {
+                try {
+                    NBTTagCompound props = CompressedStreamTools.readCompressed(new FileInputStream(player)).getCompoundTag(TransmutationProps.PROP_NAME);
+                    cachedEmc.put(playerUUID, props.getDouble("transmutationEmc"));
+                    cachedFullKnowledge.put(playerUUID, props.getBoolean("tome"));
+
+                    List<ItemStack> knowledge = Lists.newArrayList();
+                    NBTTagList list = props.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+                    for (int i = 0; i < list.tagCount(); i++)
+                    {
+                        ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+                        if (item != null)
+                        {
+                            knowledge.add(item);
+                        }
                     }
+                    cachedKnowledge.put(playerUUID, knowledge);
+                } catch (IOException e) {
+                    PELogger.logWarn("Failed to cache offline data for API calls");
                 }
             }
         }

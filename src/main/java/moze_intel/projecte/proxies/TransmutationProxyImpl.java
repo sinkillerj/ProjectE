@@ -51,7 +51,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
-            return TransmutationOffline.hasKnowledgeForStack(playerUUID);
+            return TransmutationOffline.hasKnowledgeForStack(stack, playerUUID);
         }
     }
 
