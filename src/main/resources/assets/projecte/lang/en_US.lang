@@ -363,3 +363,4 @@ pe.debug.metainvalid.name=Invalid metadata set
 pe.manual.pe_philosophers_stone=ExampleInfo
 pe.manual.welcome=This is the text in the welcome text page.
 pe.manual.title.welcome=Welcome to the guide!
+pe.manual.title.alchchest=alchchest.png

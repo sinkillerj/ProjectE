@@ -1,28 +1,51 @@
 package moze_intel.projecte.manual;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 public class PEManualPage
 {
 	private Item item = null;
 	private String title = null;
-	public boolean textPage = false;
+	private ResourceLocation resource = null;
+	private Enum pageType;
+	
+	public enum type {
+		ITEMPAGE, TEXTPAGE, IMAGEPAGE
+		}
 	
 	public PEManualPage(Item item)
 	{
 		this.item = item;
+		this.pageType = type.ITEMPAGE;
 	}
 	
-	public PEManualPage(String string)
+	public PEManualPage(String title)
 	{
-		this.title = string;
-		this.textPage = true;	
+		this.title = title;
+		this.pageType = type.TEXTPAGE;
+	}
+	
+	public PEManualPage(String title,ResourceLocation resource){
+		this.resource = resource;
+		this.title = title;
+		this.pageType = type.IMAGEPAGE;
 	}
 
 	public Item getItem()
 	{
 		return item;
+	}
+	
+	public Enum getType()
+	{
+		return pageType;
+	}
+	
+	public ResourceLocation getResource()
+	{
+		return resource;
 	}
 
 	public String getItemName()

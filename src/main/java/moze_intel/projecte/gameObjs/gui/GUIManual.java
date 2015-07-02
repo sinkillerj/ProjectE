@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.manual.ManualPageHandler;
+import moze_intel.projecte.manual.PEManualPage.type;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -8,8 +10,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -48,6 +53,9 @@ public class GUIManual extends GuiScreen {
 		public void drawScreen(int par1, int par2, float par3){		
 			int yPos = 50;
 			int xPos = 100;
+			
+			ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+				width = scaledresolution.getScaledWidth();
 
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			
@@ -61,12 +69,16 @@ public class GUIManual extends GuiScreen {
 		    this.drawTexturedModalRect(k, 5, 0, 0, 256, 180);
 		    
 		    if(this.currentPage > -1){
-		    	if(ManualPageHandler.pages.get(currentPage).textPage==false){
+		    	if(ManualPageHandler.pages.get(currentPage).getType()==type.ITEMPAGE){
 		    		this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getItemName(), k + 39, 27, 0, false);
 		    	}else{
 		    		this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getTitle(), k + 39, 27, 0, false);
 		    	}
-		    	this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
+		    	if(ManualPageHandler.pages.get(currentPage).getType()==type.IMAGEPAGE){
+		    		drawImage(ManualPageHandler.pages.get(currentPage).getResource(),(scaledresolution.getScaledWidth()+256)/2,80);
+		    	}else{
+		    		this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
+		    	}
 		    }
 		    
 		    for(int i = 0; i < this.buttonList.size(); i++){
@@ -181,6 +193,21 @@ public class GUIManual extends GuiScreen {
 		@Override
 		public boolean doesGuiPauseGame(){	
 			return false;
+		}
+		
+		public void drawImage(ResourceLocation resource, int x, int y){
+			TextureManager render = Minecraft.getMinecraft().renderEngine;
+			render.bindTexture(resource);
+			
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glColor4f(1F, 1F, 1F, 1F);
+			GL11.glScalef(0.5F, 0.5F, 1F);
+			this.drawTexturedModalRect(x, y, 0, 0, 256, 256);
+			GL11.glScalef(2F, 2F, 1F);
+			GL11.glDisable(GL11.GL_BLEND);
+
+			
 		}
 
 		
