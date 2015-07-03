@@ -1,17 +1,18 @@
 package moze_intel.projecte.proxies;
 
 import com.google.common.base.Preconditions;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
+
+import javax.annotation.Nonnull;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
 
 public class EMCProxyImpl implements IEMCProxy
 {
@@ -43,7 +44,7 @@ public class EMCProxyImpl implements IEMCProxy
     @Override
     public boolean hasValue(@Nonnull ItemStack stack)
     {
-        return EMCHelper.doesItemHaveEmc(stack);
+        return hasValue(stack.getItem());
     }
 
     @Override
