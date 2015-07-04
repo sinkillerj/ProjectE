@@ -69,13 +69,12 @@ public class MatterBlock extends Block
 		return meta;
 	}
 	
-	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	public void getSubBlocks(Block matterBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
-			list.add(new ItemStack(item , 1, i));
+			list.add(new ItemStack(matterBlock , 1, i));
 		}
 	}
 	

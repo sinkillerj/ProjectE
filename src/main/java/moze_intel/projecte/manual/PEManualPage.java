@@ -1,12 +1,14 @@
 package moze_intel.projecte.manual;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 public class PEManualPage
 {
-	private Item item = null;
+	private ItemStack is = null;
 	private String title = null;
 	private ResourceLocation resource = null;
 	private Enum pageType;
@@ -17,7 +19,13 @@ public class PEManualPage
 	
 	public PEManualPage(Item item)
 	{
-		this.item = item;
+		this.is = new ItemStack(item);
+		this.pageType = type.ITEMPAGE;
+	}
+	
+	public PEManualPage(Block block)
+	{
+		this.is = new ItemStack(block);
 		this.pageType = type.ITEMPAGE;
 	}
 	
@@ -33,9 +41,14 @@ public class PEManualPage
 		this.pageType = type.IMAGEPAGE;
 	}
 
-	public Item getItem()
+	public PEManualPage(ItemStack is) {
+		this.is = is;
+		this.pageType = type.ITEMPAGE;
+	}
+	
+	public ItemStack getItemStack()
 	{
-		return item;
+		return is;
 	}
 	
 	public Enum getType()
@@ -48,15 +61,15 @@ public class PEManualPage
 		return resource;
 	}
 
-	public String getItemName()
+	public String getItemStackName()
 	{
-		return StatCollector.translateToLocal(item.getUnlocalizedName() + ".name");
+		return StatCollector.translateToLocal(is.getUnlocalizedName() + ".name");
 	}
 
 	public String getHelpInfo()
 	{
-		if(item!=null){
-			return StatCollector.translateToLocal("pe.manual." + item.getUnlocalizedName().substring(5)); // Strip "item." or "tile."
+		if(is!=null){
+			return StatCollector.translateToLocal("pe.manual." + is.getUnlocalizedName().substring(5)); // Strip "item." or "tile."
 		}else{
 			return StatCollector.translateToLocal("pe.manual." + title);
 		}

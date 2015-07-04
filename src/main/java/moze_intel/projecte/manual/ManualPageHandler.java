@@ -2,61 +2,158 @@ package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.FuelBlock;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
+import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
+import moze_intel.projecte.gameObjs.items.CovalenceDust;
+import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.gameObjs.items.Matter;
 import moze_intel.projecte.utils.Comparators;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class ManualPageHandler {
 
 	public static final List<PEManualPage> pages = Lists.newArrayList();
-	public static final List<String> textPages = Lists.newArrayList();
-	public static final HashMap<String, ResourceLocation> imagePages = new HashMap<String, ResourceLocation>();
-
-	public static void init()
-	{
-		List<Block> nonTechnicalBlocks = Lists.newArrayList(Sets.difference(ObjHandler.blocks, ObjHandler.technicalBlocks));
-		List<Item> nonTechnicalItems = Lists.newArrayList(Sets.difference(ObjHandler.items, ObjHandler.technicalItems));
-
-		registerTextPages();
-		registerImagePages();
+	public static final TreeMap<Integer,String> pageIndexes = new TreeMap<Integer,String>();	
+	public static List<ItemStack> subItems = Lists.newArrayList();
+	
+	private static int pageNumber = 0;
+	private static String itemName = null;
+	
+	public static void init(){
 		
-		Collections.sort(nonTechnicalBlocks, Comparators.BLOCK_UNLOCAL_NAME);
-		Collections.sort(nonTechnicalItems, Comparators.ITEM_UNLOCAL_NAME);
+		//Blocks
+		addItems(ObjHandler.alchChest);
+		addItems(ObjHandler.confuseTorch);
+		addItems(ObjHandler.transmuteStone);
+		addItems(ObjHandler.condenser);
+		addItems(ObjHandler.condenserMk2);
+		addItems(ObjHandler.rmFurnaceOff);
+		addItems(ObjHandler.dmFurnaceOff);
+		addItems(ObjHandler.dmPedestal);
+		addItems(ObjHandler.energyCollector);
+		addItems(ObjHandler.collectorMK2);
+		addItems(ObjHandler.collectorMK3);
+		addItems(ObjHandler.relay);
+		addItems(ObjHandler.relayMK2);
+		addItems(ObjHandler.relayMK3);
+		addItems(ObjHandler.novaCatalyst);
+		addItems(ObjHandler.novaCataclysm);
 		
-		for(Entry<String, ResourceLocation> entry: imagePages.entrySet()){
-			pages.add(new PEManualPage(entry.getKey(),entry.getValue()));
-		}
+		//Meta-blocks
+		new MatterBlock().getSubBlocks(ObjHandler.matterBlock, null, subItems);
+		addSubItems(subItems);
+		new FuelBlock().getSubBlocks(ObjHandler.fuelBlock, null, subItems);
+		addSubItems(subItems);
 		
-		for(String title : textPages){
-			pages.add(new PEManualPage(title));
-		}
-
-		for(Item item : nonTechnicalItems){
-			pages.add(new PEManualPage(item));
-		}
-
-		for(Block block : nonTechnicalBlocks){
-			pages.add(new PEManualPage(Item.getItemFromBlock(block)));
-		}
+		//Items
+		addItems(ObjHandler.philosStone);
+		addItems(ObjHandler.alchBag); //Left out of meta-items due to clutter reasons, don't need 16 alchbag pages
+		addItems(ObjHandler.repairTalisman);
+		addItems(ObjHandler.dmPick);
+		addItems(ObjHandler.dmAxe);
+		addItems(ObjHandler.dmShovel);
+		addItems(ObjHandler.dmSword);
+		addItems(ObjHandler.dmHoe);
+		addItems(ObjHandler.dmShears);
+		addItems(ObjHandler.dmHammer);
+		addItems(ObjHandler.rmPick);
+		addItems(ObjHandler.rmAxe);
+		addItems(ObjHandler.rmShovel);
+		addItems(ObjHandler.rmSword);
+		addItems(ObjHandler.rmHoe);
+		addItems(ObjHandler.rmShears);
+		addItems(ObjHandler.rmHammer);
+		addItems(ObjHandler.rmKatar);
+		addItems(ObjHandler.rmStar);
+		addItems(ObjHandler.dmHelmet);
+		addItems(ObjHandler.dmChest);
+		addItems(ObjHandler.dmLegs);
+		addItems(ObjHandler.dmFeet);
+		addItems(ObjHandler.rmHelmet);
+		addItems(ObjHandler.rmChest);
+		addItems(ObjHandler.rmLegs);
+		addItems(ObjHandler.rmFeet);
+		addItems(ObjHandler.gemHelmet);
+		addItems(ObjHandler.gemChest);
+		addItems(ObjHandler.gemLegs);
+		addItems(ObjHandler.gemFeet);
+		addItems(ObjHandler.ironBand);
+		addItems(ObjHandler.blackHole);
+		addItems(ObjHandler.angelSmite);
+		addItems(ObjHandler.harvestGod);
+		addItems(ObjHandler.ignition);
+		addItems(ObjHandler.zero);
+		addItems(ObjHandler.swrg);
+		addItems(ObjHandler.timeWatch);
+		addItems(ObjHandler.everTide);
+		addItems(ObjHandler.volcanite);
+		addItems(ObjHandler.eternalDensity);
+		addItems(ObjHandler.dRod1);
+		addItems(ObjHandler.dRod2);
+		addItems(ObjHandler.dRod3);
+		addItems(ObjHandler.mercEye);
+		addItems(ObjHandler.voidRing);
+		addItems(ObjHandler.arcana);
+		addItems(ObjHandler.dCatalyst);
+		addItems(ObjHandler.hyperLens);
+		addItems(ObjHandler.cataliticLens);
+		addItems(ObjHandler.bodyStone);
+		addItems(ObjHandler.soulStone);
+		addItems(ObjHandler.mindStone);
+		addItems(ObjHandler.lifeStone);
+		addItems(ObjHandler.tome);
+		addItems(ObjHandler.transmutationTablet);
+		
+		//Meta-items
+		new Matter().getSubItems(ObjHandler.matter, null, subItems);
+		addSubItems(subItems);
+		new AlchemicalFuel().getSubItems(ObjHandler.fuels, null, subItems);
+		addSubItems(subItems);
+		new CovalenceDust().getSubItems(ObjHandler.covalence, null, subItems);
+		addSubItems(subItems);
+		new KleinStar().getSubItems(ObjHandler.kleinStars, null, subItems);
+		addSubItems(subItems);
+		
+		//for(Entry<String,Integer>entry : pageIndexes.entrySet()){
+		//	System.out.println(entry.getKey() + ":" + entry.getValue());
+		//}
+		
 	}
 	
-	private static void registerTextPages()
-	{
-		textPages.add("welcome");
+	private static void addItems(Item item){
+		pages.add(new PEManualPage(item));
+		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
+		pageIndexes.put(pageNumber++,itemName);
 	}
 	
-	private static void registerImagePages()
-	{
-		imagePages.put("alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"));
+	private static void addItems(Block block){
+		pages.add(new PEManualPage(block));
+		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
+		pageIndexes.put(pageNumber++,itemName);
+	}
+	
+	private static void addSubItems(List<ItemStack> list){
+		
+		for(ItemStack is : list){
+			pages.add(new PEManualPage(is));
+			itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
+			pageIndexes.put(pageNumber++,itemName);
+		}
+		list.clear();
+	}	
 
-	}
-	
 }
