@@ -186,7 +186,7 @@ public class GUIManual extends GuiScreen {
 	    	public void drawButton(Minecraft mc, int par2, int par3){
 	    	GL11.glScaled(0.4f, 0.4f, 0.4f);
 	    	drawRect(xPosition, yPosition,(xPosition + width), (yPosition + height), 0);
-	    	mc.fontRenderer.drawString(displayString, Math.round(xPosition*2.5f), yPosition*3, 0);
+	    	mc.fontRenderer.drawString(displayString, Math.round(xPosition*2.5f), Math.round(yPosition*2.5f), 0);
 
 	    	GL11.glScaled(2.5f, 2.5f, 2.5f);
 	    	}
