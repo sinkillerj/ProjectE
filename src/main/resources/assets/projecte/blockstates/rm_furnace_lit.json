@@ -2,7 +2,7 @@
   "variants": {
     "facing=north": { "model": "projecte:rm_furnace_lit" },
     "facing=south": { "model": "projecte:rm_furnace_lit", "y": 180 },
-    "facing=west":  { "model": "projecte:rm_furnace_lit", "y": 270 },
-    "facing=east":  { "model": "projecte:rm_furnace_lit", "y": 90 }
+    "facing=west": { "model": "projecte:rm_furnace_lit", "y": 270 },
+    "facing=east": { "model": "projecte:rm_furnace_lit", "y": 90 }
   }
 }

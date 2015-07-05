@@ -1,6 +1,6 @@
 {
-  "parent" : "block/cube_all",
-  "textures" : {
-    "all" : "projecte:blocks/fuels_2"
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "projecte:blocks/fuels_2"
   }
 }

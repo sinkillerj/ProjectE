@@ -1,7 +1,6 @@
 {
-  "variants" :
-  {
-    "tier=dark_matter" : { "model" : "projecte:dark_matter_block"},
-    "tier=red_matter" : { "model" : "projecte:red_matter_block"}
+  "variants": {
+    "tier=dark_matter": { "model": "projecte:dark_matter_block"},
+    "tier=red_matter": { "model": "projecte:red_matter_block"}
   }
 }

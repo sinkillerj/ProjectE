@@ -1,7 +1,6 @@
 {
-  "parent" : "block/cube_all",
-  "textures" :
-  {
-    "all" : "projecte:blocks/rm"
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "projecte:blocks/rm"
   }
 }

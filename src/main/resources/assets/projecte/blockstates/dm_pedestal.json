@@ -1,5 +1,5 @@
 {
-  "variants" : {
-    "normal" : { "model" : "projecte:dm_pedestal" }
+  "variants": {
+    "normal": { "model": "projecte:dm_pedestal" }
   }
 }

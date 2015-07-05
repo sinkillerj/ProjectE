@@ -2,7 +2,7 @@
   "variants": {
     "facing=north": { "model": "projecte:relay_mk2" },
     "facing=south": { "model": "projecte:relay_mk2", "y": 180 },
-    "facing=west":  { "model": "projecte:relay_mk2", "y": 270 },
-    "facing=east":  { "model": "projecte:relay_mk2", "y": 90 }
+    "facing=west": { "model": "projecte:relay_mk2", "y": 270 },
+    "facing=east": { "model": "projecte:relay_mk2", "y": 90 }
   }
 }

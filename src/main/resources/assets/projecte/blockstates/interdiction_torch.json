@@ -1,9 +1,9 @@
 {
   "variants": {
-    "facing=up":  { "model": "projecte:interdiction_torch_standing" },
-    "facing=east":  { "model": "projecte:interdiction_torch_wall" },
-    "facing=south":  { "model": "projecte:interdiction_torch_wall", "y": 90 },
-    "facing=west":  { "model": "projecte:interdiction_torch_wall", "y": 180 },
-    "facing=north":  { "model": "projecte:interdiction_torch_wall", "y": 270 }
+    "facing=up": { "model": "projecte:interdiction_torch_standing" },
+    "facing=east": { "model": "projecte:interdiction_torch_wall" },
+    "facing=south": { "model": "projecte:interdiction_torch_wall", "y": 90 },
+    "facing=west": { "model": "projecte:interdiction_torch_wall", "y": 180 },
+    "facing=north": { "model": "projecte:interdiction_torch_wall", "y": 270 }
   }
 }
