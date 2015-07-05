@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import moze_intel.projecte.manual.ImagePage;
+import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.manual.PEManualPage;
 import moze_intel.projecte.manual.PEManualPage.EnumPageType;
@@ -19,7 +21,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 @SideOnly(Side.CLIENT)
 public class GUIManual extends GuiScreen
@@ -29,14 +30,13 @@ public class GUIManual extends GuiScreen
 	private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 
 	private final int INDEX_PAGE_ID = -1;
-	private int currentPage = INDEX_PAGE_ID;
+	private int currentPageID = INDEX_PAGE_ID;
 	private int offset = 3;
 	private int xOffset = 30;
 	private int yOffset = 0;
 	private int yValue = -1;
 	private final int charHeight = Math.round(9 / 2.5f);
-	private String text = "Placeholder";
-	
+
 	@Override
 	public void initGui()
 	{
@@ -69,24 +69,28 @@ public class GUIManual extends GuiScreen
 		
 	    int k = (this.width - 256) / 2;
 	    this.drawTexturedModalRect(k, 5, 0, 0, 256, 180);
-	    
-	    if (!isViewingIndex())
+
+
+		if (!isViewingIndex())
 		{
-	    	if (ManualPageHandler.pages.get(currentPage).getType()== PEManualPage.EnumPageType.ITEMPAGE)
+			PEManualPage currentPage = ManualPageHandler.pages.get(currentPageID);
+			this.fontRendererObj.drawString(currentPage.getHeaderText(), k + 39, 27, 0, false);
+
+			if (currentPage.getType() == PEManualPage.EnumPageType.IMAGEPAGE)
 			{
-				this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getItemStackName(), k + 39, 27, 0, false);
+				// TODO clarify composition of enum vs inheritance (!)
+	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
 	    	} else
 			{
-	    		this.fontRendererObj.drawString(ManualPageHandler.pages.get(currentPage).getTitle(), k + 39, 27, 0, false);
+	    		this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
 	    	}
 
-			if (ManualPageHandler.pages.get(currentPage).getType()== PEManualPage.EnumPageType.IMAGEPAGE)
+			if (currentPage.getType() == EnumPageType.ITEMPAGE)
 			{
-	    		drawImage(ManualPageHandler.pages.get(currentPage).getResource(),(scaledresolution.getScaledWidth()+256)/2,80);
-	    	} else
-			{
-	    		this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPage).getHelpInfo(), k + 18, 45, 225, 0);
-	    	}
+				ItemPage itemPage = ((ItemPage) currentPage);
+				drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock));
+			}
+
 	    } else
 		{
 	    	this.fontRendererObj.drawString("Index", k + 39, 27, 0, false);
@@ -106,29 +110,24 @@ public class GUIManual extends GuiScreen
 			}
         }
 	    
-	    // Item icon
-	    if (!isViewingIndex() && ManualPageHandler.pages.get(currentPage).getItemStack() != null)
-		{
-	    	drawItemStackToGui(mc, ManualPageHandler.pages.get(currentPage).getItemStack(), k + 19, 22, !(ManualPageHandler.pages.get(currentPage).getItemStack().getItem() instanceof ItemBlock));
-	    }
-	    
 	    this.updateButtons();
 	}
 	
     @Override
-	protected void actionPerformed(GuiButton par1GuiButton){
+	protected void actionPerformed(GuiButton par1GuiButton)
+	{
 		if (par1GuiButton.id == 0)
 		{
-    		this.currentPage++;
+    		this.currentPageID++;
     	} else if (par1GuiButton.id == 1)
 		{
-    		this.currentPage--;
+    		this.currentPageID--;
     	} else if (par1GuiButton.id == 2)
 		{
-    		this.currentPage = -1;
+    		this.currentPageID = INDEX_PAGE_ID;
     	} else
 		{
-    		this.currentPage = par1GuiButton.id - 3;
+    		this.currentPageID = par1GuiButton.id - 3;
     	}
     	
     	this.updateButtons();
@@ -144,7 +143,7 @@ public class GUIManual extends GuiScreen
 			{
     			((InvisButton)this.buttonList.get(i)).visible=true;
     		}
-    	} else if (this.currentPage == ManualPageHandler.pages.size() - 1)
+    	} else if (this.currentPageID == ManualPageHandler.pages.size() - 1)
 		{
     		((PageTurnButton) this.buttonList.get(0)).visible = false;
     		((PageTurnButton) this.buttonList.get(1)).visible = true;
@@ -300,7 +299,7 @@ public class GUIManual extends GuiScreen
     	yOffset = 0;
     	yValue = -1;
 
-    	for (Entry<Integer, String> entry : ManualPageHandler.pageIndexes.entrySet())
+    	for (Entry<Integer, PEManualPage> entry : ManualPageHandler.indexedPages.entrySet())
 		{
     		int id = entry.getKey() + offset;
     		yValue++; //for yOffset
@@ -337,22 +336,14 @@ public class GUIManual extends GuiScreen
 			//If in init, add buttons.
 			if (init)
 			{
-	    		if (ManualPageHandler.pages.get(entry.getKey()).getType() == EnumPageType.ITEMPAGE)
-				{
-	    			text = StatCollector.translateToLocal(entry.getValue()+".name");
-	    		}
-				else
-				{
-	    			text = StatCollector.translateToLocal("pe.manual.title." + entry.getValue());
-	    		}
-	    		
-	    		buttonList.add(new InvisButton(id, ((this.width-256)/2)+xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text)/2.5f), charHeight, text));
+				String text = entry.getValue().getHeaderText();
+	    		buttonList.add(new InvisButton(id, ((this.width-256)/2)+xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), charHeight, text));
 			}
 		}
 	}
 
 	private boolean isViewingIndex()
 	{
-		return currentPage == INDEX_PAGE_ID;
+		return currentPageID == INDEX_PAGE_ID;
 	}
 }

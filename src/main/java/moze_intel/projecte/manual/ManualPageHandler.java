@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ManualPageHandler
 {
 	public static final List<PEManualPage> pages = Lists.newArrayList();
-	public static final TreeMap<Integer, String> pageIndexes = Maps.newTreeMap();
+	public static final TreeMap<Integer, PEManualPage> indexedPages = Maps.newTreeMap();
 
 	private static int pageNumber = 0;
 
@@ -112,41 +112,46 @@ public class ManualPageHandler
 		addSubItems(getSubItems(ObjHandler.covalence));
 		addSubItems(getSubItems(ObjHandler.kleinStars));
 		
-		//for(Entry<String,Integer>entry : pageIndexes.entrySet()){
+		//for(Entry<String,Integer>entry : indexedPages.entrySet()){
 		//	System.out.println(entry.getKey() + ":" + entry.getValue());
 		//}
 	}
 	
 	private static void addItems(Item item)
 	{
-		pages.add(new PEManualPage(item));
-		pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
+		PEManualPage page = PEManualPage.createItemPage(item);
+		pages.add(page);
+		indexedPages.put(pageNumber++, page);
 	}
 	
 	private static void addItems(Block block)
 	{
-		pages.add(new PEManualPage(block));
-		pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
+		PEManualPage page = PEManualPage.createItemPage(block);
+		pages.add(page);
+		indexedPages.put(pageNumber++, page);
 	}
 	
 	private static void addSubItems(List<ItemStack> list)
 	{
-		for(ItemStack is : list){
-			pages.add(new PEManualPage(is));
-			pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
+		for (ItemStack is : list)
+		{
+			PEManualPage page = PEManualPage.createItemPage(is);
+			pages.add(page);
+			indexedPages.put(pageNumber++, page);
 		}
 	}
 	
-	private static void addPage(String title)
+	private static void addPage(String identifier)
 	{
-		pages.add(new PEManualPage(title));
-		pageIndexes.put(pageNumber++, title);
+		PEManualPage page = PEManualPage.createTextPage(identifier);
+		pages.add(page);
+		indexedPages.put(pageNumber++, page);
 	}
 	
 	private static void addImagePage(String title, ResourceLocation resource)
 	{
-		pages.add(new PEManualPage(title, resource));
-		//pageIndexes.put(pageNumber++,title); //Don't want this in the index probably
+		pages.add(PEManualPage.createImagePage(title, resource));
+		//indexedPages.put(pageNumber++,title); //Don't want this in the index probably
 		pageNumber++; //Don't forget to remove if you add to index
 	}
 

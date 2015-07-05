@@ -4,83 +4,54 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
-public class PEManualPage
+public abstract class PEManualPage
 {
-	private ItemStack is = null;
-	private String title = null;
-	private ResourceLocation resource = null;
-	private Enum pageType;
-	
+	private final EnumPageType pageType;
+
+	protected PEManualPage(EnumPageType type)
+	{
+		this.pageType = type;
+	}
+
 	public enum EnumPageType
 	{
-		ITEMPAGE, TEXTPAGE, IMAGEPAGE
-	}
-	
-	public PEManualPage(Item item)
-	{
-		this.is = new ItemStack(item);
-		this.pageType = EnumPageType.ITEMPAGE;
-	}
-	
-	public PEManualPage(Block block)
-	{
-		this.is = new ItemStack(block);
-		this.pageType = EnumPageType.ITEMPAGE;
-	}
-	
-	public PEManualPage(String title)
-	{
-		this.title = title;
-		this.pageType = EnumPageType.TEXTPAGE;
-	}
-	
-	public PEManualPage(String title,ResourceLocation resource){
-		this.resource = resource;
-		this.title = title;
-		this.pageType = EnumPageType.IMAGEPAGE;
+		ITEMPAGE,
+		TEXTPAGE,
+		IMAGEPAGE
 	}
 
-	public PEManualPage(ItemStack is) {
-		this.is = is;
-		this.pageType = EnumPageType.ITEMPAGE;
-	}
-	
-	public ItemStack getItemStack()
-	{
-		return is;
-	}
-	
-	public Enum getType()
+	public EnumPageType getType()
 	{
 		return pageType;
 	}
+
+	public abstract String getBodyText();
 	
-	public ResourceLocation getResource()
+	public abstract String getHeaderText();
+
+	public static PEManualPage createItemPage(Item item)
 	{
-		return resource;
+		return new ItemPage(new ItemStack(item));
 	}
 
-	public String getItemStackName()
+	public static PEManualPage createItemPage(Block block)
 	{
-		return StatCollector.translateToLocal(is.getUnlocalizedName() + ".name");
+		return new ItemPage(new ItemStack(block));
 	}
 
-	public String getHelpInfo()
+	public static PEManualPage createItemPage(ItemStack stack)
 	{
-		if (is!=null)
-		{
-			return StatCollector.translateToLocal("pe.manual." + is.getUnlocalizedName().substring(5)); // Strip "item." or "tile."
-		} else
-		{
-			return StatCollector.translateToLocal("pe.manual." + title);
-		}
+		return new ItemPage(stack.copy());
 	}
-	
-	public String getTitle()
+
+	public static PEManualPage createTextPage(String identifier)
 	{
-		return StatCollector.translateToLocal("pe.manual.title." + title);
+		return new TextPage(identifier);
 	}
-	
+
+	public static PEManualPage createImagePage(String header, ResourceLocation imageLocation)
+	{
+		return new ImagePage(header, imageLocation);
+	}
 }
