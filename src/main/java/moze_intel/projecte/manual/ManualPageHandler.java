@@ -3,12 +3,7 @@ package moze_intel.projecte.manual;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.FuelBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
-import moze_intel.projecte.gameObjs.items.CovalenceDust;
-import moze_intel.projecte.gameObjs.items.KleinStar;
-import moze_intel.projecte.gameObjs.items.Matter;
+
 import java.util.List;
 import java.util.TreeMap;
 
@@ -21,8 +16,7 @@ public class ManualPageHandler
 {
 	public static final List<PEManualPage> pages = Lists.newArrayList();
 	public static final TreeMap<Integer, String> pageIndexes = Maps.newTreeMap();
-	public static List<ItemStack> subItems = Lists.newArrayList();
-	
+
 	private static int pageNumber = 0;
 
 	public static void init()
@@ -49,15 +43,13 @@ public class ManualPageHandler
 		addItems(ObjHandler.novaCatalyst);
 		addItems(ObjHandler.novaCataclysm);
 		
-		//Meta-blocks
-		new MatterBlock().getSubBlocks(ObjHandler.matterBlock, null, subItems);
-		addSubItems(subItems);
-		new FuelBlock().getSubBlocks(ObjHandler.fuelBlock, null, subItems);
-		addSubItems(subItems);
+		// Blocks with different meta forms
+		addSubItems(getSubItems(ObjHandler.matterBlock));
+		addSubItems(getSubItems(ObjHandler.fuelBlock));
 		
 		//Items
 		addItems(ObjHandler.philosStone);
-		addItems(ObjHandler.alchBag); //Left out of meta-items due to clutter reasons, don't need 16 alchbag pages
+		addItems(ObjHandler.alchBag);
 		addItems(ObjHandler.repairTalisman);
 		addItems(ObjHandler.dmPick);
 		addItems(ObjHandler.dmAxe);
@@ -114,15 +106,11 @@ public class ManualPageHandler
 		addItems(ObjHandler.tome);
 		addItems(ObjHandler.transmutationTablet);
 		
-		//Meta-items
-		new Matter().getSubItems(ObjHandler.matter, null, subItems);
-		addSubItems(subItems);
-		new AlchemicalFuel().getSubItems(ObjHandler.fuels, null, subItems);
-		addSubItems(subItems);
-		new CovalenceDust().getSubItems(ObjHandler.covalence, null, subItems);
-		addSubItems(subItems);
-		new KleinStar().getSubItems(ObjHandler.kleinStars, null, subItems);
-		addSubItems(subItems);
+		// Items with different meta forms
+		addSubItems(getSubItems(ObjHandler.matter));
+		addSubItems(getSubItems(ObjHandler.fuels));
+		addSubItems(getSubItems(ObjHandler.covalence));
+		addSubItems(getSubItems(ObjHandler.kleinStars));
 		
 		//for(Entry<String,Integer>entry : pageIndexes.entrySet()){
 		//	System.out.println(entry.getKey() + ":" + entry.getValue());
@@ -147,13 +135,12 @@ public class ManualPageHandler
 			pages.add(new PEManualPage(is));
 			pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
 		}
-		list.clear();
-	}	
+	}
 	
 	private static void addPage(String title)
 	{
 		pages.add(new PEManualPage(title));
-		pageIndexes.put(pageNumber++,title);
+		pageIndexes.put(pageNumber++, title);
 	}
 	
 	private static void addImagePage(String title, ResourceLocation resource)
@@ -161,5 +148,19 @@ public class ManualPageHandler
 		pages.add(new PEManualPage(title, resource));
 		//pageIndexes.put(pageNumber++,title); //Don't want this in the index probably
 		pageNumber++; //Don't forget to remove if you add to index
+	}
+
+	private static List<ItemStack> getSubItems(Block b)
+	{
+		List<ItemStack> list = Lists.newArrayList();
+		b.getSubBlocks(Item.getItemFromBlock(b), null, list);
+		return list;
+	}
+
+	private static List<ItemStack> getSubItems(Item i)
+	{
+		List<ItemStack> list = Lists.newArrayList();
+		i.getSubItems(i, null, list);
+		return list;
 	}
 }
