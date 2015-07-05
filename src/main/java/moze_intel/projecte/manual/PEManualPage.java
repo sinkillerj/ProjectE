@@ -68,9 +68,11 @@ public class PEManualPage
 
 	public String getHelpInfo()
 	{
-		if(is!=null){
+		if (is!=null)
+		{
 			return StatCollector.translateToLocal("pe.manual." + is.getUnlocalizedName().substring(5)); // Strip "item." or "tile."
-		}else{
+		} else
+		{
 			return StatCollector.translateToLocal("pe.manual." + title);
 		}
 	}

@@ -1,6 +1,7 @@
 package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.FuelBlock;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
@@ -16,16 +17,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class ManualPageHandler {
-
+public class ManualPageHandler
+{
 	public static final List<PEManualPage> pages = Lists.newArrayList();
-	public static final TreeMap<Integer,String> pageIndexes = new TreeMap<Integer,String>();	
+	public static final TreeMap<Integer, String> pageIndexes = Maps.newTreeMap();
 	public static List<ItemStack> subItems = Lists.newArrayList();
 	
 	private static int pageNumber = 0;
-	private static String itemName = null;
-	
-	public static void init(){
+
+	public static void init()
+	{
 		
 		addPage("introduction");
 		
@@ -126,40 +127,39 @@ public class ManualPageHandler {
 		//for(Entry<String,Integer>entry : pageIndexes.entrySet()){
 		//	System.out.println(entry.getKey() + ":" + entry.getValue());
 		//}
-		
 	}
 	
-	private static void addItems(Item item){
+	private static void addItems(Item item)
+	{
 		pages.add(new PEManualPage(item));
-		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-		pageIndexes.put(pageNumber++,itemName);
+		pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
 	}
 	
-	private static void addItems(Block block){
+	private static void addItems(Block block)
+	{
 		pages.add(new PEManualPage(block));
-		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-		pageIndexes.put(pageNumber++,itemName);
+		pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
 	}
 	
-	private static void addSubItems(List<ItemStack> list){
-		
+	private static void addSubItems(List<ItemStack> list)
+	{
 		for(ItemStack is : list){
 			pages.add(new PEManualPage(is));
-			itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-			pageIndexes.put(pageNumber++,itemName);
+			pageIndexes.put(pageNumber++, pages.get(pageNumber).getItemStack().getUnlocalizedName());
 		}
 		list.clear();
 	}	
 	
-	private static void addPage(String title){
+	private static void addPage(String title)
+	{
 		pages.add(new PEManualPage(title));
 		pageIndexes.put(pageNumber++,title);
 	}
 	
-	private static void addImagePage(String title, ResourceLocation resource){
+	private static void addImagePage(String title, ResourceLocation resource)
+	{
 		pages.add(new PEManualPage(title, resource));
 		//pageIndexes.put(pageNumber++,title); //Don't want this in the index probably
 		pageNumber++; //Don't forget to remove if you add to index
 	}
-
 }
