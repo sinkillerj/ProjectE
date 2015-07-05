@@ -13,37 +13,38 @@ public class PEManualPage
 	private ResourceLocation resource = null;
 	private Enum pageType;
 	
-	public enum type {
+	public enum EnumPageType
+	{
 		ITEMPAGE, TEXTPAGE, IMAGEPAGE
-		}
+	}
 	
 	public PEManualPage(Item item)
 	{
 		this.is = new ItemStack(item);
-		this.pageType = type.ITEMPAGE;
+		this.pageType = EnumPageType.ITEMPAGE;
 	}
 	
 	public PEManualPage(Block block)
 	{
 		this.is = new ItemStack(block);
-		this.pageType = type.ITEMPAGE;
+		this.pageType = EnumPageType.ITEMPAGE;
 	}
 	
 	public PEManualPage(String title)
 	{
 		this.title = title;
-		this.pageType = type.TEXTPAGE;
+		this.pageType = EnumPageType.TEXTPAGE;
 	}
 	
 	public PEManualPage(String title,ResourceLocation resource){
 		this.resource = resource;
 		this.title = title;
-		this.pageType = type.IMAGEPAGE;
+		this.pageType = EnumPageType.IMAGEPAGE;
 	}
 
 	public PEManualPage(ItemStack is) {
 		this.is = is;
-		this.pageType = type.ITEMPAGE;
+		this.pageType = EnumPageType.ITEMPAGE;
 	}
 	
 	public ItemStack getItemStack()
