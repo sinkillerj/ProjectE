@@ -1,8 +1,6 @@
 package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.FuelBlock;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
@@ -10,13 +8,7 @@ import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
 import moze_intel.projecte.gameObjs.items.CovalenceDust;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.Matter;
-import moze_intel.projecte.utils.Comparators;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.minecraft.block.Block;
@@ -35,8 +27,11 @@ public class ManualPageHandler {
 	
 	public static void init(){
 		
+		addPage("introduction");
+		
 		//Blocks
 		addItems(ObjHandler.alchChest);
+		addImagePage("alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"));
 		addItems(ObjHandler.confuseTorch);
 		addItems(ObjHandler.transmuteStone);
 		addItems(ObjHandler.condenser);
@@ -155,5 +150,16 @@ public class ManualPageHandler {
 		}
 		list.clear();
 	}	
+	
+	private static void addPage(String title){
+		pages.add(new PEManualPage(title));
+		pageIndexes.put(pageNumber++,title);
+	}
+	
+	private static void addImagePage(String title, ResourceLocation resource){
+		pages.add(new PEManualPage(title, resource));
+		//pageIndexes.put(pageNumber++,title); //Don't want this in the index probably
+		pageNumber++; //Don't forget to remove if you add to index
+	}
 
 }
