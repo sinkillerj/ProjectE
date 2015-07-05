@@ -194,8 +194,8 @@ public final class EMCHelper
 
 				if (relDamage <= 0)
 				{
-					//Impossible?
-					return 0;
+					//Not Impossible. Don't use durability or enchants for emc calculation if this happens.
+					return emc;
 				}
 
 				long result = emc * relDamage;
