@@ -64,6 +64,7 @@ item.pe_gem_armor_1.name=Edelsteinbrustpanzer
 item.pe_gem_armor_2.name=Edelsteinbeinschutz
 item.pe_gem_armor_3.name=Edelsteinstiefel
 item.pe_arcana_ring.name=Ring von Arcana
+item.pe_void_ring.name=Ring der Leere
 item.pe_zero_ring.name=Null-Ring
 item.pe_tome.name=Buch des Wissens
 item.pe_transmutation_tablet.name=Transmutationsplatte
@@ -134,14 +135,14 @@ pe.arcana.mode.2=Ernte
 pe.arcana.mode.3=SWRG
 pe.arcana.inactive=Inaktiv!
 
-pe.archangel.pedestal1=Schießt Pfeile auf nahe Mobs
-pe.archangel.pedestal2=Wird jede %s ausgelöst
+pe.archangel.pedestal1=Schießt Pfeile auf nahe Kreaturen.
+pe.archangel.pedestal2=Wird jede %s ausgelöst.
 
-pe.bhb.pedestal1=Sammelt nahe Items auf
-pe.bhb.pedestal2=Legt sie in benachbarte Inventare
+pe.bhb.pedestal1=Sammelt nahe Items auf.
+pe.bhb.pedestal2=Befördert sie in benachbarte Inventare.
 
-pe.body.pedestal1=Stellt den Hunger naher Spieler wieder her
-pe.body.pedestal2=Jede %s eine halbe Hungerkeule
+pe.body.pedestal1=Stellt den Hunger naher Spieler wieder her.
+pe.body.pedestal2=Jede %s eine halbe Hungerkeule.
 
 pe.command.changelog.uptodate=ProjectE ist aktuell.
 pe.command.clearknowledge.error=Transmutationswissen von %s konnte nicht gelöscht werden
@@ -150,8 +151,9 @@ pe.command.clearknowledge.playernotfound=Der Spieler mit dem Namen %s wurde nich
 pe.command.clearknowledge.success=Transmutationswissen von %s gelöscht
 pe.command.clearknowledge.usage=/projecte clearKnowledge [Benutzername] (Keine Parameter, um sein eigenes Wissen zu löschen)
 
-pe.command.reload.started=Lade EMC-Registrierungen neu...
-pe.command.reload.success=Fertig! Sende aktualisierte Daten an Clients.
+pe.command.reload.started=Lade EMC-Werte neu, erwarte Lag.
+pe.command.reload.success=Fertig. Sende aktualisierte Daten an Clients.
+pe.command.reload.notice=Starte neu oder benutze "/projecte reloadEMC", wenn alle Änderungen komplett sind.
 
 pe.command.remove.invaliditem=Fehler: Das Item "%s" wurde nicht gefunden!
 pe.command.remove.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
@@ -159,7 +161,7 @@ pe.command.remove.success=EMC-Wert von %s entfernt.
 pe.command.remove.usage=/projecte removeEMC <unlokalisierter | OreDictionary-Name> [Meta-Wert] (Keine Parameter für in der Hand gehaltenes Item)
 
 pe.command.reset.invalidmeta=Fehler: Der Meta-Wert "%s" ist nicht gültig!
-pe.command.reset.nochange=Der EMC-Wert von %s:%s wurde nicht modifiziert!
+pe.command.reset.nochange=Der EMC-Wert von %s:%s wurde nicht geändert!
 pe.command.reset.success=EMC-Wert von %s zurückgesetzt.
 pe.command.reset.usage=/projecte resetEMC <unlokalisierter | OreDictionary-Name> [Meta-Wert] (Keine Parameter für in der Hand gehaltenes Item)
 
@@ -188,12 +190,12 @@ pe.emc.stackemc_tooltip_prefix=Stack-EMC:
 pe.emc.storedemc_tooltip=Gespeicherte EMC:
 pe.emc.too_much=VIEL ZU VIEL
 
-pe.evertide.tooltip1=Drücke %s, um ein Wasserprojektil zu feuern
-pe.evertide.tooltip2=Funktioniert wie ein unendlicher Wassereimer
-pe.evertide.tooltip3=Rechtsklick um einen Tank oder Kessel zu füllen
-pe.evertide.tooltip4=Alle Operationen sind komplett kostenlos!
-pe.evertide.pedestal1=Erzeugt Regen-/Schneestürme
-pe.evertide.pedestal2=Versucht alle %s, Regen zu erzeugen
+pe.evertide.tooltip1=Drücke %s, um ein Wasserprojektil zu feuern.
+pe.evertide.tooltip2=Funktioniert wie ein unendlicher Wassereimer.
+pe.evertide.tooltip3=Rechtsklick um einen Tank oder Kessel zu füllen.
+pe.evertide.tooltip4=Alle Funktionen verbrauchen keine EMC!
+pe.evertide.pedestal1=Erzeugt Regen-/Schneestürme.
+pe.evertide.pedestal2=Versucht alle %s, Regen zu erzeugen.
 
 pe.gem.disabled=DEAKTVIERT
 pe.gem.enabled=AKTIVIERT
@@ -207,23 +209,23 @@ pe.gem.legs.lorename=Gravitationsbeinschützer
 pe.gem.feet.lorename=Hurrikanstiefel
 
 pe.gem.nightvision_tooltip=Nachtsicht:
-pe.gem.nightvision.prompt=Drücke %s + %s um die Nachtsicht umzuschalten
+pe.gem.nightvision.prompt=Drücke %s + %s um die Nachtsicht umzuschalten.
 pe.gem.stepassist_tooltip=Schrittunterstüzung:
-pe.gem.stepassist.prompt=Drücke %s um die Schrittunterstüzung umzuschalten
+pe.gem.stepassist.prompt=Drücke %s um die Schrittunterstüzung umzuschalten.
 
 pe.gemdensity.mode_switch=Ziel gesetzt zu:
-pe.gemdensity.tooltip1=Kondensiert Items unterwegs
-pe.gemdensity.tooltip2=Aktuelles Ziel: %s
-pe.gemdensity.tooltip3=Drücke %s um das Ziel zu ändern
-pe.gemdensity.tooltip4=Rechtsklick um Blacklist/Whitelist einzurichten
-pe.gemdensity.tooltip5=Shift + Rechtsklick zum Ändern
+pe.gemdensity.tooltip1=Kondensiert Items unterwegs.
+pe.gemdensity.tooltip2=Aktuelles Ziel: %s.
+pe.gemdensity.tooltip3=Drücke %s, um das Ziel zu ändern.
+pe.gemdensity.tooltip4=Rechtsklick, um Blacklist/Whitelist einzurichten.
+pe.gemdensity.tooltip5=Shift + Rechtsklick zum Ändern.
 
-pe.harvestgod.pedestal1=Beschleunigt das Wachstum naher Pflanzen
-pe.harvestgod.pedestal2=Erntet ausgewachsene Pflanzen
-pe.harvestgod.pedestal3=Wird jede %s ausgelöst
+pe.harvestgod.pedestal1=Beschleunigt das Wachstum naher Pflanzen.
+pe.harvestgod.pedestal2=Erntet ausgewachsene Pflanzen.
+pe.harvestgod.pedestal3=Wird jede %s ausgelöst.
 
-pe.ignition.pedestal1=Verbrennt nahe Mobs
-pe.ignition.pedestal2=Wird jede %s ausgelöst
+pe.ignition.pedestal1=Verbrennt nahe Kreaturen.
+pe.ignition.pedestal2=Wird jede %s ausgelöst.
 
 pe.item.mode=Modus
 pe.item.mode_switch=Zu Modus %s gewechselt
@@ -237,10 +239,10 @@ pe.key.extra_function=Zusatzfunktion
 pe.key.fire_projectile=Projektil feuern
 pe.key.mode=Modus ändern
 
-pe.life.pedestal1=Stellt Hunger und Lebensenergie wieder her
-pe.life.pedestal2=Ein halbes Herz und eine halbe Hungerkeule jede %s
+pe.life.pedestal1=Stellt Hunger und Lebensenergie wieder her.
+pe.life.pedestal2=Ein halbes Herz und eine halbe Hungerkeule jede %s.
 
-pe.mind.pedestal1=Saugt nahe XP-Kugeln in den Stein der Gedanken
+pe.mind.pedestal1=Saugt nahe XP-Kugeln in den Stein der Gedanken.
 
 pe.misc.every_tick=jeden Tick
 pe.misc.seconds=Sekunden
@@ -250,16 +252,16 @@ pe.misc.wrenched_block=Ausrichtung des Blocks wurde geändert!
 pe.pedestal.item_disabled=Podestfunktion wurde deaktiviert!
 pe.pedestal.on_pedestal=Auf Podest:
 pe.pedestal.shortname=DM-Podest
-pe.pedestal.tooltip1=Shift + Rechtsklick um GUI zu öffnen
+pe.pedestal.tooltip1=Shift + Rechtsklick um GUI zu öffnen.
 pe.pedestal.tooltip2=Rechtsklick zum Aktivieren!
 
 pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel
 pe.philstone.mode3=Linie
-pe.philstone.tooltip1=Drücke %s, um den Crafting-GUI zu öffnen
-pe.philstone.tooltip2=Funktioniert wie ein Schraubenschlüssel für ProjectE-Blöcke
-pe.philstone.tooltip3=Linksklick ändert die Ausrichtung des Blocks
-pe.philstone.tooltip4=Shift + Rechtsklick wird den Block aufheben
+pe.philstone.tooltip1=Drücke %s, um Crafting-GUI zu öffnen.
+pe.philstone.tooltip2=Funktioniert wie ein Schraubenschlüssel für ProjectE-Blöcke-
+pe.philstone.tooltip3=Linksklick ändert die Ausrichtung des Blocks.
+pe.philstone.tooltip4=Shift + Rechtsklick hebt den Block auf.
 
 pe.redsword.mode1=Feindliche töten
 pe.redsword.mode2=Alle töten
@@ -268,30 +270,30 @@ pe.relay.mk1=Relais MKI
 pe.relay.mk2=Relais MKII
 pe.relay.mk3=Relais MKIII
 
-pe.repairtalisman.pedestal1=Repariert die Items naher Spieler
-pe.repairtalisman.pedestal2=Stellt jede %s 1 Haltbarkeit wieder her
+pe.repairtalisman.pedestal1=Repariert die Items naher Spieler.
+pe.repairtalisman.pedestal2=Stellt jede %s einen Haltbarkeitspunkt wieder her.
 
-pe.server.high_alchemist=Hoher Alchemist
+pe.server.high_alchemist=Der hohe Alchemist
 pe.server.has_joined=hat das Spiel betreten
 
-pe.soul.pedestal1=Heilt nahe Spieler
-pe.soul.pedestal2=Jede %s ein halbes Herz
+pe.soul.pedestal1=Heilt nahe Spieler.
+pe.soul.pedestal2=Jede %s ein halbes Herz.
 
-pe.swrg.pedestal1=Schießt Blitze auf nahe Mobs
-pe.swrg.pedestal2=Wird jede %s aktiviert
+pe.swrg.pedestal1=Schießt Blitze auf nahe Kreaturen.
+pe.swrg.pedestal2=Wird jede %s aktiviert.
 
 pe.timewatch.disabled=Item vom Server-Admin deaktiviert
 pe.timewatch.ff=Vorspulen
 pe.timewatch.mode=Zeitkontroll-Modus: %s
-pe.timewatch.mode_switch=Zeitkontroll-Modus auf %s gesetzt
+pe.timewatch.mode_switch=Zeitkontroll-Modus zu %s gesetzt
 pe.timewatch.off=Aus
 pe.timewatch.rw=Zurückspulen
-pe.timewatch.tooltip1=Werde der Meister der Zeit
-pe.timewatch.tooltip2=Rechtsklick um Modus zu ändern
-pe.timewatch.pedestal1=Gibt jeden Tick %d Bonus-Ticks an nahe Blöcke
-pe.timewatch.pedestal2=Jeden Tick bewegen sich nahe Mobs %.3f mal schneller
+pe.timewatch.tooltip1=Werde der Meister der Zeit.
+pe.timewatch.tooltip2=Rechtsklick um Modus zu ändern.
+pe.timewatch.pedestal1=Gibt jeden Tick %d Bonus-Ticks an nahe Blöcke.
+pe.timewatch.pedestal2=Nahe Kreaturen %.3f mal schneller.
 
-pe.tome.tooltip1=Schaltet das ganze Transmutationswissen frei
+pe.tome.tooltip1=Schaltet das ganze Transmutationswissen frei.
 
 pe.transmutation.already_using=Jemand benutzt schon diesen Transmutationstisch!
 pe.transmutation.learned0=G
@@ -317,13 +319,15 @@ pe.update.available=Neues ProjectE-Update verfügbar! Version: %s
 pe.update.changelog=Benutze /projecte changelog für die Versionsgeschichte!
 pe.update.getit=Hier herunterladen!
 
-pe.volcanite.tooltip1=Drücke %s, um ein Lavaprojektil zu feuern
-pe.volcanite.tooltip2=Funktioniert wie ein unendlicher Lavaeimer
-pe.volcanite.tooltip3=Rechtsklick um einen Tank zu füllen
-pe.volcanite.tooltip4=Alle Operationen kosten 32 EMC!
-pe.volcanite.pedestal1=Verhindert Regen-/Schneestürme
-pe.volcanite.pedestal2=Versucht alle %s, das Wetter zu stoppen
+pe.volcanite.tooltip1=Drücke %s, um ein Lavaprojektil zu feuern.
+pe.volcanite.tooltip2=Funktioniert wie ein unendlicher Lavaeimer.
+pe.volcanite.tooltip3=Rechtsklick um einen Tank zu füllen.
+pe.volcanite.tooltip4=Alle Funktionen kosten 32 EMC!
+pe.volcanite.pedestal1=Verhindert Regen-/Schneestürme.
+pe.volcanite.pedestal2=Versucht alle %s, das Wetter zu stoppen.
 
-pe.zero.pedestal1=Löscht Entities aus
-pe.zero.pedestal2=Friert die Umgebung
-pe.zero.pedestal3=Wird jede %s ausgelöst
+pe.zero.pedestal1=Löscht Kreaturen aus.
+pe.zero.pedestal2=Friert die Umgebung.
+pe.zero.pedestal3=Wird jede %s ausgelöst.
+
+pe.debug.metainvalid.name=Ungültige Metadaten
