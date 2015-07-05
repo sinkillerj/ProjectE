@@ -5,7 +5,6 @@ import moze_intel.projecte.emc.SimpleStack;
 
 import java.util.Comparator;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -111,19 +110,4 @@ public final class Comparators
 			return 0;
 		}
 	};
-
-	public static final Comparator<Block> BLOCK_UNLOCAL_NAME = new Comparator<Block>() {
-		@Override
-		public int compare(Block o1, Block o2) {
-			return o1.getUnlocalizedName().compareTo(o2.getUnlocalizedName());
-		}
-	};
-
-	public static final Comparator<Item> ITEM_UNLOCAL_NAME = new Comparator<Item>() {
-		@Override
-		public int compare(Item o1, Item o2) {
-			return o1.getUnlocalizedName().compareTo(o2.getUnlocalizedName());
-		}
-	};
-
 }

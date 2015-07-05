@@ -17,9 +17,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
@@ -30,12 +30,9 @@ public class GUIManual extends GuiScreen
 	private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 
 	private final int INDEX_PAGE_ID = -1;
-	private int currentPageID = INDEX_PAGE_ID;
+	private final int CHARACTER_HEIGHT = Math.round(9 / 2.5f);
+	private int currentPageID;
 	private int offset = 3;
-	private int xOffset = 30;
-	private int yOffset = 0;
-	private int yValue = -1;
-	private final int charHeight = Math.round(9 / 2.5f);
 
 	@Override
 	public void initGui()
@@ -45,20 +42,17 @@ public class GUIManual extends GuiScreen
         this.buttonList.add(new PageTurnButton(0, i + 210, 160, true));
         this.buttonList.add(new PageTurnButton(1, i + 16, 160, false));
         this.buttonList.add(new TocButton(2, (this.width / 2)-(TocButton.width / 2), 192, 30, 15));
-        
-        drawIndex(true);
+
+		currentPageID = INDEX_PAGE_ID;
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
-		int yPos = 50;
-		int xPos = 100;
-		
 		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-			width = scaledresolution.getScaledWidth();
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		
+		width = scaledresolution.getScaledWidth();
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
 		if (isViewingIndex())
 		{
 	    	this.mc.getTextureManager().bindTexture(tocTexture);
@@ -94,7 +88,7 @@ public class GUIManual extends GuiScreen
 	    } else
 		{
 	    	this.fontRendererObj.drawString("Index", k + 39, 27, 0, false);
-	    	drawIndex(false);
+	    	drawIndex();
 		}
 
 	    //Back and forth buttons, adjust to account for more buttons in buttonList(second list for index?)
@@ -133,7 +127,8 @@ public class GUIManual extends GuiScreen
     	this.updateButtons();
     }
 	
-    private void updateButtons(){
+    private void updateButtons()
+	{
     	if (isViewingIndex())
 		{
     		((PageTurnButton) this.buttonList.get(0)).visible = true;
@@ -150,7 +145,7 @@ public class GUIManual extends GuiScreen
     		((TocButton) this.buttonList.get(2)).visible = true;
     		for (int i = 3; i<this.buttonList.size(); i++)
 			{
-    			((InvisButton)this.buttonList.get(i)).visible=false;
+    			((InvisButton)this.buttonList.get(i)).visible = false;
     		}
     	} else
 		{
@@ -159,7 +154,7 @@ public class GUIManual extends GuiScreen
     		((TocButton) this.buttonList.get(2)).visible = true;
     		for (int i = 3; i<this.buttonList.size(); i++)
 			{
-    			((InvisButton)this.buttonList.get(i)).visible=false;
+    			((InvisButton)this.buttonList.get(i)).visible = false;
     		}
     	}
     }
@@ -267,8 +262,7 @@ public class GUIManual extends GuiScreen
 	
 	public void drawImage(ResourceLocation resource, int x, int y)
 	{
-		TextureManager render = Minecraft.getMinecraft().renderEngine;
-		render.bindTexture(resource);
+		Minecraft.getMinecraft().renderEngine.bindTexture(resource);
 		
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -279,29 +273,22 @@ public class GUIManual extends GuiScreen
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	public void drawCategory(String name, boolean draw)
+	public void drawCategory(String name, int xOffset, int yOffset)
 	{
-			yValue++;
-	   		yOffset = yValue * charHeight + 40;	
-			GL11.glScalef(0.5F, 0.5F, 1F);
-			if (draw)
-			{
-				mc.fontRenderer.drawString("§n" + name, (((this.width-256)/2)+xOffset)*2, yOffset*2, 0);
-			}
-			GL11.glScalef(2, 2F, 1F);
-			yValue += 2;
-	    	yOffset = yValue * charHeight + 40;
+		GL11.glScalef(0.5F, 0.5F, 1F);
+		mc.fontRenderer.drawString(EnumChatFormatting.UNDERLINE + name, (((this.width - 256) / 2) + xOffset)*2, yOffset * 2, 0);
+		GL11.glScalef(2, 2F, 1F);
 	}
 	
-	public void drawIndex(boolean init)
+	public void drawIndex()
 	{
-    	xOffset = 30;
-    	yOffset = 0;
-    	yValue = -1;
+    	int xOffset = 30;
+    	int yOffset = 0;
+    	int yValue = -1;
 
     	for (Entry<Integer, PEManualPage> entry : ManualPageHandler.indexedPages.entrySet())
 		{
-    		int id = entry.getKey() + offset;
+
     		yValue++; //for yOffset
     		
     		if (yOffset >= 150)
@@ -310,35 +297,47 @@ public class GUIManual extends GuiScreen
     			yValue = -1;
     		}
 
-    		yOffset = yValue * charHeight + 40;
-    		//!init gives false in initGui and true in drawScreen. 
+    		yOffset = yValue * CHARACTER_HEIGHT + 40;
+
+
 			switch (entry.getKey())
 			{
     			case 0:
-    				drawCategory("Items", !init);
+					yValue++;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
+    				drawCategory("Items", xOffset, yOffset);
+					yValue += 2;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
     				break;
     				
     			case 12:
-    				drawCategory("Cakes", !init);
+					yValue++;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
+    				drawCategory("Cakes", xOffset, yOffset);
+					yValue += 2;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
     				break;
     				//Armors is rendered weirdly, check it out
     			case 42:
-    				drawCategory("Armors", !init);
+					yValue++;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
+    				drawCategory("Armors", xOffset, yOffset);
+					yValue += 2;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
     				break;
-    				
+
     			case 84:
-    				drawCategory("Death", !init);
+					yValue++;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
+    				drawCategory("Death", xOffset, yOffset);
+					yValue += 2;
+					yOffset = yValue * CHARACTER_HEIGHT + 40;
     				break;
-    				
-    			default: break;
 			}
-    		
-			//If in init, add buttons.
-			if (init)
-			{
-				String text = entry.getValue().getHeaderText();
-	    		buttonList.add(new InvisButton(id, ((this.width-256)/2)+xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), charHeight, text));
-			}
+
+			String text = entry.getValue().getHeaderText();
+			int buttonID = entry.getKey() + offset;
+			buttonList.add(new InvisButton(buttonID, ((this.width-256)/2)+xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), CHARACTER_HEIGHT, text));
 		}
 	}
 

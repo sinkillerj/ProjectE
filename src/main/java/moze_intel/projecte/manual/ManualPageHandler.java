@@ -15,120 +15,115 @@ import net.minecraft.util.ResourceLocation;
 public class ManualPageHandler
 {
 	public static final List<PEManualPage> pages = Lists.newArrayList();
+	// Collection of pages that should be shown in the index. K = index in above list, V = the page object
 	public static final TreeMap<Integer, PEManualPage> indexedPages = Maps.newTreeMap();
-
-	private static int pageNumber = 0;
 
 	public static void init()
 	{
 		
-		addPage("introduction");
+		addTextPage("introduction");
 		
 		//Blocks
-		addItems(ObjHandler.alchChest);
+		addItem(ObjHandler.alchChest);
 		addImagePage("alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"));
-		addItems(ObjHandler.confuseTorch);
-		addItems(ObjHandler.transmuteStone);
-		addItems(ObjHandler.condenser);
-		addItems(ObjHandler.condenserMk2);
-		addItems(ObjHandler.rmFurnaceOff);
-		addItems(ObjHandler.dmFurnaceOff);
-		addItems(ObjHandler.dmPedestal);
-		addItems(ObjHandler.energyCollector);
-		addItems(ObjHandler.collectorMK2);
-		addItems(ObjHandler.collectorMK3);
-		addItems(ObjHandler.relay);
-		addItems(ObjHandler.relayMK2);
-		addItems(ObjHandler.relayMK3);
-		addItems(ObjHandler.novaCatalyst);
-		addItems(ObjHandler.novaCataclysm);
+		addItem(ObjHandler.confuseTorch);
+		addItem(ObjHandler.transmuteStone);
+		addItem(ObjHandler.condenser);
+		addItem(ObjHandler.condenserMk2);
+		addItem(ObjHandler.rmFurnaceOff);
+		addItem(ObjHandler.dmFurnaceOff);
+		addItem(ObjHandler.dmPedestal);
+		addItem(ObjHandler.energyCollector);
+		addItem(ObjHandler.collectorMK2);
+		addItem(ObjHandler.collectorMK3);
+		addItem(ObjHandler.relay);
+		addItem(ObjHandler.relayMK2);
+		addItem(ObjHandler.relayMK3);
+		addItem(ObjHandler.novaCatalyst);
+		addItem(ObjHandler.novaCataclysm);
 		
 		// Blocks with different meta forms
 		addSubItems(getSubItems(ObjHandler.matterBlock));
 		addSubItems(getSubItems(ObjHandler.fuelBlock));
 		
 		//Items
-		addItems(ObjHandler.philosStone);
-		addItems(ObjHandler.alchBag);
-		addItems(ObjHandler.repairTalisman);
-		addItems(ObjHandler.dmPick);
-		addItems(ObjHandler.dmAxe);
-		addItems(ObjHandler.dmShovel);
-		addItems(ObjHandler.dmSword);
-		addItems(ObjHandler.dmHoe);
-		addItems(ObjHandler.dmShears);
-		addItems(ObjHandler.dmHammer);
-		addItems(ObjHandler.rmPick);
-		addItems(ObjHandler.rmAxe);
-		addItems(ObjHandler.rmShovel);
-		addItems(ObjHandler.rmSword);
-		addItems(ObjHandler.rmHoe);
-		addItems(ObjHandler.rmShears);
-		addItems(ObjHandler.rmHammer);
-		addItems(ObjHandler.rmKatar);
-		addItems(ObjHandler.rmStar);
-		addItems(ObjHandler.dmHelmet);
-		addItems(ObjHandler.dmChest);
-		addItems(ObjHandler.dmLegs);
-		addItems(ObjHandler.dmFeet);
-		addItems(ObjHandler.rmHelmet);
-		addItems(ObjHandler.rmChest);
-		addItems(ObjHandler.rmLegs);
-		addItems(ObjHandler.rmFeet);
-		addItems(ObjHandler.gemHelmet);
-		addItems(ObjHandler.gemChest);
-		addItems(ObjHandler.gemLegs);
-		addItems(ObjHandler.gemFeet);
-		addItems(ObjHandler.ironBand);
-		addItems(ObjHandler.blackHole);
-		addItems(ObjHandler.angelSmite);
-		addItems(ObjHandler.harvestGod);
-		addItems(ObjHandler.ignition);
-		addItems(ObjHandler.zero);
-		addItems(ObjHandler.swrg);
-		addItems(ObjHandler.timeWatch);
-		addItems(ObjHandler.everTide);
-		addItems(ObjHandler.volcanite);
-		addItems(ObjHandler.eternalDensity);
-		addItems(ObjHandler.dRod1);
-		addItems(ObjHandler.dRod2);
-		addItems(ObjHandler.dRod3);
-		addItems(ObjHandler.mercEye);
-		addItems(ObjHandler.voidRing);
-		addItems(ObjHandler.arcana);
-		addItems(ObjHandler.dCatalyst);
-		addItems(ObjHandler.hyperLens);
-		addItems(ObjHandler.cataliticLens);
-		addItems(ObjHandler.bodyStone);
-		addItems(ObjHandler.soulStone);
-		addItems(ObjHandler.mindStone);
-		addItems(ObjHandler.lifeStone);
-		addItems(ObjHandler.tome);
-		addItems(ObjHandler.transmutationTablet);
+		addItem(ObjHandler.philosStone);
+		addItem(ObjHandler.alchBag);
+		addItem(ObjHandler.repairTalisman);
+		addItem(ObjHandler.dmPick);
+		addItem(ObjHandler.dmAxe);
+		addItem(ObjHandler.dmShovel);
+		addItem(ObjHandler.dmSword);
+		addItem(ObjHandler.dmHoe);
+		addItem(ObjHandler.dmShears);
+		addItem(ObjHandler.dmHammer);
+		addItem(ObjHandler.rmPick);
+		addItem(ObjHandler.rmAxe);
+		addItem(ObjHandler.rmShovel);
+		addItem(ObjHandler.rmSword);
+		addItem(ObjHandler.rmHoe);
+		addItem(ObjHandler.rmShears);
+		addItem(ObjHandler.rmHammer);
+		addItem(ObjHandler.rmKatar);
+		addItem(ObjHandler.rmStar);
+		addItem(ObjHandler.dmHelmet);
+		addItem(ObjHandler.dmChest);
+		addItem(ObjHandler.dmLegs);
+		addItem(ObjHandler.dmFeet);
+		addItem(ObjHandler.rmHelmet);
+		addItem(ObjHandler.rmChest);
+		addItem(ObjHandler.rmLegs);
+		addItem(ObjHandler.rmFeet);
+		addItem(ObjHandler.gemHelmet);
+		addItem(ObjHandler.gemChest);
+		addItem(ObjHandler.gemLegs);
+		addItem(ObjHandler.gemFeet);
+		addItem(ObjHandler.ironBand);
+		addItem(ObjHandler.blackHole);
+		addItem(ObjHandler.angelSmite);
+		addItem(ObjHandler.harvestGod);
+		addItem(ObjHandler.ignition);
+		addItem(ObjHandler.zero);
+		addItem(ObjHandler.swrg);
+		addItem(ObjHandler.timeWatch);
+		addItem(ObjHandler.everTide);
+		addItem(ObjHandler.volcanite);
+		addItem(ObjHandler.eternalDensity);
+		addItem(ObjHandler.dRod1);
+		addItem(ObjHandler.dRod2);
+		addItem(ObjHandler.dRod3);
+		addItem(ObjHandler.mercEye);
+		addItem(ObjHandler.voidRing);
+		addItem(ObjHandler.arcana);
+		addItem(ObjHandler.dCatalyst);
+		addItem(ObjHandler.hyperLens);
+		addItem(ObjHandler.cataliticLens);
+		addItem(ObjHandler.bodyStone);
+		addItem(ObjHandler.soulStone);
+		addItem(ObjHandler.mindStone);
+		addItem(ObjHandler.lifeStone);
+		addItem(ObjHandler.tome);
+		addItem(ObjHandler.transmutationTablet);
 		
 		// Items with different meta forms
 		addSubItems(getSubItems(ObjHandler.matter));
 		addSubItems(getSubItems(ObjHandler.fuels));
 		addSubItems(getSubItems(ObjHandler.covalence));
 		addSubItems(getSubItems(ObjHandler.kleinStars));
-		
-		//for(Entry<String,Integer>entry : indexedPages.entrySet()){
-		//	System.out.println(entry.getKey() + ":" + entry.getValue());
-		//}
 	}
 	
-	private static void addItems(Item item)
+	private static void addItem(Item item)
 	{
 		PEManualPage page = PEManualPage.createItemPage(item);
 		pages.add(page);
-		indexedPages.put(pageNumber++, page);
+		indexedPages.put(pages.indexOf(page), page);
 	}
 	
-	private static void addItems(Block block)
+	private static void addItem(Block block)
 	{
 		PEManualPage page = PEManualPage.createItemPage(block);
 		pages.add(page);
-		indexedPages.put(pageNumber++, page);
+		indexedPages.put(pages.indexOf(page), page);
 	}
 	
 	private static void addSubItems(List<ItemStack> list)
@@ -137,22 +132,21 @@ public class ManualPageHandler
 		{
 			PEManualPage page = PEManualPage.createItemPage(is);
 			pages.add(page);
-			indexedPages.put(pageNumber++, page);
+			indexedPages.put(pages.indexOf(page), page);
 		}
 	}
 	
-	private static void addPage(String identifier)
+	private static void addTextPage(String identifier)
 	{
 		PEManualPage page = PEManualPage.createTextPage(identifier);
 		pages.add(page);
-		indexedPages.put(pageNumber++, page);
+		indexedPages.put(pages.indexOf(page), page);
 	}
 	
 	private static void addImagePage(String title, ResourceLocation resource)
 	{
 		pages.add(PEManualPage.createImagePage(title, resource));
-		//indexedPages.put(pageNumber++,title); //Don't want this in the index probably
-		pageNumber++; //Don't forget to remove if you add to index
+		// indexedPages.put(pages.indexOf(page),title); Uncomment to add image pages to index
 	}
 
 	private static List<ItemStack> getSubItems(Block b)
