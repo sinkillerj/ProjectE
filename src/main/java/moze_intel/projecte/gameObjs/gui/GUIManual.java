@@ -213,8 +213,9 @@ public class GUIManual extends GuiScreen
 				{
 					v += bHeight;
 				}
-				
+				GL11.glEnable(GL11.GL_BLEND);
 				this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, bWidth, bHeight);
+				GL11.glDisable(GL11.GL_BLEND);
 			}
 		}
 		
