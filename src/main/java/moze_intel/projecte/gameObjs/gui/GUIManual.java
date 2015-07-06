@@ -76,12 +76,12 @@ public class GUIManual extends GuiScreen
 	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
 	    	} else
 			{
+				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
 				if (currentPage instanceof ItemPage)
 				{
 					ItemPage itemPage = ((ItemPage) currentPage);
 					drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock));
 				}
-				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
 			}
 	    } else
 		{
