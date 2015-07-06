@@ -272,7 +272,7 @@ public class GUIManual extends GuiScreen
 		{
 			yValue++;
 			yOffset = yValue * CHARACTER_HEIGHT + 40;
-			drawCategory(StatCollector.translateToLocal(entry.getKey().unlocalName), xOffset, yOffset);
+			drawCategory(StatCollector.translateToLocal(entry.getKey().getUnlocalName()), xOffset, yOffset);
 			yValue += 1;
 			yOffset = yValue * CHARACTER_HEIGHT + 40;
 

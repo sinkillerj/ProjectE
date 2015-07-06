@@ -9,10 +9,15 @@ public enum PageCategory
     ARMOR("armors"),
     MUSTFIGUREOUTTHERESTOFTHESE("kappa");
 
-    public final String unlocalName;
+    private final String identifier;
 
-    PageCategory(String unlocalName)
+    PageCategory(String identifier)
     {
-        this.unlocalName = unlocalName;
+        this.identifier = identifier;
+    }
+
+    public String getUnlocalName()
+    {
+        return "pe.manual.category." + identifier;
     }
 }
