@@ -1,18 +1,18 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import moze_intel.projecte.manual.AbstractPage;
 import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualPageHandler;
-import moze_intel.projecte.manual.PEManualPage;
-import moze_intel.projecte.manual.PEManualPage.EnumPageType;
+import moze_intel.projecte.manual.PageCategory;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -21,6 +21,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 @SideOnly(Side.CLIENT)
 public class GUIManual extends GuiScreen
@@ -41,7 +42,7 @@ public class GUIManual extends GuiScreen
 		
         this.buttonList.add(new PageTurnButton(0, i + 210, 160, true));
         this.buttonList.add(new PageTurnButton(1, i + 16, 160, false));
-        this.buttonList.add(new TocButton(2, (this.width / 2)-(TocButton.width / 2), 192, 30, 15));
+        this.buttonList.add(new TocButton(2, (this.width / 2) - (TocButton.width / 2), 192, 30, 15));
 
 		currentPageID = INDEX_PAGE_ID;
 	}
@@ -67,63 +68,46 @@ public class GUIManual extends GuiScreen
 
 		if (!isViewingIndex())
 		{
-			PEManualPage currentPage = ManualPageHandler.pages.get(currentPageID);
+			AbstractPage currentPage = ManualPageHandler.pages.get(currentPageID);
 			this.fontRendererObj.drawString(currentPage.getHeaderText(), k + 39, 27, 0, false);
 
-			if (currentPage.getType() == PEManualPage.EnumPageType.IMAGEPAGE)
+			if (currentPage instanceof ImagePage)
 			{
-				// TODO clarify composition of enum vs inheritance (!)
 	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
 	    	} else
 			{
-	    		this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
-	    	}
-
-			if (currentPage.getType() == EnumPageType.ITEMPAGE)
-			{
-				ItemPage itemPage = ((ItemPage) currentPage);
-				drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock));
+				if (currentPage instanceof ItemPage)
+				{
+					ItemPage itemPage = ((ItemPage) currentPage);
+					drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock));
+				}
+				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
 			}
-
 	    } else
 		{
-	    	this.fontRendererObj.drawString("Index", k + 39, 27, 0, false);
+	    	this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 39, 27, 0, false);
 	    	drawIndex();
 		}
 
-	    //Back and forth buttons, adjust to account for more buttons in buttonList(second list for index?)
-	    for (int i = 0; i < this.buttonList.size(); i++)
+		this.updateButtons();
+
+		for (Object aButtonList : this.buttonList)
 		{
-            if (i < 3)
-			{
-				((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY);
-			}
-            else if (isViewingIndex())
-			{
-				((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY);
-			}
-        }
-	    
-	    this.updateButtons();
+			((GuiButton) aButtonList).drawButton(this.mc, mouseX, mouseY);
+		}
+
 	}
 	
     @Override
-	protected void actionPerformed(GuiButton par1GuiButton)
+	protected void actionPerformed(GuiButton button)
 	{
-		if (par1GuiButton.id == 0)
+		switch (button.id)
 		{
-    		this.currentPageID++;
-    	} else if (par1GuiButton.id == 1)
-		{
-    		this.currentPageID--;
-    	} else if (par1GuiButton.id == 2)
-		{
-    		this.currentPageID = INDEX_PAGE_ID;
-    	} else
-		{
-    		this.currentPageID = par1GuiButton.id - 3;
-    	}
-    	
+			case 0: currentPageID++; break;
+			case 1: currentPageID--; break;
+			case 2: currentPageID = INDEX_PAGE_ID; break;
+			default: currentPageID = button.id - 3;
+		}
     	this.updateButtons();
     }
 	
@@ -136,7 +120,7 @@ public class GUIManual extends GuiScreen
     		((TocButton) this.buttonList.get(2)).visible = false;
     		for (int i = 3; i<this.buttonList.size(); i++)
 			{
-    			((InvisButton)this.buttonList.get(i)).visible=true;
+    			((IndexLinkButton)this.buttonList.get(i)).visible = true;
     		}
     	} else if (this.currentPageID == ManualPageHandler.pages.size() - 1)
 		{
@@ -145,16 +129,16 @@ public class GUIManual extends GuiScreen
     		((TocButton) this.buttonList.get(2)).visible = true;
     		for (int i = 3; i<this.buttonList.size(); i++)
 			{
-    			((InvisButton)this.buttonList.get(i)).visible = false;
+    			((IndexLinkButton)this.buttonList.get(i)).visible = false;
     		}
     	} else
 		{
     		((PageTurnButton) this.buttonList.get(0)).visible = true;
     		((PageTurnButton) this.buttonList.get(1)).visible = true;
     		((TocButton) this.buttonList.get(2)).visible = true;
-    		for (int i = 3; i<this.buttonList.size(); i++)
+    		for (int i = 3; i < this.buttonList.size(); i++)
 			{
-    			((InvisButton)this.buttonList.get(i)).visible = false;
+    			((IndexLinkButton)this.buttonList.get(i)).visible = false;
     		}
     	}
     }
@@ -162,20 +146,20 @@ public class GUIManual extends GuiScreen
     @SideOnly(Side.CLIENT)
 	private static class TocButton extends GuiButton
 	{
-    	static int width = 0;
+    	private static int width = 0;
 		
 		public TocButton(int ID, int xPos, int yPos, int bWidth, int bHeight)
 		{
-			super(ID,xPos,yPos, bWidth, bHeight, "ToC");
+			super(ID, xPos, yPos, bWidth, bHeight, StatCollector.translateToLocal("pe.manual.index_button"));
 			TocButton.width = bWidth;
 		}
 		
     }
     
     @SideOnly(Side.CLIENT)
-	private static class InvisButton extends GuiButton
+	private static class IndexLinkButton extends GuiButton
 	{
-    	public InvisButton(int par1, int par2, int par3, int par4, int par5, String par6)
+    	public IndexLinkButton(int par1, int par2, int par3, int par4, int par5, String par6)
 		{
     		super(par1, par2, par3, par4, par5, par6);
     	}
@@ -183,35 +167,38 @@ public class GUIManual extends GuiScreen
     	@Override
     	public void drawButton(Minecraft mc, int par2, int par3)
 		{
-    		GL11.glScaled(0.4f, 0.4f, 0.4f);
-    		drawRect(xPosition, yPosition,(xPosition + width), (yPosition + height), 0);
-    		mc.fontRenderer.drawString(displayString, Math.round(xPosition * 2.5f), Math.round(yPosition * 2.5f), 0);
-			GL11.glScaled(2.5f, 2.5f, 2.5f);
+			if (visible)
+			{
+				GL11.glScaled(0.4f, 0.4f, 0.4f);
+				drawRect(xPosition, yPosition,(xPosition + width), (yPosition + height), 0);
+				mc.fontRenderer.drawString(displayString, Math.round(xPosition * 2.5f), Math.round(yPosition * 2.5f), 0);
+				GL11.glScaled(2.5f, 2.5f, 2.5f);
+			}
 		}
     }    	
     
 	@SideOnly(Side.CLIENT)
 	private static class PageTurnButton extends GuiButton
 	{
-		public static int bWidth = 23;
-		public static int bHeight = 13;
-		private boolean bool;
+		private static final int bWidth = 23;
+		private static final int bHeight = 13;
+		private boolean pointsRight;
 		
 		public PageTurnButton(int ID, int xPos, int yPos, boolean par4)
 		{
 			super(ID, xPos, yPos, bWidth, bHeight, "");
-			bool = par4;
+			pointsRight = par4;
 		}
 		
 		
 		@Override
-		public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_)
+		public void drawButton(Minecraft mc, int mouseX, int mouseY)
 		{
 			if (this.visible)
 			{
-				boolean hover = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition && p_146112_2_ < this.xPosition + this.width && p_146112_3_ < this.yPosition + this.height;
+				boolean hover = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				p_146112_1_.getTextureManager().bindTexture(bookGui);
+				mc.getTextureManager().bindTexture(bookGui);
 				int u = 0;
 				int v = 192;
 				
@@ -219,8 +206,8 @@ public class GUIManual extends GuiScreen
 				{
 					 u += bWidth;
 				}
-				//Inverts the button
-				if(!this.bool)
+
+				if(!pointsRight)
 				{
 					v += bHeight;
 				}
@@ -248,12 +235,7 @@ public class GUIManual extends GuiScreen
         
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 	}
-	
-	public static void drawItemStackToGui(Minecraft mc, Block block, int x, int y, boolean fixLighting)
-	{
-		drawItemStackToGui(mc, new ItemStack(block), x, y, fixLighting);
-	}
-	
+
 	@Override
 	public boolean doesGuiPauseGame()
 	{
@@ -286,58 +268,30 @@ public class GUIManual extends GuiScreen
     	int yOffset = 0;
     	int yValue = -1;
 
-    	for (Entry<Integer, PEManualPage> entry : ManualPageHandler.indexedPages.entrySet())
+    	for (Entry<PageCategory, List<AbstractPage>> entry : ManualPageHandler.categoryMap.entrySet())
 		{
+			yValue++;
+			yOffset = yValue * CHARACTER_HEIGHT + 40;
+			drawCategory(StatCollector.translateToLocal(entry.getKey().unlocalName), xOffset, yOffset);
+			yValue += 1;
+			yOffset = yValue * CHARACTER_HEIGHT + 40;
 
-    		yValue++; //for yOffset
-    		
-    		if (yOffset >= 150)
+			for (AbstractPage page : entry.getValue())
 			{
-    			xOffset += 50;
-    			yValue = -1;
-    		}
+				if (!page.shouldAppearInIndex()) {
+					continue;
+				}
+				yValue++;
+				if (yOffset >= 150) {
+					xOffset += 50;
+					yValue = -1;
+				}
 
-    		yOffset = yValue * CHARACTER_HEIGHT + 40;
-
-
-			switch (entry.getKey())
-			{
-    			case 0:
-					yValue++;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				drawCategory("Items", xOffset, yOffset);
-					yValue += 2;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				break;
-    				
-    			case 12:
-					yValue++;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				drawCategory("Cakes", xOffset, yOffset);
-					yValue += 2;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				break;
-    				//Armors is rendered weirdly, check it out
-    			case 42:
-					yValue++;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				drawCategory("Armors", xOffset, yOffset);
-					yValue += 2;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				break;
-
-    			case 84:
-					yValue++;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				drawCategory("Death", xOffset, yOffset);
-					yValue += 2;
-					yOffset = yValue * CHARACTER_HEIGHT + 40;
-    				break;
+				yOffset = yValue * CHARACTER_HEIGHT + 40;
+				String text = page.getHeaderText();
+				int buttonID = ManualPageHandler.pages.indexOf(page) + offset;
+				buttonList.add(new IndexLinkButton(buttonID, ((this.width - 256) / 2) + xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), CHARACTER_HEIGHT, text));
 			}
-
-			String text = entry.getValue().getHeaderText();
-			int buttonID = entry.getKey() + offset;
-			buttonList.add(new InvisButton(buttonID, ((this.width-256)/2)+xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), CHARACTER_HEIGHT, text));
 		}
 	}
 

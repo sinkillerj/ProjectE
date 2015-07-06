@@ -2,26 +2,24 @@ package moze_intel.projecte.manual;
 
 import net.minecraft.util.StatCollector;
 
-public class TextPage extends PEManualPage
+public class TextPage extends AbstractPage
 {
     private final String header;
-    protected TextPage(String identifier)
+    protected TextPage(String identifier, PageCategory category)
     {
-        super(EnumPageType.TEXTPAGE);
+        super(category);
         this.header = identifier;
     }
 
     @Override
     public String getHeaderText()
     {
-        //TODO change key
-        return StatCollector.translateToLocal("pe.manual.title." + header);
+        return StatCollector.translateToLocal("pe.manual." + header + ".header");
     }
 
     @Override
     public String getBodyText()
     {
-        //TODO change key and var name
         return StatCollector.translateToLocal("pe.manual." + header);
     }
 }

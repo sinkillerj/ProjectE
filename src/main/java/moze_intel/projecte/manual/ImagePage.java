@@ -3,16 +3,22 @@ package moze_intel.projecte.manual;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
-public class ImagePage extends PEManualPage
+public class ImagePage extends AbstractPage
 {
     private final ResourceLocation imageLocation;
     private final String header;
 
-    protected ImagePage(String header, ResourceLocation imageLocation)
+    protected ImagePage(String header, ResourceLocation imageLocation, PageCategory category)
     {
-        super(EnumPageType.IMAGEPAGE);
+        super(category);
         this.header = header;
         this.imageLocation = imageLocation;
+    }
+
+    @Override
+    public boolean shouldAppearInIndex()
+    {
+        return false;
     }
 
     public ResourceLocation getImageLocation()
@@ -23,8 +29,7 @@ public class ImagePage extends PEManualPage
     @Override
     public String getHeaderText()
     {
-        // TODO change key
-        return StatCollector.translateToLocal("pe.manual.title." + header);
+        return StatCollector.translateToLocal("pe.manual." + header + ".header");
     }
 
     @Override

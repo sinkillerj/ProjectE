@@ -3,13 +3,13 @@ package moze_intel.projecte.manual;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
-public class ItemPage extends PEManualPage
+public class ItemPage extends AbstractPage
 {
     private final ItemStack stack;
 
-    protected ItemPage(ItemStack stack)
+    protected ItemPage(ItemStack stack, PageCategory category)
     {
-        super(EnumPageType.ITEMPAGE);
+        super(category);
         this.stack = stack;
     }
 
