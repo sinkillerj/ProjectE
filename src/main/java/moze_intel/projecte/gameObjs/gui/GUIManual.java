@@ -83,7 +83,10 @@ public class GUIManual extends GuiScreen
 	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
 	    	} else
 			{
-				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), k + 18, 45, 225, 0);
+	    		float scaleFactor = 0.5f;
+	    		GL11.glScalef(scaleFactor, scaleFactor, 1f);
+				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), Math.round((k + 18)/scaleFactor), Math.round((45)/scaleFactor), Math.round((220)/scaleFactor), 0);
+				GL11.glScalef(1/scaleFactor, 1/scaleFactor, 1f);
 				if (currentPage instanceof ItemPage)
 				{
 					ItemPage itemPage = ((ItemPage) currentPage);
