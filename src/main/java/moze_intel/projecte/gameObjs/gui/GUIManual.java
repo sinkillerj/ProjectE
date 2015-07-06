@@ -1,10 +1,13 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.manual.AbstractPage;
 import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.manual.PageCategory;
+import moze_intel.projecte.utils.ItemHelper;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -84,7 +87,8 @@ public class GUIManual extends GuiScreen
 				if (currentPage instanceof ItemPage)
 				{
 					ItemPage itemPage = ((ItemPage) currentPage);
-					drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock));
+					drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
+					|| ItemHelper.areItemStacksEqual(itemPage.getItemStack(), new ItemStack(ObjHandler.confuseTorch)));
 				}
 			}
 	    } else
