@@ -42,7 +42,11 @@ public class GUIManual extends GuiScreen
 		
         this.buttonList.add(new PageTurnButton(0, i + 210, 160, true));
         this.buttonList.add(new PageTurnButton(1, i + 16, 160, false));
-        this.buttonList.add(new TocButton(2, (this.width / 2) - (TocButton.width / 2), 192, 30, 15));
+        
+    	String text = StatCollector.translateToLocal("pe.manual.index_button");
+    	int width = mc.fontRenderer.getStringWidth(text);
+		
+        this.buttonList.add(new TocButton(2, (this.width / 2) - (width / 2), 192, width, 15, text));
 
 		currentPageID = INDEX_PAGE_ID;
 	}
@@ -146,12 +150,10 @@ public class GUIManual extends GuiScreen
     @SideOnly(Side.CLIENT)
 	private static class TocButton extends GuiButton
 	{
-    	private static int width = 0;
-		
-		public TocButton(int ID, int xPos, int yPos, int bWidth, int bHeight)
+
+		public TocButton(int ID, int xPos, int yPos, int bWidth, int bHeight, String text)
 		{
-			super(ID, xPos, yPos, bWidth, bHeight, StatCollector.translateToLocal("pe.manual.index_button"));
-			TocButton.width = bWidth;
+			super(ID, xPos, yPos, bWidth, bHeight, text);
 		}
 		
     }
