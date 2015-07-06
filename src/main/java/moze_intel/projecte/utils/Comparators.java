@@ -2,12 +2,13 @@ package moze_intel.projecte.utils;
 
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.manual.AbstractPage;
 
 import java.util.Comparator;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public final class Comparators
 {
@@ -112,18 +113,10 @@ public final class Comparators
 		}
 	};
 
-	public static final Comparator<Block> BLOCK_UNLOCAL_NAME = new Comparator<Block>() {
+	public static final Comparator<AbstractPage> PAGE_HEADER = new Comparator<AbstractPage>() {
 		@Override
-		public int compare(Block o1, Block o2) {
-			return o1.getUnlocalizedName().compareTo(o2.getUnlocalizedName());
+		public int compare(AbstractPage o1, AbstractPage o2) {
+			return StatCollector.translateToLocal(o1.getHeaderText()).compareToIgnoreCase(StatCollector.translateToLocal(o2.getHeaderText()));
 		}
 	};
-
-	public static final Comparator<Item> ITEM_UNLOCAL_NAME = new Comparator<Item>() {
-		@Override
-		public int compare(Item o1, Item o2) {
-			return o1.getUnlocalizedName().compareTo(o2.getUnlocalizedName());
-		}
-	};
-
 }

@@ -1,165 +1,184 @@
 package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.FuelBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
-import moze_intel.projecte.gameObjs.items.CovalenceDust;
-import moze_intel.projecte.gameObjs.items.KleinStar;
-import moze_intel.projecte.gameObjs.items.Matter;
+import moze_intel.projecte.utils.Comparators;
+
+import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class ManualPageHandler {
+public class ManualPageHandler
+{
+	public static final List<AbstractPage> pages = Lists.newArrayList();
+	public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
 
-	public static final List<PEManualPage> pages = Lists.newArrayList();
-	public static final TreeMap<Integer,String> pageIndexes = new TreeMap<Integer,String>();	
-	public static List<ItemStack> subItems = Lists.newArrayList();
-	
-	private static int pageNumber = 0;
-	private static String itemName = null;
-	
-	public static void init(){
-		
-		addPage("introduction");
+
+	public static void init()
+	{
+		for (PageCategory e : PageCategory.values())
+		{
+			categoryMap.put(e, Lists.<AbstractPage>newArrayList());
+		}
+
+		addTextPage("introduction", PageCategory.NONE);
 		
 		//Blocks
-		addItems(ObjHandler.alchChest);
-		addImagePage("alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"));
-		addItems(ObjHandler.confuseTorch);
-		addItems(ObjHandler.transmuteStone);
-		addItems(ObjHandler.condenser);
-		addItems(ObjHandler.condenserMk2);
-		addItems(ObjHandler.rmFurnaceOff);
-		addItems(ObjHandler.dmFurnaceOff);
-		addItems(ObjHandler.dmPedestal);
-		addItems(ObjHandler.energyCollector);
-		addItems(ObjHandler.collectorMK2);
-		addItems(ObjHandler.collectorMK3);
-		addItems(ObjHandler.relay);
-		addItems(ObjHandler.relayMK2);
-		addItems(ObjHandler.relayMK3);
-		addItems(ObjHandler.novaCatalyst);
-		addItems(ObjHandler.novaCataclysm);
+		addItem(ObjHandler.alchChest, PageCategory.BLOCK);
+		addImagePage("img_alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"), PageCategory.BLOCK);
+		addItem(ObjHandler.confuseTorch, PageCategory.BLOCK);
+		addItem(ObjHandler.transmuteStone, PageCategory.BLOCK);
+		addItem(ObjHandler.condenser, PageCategory.BLOCK);
+		addItem(ObjHandler.condenserMk2, PageCategory.BLOCK);
+		addItem(ObjHandler.rmFurnaceOff, PageCategory.BLOCK);
+		addItem(ObjHandler.dmFurnaceOff, PageCategory.BLOCK);
+		addItem(ObjHandler.dmPedestal, PageCategory.BLOCK);
+		addItem(ObjHandler.energyCollector, PageCategory.BLOCK);
+		addItem(ObjHandler.collectorMK2, PageCategory.BLOCK);
+		addItem(ObjHandler.collectorMK3, PageCategory.BLOCK);
+		addItem(ObjHandler.relay, PageCategory.BLOCK);
+		addItem(ObjHandler.relayMK2, PageCategory.BLOCK);
+		addItem(ObjHandler.relayMK3, PageCategory.BLOCK);
+		addItem(ObjHandler.novaCatalyst, PageCategory.BLOCK);
+		addItem(ObjHandler.novaCataclysm, PageCategory.BLOCK);
 		
-		//Meta-blocks
-		new MatterBlock().getSubBlocks(ObjHandler.matterBlock, null, subItems);
-		addSubItems(subItems);
-		new FuelBlock().getSubBlocks(ObjHandler.fuelBlock, null, subItems);
-		addSubItems(subItems);
+		// Blocks with different meta forms
+		addItemAndSubs(getSubItems(ObjHandler.matterBlock), PageCategory.BLOCK);
+		addItemAndSubs(getSubItems(ObjHandler.fuelBlock), PageCategory.BLOCK);
 		
 		//Items
-		addItems(ObjHandler.philosStone);
-		addItems(ObjHandler.alchBag); //Left out of meta-items due to clutter reasons, don't need 16 alchbag pages
-		addItems(ObjHandler.repairTalisman);
-		addItems(ObjHandler.dmPick);
-		addItems(ObjHandler.dmAxe);
-		addItems(ObjHandler.dmShovel);
-		addItems(ObjHandler.dmSword);
-		addItems(ObjHandler.dmHoe);
-		addItems(ObjHandler.dmShears);
-		addItems(ObjHandler.dmHammer);
-		addItems(ObjHandler.rmPick);
-		addItems(ObjHandler.rmAxe);
-		addItems(ObjHandler.rmShovel);
-		addItems(ObjHandler.rmSword);
-		addItems(ObjHandler.rmHoe);
-		addItems(ObjHandler.rmShears);
-		addItems(ObjHandler.rmHammer);
-		addItems(ObjHandler.rmKatar);
-		addItems(ObjHandler.rmStar);
-		addItems(ObjHandler.dmHelmet);
-		addItems(ObjHandler.dmChest);
-		addItems(ObjHandler.dmLegs);
-		addItems(ObjHandler.dmFeet);
-		addItems(ObjHandler.rmHelmet);
-		addItems(ObjHandler.rmChest);
-		addItems(ObjHandler.rmLegs);
-		addItems(ObjHandler.rmFeet);
-		addItems(ObjHandler.gemHelmet);
-		addItems(ObjHandler.gemChest);
-		addItems(ObjHandler.gemLegs);
-		addItems(ObjHandler.gemFeet);
-		addItems(ObjHandler.ironBand);
-		addItems(ObjHandler.blackHole);
-		addItems(ObjHandler.angelSmite);
-		addItems(ObjHandler.harvestGod);
-		addItems(ObjHandler.ignition);
-		addItems(ObjHandler.zero);
-		addItems(ObjHandler.swrg);
-		addItems(ObjHandler.timeWatch);
-		addItems(ObjHandler.everTide);
-		addItems(ObjHandler.volcanite);
-		addItems(ObjHandler.eternalDensity);
-		addItems(ObjHandler.dRod1);
-		addItems(ObjHandler.dRod2);
-		addItems(ObjHandler.dRod3);
-		addItems(ObjHandler.mercEye);
-		addItems(ObjHandler.voidRing);
-		addItems(ObjHandler.arcana);
-		addItems(ObjHandler.dCatalyst);
-		addItems(ObjHandler.hyperLens);
-		addItems(ObjHandler.cataliticLens);
-		addItems(ObjHandler.bodyStone);
-		addItems(ObjHandler.soulStone);
-		addItems(ObjHandler.mindStone);
-		addItems(ObjHandler.lifeStone);
-		addItems(ObjHandler.tome);
-		addItems(ObjHandler.transmutationTablet);
+		addItem(ObjHandler.philosStone, PageCategory.ITEM);
+		addItem(ObjHandler.alchBag, PageCategory.ITEM);
+		addItem(ObjHandler.repairTalisman, PageCategory.ITEM);
+		addItem(ObjHandler.dmPick, PageCategory.TOOLS);
+		addItem(ObjHandler.dmAxe, PageCategory.TOOLS);
+		addItem(ObjHandler.dmShovel, PageCategory.TOOLS);
+		addItem(ObjHandler.dmSword, PageCategory.TOOLS);
+		addItem(ObjHandler.dmHoe, PageCategory.TOOLS);
+		addItem(ObjHandler.dmShears, PageCategory.TOOLS);
+		addItem(ObjHandler.dmHammer, PageCategory.TOOLS);
+		addItem(ObjHandler.rmPick, PageCategory.TOOLS);
+		addItem(ObjHandler.rmAxe, PageCategory.TOOLS);
+		addItem(ObjHandler.rmShovel, PageCategory.TOOLS);
+		addItem(ObjHandler.rmSword, PageCategory.TOOLS);
+		addItem(ObjHandler.rmHoe, PageCategory.TOOLS);
+		addItem(ObjHandler.rmShears, PageCategory.TOOLS);
+		addItem(ObjHandler.rmHammer, PageCategory.TOOLS);
+		addItem(ObjHandler.rmKatar, PageCategory.TOOLS);
+		addItem(ObjHandler.rmStar, PageCategory.TOOLS);
+		addItem(ObjHandler.dmHelmet, PageCategory.ARMOR);
+		addItem(ObjHandler.dmChest, PageCategory.ARMOR);
+		addItem(ObjHandler.dmLegs, PageCategory.ARMOR);
+		addItem(ObjHandler.dmFeet, PageCategory.ARMOR);
+		addItem(ObjHandler.rmHelmet, PageCategory.ARMOR);
+		addItem(ObjHandler.rmChest, PageCategory.ARMOR);
+		addItem(ObjHandler.rmLegs, PageCategory.ARMOR);
+		addItem(ObjHandler.rmFeet, PageCategory.ARMOR);
+		addItem(ObjHandler.gemHelmet, PageCategory.ARMOR);
+		addItem(ObjHandler.gemChest, PageCategory.ARMOR);
+		addItem(ObjHandler.gemLegs, PageCategory.ARMOR);
+		addItem(ObjHandler.gemFeet, PageCategory.ARMOR);
+		addItem(ObjHandler.ironBand, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.blackHole, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.angelSmite, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.harvestGod, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.ignition, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.zero, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.swrg, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.timeWatch, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.everTide, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.volcanite, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.eternalDensity, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.dRod1, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.dRod2, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.dRod3, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.mercEye, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.voidRing, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.arcana, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.dCatalyst, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.hyperLens, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.cataliticLens, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.bodyStone, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.soulStone, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.mindStone, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.lifeStone, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.tome, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItem(ObjHandler.transmutationTablet, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
 		
-		//Meta-items
-		new Matter().getSubItems(ObjHandler.matter, null, subItems);
-		addSubItems(subItems);
-		new AlchemicalFuel().getSubItems(ObjHandler.fuels, null, subItems);
-		addSubItems(subItems);
-		new CovalenceDust().getSubItems(ObjHandler.covalence, null, subItems);
-		addSubItems(subItems);
-		new KleinStar().getSubItems(ObjHandler.kleinStars, null, subItems);
-		addSubItems(subItems);
-		
-		//for(Entry<String,Integer>entry : pageIndexes.entrySet()){
-		//	System.out.println(entry.getKey() + ":" + entry.getValue());
-		//}
-		
+		// Items with different meta forms
+		addItemAndSubs(getSubItems(ObjHandler.matter), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItemAndSubs(getSubItems(ObjHandler.fuels), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItemAndSubs(getSubItems(ObjHandler.covalence), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+		addItemAndSubs(getSubItems(ObjHandler.kleinStars), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+
+		registerAll();
 	}
 	
-	private static void addItems(Item item){
-		pages.add(new PEManualPage(item));
-		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-		pageIndexes.put(pageNumber++,itemName);
+	private static void addItem(Item item, PageCategory category)
+	{
+		AbstractPage page = AbstractPage.createItemPage(item, category);
+		categoryMap.get(category).add(page);
 	}
 	
-	private static void addItems(Block block){
-		pages.add(new PEManualPage(block));
-		itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-		pageIndexes.put(pageNumber++,itemName);
+	private static void addItem(Block block, PageCategory category)
+	{
+		AbstractPage page = AbstractPage.createItemPage(block, category);
+		categoryMap.get(category).add(page);
 	}
 	
-	private static void addSubItems(List<ItemStack> list){
-		
-		for(ItemStack is : list){
-			pages.add(new PEManualPage(is));
-			itemName = pages.get(pageNumber).getItemStack().getUnlocalizedName();
-			pageIndexes.put(pageNumber++,itemName);
+	private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
+	{
+		for (ItemStack is : list)
+		{
+			AbstractPage page = AbstractPage.createItemPage(is, category);
+			categoryMap.get(category).add(page);
 		}
-		list.clear();
-	}	
-	
-	private static void addPage(String title){
-		pages.add(new PEManualPage(title));
-		pageIndexes.put(pageNumber++,title);
 	}
 	
-	private static void addImagePage(String title, ResourceLocation resource){
-		pages.add(new PEManualPage(title, resource));
-		//pageIndexes.put(pageNumber++,title); //Don't want this in the index probably
-		pageNumber++; //Don't forget to remove if you add to index
+	private static void addTextPage(String identifier, PageCategory category)
+	{
+		AbstractPage page = AbstractPage.createTextPage(identifier, category);
+		categoryMap.get(category).add(page);
+	}
+	
+	private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
+	{
+		AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
+		categoryMap.get(category).add(page);
 	}
 
+	/**
+	 * Iterates through all categories in enum order, sorts the list alphabetically by localized header, then adds them to the page list
+	 */
+	private static void registerAll()
+	{
+		for (List<AbstractPage> categoryPages : categoryMap.values())
+		{
+			Collections.sort(categoryPages, Comparators.PAGE_HEADER);
+			for (AbstractPage page : categoryPages)
+			{
+				pages.add(page);
+			}
+		}
+	}
+
+	private static List<ItemStack> getSubItems(Block b)
+	{
+		List<ItemStack> list = Lists.newArrayList();
+		b.getSubBlocks(Item.getItemFromBlock(b), null, list);
+		return list;
+	}
+
+	private static List<ItemStack> getSubItems(Item i)
+	{
+		List<ItemStack> list = Lists.newArrayList();
+		i.getSubItems(i, null, list);
+		return list;
+	}
 }

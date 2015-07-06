@@ -360,7 +360,15 @@ pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
 
+pe.manual.index=Index
+pe.manual.index_button=ToC
+
+# ItemPages bodies
 pe.manual.pe_philosophers_stone=ExampleInfo
+
+# TextPages headers and bodies
 pe.manual.introduction=This is the text in the introduction text page.
-pe.manual.title.introduction=Introduction
-pe.manual.title.alchchest=alchchest.png
+pe.manual.introduction.header=Introduction
+
+# ImagePage headers
+pe.manual.img_alchchest.header=alchchest.png

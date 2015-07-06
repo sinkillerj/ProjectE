@@ -1,8 +1,11 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
+
+import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,8 +15,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class MatterBlock extends Block
 {
@@ -68,9 +69,10 @@ public class MatterBlock extends Block
 	{
 		return meta;
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Block matterBlock, CreativeTabs cTab, List list)
+	public void getSubBlocks(Item matterBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
