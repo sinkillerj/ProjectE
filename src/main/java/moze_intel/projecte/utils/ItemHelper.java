@@ -8,6 +8,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Collections;
@@ -119,6 +121,19 @@ public final class ItemHelper
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Copy an NBTTagList that has inventory indices into the appropriate positions of provided array.
+	 */
+	public static ItemStack[] copyIndexedNBTToArray(NBTTagList list, ItemStack[] dest)
+	{
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			NBTTagCompound entry = list.getCompoundTagAt(i);
+			dest[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
+		}
+		return dest;
 	}
 
 	/**
@@ -349,6 +364,16 @@ public final class ItemHelper
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
 
+	public static ItemStack[] nbtToArray(NBTTagList list)
+	{
+		ItemStack[] stacks = new ItemStack[list.tagCount()];
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			stacks[i] = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+		}
+		return stacks;
+	}
+
 	public static void pushLootBallInInv(IInventory inv, EntityLootBall ball)
 	{
 		List<ItemStack> results = Lists.newArrayList();
@@ -442,6 +467,25 @@ public final class ItemHelper
 		}
 
 		return stack.copy();
+	}
+
+	/**
+	 * Takes an array of ItemStacks and turns it into an NBTTaglist.
+	 */
+	public static NBTTagList toIndexedNBTList(ItemStack[] stacks)
+	{
+		NBTTagList list = new NBTTagList();
+		for (int i = 0; i < stacks.length; i++)
+		{
+			if (stacks[i] != null)
+			{
+				NBTTagCompound entry = new NBTTagCompound();
+				entry.setByte("index", ((byte) i));
+				stacks[i].writeToNBT(entry);
+				list.appendTag(entry);
+			}
+		}
+		return list;
 	}
 
 	public static void trimItemList(List<ItemStack> list)

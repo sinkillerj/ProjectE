@@ -22,7 +22,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
@@ -33,7 +32,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.CommonProxy;
@@ -154,8 +152,8 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
-		IOHandler.saveData();
-		PELogger.logInfo("Saved transmutation and alchemical bag data.");
+//		IOHandler.saveData();
+//		PELogger.logInfo("Saved transmutation and alchemical bag data.");
 	}
 	
 	@Mod.EventHandler
@@ -164,10 +162,9 @@ public class PECore
 		TileEntityHandler.clearAll();
 		PELogger.logDebug("Cleared tile entity maps.");
 
-		Transmutation.clear();
-		AlchemicalBags.clear();
-		PELogger.logDebug("Cleared player data.");
-		
+		Transmutation.clearCache();
+		PELogger.logDebug("Cleared cached tome knowledge");
+
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
 		

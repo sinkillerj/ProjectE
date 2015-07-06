@@ -1,20 +1,5 @@
 item.pe_philosophers_stone.name=Философский камень
-item.pe_alchemical_bag_black.name=Алхимический мешок
-item.pe_alchemical_bag_red.name=Алхимический мешок
-item.pe_alchemical_bag_green.name=Алхимический мешок
-item.pe_alchemical_bag_brown.name=Алхимический мешок
-item.pe_alchemical_bag_blue.name=Алхимический мешок
-item.pe_alchemical_bag_purple.name=Алхимический мешок
-item.pe_alchemical_bag_cyan.name=Алхимический мешок
-item.pe_alchemical_bag_silver.name=Алхимический мешок
-item.pe_alchemical_bag_gray.name=Алхимический мешок
-item.pe_alchemical_bag_pink.name=Алхимический мешок
-item.pe_alchemical_bag_lime.name=Алхимический мешок
-item.pe_alchemical_bag_yellow.name=Алхимический мешок
-item.pe_alchemical_bag_lightBlue.name=Алхимический мешок
-item.pe_alchemical_bag_magenta.name=Алхимический мешок
-item.pe_alchemical_bag_orange.name=Алхимический мешок
-item.pe_alchemical_bag_white.name=Алхимический мешок
+item.pe_alchemical_bag.name=Алхимический мешок
 item.pe_repair_talisman.name=Талисман восстановления
 item.pe_klein_star_1.name=Звезда Клейна 1
 item.pe_klein_star_2.name=Звезда Клейна 2
@@ -85,8 +70,9 @@ item.pe_gem_armor_1.name=Кираса из драгоценных камней
 item.pe_gem_armor_2.name=Поножи из драгоценных камней
 item.pe_gem_armor_3.name=Ботинки из драгоценных камней
 item.pe_arcana_ring.name=Кольцо тайн
+item.pe_void_ring.name=Кольцо пустоты
 item.pe_zero_ring.name=Кольцо абсолютного нуля
-item.pe_tome.name=Алхимический том
+item.pe_tome.name=Том знаний
 item.pe_transmutation_tablet.name=Стол трансмутаций
 
 tile.pe_alchemy_chest.name=Алхимический сундук
@@ -110,6 +96,8 @@ tile.pe_fuel_block_0.name=Блок алхимического угля
 tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
 tile.pe_dmPedestal.name=Пьедестал из тёмной материи
+
+itemGroup.ProjectE=ProjectE
 
 achievement.phil_stone=Лучший друг алхимиков!
 achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень
@@ -148,6 +136,13 @@ achievement.klein.desc=Запас EMC на чёрный день.
 achievement.klein_big=Большие EMC аккумуляторы
 achievement.klein_big.desc=Вселенная в Вашем кармане.
 
+pe.arcana.mode=Режим: 
+pe.arcana.mode.0=Обнуление
+pe.arcana.mode.1=Воспламенение
+pe.arcana.mode.2=Сбор
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Неактивно!
+
 pe.archangel.pedestal1=Стреляет стрелами в ближайших мобов
 pe.archangel.pedestal2=Срабатывает каждые %s
 
@@ -156,6 +151,35 @@ pe.bhb.pedestal2=Сбрасывает их в соседние инвентар�
 
 pe.body.pedestal1=Восстанавливает голод ближайших игроков
 pe.body.pedestal2=Восстанавливает половинку голода каждые %s
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
+pe.command.changelog.uptodate=Для ProjectE обновления не требуются.
+pe.command.clearknowledge.error=Не удалось очистить знания игрока %s
+pe.command.clearknowledge.notify=Ваши знания трансмутаций были очищены администратором %s!
+pe.command.clearknowledge.playernotfound=Не удалось найти игрока с именем: %s
+pe.command.clearknowledge.success=Знания игрока %s очищены
+pe.command.clearknowledge.usage=/projecte clearKnowledge [имя игрока] (оставьте пустым, чтобы применить на себя)
+
+pe.command.reload.started=Перезагрузка значений EMC, возможны лаги.
+pe.command.reload.success=Перезагрузка EMC завершена. Обновлённые данные отправляются на клиенты.
+pe.command.reload.notice=Перезагрузитесь или используйте "/projecte reloadEMC", когда изменения завершены.
+
+pe.command.remove.invaliditem=Ошибка: Предмет с именем "%s" не найден!
+pe.command.remove.invalidmeta=Ошибка: Значение метаданных "%s" неверно!
+pe.command.remove.success=Значение EMC для предмета %s удалено.
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [метаданные] (оставьте пустым, чтобы применить к предмету в руке)
+
+pe.command.reset.invalidmeta=Ошибка: Значение метаданных "%s" неверно!
+pe.command.reset.nochange=Значение EMC для %s:%s не было изменено!
+pe.command.reset.success=Значение EMC для %s сброшено.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [метаданные] (оставьте пустым, чтобы применить к предмету в руке)
+
+pe.command.set.invalidemc=Ошибка: Значение EMC "%s" неверно!
+pe.command.set.invaliditem=Ошибка: Предмет с именем "%s" не найден!
+pe.command.set.invalidmeta=Ошибка: Значение метаданных "%s" неверно!
+pe.command.set.success=Значение EMC для %s изменено на %s!
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [метаданные] [значение EMC], /projecte setEMC [значение EMC] (для предмета в руке)
 
 pe.darkpick.mode1=Стандартный
 pe.darkpick.mode2=3x блока в высоту
@@ -176,6 +200,7 @@ pe.emc.maxoutrate_tooltip=Максимальная скорость выхода
 pe.emc.maxstorage_tooltip=Максимальное хранилище:
 pe.emc.name=EMC
 pe.emc.rate=EMC/сек
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
 pe.emc.storedemc_tooltip=Накоплено EMC:
 pe.emc.too_much=СЛИШКОМ МНОГО
 
@@ -188,13 +213,22 @@ pe.evertide.pedestal2=Пытается вызвать дождь каждые %s
 
 pe.gem.disabled=ОТКЛЮЧЕНО
 pe.gem.enabled=ВКЛЮЧЕНО
+
+pe.gem.activate=Наступательные способности брони активированы
+pe.gem.deactivate=Наступательные способности брони деактивированы
+
+pe.gem.helm.lorename=Шлем бездны
+pe.gem.chest.lorename=Адская броня
+pe.gem.legs.lorename=Гравитационные поножи
+pe.gem.feet.lorename=Ураганные ботинки
+
 pe.gem.nightvision_tooltip=Ночное зрение:
-pe.gem.nightvision.prompt=Нажмите Shift %s, чтобы переключить ночное зрение
+pe.gem.nightvision.prompt=Нажмите %s + %s, чтобы переключить ночное зрение
 pe.gem.stepassist_tooltip=Помощь в шаге:
 pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в шаге
 
 pe.gemdensity.blacklist=Чёрный список
-pe.gemdensity.mode_switch=Цель установлена на %s
+pe.gemdensity.mode_switch=Цель установлена на
 pe.gemdensity.tooltip1=Уплотняет предметы на ходу
 pe.gemdensity.tooltip2=Текущая цель: %s
 pe.gemdensity.tooltip3=Нажмите %s, чтобы сменить цель
@@ -212,18 +246,29 @@ pe.ignition.pedestal2=Активируется каждые %s
 pe.item.mode=Режим
 pe.item.mode_switch=Переключено на режим: %s
 
-pe.katar.mode1=Вырубка
-pe.katar.mode2=Мотыга
-pe.katar.mode3=Стрижка
-pe.katar.mode4=Бой
+pe.katar.mode1=Убивать враждебных
+pe.katar.mode2=Убивать всех
+
+pe.key.armor_toggle=Эффекты брони
+pe.key.charge=Разбег
+pe.key.extra_function=Доп. функция
+pe.key.fire_projectile=Огненный снаряд
+pe.key.mode=Сменить режим
 
 pe.life.pedestal1=Восстанавливает голод и здоровье
 pe.life.pedestal2=По половинке сердца и голода каждые %s
 
+pe.mind.pedestal1=Всасывает ближайшие сферы опыта в камень разума
+
 pe.misc.every_tick=каждый такт
 pe.misc.seconds=секунд(-ы)
 pe.misc.storedxp_tooltip=Накоплено опыта:
-pe.misc.wrenched_block=Wrenched block!
+pe.misc.wrenched_block=Демонтированный блок!
+
+pe.morningstar.mode1=Стандартный
+pe.morningstar.mode2=3x блока в высоту
+pe.morningstar.mode3=3x блока в ширину
+pe.morningstar.mode4=3x блока в длину
 
 pe.pedestal.item_disabled=Функционал пьедестала отключен!
 pe.pedestal.on_pedestal=На пьедестале:
@@ -243,6 +288,9 @@ pe.redpick.mode1=Стандартный
 pe.redpick.mode2=3x блока в высоту
 pe.redpick.mode3=3x блока в ширину
 pe.redpick.mode4=3x блока в длину
+
+pe.redsword.mode1=Убивать враждебных
+pe.redsword.mode2=Убивать всех
 
 pe.relay.mk1=Реле MKI
 pe.relay.mk2=Реле MKII
@@ -269,6 +317,7 @@ pe.timewatch.rw=Перемотка
 pe.timewatch.tooltip1=Станьте хозяином времени
 pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
 pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
+pe.timewatch.pedestal2=Каждый такт, ближайшие мобы двигаются в %.3f раз быстрее
 
 pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
 
@@ -283,6 +332,20 @@ pe.transmutation.learned5=н
 pe.transmutation.learned6=о
 pe.transmutation.learned7=!
 
+pe.transmutation.unlearned0=Н
+pe.transmutation.unlearned1=е
+pe.transmutation.unlearned2=в
+pe.transmutation.unlearned3=ы
+pe.transmutation.unlearned4=у
+pe.transmutation.unlearned5=ч
+pe.transmutation.unlearned6=е
+pe.transmutation.unlearned7=н
+pe.transmutation.unlearned8=о
+
+pe.update.available=Новое обновление для ProjectE доступно! Новая версия: %s
+pe.update.changelog=Используйте /projecte changelog для вызова списка изменений!
+pe.update.getit=Загрузите здесь!
+
 pe.volcanite.tooltip1=Нажмите %s, чтобы выпустить лавовый снаряд
 pe.volcanite.tooltip2=Работает как бесконечное полное ведро лавы
 pe.volcanite.tooltip3=ПКМ, чтобы наполнить резервуары
@@ -293,3 +356,5 @@ pe.volcanite.pedestal2=Пытается остановить погодные я
 pe.zero.pedestal1=Тушит сущностей
 pe.zero.pedestal2=Замораживает окрестности
 pe.zero.pedestal3=Активируется каждые %s
+
+pe.debug.metainvalid.name=Неверные метаданные

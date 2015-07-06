@@ -65,14 +65,18 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		condense(stack, ((EntityPlayer) entity).inventory.mainInventory);
 	}
-	
-	public static void condense(ItemStack gem, ItemStack[] inv)
+
+	/**
+	 * @return Whether the inventory was changed
+	 */
+	public static boolean condense(ItemStack gem, ItemStack[] inv)
 	{
 		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
-			return;
+			return false;
 		}
-		
+
+		boolean hasChanged = false;
 		boolean isWhitelist = isWhitelistMode(gem);
 		List<ItemStack> whitelist = getWhitelist(gem);
 		
@@ -102,6 +106,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				}
 				
 				ItemPE.addEmc(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
+				hasChanged = true;
 				break;
 			}
 		}
@@ -110,21 +115,24 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		if (!EMCHelper.doesItemHaveEmc(target))
 		{
-			return;
+			return hasChanged;
 		}
 
 		while (getEmc(gem) >= value)
 		{
 			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
-			
+
 			if (remain != null)
 			{
-				return;
+				return false;
 			}
 			
 			ItemPE.removeEmc(gem, value);
 			setItems(gem, Lists.<ItemStack>newArrayList());
+			hasChanged = true;
 		}
+
+		return hasChanged;
 	}
 	
 	@Override
@@ -240,13 +248,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static void addToList(List<ItemStack> list, ItemStack stack)
 	{
 		boolean hasFound = false;
-		
+
 		for (ItemStack s : list)
 		{
 			if (s.stackSize < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack))
 			{
 				int remain = s.getMaxStackSize() - s.stackSize;
-				
+
 				if (stack.stackSize <= remain)
 				{
 					s.stackSize += stack.stackSize;
@@ -260,7 +268,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				}
 			}
 		}
-		
+
 		if (!hasFound)
 		{
 			list.add(stack);
@@ -403,11 +411,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
-		if (!player.worldObj.isRemote)
-		{
-			condense(stack, inv);
-		}
+		return !player.worldObj.isRemote && condense(stack, inv);
 	}
 }

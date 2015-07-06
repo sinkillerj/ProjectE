@@ -1,36 +1,28 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class EntityLightningProjectile extends EntityThrowable
+public class EntitySWRGProjectile extends PEProjectile
 {
-	private final ItemStack ring;
-	
-	public EntityLightningProjectile(World world)
+	public EntitySWRGProjectile(World world)
 	{
 		super(world);
-		
-		this.ring = null;
 	}
 	
-	public EntityLightningProjectile(World world, EntityLivingBase player, ItemStack ring)
+	public EntitySWRGProjectile(World world, EntityPlayer player)
 	{
 		super(world, player);
-		
-		this.ring = ring;
 	}
 	
 	@Override
-	protected void onImpact(MovingObjectPosition mop)
+	protected void apply(MovingObjectPosition mop)
 	{
 		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
@@ -42,15 +34,12 @@ public class EntityLightningProjectile extends EntityThrowable
 			
 			if(up == Blocks.air || up == Blocks.snow_layer)
 			{
-				EntityPlayer player = (EntityPlayer)getThrower();
-				if(ItemPE.consumeFuel(player, ring, 768, true))
+				if(tryConsumeEmc(((ItemPE) ObjHandler.arcana), 768))
 				{
 					EntityLightningBolt lightning = new EntityLightningBolt(worldObj, x, y, z);
 					worldObj.addWeatherEffect(lightning);
 				}
 			}
-			
-			setDead();
 		}
 	}
 }

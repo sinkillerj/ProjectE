@@ -1,20 +1,5 @@
 item.pe_philosophers_stone.name=Philosopher's Stone
-item.pe_alchemical_bag_black.name=Alchemical Bag
-item.pe_alchemical_bag_red.name=Alchemical Bag
-item.pe_alchemical_bag_green.name=Alchemical Bag
-item.pe_alchemical_bag_brown.name=Alchemical Bag
-item.pe_alchemical_bag_blue.name=Alchemical Bag
-item.pe_alchemical_bag_purple.name=Alchemical Bag
-item.pe_alchemical_bag_cyan.name=Alchemical Bag
-item.pe_alchemical_bag_silver.name=Alchemical Bag
-item.pe_alchemical_bag_gray.name=Alchemical Bag
-item.pe_alchemical_bag_pink.name=Alchemical Bag
-item.pe_alchemical_bag_lime.name=Alchemical Bag
-item.pe_alchemical_bag_yellow.name=Alchemical Bag
-item.pe_alchemical_bag_lightBlue.name=Alchemical Bag
-item.pe_alchemical_bag_magenta.name=Alchemical Bag
-item.pe_alchemical_bag_orange.name=Alchemical Bag
-item.pe_alchemical_bag_white.name=Alchemical Bag
+item.pe_alchemical_bag.name=Alchemical Bag
 item.pe_repair_talisman.name=Repair Talisman
 item.pe_klein_star_1.name=Klein Star Ein
 item.pe_klein_star_2.name=Klein Star Zwei
@@ -176,8 +161,9 @@ pe.command.clearknowledge.playernotfound=Couldn't find player named: %s
 pe.command.clearknowledge.success=Cleared knowledge for: %s
 pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (no params to target self)
 
-pe.command.reload.started=Reloading EMC registrations...
-pe.command.reload.success=Done! Sending updated data to clients.
+pe.command.reload.started=Reloading EMC values, expect lag.
+pe.command.reload.success=EMC reload complete. Sending updated data to clients.
+pe.command.reload.notice=Restart or use "/projecte reloadEMC" when all changes are complete.
 
 pe.command.remove.invaliditem=Error: The item "%s" was not found!
 pe.command.remove.invalidmeta=Error: The meta value "%s" is not valid!
@@ -370,3 +356,5 @@ pe.volcanite.pedestal2=Attempts to stop weather every %s
 pe.zero.pedestal1=Extinguishes entities
 pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
+
+pe.debug.metainvalid.name=Invalid metadata set

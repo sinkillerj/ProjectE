@@ -5,11 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.gameObjs.container.TransmuteContainer;
-import moze_intel.projecte.gameObjs.container.TransmuteTabletContainer;
-import moze_intel.projecte.gameObjs.container.inventory.TransmuteTabletInventory;
-import moze_intel.projecte.gameObjs.tiles.TransmuteTile;
-import net.minecraft.inventory.Container;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 
 public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
 {
@@ -27,41 +23,22 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	@Override
 	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) 
 	{
-		Container cont = ctx.getServerHandler().playerEntity.openContainer;
-		
-		if (cont instanceof TransmuteContainer) 
+		if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
 		{
-			TransmuteTile tile = ((TransmuteContainer) cont).tile;
-			
+			TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
+
 			if (pkt.search != null)
 			{
-				tile.filter = pkt.search;
+				container.transmutationInventory.filter = pkt.search;
 			}
 			else
 			{
-				tile.filter = "";
+				container.transmutationInventory.filter = "";
 			}
 
-			tile.searchpage = pkt.searchpage;
-			
-			tile.updateOutputs();
-		}
-		else if (cont instanceof TransmuteTabletContainer)
-		{
-			TransmuteTabletInventory inv = ((TransmuteTabletContainer) cont).table;
-			
-			if (pkt.search != null)
-			{
-				inv.filter = pkt.search;
-			}
-			else
-			{
-				inv.filter = "";
-			}
+			container.transmutationInventory.searchpage = pkt.searchpage;
 
-			inv.searchpage = pkt.searchpage;
-			
-			inv.updateOutputs();
+			container.transmutationInventory.updateOutputs();
 		}
 		
 		return null;

@@ -14,6 +14,7 @@ public interface IAlchBagItem
 	 * @param inv The inventory of the bag
 	 * @param player The player whose bag is being ticked.
 	 * @param stack The ItemStack being ticked
+	 * @return Whether the inventory was changed by this item ticking
 	 */
-	void updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack);
+	boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack);
 }

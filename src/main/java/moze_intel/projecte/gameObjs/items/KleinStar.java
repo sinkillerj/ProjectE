@@ -100,8 +100,13 @@ public class KleinStar extends ItemPE
 	
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
-	{	
-		return super.getUnlocalizedName()+ "_"+(stack.getItemDamage() + 1);
+	{
+		if (stack.getItemDamage() > 5)
+		{
+			return "pe.debug.metainvalid";
+		}
+
+		return super.getUnlocalizedName()+ "_" + (stack.getItemDamage() + 1);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -116,7 +121,7 @@ public class KleinStar extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int par1)
 	{
-		return icons[MathHelper.clamp_int(par1, 0, 6)];
+		return icons[MathHelper.clamp_int(par1, 0, 5)];
 	}
 	
 	@Override

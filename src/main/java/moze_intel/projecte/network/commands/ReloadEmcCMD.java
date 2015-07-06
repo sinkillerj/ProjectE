@@ -1,8 +1,11 @@
 package moze_intel.projecte.network.commands;
 
-import moze_intel.projecte.emc.ThreadReloadEMCMap;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentTranslation;
+import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.handlers.TileEntityHandler;
 
 public class ReloadEmcCMD extends ProjectEBaseCMD
 {
@@ -22,7 +25,15 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	public void processCommand(ICommandSender sender, String[] params) 
 	{
 		sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.started"));
-		ThreadReloadEMCMap.runEMCRemap(sender, new ChatComponentTranslation("pe.command.reload.success"));
+
+		EMCMapper.clearMaps();
+		CustomEMCParser.readUserData();
+		EMCMapper.map();
+		TileEntityHandler.checkAllCondensers();
+
+		sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.success"));
+
+		PacketHandler.sendFragmentedEmcPacketToAll();
 	}
 
 	@Override

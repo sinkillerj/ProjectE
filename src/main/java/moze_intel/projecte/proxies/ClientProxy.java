@@ -1,6 +1,6 @@
 package moze_intel.projecte.proxies;
 
-import com.google.common.collect.Sets;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -12,7 +12,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLightningProjectile;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
@@ -22,6 +22,9 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.playerData.AlchBagProps;
+import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.rendering.ChestItemRenderer;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserItemRenderer;
@@ -34,15 +37,33 @@ import moze_intel.projecte.rendering.PedestalItemRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.Set;
-
 public class ClientProxy extends CommonProxy
 {
+	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received
+	// and the wrapped methods are called directly.
+
+	@Override
+	public void clearClientKnowledge()
+	{
+		Transmutation.clearKnowledge(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
+	@Override
+	public TransmutationProps getClientTransmutationProps()
+	{
+		return TransmutationProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
+	@Override
+	public AlchBagProps getClientBagProps()
+	{
+		return AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+	}
+
 	@Override
 	public void registerKeyBinds()
 	{
@@ -73,7 +94,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(ObjHandler.fireProjectile));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLightningProjectile.class, new RenderSnowball(ObjHandler.windProjectile));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, new RenderSnowball(ObjHandler.windProjectile));
 	}
 	
 	@Override
