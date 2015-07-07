@@ -1,6 +1,5 @@
 package moze_intel.projecte.events;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -10,6 +9,7 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -64,6 +64,11 @@ public class PlayerEvents
 	{
 		if (evt.entity instanceof EntityPlayer)
 		{
+			if (!evt.entity.worldObj.isRemote)
+			{
+				// Release old offline knowledge in prep for loading online knowledge
+				TransmutationOffline.clear(evt.entity.getUniqueID());
+			}
 			TransmutationProps.register(((EntityPlayer) evt.entity));
 			AlchBagProps.register(((EntityPlayer) evt.entity));
 		}
@@ -84,8 +89,6 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
-
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 

@@ -1,13 +1,12 @@
 package moze_intel.projecte.api.proxy;
 
 import com.sun.javafx.beans.annotations.NonNull;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 
 public interface ITransmutationProxy
 {
@@ -29,7 +28,7 @@ public interface ITransmutationProxy
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to query
      * @param stack The ItemStack to query
-     * @return Whether the player has knowledge for this ItemStack
+     * @return Whether the player has knowledge for this ItemStack, as well as false if player is not found.
      */
     boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @NonNull ItemStack stack);
 
@@ -37,12 +36,12 @@ public interface ITransmutationProxy
      * Queries the knowledge of the provided player
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to query
-     * @return Whether the player has full/override knowledge from the Tome
+     * @return Whether the player has full/override knowledge from the Tome, as well as false if player is not found.
      */
     boolean hasFullKnowledge(@Nonnull UUID playerUUID);
 
     /**
-     * Adds to the knowledge of the provided player. Only works if player is online (for now)
+     * Adds to the knowledge of the provided player. Only works if player is online
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to add
@@ -50,7 +49,7 @@ public interface ITransmutationProxy
     void addKnowledge(@NonNull UUID playerUUID, @NonNull ItemStack stack);
 
     /**
-     * Removes from the knowledge of the provided player. Only works if player is online (for now)
+     * Removes from the knowledge of the provided player. Only works if player is online
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to remove
@@ -58,7 +57,7 @@ public interface ITransmutationProxy
     void removeKnowledge(@NonNull UUID playerUUID, @NonNull ItemStack stack);
 
     /**
-     * Sets the player's personal transmutation emc to that provided. Only works if player is online (for now)
+     * Sets the player's personal transmutation emc to that provided. Only works if player is online
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @param emc The value to set
@@ -66,7 +65,7 @@ public interface ITransmutationProxy
     void setEMC(@Nonnull UUID playerUUID, double emc);
 
     /**
-     * Gets the player's personal transmutation emc to that provided. Only works if player is online (for now)
+     * Gets the player's personal transmutation emc to that provided.
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @return The emc, or NaN if player is not found

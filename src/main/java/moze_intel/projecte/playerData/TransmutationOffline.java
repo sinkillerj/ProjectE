@@ -3,6 +3,12 @@ package moze_intel.projecte.playerData;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,13 +16,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.Constants;
 
 public class TransmutationOffline
 {
@@ -49,7 +48,7 @@ public class TransmutationOffline
 
     public static boolean hasKnowledgeForStack(ItemStack stack, UUID playerUUID)
     {
-        return getKnowledge(playerUUID).contains(stack);
+        return getKnowledge(playerUUID) != null && getKnowledge(playerUUID).contains(stack);
     }
 
     public static boolean hasFullKnowledge(UUID playerUUID)
@@ -58,7 +57,7 @@ public class TransmutationOffline
         {
             cacheOfflineData(playerUUID);
         }
-        return cachedFullKnowledge.get(playerUUID);
+        return cachedFullKnowledge.get(playerUUID) == null ? false : cachedFullKnowledge.get(playerUUID);
     }
 
     public static double getEmc(UUID playerUUID)
@@ -67,7 +66,7 @@ public class TransmutationOffline
         {
             cacheOfflineData(playerUUID);
         }
-        return cachedEmc.get(playerUUID);
+        return cachedEmc.get(playerUUID) == null ? Double.NaN : cachedEmc.get(playerUUID);
     }
 
     private static void cacheOfflineData(UUID playerUUID) {
