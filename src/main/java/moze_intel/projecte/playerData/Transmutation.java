@@ -8,16 +8,18 @@ import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public final class Transmutation 
 {
@@ -105,7 +107,8 @@ public final class Transmutation
 
 	public static ItemStack[] getInputsAndLock(EntityPlayer player)
 	{
-		return TransmutationProps.getDataFor(player).getInputLocks().clone();
+		ItemStack[] locks = TransmutationProps.getDataFor(player).getInputLocks();
+		return Arrays.copyOf(locks, locks.length);
 	}
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
