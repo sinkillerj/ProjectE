@@ -8,6 +8,8 @@ import moze_intel.projecte.api.proxy.ITransmutationProxy;
 public final class ProjectEAPI
 {
 	/**
+	 * Retrieves the proxy for EMC-based API queries.
+	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
 	 * @return The proxy for EMC-based API queries
 	 */
 	public static IEMCProxy getEMCProxy()
@@ -18,12 +20,14 @@ public final class ProjectEAPI
 			return (IEMCProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
-			FMLLog.info("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			FMLLog.warning("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
 		}
 		return null;
 	}
 
 	/**
+	 * Retrieves the proxy for Transmutation-based API queries.
+	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
 	 * @return The proxy for Transmutation-based API queries
 	 */
 	public static ITransmutationProxy getTransmutationProxy()
@@ -34,13 +38,15 @@ public final class ProjectEAPI
 			return (ITransmutationProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
-			FMLLog.info("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			FMLLog.warning("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
 		}
 		return null;
 	}
 
 	/**
-	 * @return The proxy for whitelisting or blacklisting things
+	 * Retrieves the proxy for black/whitelist-based API queries.
+	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
+	 * @return The proxy for black/whitelist-based API queries
 	 */
 	public static IBlacklistProxy getBlacklistProxy()
 	{
@@ -50,7 +56,7 @@ public final class ProjectEAPI
 			return (IBlacklistProxy) clazz.getField("instance").get(null);
 		} catch (ReflectiveOperationException ex)
 		{
-			FMLLog.info("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			FMLLog.warning("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
 		}
 		return null;
 	}

@@ -66,8 +66,8 @@ public class PlayerEvents
 		{
 			if (!evt.entity.worldObj.isRemote)
 			{
-				// Release old offline knowledge in prep for loading online knowledge
 				TransmutationOffline.clear(evt.entity.getUniqueID());
+				PELogger.logDebug("Clearing offline data cache in preparation to load online data");
 			}
 			TransmutationProps.register(((EntityPlayer) evt.entity));
 			AlchBagProps.register(((EntityPlayer) evt.entity));

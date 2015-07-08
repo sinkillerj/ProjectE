@@ -2,6 +2,7 @@ package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -48,7 +49,18 @@ public class TransmutationOffline
 
     public static boolean hasKnowledgeForStack(ItemStack stack, UUID playerUUID)
     {
-        return getKnowledge(playerUUID) != null && getKnowledge(playerUUID).contains(stack);
+        List<ItemStack> knowledge = getKnowledge(playerUUID);
+        if (knowledge != null)
+        {
+            for (ItemStack s : knowledge)
+            {
+                if (ItemHelper.basicAreStacksEqual(s, stack))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean hasFullKnowledge(UUID playerUUID)
@@ -91,6 +103,7 @@ public class TransmutationOffline
                         }
                     }
                     cachedKnowledge.put(playerUUID, knowledge);
+                    PELogger.logDebug("Caching offline data for UUID: " + playerUUID.toString());
                 } catch (IOException e) {
                     PELogger.logWarn("Failed to cache offline data for API calls");
                 }
