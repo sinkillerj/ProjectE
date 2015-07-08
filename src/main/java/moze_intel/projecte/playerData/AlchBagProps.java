@@ -3,10 +3,6 @@ package moze_intel.projecte.playerData;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-
-import java.util.Arrays;
-import java.util.Map;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,6 +11,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.Arrays;
+import java.util.Map;
 
 public class AlchBagProps implements IExtendedEntityProperties
 {
