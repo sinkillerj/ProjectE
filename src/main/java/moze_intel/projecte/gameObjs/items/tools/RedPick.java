@@ -41,12 +41,10 @@ public class RedPick extends DarkPick
 	public float getDigSpeed(ItemStack stack, IBlockState state)
 	{
 		Block b = state.getBlock();
-		MatterBlock.EnumMatterType type = ((MatterBlock.EnumMatterType) state.getValue(MatterBlock.TIER_PROP));
-		if ((b == ObjHandler.matterBlock && type == MatterBlock.EnumMatterType.RED_MATTER || b == ObjHandler.rmFurnaceOff || b == ObjHandler.rmFurnaceOn))
+		if ((b == ObjHandler.matterBlock && state.getValue(MatterBlock.TIER_PROP) == MatterBlock.EnumMatterType.RED_MATTER || b == ObjHandler.rmFurnaceOff || b == ObjHandler.rmFurnaceOn))
 		{
 			return 1200000.0F;
 		}
-		
 		return super.getDigSpeed(stack, state);
 	}
 }
