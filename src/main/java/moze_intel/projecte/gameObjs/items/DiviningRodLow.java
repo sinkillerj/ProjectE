@@ -97,7 +97,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 						ItemStack blockStack = drops.get(0);
 						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
 
-						if (Block.getBlockFromItem(blockStack.getItem()) == block && blockEmc == 0)
+						if (blockEmc == 0)
 						{
 							Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting().getSmeltingList();
 
