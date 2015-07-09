@@ -95,7 +95,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 						}
 
 						ItemStack blockStack = drops.get(0);
-						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
+						int blockEmc = EMCHelper.getEmcValue(blockStack);
 
 						if (blockEmc == 0)
 						{
