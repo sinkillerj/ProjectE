@@ -1,6 +1,5 @@
 package moze_intel.projecte.events;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -36,6 +35,11 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void cloneEvent(PlayerEvent.Clone evt)
 	{
+		if (!evt.wasDeath)
+		{
+			return; // Vanilla handles it for us.
+		}
+
 		NBTTagCompound bag = new NBTTagCompound();
 		NBTTagCompound transmute = new NBTTagCompound();
 
@@ -84,8 +88,6 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void playerChangeDimension(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		System.out.println(FMLCommonHandler.instance().getEffectiveSide());
-
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 
