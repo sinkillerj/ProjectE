@@ -7,6 +7,7 @@ import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -108,7 +109,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 									continue;
 								}
 
-								if (entry.getKey().getItem() == blockStack.getItem() && entry.getKey().getItemDamage() == blockStack.getItemDamage())
+								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 								{
 									int currentValue = EMCHelper.getEmcValue(entry.getValue());
 
