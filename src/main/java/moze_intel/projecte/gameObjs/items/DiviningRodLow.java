@@ -24,10 +24,9 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class DiviningRodLow extends ItemPE implements IModeChanger
@@ -88,18 +87,19 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 							continue;
 						}
 
-						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+						List<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 
 						if (drops.size() == 0)
 						{
 							continue;
 						}
 
+						ItemStack blockStack = drops.get(0);
 						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
 
-						if (blockEmc == 0)
+						if (Block.getBlockFromItem(blockStack.getItem()) == block && blockEmc == 0)
 						{
-							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting().getSmeltingList();
 
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
@@ -108,7 +108,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 									continue;
 								}
 
-								if (entry.getKey().getItem() == drops.get(0).getItem())
+								if (entry.getKey().getItem() == blockStack.getItem() && entry.getKey().getItemDamage() == blockStack.getItemDamage())
 								{
 									int currentValue = EMCHelper.getEmcValue(entry.getValue());
 
