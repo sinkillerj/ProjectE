@@ -1,3 +1,16 @@
+###Version 1.7.10-PE1.7.2
+* NEW: French language file updates
+* NEW: Russian language file updates
+* NEW: German language file updates
+* NEW: Italian language file updates
+* NEW: Chinese language file updates
+* NEW: Shift clicking added in some GUIs that were missing it
+* FIXED: Knowledge entries duplicating when exiting the End. Thanks Mojang
+* FIXED: A SMP ConcurrentModificationException
+* FIXED: A ArithmeticException caused by the rent...erm...the EMC value of a recipe being too damn high
+* FIXED: A calculation issue resulting from a items damage being higher than its max damage
+* FIXED: Divining rod ignoring metadata
+
 ###Version 1.7.10-PE1.7.1
 * NOTICE: It is recommended that you take a world backup prior to updating to 1.7.1 or higher
 * NOTICE: Remove all items from the left side and lock slots of the transmutation GUI prior to updating or they will be lost
