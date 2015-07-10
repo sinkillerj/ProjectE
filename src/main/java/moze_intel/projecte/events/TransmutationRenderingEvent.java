@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -46,15 +48,24 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				RenderHelper.enableStandardItemLighting();
 				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
 				{
-					// TODO render fluid
+					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
+					mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+					Tessellator tess = Tessellator.getInstance();
+					WorldRenderer render = tess.getWorldRenderer();
+					render.startDrawingQuads();
+					render.addVertexWithUV(0, 0, 0, sprite.getMinU(), sprite.getMinV());
+					render.addVertexWithUV(0, 16, 0, sprite.getMinU(), sprite.getMaxV());
+					render.addVertexWithUV(16, 16, 0, sprite.getMaxU(), sprite.getMaxV());
+					render.addVertexWithUV(16, 0, 0, sprite.getMaxU(), sprite.getMinV());
+					tess.draw();
 				} else
 				{
+					RenderHelper.enableStandardItemLighting();
 					mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+					RenderHelper.disableStandardItemLighting();
 				}
-				RenderHelper.disableStandardItemLighting();
 			}
 		}
 	}

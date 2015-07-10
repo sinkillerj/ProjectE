@@ -235,7 +235,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (world.getBlockState(pos) == pointed)
 		{
-			world.setBlockState(pos, result, 2);
+			world.setBlockState(pos, result, 3);
 
 			if (world.rand.nextInt(8) == 0)
 			{
