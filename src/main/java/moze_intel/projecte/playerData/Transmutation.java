@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -105,7 +106,8 @@ public final class Transmutation
 
 	public static ItemStack[] getInputsAndLock(EntityPlayer player)
 	{
-		return TransmutationProps.getDataFor(player).getInputLocks().clone();
+		ItemStack[] locks = TransmutationProps.getDataFor(player).getInputLocks();
+		return Arrays.copyOf(locks, locks.length);
 	}
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
