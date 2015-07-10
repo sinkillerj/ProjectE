@@ -6,7 +6,7 @@
 * NEW: Chinese language file updates
 * NEW: Shift clicking added in some GUIs that were missing it
 * FIXED: Knowledge entries duplicating when exiting the End. Thanks Mojang
-* FIXED: A SMP ConcurrentModificationException
+* FIXED: A SSP ConcurrentModificationException
 * FIXED: A ArithmeticException caused by the rent...erm...the EMC value of a recipe being too damn high
 * FIXED: A calculation issue resulting from a items damage being higher than its max damage
 * FIXED: Divining rod ignoring metadata
