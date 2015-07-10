@@ -68,14 +68,15 @@ import java.util.Set;
 public final class WorldHelper
 {
 	@SuppressWarnings("unchecked")
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
 			EntityWolf.class, EntityHorse.class, EntityRabbit.class
 	);
+
 	@SuppressWarnings("unchecked")
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> mobs = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
@@ -248,12 +249,12 @@ public final class WorldHelper
 		return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
 	}
 
-	public static Entity getNewEntityInstance(Class<? extends Entity> c, World world)
+	public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world)
 	{
 		try
 		{
-			Constructor<? extends Entity> constr = c.getConstructor(World.class);
-			Entity ent = constr.newInstance(world);
+			Constructor<T> constr = c.getConstructor(World.class);
+			T ent = constr.newInstance(world);
 
 			if (ent instanceof EntitySkeleton)
 			{
@@ -321,9 +322,9 @@ public final class WorldHelper
 		return BlockPos.getAllInBox(corner1, corner2);
 	}
 
-	public static Entity getRandomEntity(World world, Entity toRandomize)
+	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
 	{
-		Class entClass = toRandomize.getClass();
+		Class<? extends EntityLiving> entClass = toRandomize.getClass();
 
 		if (peacefuls.contains(entClass))
 		{
@@ -331,7 +332,7 @@ public final class WorldHelper
 		}
 		else if (mobs.contains(entClass))
 		{
-			Entity ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			EntityLiving ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
 			if (ent instanceof EntityRabbit)
 			{
 				((EntityRabbit) ent).setRabbitType(99);

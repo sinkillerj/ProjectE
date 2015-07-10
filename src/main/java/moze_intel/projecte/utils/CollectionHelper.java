@@ -8,7 +8,7 @@ import java.util.List;
  */
 public final class CollectionHelper
 {
-	public static <T> T getRandomListEntry(List<T> list, Object toExclude)
+	public static <T> T getRandomListEntry(List<T> list, T toExclude)
 	{
 		T obj;
 

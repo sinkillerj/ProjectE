@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -21,8 +22,8 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class DiviningRodLow extends ItemPE implements IModeChanger
@@ -92,11 +93,12 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 							continue;
 						}
 
-						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
+						ItemStack blockStack = drops.get(0);
+						int blockEmc = EMCHelper.getEmcValue(blockStack);
 
 						if (blockEmc == 0)
 						{
-							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.instance().getSmeltingList();
+							Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
 
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
@@ -105,7 +107,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 									continue;
 								}
 
-								if (entry.getKey().getItem() == drops.get(0).getItem())
+								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 								{
 									int currentValue = EMCHelper.getEmcValue(entry.getValue());
 

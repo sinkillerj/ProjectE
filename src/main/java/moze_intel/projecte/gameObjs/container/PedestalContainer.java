@@ -33,7 +33,37 @@ public class PedestalContainer extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
-		return null;
+		Slot slot = this.getSlot(slotIndex);
+
+		if (slot == null || !slot.getHasStack())
+		{
+			return null;
+		}
+
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+
+		if (slotIndex == 0)
+		{
+			if (!this.mergeItemStack(stack, 1, this.inventorySlots.size(), false))
+				return null;
+			slot.onSlotChanged();
+		}
+		else if (!this.mergeItemStack(stack, 0, 1, false))
+		{
+			return null;
+		}
+		if (stack.stackSize == 0)
+		{
+			slot.putStack(null);
+		}
+		else
+		{
+			slot.onSlotChanged();
+		}
+
+		slot.onPickupFromSlot(player, newStack);
+		return newStack;
 	}
 
 	@Override

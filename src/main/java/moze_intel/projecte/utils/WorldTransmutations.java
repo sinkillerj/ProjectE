@@ -32,9 +32,13 @@ public final class WorldTransmutations
 		registerDefault(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
 		registerDefault(Blocks.sand, Blocks.grass, Blocks.cobblestone);
 		registerDefault(Blocks.gravel, Blocks.sandstone, null);
+		registerDefault(Blocks.sandstone, Blocks.gravel, null);
 		registerDefault(Blocks.water, Blocks.ice, null);
+		registerDefault(Blocks.ice, Blocks.water, null);
 		registerDefault(Blocks.lava, Blocks.obsidian, null);
+		registerDefault(Blocks.obsidian, Blocks.lava, null);
 		registerDefault(Blocks.melon_block, Blocks.pumpkin, null);
+		registerDefault(Blocks.pumpkin, Blocks.melon_block, null);
 
 		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
 				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE),

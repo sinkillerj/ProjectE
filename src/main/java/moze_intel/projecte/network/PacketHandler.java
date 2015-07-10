@@ -1,6 +1,7 @@
 package moze_intel.projecte.network;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
@@ -107,7 +108,7 @@ public final class PacketHandler
 		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
 		{
 			SimpleStack stack = entry.getKey();
 

@@ -35,6 +35,11 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void cloneEvent(PlayerEvent.Clone evt)
 	{
+		if (!evt.wasDeath)
+		{
+			return; // Vanilla handles it for us.
+		}
+
 		NBTTagCompound bag = new NBTTagCompound();
 		NBTTagCompound transmute = new NBTTagCompound();
 

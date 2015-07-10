@@ -21,7 +21,7 @@ public class EternalDensityInventory implements IInventory
 	
 	public EternalDensityInventory(ItemStack stack, EntityPlayer player) 
 	{
-		inventory = new ItemStack[10];
+		inventory = new ItemStack[9];
 		
 		if (!stack.hasTagCompound())
 		{
@@ -37,7 +37,7 @@ public class EternalDensityInventory implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return 10;
+		return 9;
 	}
 
 	@Override
@@ -217,5 +217,17 @@ public class EternalDensityInventory implements IInventory
 	public boolean isWhitelistMode()
 	{
 		return isInWhitelist;
+	}
+
+	public int findFirstEmptySlot()
+	{
+		for (int i = 0; i < inventory.length; i++)
+		{
+			if (inventory[i] == null)
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 }

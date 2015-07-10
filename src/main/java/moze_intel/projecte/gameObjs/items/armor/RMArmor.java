@@ -73,13 +73,13 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
 	{
-		return true;
+		return ((RMArmor) itemstack.getItem()).armorPiece == EnumArmorType.HEAD;
 	}
 
 	@Override
 	@Optional.Method(modid = "Thaumcraft")
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
 	{
-		return true;
+		return ((RMArmor) itemstack.getItem()).armorPiece == EnumArmorType.HEAD;
 	}
 }

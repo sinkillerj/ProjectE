@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,7 +47,13 @@ public class TransmutationRenderingEvent
 			if (transmutationResult != null)
 			{
 				RenderHelper.enableStandardItemLighting();
-				mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
+				{
+					// TODO render fluid
+				} else
+				{
+					mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+				}
 				RenderHelper.disableStandardItemLighting();
 			}
 		}
@@ -160,7 +167,7 @@ public class TransmutationRenderingEvent
 				renderList.clear();
 			}
 		}
-		else if (transmutationResult != null)
+		else
 		{
 			transmutationResult = null;
 		}

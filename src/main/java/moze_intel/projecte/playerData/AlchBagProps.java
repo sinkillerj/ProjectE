@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class AlchBagProps implements IExtendedEntityProperties
@@ -44,7 +45,8 @@ public class AlchBagProps implements IExtendedEntityProperties
 			bagData.put(color, new ItemStack[104]);
 			PELogger.logInfo("Created new inventory array for color " + color + " and player " + player.getCommandSenderName());
 		}
-		return bagData.get(color).clone();
+		ItemStack[] inv = bagData.get(color);
+		return Arrays.copyOf(inv, inv.length);
 	}
 
 	protected void setInv(int color, ItemStack[] inv)
