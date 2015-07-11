@@ -192,7 +192,7 @@ pe.emc.too_much=VIEL ZU VIEL
 
 pe.evertide.tooltip1=Drücke %s, um ein Wasserprojektil zu feuern.
 pe.evertide.tooltip2=Funktioniert wie ein unendlicher Wassereimer.
-pe.evertide.tooltip3=Rechtsklick um einen Tank oder Kessel zu füllen.
+pe.evertide.tooltip3=Rechtsklick, um einen Tank oder Kessel zu füllen.
 pe.evertide.tooltip4=Alle Funktionen verbrauchen keine EMC!
 pe.evertide.pedestal1=Erzeugt Regen-/Schneestürme.
 pe.evertide.pedestal2=Versucht alle %s, Regen zu erzeugen.
@@ -209,9 +209,9 @@ pe.gem.legs.lorename=Gravitationsbeinschützer
 pe.gem.feet.lorename=Hurrikanstiefel
 
 pe.gem.nightvision_tooltip=Nachtsicht:
-pe.gem.nightvision.prompt=Drücke %s + %s um die Nachtsicht umzuschalten.
+pe.gem.nightvision.prompt=Drücke %s + %s, um die Nachtsicht umzuschalten.
 pe.gem.stepassist_tooltip=Schrittunterstüzung:
-pe.gem.stepassist.prompt=Drücke %s um die Schrittunterstüzung umzuschalten.
+pe.gem.stepassist.prompt=Drücke %s, um die Schrittunterstüzung umzuschalten.
 
 pe.gemdensity.mode_switch=Ziel gesetzt zu:
 pe.gemdensity.tooltip1=Kondensiert Items unterwegs.
@@ -252,14 +252,14 @@ pe.misc.wrenched_block=Ausrichtung des Blocks wurde geändert!
 pe.pedestal.item_disabled=Podestfunktion wurde deaktiviert!
 pe.pedestal.on_pedestal=Auf Podest:
 pe.pedestal.shortname=DM-Podest
-pe.pedestal.tooltip1=Shift + Rechtsklick um GUI zu öffnen.
+pe.pedestal.tooltip1=Shift + Rechtsklick, um GUI zu öffnen.
 pe.pedestal.tooltip2=Rechtsklick zum Aktivieren!
 
 pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel
 pe.philstone.mode3=Linie
 pe.philstone.tooltip1=Drücke %s, um Crafting-GUI zu öffnen.
-pe.philstone.tooltip2=Funktioniert wie ein Schraubenschlüssel für ProjectE-Blöcke-
+pe.philstone.tooltip2=Funktioniert wie ein Schraubenschlüssel für ProjectE-Blöcke.
 pe.philstone.tooltip3=Linksklick ändert die Ausrichtung des Blocks.
 pe.philstone.tooltip4=Shift + Rechtsklick hebt den Block auf.
 
@@ -289,9 +289,9 @@ pe.timewatch.mode_switch=Zeitkontroll-Modus zu %s gesetzt
 pe.timewatch.off=Aus
 pe.timewatch.rw=Zurückspulen
 pe.timewatch.tooltip1=Werde der Meister der Zeit.
-pe.timewatch.tooltip2=Rechtsklick um Modus zu ändern.
+pe.timewatch.tooltip2=Rechtsklick, um Modus zu ändern.
 pe.timewatch.pedestal1=Gibt jeden Tick %d Bonus-Ticks an nahe Blöcke.
-pe.timewatch.pedestal2=Nahe Kreaturen %.3f mal schneller.
+pe.timewatch.pedestal2=Nahe Kreaturen bewegen sich %.3f mal schneller.
 
 pe.tome.tooltip1=Schaltet das ganze Transmutationswissen frei.
 
@@ -321,7 +321,7 @@ pe.update.getit=Hier herunterladen!
 
 pe.volcanite.tooltip1=Drücke %s, um ein Lavaprojektil zu feuern.
 pe.volcanite.tooltip2=Funktioniert wie ein unendlicher Lavaeimer.
-pe.volcanite.tooltip3=Rechtsklick um einen Tank zu füllen.
+pe.volcanite.tooltip3=Rechtsklick, um einen Tank zu füllen.
 pe.volcanite.tooltip4=Alle Funktionen kosten 32 EMC!
 pe.volcanite.pedestal1=Verhindert Regen-/Schneestürme.
 pe.volcanite.pedestal2=Versucht alle %s, das Wetter zu stoppen.
