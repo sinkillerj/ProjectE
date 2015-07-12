@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,24 +45,21 @@ public class EntityLavaProjectile extends PEProjectile
 
 			boolean flag = true;
 
-			for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
-				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
-					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
+			for (BlockPos pos : WorldHelper.getPositionsFromCorners(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+			{
+				Block block = this.worldObj.getBlockState(pos).getBlock();
+
+				if (block == Blocks.water || block == Blocks.flowing_water)
+				{
+					this.worldObj.setBlockToAir(pos);
+
+					if (flag)
 					{
-						BlockPos pos = new BlockPos(x, y, z);
-						Block block = this.worldObj.getBlockState(pos).getBlock();
-
-						if (block == Blocks.water || block == Blocks.flowing_water)
-						{
-							this.worldObj.setBlockToAir(pos);
-
-							if (flag)
-							{
-								this.worldObj.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-								flag = false;
-							}
-						}
+						this.worldObj.playSoundAtEntity(this, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+						flag = false;
 					}
+				}
+			}
 
 			if (this.posY > 128)
 			{

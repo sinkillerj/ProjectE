@@ -3,6 +3,7 @@ package moze_intel.projecte.events;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
@@ -17,7 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -95,83 +95,17 @@ public class TransmutationRenderingEvent
 		
 		if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			EnumFacing orientation = mop.sideHit;
-
 			IBlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
-
-			int blockX = mop.getBlockPos().getX();
-			int blockY = mop.getBlockPos().getY();
-			int blockZ = mop.getBlockPos().getZ();
 
 			if (transmutationResult != null)
 			{
 				byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
+				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 
-				switch (((ItemMode) stack.getItem()).getMode(stack))
+				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
 				{
-					case 0:
-					{
-						for (int x = blockX - charge; x <= blockX + charge; x++)
-							for (int y = blockY - charge; y <= blockY + charge; y++)
-								for (int z = blockZ - charge; z <= blockZ + charge; z++)
-								{
-									addBlockToRenderList(world, current, new BlockPos(x, y, z));
-								}
-						
-						break;
-					}
-					case 1:
-					{
-						if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN)
-						{
-							for (int x = blockX - charge; x <= blockX + charge; x++)
-								for (int z = blockZ - charge; z <= blockZ + charge; z++)
-								{
-									addBlockToRenderList(world, current, new BlockPos(x, blockY, z));
-								}
-						}
-						else if (orientation == EnumFacing.EAST || orientation == EnumFacing.WEST)
-						{
-							for (int y = blockY - charge; y <= blockY + charge; y++)
-								for (int z = blockZ - charge; z <= blockZ + charge; z++)
-								{
-									addBlockToRenderList(world, current, new BlockPos(blockX, y, z));
-								}
-						}
-						else if (orientation == EnumFacing.SOUTH || orientation == EnumFacing.NORTH)
-						{
-							for (int x = blockX - charge; x <= blockX + charge; x++)
-								for (int y = blockY - charge; y <= blockY + charge; y++)
-								{
-									addBlockToRenderList(world, current, new BlockPos(x, y, blockZ));
-								}
-						}
-						
-						break;
-					}
-					case 2:
-					{
-						EnumFacing playerFacing = player.getHorizontalFacing();
-						int side = orientation.getAxis() == EnumFacing.Axis.X ? 0 : orientation.getAxis() == EnumFacing.Axis.Z ? 1 : playerFacing == EnumFacing.NORTH || playerFacing == EnumFacing.SOUTH ? 0 : 1; // TODO 1.8 rework to be clearer
-						
-						if (side == 0)
-						{
-							for (int z = blockZ - charge; z <= blockZ + charge; z++)
-							{
-								addBlockToRenderList(world, current, new BlockPos(blockX, blockY, z));
-							}
-						}
-						else 
-						{
-							for (int x = blockX - charge; x <= blockX + charge; x++)
-							{
-								addBlockToRenderList(world, current, new BlockPos(x, blockY, blockZ));
-							}
-						}
-						
-						break;
-					}
+					addBlockToRenderList(pos);
 				}
 				
 				drawAll();
@@ -259,13 +193,10 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableBlend();
 	}
 	
-	private void addBlockToRenderList(World world, IBlockState current, BlockPos pos)
+	private void addBlockToRenderList(BlockPos pos)
 	{
-		if (world.getBlockState(pos) == current)
-		{
-			AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
-			box = box.offset(-playerX, -playerY, -playerZ);
-			renderList.add(box);
-		}
+		AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
+		box = box.offset(-playerX, -playerY, -playerZ);
+		renderList.add(box);
 	}
 }

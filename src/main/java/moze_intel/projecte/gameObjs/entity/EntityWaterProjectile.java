@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,30 +41,27 @@ public class EntityWaterProjectile extends PEProjectile
 				return;
 			}
 
-			for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
-				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
-					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
-					{
-						BlockPos pos = new BlockPos(x, y, z);
-						Block block = this.worldObj.getBlockState(pos).getBlock();
-						boolean flag = false;
-						
-						if (block == Blocks.lava)
-						{
-							this.worldObj.setBlockState(pos, Blocks.obsidian.getDefaultState());
-						}
-						else if (block == Blocks.flowing_lava)
-						{
-							this.worldObj.setBlockState(pos, Blocks.cobblestone.getDefaultState());
-						}
-						else
-						{
-							continue;
-						}
-						
-						this.worldObj.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-					}
-			
+			for (BlockPos pos : WorldHelper.getPositionsFromCorners(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+			{
+				Block block = this.worldObj.getBlockState(pos).getBlock();
+				boolean flag = false;
+
+				if (block == Blocks.lava)
+				{
+					this.worldObj.setBlockState(pos, Blocks.obsidian.getDefaultState());
+				}
+				else if (block == Blocks.flowing_lava)
+				{
+					this.worldObj.setBlockState(pos, Blocks.cobblestone.getDefaultState());
+				}
+				else
+				{
+					continue;
+				}
+
+				this.worldObj.playSoundAtEntity(this, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+			}
+
 			if (this.isInWater())
 			{
 				this.setDead();

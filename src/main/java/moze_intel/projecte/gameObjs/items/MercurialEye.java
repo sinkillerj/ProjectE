@@ -5,6 +5,7 @@ import moze_intel.projecte.api.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -130,61 +131,55 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			if (box != null)
 			{
-				for (int x = (int) box.minX; x <= (int) box.maxX; x++)
+				for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
 				{
-					for (int y = (int) box.minY; y <= (int) box.maxY; y++)
+					IBlockState state = world.getBlockState(currentPos);
+					Block oldBlock = state.getBlock();
+
+					if (mode == NORMAL_MODE && world.isAirBlock(currentPos))
 					{
-						for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
+						if (kleinEmc < reqEmc)
+							break;
+						world.setBlockState(pos, newState, 3);
+						removeKleinEMC(stack, reqEmc);
+						kleinEmc -= reqEmc;
+					}
+					else if (mode == TRANSMUTATION_MODE)
+					{
+						if (newState == state || oldBlock.isAir(world, currentPos) || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
 						{
-							BlockPos currentPos = new BlockPos(x, y, z);
-							IBlockState state = world.getBlockState(currentPos);
-							Block oldBlock = state.getBlock();
+							continue;
+						}
 
-							if (mode == NORMAL_MODE && world.isAirBlock(currentPos))
+						int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(state, 1));
+
+						if (emc > reqEmc)
+						{
+							int difference = emc - reqEmc;
+
+							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+
+							addKleinEMC(stack, difference);
+							world.setBlockState(pos, newState, 3);
+						}
+						else if (emc < reqEmc)
+						{
+							int difference = reqEmc - emc;
+
+							if (kleinEmc >= difference)
 							{
-								if (kleinEmc < reqEmc)
-									break;
+								kleinEmc -= difference;
+								removeKleinEMC(stack, difference);
 								world.setBlockState(pos, newState, 3);
-								removeKleinEMC(stack, reqEmc);
-								kleinEmc -= reqEmc;
 							}
-							else if (mode == TRANSMUTATION_MODE)
-							{
-								if (newState == state || oldBlock.isAir(world, currentPos) || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
-								{
-									continue;
-								}
-
-								int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(state, 1));
-
-								if (emc > reqEmc)
-								{
-									int difference = emc - reqEmc;
-
-									kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-
-									addKleinEMC(stack, difference);
-									world.setBlockState(pos, newState, 3);
-								}
-								else if (emc < reqEmc)
-								{
-									int difference = reqEmc - emc;
-
-									if (kleinEmc >= difference)
-									{
-										kleinEmc -= difference;
-										removeKleinEMC(stack, difference);
-										world.setBlockState(pos, newState, 3);
-									}
-								}
-								else
-								{
-									world.setBlockState(pos, newState, 3);
-								}
-							}
+						}
+						else
+						{
+							world.setBlockState(pos, newState, 3);
 						}
 					}
 				}
+
 				player.worldObj.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 			}
 		}

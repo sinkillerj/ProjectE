@@ -187,28 +187,30 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 			case 1: // ignition
 				switch(player.getHorizontalFacing())
 				{
-					case SOUTH: // south, -z
-					case NORTH: // north, +z
-						for(int x = (int) (player.posX - 30); x <= player.posX + 30; x++)
-							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-								for(int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
-								{
-									BlockPos pos = new BlockPos(x, y, z);
-									if(world.isAirBlock(pos))
-										world.setBlockState(pos, Blocks.fire.getDefaultState());
-								}
+					case SOUTH: // fall through
+					case NORTH:
+					{
+						for (BlockPos pos : WorldHelper.getPositionsFromCorners(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3)))
+						{
+							if (world.isAirBlock(pos))
+							{
+								world.setBlockState(pos, Blocks.fire.getDefaultState());
+							}
+						}
 						break;
-					case WEST: // west, -x
-					case EAST: // east, +x
-						for(int x = (int) (player.posX - 3); x <= player.posX + 3; x++)
-							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-								for(int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++)
-								{
-									BlockPos pos = new BlockPos(x, y, z);
-									if(world.isAirBlock(pos))
-										world.setBlockState(pos, Blocks.fire.getDefaultState());
-								}
+					}
+					case WEST: // fall through
+					case EAST:
+					{
+						for (BlockPos pos : WorldHelper.getPositionsFromCorners(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30)))
+						{
+							if (world.isAirBlock(pos))
+							{
+								world.setBlockState(pos, Blocks.fire.getDefaultState());
+							}
+						}
 						break;
+					}
 				}
 				world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
 				break;

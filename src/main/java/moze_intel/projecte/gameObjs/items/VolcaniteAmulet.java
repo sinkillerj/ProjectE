@@ -109,19 +109,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
 	}
 
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
+	private void handleWalkOnLava(EntityPlayer player)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
-		
-		EntityPlayer player = (EntityPlayer) entity;
-
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
+		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.lava || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && player.worldObj.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -129,20 +124,30 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				player.fallDistance = 0.0F;
 				player.onGround = true;
 			}
-				
-			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+
+			if (!player.worldObj.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
-		else if (!world.isRemote)
+		else if (!player.worldObj.isRemote)
 		{
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
 		}
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
+	{
+		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
 		
+		EntityPlayer player = (EntityPlayer) entity;
+
+		handleWalkOnLava(player);
+
 		if (!world.isRemote)
 		{
 			if (!player.isImmuneToFire())
@@ -189,35 +194,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 		
 		EntityPlayer player = (EntityPlayer) ent;
-		World world = player.worldObj;
 
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
-		BlockPos pos = new BlockPos(x, y, z);
-		if ((world.getBlockState(pos.down()).getBlock() == Blocks.lava || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && world.isAirBlock(pos))
-		{
-			if (!player.isSneaking())
-			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
-			}
-				
-			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
-			}
-		}
-		else if (!world.isRemote)
-		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
-			}
-		}
+		handleWalkOnLava(player);
 		
-		if (!world.isRemote && !player.isImmuneToFire())
+		if (!player.worldObj.isRemote && !player.isImmuneToFire())
 		{
 			PlayerHelper.setPlayerFireImmunity(player, true);
 		}

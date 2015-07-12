@@ -217,31 +217,24 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			return;
 		}
-		for (int x = (int) bBox.minX; x <= bBox.maxX; x++)
-		{
-			for (int y = (int) bBox.minY; y <= bBox.maxY; y++)
-			{
-				for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++)
-				{
-					BlockPos pos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(pos);
-					Block block = state.getBlock();
 
-					if (block.getTickRandomly()
-							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
-							&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
-							&& !(block instanceof IGrowable)
-							&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
-						)
-					{
-						for (int i = 0; i < bonusTicks; i++)
-						{
-							block.updateTick(world, pos, state, itemRand);
-						}
-					}
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
+		{
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+
+			if (block.getTickRandomly()
+					&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
+					&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
+					&& !(block instanceof IGrowable)
+					&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
+					)
+			{
+				for (int i = 0; i < bonusTicks; i++)
+				{
+					block.updateTick(world, pos, state, itemRand);
 				}
 			}
-
 		}
 	}
 

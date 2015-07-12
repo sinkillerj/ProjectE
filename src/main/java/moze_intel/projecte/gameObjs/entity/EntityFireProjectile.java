@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -38,25 +39,23 @@ public class EntityFireProjectile extends PEProjectile
 			}
 			else if(block == Blocks.sand)
 			{
-				for(int x1 = pos.getX() - 2; x1 <= pos.getX() + 2; x1++)
-					for(int y1 = pos.getY() - 2; y1 <= pos.getY() + 2; y1++)
-						for(int z1 = pos.getZ() - 2; z1 <= pos.getZ() + 2; z1++)
-						{
-							BlockPos currentPos = new BlockPos(x1, y1, z1);
-							if(worldObj.getBlockState(currentPos) == Blocks.sand)
-								worldObj.setBlockState(currentPos, Blocks.glass.getDefaultState());
-						}
+				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
+				{
+					if(worldObj.getBlockState(currentPos) == Blocks.sand)
+					{
+						worldObj.setBlockState(currentPos, Blocks.glass.getDefaultState());
+					}
+				}
 			}
 			else
 			{
-				for(int x1 = pos.getX() - 1; x1 <= pos.getX() + 1; x1++)
-					for(int y1 = pos.getY() - 1; y1 <= pos.getY() + 1; y1++)
-						for(int z1 = pos.getZ() - 1; z1 <= pos.getZ() + 1; z1++)
-						{
-							BlockPos currentPos = new BlockPos(x1, y1, z1);
-							if(worldObj.isAirBlock(currentPos))
-								worldObj.setBlockState(currentPos, Blocks.fire.getDefaultState());
-						}
+				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-1, -1, -1), mop.getBlockPos().add(1, 1, 1)))
+				{
+					if(worldObj.isAirBlock(currentPos))
+					{
+						worldObj.setBlockState(currentPos, Blocks.fire.getDefaultState());
+					}
+				}
 			}
 		}
 	}

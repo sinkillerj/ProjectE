@@ -73,69 +73,65 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 			int depth = getDepthFromMode(mode);
 			AxisAlignedBB box = WorldHelper.getDeepBox(mop.getBlockPos(), mop.sideHit, depth);
 
-			for (int i = (int) box.minX; i <= box.maxX; i++)
-				for (int j = (int) box.minY; j <= box.maxY; j++)
-					for (int k = (int) box.minZ; k <= box.maxZ; k++)
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+			{
+				IBlockState state = world.getBlockState(pos);
+				Block block = state.getBlock();
+
+				if (block.isAir(world, pos))
+				{
+					continue;
+				}
+
+				List<ItemStack> drops = block.getDrops(world, pos, state, 0);
+
+				if (drops.size() == 0)
+				{
+					continue;
+				}
+
+				ItemStack blockStack = drops.get(0);
+				int blockEmc = EMCHelper.getEmcValue(blockStack);
+
+				if (blockEmc == 0)
+				{
+					Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
+
+					for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 					{
-						BlockPos pos = new BlockPos(i, j, k);
-						IBlockState state = world.getBlockState(pos);
-						Block block = state.getBlock();
-
-						if (block.isAir(world, pos))
+						if (entry == null || entry.getKey() == null)
 						{
 							continue;
 						}
 
-						List<ItemStack> drops = block.getDrops(world, pos, state, 0);
-
-						if (drops.size() == 0)
+						if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 						{
-							continue;
-						}
+							int currentValue = EMCHelper.getEmcValue(entry.getValue());
 
-						ItemStack blockStack = drops.get(0);
-						int blockEmc = EMCHelper.getEmcValue(blockStack);
-
-						if (blockEmc == 0)
-						{
-							Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
-
-							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+							if (currentValue != 0)
 							{
-								if (entry == null || entry.getKey() == null)
+								if (!emcValues.contains(currentValue))
 								{
-									continue;
+									emcValues.add(currentValue);
 								}
 
-								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
-								{
-									int currentValue = EMCHelper.getEmcValue(entry.getValue());
-
-									if (currentValue != 0)
-									{
-										if (!emcValues.contains(currentValue))
-										{
-											emcValues.add(currentValue);
-										}
-
-										totalEmc += currentValue;
-									}
-								}
+								totalEmc += currentValue;
 							}
 						}
-						else
-						{
-							if (!emcValues.contains(blockEmc))
-							{
-								emcValues.add(blockEmc);
-							}
-
-							totalEmc += blockEmc;
-						}
-
-						numBlocks++;
+					}
+				}
+				else
+				{
+					if (!emcValues.contains(blockEmc))
+					{
+						emcValues.add(blockEmc);
 					}
 
+					totalEmc += blockEmc;
+				}
+
+				numBlocks++;
+			}
 
 			if (numBlocks == 0)
 			{

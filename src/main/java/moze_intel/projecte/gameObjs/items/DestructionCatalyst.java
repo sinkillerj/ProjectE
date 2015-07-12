@@ -14,7 +14,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.List;
 
@@ -48,44 +48,41 @@ public class DestructionCatalyst extends ItemCharge
 			AxisAlignedBB box = WorldHelper.getDeepBox(coords, mop.sideHit, --numRows);
 			
 			List<ItemStack> drops = Lists.newArrayList();
-			
-			for (int x = (int) box.minX; x <= box.maxX; x++)
-				for (int y = (int) box.minY; y <= box.maxY; y++)
-					for (int z = (int) box.minZ; z <= box.maxZ; z++)
-					{
-						BlockPos pos = new BlockPos(x, y, z);
-						Block block = world.getBlockState(pos).getBlock();
-						float hardness = block.getBlockHardness(world, pos);
-						
-						if (block.isAir(world, pos) || hardness >= 50.0F || hardness == -1.0F)
-						{
-							continue;
-						}
-						
-						if (!consumeFuel(player, stack, 8, true))
-						{
-							break;
-						}
-						
-						if (!hasAction)
-						{
-							hasAction = true;
-						}
-						
-						List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
-						
-						if (list != null && list.size() > 0)
-						{
-							drops.addAll(list);
-						}
-						
-						world.setBlockToAir(pos);
-						
-						if (world.rand.nextInt(8) == 0)
-						{
-							PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, x, y, z), new TargetPoint(world.provider.getDimensionId(), x, y + 1, z, 32));
-						}
-					}
+
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+			{
+				Block block = world.getBlockState(pos).getBlock();
+				float hardness = block.getBlockHardness(world, pos);
+
+				if (block.isAir(world, pos) || hardness >= 50.0F || hardness == -1.0F)
+				{
+					continue;
+				}
+
+				if (!consumeFuel(player, stack, 8, true))
+				{
+					break;
+				}
+
+				if (!hasAction)
+				{
+					hasAction = true;
+				}
+
+				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
+
+				if (list != null && list.size() > 0)
+				{
+					drops.addAll(list);
+				}
+
+				world.setBlockToAir(pos);
+
+				if (world.rand.nextInt(8) == 0)
+				{
+					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+				}
+			}
 
 			PlayerHelper.swingItem(player);
 			if (hasAction)

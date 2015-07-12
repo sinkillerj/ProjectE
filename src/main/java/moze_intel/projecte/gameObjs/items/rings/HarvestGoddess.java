@@ -97,30 +97,27 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	private boolean useBoneMeal(World world, BlockPos pos)
 	{
 		boolean result = false;
-		
-		for (int x = pos.getX() - 15; x <= pos.getX() + 15; x++)
-			for (int z = pos.getZ() - 15; z <= pos.getZ() + 15; z++)
+
+		for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-15, 0, -15), pos.add(15, 0, 15)))
+		{
+			IBlockState state = world.getBlockState(currentPos);
+			Block crop = state.getBlock();
+
+			if (crop instanceof IGrowable)
 			{
-				BlockPos currentPos = new BlockPos(x, pos.getY(), z);
-				IBlockState state = world.getBlockState(currentPos);
-				Block crop = state.getBlock();
-				
-				if (crop instanceof IGrowable)
+				IGrowable growable = (IGrowable) crop;
+
+				if (growable.canUseBonemeal(world, world.rand, currentPos, state))
 				{
-					IGrowable growable = (IGrowable) crop;
-					
-					if (growable.canUseBonemeal(world, world.rand, currentPos, state))
+					if (!result)
 					{
-						if (!result)
-						{
-							result = true;
-						}
-						
-						growable.grow(world, world.rand, currentPos, state);
+						result = true;
 					}
+
+					growable.grow(world, world.rand, currentPos, state);
 				}
 			}
-		
+		}
 		return result;
 	}
 	
@@ -134,53 +131,50 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			return false;
 		}
-		
-		for (int x = pos.getX() - 8; x <= pos.getX() + 8; x++)
-			for (int z = pos.getZ() - 8; z <= pos.getZ() + 8; z++)
+
+		for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
+		{
+			IBlockState state = world.getBlockState(currentPos);
+
+			if (world.isAirBlock(currentPos))
 			{
-				BlockPos currentPos = new BlockPos(x, pos.getY(), z);
-				IBlockState state = world.getBlockState(currentPos);
-				
-				if (world.isAirBlock(currentPos))
+				continue;
+			}
+
+			for (int i = 0; i < seeds.size(); i++)
+			{
+				StackWithSlot s = seeds.get(i);
+				IPlantable plant;
+
+				if (s.stack.getItem() instanceof IPlantable)
 				{
-					continue;
+					plant = (IPlantable) s.stack.getItem();
 				}
-				
-				for (int i = 0; i < seeds.size(); i++)
+				else
 				{
-					StackWithSlot s = seeds.get(i);
-					IPlantable plant;
-					
-					if (s.stack.getItem() instanceof IPlantable)
+					plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
+				}
+
+				if (state.getBlock().canSustainPlant(world, currentPos, EnumFacing.UP, plant) && world.isAirBlock(currentPos.up()))
+				{
+					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
+					player.inventory.decrStackSize(s.slot, 1);
+					player.inventoryContainer.detectAndSendChanges();
+
+					s.stack.stackSize--;
+
+					if (s.stack.stackSize <= 0)
 					{
-						plant = (IPlantable) s.stack.getItem();
+						seeds.remove(i);
 					}
-					else
+
+					if (!result)
 					{
-						plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
-					}
-					
-					if (state.getBlock().canSustainPlant(world, currentPos, EnumFacing.UP, plant) && world.isAirBlock(currentPos.up()))
-					{
-						world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
-						player.inventory.decrStackSize(s.slot, 1);
-						player.inventoryContainer.detectAndSendChanges();
-						
-						s.stack.stackSize--;
-						
-						if (s.stack.stackSize <= 0)
-						{
-							seeds.remove(i);
-						}
-						
-						if (!result)
-						{
-							result = true;
-						}
+						result = true;
 					}
 				}
 			}
-		
+		}
 		return result;
 	}
 	
