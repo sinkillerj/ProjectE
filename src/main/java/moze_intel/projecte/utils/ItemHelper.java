@@ -79,6 +79,29 @@ public final class ItemHelper
 		trimItemList(list);
 	}
 
+	/**
+	 * Compacts and sorts list of items, without regard for stack sizes
+	 */
+	public static void compactItemListNoStacksize(List<ItemStack> list)
+	{
+		for (int i = 0; i < list.size(); i++)
+		{
+			ItemStack s = list.get(i);
+			for (int j = i + 1; j < list.size(); j++)
+			{
+				ItemStack s1 = list.get(j);
+				if (areItemStacksEqual(s, s1))
+				{
+					s.stackSize += s1.stackSize;
+					s1.stackSize = 0;
+				}
+			}
+		}
+
+		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
+		trimItemList(list);
+	}
+
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
 		Iterator<ItemStack> iter = list.iterator();
