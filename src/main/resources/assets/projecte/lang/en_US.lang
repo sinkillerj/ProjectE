@@ -206,6 +206,10 @@ pe.emc.stackemc_tooltip_prefix=Stack EMC:
 pe.emc.storedemc_tooltip=Stored EMC:
 pe.emc.too_much=WAY TOO MUCH
 
+pe.evertide.general=Water-breathing and walking.
+pe.evertide.projectile=Shoot a water source block
+pe.evertide.rightclick=Place water or fill containers.
+
 pe.evertide.tooltip1=Press %s to fire a water projectile
 pe.evertide.tooltip2=Acts as an infinite water bucket
 pe.evertide.tooltip3=Right click to fill tanks and cauldrons
@@ -362,8 +366,12 @@ pe.zero.pedestal1=Extinguishes entities
 pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
+pe.catalitic.projectile=Shoots a projectile that causes an explosion based on the charge level
+
 pe.debug.metainvalid.name=Invalid metadata set
 
+
+pe.tooltip.general=General:
 pe.tooltip.functionality.prefix=Functions in
 pe.tooltip.functionality.hotbar=Hotbar
 pe.tooltip.functionality.inventory=Inventory
@@ -374,5 +382,5 @@ pe.tooltip.functionality.pedestal=DM Pedestal
 pe.tooltip.functionality.andSeparator=and
 pe.tooltip.functionality.commaSeparator=,
 
-pe.tooltip.sneakForDetails=Sneak to show details
+pe.tooltip.sneakForDetails=Sneak and/or Ctrl to show details
 pe.tooltip.needs_fuel=Consumes EMC from Fuel or Klein Stars

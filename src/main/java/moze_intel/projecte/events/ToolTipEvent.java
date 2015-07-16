@@ -1,15 +1,5 @@
 package moze_intel.projecte.events;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.mojang.realmsclient.gui.ChatFormatting;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionality;
 import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionality;
 import moze_intel.projecte.api.tooltip.ITTBaseFunctionality;
@@ -17,29 +7,37 @@ import moze_intel.projecte.api.tooltip.ITTBaubleFunctionality;
 import moze_intel.projecte.api.tooltip.ITTHotbarFunctionality;
 import moze_intel.projecte.api.tooltip.ITTInventoryFunctionality;
 import moze_intel.projecte.api.tooltip.ITTPedestalFunctionality;
+import moze_intel.projecte.api.tooltip.keybinds.ITTExtraFunction;
+import moze_intel.projecte.api.tooltip.keybinds.ITTKeybind;
+import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
+import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
 import moze_intel.projecte.api.tooltip.special.ITTConsumesEMC;
 import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
 import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
 import moze_intel.projecte.api.tooltip.special.ITTSpecialFunctionality;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIPedestal;
+import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PEKeybind;
 
-import net.java.games.input.Keyboard;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import scala.collection.immutable.Set;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 import java.util.Map;
@@ -250,7 +248,7 @@ public class ToolTipEvent
 
 	private void addFunctionalityTooltip(ITTBaseFunctionality item, ItemTooltipEvent event)
 	{
-		if (item instanceof ITTGeneralFunctionality) {
+		if (item instanceof ITTGeneralFunctionality && !showDetails()) {
 			event.toolTip.addAll(((ITTGeneralFunctionality) item).getGeneralDescription());
 		}
 		List<String> functionality = Lists.newArrayList();
@@ -272,13 +270,50 @@ public class ToolTipEvent
 		{
 			addSpecialFunctionality((ITTSpecialFunctionality)item, event);
 		}
+		if (item instanceof ITTKeybind && showKeybinds())
+		{
+			addKeybind((ITTKeybind) item, event);
+		}
+	}
+
+	private void addKeybind(ITTKeybind item, ItemTooltipEvent event)
+	{
+		GameSettings settings = Minecraft.getMinecraft().gameSettings;
+		if (item instanceof ITTRightClick)
+		{
+			addTooltipForKeybind(GameSettings.getKeyDisplayString(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode()), item.getTooltipLocalisationPrefix(), "rightclick", event);
+		}
+		if (item instanceof ITTProjectile)
+		{
+			addTooltipForKeybind(GameSettings.getKeyDisplayString(ClientKeyHelper.peToMc.get(PEKeybind.FIRE_PROJECTILE).getKeyCode()), item.getTooltipLocalisationPrefix(), "projectile", event);
+		}
+		if (item instanceof ITTExtraFunction)
+		{
+			addTooltipForKeybind(GameSettings.getKeyDisplayString(ClientKeyHelper.peToMc.get(PEKeybind.EXTRA_FUNCTION).getKeyCode()), item.getTooltipLocalisationPrefix(), "extrafunction", event);
+		}
+	}
+	private void addTooltipForKeybind(String keydescription, String baseLocalisation, String keybind, ItemTooltipEvent event) {
+		event.toolTip.add(ChatFormatting.DARK_PURPLE + keydescription + ": " + ChatFormatting.RESET + StatCollector.translateToLocal(baseLocalisation + "." + keybind));
+	}
+
+	private boolean showDetails() {
+		return Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+	}
+
+	private boolean showKeybinds()
+	{
+		return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
 	}
 
 	private void addSpecialFunctionality(ITTSpecialFunctionality item, ItemTooltipEvent event)
 	{
-		//if (Minecraft.getMinecraft().gameSettings.keyBindSneak.isPressed())
-		if (org.lwjgl.input.Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode()))
+		if (showDetails())
 		{
+			if (item instanceof ITTGeneralFunctionality)
+			{
+				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.tooltip.general"));
+				event.toolTip.addAll(((ITTGeneralFunctionality) item).getGeneralDescription());
+			}
 			if (item instanceof ITTPedestalFunctionalitySpecial)
 			{
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + " ");
@@ -290,7 +325,7 @@ public class ToolTipEvent
 				event.toolTip.add(ChatFormatting.GOLD + StatCollector.translateToLocal("pe.tooltip.needs_fuel"));
 			}
 		}
-		else
+		else if (!showKeybinds())
 		{
 			event.toolTip.add(ChatFormatting.ITALIC + ""+ ChatFormatting.DARK_GRAY + StatCollector.translateToLocal("pe.tooltip.sneakForDetails"));
 		}

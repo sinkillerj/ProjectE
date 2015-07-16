@@ -1,13 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IPedestalItem;
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionality;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionality;
+import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
+import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -17,6 +15,12 @@ import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+
+import baubles.api.BaubleType;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
@@ -40,7 +44,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
+public class EvertideAmulet extends ItemPE implements ITTProjectile, ITTBaubleFunctionality, ITTPedestalFunctionalitySpecial, ITTHotbarFunctionality, ITTGeneralFunctionality, IFluidContainerItem, ITTRightClick
 {
 	public EvertideAmulet()
 	{
@@ -231,7 +235,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		this.itemIcon = register.registerIcon(this.getTexture("rings", "evertide_amulet"));//"ee2:rings/evertide_amulet");
 	}
 
-	@Override
+/*	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
@@ -240,7 +244,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
 		list.add(StatCollector.translateToLocal("pe.evertide.tooltip4"));
-	}
+	}*/
 	
 	@Override
 	@Optional.Method(modid = "Baubles")
@@ -312,5 +316,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public List<String> getGeneralDescription()
+	{
+		return Lists.newArrayList(StatCollector.translateToLocal("pe.evertide.general"));
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.evertide";
 	}
 }
