@@ -4,7 +4,7 @@ import moze_intel.projecte.api.tooltip.ITTPedestalFunctionality;
 
 import java.util.List;
 
-public interface ITTPedestalFunctionalitySpecial extends ITTPedestalFunctionality
+public interface ITTPedestalFunctionalitySpecial extends ITTPedestalFunctionality, ITTSpecialFunctionality
 {
 
 	/***

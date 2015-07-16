@@ -146,9 +146,11 @@ pe.arcana.inactive=Inactive!
 pe.archangel.pedestal1=Fires arrows at nearby mobs
 pe.archangel.pedestal2=Triggers every %s
 
+pe.bhb.general=Attracts items and stores them in an Inventory
 pe.bhb.pedestal1=Sucks in nearby item drops
 pe.bhb.pedestal2=Dumps in adjacent inventories
 
+pe.body.general=Restores hunger when activated
 pe.body.pedestal1=Restores nearby players' hunger
 pe.body.pedestal2=Half a shank every %s
 
@@ -236,6 +238,7 @@ pe.gemdensity.tooltip4=Right click to set up blacklist/whitelist
 pe.gemdensity.tooltip5=Shift right click to toggle
 pe.gemdensity.whitelist=Whitelist
 
+pe.harvestgod.general=Accelerates Crop Growth. Harvests Crops when activated.
 pe.harvestgod.pedestal1=Accelerates growth of nearby crops
 pe.harvestgod.pedestal2=Harvests nearby grown crops
 pe.harvestgod.pedestal3=Activates every %s
@@ -255,6 +258,7 @@ pe.key.extra_function=Extra Function
 pe.key.fire_projectile=Fire Projectile
 pe.key.mode=Change Mode
 
+pe.life.general=Restores hunger and hearts when activated
 pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s
 
@@ -302,6 +306,7 @@ pe.repairtalisman.pedestal2=Restores 1 durability every %s
 pe.server.high_alchemist=High alchemist
 pe.server.has_joined=has joined the server
 
+pe.soul.general=Heals player when activated
 pe.soul.pedestal1=Heals nearby players
 pe.soul.pedestal2=Half a heart every %s
 
@@ -358,3 +363,16 @@ pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
+
+pe.tooltip.functionality.prefix=Functions in
+pe.tooltip.functionality.hotbar=Hotbar
+pe.tooltip.functionality.inventory=Inventory
+pe.tooltip.functionality.alchbag=Alch. Bag
+pe.tooltip.functionality.alchchest=Alch. Chest
+pe.tooltip.functionality.bauble=Bauble
+pe.tooltip.functionality.pedestal=DM Pedestal
+pe.tooltip.functionality.andSeparator=and
+pe.tooltip.functionality.commaSeparator=,
+
+pe.tooltip.sneakForDetails=Sneak to show details
+pe.tooltip.needs_fuel=Consumes EMC from Fuel or Klein Stars

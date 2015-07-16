@@ -21,4 +21,9 @@ public interface IPedestalItem {
 	 */
     void updateInPedestal(World world, int x, int y, int z);
 
+	/***
+	 * Called clientside when inside the pedestal gui to add special function descriptions
+	 * @return Brief string describing item function in pedestal.
+	 */
+	List<String> getPedestalDescription();
 }

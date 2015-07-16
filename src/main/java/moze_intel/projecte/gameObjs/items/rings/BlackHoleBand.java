@@ -7,6 +7,12 @@ import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionality;
+import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionality;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionality;
+import moze_intel.projecte.api.tooltip.ITTInventoryFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -27,7 +33,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
+public class BlackHoleBand extends RingToggle implements ITTAlchBagFunctionality, ITTAlchChestFunctionality, ITTBaubleFunctionality, ITTInventoryFunctionality, ITTPedestalFunctionalitySpecial, ITTGeneralFunctionality
 {
 	public BlackHoleBand()
 	{
@@ -214,5 +220,11 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> getGeneralDescription()
+	{
+		return Lists.newArrayList(StatCollector.translateToLocal("pe.bhb.general"));
 	}
 }

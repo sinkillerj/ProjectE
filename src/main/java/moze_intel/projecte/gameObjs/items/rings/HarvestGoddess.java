@@ -2,6 +2,10 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionality;
+import moze_intel.projecte.api.tooltip.ITTPedestalFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
@@ -22,7 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-public class HarvestGoddess extends RingToggle implements IPedestalItem
+public class HarvestGoddess extends RingToggle implements ITTPedestalFunctionalitySpecial, ITTHotbarFunctionality, ITTGeneralFunctionality
 {
 	public HarvestGoddess()
 	{
@@ -280,6 +284,12 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					StatCollector.translateToLocal("pe.harvestgod.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public List<String> getGeneralDescription()
+	{
+		return Lists.newArrayList(StatCollector.translateToLocal("pe.harvestgod.general"));
 	}
 
 	private class StackWithSlot
