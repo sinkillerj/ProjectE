@@ -327,7 +327,7 @@ public class ToolTipEvent
 		}
 		else if (!showKeybinds())
 		{
-			event.toolTip.add(ChatFormatting.ITALIC + ""+ ChatFormatting.DARK_GRAY + StatCollector.translateToLocal("pe.tooltip.sneakForDetails"));
+			event.toolTip.add(ChatFormatting.ITALIC + ""+ ChatFormatting.DARK_GRAY + StatCollector.translateToLocal("pe.tooltip.sneakOrCtrlForDetails"));
 		}
 	}
 

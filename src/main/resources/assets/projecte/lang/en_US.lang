@@ -382,5 +382,5 @@ pe.tooltip.functionality.pedestal=DM Pedestal
 pe.tooltip.functionality.andSeparator=and
 pe.tooltip.functionality.commaSeparator=,
 
-pe.tooltip.sneakForDetails=Sneak and/or Ctrl to show details
+pe.tooltip.sneakOrCtrlForDetails=Sneak and/or Ctrl to show details
 pe.tooltip.needs_fuel=Consumes EMC from Fuel or Klein Stars
