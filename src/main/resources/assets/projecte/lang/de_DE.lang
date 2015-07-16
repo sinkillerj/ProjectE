@@ -182,9 +182,9 @@ pe.command.set.success=EMC-Wert von %s zu %s gesetzt!
 pe.command.set.usage=/projecte setEMC [unlokalisierter | OreDictionary-Name] [Meta-Wert] [EMC-Wert], /projecte setEMC [EMC-Wert] (Für in der Hand gehaltenes Item)
 
 pe.darkpick.mode1=Standard
-pe.darkpick.mode2=3x Tallshot
-pe.darkpick.mode3=3x Wideshot
-pe.darkpick.mode4=3x Longshot
+pe.darkpick.mode2=3x Übereinander
+pe.darkpick.mode3=3x Nebeneinander
+pe.darkpick.mode4=3x Hintereinander
 
 pe.divining.avgemc=Durchschnitts-EMC für %s Blöcke: %s
 pe.divining.maxemc=Höchste EMC: %s
@@ -266,9 +266,9 @@ pe.misc.storedxp_tooltip=Gespeicherte XP:
 pe.misc.wrenched_block=Ausrichtung des Blocks wurde geändert!
 
 pe.morningstar.mode1=Standard
-pe.morningstar.mode2=3x Tallshot
-pe.morningstar.mode3=3x Wideshot
-pe.morningstar.mode4=3x Longshot
+pe.morningstar.mode2=3x Übereinander
+pe.morningstar.mode3=3x Nebeneinander
+pe.morningstar.mode4=3x Hintereinander
 
 pe.pedestal.item_disabled=Podestfunktion wurde deaktiviert!
 pe.pedestal.on_pedestal=Auf Podest:
@@ -285,9 +285,9 @@ pe.philstone.tooltip3=Linksklick ändert die Ausrichtung des Blocks.
 pe.philstone.tooltip4=Shift + Rechtsklick hebt den Block auf.
 
 pe.redpick.mode1=Standard
-pe.redpick.mode2=3x Tallshot
-pe.redpick.mode3=3x Wideshot
-pe.redpick.mode4=3x Longshot
+pe.redpick.mode2=3x Übereinander
+pe.redpick.mode3=3x Nebeneinander
+pe.redpick.mode4=3x Hintereinander
 
 pe.redsword.mode1=Feindliche töten
 pe.redsword.mode2=Alle töten
