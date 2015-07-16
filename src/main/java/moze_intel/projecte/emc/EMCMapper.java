@@ -87,6 +87,7 @@ public final class EMCMapper
 			NormalizedSimpleStack.addMappings(graphMapper);
 			PELogger.logInfo("Starting to generate Values:");
 
+			config.save();
 
 			graphMapperValues = graphMapper.generateValues();
 			PELogger.logInfo("Generated Values...");
@@ -105,7 +106,7 @@ public final class EMCMapper
 				}
 			}
 		}
-		config.save();
+
 
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
