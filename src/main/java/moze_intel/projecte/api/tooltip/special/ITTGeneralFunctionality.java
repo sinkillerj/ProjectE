@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ITTGeneralFunctionality extends ITTBaseFunctionality
 {
-	public List<String> getGeneralDescription();
+	public String getTooltipLocalisationPrefix();
 }

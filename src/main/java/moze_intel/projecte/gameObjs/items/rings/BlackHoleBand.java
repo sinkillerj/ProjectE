@@ -223,8 +223,8 @@ public class BlackHoleBand extends RingToggle implements ITTAlchBagFunctionality
 	}
 
 	@Override
-	public List<String> getGeneralDescription()
+	public String getTooltipLocalisationPrefix()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.bhb.general"));
+		return "pe.bhb";
 	}
 }

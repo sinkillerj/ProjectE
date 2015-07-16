@@ -9,11 +9,9 @@ import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 
 import baubles.api.BaubleType;
@@ -316,12 +314,6 @@ public class EvertideAmulet extends ItemPE implements ITTProjectile, ITTBaubleFu
 					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
-	}
-
-	@Override
-	public List<String> getGeneralDescription()
-	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.evertide.general"));
 	}
 
 	@Override

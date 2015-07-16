@@ -180,8 +180,8 @@ public class LifeStone extends RingToggle implements ITTBaubleFunctionality, ITT
 	}
 
 	@Override
-	public List<String> getGeneralDescription()
+	public String getTooltipLocalisationPrefix()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.life.general"));
+		return "pe.life";
 	}
 }

@@ -165,8 +165,8 @@ public class SoulStone extends RingToggle implements ITTBaubleFunctionality, ITT
 	}
 
 	@Override
-	public List<String> getGeneralDescription()
+	public String getTooltipLocalisationPrefix()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.soul.general"));
+		return "pe.soul";
 	}
 }

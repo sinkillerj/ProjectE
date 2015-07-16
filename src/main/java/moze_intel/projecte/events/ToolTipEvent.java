@@ -249,7 +249,7 @@ public class ToolTipEvent
 	private void addFunctionalityTooltip(ITTBaseFunctionality item, ItemTooltipEvent event)
 	{
 		if (item instanceof ITTGeneralFunctionality && !showDetails()) {
-			event.toolTip.addAll(((ITTGeneralFunctionality) item).getGeneralDescription());
+			event.toolTip.add(StatCollector.translateToLocal(((ITTGeneralFunctionality) item).getTooltipLocalisationPrefix() + ".general"));
 		}
 		List<String> functionality = Lists.newArrayList();
 		if (item instanceof ITTInventoryFunctionality)
@@ -312,7 +312,7 @@ public class ToolTipEvent
 			if (item instanceof ITTGeneralFunctionality)
 			{
 				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.tooltip.general"));
-				event.toolTip.addAll(((ITTGeneralFunctionality) item).getGeneralDescription());
+				event.toolTip.add(StatCollector.translateToLocal(((ITTGeneralFunctionality) item).getTooltipLocalisationPrefix() + ".general"));
 			}
 			if (item instanceof ITTPedestalFunctionalitySpecial)
 			{

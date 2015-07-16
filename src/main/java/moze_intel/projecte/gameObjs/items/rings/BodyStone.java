@@ -166,8 +166,8 @@ public class BodyStone extends RingToggle implements ITTBaubleFunctionality, ITT
 	}
 
 	@Override
-	public List<String> getGeneralDescription()
+	public String getTooltipLocalisationPrefix()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.body.general"));
+		return "pe.body";
 	}
 }

@@ -287,9 +287,9 @@ public class HarvestGoddess extends RingToggle implements ITTPedestalFunctionali
 	}
 
 	@Override
-	public List<String> getGeneralDescription()
+	public String getTooltipLocalisationPrefix()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.harvestgod.general"));
+		return "pe.harvestgod";
 	}
 
 	private class StackWithSlot
