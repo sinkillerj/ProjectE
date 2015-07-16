@@ -1,9 +1,8 @@
 package moze_intel.projecte.api.tooltip.keybinds;
 
-import moze_intel.projecte.api.tooltip.ITTBaseFunctionality;
-import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.ITTAdvancedTooltip;
 
-public interface ITTKeybind extends ITTGeneralFunctionality
+public interface ITTKeybind extends ITTAdvancedTooltip
 {
 	public String getTooltipLocalisationPrefix();
 }

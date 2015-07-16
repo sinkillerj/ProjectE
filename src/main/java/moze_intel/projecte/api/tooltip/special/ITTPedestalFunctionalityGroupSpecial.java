@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.tooltip.special;
 
-import moze_intel.projecte.api.tooltip.ITTPedestalFunctionality;
+import moze_intel.projecte.api.tooltip.ITTPedestalFunctionalityGroup;
 
 import java.util.List;
 
-public interface ITTPedestalFunctionalitySpecial extends ITTPedestalFunctionality, ITTSpecialFunctionality
+public interface ITTPedestalFunctionalityGroupSpecial extends ITTPedestalFunctionalityGroup, ITTShiftDetailView
 {
 
 	/***

@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.tooltip.ITTBaubleFunctionality;
-import moze_intel.projecte.api.tooltip.ITTHotbarFunctionality;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionalityGroup;
 import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
 import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
 import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
-import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalityGroupSpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -42,7 +42,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements ITTProjectile, ITTBaubleFunctionality, ITTPedestalFunctionalitySpecial, ITTHotbarFunctionality, ITTGeneralFunctionality, IFluidContainerItem, ITTRightClick
+public class EvertideAmulet extends ItemPE implements ITTProjectile, ITTBaubleFunctionalityGroup, ITTPedestalFunctionalityGroupSpecial, ITTHotbarFunctionalityGroup, ITTGeneralFunctionality, IFluidContainerItem, ITTRightClick
 {
 	public EvertideAmulet()
 	{

@@ -1,20 +1,21 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionality;
-import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionality;
-import moze_intel.projecte.api.tooltip.ITTBaseFunctionality;
-import moze_intel.projecte.api.tooltip.ITTBaubleFunctionality;
-import moze_intel.projecte.api.tooltip.ITTHotbarFunctionality;
-import moze_intel.projecte.api.tooltip.ITTInventoryFunctionality;
-import moze_intel.projecte.api.tooltip.ITTPedestalFunctionality;
+import moze_intel.projecte.api.tooltip.ITTAdvancedTooltip;
+import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTInventoryFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTPedestalFunctionalityGroup;
 import moze_intel.projecte.api.tooltip.keybinds.ITTExtraFunction;
 import moze_intel.projecte.api.tooltip.keybinds.ITTKeybind;
 import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
 import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
 import moze_intel.projecte.api.tooltip.special.ITTConsumesEMC;
 import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
-import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalitySpecial;
-import moze_intel.projecte.api.tooltip.special.ITTSpecialFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalityGroupSpecial;
+import moze_intel.projecte.api.tooltip.special.ITTShiftDetailView;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -57,8 +58,8 @@ public class ToolTipEvent
 			return;
 		}
 
-		if (currentItem instanceof ITTBaseFunctionality) {
-			addFunctionalityTooltip((ITTBaseFunctionality)currentItem, event);
+		if (currentItem instanceof ITTAdvancedTooltip) {
+			addAdvancedTooltip((ITTAdvancedTooltip) currentItem, event);
 		}
 
 		if (currentBlock == ObjHandler.dmPedestal)
@@ -240,35 +241,45 @@ public class ToolTipEvent
 	ImmutableMap<String, Class> functionalityClasses = ImmutableMap.<String,Class>builder()
 			//.put("pe.tooltip.functionality.hotbar", ITTHotbarFunctionality.class)
 			//.put("pe.tooltip.functionality.inventory", ITTInventoryFunctionality.class)
-			.put("pe.tooltip.functionality.alchbag", ITTAlchBagFunctionality.class)
-			.put("pe.tooltip.functionality.alchchest", ITTAlchChestFunctionality.class)
-			.put("pe.tooltip.functionality.bauble", ITTBaubleFunctionality.class)
-			.put("pe.tooltip.functionality.pedestal", ITTPedestalFunctionality.class)
+			.put("pe.tooltip.functionality.alchbag", ITTAlchBagFunctionalityGroup.class)
+			.put("pe.tooltip.functionality.alchchest", ITTAlchChestFunctionalityGroup.class)
+			.put("pe.tooltip.functionality.bauble", ITTBaubleFunctionalityGroup.class)
+			.put("pe.tooltip.functionality.pedestal", ITTPedestalFunctionalityGroup.class)
 			.build();
 
-	private void addFunctionalityTooltip(ITTBaseFunctionality item, ItemTooltipEvent event)
+	private void addAdvancedTooltip(ITTAdvancedTooltip item, ItemTooltipEvent event)
 	{
 		if (item instanceof ITTGeneralFunctionality && !showDetails()) {
 			event.toolTip.add(StatCollector.translateToLocal(((ITTGeneralFunctionality) item).getTooltipLocalisationPrefix() + ".general"));
 		}
-		List<String> functionality = Lists.newArrayList();
-		if (item instanceof ITTInventoryFunctionality)
+		if (item instanceof ITTFunctionalityGroup)
 		{
-			functionality.add(StatCollector.translateToLocal("pe.tooltip.functionality.inventory"));
-		} else if (item instanceof ITTHotbarFunctionality)
-		{
-			functionality.add(StatCollector.translateToLocal("pe.tooltip.functionality.hotbar"));
-		}
-		for(Map.Entry<String, Class> e: functionalityClasses.entrySet()) {
-			if (e.getValue().isInstance(item)) {
-				functionality.add(StatCollector.translateToLocal(e.getKey()));
+			List<String> functionality = Lists.newArrayList();
+			if (item instanceof ITTInventoryFunctionalityGroup)
+			{
+				functionality.add(StatCollector.translateToLocal("pe.tooltip.functionality.inventory"));
 			}
+			else if (item instanceof ITTHotbarFunctionalityGroup)
+			{
+				functionality.add(StatCollector.translateToLocal("pe.tooltip.functionality.hotbar"));
+			}
+			for (Map.Entry<String, Class> e : functionalityClasses.entrySet())
+			{
+				if (e.getValue().isInstance(item))
+				{
+					functionality.add(StatCollector.translateToLocal(e.getKey()));
+				}
+			}
+			event.toolTip.add(StatCollector.translateToLocal("pe.tooltip.functionality.prefix") + " " + makeSeparatedList(functionality));
 		}
-		event.toolTip.add(StatCollector.translateToLocal("pe.tooltip.functionality.prefix") + " " + makeSeparatedList(functionality));
 
-		if (item instanceof ITTSpecialFunctionality)
+		if (!showKeybinds() && !showDetails())
 		{
-			addSpecialFunctionality((ITTSpecialFunctionality)item, event);
+			event.toolTip.add(ChatFormatting.ITALIC + "" + ChatFormatting.DARK_GRAY + StatCollector.translateToLocal("pe.tooltip.sneakOrCtrlForDetails"));
+		}
+		if (item instanceof ITTShiftDetailView && showDetails())
+		{
+			addSpecialFunctionality((ITTShiftDetailView) item, event);
 		}
 		if (item instanceof ITTKeybind && showKeybinds())
 		{
@@ -278,6 +289,7 @@ public class ToolTipEvent
 
 	private void addKeybind(ITTKeybind item, ItemTooltipEvent event)
 	{
+		event.toolTip.add(StatCollector.translateToLocal("pe.tooltip.keybinds"));
 		GameSettings settings = Minecraft.getMinecraft().gameSettings;
 		if (item instanceof ITTRightClick)
 		{
@@ -305,29 +317,22 @@ public class ToolTipEvent
 		return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
 	}
 
-	private void addSpecialFunctionality(ITTSpecialFunctionality item, ItemTooltipEvent event)
+	private void addSpecialFunctionality(ITTShiftDetailView item, ItemTooltipEvent event)
 	{
-		if (showDetails())
+		if (item instanceof ITTGeneralFunctionality)
 		{
-			if (item instanceof ITTGeneralFunctionality)
-			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.tooltip.general"));
-				event.toolTip.add(StatCollector.translateToLocal(((ITTGeneralFunctionality) item).getTooltipLocalisationPrefix() + ".general"));
-			}
-			if (item instanceof ITTPedestalFunctionalitySpecial)
-			{
-				event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + " ");
-				event.toolTip.addAll(((ITTPedestalFunctionalitySpecial) item).getPedestalDescription());
-			}
-
-			if (item instanceof ITTConsumesEMC)
-			{
-				event.toolTip.add(ChatFormatting.GOLD + StatCollector.translateToLocal("pe.tooltip.needs_fuel"));
-			}
+			event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.tooltip.general"));
+			event.toolTip.add(StatCollector.translateToLocal(((ITTGeneralFunctionality) item).getTooltipLocalisationPrefix() + ".general"));
 		}
-		else if (!showKeybinds())
+		if (item instanceof ITTPedestalFunctionalityGroupSpecial)
 		{
-			event.toolTip.add(ChatFormatting.ITALIC + ""+ ChatFormatting.DARK_GRAY + StatCollector.translateToLocal("pe.tooltip.sneakOrCtrlForDetails"));
+			event.toolTip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + " ");
+			event.toolTip.addAll(((ITTPedestalFunctionalityGroupSpecial) item).getPedestalDescription());
+		}
+
+		if (item instanceof ITTConsumesEMC)
+		{
+			event.toolTip.add(ChatFormatting.GOLD + StatCollector.translateToLocal("pe.tooltip.needs_fuel"));
 		}
 	}
 

@@ -1,10 +1,8 @@
 package moze_intel.projecte.api.tooltip.special;
 
-import moze_intel.projecte.api.tooltip.ITTBaseFunctionality;
+import moze_intel.projecte.api.tooltip.ITTFunctionalityGroup;
 
-import java.util.List;
-
-public interface ITTGeneralFunctionality extends ITTBaseFunctionality
+public interface ITTGeneralFunctionality extends ITTFunctionalityGroup
 {
 	public String getTooltipLocalisationPrefix();
 }
