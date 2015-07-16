@@ -71,10 +71,17 @@ public final class EMCMapper
 			PELogger.logInfo("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)
 			{
-				if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
+				try
 				{
-					emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
-					PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+					if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
+					{
+						emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+						PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+					}
+				} catch (Exception e)
+				{
+					PELogger.logFatal(String.format("Exception during Mapping Collection from Mapper %s. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName()));
+					e.printStackTrace();
 				}
 			}
 			NormalizedSimpleStack.addMappings(graphMapper);
