@@ -233,6 +233,8 @@ pe.gem.nightvision.prompt=Press %s + %s to toggle Night Vision
 pe.gem.stepassist_tooltip=Step Assist:
 pe.gem.stepassist.prompt=Press %s to toggle Step Assist
 
+pe.gemdensity.general=Condenses items in inventory.
+
 pe.gemdensity.blacklist=Blacklist
 pe.gemdensity.mode_switch=Set target to
 pe.gemdensity.tooltip1=Condenses items on the go
@@ -304,6 +306,7 @@ pe.relay.mk1=Relay MKI
 pe.relay.mk2=Relay MKII
 pe.relay.mk3=Relay MKIII
 
+pe.repairtalisman.general=Repairs items in inventory
 pe.repairtalisman.pedestal1=Repairs nearby players' items
 pe.repairtalisman.pedestal2=Restores 1 durability every %s
 
@@ -355,6 +358,9 @@ pe.update.available=New ProjectE update available! Version: %s
 pe.update.changelog=Use /projecte changelog for change log!
 pe.update.getit=Get it here!
 
+pe.volcanite.general=Fire immunity and lava walking
+pe.volcanite.projectile=Shoot a lava source block
+pe.volcanite.rightclick=Place Lava or fill containers
 pe.volcanite.tooltip1=Press %s to fire a lava projectile
 pe.volcanite.tooltip2=Acts as infinitely full lava bucket
 pe.volcanite.tooltip3=Right click to fill tanks
@@ -366,7 +372,16 @@ pe.zero.pedestal1=Extinguishes entities
 pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
-pe.catalitic.projectile=Shoots a projectile that causes an explosion based on the charge level
+
+pe.destructioncatalyst.charge=Increase/Decrease the depth of the hole
+pe.destructioncatalyst.rightclick=Create a 3x3 hole
+pe.catalitic.rightclick=Create a 3x3 tunnel
+pe.catalitic.charge=Increase/Decrease the depth of the hole and size of explosion
+pe.catalitic.projectile=Shoots a projectile that causes an explosion
+
+pe.hyperkineticlens.rightclick=Shoots a projectile that causes an explosion
+pe.hyperkineticlens.projectile=Shoots a projectile that causes an explosion
+pe.hyperkineticlens.charge=Increase/Decrease the size of the explosion
 
 pe.debug.metainvalid.name=Invalid metadata set
 

@@ -8,6 +8,7 @@ import moze_intel.projecte.api.tooltip.ITTFunctionalityGroup;
 import moze_intel.projecte.api.tooltip.ITTHotbarFunctionalityGroup;
 import moze_intel.projecte.api.tooltip.ITTInventoryFunctionalityGroup;
 import moze_intel.projecte.api.tooltip.ITTPedestalFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.keybinds.ITTCharge;
 import moze_intel.projecte.api.tooltip.keybinds.ITTExtraFunction;
 import moze_intel.projecte.api.tooltip.keybinds.ITTKeybind;
 import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
@@ -303,7 +304,13 @@ public class ToolTipEvent
 		{
 			addTooltipForKeybind(GameSettings.getKeyDisplayString(ClientKeyHelper.peToMc.get(PEKeybind.EXTRA_FUNCTION).getKeyCode()), item.getTooltipLocalisationPrefix(), "extrafunction", event);
 		}
+		if (item instanceof ITTCharge)
+		{
+			String chargeKey = GameSettings.getKeyDisplayString(ClientKeyHelper.peToMc.get(PEKeybind.CHARGE).getKeyCode());
+			addTooltipForKeybind(chargeKey + "(" + StatCollector.translateToLocal("key.sneak") + ")", item.getTooltipLocalisationPrefix(), "charge", event);
+		}
 	}
+
 	private void addTooltipForKeybind(String keydescription, String baseLocalisation, String keybind, ItemTooltipEvent event) {
 		event.toolTip.add(ChatFormatting.DARK_PURPLE + keydescription + ": " + ChatFormatting.RESET + StatCollector.translateToLocal(baseLocalisation + "." + keybind));
 	}

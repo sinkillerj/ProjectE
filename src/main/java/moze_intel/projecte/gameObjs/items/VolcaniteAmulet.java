@@ -11,6 +11,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.IFireProtectionItem;
 import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
+import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
+import moze_intel.projecte.api.tooltip.special.ITTConsumesEMC;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalityGroupSpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -40,7 +47,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtectionItem
+public class VolcaniteAmulet extends ItemPE implements ITTProjectile, ITTBaubleFunctionalityGroup, ITTPedestalFunctionalityGroupSpecial, IFireProtectionItem, ITTHotbarFunctionalityGroup, ITTRightClick, ITTConsumesEMC, ITTGeneralFunctionality
 {
 	public VolcaniteAmulet()
 	{
@@ -308,5 +315,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.volcanite";
 	}
 }
