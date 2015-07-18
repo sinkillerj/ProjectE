@@ -80,7 +80,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 
 	private void pruneDuplicateKnowledge()
 	{
-		ItemHelper.compactItemList(knowledge);
+		ItemHelper.compactItemListNoStacksize(knowledge);
 		for (ItemStack s : knowledge)
 		{
 			if (s.stackSize > 1)
