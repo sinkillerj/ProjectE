@@ -563,9 +563,9 @@ public class GraphMapperTest {
 		graphMapper.setValue(gDust, 384, IMappingCollector.FixedValue.FixAndInherit);
 		graphMapper.setValue(stone, 1, IMappingCollector.FixedValue.FixAndInherit);
 		graphMapper.addConversion(8, "antiblockWhite", Arrays.asList(
-				stone,stone,stone,
-				stone,gDust,stone,
-				stone,stone,stone));
+				stone, stone, stone,
+				stone, gDust, stone,
+				stone, stone, stone));
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
@@ -637,6 +637,28 @@ public class GraphMapperTest {
 		assertEquals(768, getValue(values, "waterBucket"));
 		assertEquals(0, getValue(values, "waterGroup"));
 		assertEquals(3, getValue(values, "result"));
+	}
+
+
+	@org.junit.Test
+	public void testOverflowWithIngredients() throws Exception {
+		graphMapper.setValue("a", Integer.MAX_VALUE / 2 + 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValue("b", Integer.MAX_VALUE / 2 + 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(1, "c", Arrays.asList("a", "b"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(Integer.MAX_VALUE / 2 + 1, getValue(values, "a"));
+		assertEquals(Integer.MAX_VALUE/2+1, getValue(values, "b"));
+		assertEquals(0, getValue(values, "c"));
+	}
+
+	@org.junit.Test
+	public void testOverflowWithAmount() throws Exception {
+		graphMapper.setValue("a", Integer.MAX_VALUE / 2, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.addConversion(3, "a", Arrays.asList("something"));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(Integer.MAX_VALUE/2, getValue(values, "a"));
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
