@@ -4,6 +4,7 @@ import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
 import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.cricketcraft.chisel.api.carving.ICarvingVariation;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
@@ -37,7 +38,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public boolean isAvailable() {
-		return Loader.isModLoaded("chisel");
+		return Loader.isModLoaded("chisel") && "Chisel 2".equals(FMLCommonHandler.instance().findContainerFor("chisel").getName());
 	}
 
 	@Override
