@@ -1,3 +1,12 @@
+###Version 1.7.10-PE1.7.3
+* NEW: Portuguese language file updates
+* NEW: German language file updates
+* FIXED: Some duplicate knowledge caused by the End bug was not removed in 1.7.2. This has been corrected and all duplicate knowledge should now be automatically removed
+* FIXED: A potential Life Stone crash
+* FIXED: Workaround added for a crash caused by using outdated Chisel versions
+* FIXED: Another ArithmeticException
+* FIXED: All mapping exceptions should now be caught and logged
+
 ###Version 1.7.10-PE1.7.2
 * NEW: French language file updates
 * NEW: Russian language file updates

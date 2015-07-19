@@ -10,6 +10,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -35,7 +36,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public boolean isAvailable() {
-		return Loader.isModLoaded("chisel");
+		return Loader.isModLoaded("chisel") && "Chisel 2".equals(FMLCommonHandler.instance().findContainerFor("chisel").getName());
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					//What would the output cost be, if that conversion would be used
 					V conversionValueSingle = arithmetic.div(conversionValue, conversion.outnumber);
 					//What is the actual emc value for the conversion output
-					V resultValue = values.containsKey(entry.getKey()) ? arithmetic.mul(conversion.outnumber, values.get(entry.getKey())) : ZERO;
+					V resultValueSingle = values.containsKey(entry.getKey()) ? values.get(entry.getKey()) : ZERO;
 
 					//Find the smallest EMC value for the conversion.output
 					if (conversionValueSingle.compareTo(ZERO) > 0 || arithmetic.isFree(conversionValueSingle)) {
@@ -108,13 +108,13 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					}
 					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
 					//This is a Loophole. We remove it by setting the value to 0.
-					if (ZERO.compareTo(conversionValue) < 0 && conversionValue.compareTo(resultValue) < 0) {
+					if (ZERO.compareTo(conversionValue) < 0 && conversionValueSingle.compareTo(resultValueSingle) < 0) {
 						if (canOverride(entry.getKey(), ZERO)) {
-							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValue, conversionValue, conversion);
+							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValueSingle, conversionValue, conversion);
 							newValueFor.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
-							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s fixed value of result: %s", conversion, conversionValue, resultValue));
+							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s fixed value of result: %s", conversion, conversionValue, resultValueSingle));
 						}
 					}
 				}
