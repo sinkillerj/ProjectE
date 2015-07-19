@@ -19,7 +19,7 @@ public interface ITransmutationProxy
      * @param result1Meta First result metadata
      * @param result2 Alternate result (when sneaking). You may pass null, in which there will be no alternate transmutation
      * @param result2meta Alternate result metadata. If result2 is null, this value is ignored
-     * @return Whether the registration succeeded. It may fail if transmutations already exist for the block origin
+     * @return Whether the registration succeeded. It may fail if transmutations already exist for block origin
      */
     boolean registerWorldTransmutation(@Nonnull Block origin, int originMeta, @Nonnull Block result1, int result1Meta, @Nullable Block result2, int result2meta);
 
@@ -28,7 +28,7 @@ public interface ITransmutationProxy
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to query
      * @param stack The ItemStack to query
-     * @return Whether the player has knowledge for this ItemStack, as well as false if player is not found.
+     * @return Whether the player has knowledge for this ItemStack, false if player is not found
      */
     boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @NonNull ItemStack stack);
 
@@ -36,7 +36,7 @@ public interface ITransmutationProxy
      * Queries the knowledge of the provided player
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to query
-     * @return Whether the player has full/override knowledge from the Tome, as well as false if player is not found.
+     * @return Whether the player has full/override knowledge from the Tome, false if player is not found
      */
     boolean hasFullKnowledge(@Nonnull UUID playerUUID);
 
@@ -65,7 +65,7 @@ public interface ITransmutationProxy
     void setEMC(@Nonnull UUID playerUUID, double emc);
 
     /**
-     * Gets the player's personal transmutation emc to that provided.
+     * Gets the player's personal transmutation emc
      * Calls may only be issued on the server side, and if the server is running
      * @param playerUUID The Player to modify
      * @return The emc, or NaN if player is not found

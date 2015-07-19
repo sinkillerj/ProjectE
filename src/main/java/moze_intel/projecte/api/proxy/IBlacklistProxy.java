@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.proxy;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nonnull;
 
 public interface IBlacklistProxy
 {
@@ -16,7 +16,7 @@ public interface IBlacklistProxy
     void blacklistInterdiction(@Nonnull Class<? extends Entity> clazz);
 
     /**
-     * Prevent the Watch of Flowing Time from speeding up this TileEntity.
+     * Prevent the Watch of Flowing Time from speeding up this TileEntity
      * Modders: Use this only to prevent things from breaking badly - leave balance to the modpacker and player
      * Call this during the postinit phase
      * @param clazz The TileEntity to blacklist

@@ -66,7 +66,7 @@ public interface IEMCProxy
      * Queries the EMC value for the provided stack
      * Can be called at any time, but will only return valid results if a world is loaded
      * Can be called on both sides
-     * This takes into account bonuses such as stored emc in power items and enchantment boosts.
+     * This takes into account bonuses such as stored emc in power items and enchantments
      * @param stack The stack we want to query
      * @return The stack's EMC value, or 0 if there is none
      */
