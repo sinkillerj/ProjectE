@@ -97,6 +97,8 @@ tile.pe_fuel_block_1.name=莫比乌斯燃料块
 tile.pe_fuel_block_2.name=永恒燃料块
 tile.pe_dmPedestal.name=暗物质台座
 
+itemGroup.ProjectE=ProjectE
+
 achievement.phil_stone=炼金术师的挚友
 achievement.phil_stone.desc=用贤者之石开启你的炼金之旅!
 achievement.alch_chest=存储升级!
@@ -150,6 +152,8 @@ pe.bhb.pedestal2=可存入邻接的容器中
 pe.body.pedestal1=恢复玩家的饥饿度
 pe.body.pedestal2=每%s恢复半格饥饿值
 
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
 pe.command.changelog.uptodate=当前使用的ProjectE为最新版本.
 pe.command.clearknowledge.error=无法清空玩家 %s 的转化知识.
 pe.command.clearknowledge.notify=你的转化知识已被 %s 全部清空!
@@ -159,6 +163,7 @@ pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (参数无�
 
 pe.command.reload.started=正在更新注册的EMC值...
 pe.command.reload.success=更新完成!更新数据已发送至客户端.
+pe.command.reload.notice=当完成所有变更时，请重启或使用 "/projecte reloadEMC" 指令.
 
 pe.command.remove.invaliditem=错误: 未找到物品" %s ".
 pe.command.remove.invalidmeta=错误: meta数据" %s "是无效的.
@@ -195,8 +200,8 @@ pe.emc.maxoutrate_tooltip=最高输出效率:
 pe.emc.maxstorage_tooltip=能量上限:
 pe.emc.name=EMC
 pe.emc.rate=EMC/s
-pe.emc.stackemc_tooltip_prefix=Stack EMC:
-pe.emc.storedemc_tooltip=Stored EMC:
+pe.emc.stackemc_tooltip_prefix=EMC总和:
+pe.emc.storedemc_tooltip=EMC存储:
 pe.emc.too_much=EMC能量已达到上限!
 
 pe.evertide.tooltip1=按[%s]键发射一颗潮汐宝珠
@@ -318,6 +323,24 @@ pe.tome.tooltip1=放入转化桌可习得全部转化知识.
 
 pe.transmutation.already_using=有人正在使用这个转化桌!
 pe.transmutation.transmute=转化桌
+pe.transmutation.learned0=L
+pe.transmutation.learned1=e
+pe.transmutation.learned2=a
+pe.transmutation.learned3=r
+pe.transmutation.learned4=n
+pe.transmutation.learned5=e
+pe.transmutation.learned6=d
+pe.transmutation.learned7=!
+
+pe.transmutation.unlearned0=U
+pe.transmutation.unlearned1=n
+pe.transmutation.unlearned2=l
+pe.transmutation.unlearned3=e
+pe.transmutation.unlearned4=a
+pe.transmutation.unlearned5=r
+pe.transmutation.unlearned6=n
+pe.transmutation.unlearned7=e
+pe.transmutation.unlearned8=d
 
 pe.update.available=ProjectE有可更新的版本! 版本号: %s
 pe.update.changelog=使用指令/projecte changelog查看更新日志.
@@ -333,3 +356,5 @@ pe.volcanite.pedestal2=每%s激活一次
 pe.zero.pedestal1=熄灭实体上的火焰
 pe.zero.pedestal2=并冻结周围的一切
 pe.zero.pedestal3=每%s激活一次
+
+pe.debug.metainvalid.name=metadata参数设置无效

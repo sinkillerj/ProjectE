@@ -78,6 +78,18 @@ public class TransmutationProps implements IExtendedEntityProperties
 		return knowledge;
 	}
 
+	private void pruneDuplicateKnowledge()
+	{
+		ItemHelper.compactItemListNoStacksize(knowledge);
+		for (ItemStack s : knowledge)
+		{
+			if (s.stackSize > 1)
+			{
+				s.stackSize = 1;
+			}
+		}
+	}
+
 	private void pruneStaleKnowledge()
 	{
 		Iterator<ItemStack> iter = knowledge.iterator();
@@ -184,7 +196,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 				knowledge.add(item);
 			}
 		}
-
+		pruneDuplicateKnowledge();
 		NBTTagList list2 = properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND);
 		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
 	}
