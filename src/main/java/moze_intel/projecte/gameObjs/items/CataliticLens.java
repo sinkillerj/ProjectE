@@ -1,16 +1,18 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.tooltip.keybinds.ITTProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class CataliticLens extends DestructionCatalyst implements IProjectileShooter
+public class CataliticLens extends DestructionCatalyst implements ITTProjectile
 {
 	public CataliticLens() 
 	{
@@ -39,5 +41,11 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("catalitic_lens"));
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.catalitic";
 	}
 }

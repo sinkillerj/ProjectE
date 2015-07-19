@@ -1,10 +1,14 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
-import moze_intel.projecte.api.IPedestalItem;
+
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTHotbarFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.special.ITTConsumesEMC;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalityGroupSpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
@@ -21,7 +25,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class LifeStone extends RingToggle implements IBauble, IPedestalItem
+public class LifeStone extends RingToggle implements ITTBaubleFunctionalityGroup, ITTPedestalFunctionalityGroupSpecial, ITTHotbarFunctionalityGroup, ITTGeneralFunctionality, ITTConsumesEMC
 {
 	public LifeStone()
 	{
@@ -172,5 +176,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 					StatCollector.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.life";
 	}
 }

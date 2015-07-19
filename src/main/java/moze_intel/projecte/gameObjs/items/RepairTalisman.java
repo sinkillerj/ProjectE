@@ -10,6 +10,11 @@ import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
 import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
+import moze_intel.projecte.api.tooltip.special.ITTPedestalFunctionalityGroupSpecial;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -31,7 +36,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
+public class RepairTalisman extends ItemPE implements ITTAlchBagFunctionalityGroup, ITTAlchChestFunctionalityGroup, ITTBaubleFunctionalityGroup, ITTPedestalFunctionalityGroupSpecial, ITTGeneralFunctionality
 {
 	public RepairTalisman()
 	{
@@ -257,5 +262,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.repairtalisman";
 	}
 }

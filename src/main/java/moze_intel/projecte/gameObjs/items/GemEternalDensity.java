@@ -10,6 +10,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.IAlchBagItem;
 import moze_intel.projecte.api.IAlchChestItem;
 import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.tooltip.ITTAlchBagFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTAlchChestFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.ITTBaubleFunctionalityGroup;
+import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
+import moze_intel.projecte.api.tooltip.special.ITTGeneralFunctionality;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -37,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements ITTAlchBagFunctionalityGroup, ITTAlchChestFunctionalityGroup, IModeChanger, ITTBaubleFunctionalityGroup, ITTGeneralFunctionality, ITTRightClick
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon gemOff;
@@ -414,5 +419,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
 	{
 		return !player.worldObj.isRemote && condense(stack, inv);
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.gemdensity";
 	}
 }

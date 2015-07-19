@@ -4,6 +4,10 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import moze_intel.projecte.api.tooltip.keybinds.ITTCharge;
+import moze_intel.projecte.api.tooltip.keybinds.ITTRightClick;
+import moze_intel.projecte.api.tooltip.special.ITTConsumesEMC;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Coordinates;
@@ -23,7 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DestructionCatalyst extends ItemCharge
+public class DestructionCatalyst extends ItemCharge implements ITTRightClick, ITTConsumesEMC, ITTCharge
 {
 	public DestructionCatalyst() 
 	{
@@ -124,5 +128,11 @@ public class DestructionCatalyst extends ItemCharge
 	public void registerIcons(IIconRegister register)
 	{
 		this.itemIcon = register.registerIcon(this.getTexture("destruction_catalyst"));
+	}
+
+	@Override
+	public String getTooltipLocalisationPrefix()
+	{
+		return "pe.destructioncatalyst";
 	}
 }
