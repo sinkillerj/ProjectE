@@ -7,57 +7,69 @@ import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
 public final class ProjectEAPI
 {
+	private static IEMCProxy emcProxy;
+	private static ITransmutationProxy transProxy;
+	private static IBlacklistProxy blacklistProxy;
+
+	private ProjectEAPI() {}
+
 	/**
 	 * Retrieves the proxy for EMC-based API queries.
-	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
 	 * @return The proxy for EMC-based API queries
 	 */
 	public static IEMCProxy getEMCProxy()
 	{
-		try
+		if (emcProxy == null)
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.impl.EMCProxyImpl");
-			return (IEMCProxy) clazz.getField("instance").get(null);
-		} catch (ReflectiveOperationException ex)
-		{
-			FMLLog.warning("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.EMCProxyImpl");
+				emcProxy = (IEMCProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
 		}
-		return null;
+		return emcProxy;
 	}
 
 	/**
 	 * Retrieves the proxy for Transmutation-based API queries.
-	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
 	 * @return The proxy for Transmutation-based API queries
 	 */
 	public static ITransmutationProxy getTransmutationProxy()
 	{
-		try
+		if (transProxy == null)
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.impl.TransmutationProxyImpl");
-			return (ITransmutationProxy) clazz.getField("instance").get(null);
-		} catch (ReflectiveOperationException ex)
-		{
-			FMLLog.warning("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.TransmutationProxyImpl");
+				transProxy = (ITransmutationProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
 		}
-		return null;
+		return transProxy;
 	}
 
 	/**
 	 * Retrieves the proxy for black/whitelist-based API queries.
-	 * Hold on to this object after you get it, as this getter uses reflection and repeated calls may slow down your mod.
 	 * @return The proxy for black/whitelist-based API queries
 	 */
 	public static IBlacklistProxy getBlacklistProxy()
 	{
-		try
+		if (blacklistProxy == null)
 		{
-			Class<?> clazz = Class.forName("moze_intel.projecte.impl.BlacklistProxyImpl");
-			return (IBlacklistProxy) clazz.getField("instance").get(null);
-		} catch (ReflectiveOperationException ex)
-		{
-			FMLLog.warning("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.BlacklistProxyImpl");
+				blacklistProxy = (IBlacklistProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
 		}
-		return null;
+		return blacklistProxy;
 	}
 }
