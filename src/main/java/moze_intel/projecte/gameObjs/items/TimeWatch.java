@@ -417,8 +417,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		return list;
 	}
 
-	public static void blacklistPublic(String name)
+	public static void blacklist(Class<? extends TileEntity> clazz)
 	{
-		internalBlacklist.add(name);
+		internalBlacklist.add(clazz.getName());
 	}
 }

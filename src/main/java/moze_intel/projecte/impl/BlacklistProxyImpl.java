@@ -1,19 +1,18 @@
-package moze_intel.projecte.proxies;
+package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
 import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
-
-import javax.annotation.Nonnull;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nonnull;
 
 public class BlacklistProxyImpl implements IBlacklistProxy
 {
@@ -33,7 +32,7 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     public void blacklistTimeWatch(@Nonnull Class<? extends TileEntity> clazz)
     {
         Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering TimeWatch blacklist at incorrect time!", Loader.instance().activeModContainer().getModId());
-        TimeWatch.blacklistPublic(clazz.getName());
+        TimeWatch.blacklist(clazz);
     }
 
     @Override

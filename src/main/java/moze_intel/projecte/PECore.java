@@ -33,7 +33,7 @@ import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationOffline;
-import moze_intel.projecte.proxies.CommonProxy;
+import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
@@ -58,8 +58,8 @@ public class PECore
 	@Instance(MODID)
 	public static PECore instance;
 	
-	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
-	public static CommonProxy proxy;
+	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
+	public static IProxy proxy;
 
 	public static final List<String> uuids = Lists.newArrayList();
 	

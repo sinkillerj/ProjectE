@@ -1,23 +1,25 @@
-package moze_intel.projecte.proxies;
+package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.relauncher.Side;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 
 public class TransmutationProxyImpl implements ITransmutationProxy
 {
@@ -43,30 +45,45 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @Nonnull ItemStack stack)
     {
-        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
-        EntityPlayer player = findOnlinePlayer(playerUUID);
-        if (player != null)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            return Transmutation.hasKnowledgeForStack(stack, player);
+            Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
+            return Transmutation.hasKnowledgeForStack(stack, PECore.proxy.getClientPlayer());
         }
         else
         {
-            return TransmutationOffline.hasKnowledgeForStack(stack, playerUUID);
+            Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
+            EntityPlayer player = findOnlinePlayer(playerUUID);
+            if (player != null)
+            {
+                return Transmutation.hasKnowledgeForStack(stack, player);
+            }
+            else
+            {
+                return TransmutationOffline.hasKnowledgeForStack(stack, playerUUID);
+            }
         }
     }
 
     @Override
     public boolean hasFullKnowledge(@Nonnull UUID playerUUID)
     {
-        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
-        EntityPlayer player = findOnlinePlayer(playerUUID);
-        if (player != null)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            return Transmutation.hasFullKnowledge(player);
-        }
-        else
+            Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
+            return Transmutation.hasFullKnowledge(PECore.proxy.getClientPlayer());
+        } else
         {
-            return TransmutationOffline.hasFullKnowledge(playerUUID);
+            Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
+            EntityPlayer player = findOnlinePlayer(playerUUID);
+            if (player != null)
+            {
+                return Transmutation.hasFullKnowledge(player);
+            }
+            else
+            {
+                return TransmutationOffline.hasFullKnowledge(playerUUID);
+            }
         }
     }
 
@@ -109,15 +126,22 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public double getEMC(@Nonnull UUID playerUUID)
     {
-        Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query player EMC!");
-        EntityPlayer player = findOnlinePlayer(playerUUID);
-        if (player != null)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            return Transmutation.getEmc(player);
-        }
-        else
+            Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
+            return Transmutation.getEmc(PECore.proxy.getClientPlayer());
+        } else
         {
-            return TransmutationOffline.getEmc(playerUUID);
+            Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query player EMC!");
+            EntityPlayer player = findOnlinePlayer(playerUUID);
+            if (player != null)
+            {
+                return Transmutation.getEmc(player);
+            }
+            else
+            {
+                return TransmutationOffline.getEmc(playerUUID);
+            }
         }
     }
 

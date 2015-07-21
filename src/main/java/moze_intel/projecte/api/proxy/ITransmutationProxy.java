@@ -25,7 +25,8 @@ public interface ITransmutationProxy
 
     /**
      * Queries the knowledge of the provided player
-     * Calls may only be issued on the server side, and if the server is running
+     * Can be called on both sides, only if the client player exists or the server is started
+     * If called on the client side, playerUUID is ignored and the client player is used instead
      * @param playerUUID The Player to query
      * @param stack The ItemStack to query
      * @return Whether the player has knowledge for this ItemStack, false if player is not found
@@ -34,7 +35,8 @@ public interface ITransmutationProxy
 
     /**
      * Queries the knowledge of the provided player
-     * Calls may only be issued on the server side, and if the server is running
+     * Can be called on both sides, only if the client player exists or the server is started
+     * If called on the client side, playerUUID is ignored and the client player is used instead
      * @param playerUUID The Player to query
      * @return Whether the player has full/override knowledge from the Tome, false if player is not found
      */
@@ -66,7 +68,8 @@ public interface ITransmutationProxy
 
     /**
      * Gets the player's personal transmutation emc
-     * Calls may only be issued on the server side, and if the server is running
+     * Can be called on both sides, only if the client player exists or the server is started
+     * If called on the client side, playerUUID is ignored and the client player is used instead
      * @param playerUUID The Player to modify
      * @return The emc, or NaN if player is not found
      */
