@@ -8,6 +8,7 @@ import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.LazyMapper;
+import moze_intel.projecte.emc.mappers.NEIMapper;
 import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
 import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
@@ -38,6 +39,7 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
+				new NEIMapper(),
 				new LazyMapper(),
 				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
