@@ -21,7 +21,7 @@ public class EMCProxyImpl implements IEMCProxy
     private EMCProxyImpl() {}
 
     @Override
-    public void registerCustomEmc(@Nonnull ItemStack stack, int value)
+    public void registerCustomEMC(@Nonnull ItemStack stack, int value)
     {
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
