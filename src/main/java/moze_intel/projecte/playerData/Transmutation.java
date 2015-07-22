@@ -1,7 +1,6 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
-
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -10,19 +9,18 @@ import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class Transmutation 
 {
@@ -81,7 +79,10 @@ public final class Transmutation
 		if (!data.hasFullKnowledge())
 		{
 			data.getKnowledge().add(stack);
-			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+			if (!player.worldObj.isRemote)
+			{
+				MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+			}
 		}
 	}
 
@@ -97,7 +98,10 @@ public final class Transmutation
 				if (ItemStack.areItemStacksEqual(stack, iter.next()))
 				{
 					iter.remove();
-					MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+					if (!player.worldObj.isRemote)
+					{
+						MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+					}
 					break;
 				}
 			}
@@ -137,7 +141,10 @@ public final class Transmutation
 	public static void setFullKnowledge(EntityPlayer player)
 	{
 		TransmutationProps.getDataFor(player).setFullKnowledge(true);
-		MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		if (!player.worldObj.isRemote)
+		{
+			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		}
 	}
 
 	public static void clearKnowledge(EntityPlayer player)
@@ -145,7 +152,10 @@ public final class Transmutation
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		data.setFullKnowledge(false);
 		data.getKnowledge().clear();
-		MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		if (!player.worldObj.isRemote)
+		{
+			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		}
 	}
 
 	public static double getEmc(EntityPlayer player)
