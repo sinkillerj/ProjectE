@@ -1,11 +1,12 @@
 package moze_intel.projecte.api.proxy;
 
-import com.sun.javafx.beans.annotations.NonNull;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.List;
 import java.util.UUID;
 
 public interface ITransmutationProxy
@@ -31,8 +32,17 @@ public interface ITransmutationProxy
      * @param stack The ItemStack to query
      * @return Whether the player has knowledge for this ItemStack, false if player is not found
      */
-    boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @NonNull ItemStack stack);
+    boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
 
+    /**
+     * Queries all the knowledge of the provided player
+     * Can be called on both sides, only if the client player exists or the server is started
+     * If called on the client side, playerUUID is ignored and the client player is used instead
+     * @param playerUUID The Player to query
+     * @return List<ItemStack> List of ItemStacks the player has transmutation knowledge of.
+     */
+    List<ItemStack> getKnowledge(@Nonnull UUID playerUUID);
+    
     /**
      * Queries the knowledge of the provided player
      * Can be called on both sides, only if the client player exists or the server is started
@@ -48,7 +58,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to add
      */
-    void addKnowledge(@NonNull UUID playerUUID, @NonNull ItemStack stack);
+    void addKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
 
     /**
      * Removes from the knowledge of the provided player. Only works if player is online
@@ -56,7 +66,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to remove
      */
-    void removeKnowledge(@NonNull UUID playerUUID, @NonNull ItemStack stack);
+    void removeKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
 
     /**
      * Sets the player's personal transmutation emc to that provided. Only works if player is online

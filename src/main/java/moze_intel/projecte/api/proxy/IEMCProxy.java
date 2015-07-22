@@ -14,7 +14,7 @@ public interface IEMCProxy
      * @param stack The stack we want to define EMC for
      * @param value The value to define. Values below 0 are changed to 0
      */
-    void registerCustomEmc(@Nonnull ItemStack stack, int value);
+    void registerCustomEMC(@Nonnull ItemStack stack, int value);
 
     /**
      * Queries the EMC value registry if the given block has an EMC value
