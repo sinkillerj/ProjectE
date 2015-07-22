@@ -66,7 +66,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
     
     @Override
-	public List<ItemStack> getKnowledge(UUID playerUUID) {
+	public List<ItemStack> getKnowledge(@Nonnull UUID playerUUID)
+    {
     	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
