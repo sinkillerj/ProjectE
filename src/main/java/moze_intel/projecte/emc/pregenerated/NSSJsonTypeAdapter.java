@@ -1,13 +1,13 @@
 package moze_intel.projecte.emc.pregenerated;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.PELogger;
-
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
@@ -23,10 +23,10 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 			Object itemObject = Item.itemRegistry.getObjectById(item.id);
 			if (itemObject != null)
 			{
-				String itemName = (String) Item.itemRegistry.getNameForObject(itemObject);
+				ResourceLocation itemName = ((ResourceLocation) Item.itemRegistry.getNameForObject(itemObject));
 				if (itemName != null)
 				{
-					out.value(String.format("%s|%d", itemName, item.damage));
+					out.value(String.format("%s|%d", itemName.toString(), item.damage));
 					return;
 				}
 			}
@@ -49,7 +49,7 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 		{
 			return null;
 		}
-		String itemName = serializedItem.substring(0, pipeIndex);
+		ResourceLocation itemName = new ResourceLocation(serializedItem.substring(0, pipeIndex));
 		String itemDamageString = serializedItem.substring(pipeIndex + 1);
 		int itemDamage;
 		try {
