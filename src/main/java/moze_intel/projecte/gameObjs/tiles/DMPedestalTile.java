@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.chunk.EmptyChunk;
 
 public class DMPedestalTile extends TileEmc implements IInventory
 {
@@ -32,7 +31,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	{
 		if (worldObj.isRemote)
 		{
-			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord) instanceof EmptyChunk)
+			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty())
 			{
 				// Handle condition where this method is called even after the clientside chunk has unloaded. Don't you love vanilla???
 				return;
