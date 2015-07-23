@@ -1,0 +1,6 @@
+{
+  "parent": "projecte:block/dummy",
+  "textures": {
+    "particle": "projecte:blocks/alchemy_chest"
+  }
+}

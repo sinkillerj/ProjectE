@@ -1,3 +1,6 @@
 {
-  "parent" : "builtin/entity"
+  "parent" : "projecte:item/base_chest",
+  "textures": {
+    "chest": "projecte:blocks/condenser_mk2"
+  }
 }
