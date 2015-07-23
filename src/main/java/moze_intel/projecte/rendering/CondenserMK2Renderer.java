@@ -1,8 +1,10 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -28,10 +30,10 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer
 
 		CondenserTile condenser = (CondenserTile) tile;
 		EnumFacing direction = null;
-		if (condenser.getWorld() != null)
+		if (condenser.getWorld() != null && !condenser.isInvalid())
 		{
-			direction = ((EnumFacing) condenser.getWorld().getBlockState(condenser.getPos()).getValue(CondenserMK2.FACING));
-
+			IBlockState state = condenser.getWorld().getBlockState(condenser.getPos());
+			direction = state.getBlock() == ObjHandler.condenserMk2 ? (EnumFacing) state.getValue(BlockDirection.FACING) : null;
 		}
 
 		this.bindTexture(texture);
