@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT, IMessage>
+public class SyncBagDataPKT implements IMessage
 {
 	private NBTTagCompound nbt;
 	
@@ -19,20 +19,6 @@ public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT,
 	public SyncBagDataPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
-	}
-
-	@Override
-	public IMessage onMessage(final SyncBagDataPKT message, MessageContext ctx)
-	{
-		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
-				PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
-			}
-		});
-		
-		return null;
 	}
 
 	@Override
@@ -45,5 +31,22 @@ public class SyncBagDataPKT implements IMessage, IMessageHandler<SyncBagDataPKT,
 	public void toBytes(ByteBuf buf) 
 	{
 		ByteBufUtils.writeTag(buf, nbt);
+	}
+
+	public static class Handler implements IMessageHandler<SyncBagDataPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final SyncBagDataPKT message, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
+					PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
+				}
+			});
+
+			return null;
+		}
 	}
 }

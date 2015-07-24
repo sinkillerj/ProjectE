@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMessage>
+public class RelaySyncPKT implements IMessage
 {
 	private int displayEmc;
 	private int displayKleinEmc;
@@ -25,31 +25,6 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		this.displayKleinEmc = displayKleinEmc;
 		this.displayRawEmc = displayRawEmc;
 		this.pos = tile.getPos();
-	}
-	
-	@Override
-	public IMessage onMessage(final RelaySyncPKT pkt, MessageContext ctx)
-	{
-		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
-
-				if (tile == null)
-				{
-					PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
-				}
-				else
-				{
-					RelayMK1Tile relay = (RelayMK1Tile) tile;
-					relay.displayEmc = pkt.displayEmc;
-					relay.displayKleinEmc = pkt.displayKleinEmc;
-					relay.displayRawEmc = pkt.displayRawEmc;
-				}
-			}
-		});
-		
-		return null;
 	}
 
 	@Override
@@ -68,5 +43,33 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		buf.writeInt(displayKleinEmc);
 		buf.writeInt(displayRawEmc);
 		buf.writeLong(pos.toLong());
+	}
+
+	public static class Handler implements IMessageHandler<RelaySyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final RelaySyncPKT pkt, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+					if (tile == null)
+					{
+						PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
+					}
+					else
+					{
+						RelayMK1Tile relay = (RelayMK1Tile) tile;
+						relay.displayEmc = pkt.displayEmc;
+						relay.displayKleinEmc = pkt.displayKleinEmc;
+						relay.displayRawEmc = pkt.displayRawEmc;
+					}
+				}
+			});
+
+			return null;
+		}
 	}
 }

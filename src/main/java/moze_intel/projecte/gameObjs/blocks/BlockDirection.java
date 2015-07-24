@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -66,11 +65,6 @@ public abstract class BlockDirection extends BlockContainer
 			
 			tile.readFromNBT(stack.getTagCompound());
 		}
-		
-		if (tile instanceof TileEmcDirection)
-		{
-			((TileEmcDirection) tile).setRelativeOrientation(entityLiving, false);
-		}
 	}
 	
 	@Override
@@ -99,12 +93,6 @@ public abstract class BlockDirection extends BlockContainer
 		
 		if (stack != null && stack.getItem() == ObjHandler.philosStone)
 		{
-			TileEntity tile = world.getTileEntity(pos);
-			
-			if (tile instanceof TileEmcDirection)
-			{
-				((TileEmcDirection) tile).setRelativeOrientation(player, true); // TODO 1.8 TE's really should be using the blockstate too for rotation...
-			}
 			setFacingMeta(world, pos, player);
 		}
 	}

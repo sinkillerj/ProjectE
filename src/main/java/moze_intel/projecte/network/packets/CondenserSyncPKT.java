@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSyncPKT, IMessage>
+public class CondenserSyncPKT implements IMessage
 {
 	private int displayEmc;
 	private int requiredEmc;
@@ -23,30 +23,6 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 		this.displayEmc = displayEmc;
 		this.requiredEmc = requiredEmc;
 		this.pos = tile.getPos();
-	}
-	
-	@Override
-	public IMessage onMessage(final CondenserSyncPKT pkt, MessageContext ctx)
-	{
-		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
-
-				if (tile == null)
-				{
-					PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
-				}
-				else
-				{
-					CondenserTile cond = (CondenserTile) tile;
-					cond.displayEmc = pkt.displayEmc;
-					cond.requiredEmc = pkt.requiredEmc;
-				}
-			}
-		});
-
-		return null;
 	}
 
 	@Override
@@ -63,5 +39,32 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 		buf.writeInt(displayEmc);
 		buf.writeInt(requiredEmc);
 		buf.writeLong(pos.toLong());
+	}
+
+	public static class Handler implements IMessageHandler<CondenserSyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final CondenserSyncPKT pkt, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.pos);
+
+					if (tile == null)
+					{
+						PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
+					}
+					else
+					{
+						CondenserTile cond = (CondenserTile) tile;
+						cond.displayEmc = pkt.displayEmc;
+						cond.requiredEmc = pkt.requiredEmc;
+					}
+				}
+			});
+
+			return null;
+		}
 	}
 }

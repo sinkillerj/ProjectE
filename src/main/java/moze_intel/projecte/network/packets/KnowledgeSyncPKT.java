@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class KnowledgeSyncPKT implements IMessage, IMessageHandler<KnowledgeSyncPKT, IMessage>
+public class KnowledgeSyncPKT implements IMessage
 {
 	private NBTTagCompound nbt;
 	
@@ -19,20 +19,6 @@ public class KnowledgeSyncPKT implements IMessage, IMessageHandler<KnowledgeSync
 	public KnowledgeSyncPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
-	}
-	
-	@Override
-	public IMessage onMessage(final KnowledgeSyncPKT message, MessageContext ctx)
-	{
-		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
-				PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
-			}
-		});
-		
-		return null;
 	}
 
 	@Override
@@ -45,5 +31,22 @@ public class KnowledgeSyncPKT implements IMessage, IMessageHandler<KnowledgeSync
 	public void toBytes(ByteBuf buf) 
 	{
 		ByteBufUtils.writeTag(buf, nbt);
+	}
+
+	public static class Handler implements IMessageHandler<KnowledgeSyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final KnowledgeSyncPKT message, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
+					PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
+				}
+			});
+
+			return null;
+		}
 	}
 }

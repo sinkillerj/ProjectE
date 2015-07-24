@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
+public class SearchUpdatePKT implements IMessage
 {
 	private String search;
 	private int searchpage;
@@ -18,35 +18,6 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	{
 		this.search = search;
 		this.searchpage = page;
-	}
-
-	@Override
-	public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
-	{
-		ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
-				{
-					TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
-
-					if (pkt.search != null)
-					{
-						container.transmutationInventory.filter = pkt.search;
-					}
-					else
-					{
-						container.transmutationInventory.filter = "";
-					}
-
-					container.transmutationInventory.searchpage = pkt.searchpage;
-
-					container.transmutationInventory.updateOutputs();
-				}
-			}
-		});
-
-		return null;
 	}
 
 	@Override
@@ -61,5 +32,37 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	{
 		ByteBufUtils.writeUTF8String(buf, search);
 		ByteBufUtils.writeVarShort(buf, searchpage);
+	}
+
+	public static class Handler implements IMessageHandler<SearchUpdatePKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
+		{
+			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
+					{
+						TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
+
+						if (pkt.search != null)
+						{
+							container.transmutationInventory.filter = pkt.search;
+						}
+						else
+						{
+							container.transmutationInventory.filter = "";
+						}
+
+						container.transmutationInventory.searchpage = pkt.searchpage;
+
+						container.transmutationInventory.updateOutputs();
+					}
+				}
+			});
+
+			return null;
+		}
 	}
 }

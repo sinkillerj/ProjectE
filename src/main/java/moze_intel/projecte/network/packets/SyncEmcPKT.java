@@ -1,63 +1,30 @@
 package moze_intel.projecte.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.List;
 
-public class SyncEmcPKT implements IMessage, IMessageHandler<SyncEmcPKT, IMessage>
+public class SyncEmcPKT implements IMessage
 {
 	private int packetNum;
 	private Object[] data;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
+	public SyncEmcPKT(int packetNum, List<Integer[]> arrayList)
 	{
 		this.packetNum = packetNum;
 		data = arrayList.toArray();
-	}
-
-	@Override
-	public IMessage onMessage(SyncEmcPKT pkt, MessageContext ctx)
-	{
-		if (pkt.packetNum == 0)
-		{
-			PELogger.logInfo("Receiving EMC data from server.");
-
-			EMCMapper.emc.clear();
-			EMCMapper.emc = new LinkedHashMap<SimpleStack, Integer>();
-		}
-
-		for (Object obj : pkt.data)
-		{
-			Integer[] array = (Integer[]) obj;
-
-			SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
-
-			if (stack.isValid())
-			{
-				EMCMapper.emc.put(stack, array[3]);
-			}
-		}
-
-		if (pkt.packetNum == -1)
-		{
-			PELogger.logInfo("Received all packets!");
-
-			Transmutation.cacheFullKnowledge();
-			FuelMapper.loadMap();
-		}
-
-		return null;
 	}
 
 	@Override
@@ -94,6 +61,47 @@ public class SyncEmcPKT implements IMessage, IMessageHandler<SyncEmcPKT, IMessag
 			{
 				buf.writeInt(array[i]);
 			}
+		}
+	}
+
+	public static class Handler implements IMessageHandler<SyncEmcPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					if (pkt.packetNum == 0)
+					{
+						PELogger.logInfo("Receiving EMC data from server.");
+
+						EMCMapper.emc.clear();
+						EMCMapper.emc = Maps.newLinkedHashMap();
+					}
+
+					for (Object obj : pkt.data)
+					{
+						Integer[] array = (Integer[]) obj;
+
+						SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+
+						if (stack.isValid())
+						{
+							EMCMapper.emc.put(stack, array[3]);
+						}
+					}
+
+					if (pkt.packetNum == -1)
+					{
+						PELogger.logInfo("Received all packets!");
+
+						Transmutation.cacheFullKnowledge();
+						FuelMapper.loadMap();
+					}
+				}
+			});
+			return null;
 		}
 	}
 }

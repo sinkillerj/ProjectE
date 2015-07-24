@@ -10,7 +10,6 @@ import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.OrientationSyncPKT;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.RelaySyncPKT;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
@@ -42,24 +41,23 @@ public final class PacketHandler
 	
 	public static void register()
 	{
-		HANDLER.registerMessage(SyncEmcPKT.class, SyncEmcPKT.class, 0, Side.CLIENT);
-		HANDLER.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
-		HANDLER.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
-		HANDLER.registerMessage(SwingItemPKT.class, SwingItemPKT.class, 3, Side.CLIENT);
-		HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
-		HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
-		HANDLER.registerMessage(KnowledgeSyncPKT.class, KnowledgeSyncPKT.class, 6, Side.CLIENT);
-		HANDLER.registerMessage(TileEmcSyncPKT.class, TileEmcSyncPKT.class, 7, Side.CLIENT);
-		HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
-		HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
-		HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
-		HANDLER.registerMessage(CheckUpdatePKT.class, CheckUpdatePKT.class, 11, Side.CLIENT);
-		HANDLER.registerMessage(SyncBagDataPKT.class, SyncBagDataPKT.class, 12, Side.CLIENT);
-		HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
-		HANDLER.registerMessage(KnowledgeClearPKT.class, KnowledgeClearPKT.class, 14, Side.CLIENT);
-		HANDLER.registerMessage(OrientationSyncPKT.class, OrientationSyncPKT.class, 15, Side.CLIENT);
-		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
-		HANDLER.registerMessage(SyncPedestalPKT.class, SyncPedestalPKT.class, 17, Side.CLIENT);
+		HANDLER.registerMessage(SyncEmcPKT.Handler.class, SyncEmcPKT.class, 0, Side.CLIENT);
+		HANDLER.registerMessage(KeyPressPKT.Handler.class, KeyPressPKT.class, 1, Side.SERVER);
+		HANDLER.registerMessage(ParticlePKT.Handler.class, ParticlePKT.class, 2, Side.CLIENT);
+		HANDLER.registerMessage(SwingItemPKT.Handler.class, SwingItemPKT.class, 3, Side.CLIENT);
+		HANDLER.registerMessage(StepHeightPKT.Handler.class, StepHeightPKT.class, 4, Side.CLIENT);
+		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, 5, Side.CLIENT);
+		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, 6, Side.CLIENT);
+		HANDLER.registerMessage(TileEmcSyncPKT.Handler.class, TileEmcSyncPKT.class, 7, Side.CLIENT);
+		HANDLER.registerMessage(CondenserSyncPKT.Handler.class, CondenserSyncPKT.class, 8, Side.CLIENT);
+		HANDLER.registerMessage(CollectorSyncPKT.Handler.class, CollectorSyncPKT.class, 9, Side.CLIENT);
+		HANDLER.registerMessage(RelaySyncPKT.Handler.class, RelaySyncPKT.class, 10, Side.CLIENT);
+		HANDLER.registerMessage(CheckUpdatePKT.Handler.class, CheckUpdatePKT.class, 11, Side.CLIENT);
+		HANDLER.registerMessage(SyncBagDataPKT.Handler.class, SyncBagDataPKT.class, 12, Side.CLIENT);
+		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, 13, Side.SERVER);
+		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, 14, Side.CLIENT);
+		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, 16, Side.SERVER);
+		HANDLER.registerMessage(SyncPedestalPKT.Handler.class, SyncPedestalPKT.class, 17, Side.CLIENT);
 	}
 
 	public static Packet getMCPacket(IMessage message)
