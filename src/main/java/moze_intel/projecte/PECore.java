@@ -8,6 +8,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -26,6 +27,7 @@ import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -167,6 +169,15 @@ public class PECore
 		
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
+	}
+
+	@Mod.EventHandler
+	public void imc(FMLInterModComms.IMCEvent evt)
+	{
+		for (FMLInterModComms.IMCMessage msg : evt.getMessages())
+		{
+			IMCHandler.handle(msg);
+		}
 	}
 
 	@Mod.EventHandler

@@ -8,24 +8,21 @@ import net.minecraft.tileentity.TileEntity;
 
 public class IMCHandler
 {
-    public static void handle(FMLInterModComms.IMCEvent event)
+    public static void handle(FMLInterModComms.IMCMessage msg)
     {
-        for (FMLInterModComms.IMCMessage msg : event.getMessages())
-        {
-            String messageKey = msg.key.toLowerCase();
-            if ("registeremc".equals(messageKey)) {
-                PELogger.logWarn("Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored", msg.getSender());
-            } else if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
-                blacklist(false, msg);
-            } else if ("swrgblacklist".equals(messageKey) && msg.isStringMessage()) {
-                blacklist(true, msg);
-            } else if ("nbtwhitelist".equals(messageKey) && msg.isItemStackMessage()) {
-                whitelistNBT(msg);
-            } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
-                blacklistWatch(msg);
-            } else {
-                PELogger.logWarn("Received unknown message \"%s\" from mod %s, ignoring.", messageKey, msg.getSender());
-            }
+        String messageKey = msg.key.toLowerCase();
+        if ("registeremc".equals(messageKey)) {
+            PELogger.logWarn("Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored", msg.getSender());
+        } else if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
+            blacklist(false, msg);
+        } else if ("swrgblacklist".equals(messageKey) && msg.isStringMessage()) {
+            blacklist(true, msg);
+        } else if ("nbtwhitelist".equals(messageKey) && msg.isItemStackMessage()) {
+            whitelistNBT(msg);
+        } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
+            blacklistWatch(msg);
+        } else {
+            PELogger.logWarn("Received unknown message \"%s\" from mod %s, ignoring.", messageKey, msg.getSender());
         }
     }
 
