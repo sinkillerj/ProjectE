@@ -1,8 +1,6 @@
-package moze_intel.projecte.handlers;
+package moze_intel.projecte.impl;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -10,8 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class IMCHandler
 {
-    @SubscribeEvent
-    public void handle(FMLInterModComms.IMCEvent event)
+    public static void handle(FMLInterModComms.IMCEvent event)
     {
         for (FMLInterModComms.IMCMessage msg : event.getMessages())
         {
@@ -27,52 +24,47 @@ public class IMCHandler
             } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
                 blacklistWatch(msg);
             } else {
-                PELogger.logWarn("Received unknown message \"%s\" from mod %s", messageKey, msg.getSender());
+                PELogger.logWarn("Received unknown message \"%s\" from mod %s, ignoring.", messageKey, msg.getSender());
             }
         }
     }
 
-    private void blacklist(boolean isSWRG, FMLInterModComms.IMCMessage msg)
+    private static void blacklist(boolean isSWRG, FMLInterModComms.IMCMessage msg)
     {
         Class<? extends Entity> clazz = loadAndCheckSubclass(msg.getStringValue(), Entity.class);
         if (clazz != null)
         {
             if (isSWRG)
             {
-                ProjectEAPI.getBlacklistProxy().blacklistSwiftwolf(clazz);
+                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistSwiftwolf(clazz, msg.getSender());
             }
             else
             {
-                ProjectEAPI.getBlacklistProxy().blacklistInterdiction(clazz);
+                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistInterdiction(clazz, msg.getSender());
             }
-            PELogger.logInfo("Mod %s blacklisted class %s for %s", msg.getSender(), clazz.getCanonicalName(), isSWRG ? "SWRG" : "interdiction torch");
         }
 
     }
 
-    private void blacklistWatch(FMLInterModComms.IMCMessage msg)
+    private static void blacklistWatch(FMLInterModComms.IMCMessage msg)
     {
         Class<? extends TileEntity> clazz = loadAndCheckSubclass(msg.getStringValue(), TileEntity.class);
         if (clazz != null)
         {
-            ProjectEAPI.getBlacklistProxy().blacklistTimeWatch(clazz);
-            PELogger.logInfo("Mod %s blacklisted tile entity %s for Watch of Flowing Time");
+            ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistTimewatch(clazz, msg.getSender());
         }
     }
 
-    private void whitelistNBT(FMLInterModComms.IMCMessage msg)
+    private static void whitelistNBT(FMLInterModComms.IMCMessage msg)
     {
         ItemStack s = msg.getItemStackValue();
-        if (s == null)
+        if (s != null)
         {
-            PELogger.logWarn("Mod %s sent a null stack for nbt whitelist!", msg.getSender());
-            return;
+            ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doWhitelistNBT(s, msg.getSender());
         }
-
-        ProjectEAPI.getBlacklistProxy().whitelistNBT(s);
     }
 
-    private <T> Class<? extends T> loadAndCheckSubclass(String name, Class<T> toCheck)
+    private static <T> Class<? extends T> loadAndCheckSubclass(String name, Class<T> toCheck)
     {
         try
         {

@@ -4,8 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import javax.annotation.Nonnull;
-
 public interface IBlacklistProxy
 {
     /**
@@ -13,14 +11,14 @@ public interface IBlacklistProxy
      * Call this during the postinit phase
      * @param clazz The entity class to blacklist
      */
-    void blacklistInterdiction(@Nonnull Class<? extends Entity> clazz);
+    void blacklistInterdiction(Class<? extends Entity> clazz);
 
     /**
      * Blacklist an Entity class from being repelled by the SWRG's repel mode
      * Call this during the postinit phase
      * @param clazz The entity class to blacklist
      */
-    void blacklistSwiftwolf(@Nonnull Class<? extends Entity> clazz);
+    void blacklistSwiftwolf(Class<? extends Entity> clazz);
 
     /**
      * Prevent the Watch of Flowing Time from speeding up this TileEntity
@@ -28,12 +26,12 @@ public interface IBlacklistProxy
      * Call this during the postinit phase
      * @param clazz The TileEntity to blacklist
      */
-    void blacklistTimeWatch(@Nonnull Class<? extends TileEntity> clazz);
+    void blacklistTimeWatch(Class<? extends TileEntity> clazz);
 
     /**
      * Whitelist an ItemStack, allowing stacks of its kind to dupe NBT during Transmutation and Condensation
      * Call this during the postinit phase
      * @param stack The stack to whitelist
      */
-    void whitelistNBT(@Nonnull ItemStack stack);
+    void whitelistNBT(ItemStack stack);
 }

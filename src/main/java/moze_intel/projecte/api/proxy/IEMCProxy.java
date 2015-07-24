@@ -4,8 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
-
 public interface IEMCProxy
 {
     /**
@@ -14,7 +12,7 @@ public interface IEMCProxy
      * @param stack The stack we want to define EMC for
      * @param value The value to define. Values below 0 are changed to 0
      */
-    void registerCustomEMC(@Nonnull ItemStack stack, int value);
+    void registerCustomEMC(ItemStack stack, int value);
 
     /**
      * Queries the EMC value registry if the given block has an EMC value
@@ -23,7 +21,7 @@ public interface IEMCProxy
      * @param block The block we want to query
      * @return Whether the block has an emc value
      */
-    boolean hasValue(@Nonnull Block block);
+    boolean hasValue(Block block);
 
     /**
      * Queries the EMC value registry if the given item has an EMC value
@@ -32,7 +30,7 @@ public interface IEMCProxy
      * @param item The item we want to query
      * @return Whether the item has an emc value
      */
-    boolean hasValue(@Nonnull Item item);
+    boolean hasValue(Item item);
 
     /**
      * Queries the EMC value registry if the given ItemStack has an EMC value
@@ -42,7 +40,7 @@ public interface IEMCProxy
      * @param stack The stack we want to query
      * @return Whether the ItemStack has an emc value
      */
-    boolean hasValue(@Nonnull ItemStack stack);
+    boolean hasValue(ItemStack stack);
 
     /**
      * Queries the EMC value for the provided block
@@ -51,7 +49,7 @@ public interface IEMCProxy
      * @param block The block we want to query
      * @return The block's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull Block block);
+    int getValue(Block block);
 
     /**
      * Queries the EMC value for the provided item
@@ -60,7 +58,7 @@ public interface IEMCProxy
      * @param item The item we want to query
      * @return The item's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull Item item);
+    int getValue(Item item);
 
     /**
      * Queries the EMC value for the provided stack
@@ -70,5 +68,5 @@ public interface IEMCProxy
      * @param stack The stack we want to query
      * @return The stack's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull ItemStack stack);
+    int getValue(ItemStack stack);
 }

@@ -44,33 +44,33 @@ public final class PELogger
 
 	public static void log(Level level, String msg, Object... args)
 	{
-		logger.log(level, msg, args);
+		logger.log(level, String.format(msg, args));
 	}
 
 	public static void logInfo(String msg, Object... args)
 	{
-		logger.info(msg, args);
+		logger.info(String.format(msg, args));
 	}
 
 	public static void logWarn(String msg, Object... args)
 	{
-		logger.warn(msg, args);
+		logger.warn(String.format(msg, args));
 	}
 
 	public static void logFatal(String msg, Object... args)
 	{
-		logger.fatal(msg, args);
+		logger.fatal(String.format(msg, args));
 	}
 
 	public static void logDebug(String msg, Object... args)
 	{
 		if (ProjectEConfig.enableDebugLog) // visible in main console
 		{
-			logger.info(msg, args);
+			logger.info(String.format(msg, args));
 		}
 		else
 		{
-			logger.debug(msg, args); // fml log
+			logger.debug(String.format(msg, args)); // fml log
 		}
 	}
 }

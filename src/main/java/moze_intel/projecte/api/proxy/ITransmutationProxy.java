@@ -3,9 +3,7 @@ package moze_intel.projecte.api.proxy;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ public interface ITransmutationProxy
      * @param result2meta Alternate result metadata. If result2 is null, this value is ignored
      * @return Whether the registration succeeded. It may fail if transmutations already exist for block origin
      */
-    boolean registerWorldTransmutation(@Nonnull Block origin, int originMeta, @Nonnull Block result1, int result1Meta, @Nullable Block result2, int result2meta);
+    boolean registerWorldTransmutation(Block origin, int originMeta, Block result1, int result1Meta, @Nullable Block result2, int result2meta);
 
     /**
      * Queries the knowledge of the provided player
@@ -32,7 +30,7 @@ public interface ITransmutationProxy
      * @param stack The ItemStack to query
      * @return Whether the player has knowledge for this ItemStack, false if player is not found
      */
-    boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
+    boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack);
 
     /**
      * Queries all the knowledge of the provided player
@@ -41,7 +39,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to query
      * @return List<ItemStack> List of ItemStacks the player has transmutation knowledge of.
      */
-    List<ItemStack> getKnowledge(@Nonnull UUID playerUUID);
+    List<ItemStack> getKnowledge(UUID playerUUID);
     
     /**
      * Queries the knowledge of the provided player
@@ -50,7 +48,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to query
      * @return Whether the player has full/override knowledge from the Tome, false if player is not found
      */
-    boolean hasFullKnowledge(@Nonnull UUID playerUUID);
+    boolean hasFullKnowledge(UUID playerUUID);
 
     /**
      * Adds to the knowledge of the provided player. Only works if player is online
@@ -58,7 +56,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to add
      */
-    void addKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
+    void addKnowledge(UUID playerUUID, ItemStack stack);
 
     /**
      * Removes from the knowledge of the provided player. Only works if player is online
@@ -66,7 +64,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @param stack The ItemStack to remove
      */
-    void removeKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack);
+    void removeKnowledge(UUID playerUUID, ItemStack stack);
 
     /**
      * Sets the player's personal transmutation emc to that provided. Only works if player is online
@@ -74,7 +72,7 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @param emc The value to set
      */
-    void setEMC(@Nonnull UUID playerUUID, double emc);
+    void setEMC(UUID playerUUID, double emc);
 
     /**
      * Gets the player's personal transmutation emc
@@ -83,5 +81,5 @@ public interface ITransmutationProxy
      * @param playerUUID The Player to modify
      * @return The emc, or NaN if player is not found
      */
-    double getEMC(@Nonnull UUID playerUUID);
+    double getEMC(UUID playerUUID);
 }

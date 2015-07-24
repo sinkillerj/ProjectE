@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
@@ -28,8 +27,10 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     private TransmutationProxyImpl() {}
 
     @Override
-    public boolean registerWorldTransmutation(@Nonnull Block origin, int originMeta, @Nonnull Block result1, int result1Meta, @Nullable Block result2, int result2meta)
+    public boolean registerWorldTransmutation(Block origin, int originMeta, Block result1, int result1Meta, @Nullable Block result2, int result2meta)
     {
+        Preconditions.checkNotNull(origin);
+        Preconditions.checkNotNull(result1);
         Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), String.format("Mod %s tried to register world transmutation at an invalid time!", Loader.instance().activeModContainer().getModId()));
         if (WorldTransmutations.getWorldTransmutation(new MetaBlock(origin, originMeta), false) != null)
         {
@@ -43,8 +44,9 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
 
     @Override
-    public boolean hasKnowledgeFor(@Nonnull UUID playerUUID, @Nonnull ItemStack stack)
+    public boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkNotNull(stack);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
@@ -52,6 +54,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
+            Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
@@ -66,7 +69,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
     
     @Override
-	public List<ItemStack> getKnowledge(@Nonnull UUID playerUUID)
+	public List<ItemStack> getKnowledge(UUID playerUUID)
     {
     	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -75,6 +78,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
         else
         {
+            Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
@@ -89,7 +93,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
 	}
 
     @Override
-    public boolean hasFullKnowledge(@Nonnull UUID playerUUID)
+    public boolean hasFullKnowledge(UUID playerUUID)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -97,6 +101,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
             return Transmutation.hasFullKnowledge(PECore.proxy.getClientPlayer());
         } else
         {
+            Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
@@ -111,8 +116,10 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
 
     @Override
-    public void addKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack)
+    public void addKnowledge(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkNotNull(playerUUID);
+        Preconditions.checkNotNull(stack);
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
@@ -123,8 +130,10 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
 
     @Override
-    public void removeKnowledge(@Nonnull UUID playerUUID, @Nonnull ItemStack stack)
+    public void removeKnowledge(UUID playerUUID, ItemStack stack)
     {
+        Preconditions.checkNotNull(playerUUID);
+        Preconditions.checkNotNull(stack);
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
@@ -135,8 +144,9 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
 
     @Override
-    public void setEMC(@Nonnull UUID playerUUID, double emc)
+    public void setEMC(UUID playerUUID, double emc)
     {
+        Preconditions.checkNotNull(playerUUID);
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify player EMC!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
@@ -147,7 +157,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     }
 
     @Override
-    public double getEMC(@Nonnull UUID playerUUID)
+    public double getEMC(UUID playerUUID)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -155,6 +165,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
             return Transmutation.getEmc(PECore.proxy.getClientPlayer());
         } else
         {
+            Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query player EMC!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
