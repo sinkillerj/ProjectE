@@ -41,7 +41,7 @@ public class EntityFireProjectile extends PEProjectile
 			{
 				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
 				{
-					if(worldObj.getBlockState(currentPos) == Blocks.sand)
+					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.sand)
 					{
 						worldObj.setBlockState(currentPos, Blocks.glass.getDefaultState());
 					}
