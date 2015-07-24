@@ -29,6 +29,14 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     }
 
     @Override
+    public void blacklistSwiftwolf(@Nonnull Class<? extends Entity> clazz)
+    {
+        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering SWRG repel at incorrect time!", Loader.instance().activeModContainer().getModId());
+        WorldHelper.blacklistSwrg(clazz);
+        PELogger.logInfo(String.format("Mod %s blacklisted entity %s for Swiftwolf repel.", Loader.instance().activeModContainer().getModId(), clazz.getName()));
+    }
+
+    @Override
     public void blacklistTimeWatch(@Nonnull Class<? extends TileEntity> clazz)
     {
         Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering TimeWatch blacklist at incorrect time!", Loader.instance().activeModContainer().getModId());

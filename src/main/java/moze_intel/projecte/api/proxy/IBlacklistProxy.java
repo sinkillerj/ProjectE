@@ -16,6 +16,13 @@ public interface IBlacklistProxy
     void blacklistInterdiction(@Nonnull Class<? extends Entity> clazz);
 
     /**
+     * Blacklist an Entity class from being repelled by the SWRG's repel mode
+     * Call this during the postinit phase
+     * @param clazz The entity class to blacklist
+     */
+    void blacklistSwiftwolf(@Nonnull Class<? extends Entity> clazz);
+
+    /**
      * Prevent the Watch of Flowing Time from speeding up this TileEntity
      * Modders: Use this only to prevent things from breaking badly - leave balance to the modpacker and player
      * Call this during the postinit phase

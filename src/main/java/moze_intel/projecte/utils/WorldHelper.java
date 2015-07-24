@@ -77,7 +77,19 @@ public final class WorldHelper
 
 	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
+	public static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
+	{
+		if (!interdictionBlacklist.contains(clazz))
+		{
+			interdictionBlacklist.add(clazz);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean blacklistSwrg(Class<? extends Entity> clazz)
 	{
 		if (!interdictionBlacklist.contains(clazz))
 		{
@@ -520,7 +532,6 @@ public final class WorldHelper
 
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
-	 * If isSWRG is true, then the blacklist is not checked.
 	 */
 	public static void repelEntitiesInAABBFromPoint(World world, AxisAlignedBB effectBounds, double x, double y, double z, boolean isSWRG)
 	{
@@ -528,11 +539,11 @@ public final class WorldHelper
 
 		for (Entity ent : list)
 		{
-			if (isSWRG || !interdictionBlacklist.contains(ent.getClass())) {
-				// SWRG repels all, only the torch respects blacklist
+			if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
+					if (!isSWRG && ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}
