@@ -108,55 +108,52 @@ public class NovaExplosion extends Explosion
 		BlockPos blockpos;
 		List<ItemStack> allDrops = Lists.newArrayList();
 
-		if (true) //this.isSmoking) 1.8 - isSmoking is private and is always true for a Nova Explosion.
-		{
-			iterator = this.func_180343_e().iterator();
+		iterator = this.func_180343_e().iterator();
 
-			while (iterator.hasNext())
-			{
-				blockpos = iterator.next();
-				Block block = this.worldObj.getBlockState(blockpos).getBlock();
+		while (iterator.hasNext())
+        {
+            blockpos = iterator.next();
+            Block block = this.worldObj.getBlockState(blockpos).getBlock();
 
-				if (spawnParticles)
-				{
-					double d0 = (double)((float)blockpos.getX() + this.worldObj.rand.nextFloat());
-					double d1 = (double)((float)blockpos.getY() + this.worldObj.rand.nextFloat());
-					double d2 = (double)((float)blockpos.getZ() + this.worldObj.rand.nextFloat());
-					double d3 = d0 - x;
-					double d4 = d1 - y;
-					double d5 = d2 - z;
-					double d6 = (double)MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
-					d3 /= d6;
-					d4 /= d6;
-					d5 /= d6;
-					double d7 = 0.5D / (d6 / (double)cachedExplosionSize + 0.1D);
-					d7 *= (double)(this.worldObj.rand.nextFloat() * this.worldObj.rand.nextFloat() + 0.3F);
-					d3 *= d7;
-					d4 *= d7;
-					d5 *= d7;
-					this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + x * 1.0D) / 2.0D, (d1 + y * 1.0D) / 2.0D, (d2 + z * 1.0D) / 2.0D, d3, d4, d5);
-					this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
-				}
+            if (spawnParticles)
+            {
+                double d0 = (double)((float)blockpos.getX() + this.worldObj.rand.nextFloat());
+                double d1 = (double)((float)blockpos.getY() + this.worldObj.rand.nextFloat());
+                double d2 = (double)((float)blockpos.getZ() + this.worldObj.rand.nextFloat());
+                double d3 = d0 - x;
+                double d4 = d1 - y;
+                double d5 = d2 - z;
+                double d6 = (double)MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
+                d3 /= d6;
+                d4 /= d6;
+                d5 /= d6;
+                double d7 = 0.5D / (d6 / (double)cachedExplosionSize + 0.1D);
+                d7 *= (double)(this.worldObj.rand.nextFloat() * this.worldObj.rand.nextFloat() + 0.3F);
+                d3 *= d7;
+                d4 *= d7;
+                d5 *= d7;
+                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + x * 1.0D) / 2.0D, (d1 + y * 1.0D) / 2.0D, (d2 + z * 1.0D) / 2.0D, d3, d4, d5);
+                this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
+            }
 
-				if (block.getMaterial() != Material.air)
-				{
-					List<ItemStack> drops = block.getDrops(worldObj, blockpos, this.worldObj.getBlockState(blockpos), 0);
-					if (drops.size() > 0)
-					{
-						allDrops.addAll(drops);
-					}
+            if (block.getMaterial() != Material.air)
+            {
+                List<ItemStack> drops = block.getDrops(worldObj, blockpos, this.worldObj.getBlockState(blockpos), 0);
+                if (drops.size() > 0)
+                {
+                    allDrops.addAll(drops);
+                }
 
-					block.onBlockExploded(worldObj, blockpos, this);
-				}
-			}
-			if (getExplosivePlacedBy() != null)
-			{
-				WorldHelper.createLootDrop(allDrops, this.worldObj, new BlockPos(getExplosivePlacedBy()));
-			}
-			else
-			{
-				WorldHelper.createLootDrop(allDrops, this.worldObj, x, y, z);
-			}
-		}
+                block.onBlockExploded(worldObj, blockpos, this);
+            }
+        }
+		if (getExplosivePlacedBy() != null)
+        {
+            WorldHelper.createLootDrop(allDrops, this.worldObj, new BlockPos(getExplosivePlacedBy()));
+        }
+        else
+        {
+            WorldHelper.createLootDrop(allDrops, this.worldObj, x, y, z);
+        }
 	}
 }

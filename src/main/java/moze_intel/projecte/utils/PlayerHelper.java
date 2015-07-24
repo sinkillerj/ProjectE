@@ -8,11 +8,12 @@ import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Helper class for player-related methods.
@@ -54,8 +55,8 @@ public final class PlayerHelper
 
 	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
 	{
-		Tuple vecs = getLookVec(player, maxDistance);
-		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(((Vec3) vecs.getFirst()), ((Vec3) vecs.getSecond()));
+		Pair<Vec3, Vec3> vecs = getLookVec(player, maxDistance);
+		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(vecs.getLeft(), vecs.getRight());
 		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
 			return mop.getBlockPos();
@@ -66,14 +67,14 @@ public final class PlayerHelper
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Tuple getLookVec(EntityPlayer player, double maxDistance)
+	public static Pair<Vec3, Vec3> getLookVec(EntityPlayer player, double maxDistance)
 	{
 		// Thank you ForgeEssentials
 		Vec3 look = player.getLook(1.0F);
 		Vec3 playerPos = new Vec3(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
 		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
-		return new Tuple(src, dest);
+		return ImmutablePair.of(src, dest);
 	}
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)

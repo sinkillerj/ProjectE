@@ -125,7 +125,8 @@ public final class WorldTransmutations
 	{
 		if (MAP.containsKey(current))
 		{
-			return isSneaking ? MAP.get(current).getRight() : MAP.get(current).getLeft();
+			Pair<IBlockState, IBlockState> result = MAP.get(current);
+			return isSneaking ? (result.getRight() == null ? result.getLeft() : result.getRight()) : result.getLeft();
 		}
 
 		return null;

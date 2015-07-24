@@ -52,7 +52,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		BlockPos pos = PlayerHelper.getBlockLookingAt(player, 64);
 		if (pos == null)
 		{
-			Vec3 vec  = ((Vec3) PlayerHelper.getLookVec(player, 32).getSecond());
+			Vec3 vec  = PlayerHelper.getLookVec(player, 32).getRight();
 			pos = new BlockPos(vec);
 		}
 

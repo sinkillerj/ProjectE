@@ -9,7 +9,6 @@ import java.io.IOException;
  */
 public final class FileHelper
 {
-
 	public static void closeStream(Closeable c)
 	{
 		if (c != null)
