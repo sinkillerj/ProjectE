@@ -172,11 +172,11 @@ public class PECore
 	}
 
 	@Mod.EventHandler
-	public void imc(FMLInterModComms.IMCEvent evt)
+	public void onIMCMessage(FMLInterModComms.IMCEvent event)
 	{
-		for (FMLInterModComms.IMCMessage msg : evt.getMessages())
+		for (FMLInterModComms.IMCMessage msg : event.getMessages())
 		{
-			IMCHandler.handle(msg);
+			IMCHandler.handleIMC(msg);
 		}
 	}
 

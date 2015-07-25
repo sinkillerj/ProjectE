@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class IMCHandler
 {
-    public static void handle(FMLInterModComms.IMCMessage msg)
+    public static void handleIMC(FMLInterModComms.IMCMessage msg)
     {
         String messageKey = msg.key.toLowerCase();
         if ("registeremc".equals(messageKey)) {
