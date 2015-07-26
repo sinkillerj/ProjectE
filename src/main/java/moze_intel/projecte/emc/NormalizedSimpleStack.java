@@ -76,7 +76,6 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public abstract int hashCode();
 	public abstract boolean equals(Object o);
 
 
@@ -156,10 +155,6 @@ public abstract class NormalizedSimpleStack {
 				return o == this;
 			}
 			return false;
-		}
-		@Override
-		public int hashCode() {
-			return super.hashCode();
 		}
 
 		@Override
