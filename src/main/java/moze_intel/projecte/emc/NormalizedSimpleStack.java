@@ -2,6 +2,8 @@ package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -69,9 +71,10 @@ public abstract class NormalizedSimpleStack {
 
 		for (Map.Entry<String, NormalizedSimpleStack> entry: oreDictStacks.entrySet()) {
 			NormalizedSimpleStack oreDictStack = entry.getValue();
-			List<ItemStack> list = OreDictionary.getOres(entry.getKey());
+			List<ItemStack> list = ItemHelper.getODItems(entry.getKey());
 			for (ItemStack i: list) {
 				mapper.addConversion(1, oreDictStack, Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(i)));
+				mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(i), Arrays.asList(oreDictStack));
 			}
 		}
 	}

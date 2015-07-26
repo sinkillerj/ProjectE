@@ -129,9 +129,7 @@ public class OreDictionaryMapper extends LazyMapper {
 	}
 
 	protected void addMapping(String odName, int value) {
-		for (ItemStack stack : ItemHelper.getODItems(odName)) {
-			addMapping(stack, value);
-		}
+		this.mapper.setValue(NormalizedSimpleStack.forOreDictionary(odName), value, IMappingCollector.FixedValue.FixAndInherit);
 	}
 
 
