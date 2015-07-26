@@ -16,7 +16,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraftforge.common.config.Configuration;
-import scala.Int;
 
 import java.io.File;
 import java.io.FileReader;
@@ -55,6 +54,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 							try
 							{
 								addMappingsFromFile(new FileReader(f), mapper);
+								PELogger.logInfo("Collected Mappings from " + f.getName());
 							} catch (Exception e) {
 								PELogger.logFatal("Exception when reading file: " + f);
 								e.printStackTrace();
@@ -76,7 +76,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 	public static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		Map<String, NormalizedSimpleStack> fakes = Maps.newHashMap();
-		//TODO implement buffered IMappingCollector
+		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
 			PELogger.logDebug(String.format("Adding conversions from group '%s' with comment '%s'", entry.getKey(), entry.getValue().comment));
@@ -91,6 +91,21 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				PELogger.logFatal(String.format("ERROR reading custom conversion from group %s!", entry.getKey()));
 				e.printStackTrace();
 			}
+		}
+
+		try
+		{
+			for (Map.Entry<String, Integer> entry : file.values.setValueBefore.entrySet())
+			{
+				mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+			}
+			for (Map.Entry<String, Integer> entry : file.values.setValueAfter.entrySet())
+			{
+				mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAfterInherit);
+			}
+		} catch (Exception e) {
+			PELogger.logFatal("ERROR reading custom conversion values!");
+			e.printStackTrace();
 		}
 	}
 
