@@ -11,10 +11,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeseria
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import net.minecraftforge.common.config.Configuration;
-
-import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {

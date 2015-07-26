@@ -122,46 +122,25 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static Map<Map<NormalizedSimpleStack,Integer>,NSSGroup> groups = Maps.newHashMap();
-	public static NormalizedSimpleStack createGroup(Iterable<ItemStack> i) {
-		IngredientMap<NormalizedSimpleStack> groupMap = new IngredientMap<NormalizedSimpleStack>();
-		for (ItemStack itemStack:i) {
-			NormalizedSimpleStack normStack = getNormalizedSimpleStackFor(itemStack);
-			if (normStack == null) return null;
-			groupMap.addIngredient(normStack, itemStack.stackSize);
-		}
-		Map<NormalizedSimpleStack,Integer> map = groupMap.getMap();
-		NSSGroup g;
-		if (groups.containsKey(map)) {
-			g = groups.get(map);;
-			map.clear();
-		} else {
-			g = new NSSGroup(map);
-			groups.put(map, g);
-		}
-		return g;
+	public static NormalizedSimpleStack createFake() {
+		return new NSSFake();
   	}
 
-	public static class NSSGroup extends NormalizedSimpleStack {
-		Map<NormalizedSimpleStack, Integer> group;
-		public NSSGroup(Map<NormalizedSimpleStack, Integer> g) {
-			group = g;
-		}
-
+	public static class NSSFake extends NormalizedSimpleStack {
 		public boolean equals(Object o) {
-			if (o instanceof NSSGroup) {
-				return group.equals(((NSSGroup)o).group);
+			if (o instanceof NSSFake) {
+				return o == this;
 			}
 			return false;
 		}
 		@Override
 		public int hashCode() {
-			return this.group.hashCode();
+			return super.hashCode();
 		}
 
 		@Override
 		public String toString() {
-			return this.group.keySet().toString();
+			return "NSSFAKE: " + super.toString();
 		}
 	}
 

@@ -63,7 +63,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
-								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
+								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createFake();
 								ingredientMap.addIngredient(normalizedSimpleStack,1);
 								for (ItemStack stack: multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
