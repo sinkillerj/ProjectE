@@ -51,7 +51,7 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     }
 
     /**
-     * Split actual doing of whitelisting/blacklisting apart in order to log it properly for IMC
+     * Split actual doing of whitelisting/blacklisting apart in order to log it properly from IMC
      */
 
     protected void doBlacklistInterdiction(Class<? extends Entity> clazz, String modName)

@@ -103,9 +103,9 @@ public class TransmutationOffline
                         }
                     }
                     cachedKnowledge.put(playerUUID, knowledge);
-                    PELogger.logDebug("Caching offline data for UUID: " + playerUUID.toString());
+                    PELogger.logDebug("Caching offline data for UUID: %s", playerUUID);
                 } catch (IOException e) {
-                    PELogger.logWarn("Failed to cache offline data for API calls");
+                    PELogger.logWarn("Failed to cache offline data for API calls for UUID: %s", playerUUID);
                 }
             }
         }

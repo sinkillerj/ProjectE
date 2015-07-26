@@ -61,14 +61,14 @@ public class IMCHandler
         }
     }
 
-    private static <T> Class<? extends T> loadAndCheckSubclass(String name, Class<T> toCheck)
+    private static <T, U extends T> Class<U> loadAndCheckSubclass(String name, Class<T> toCheck)
     {
         try
         {
             Class<?> clazz = Class.forName(name);
             if (toCheck.isAssignableFrom(clazz))
             {
-                return (Class<? extends T>) clazz;
+                return (Class<U>) clazz;
             }
         } catch (ClassNotFoundException ex) {
             PELogger.logWarn("IMC tried to identify a class that couldn't be found: %s", name);
