@@ -1,0 +1,47 @@
+{
+  "comment": "Contains default values and conversions for metals and alloys.",
+  "groups": {
+    "general alloys": {
+      "conversions": [
+        {"o": "OD|ingotBronze", "c": 4, "i": {"OD|ingotCopper": 3, "OD|ingotTin": 1}}
+      ]
+    },
+    "tinkers construct alloys": {
+      "conversions": [
+        {"o": "OD|ingotAluminumBrass", "c": 64, "i": {"OD|ingotAluminum": 48, "OD|ingotCopper": 16}},
+        {"o": "OD|ingotManyullyn", "c": 1, "i": {"OD|ingotCobalt": 1, "OD|ingotArdite": 1}},
+        {"o": "OD|ingotAlumite", "c": 1, "i": {"OD|ingotAluminum": 80, "OD|ingotIron": 32, "minecraft:obsidian|0": 16}}
+      ]
+    },
+    "ender io alloys": {
+      "conversions": [
+        {"o": "OD|ingotElectricalSteel", "c": 1, "i": ["OD|ingotIron", "minecraft:coal|1", "OD|itemSilicon"]},
+        {"o": "OD|ingotEnergeticAlloy", "c": 1, "i": ["OD|dustRedstone", "OD|ingotGold", "OD|dustGlowstone"]},
+        {"o": "OD|ingotPhasedGold", "c": 1, "i": ["OD|ingotEnergeticAlloy", "minecraft:ender_pearl|0"]},
+        {"o": "OD|ingotRedstoneAlloy", "c": 1, "i": ["OD|dustRedstone", "OD|itemSilicon"]},
+        {"o": "OD|ingotConductiveIron", "c": 1, "i": ["OD|dustRedstone", "OD|ingotIron"]},
+        {"o": "OD|ingotPhasedIron", "c": 1, "i": ["OD|ingotIron", "minecraft:ender_pearl|0"]},
+        {"o": "OD|ingotDarkSteel", "c": 1, "i": ["OD|ingotIron", "minecraft:coal|1", "minecraft:obsidian|0"]},
+        {"o": "OD|ingotSoularium", "c": 1, "i": ["OD|ingotGold", "minecraft:soul_sand|0"]}
+      ]
+    }
+  },
+  "values": {
+    "before": {
+      "OD|ingotIron":256,
+      "OD|ingotGold":2048,
+
+      "OD|ingotCopper": 128,
+      "OD|ingotTin": 256,
+      "OD|ingotSilver": 512,
+      "OD|ingotLead": 512,
+      "OD|ingotNickel": 1024,
+
+      "OD|ingotAluminum": 128,
+      "OD|ingotArdite": 1024,
+      "OD|ingotCobalt": 1024,
+
+      "OD|itemSilicon": 32
+    }
+  }
+}

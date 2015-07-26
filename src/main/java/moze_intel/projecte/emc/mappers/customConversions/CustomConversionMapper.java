@@ -12,18 +12,27 @@ import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
 import moze_intel.projecte.utils.PELogger;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraftforge.common.config.Configuration;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
+	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals");
+
+
 	@Override
 	public String getName()
 	{
@@ -45,7 +54,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
-		File customConversionFolder = new File(PECore.CONFIG_DIR, "customConversions");
+		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory()) {
 			for (File f: customConversionFolder.listFiles()) {
 				if (f.isFile() && f.canRead()) {
@@ -68,6 +77,12 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
 			}
 		}
+		tryToWriteDefaultFiles();
+	}
+
+	private static File getCustomConversionFolder()
+	{
+		return new File(PECore.CONFIG_DIR, "customConversions");
 	}
 
 	public static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
@@ -143,5 +158,33 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		builder.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer());
 		Gson gson = builder.create();
 		return gson.fromJson(json, CustomConversionFile.class);
+	}
+
+
+	public static void tryToWriteDefaultFiles() {
+		for (String filename: defaultfilenames) {
+			writeDefaultFile(filename);
+		}
+	}
+
+	private static void writeDefaultFile(String filename) {
+		File customConversionFolder = getCustomConversionFolder();
+		File f = new File(customConversionFolder, filename + ".json");
+		if (f.exists()) {
+			return;
+		}
+		try {
+		if (f.createNewFile() && f.canWrite())
+		{
+			InputStream stream = CustomConversionMapper.class.getClassLoader().getResourceAsStream("defaultCustomConversions/" + filename + ".json");
+			OutputStream outputStream = new FileOutputStream(f);
+			IOUtils.copy(stream, outputStream);
+			stream.close();
+			outputStream.close();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 }
