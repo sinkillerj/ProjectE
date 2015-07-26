@@ -37,8 +37,6 @@ public class TransmutationRenderingEvent
 	private double playerY;
 	private double playerZ;
 	private MetaBlock transmutationResult;
-	private int counter;
-	private boolean incrementing;
 
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
@@ -175,7 +173,7 @@ public class TransmutationRenderingEvent
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion(120) * 0.60f : 0.35f);
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tessellator = Tessellator.instance;
 		
@@ -247,25 +245,8 @@ public class TransmutationRenderingEvent
 		}
 	}
 
-	private float getPulseProportion(int duration)
+	private float getPulseProportion()
 	{
-		// TODO do real math instead of cheaty not-math
-		if (incrementing)
-		{
-			counter += 1;
-			if (counter >= duration)
-			{
-				incrementing = false;
-			}
-		}
-		else
-		{
-			counter -= 1;
-			if (counter <= 0)
-			{
-				incrementing = true;
-			}
-		}
-		return counter / ((float) duration);
+		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}
 }
