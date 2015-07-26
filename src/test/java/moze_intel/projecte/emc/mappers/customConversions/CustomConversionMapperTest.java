@@ -8,12 +8,14 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFi
 
 import org.junit.Test;
 
+import java.io.StringReader;
+
 public class CustomConversionMapperTest
 {
 	@Test
 	public void testCommentOnlyCustomConversionFileJson() {
 		String simpleFile = "{'comment':'A very simple Example'}";
-		CustomConversionFile f = CustomConversionMapper.parseJson(simpleFile);
+		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f);
 		assertEquals("A very simple Example", f.comment);
 	}
@@ -30,7 +32,7 @@ public class CustomConversionMapperTest
 						"}" +
 					"}";
 
-		CustomConversionFile f = CustomConversionMapper.parseJson(simpleFile);
+		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f);
 		assertEquals(1, f.groups.size());
 		assertTrue("Map contains key for group", f.groups.containsKey("groupa"));
@@ -54,7 +56,7 @@ public class CustomConversionMapperTest
 						"}" +
 					"}";
 
-		CustomConversionFile f = CustomConversionMapper.parseJson(simpleFile);
+		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f);
 		assertEquals(1, f.groups.size());
 		assertTrue("Map contains key for group", f.groups.containsKey("groupa"));
@@ -103,7 +105,7 @@ public class CustomConversionMapperTest
 						"	}" +
 						"}" +
 						"}";
-		CustomConversionFile f = CustomConversionMapper.parseJson(simpleFile);
+		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
 		assertEquals(1, (int) f.values.setValueBefore.get("a"));
 		assertEquals(2, (int) f.values.setValueBefore.get("b"));

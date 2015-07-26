@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraftforge.common.config.Configuration;
 
+import java.io.Reader;
+
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
 	@Override
@@ -39,7 +41,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 	}
 
-	public static CustomConversionFile parseJson(String json) {
+	public static CustomConversionFile parseJson(Reader json) {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(CustomConversion.class, new CustomConversionDeserializer());
 		builder.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer());
