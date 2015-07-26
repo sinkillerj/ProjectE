@@ -10,6 +10,7 @@ import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.LazyMapper;
 import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
 import moze_intel.projecte.emc.mappers.SmeltingMapper;
+import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 import moze_intel.projecte.playerData.Transmutation;
@@ -41,6 +42,7 @@ public final class EMCMapper
 				new LazyMapper(),
 				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
+				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),

@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -17,6 +18,8 @@ import com.google.gson.GsonBuilder;
 import net.minecraftforge.common.config.Configuration;
 import scala.Int;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.Reader;
 import java.util.Map;
 
@@ -43,7 +46,28 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
-
+		File customConversionFolder = new File(PECore.CONFIG_DIR, "customConversions");
+		if (customConversionFolder.isDirectory()) {
+			for (File f: customConversionFolder.listFiles()) {
+				if (f.isFile() && f.canRead()) {
+					if (f.getName().endsWith(".json")) {
+						if (config.getBoolean(f.getName().substring(0, f.getName().length() - 5), "", true, String.format("Read file: %s?", f.getName()))) {
+							try
+							{
+								addMappingsFromFile(new FileReader(f), mapper);
+							} catch (Exception e) {
+								PELogger.logFatal("Exception when reading file: " + f);
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		} else {
+			if (!customConversionFolder.mkdir()) {
+				PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
+			}
+		}
 	}
 
 	public static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
