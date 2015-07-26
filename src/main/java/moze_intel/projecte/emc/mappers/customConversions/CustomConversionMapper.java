@@ -6,6 +6,8 @@ import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
+import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
+import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +45,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	public static CustomConversionFile parseJson(String json) {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(CustomConversion.class, new CustomConversionDeserializer());
+		builder.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer());
 		Gson gson = builder.create();
 		return gson.fromJson(json, CustomConversionFile.class);
 	}
