@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,10 +66,33 @@ public abstract class NormalizedSimpleStack {
 				mapper.addConversion(1, stackWildcard, Arrays.asList((NormalizedSimpleStack)new NSSItem(entry.getKey(), metadata)));
 			}
 		}
+
+		for (Map.Entry<String, NormalizedSimpleStack> entry: oreDictStacks.entrySet()) {
+			NormalizedSimpleStack oreDictStack = entry.getValue();
+			List<ItemStack> list = OreDictionary.getOres(entry.getKey());
+			for (ItemStack i: list) {
+				mapper.addConversion(1, oreDictStack, Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(i)));
+			}
+		}
 	}
 
 	public abstract int hashCode();
 	public abstract boolean equals(Object o);
+
+
+	private static Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
+	public static NormalizedSimpleStack forOreDictionary(String oreDictionaryName)
+	{
+		if (oreDictStacks.containsKey(oreDictionaryName))
+			return oreDictStacks.get(oreDictionaryName);
+		List<ItemStack> list = OreDictionary.getOres(oreDictionaryName);
+		if (list == null || list.size() == 0) {
+			return null;
+		}
+		NormalizedSimpleStack nss = new NSSOreDictionary(oreDictionaryName);
+		oreDictStacks.put(oreDictionaryName, nss);
+		return nss;
+	}
 
 	public static class NSSItem extends NormalizedSimpleStack{
 		public int id;
@@ -165,5 +189,53 @@ public abstract class NormalizedSimpleStack {
 		public String toString() {
 			return "Fluid: " + this.name;
 		}
+	}
+
+	public static class NSSOreDictionary extends NormalizedSimpleStack {
+
+		public final String od;
+		private NSSOreDictionary(String od) {
+			this.od = od;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return od.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if (o instanceof NSSOreDictionary) {
+				return this.od.equals(((NSSOreDictionary) o).od);
+			}
+			return false;
+		}
+	}
+
+	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) throws Exception {
+		int pipeIndex = serializedItem.lastIndexOf('|');
+		if (pipeIndex < 0)
+		{
+			return null;
+		}
+		String itemName = serializedItem.substring(0, pipeIndex);
+		String itemDamageString = serializedItem.substring(pipeIndex + 1);
+		int itemDamage;
+		try {
+			itemDamage = Integer.parseInt(itemDamageString);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(String.format("Could not parse '%s' to metadata-integer", itemDamageString), e);
+		}
+
+		Object itemObject = Item.itemRegistry.getObject(itemName);
+		if (itemObject != null)
+		{
+			int id = Item.itemRegistry.getIDForObject(itemObject);
+			return NormalizedSimpleStack.getNormalizedSimpleStackFor(id, itemDamage);
+		}
+		PELogger.logWarn(String.format("Could not get Item-Object for Item with name: '%s'", itemName));
+		return null;
 	}
 }
