@@ -29,7 +29,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -93,14 +92,14 @@ public abstract class PEToolBase extends ItemMode
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state.getBlock(), stack)) // TODO 1.8 need a world to call this now || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
+			if (canHarvestBlock(state.getBlock(), stack))
 			{
 				return 14.0f + (12.0f * this.getCharge(stack));
 			}
 		}
 		else if ("rm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state.getBlock(), stack)) // TODO 1.8 need a world to call this now || ForgeHooks.canToolHarvestBlock(block, metadata, stack))
+			if (canHarvestBlock(state.getBlock(), stack))
 			{
 				return 16.0f + (14.0f * this.getCharge(stack));
 			}
@@ -151,6 +150,7 @@ public abstract class PEToolBase extends ItemMode
 				if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
 				{
 					drops.addAll(blockDrops);
+					player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
 					world.setBlockToAir(pos);
 				}
 			}
@@ -250,7 +250,6 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-		AxisAlignedBB box;
 
 		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
 		{
@@ -258,73 +257,29 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		EnumFacing direction = mop.sideHit;
-		int x = mop.getBlockPos().getX();
-		int y = mop.getBlockPos().getY();
-		int z = mop.getBlockPos().getZ();
+		BlockPos hitPos = mop.getBlockPos();
+		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
-		if (mode == 1) // 3x Tallshot
+		switch (mode)
 		{
-			box = new AxisAlignedBB(x, y - 1, z, x, y + 1, z);
-		}
-		else if (mode == 2) // 3x Wideshot
-		{
-			if (direction.getAxis() == EnumFacing.Axis.X)
-			{
-				box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
-			}
-			else if (direction.getAxis() == EnumFacing.Axis.Y)
-			{
-				box = new AxisAlignedBB(x - 1, y, z, x + 1, y, z);
-			}
-			else
-			{
-				int dir = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
-				if (dir == 0 || dir == 2) // TODO 1.8 what is this testing for
+			case 1: // 3x Tallshot
+				box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
+			case 2: // 3x Wideshot
+				switch (direction.getAxis())
 				{
-					box = new AxisAlignedBB(x, y, z - 1, x, y, z + 1);
+					case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
+					case Y:
+						switch (player.getHorizontalFacing().getAxis())
+						{
+							case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
+							case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
+						}
+						break;
+					case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
 				}
-				else
-				{
-					box = new AxisAlignedBB(x - 1, y, z, x + 1, y, z);
-				}
-			}
-		}
-		else // 3x Longshot
-		{
-			if (direction.getAxis() == EnumFacing.Axis.X)
-			{
-				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
-				{
-					box = new AxisAlignedBB(x - 2, y, z, x, y, z);
-				}
-				else
-				{
-					box = new AxisAlignedBB(x, y, z, x + 2, y, z);
-				}
-			}
-			else if (direction.getAxis() == EnumFacing.Axis.Z)
-			{
-				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
-				{
-					box = new AxisAlignedBB(x, y, z - 2, x, y, z);
-				}
-				else
-				{
-					box = new AxisAlignedBB(x, y, z, x, y, z + 2);
-				}
-			}
-			else
-			{
-				if (direction.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
-				{
-					box = new AxisAlignedBB(x, y - 2, z, x, y, z);
-				}
-				else
-				{
-					box = new AxisAlignedBB(x, y, z, x, y + 2, z);
-				}
-			}
+				break;
+			case 3: // 3x Longshot
+				box = new AxisAlignedBB(hitPos, hitPos.offset(direction.getOpposite(), 2)); break;
 		}
 
 		List<ItemStack> drops = Lists.newArrayList();
@@ -337,7 +292,8 @@ public abstract class PEToolBase extends ItemMode
 			if (!b.isAir(world, digPos) && b.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
 			{
 				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
-				world.setBlockToAir(digPos);
+				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(b)], 1);
+				world.destroyBlock(digPos, false);
 			}
 		}
 
@@ -377,6 +333,7 @@ public abstract class PEToolBase extends ItemMode
 					)
 			{
 				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
+				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(b)], 1);
 				world.setBlockToAir(pos);
 			}
 		}

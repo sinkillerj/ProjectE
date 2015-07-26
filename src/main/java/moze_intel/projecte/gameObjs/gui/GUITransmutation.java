@@ -41,7 +41,7 @@ public class GUITransmutation extends GuiContainer
 		this.xLocation = (this.width - this.xSize) / 2;
 		this.yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10); // TODO 1.8 check purpose of 0
+		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(inv.filter);
 
 		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));

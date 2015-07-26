@@ -47,6 +47,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -497,6 +498,7 @@ public final class WorldHelper
 			{
 				currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
 				world.setBlockToAir(pos);
+				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(currentState.getBlock())], 1);
 				numMined++;
 				harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 			}
