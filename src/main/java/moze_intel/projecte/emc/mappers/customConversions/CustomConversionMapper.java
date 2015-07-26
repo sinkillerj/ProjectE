@@ -49,7 +49,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		if (customConversionFolder.isDirectory()) {
 			for (File f: customConversionFolder.listFiles()) {
 				if (f.isFile() && f.canRead()) {
-					if (f.getName().endsWith(".json")) {
+					if (f.getName().toLowerCase().endsWith(".json")) {
 						if (config.getBoolean(f.getName().substring(0, f.getName().length() - 5), "", true, String.format("Read file: %s?", f.getName()))) {
 							try
 							{
