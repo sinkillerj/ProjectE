@@ -26,7 +26,7 @@ public class OreDictionaryMapper extends LazyMapper {
 							continue;
 						}
 
-						mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
+						mapper.setValue(NormalizedSimpleStack.getFor(stack), 0, IMappingCollector.FixedValue.FixAndDoNotInherit);
 					}
 				}
 			}

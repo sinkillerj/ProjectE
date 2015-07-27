@@ -18,7 +18,7 @@ import java.util.Set;
 public abstract class NormalizedSimpleStack {
 	public static Map<Integer, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(int id, int damage) {
+	public static NormalizedSimpleStack getFor(int id, int damage) {
 		if (id < 0) return null;
 		NSSItem normStack = new NSSItem(id, damage);
 		Set<Integer> usedMetadata;
@@ -32,29 +32,29 @@ public abstract class NormalizedSimpleStack {
 		return normStack;
 	}
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(Block block) {
-		return getNormalizedSimpleStackFor(new ItemStack(block));
+	public static NormalizedSimpleStack getFor(Block block) {
+		return getFor(new ItemStack(block));
 	}
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(Item item) {
-		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(item), 0);
+	public static NormalizedSimpleStack getFor(Item item) {
+		return getFor(Item.itemRegistry.getIDForObject(item), 0);
 	}
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(Item item, int meta ) {
-		return getNormalizedSimpleStackFor(Item.itemRegistry.getIDForObject(item), meta);
+	public static NormalizedSimpleStack getFor(Item item, int meta) {
+		return getFor(Item.itemRegistry.getIDForObject(item), meta);
 	}
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(ItemStack stack) {
+	public static NormalizedSimpleStack getFor(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return null;
 		int id = Item.itemRegistry.getIDForObject(stack.getItem());
 		if (id < 0) {
 			PELogger.logWarn(String.format("Could not get id for stack %s with item %s (Class: %s)", stack, stack.getItem(), stack.getItem().getClass()));
 			return null;
 		}
-		return getNormalizedSimpleStackFor(id, stack.getItemDamage());
+		return getFor(id, stack.getItemDamage());
 	}
 
-	public static NormalizedSimpleStack getNormalizedSimpleStackFor(net.minecraftforge.fluids.Fluid fluid) {
+	public static NormalizedSimpleStack getFor(net.minecraftforge.fluids.Fluid fluid) {
 		//TODO cache The fluid normalizedSimpleStacks?
 		return new NSSFluid(fluid);
 	}
@@ -73,8 +73,8 @@ public abstract class NormalizedSimpleStack {
 			NormalizedSimpleStack oreDictStack = entry.getValue();
 			List<ItemStack> list = ItemHelper.getODItems(entry.getKey());
 			for (ItemStack i: list) {
-				mapper.addConversion(1, oreDictStack, Arrays.asList(NormalizedSimpleStack.getNormalizedSimpleStackFor(i)));
-				mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(i), Arrays.asList(oreDictStack));
+				mapper.addConversion(1, oreDictStack, Arrays.asList(NormalizedSimpleStack.getFor(i)));
+				mapper.addConversion(1, NormalizedSimpleStack.getFor(i), Arrays.asList(oreDictStack));
 			}
 		}
 	}
@@ -231,7 +231,7 @@ public abstract class NormalizedSimpleStack {
 		if (itemObject != null)
 		{
 			int id = Item.itemRegistry.getIDForObject(itemObject);
-			return NormalizedSimpleStack.getNormalizedSimpleStackFor(id, itemDamage);
+			return NormalizedSimpleStack.getFor(id, itemDamage);
 		}
 		PELogger.logWarn(String.format("Could not get Item-Object for Item with name: '%s'", itemName));
 		return null;

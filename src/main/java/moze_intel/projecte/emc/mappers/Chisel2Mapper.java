@@ -10,8 +10,6 @@ import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -48,7 +46,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		for (String name: chiselBlockNames) {
 			Block block = Block.getBlockFromName("chisel:" + name);
 			if (block != null) {
-				mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(block), 1, IMappingCollector.FixedValue.FixAndInherit);
+				mapper.setValue(NormalizedSimpleStack.getFor(block), 1, IMappingCollector.FixedValue.FixAndInherit);
 			}
 		}
 
@@ -64,11 +62,11 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		}*/
 		List<NormalizedSimpleStack> stacks = new ArrayList<NormalizedSimpleStack>();
 		for (ICarvingVariation v : group.getVariations()) {
-			stacks.add(NormalizedSimpleStack.getNormalizedSimpleStackFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
+			stacks.add(NormalizedSimpleStack.getFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
 		}
 		if (group.getOreName() != null) {
 			for (ItemStack ore : OreDictionary.getOres(group.getOreName())) {
-				stacks.add(NormalizedSimpleStack.getNormalizedSimpleStackFor(ore));
+				stacks.add(NormalizedSimpleStack.getFor(ore));
 			}
 		}
 		for (int i = 1; i < stacks.size(); i++) {

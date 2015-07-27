@@ -43,7 +43,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	}
 	protected NormalizedSimpleStack deserializeFromString(String s) {
 		String[] splits = s.split("@", 2);
-		return NormalizedSimpleStack.getNormalizedSimpleStackFor((Item)Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
+		return NormalizedSimpleStack.getFor((Item) Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
 	}
 
 	@Override

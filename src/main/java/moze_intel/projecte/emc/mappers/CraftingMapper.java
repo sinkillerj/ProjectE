@@ -41,7 +41,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
-			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput);
+			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getFor(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (!config.getBoolean("enable" + recipeMapper.getName(),"IRecipeImplementations", true, recipeMapper.getDescription())) continue;
 				if (recipeMapper.canHandle(recipe)) {
@@ -54,12 +54,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								if (stack == null || stack.getItem() == null) continue;
 								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 									if (stack.getItem().hasContainerItem(stack)) {
-										ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
+										ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
 									}
-									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
 								} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
 									//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0);
+									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
@@ -70,9 +70,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
 										if (stack.getItem().hasContainerItem(stack)) {
-											groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
+											groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
 										}
-										groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
+										groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
 										mapper.addConversion(1, normalizedSimpleStack, groupIngredientMap.getMap());
 									}
 								}
