@@ -1,6 +1,6 @@
 package mapeper.projecte.neirecipecollector;
 
-import codechicken.nei.recipe.IRecipeHandler;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -21,52 +21,52 @@ public class NEIRecipeCollector
 	}
 	private NEIRecipeCollector() {}
 
-	Collection<IRecipeHandler> craftingHandlers;
-	public Collection<IRecipeHandler> getCraftingHandlers() {
+	Collection<TemplateRecipeHandler> craftingHandlers;
+	public Collection<TemplateRecipeHandler> getCraftingHandlers() {
 		if (craftingHandlers != null) return craftingHandlers;
 		return (craftingHandlers = getCraftingHandlersFromNEI());
 	}
 
-	Map<String, IRecipeHandler> craftingHandlersForName;
-	public Map<String, IRecipeHandler> getCraftingHandlersForName() {
+	Map<String, TemplateRecipeHandler> craftingHandlersForName;
+	public Map<String, TemplateRecipeHandler> getCraftingHandlersForName() {
 		if (craftingHandlersForName != null) return craftingHandlersForName;
-		return craftingHandlersForName = Maps.uniqueIndex(getCraftingHandlers(), new Function<IRecipeHandler, String>()
+		return craftingHandlersForName = Maps.uniqueIndex(getCraftingHandlers(), new Function<TemplateRecipeHandler, String>()
 		{
 			@Nullable
 			@Override
-			public String apply(@Nullable IRecipeHandler input)
+			public String apply(@Nullable TemplateRecipeHandler input)
 			{
 				return input.getClass().getName();
 			}
 		});
 	}
-	Map<String, IRecipeHandler> craftingHandlersForLowerCaseName;
-	public Map<String, IRecipeHandler> getCraftingHandlersForLowerCaseName() {
+	Map<String, TemplateRecipeHandler> craftingHandlersForLowerCaseName;
+	public Map<String, TemplateRecipeHandler> getCraftingHandlersForLowerCaseName() {
 		if (craftingHandlersForLowerCaseName != null) return craftingHandlersForLowerCaseName;
-		return craftingHandlersForLowerCaseName = Maps.uniqueIndex(getCraftingHandlers(), new Function<IRecipeHandler, String>()
+		return craftingHandlersForLowerCaseName = Maps.uniqueIndex(getCraftingHandlers(), new Function<TemplateRecipeHandler, String>()
 		{
 			@Nullable
 			@Override
-			public String apply(@Nullable IRecipeHandler input)
+			public String apply(@Nullable TemplateRecipeHandler input)
 			{
 				return input.getClass().getName().toLowerCase();
 			}
 		});
 	}
 
-	private Collection<IRecipeHandler> getCraftingHandlersFromNEI() {
+	private Collection<TemplateRecipeHandler> getCraftingHandlersFromNEI() {
 		try
 		{
 			Class clazz = Class.forName("codechicken.nei.recipe.GuiCraftingRecipe");
 			Field f = clazz.getDeclaredField("craftinghandlers");
 			Object craftingHandlers = f.get(null);
 			if (craftingHandlers instanceof Collection) {
-				return (Collection<IRecipeHandler>)Lists.newArrayList(Iterables.filter((Collection) craftingHandlers, new Predicate()
+				return (Collection<TemplateRecipeHandler>)Lists.newArrayList(Iterables.filter((Collection) craftingHandlers, new Predicate()
 				{
 					@Override
 					public boolean apply(@Nullable Object input)
 					{
-						return input instanceof IRecipeHandler;
+						return input instanceof TemplateRecipeHandler;
 					}
 				}));
 			}

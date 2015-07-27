@@ -1,6 +1,7 @@
 package mapeper.projecte.neirecipecollector.commands;
 
 import codechicken.nei.recipe.IRecipeHandler;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import mapeper.projecte.neirecipecollector.ChatUtils;
@@ -42,15 +43,23 @@ public class CollectSubCommand implements ISubCommand
 		}
 
 		String className = params.get(0);
-		IRecipeHandler handler = NEIRecipeCollector.getInstance().getCraftingHandlersForLowerCaseName().get(className.toLowerCase());
-		if (handler != null) {
-			ChatUtils.addChatMessage(sender, "Found IRecipeHandler: %s", handler.getClass().getName());
-			ChatUtils.addChatMessage(sender, "Recipe Name: %s", handler.getRecipeName());
-			ChatUtils.addChatMessage(sender, "Recipe Count: %d", handler.numRecipes());
-		} else {
+		TemplateRecipeHandler handler = NEIRecipeCollector.getInstance().getCraftingHandlersForLowerCaseName().get(className.toLowerCase());
+		if (handler == null) {
 			ChatUtils.addChatError(sender, "Could not load IRecipeHandler with Classname: %s", className);
 			return;
 		}
+
+		try
+		{
+			handler.loadCraftingRecipes(handler.getOverlayIdentifier());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ChatUtils.addChatError(sender, "Error on loadCraftingRecipes: %s", e);
+			return;
+		}
+		ChatUtils.addChatMessage(sender, "Found IRecipeHandler: %s", handler.getClass().getName());
+		ChatUtils.addChatMessage(sender, "Recipe Name: %s", handler.getRecipeName());
+		ChatUtils.addChatMessage(sender, "Recipe Count: %d", handler.numRecipes());
 
 		boolean log = false;
 		boolean some = false;
