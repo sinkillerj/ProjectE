@@ -70,7 +70,7 @@ public class NEIRecipeCollectorCommand extends CommandBase
 			addChatMessage(sender, usage);
 			return;
 		}
-		if (params.length > 1) {
+		if (params.length >= 1) {
 			ISubCommand subCommand = subCommandsPerName.get(params[0].toLowerCase());
 			if (subCommand != null) {
 				subCommand.processCommand(String.format("/%s %s", getCommandName(), params[0].toLowerCase()), sender, Arrays.asList(params).subList(1, params.length));
