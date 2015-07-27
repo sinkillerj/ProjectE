@@ -127,6 +127,7 @@ public class CollectSubCommand implements ISubCommand
 				return;
 			}
 			//TODO Options: Searching OreDict instead of Fake Items (Enable to use OD for groups and single-items separate)
+			//TODO Option to set ingredient and or output stacksize to a specific value (For Potions to turn 1+1=1 into 1+3=3
 		}
 
 		for (int i = 0; i < numRecipes; i++) {
@@ -144,6 +145,7 @@ public class CollectSubCommand implements ISubCommand
 	void resetSettings() {
 		fulllists = false;
 		unlocal = false;
+
 	}
 
 	boolean unlocal = false;
