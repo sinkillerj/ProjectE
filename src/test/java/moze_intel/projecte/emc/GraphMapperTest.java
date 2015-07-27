@@ -663,6 +663,14 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testOverwriteConversions() {
+		graphMapper.setValue("a", 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueFromConversion(1, "b", Arrays.asList("a", "a", "a"));
+		graphMapper.addConversion(1, "b", Arrays.asList("a"));
+		graphMapper.addConversion(1, "c", Arrays.asList("b", "b"));
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a"));
+		assertEquals(3, getValue(values, "b"));
+		assertEquals(6, getValue(values, "c"));
 
 	}
 

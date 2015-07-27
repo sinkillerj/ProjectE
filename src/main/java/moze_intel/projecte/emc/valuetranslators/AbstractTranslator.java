@@ -44,4 +44,16 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	{
 		inner.setValue(something, translateValue(value), type);
 	}
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
+	{
+		inner.setValueFromConversion(outnumber, something, ingredients);
+	}
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
+	{
+		inner.setValueFromConversion(outnumber, something, ingredientsWithAmount);
+	}
 }

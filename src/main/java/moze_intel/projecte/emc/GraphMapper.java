@@ -22,6 +22,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		debugFormat("%s", s);
 	}
 
+	protected Map<T, Conversion> overwriteConversion = Maps.newHashMap();
 	protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
 	protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
 	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
@@ -66,6 +67,15 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		addConversion(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
 	}
 
+	protected void addConversionToIngredientUsages(Conversion conversion) {
+		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
+			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
+			if (ingredient.getValue() == null)
+				throw new IllegalArgumentException("ingredient amount value has to be != null");
+			usesForIngredient.add(conversion);
+		}
+	}
+
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
@@ -80,30 +90,28 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
-
-		for (Map.Entry<T, Integer> ingredient : ingredientsWithAmount.entrySet()) {
-			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
-			if (ingredient.getValue() == null)
-				throw new IllegalArgumentException("ingredient amount value has to be != null");
-			usesForIngredient.add(conversion);
-		}
+		addConversionToIngredientUsages(conversion);
 	}
 
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
 		addConversion(outnumber, output, ingredients, arithmetic.getZero());
 	}
 
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
-		Map<T, Integer> ingredientsWithAmount = new HashMap<T, Integer>();
-		for (T ingredient : ingredients) {
-			if (ingredientsWithAmount.containsKey(ingredient)) {
-				int amount = ingredientsWithAmount.get(ingredient);
-				ingredientsWithAmount.put(ingredient, amount + 1);
+	protected Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
+		Map<T, Integer> map = new HashMap<T, Integer>();
+		for (T ingredient : iterable) {
+			if (map.containsKey(ingredient)) {
+				int amount = map.get(ingredient);
+				map.put(ingredient, amount + 1);
 			} else {
-				ingredientsWithAmount.put(ingredient, 1);
+				map.put(ingredient, 1);
 			}
 		}
-		this.addConversion(outnumber, output, ingredientsWithAmount, baseValueForConversion);
+		return map;
+	}
+
+	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
+		this.addConversion(outnumber, output, listToMapOfCounts(ingredients), baseValueForConversion);
 	}
 
 	public void setValue(T something, V value, FixedValue type) {
@@ -140,13 +148,41 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 	}
 
 
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
+	{
+		this.setValueFromConversion(outnumber, something, listToMapOfCounts(ingredients));
+	}
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
+	{
+		if (something == null || ingredientsWithAmount.containsKey(null)) {
+			PELogger.logWarn(String.format("Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, something));
+			return;
+		}
+		if (outnumber <= 0)
+			throw new IllegalArgumentException("outnumber has to be > 0!");
+		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
+		if (overwriteConversion.containsKey(something)) {
+			Conversion oldConversion = overwriteConversion.get(something);
+			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
+			for (T ingredient: ingredientsWithAmount.keySet()) {
+				getUsesFor(ingredient).remove(oldConversion);
+			}
+		}
+		addConversionToIngredientUsages(conversion);
+		overwriteConversion.put(something, conversion);
+	}
+
+
 	abstract public Map<T, V> generateValues();
 
 	protected class Conversion {
 		T output;
 
 		int outnumber = 1;
-		V value;
+		V value = arithmetic.getZero();
 		Map<T, Integer> ingredientsWithAmount;
 
 		protected Conversion(T output) {

@@ -84,4 +84,8 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 */
 	public void setValue(T something, V value, FixedValue type);
 
+	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients);
+
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
+
 }
