@@ -18,12 +18,23 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.0"
-group= "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+group= "mapeper.projecte.neirecipecollector" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "ProjectE-NEIRecipeCollector"
 
 minecraft {
     version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "eclipse"
+}
+
+runClient {
+    args "--noCoreSearch"
+}
+
+repositories {
+    maven { //NEI Repo
+        name 'CB Repo'
+        url "http://chickenbones.net/maven/"
+    }
 }
 
 dependencies {
@@ -39,6 +50,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.110:dev"
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
 
 }
 
