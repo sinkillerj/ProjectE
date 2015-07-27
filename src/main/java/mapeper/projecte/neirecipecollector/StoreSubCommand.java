@@ -19,7 +19,7 @@ public class StoreSubCommand implements ISubCommand
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, List<String> params)
+	public void processCommand(String previousCommands, ICommandSender sender, List<String> params)
 	{
 
 	}

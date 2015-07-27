@@ -44,7 +44,7 @@ public class NEIRecipeCollectorCommand extends CommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] params)
 	{
 		if (params.length == 1) {
-			return Lists.newArrayList(Iterables.filter(subCommandsPerName.keySet(), new LowerCasePrefixPredicate(params[0])));
+			return LowerCasePrefixPredicate.autocompletionOptions(subCommandsPerName.keySet(), params[0]);
 		} else if (params.length > 1) {
 			ISubCommand subCommand = subCommandsPerName.get(params[0]);
 			if (subCommand != null) {
@@ -73,9 +73,9 @@ public class NEIRecipeCollectorCommand extends CommandBase
 			return;
 		}
 		if (params.length > 1) {
-			ISubCommand subCommand = subCommandsPerName.get(params[0]);
+			ISubCommand subCommand = subCommandsPerName.get(params[0].toLowerCase());
 			if (subCommand != null) {
-				subCommand.processCommand(sender, Arrays.asList(params).subList(1, params.length));
+				subCommand.processCommand(String.format("/%s %s", getCommandName(), params[0].toLowerCase()), sender, Arrays.asList(params).subList(1, params.length));
 			} else {
 				addChatMessage(sender, String.format("ERROR: Unknown command %s", params[0]));
 				addChatMessage(sender, usage);
