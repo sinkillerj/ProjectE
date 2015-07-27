@@ -1,4 +1,4 @@
-package mapeper.projecte.neirecipecollector;
+package mapeper.projecte.neirecipecollector.commands;
 
 import net.minecraft.command.ICommandSender;
 

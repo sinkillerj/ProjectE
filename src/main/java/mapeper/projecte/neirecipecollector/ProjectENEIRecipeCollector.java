@@ -1,10 +1,9 @@
 package mapeper.projecte.neirecipecollector;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraft.init.Blocks;
+import mapeper.projecte.neirecipecollector.commands.NEIRecipeCollectorCommand;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 @Mod(modid = ProjectENEIRecipeCollector.MODID, version = ProjectENEIRecipeCollector.VERSION)
 public class ProjectENEIRecipeCollector

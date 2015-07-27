@@ -1,6 +1,9 @@
-package mapeper.projecte.neirecipecollector;
+package mapeper.projecte.neirecipecollector.commands;
 
 import codechicken.nei.recipe.IRecipeHandler;
+import mapeper.projecte.neirecipecollector.ChatUtils;
+import mapeper.projecte.neirecipecollector.LowerCasePrefixPredicate;
+import mapeper.projecte.neirecipecollector.NEIRecipeCollector;
 import net.minecraft.command.ICommandSender;
 
 import java.util.List;

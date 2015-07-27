@@ -1,12 +1,10 @@
-package mapeper.projecte.neirecipecollector;
+package mapeper.projecte.neirecipecollector.commands;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import mapeper.projecte.neirecipecollector.LowerCasePrefixPredicate;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
