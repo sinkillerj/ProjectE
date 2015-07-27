@@ -148,12 +148,12 @@ public class CollectSubCommand implements ISubCommand
 
 	boolean unlocal = false;
 	boolean fulllists = false;
-	
+
 	private String itemToString(ItemStack itemStack) {
 		if (unlocal) {
-			return String.format("%s|%s", GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString(), itemStack.getItemDamage());
+			return String.format("%d*%s|%s", itemStack.stackSize, GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString(), itemStack.getItemDamage());
 		}
-		return "'" + itemStack.getDisplayName() + "'";
+		return String.format("%d*'%s'", itemStack.stackSize, itemStack.getDisplayName());
 	}
 
 	private String listOfPositionedStacksToString(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots) {
