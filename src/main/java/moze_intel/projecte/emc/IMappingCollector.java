@@ -44,16 +44,16 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * @param output What is produced
 	 * @param ingredientsWithAmount What is consumed and how many of it
 	 */
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
 
 	/**
-	 * The same as {@link #addConversionMultiple(int, Object, java.util.Map)}, but adds an extra cost to the Conversion.
+	 * The same as {@link #addConversion(int, Object, java.util.Map)}, but adds an extra cost to the Conversion.
 	 * @param outnumber How many items are produced
 	 * @param output What is produced
 	 * @param ingredientsWithAmount What is consumed
 	 * @param baseValueForConversion A base cost for performing the Conversion
 	 */
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion);
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion);
 
 	/**
 	 * Add a Conversion that produced {@code outnumber} items of {@code output} by consuming the {@code ingredients}. <br/>

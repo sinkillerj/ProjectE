@@ -62,11 +62,11 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
 	}
 
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		addConversionMultiple(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
+		addConversion(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
 	}
 
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
@@ -103,7 +103,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 				ingredientsWithAmount.put(ingredient, 1);
 			}
 		}
-		this.addConversionMultiple(outnumber, output, ingredientsWithAmount, baseValueForConversion);
+		this.addConversion(outnumber, output, ingredientsWithAmount, baseValueForConversion);
 	}
 
 	public void setValue(T something, V value, FixedValue type) {
@@ -134,7 +134,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 				fixValueAfterInherit.put(something, value);
 				break;
 			case SuggestionAndInherit:
-				this.addConversionMultiple(1, something, new HashMap<T, Integer>(), value);
+				this.addConversion(1, something, new HashMap<T, Integer>(), value);
 				break;
 		}
 	}

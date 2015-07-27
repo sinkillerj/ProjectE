@@ -10,8 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
-import java.util.Arrays;
-
 public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	IMappingCollector<NormalizedSimpleStack, Integer> mapper;
@@ -25,7 +23,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Blocks.netherrack), 1);
 		addMapping(new ItemStack(Blocks.dirt), 1);
 		addMapping(new ItemStack(Blocks.dirt, 1, 2), 2);
-		mapper.addConversionMultiple(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.dirt), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.dirt), 2));
+		mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.dirt), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.dirt), 2));
 		addMapping(new ItemStack(Blocks.mycelium), 2);
 		addMapping(new ItemStack(Blocks.leaves), 1);
 		addMapping(new ItemStack(Blocks.leaves2), 1);
@@ -76,9 +74,9 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Blocks.pumpkin), 144);
 		addMapping(new ItemStack(Items.bone), 144);
 
-		mapper.addConversionMultiple(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.mossy_cobblestone), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.cobblestone), 2));
+		mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.mossy_cobblestone), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.cobblestone), 2));
 		//Mossy Stone Bricks
-		mapper.addConversionMultiple(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(new ItemStack(Blocks.stonebrick, 1, 1)), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.stonebrick), 2));
+		mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(new ItemStack(Blocks.stonebrick, 1, 1)), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Blocks.stonebrick), 2));
 		addMapping(new ItemStack(Blocks.stonebrick, 1, 2), 1);
 		addMapping(new ItemStack(Blocks.stonebrick, 1, 3), 1);
 		addMapping(new ItemStack(Items.saddle), 192);
@@ -135,8 +133,8 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.emerald), 16384);
 
 		addMapping(new ItemStack(Items.nether_star), 139264);
-		mapper.addConversionMultiple(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.iron_horse_armor), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.iron_ingot), 8));
-		mapper.addConversionMultiple(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.golden_horse_armor), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.gold_ingot), 8));
+		mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.iron_horse_armor), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.iron_ingot), 8));
+		mapper.addConversion(1, NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.golden_horse_armor), ImmutableMap.of(NormalizedSimpleStack.getNormalizedSimpleStackFor(Items.gold_ingot), 8));
 		addMapping(new ItemStack(Items.diamond_horse_armor), 40960);
 		addMapping(new ItemStack(Blocks.tallgrass), 1);
 		addMapping(new ItemStack(Blocks.tallgrass, 1, 1), 1);

@@ -2,8 +2,6 @@ package moze_intel.projecte.emc.valuetranslators;
 
 import moze_intel.projecte.emc.IValueGenerator;
 
-import org.apache.commons.lang3.math.Fraction;
-
 import java.util.Map;
 
 public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT extends Comparable<OUT>> implements IValueGenerator<T, OUT>
@@ -18,15 +16,15 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	public abstract IN translateValue(OUT v);
 
 	@Override
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount)
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount)
 	{
-		inner.addConversionMultiple(outnumber, output, ingredientsWithAmount);
+		inner.addConversion(outnumber, output, ingredientsWithAmount);
 	}
 
 	@Override
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, OUT baseValueForConversion)
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, OUT baseValueForConversion)
 	{
-		inner.addConversionMultiple(outnumber, output, ingredientsWithAmount, translateValue(baseValueForConversion));
+		inner.addConversion(outnumber, output, ingredientsWithAmount, translateValue(baseValueForConversion));
 	}
 
 	@Override

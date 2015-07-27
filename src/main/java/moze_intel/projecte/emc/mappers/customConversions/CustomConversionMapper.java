@@ -22,7 +22,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -100,7 +99,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				for (CustomConversion conversion : entry.getValue().conversions)
 				{
 					NormalizedSimpleStack output = getNSSfromJsonString(conversion.output, fakes);
-					mapper.addConversionMultiple(conversion.count, output, convertToNSSMap(conversion.ingredients, fakes));
+					mapper.addConversion(conversion.count, output, convertToNSSMap(conversion.ingredients, fakes));
 				}
 			} catch (Exception e) {
 				PELogger.logFatal(String.format("ERROR reading custom conversion from group %s!", entry.getKey()));

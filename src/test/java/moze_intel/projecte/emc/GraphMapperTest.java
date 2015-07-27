@@ -395,7 +395,7 @@ public class GraphMapperTest {
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
-		graphMapper.addConversionMultiple(1, "fluidCraft", map);
+		graphMapper.addConversion(1, "fluidCraft", map);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(9, getValue(values, "somethingElse"));
@@ -418,7 +418,7 @@ public class GraphMapperTest {
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
-		graphMapper.addConversionMultiple(1, "fluidCraft", map);
+		graphMapper.addConversion(1, "fluidCraft", map);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(9, getValue(values, "somethingElse"));
@@ -506,25 +506,25 @@ public class GraphMapperTest {
 		graphMapper.addConversion(1, "firecharge*", Arrays.asList("firecharge"));
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("coal0", 9);
-		graphMapper.addConversionMultiple(1, "coalblock", m);
+		graphMapper.addConversion(1, "coalblock", m);
 
 		m.clear();
 		//Philosophers stone smelting 7xCoalOre -> 7xCoal
 		m.put("coalore", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal0", m);
+		graphMapper.addConversion(7, "coal0", m);
 
 		m.clear();
 		//Philosophers stone smelting logs
 		m.put("log*", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal1", m);
+		graphMapper.addConversion(7, "coal1", m);
 
 		m.clear();
 		//Philosophers stone smelting log2s
 		m.put("log2*", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal1", m);
+		graphMapper.addConversion(7, "coal1", m);
 
 
 		//Smelting single coal ore
@@ -585,10 +585,10 @@ public class GraphMapperTest {
 		ingredients.put("a", 1);
 		ingredients.put("b", 1);
 		ingredients.put("notConsume1", 0);
-		graphMapper.addConversionMultiple(1, "c1", ingredients);
+		graphMapper.addConversion(1, "c1", ingredients);
 		ingredients.remove("notConsume1");
 		ingredients.put("notConsume2", 0);
-		graphMapper.addConversionMultiple(1, "c2", ingredients);
+		graphMapper.addConversion(1, "c2", ingredients);
 
 
 		Map<String, Integer> values = graphMapper.generateValues();
@@ -626,7 +626,7 @@ public class GraphMapperTest {
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("waterBucket", 1);
 		m.put("bucket", -1);
-		graphMapper.addConversionMultiple(1, "waterGroup", m);
+		graphMapper.addConversion(1, "waterGroup", m);
 		graphMapper.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
 		graphMapper.setValue("a", 3, IMappingCollector.FixedValue.FixAndInherit);
 		graphMapper.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
@@ -659,6 +659,11 @@ public class GraphMapperTest {
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(Integer.MAX_VALUE/2, getValue(values, "a"));
+	}
+
+	@org.junit.Test
+	public void testOverwriteConversions() {
+
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {

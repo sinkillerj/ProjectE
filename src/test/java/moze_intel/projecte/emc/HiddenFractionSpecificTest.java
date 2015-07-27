@@ -70,7 +70,7 @@ public class HiddenFractionSpecificTest
 
 		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
 		graphMapper.addConversion(250*1000, "moltenEnder", Arrays.asList("enderpearl"));
-		graphMapper.addConversionMultiple(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000*1000, "bucket", 1));
+		graphMapper.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000 * 1000, "bucket", 1));
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1024, getValue(values, "enderpearl"));
@@ -86,12 +86,12 @@ public class HiddenFractionSpecificTest
 	{
 		graphMapper.setValue("glass", 1, IMappingCollector.FixedValue.FixAndInherit);
 
-		graphMapper.addConversionMultiple(16, "pane", ImmutableMap.of("glass", 6));
-		graphMapper.addConversionMultiple(5, "vial", ImmutableMap.of("pane", 5));
+		graphMapper.addConversion(16, "pane", ImmutableMap.of("glass", 6));
+		graphMapper.addConversion(5, "vial", ImmutableMap.of("pane", 5));
 		//Internal EMC of pane and vial: 3/8 = 0.375
 		//So 8 * vial should have an emc of 3 => testItem should have emc of 1
-		graphMapper.addConversionMultiple(3, "testItem1", ImmutableMap.of("pane", 8));
-		graphMapper.addConversionMultiple(3, "testItem2", ImmutableMap.of("vial", 8));
+		graphMapper.addConversion(3, "testItem1", ImmutableMap.of("pane", 8));
+		graphMapper.addConversion(3, "testItem2", ImmutableMap.of("vial", 8));
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1, getValue(values, "glass"));
@@ -106,9 +106,9 @@ public class HiddenFractionSpecificTest
 	{
 		graphMapper.setValue("a", 1, IMappingCollector.FixedValue.FixAndInherit);
 
-		graphMapper.addConversionMultiple(2, "ahalf", ImmutableMap.of("a", 1));
-		graphMapper.addConversionMultiple(1, "ahalf2", ImmutableMap.of("ahalf", 1));
-		graphMapper.addConversionMultiple(1, "2ahalf2", ImmutableMap.of("ahalf2", 2));
+		graphMapper.addConversion(2, "ahalf", ImmutableMap.of("a", 1));
+		graphMapper.addConversion(1, "ahalf2", ImmutableMap.of("ahalf", 1));
+		graphMapper.addConversion(1, "2ahalf2", ImmutableMap.of("ahalf2", 2));
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1, getValue(values, "a"));

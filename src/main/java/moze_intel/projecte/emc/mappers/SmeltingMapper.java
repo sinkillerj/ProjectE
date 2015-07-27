@@ -23,11 +23,11 @@ public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			NormalizedSimpleStack normInput = NormalizedSimpleStack.getNormalizedSimpleStackFor(input);
 			NormalizedSimpleStack normOutput = NormalizedSimpleStack.getNormalizedSimpleStackFor(output);
 			map.addIngredient(normInput, input.stackSize);
-			mapper.addConversionMultiple(output.stackSize, normOutput, map.getMap());
+			mapper.addConversion(output.stackSize, normOutput, map.getMap());
 			if (config.getBoolean("doBackwardsMapping", "", false, "If X has a value and is smelted from Y, Y will get a value too. This is an experimental thing and might result in Mappings you did not expect/want to happen.")) {
 				map = new IngredientMap<NormalizedSimpleStack>();
 				map.addIngredient(normOutput, output.stackSize);
-				mapper.addConversionMultiple(input.stackSize, normInput, map.getMap());
+				mapper.addConversion(input.stackSize, normInput, map.getMap());
 			}
 
 		}

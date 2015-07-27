@@ -73,12 +73,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 											groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
 										}
 										groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
-										mapper.addConversionMultiple(1, normalizedSimpleStack, groupIngredientMap.getMap());
+										mapper.addConversion(1, normalizedSimpleStack, groupIngredientMap.getMap());
 									}
 								}
 							}
 							if (recipeOutput.stackSize > 0) {
-								mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
+								mapper.addConversion(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
 							} else {
 								PELogger.logWarn("Ignoring Recipe because outnumber <= 0: " + ingredientMap.getMap().toString() + " -> " + recipeOutput);
 							}
