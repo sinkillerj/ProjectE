@@ -25,7 +25,10 @@ Format:
 		},
 		'after': {
 			'd': 3
-		}
+		},
+ 		'conversion': [
+			//List of Conversions
+		]
 	}
 }
 </pre>

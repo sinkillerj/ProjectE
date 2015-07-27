@@ -113,4 +113,27 @@ public class CustomConversionMapperTest
 		assertEquals(3, (int) f.values.setValueAfter.get("d"));
 
 	}
+
+	@Test
+	public void testSetValueFromConversion()
+	{
+		String simpleFile =
+				"{'values': {" +
+						"	'conversion': [" +
+						"		{'output':'outA', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}" +
+						"	]" +
+						"}" +
+						"}";
+		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
+		assertNotNull(f.values);
+		assertNotNull(f.values.conversion);
+		assertEquals(1, f.values.conversion.length);
+		CustomConversion conversion = f.values.conversion[0];
+		assertEquals("outA", conversion.output);
+		assertEquals(1, conversion.count);
+		assertEquals(3, conversion.ingredients.size());
+		assertEquals(1, (int)conversion.ingredients.get("ing1"));
+		assertEquals(2, (int)conversion.ingredients.get("ing2"));
+		assertEquals(3, (int)conversion.ingredients.get("ing3"));
+	}
 }

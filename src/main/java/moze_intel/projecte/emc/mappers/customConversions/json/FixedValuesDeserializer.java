@@ -21,6 +21,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 
 		fixed.setValueBefore = parseSetValueMapFromObject(o, "before");
 		fixed.setValueAfter = parseSetValueMapFromObject(o, "after");
+		fixed.conversion = context.deserialize(o.getAsJsonArray("conversion"), CustomConversion[].class);
 		return fixed;
 	}
 
