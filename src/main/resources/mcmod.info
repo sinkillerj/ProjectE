@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "ProjectENEIRecipeCollector",
+  "name": "ProjectE NEI Recipe Collector",
+  "description": "Collect Recipes from NEI GUIs using chat commands.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["MaPePeR"],
+  "credits": "The Forge and FML guys, for making the example mod.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
