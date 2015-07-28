@@ -1,10 +1,9 @@
 package mapeper.projecte.neirecipecollector.commands;
 
 import codechicken.nei.PositionedStack;
-import codechicken.nei.recipe.IRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mapeper.projecte.neirecipecollector.ChatUtils;
@@ -13,13 +12,15 @@ import mapeper.projecte.neirecipecollector.NEIRecipeCollector;
 import mapeper.projecte.neirecipecollector.ProjectENEIRecipeCollector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import org.apache.logging.log4j.Logger;
 import scala.actors.threadpool.Arrays;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CollectSubCommand implements ISubCommand
 {
@@ -50,7 +51,8 @@ public class CollectSubCommand implements ISubCommand
 			ChatUtils.addChatError(sender, "Usage: '%s <IRecipeHandler class name> [options]'", previousCommands);
 			ChatUtils.addChatError(sender, "Options: ");
 			ChatUtils.addChatError(sender, "skip=<a>,<b>,... Skip specific slots");
-			ChatUtils.addChatError(sender, "multiplier=<n>   Multiply the output stacksize");
+			ChatUtils.addChatError(sender, "s<slotnum or o>=<n>   overwrite stacksize of slot in recipe (number from 0 to n or 'o' for output)");
+			ChatUtils.addChatError(sender, "s<slotnum or o>*<n>   multiply stacksize of slot in recipe (number from 0 to n or 'o' for output)");
 			ChatUtils.addChatError(sender, "some             Show the first 3 recipes");
 			ChatUtils.addChatError(sender, "log              Log all recipes");
 			ChatUtils.addChatError(sender, "unlocal          Log unique item names instead display name");
@@ -88,8 +90,13 @@ public class CollectSubCommand implements ISubCommand
 		boolean some = false;
 
 		Set<Integer> skip = Sets.newHashSet();
+
+		Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o)(\\=|\\*)(\\d+)$");
+
 		int multiplier = 1;
 		for (String s: params.subList(1, params.size())) {
+			Matcher stacksizeOperandMatcher = overwriteOrMultiplyPattern.matcher(s);
+
 			if (s.equals("some")) {
 				some = true;
 			} else if (s.equals("log")) {
@@ -112,22 +119,30 @@ public class CollectSubCommand implements ISubCommand
 						return;
 					}
 				}
-			} else if (s.startsWith("multiplier=")) {
-				String m = s.substring("multiplier=".length());
-				try {
-					int i = Integer.parseInt(m);
-					if (i <= 0) throw new NumberFormatException("Only > 0 allowed");
-				} catch (NumberFormatException e) {
-					ChatUtils.addChatError(sender, "Could not parse multiplier option '%s' as positive int", m);
-					e.printStackTrace();
+			} else if (stacksizeOperandMatcher.matches()) {
+				String slot = stacksizeOperandMatcher.group(1);
+				int slotNum = 0;
+				String operand = stacksizeOperandMatcher.group(2);
+				String number = stacksizeOperandMatcher.group(3);
+				if (slot.equals("o")) {
+					slotNum = -1;
+				} else {
+					slotNum = Integer.parseInt(slot);
+				}
+				int n = Integer.parseInt(number);
+				Map<Integer, Integer> map;
+				if (operand.equals("=")) map = setStacksizeForSlot;
+				else if (operand.equals("*")) map = multiplyStacksizeForSlot;
+				else {
+					ChatUtils.addChatError(sender, "Cannot parse Operand in %s", s);
 					return;
 				}
+				map.put(slotNum, n);
 			} else {
 				ChatUtils.addChatError(sender, "Unknown option '%s'", s);
 				return;
 			}
 			//TODO Options: Searching OreDict instead of Fake Items (Enable to use OD for groups and single-items separate)
-			//TODO Option to set ingredient and or output stacksize to a specific value (For Potions to turn 1+1=1 into 1+3=3
 		}
 
 		for (int i = 0; i < numRecipes; i++) {
@@ -145,17 +160,38 @@ public class CollectSubCommand implements ISubCommand
 	void resetSettings() {
 		fulllists = false;
 		unlocal = false;
-
+		setStacksizeForSlot.clear();
+		multiplyStacksizeForSlot.clear();
 	}
 
+	Map<Integer, Integer> setStacksizeForSlot = Maps.newHashMap();
+	Map<Integer, Integer> multiplyStacksizeForSlot = Maps.newHashMap();
 	boolean unlocal = false;
 	boolean fulllists = false;
 
+	private String itemToStringWithStacksize(ItemStack itemStack, int slotNum) {
+		boolean changedStackSize = false;
+		int stacksize = itemStack.stackSize;
+		if (setStacksizeForSlot.containsKey(slotNum)) {
+			changedStackSize = true;
+			stacksize = setStacksizeForSlot.get(slotNum);
+		}
+		if (multiplyStacksizeForSlot.containsKey(slotNum)) {
+			changedStackSize = true;
+			stacksize *= setStacksizeForSlot.get(slotNum);
+		}
+		if (changedStackSize) {
+			return String.format("(%d*)%d*%s", itemStack.stackSize, stacksize, itemToString(itemStack));
+		} else {
+			return String.format("%d*%s", itemStack.stackSize, itemToString(itemStack));
+		}
+	}
+
 	private String itemToString(ItemStack itemStack) {
 		if (unlocal) {
-			return String.format("%d*%s|%s", itemStack.stackSize, GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString(), itemStack.getItemDamage());
+			return String.format("%s|%s", GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString(), itemStack.getItemDamage());
 		}
-		return String.format("%d*'%s'", itemStack.stackSize, itemStack.getDisplayName());
+		return String.format("'%s'", itemStack.getDisplayName());
 	}
 
 	private String listOfPositionedStacksToString(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots) {
@@ -168,12 +204,12 @@ public class CollectSubCommand implements ISubCommand
 			Iterator<ItemStack> iterator = Arrays.asList(stacks.get(slotNum).items).iterator();
 			if (iterator.hasNext())
 			{
-				sb.append(itemToString(iterator.next()));
+				sb.append(itemToStringWithStacksize(iterator.next(), slotNum));
 				if (fulllists)
 				{
 					while (iterator.hasNext())
 					{
-						sb.append(", ").append(itemToString(iterator.next()));
+						sb.append(", ").append(itemToStringWithStacksize(iterator.next(), slotNum));
 					}
 				}
 				else if (iterator.hasNext())
@@ -186,7 +222,7 @@ public class CollectSubCommand implements ISubCommand
 			if (stacks.get(slotNum).items.length > 1) sb.append(']');
 			if (skipSlots.contains(slotNum)) sb.append(")");
 		}
-		sb.append(" = ").append(itemToString(outStack.item));
+		sb.append(" = ").append(itemToStringWithStacksize(outStack.item, -1));
 		return sb.toString();
 	}
 
