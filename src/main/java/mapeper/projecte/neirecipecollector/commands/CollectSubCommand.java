@@ -9,6 +9,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import mapeper.projecte.neirecipecollector.ChatUtils;
 import mapeper.projecte.neirecipecollector.LowerCasePrefixPredicate;
 import mapeper.projecte.neirecipecollector.NEIRecipeCollector;
+import mapeper.projecte.neirecipecollector.OreDictSearcher;
 import mapeper.projecte.neirecipecollector.ProjectENEIRecipeCollector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
@@ -53,6 +54,7 @@ public class CollectSubCommand implements ISubCommand
 			ChatUtils.addChatError(sender, "skip=<a>,<b>,... Skip specific slots");
 			ChatUtils.addChatError(sender, "s<slotnum or o>=<n>   overwrite stacksize of slot in recipe (number from 0 to n or 'o' for output)");
 			ChatUtils.addChatError(sender, "s<slotnum or o>*<n>   multiply stacksize of slot in recipe (number from 0 to n or 'o' for output)");
+			ChatUtils.addChatError(sender, "oredict          try to find oredictionary replacements for all the ingredients");
 			ChatUtils.addChatError(sender, "some             Show the first 3 recipes");
 			ChatUtils.addChatError(sender, "log              Log all recipes");
 			ChatUtils.addChatError(sender, "unlocal          Log unique item names instead display name");
@@ -93,7 +95,6 @@ public class CollectSubCommand implements ISubCommand
 
 		Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o)(\\=|\\*)(\\d+)$");
 
-		int multiplier = 1;
 		for (String s: params.subList(1, params.size())) {
 			Matcher stacksizeOperandMatcher = overwriteOrMultiplyPattern.matcher(s);
 
@@ -103,8 +104,11 @@ public class CollectSubCommand implements ISubCommand
 				log = true;
 			} else if (s.equals("fulllist")) {
 				fulllists = true;
-			} else if (s.equals("unlocal")) {
+			} else if (s.equals("unlocal"))
+			{
 				unlocal = true;
+			} else if (s.equals("oredict")) {
+				tryToFindOreDict = true;
 			} else if (s.startsWith("skip=")) {
 				for (String n : Splitter.on(',').omitEmptyStrings().split(s.substring(5)))
 				{
@@ -142,7 +146,6 @@ public class CollectSubCommand implements ISubCommand
 				ChatUtils.addChatError(sender, "Unknown option '%s'", s);
 				return;
 			}
-			//TODO Options: Searching OreDict instead of Fake Items (Enable to use OD for groups and single-items separate)
 		}
 
 		for (int i = 0; i < numRecipes; i++) {
@@ -160,6 +163,7 @@ public class CollectSubCommand implements ISubCommand
 	void resetSettings() {
 		fulllists = false;
 		unlocal = false;
+		tryToFindOreDict = false;
 		setStacksizeForSlot.clear();
 		multiplyStacksizeForSlot.clear();
 	}
@@ -168,6 +172,7 @@ public class CollectSubCommand implements ISubCommand
 	Map<Integer, Integer> multiplyStacksizeForSlot = Maps.newHashMap();
 	boolean unlocal = false;
 	boolean fulllists = false;
+	boolean tryToFindOreDict = false;
 
 	private String itemToStringWithStacksize(ItemStack itemStack, int slotNum) {
 		boolean changedStackSize = false;
@@ -204,17 +209,26 @@ public class CollectSubCommand implements ISubCommand
 			Iterator<ItemStack> iterator = Arrays.asList(stacks.get(slotNum).items).iterator();
 			if (iterator.hasNext())
 			{
-				sb.append(itemToStringWithStacksize(iterator.next(), slotNum));
-				if (fulllists)
-				{
-					while (iterator.hasNext())
-					{
-						sb.append(", ").append(itemToStringWithStacksize(iterator.next(), slotNum));
-					}
+				String oreDict = null;
+				if (tryToFindOreDict) {
+					oreDict = OreDictSearcher.tryToFindOreDict(stacks.get(slotNum).items);
 				}
-				else if (iterator.hasNext())
+				if (oreDict != null) {
+					sb.append("OD:").append(oreDict);
+				} else
 				{
-					sb.append(", ..");
+					sb.append(itemToStringWithStacksize(iterator.next(), slotNum));
+					if (fulllists)
+					{
+						while (iterator.hasNext())
+						{
+							sb.append(", ").append(itemToStringWithStacksize(iterator.next(), slotNum));
+						}
+					}
+					else if (iterator.hasNext())
+					{
+						sb.append(", ..");
+					}
 				}
 			} else {
 				sb.append('-');
