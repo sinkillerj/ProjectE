@@ -1,10 +1,5 @@
 package moze_intel.projecte.manual;
 
-import java.util.List;
-
-import moze_intel.projecte.gameObjs.gui.GUIManual;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -12,7 +7,6 @@ public class ImagePage extends AbstractPage
 {
     private final ResourceLocation imageLocation;
     private final String header;
-    private FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
 
     protected ImagePage(String header, ResourceLocation imageLocation, PageCategory category)
     {
@@ -44,8 +38,4 @@ public class ImagePage extends AbstractPage
         return "";
     }
 
-	@Override
-	public List<String> getBodyList() {
-		return fontRendererObj.listFormattedStringToWidth(getBodyText(), GUIManual.textWidth);
-	}
 }

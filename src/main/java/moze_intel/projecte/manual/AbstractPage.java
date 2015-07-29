@@ -2,7 +2,10 @@ package moze_intel.projecte.manual;
 
 import java.util.List;
 
+import moze_intel.projecte.gameObjs.gui.GUIManual;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public abstract class AbstractPage
 {
 	protected final PageCategory category;
+    private FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
 
 	protected AbstractPage(PageCategory category)
 	{
@@ -25,7 +29,9 @@ public abstract class AbstractPage
 	
 	public abstract String getHeaderText();
 	
-    public abstract List<String> getBodyList();
+    public List<String> getBodyList() {
+		return fontRendererObj.listFormattedStringToWidth(getBodyText(), GUIManual.textWidth);
+	}
 
 	public static AbstractPage createItemPage(Item item, PageCategory category)
 	{

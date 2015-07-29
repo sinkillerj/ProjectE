@@ -31,9 +31,4 @@ public class SubPage extends AbstractPage {
 		return "";
 	}
 
-	@Override
-	public List<String> getBodyList() {
-		return this.splitText;
-	}
-
 }
