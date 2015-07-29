@@ -42,6 +42,9 @@ public class GUIManual extends GuiScreen
 	private int offset = 3;
 	
 	public static List<String> bodyTexts = Lists.newArrayList();
+	public static int textWidth = 220;
+	public static int textHeight = 180 - 43;
+	public static int textYOffset = 10;
 
 	@Override
 	public void initGui()
@@ -89,24 +92,15 @@ public class GUIManual extends GuiScreen
 	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
 	    	} else
 			{
-	    		float scaleFactor = 0.5f;
-	    		//GL11.glScalef(scaleFactor, scaleFactor, 1f);
 	    		
-	    		
-	    		
-	    		
-	    		
-				//this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), Math.round((k + 18)/scaleFactor), Math.round((45)/scaleFactor), Math.round((220)/scaleFactor), 0);
-	    		bodyTexts = this.fontRendererObj.listFormattedStringToWidth(ManualPageHandler.pages.get(currentPageID).getBodyText(), 220);
-				
-				for(int i = 0; i < bodyTexts.size(); i++)
+	    		bodyTexts = ManualPageHandler.pages.get(currentPageID).getBodyList();
+			
+				for(int i = 0; i < bodyTexts.size() || i < Math.floor(GUIManual.textHeight/GUIManual.textYOffset); i++)
 				{
-					this.fontRendererObj.drawString(bodyTexts.get(i), k + 18, 43 + 10 * i, Color.black.getRGB());
+					this.fontRendererObj.drawString(bodyTexts.get(i), k + 18, 43 + textYOffset * i, Color.black.getRGB());
 					
 				}
 				
-				
-				//GL11.glScalef(1/scaleFactor, 1/scaleFactor, 1f);
 				if (currentPage instanceof ItemPage)
 				{
 					ItemPage itemPage = ((ItemPage) currentPage);

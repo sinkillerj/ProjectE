@@ -1,5 +1,7 @@
 package moze_intel.projecte.manual;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +24,8 @@ public abstract class AbstractPage
 	public abstract String getBodyText();
 	
 	public abstract String getHeaderText();
+	
+    public abstract List<String> getBodyList();
 
 	public static AbstractPage createItemPage(Item item, PageCategory category)
 	{
@@ -46,5 +50,9 @@ public abstract class AbstractPage
 	public static AbstractPage createImagePage(String header, ResourceLocation imageLocation, PageCategory category)
 	{
 		return new ImagePage(header, imageLocation, category);
+	}
+	public static AbstractPage createSubPage(List<String> texts, PageCategory category)
+	{
+		return new SubPage(texts, category);
 	}
 }

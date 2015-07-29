@@ -2,9 +2,12 @@ package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.Comparators;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -124,12 +127,14 @@ public class ManualPageHandler
 	{
 		AbstractPage page = AbstractPage.createItemPage(item, category);
 		categoryMap.get(category).add(page);
+		checkSubPages(page);
 	}
 	
 	private static void addItem(Block block, PageCategory category)
 	{
 		AbstractPage page = AbstractPage.createItemPage(block, category);
 		categoryMap.get(category).add(page);
+		checkSubPages(page);
 	}
 	
 	private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
@@ -138,6 +143,7 @@ public class ManualPageHandler
 		{
 			AbstractPage page = AbstractPage.createItemPage(is, category);
 			categoryMap.get(category).add(page);
+			checkSubPages(page);
 		}
 	}
 	
@@ -145,14 +151,35 @@ public class ManualPageHandler
 	{
 		AbstractPage page = AbstractPage.createTextPage(identifier, category);
 		categoryMap.get(category).add(page);
+		checkSubPages(page);
 	}
 	
 	private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
 	{
 		AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
 		categoryMap.get(category).add(page);
+		checkSubPages(page);
+	}
+	private static void addSubPage(List<String> text, PageCategory category)
+	{
+		AbstractPage page = AbstractPage.createSubPage(text, PageCategory.NONE);
+		categoryMap.get(category).add(page);
 	}
 
+	private static void checkSubPages(AbstractPage page)
+	{
+		int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.textYOffset)/GUIManual.textHeight);
+		
+		if(neededPages>1)
+		{
+			List<List<String>> parts = chopped(page.getBodyList(), (int) Math.floor(GUIManual.textHeight/GUIManual.textYOffset));
+			for(int i = 1; i<neededPages; i++)
+			{
+				addSubPage(parts.get(i), PageCategory.NONE);
+			}
+		}
+	}
+	
 	/**
 	 * Iterates through all categories in enum order, sorts the list alphabetically by localized header, then adds them to the page list
 	 */
@@ -180,5 +207,17 @@ public class ManualPageHandler
 		List<ItemStack> list = Lists.newArrayList();
 		i.getSubItems(i, null, list);
 		return list;
+	}
+	
+	// chops a list into non-view sublists of length L
+	private static <T> List<List<T>> chopped(List<T> list, final int L) {
+	    List<List<T>> parts = new ArrayList<List<T>>();
+	    final int N = list.size();
+	    for (int i = 0; i < N; i += L) {
+	        parts.add(new ArrayList<T>(
+	            list.subList(i, Math.min(N, i + L)))
+	        );
+	    }
+	    return parts;
 	}
 }
