@@ -11,6 +11,9 @@ import moze_intel.projecte.utils.ItemHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.collect.Lists;
+
+import java.awt.Color;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -37,6 +40,8 @@ public class GUIManual extends GuiScreen
 	private final int CHARACTER_HEIGHT = Math.round(9 / 2.5f);
 	private int currentPageID;
 	private int offset = 3;
+	
+	public static List<String> bodyTexts = Lists.newArrayList();
 
 	@Override
 	public void initGui()
@@ -70,7 +75,8 @@ public class GUIManual extends GuiScreen
 		}
 		
 	    int k = (this.width - 256) / 2;
-	    this.drawTexturedModalRect(k, 5, 0, 0, 256, 180);
+	    int pageHeight = 180;
+	    this.drawTexturedModalRect(k, 5, 0, 0, 256, pageHeight);
 
 
 		if (!isViewingIndex())
@@ -84,9 +90,23 @@ public class GUIManual extends GuiScreen
 	    	} else
 			{
 	    		float scaleFactor = 0.5f;
-	    		GL11.glScalef(scaleFactor, scaleFactor, 1f);
-				this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), Math.round((k + 18)/scaleFactor), Math.round((45)/scaleFactor), Math.round((220)/scaleFactor), 0);
-				GL11.glScalef(1/scaleFactor, 1/scaleFactor, 1f);
+	    		//GL11.glScalef(scaleFactor, scaleFactor, 1f);
+	    		
+	    		
+	    		
+	    		
+	    		
+				//this.fontRendererObj.drawSplitString(ManualPageHandler.pages.get(currentPageID).getBodyText(), Math.round((k + 18)/scaleFactor), Math.round((45)/scaleFactor), Math.round((220)/scaleFactor), 0);
+	    		bodyTexts = this.fontRendererObj.listFormattedStringToWidth(ManualPageHandler.pages.get(currentPageID).getBodyText(), 220);
+				
+				for(int i = 0; i < bodyTexts.size(); i++)
+				{
+					this.fontRendererObj.drawString(bodyTexts.get(i), k + 18, 43 + 10 * i, Color.black.getRGB());
+					
+				}
+				
+				
+				//GL11.glScalef(1/scaleFactor, 1/scaleFactor, 1f);
 				if (currentPage instanceof ItemPage)
 				{
 					ItemPage itemPage = ((ItemPage) currentPage);
