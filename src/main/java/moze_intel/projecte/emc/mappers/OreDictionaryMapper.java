@@ -52,42 +52,10 @@ public class OreDictionaryMapper extends LazyMapper {
 		addMapping("dustSulfur", 32);
 
 		//Ingots (blocks will get auto-mapped)
-		/*Vanilla*/
-		addMapping("ingotIron", 256);
-		addMapping("ingotGold", 2048);
-		/*General*/
-		addMapping("ingotCopper", 128);
-		addMapping("ingotTin", 256);
-		addMapping("ingotBronze", 160);
-		addMapping("ingotSilver", 512);
-		addMapping("ingotLead", 512);
-		addMapping("ingotNickel", 1024);
-		/*TE*/
-		addMapping("ingotSignalum", 256);
-		addMapping("ingotLumium", 512);
-		addMapping("ingotInvar", 512);
-		addMapping("ingotElectrum", 1280);
-		addMapping("ingotEnderium", 4096);
-		addMapping("ingotPlatinum", 4096);
-		/*TiCon*/
-		addMapping("ingotAluminum", 128);
-		addMapping("ingotAluminumBrass", 512);
-		addMapping("ingotArdite", 1024);
-		addMapping("ingotCobalt", 1024);
-		addMapping("ingotManyullyn", 2048);
-		addMapping("ingotAlumite", 1024);
 		/*TC*/
 		addMapping("ingotThaumium", 2048);
 		/*Ender IO*/
 		addMapping("itemSilicon", 32);
-		addMapping("ingotPhasedIron", 1280);
-		addMapping("ingotPhasedGold", 3520);
-		addMapping("ingotRedstoneAlloy", 96);
-		addMapping("ingotConductiveIron", 320);
-		addMapping("ingotEnergeticAlloy", 2496);
-		addMapping("ingotElectricalSteel", 352);
-		addMapping("ingotDarkSteel", 384);
-		addMapping("ingotSoularium", 2097);
 		/*Mekanism*/
 		addMapping("ingotOsmium", 512);
 
