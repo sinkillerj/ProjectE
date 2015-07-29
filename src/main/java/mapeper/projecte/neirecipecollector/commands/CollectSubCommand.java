@@ -14,6 +14,7 @@ import mapeper.projecte.neirecipecollector.OreDictSearcher;
 import mapeper.projecte.neirecipecollector.ProjectENEIRecipeCollector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.apache.logging.log4j.Logger;
 import scala.actors.threadpool.Arrays;
 
@@ -162,10 +163,10 @@ public class CollectSubCommand implements ISubCommand
 			List<PositionedStack> ingredients = handler.getIngredientStacks(i);
 			PositionedStack outStack = handler.getResultStack(i);
 			if (some && i < 3) {
-				ChatUtils.addChatMessage(sender, listOfPositionedStacksToString(ingredients, outStack, skip));
+				ChatUtils.addChatMessage(sender, listOfPositionedStacksToStringForChat(ingredients, outStack, skip));
 			}
 			if (log) {
-				LOGGER.info(listOfPositionedStacksToString(ingredients, outStack, skip));
+				LOGGER.info(listOfPositionedStacksToStringForLog(ingredients, outStack, skip));
 			}
 		}
  	}
@@ -209,12 +210,20 @@ public class CollectSubCommand implements ISubCommand
 		return String.format("'%s'", itemStack.getDisplayName());
 	}
 
-	private String listOfPositionedStacksToString(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots) {
+	private String listOfPositionedStacksToStringForChat(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots) {
+		return listOfPositionedStacksToString(stacks, outStack, skipSlots, EnumChatFormatting.STRIKETHROUGH.toString(), EnumChatFormatting.RESET.toString());
+	}
+
+	private String listOfPositionedStacksToStringForLog(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots) {
+		return listOfPositionedStacksToString(stacks, outStack, skipSlots, "(", ")");
+	}
+
+	private String listOfPositionedStacksToString(List<PositionedStack> stacks, PositionedStack outStack, Set<Integer> skipSlots, String skipStart, String skipEnd) {
 		StringBuilder sb = new StringBuilder();
 		for (int slotNum = 0; slotNum < stacks.size(); slotNum++)
 		{
 			if (slotNum != 0) sb.append(" + ");
-			if (skipSlots.contains(slotNum)) sb.append("(");
+			if (skipSlots.contains(slotNum)) sb.append(skipStart);
 			if (stacks.get(slotNum).items.length > 1) sb.append("[");
 			Iterator<ItemStack> iterator = Arrays.asList(stacks.get(slotNum).items).iterator();
 			if (iterator.hasNext())
@@ -244,7 +253,7 @@ public class CollectSubCommand implements ISubCommand
 				sb.append('-');
 			}
 			if (stacks.get(slotNum).items.length > 1) sb.append(']');
-			if (skipSlots.contains(slotNum)) sb.append(")");
+			if (skipSlots.contains(slotNum)) sb.append(skipEnd);
 		}
 		sb.append(" = ").append(itemToStringWithStacksize(outStack.item, -1));
 		return sb.toString();
