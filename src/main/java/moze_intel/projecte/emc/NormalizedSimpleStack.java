@@ -148,11 +148,20 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static NormalizedSimpleStack createFake() {
-		return new NSSFake();
-  	}
+	public static NormalizedSimpleStack createFake(String description) {
+		return new NSSFake(description);
+	}
 
 	public static class NSSFake extends NormalizedSimpleStack {
+		private final String description;
+		private final int counter;
+		private static int fakeItemCounter = 0;
+		public NSSFake(String description)
+		{
+			this.counter = fakeItemCounter++;
+			this.description = description;
+		}
+
 		public boolean equals(Object o) {
 			if (o instanceof NSSFake) {
 				return o == this;
@@ -162,7 +171,7 @@ public abstract class NormalizedSimpleStack {
 
 		@Override
 		public String toString() {
-			return "NSSFAKE: " + super.toString();
+			return "NSSFAKE" + counter + ": " + description;
 		}
 	}
 
