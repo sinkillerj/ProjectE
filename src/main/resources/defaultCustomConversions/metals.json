@@ -29,19 +29,18 @@
   "values": {
     "before": {
       "OD|ingotIron":256,
-      "OD|ingotGold":2048,
-
-      "OD|ingotCopper": 128,
-      "OD|ingotTin": 256,
-      "OD|ingotSilver": 512,
-      "OD|ingotLead": 512,
-      "OD|ingotNickel": 1024,
-
-      "OD|ingotAluminum": 128,
-      "OD|ingotArdite": 1024,
-      "OD|ingotCobalt": 1024,
-
       "OD|itemSilicon": 32
-    }
+    },
+    "conversion": [
+      {"o": "OD|ingotGold", "c": 1, "i": {"OD|ingotIron":8}},
+      {"o": "OD|ingotCopper", "c": 2, "i": {"OD|ingotIron":1}},
+      {"o": "OD|ingotTin", "c": 1, "i": {"OD|ingotIron":1}},
+      {"o": "OD|ingotSilver", "c": 1, "i": {"OD|ingotIron":2}},
+      {"o": "OD|ingotLead", "c": 1, "i": {"OD|ingotIron":2}},
+      {"o": "OD|ingotNickel", "c": 1, "i": {"OD|ingotIron":4}},
+      {"o": "OD|ingotAluminum", "c": 2, "i": {"OD|ingotIron":1}},
+      {"o": "OD|ingotArdite", "c": 1, "i": {"OD|ingotIron":4}},
+      {"o": "OD|ingotCobalt", "c": 1, "i": {"OD|ingotIron":4}}
+    ]
   }
 }

@@ -117,6 +117,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			{
 				mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAfterInherit);
 			}
+			for (CustomConversion conversion: file.values.conversion) {
+				mapper.setValueFromConversion(conversion.count, getNSSfromJsonString(conversion.output, fakes), convertToNSSMap(conversion.ingredients, fakes));
+			}
 		} catch (Exception e) {
 			PELogger.logFatal("ERROR reading custom conversion values!");
 			e.printStackTrace();
