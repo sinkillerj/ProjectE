@@ -7,4 +7,5 @@ public class CustomConversion
 	public int count = 1;
 	public String output;
 	public Map<String, Integer> ingredients;
+	public boolean evalOD = false;
 }

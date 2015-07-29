@@ -16,7 +16,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -110,16 +112,37 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 		try
 		{
-			for (Map.Entry<String, Integer> entry : file.values.setValueBefore.entrySet())
+			if (file.values != null)
 			{
-				mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
-			}
-			for (Map.Entry<String, Integer> entry : file.values.setValueAfter.entrySet())
-			{
-				mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAfterInherit);
-			}
-			for (CustomConversion conversion: file.values.conversion) {
-				mapper.setValueFromConversion(conversion.count, getNSSfromJsonString(conversion.output, fakes), convertToNSSMap(conversion.ingredients, fakes));
+				if (file.values.setValueBefore != null) {
+					for (Map.Entry<String, Integer> entry : file.values.setValueBefore.entrySet())
+					{
+						mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+					}
+				}
+				if (file.values.setValueAfter != null)
+				{
+					for (Map.Entry<String, Integer> entry : file.values.setValueAfter.entrySet())
+					{
+						mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAfterInherit);
+					}
+				}
+				if (file.values.conversion != null)
+				{
+					for (CustomConversion conversion : file.values.conversion)
+					{
+						NormalizedSimpleStack out = getNSSfromJsonString(conversion.output, fakes);
+						if (conversion.evalOD && out instanceof NormalizedSimpleStack.NSSOreDictionary)
+						{
+							String odName = ((NormalizedSimpleStack.NSSOreDictionary) out).od;
+							for (ItemStack itemStack : OreDictionary.getOres(odName))
+							{
+								mapper.setValueFromConversion(conversion.count, NormalizedSimpleStack.getFor(itemStack), convertToNSSMap(conversion.ingredients, fakes));
+							}
+						}
+						mapper.setValueFromConversion(conversion.count, out, convertToNSSMap(conversion.ingredients, fakes));
+					}
+				}
 			}
 		} catch (Exception e) {
 			PELogger.logFatal("ERROR reading custom conversion values!");

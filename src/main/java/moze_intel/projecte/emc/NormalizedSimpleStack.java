@@ -210,6 +210,11 @@ public abstract class NormalizedSimpleStack {
 			}
 			return false;
 		}
+
+		@Override
+		public String toString() {
+			return "OD: " + od;
+		}
 	}
 
 	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) throws Exception {

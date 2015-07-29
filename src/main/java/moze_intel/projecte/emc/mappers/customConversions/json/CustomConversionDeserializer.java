@@ -20,42 +20,55 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 	{
 		CustomConversion out = new CustomConversion();
 		JsonObject o = json.getAsJsonObject();
-		JsonElement element = getElementWithMultipleNames(o, "count", "c");
-		if (element != null) {
-			out.count = element.getAsInt();
-		}
-
-		element = getElementWithMultipleNames(o, "output", "out", "o");
-		if (element == null) {
-			throw new JsonParseException("Missing mandatory key: 'output', 'out' or 'o'");
-		}
-		out.output = element.getAsString();
-
-		element = getElementWithMultipleNames(o, "ingredients", "ingr", "i");
-		if (element == null) {
-			throw new JsonParseException("Missing mandatory key: 'ingredients', 'ingr' or 'i'");
-		} else {
-			if (element.isJsonArray()) {
-				Map<String, Integer> outMap = Maps.newHashMap();
-				JsonArray array = element.getAsJsonArray();
-				for (JsonElement e: array) {
-					String v = e.getAsString();
-					int count = 0;
-					if (outMap.containsKey(v)) {
-						count = outMap.get(v);
-					}
-					count += 1;
-					outMap.put(v, count);
+		boolean foundOutput = false, foundIngredients = false;
+		for (Map.Entry<String, JsonElement> entry:o.entrySet()) {
+			JsonElement element = entry.getValue();
+			if (isInList(entry.getKey(), "count", "c")) {
+				out.count = element.getAsInt();
+			}
+			else if (isInList(entry.getKey(),  "output", "out", "o")) {
+				if (foundOutput) {
+					throw new JsonParseException("Multiple values for output field");
 				}
-				out.ingredients = outMap;
-			} else if (element.isJsonObject()) {
-				out.ingredients = new Gson().fromJson(element, new TypeToken<Map<String, Integer>>(){}.getType());
+				foundOutput = true;
+				out.output = element.getAsString();
+			} else if (isInList(entry.getKey(), "ingredients", "ingr", "i")) {
+				if (foundIngredients) {
+					throw new JsonParseException("Multiple values for output field");
+				}
+				foundIngredients = true;
+				if (element.isJsonArray()) {
+					Map<String, Integer> outMap = Maps.newHashMap();
+					JsonArray array = element.getAsJsonArray();
+					for (JsonElement e: array) {
+						String v = e.getAsString();
+						int count = 0;
+						if (outMap.containsKey(v)) {
+							count = outMap.get(v);
+						}
+						count += 1;
+						outMap.put(v, count);
+					}
+					out.ingredients = outMap;
+				} else if (element.isJsonObject()) {
+					out.ingredients = new Gson().fromJson(element, new TypeToken<Map<String, Integer>>(){}.getType());
+				} else {
+					throw new JsonParseException("Could not parse ingredients!");
+				}
+			} else if (entry.getKey().equalsIgnoreCase("evalOD")) {
+				out.evalOD = element.getAsBoolean();
 			} else {
-				throw new JsonParseException("Could not parse ingredients!");
+				throw new JsonParseException(String.format("Unknown Key: %s in Conversion with value %s", entry.getKey(), element));
 			}
 		}
-
 		return out;
+	}
+
+	private static boolean isInList(String s, String ... names) {
+		for (String n: names) {
+			if (n.equalsIgnoreCase(s)) return true;
+		}
+		return false;
 	}
 
 	private static JsonElement getElementWithMultipleNames(JsonObject o, String ... names) throws JsonParseException {
