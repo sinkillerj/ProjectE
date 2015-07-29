@@ -3,6 +3,7 @@ package mapeper.projecte.neirecipecollector.commands;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -31,13 +32,22 @@ public class CollectSubCommand implements ISubCommand
 	{
 		return "collect";
 	}
+	Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o)(\\=|\\*)(\\d+)$");
+	Pattern overwriteOrMultiplyPatternWithoutOperator = Pattern.compile("^s(\\d+|o)$");
 
+	List<String> otherOptions = Lists.newArrayList("skip=", "oredict", "some", "log", "unlocal", "fulllist", "so", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9");
 	@Override
 	public List<String> addTabCompletionOptions(List<String> params)
 	{
 		if (params.size() == 1)
 		{
 			return LowerCasePrefixPredicate.autocompletionOptions(NEIRecipeCollector.getInstance().getCraftingHandlersForName().keySet(), params.get(0));
+		} else if (params.size() > 1) {
+			String lastParam = params.get(params.size() - 1);
+			if (overwriteOrMultiplyPatternWithoutOperator.matcher(lastParam).matches()) {
+				return Lists.newArrayList(lastParam + "*", lastParam + "=");
+			}
+			return LowerCasePrefixPredicate.autocompletionOptions(otherOptions, lastParam);
 		}
 		return null;
 	}
@@ -93,7 +103,7 @@ public class CollectSubCommand implements ISubCommand
 
 		Set<Integer> skip = Sets.newHashSet();
 
-		Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o)(\\=|\\*)(\\d+)$");
+
 
 		for (String s: params.subList(1, params.size())) {
 			Matcher stacksizeOperandMatcher = overwriteOrMultiplyPattern.matcher(s);
