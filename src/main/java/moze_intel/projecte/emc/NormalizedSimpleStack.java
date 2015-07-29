@@ -216,7 +216,7 @@ public abstract class NormalizedSimpleStack {
 		int pipeIndex = serializedItem.lastIndexOf('|');
 		if (pipeIndex < 0)
 		{
-			return null;
+			throw new IllegalArgumentException(String.format("Cannot parse '%s' as itemstack. Missing | to separate metadata.", serializedItem));
 		}
 		String itemName = serializedItem.substring(0, pipeIndex);
 		String itemDamageString = serializedItem.substring(pipeIndex + 1);
