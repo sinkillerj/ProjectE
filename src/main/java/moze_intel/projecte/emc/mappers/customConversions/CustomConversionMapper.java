@@ -53,6 +53,8 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
+		tryToWriteDefaultFiles();
+
 		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory()) {
 			for (File f: customConversionFolder.listFiles()) {
@@ -76,7 +78,6 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
 			}
 		}
-		tryToWriteDefaultFiles();
 	}
 
 	private static File getCustomConversionFolder()
