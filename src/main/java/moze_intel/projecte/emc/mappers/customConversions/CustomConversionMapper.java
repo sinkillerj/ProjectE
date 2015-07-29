@@ -160,7 +160,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			if (fakes.containsKey(fakeIdentifier)) {
 				return fakes.get(fakeIdentifier);
 			} else {
-				NormalizedSimpleStack nssFake = NormalizedSimpleStack.createFake();
+				NormalizedSimpleStack nssFake = NormalizedSimpleStack.createFake(fakeIdentifier);
 				fakes.put(fakeIdentifier, nssFake);
 				return nssFake;
 			}
