@@ -99,7 +99,6 @@ public class PECore
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
-		ManualPageHandler.init();
 	}
 	
 	@EventHandler
@@ -115,6 +114,7 @@ public class PECore
 	{
 		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.readUserData();
+		ManualPageHandler.init();
 	}
 	
 	@Mod.EventHandler

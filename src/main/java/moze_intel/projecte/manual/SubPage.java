@@ -2,17 +2,23 @@ package moze_intel.projecte.manual;
 
 import java.util.List;
 
+import net.minecraft.util.StatCollector;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class SubPage extends AbstractPage {
 	
 	private final List<String> splitText;
 	private final String bodyText;
-	//To add header simply add it in constructor
-	protected SubPage(List<String> bodyTexts, PageCategory category) {
+	private final String header;
+	private final int i;
+
+	protected SubPage(List<String> bodyTexts, PageCategory category, String header, int i) {
 		super(category);
 		this.splitText = bodyTexts;
 		this.bodyText = StringUtils.join(bodyTexts, "");
+		this.header = header;
+		this.i = i;
 	}
 	
     @Override
@@ -28,7 +34,8 @@ public class SubPage extends AbstractPage {
 
 	@Override
 	public String getHeaderText() {
-		return "";
+		return StatCollector.translateToLocal(header) + "_" + this.i;
+		
 	}
 
 }

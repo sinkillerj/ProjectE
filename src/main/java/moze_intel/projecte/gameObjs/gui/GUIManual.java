@@ -43,7 +43,7 @@ public class GUIManual extends GuiScreen
 	
 	public static List<String> bodyTexts = Lists.newArrayList();
 	public static int textWidth = 220;
-	public static int textHeight = 180 - 43;
+	public static int textHeight = 180 - 43 - 10;
 	public static int textYOffset = 10;
 
 	@Override
@@ -95,7 +95,7 @@ public class GUIManual extends GuiScreen
 	    		
 	    		bodyTexts = ManualPageHandler.pages.get(currentPageID).getBodyList();
 			
-				for(int i = 0; i < bodyTexts.size() || i < Math.floor(GUIManual.textHeight/GUIManual.textYOffset); i++)
+				for(int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.textHeight/GUIManual.textYOffset); i++)
 				{
 					this.fontRendererObj.drawString(bodyTexts.get(i), k + 18, 43 + textYOffset * i, Color.black.getRGB());
 					

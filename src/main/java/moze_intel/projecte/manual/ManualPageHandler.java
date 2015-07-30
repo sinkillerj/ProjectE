@@ -127,14 +127,14 @@ public class ManualPageHandler
 	{
 		AbstractPage page = AbstractPage.createItemPage(item, category);
 		categoryMap.get(category).add(page);
-		checkSubPages(page);
+		checkSubPages(page, category, new ItemStack(item).getUnlocalizedName() + ".name");
 	}
 	
 	private static void addItem(Block block, PageCategory category)
 	{
 		AbstractPage page = AbstractPage.createItemPage(block, category);
 		categoryMap.get(category).add(page);
-		checkSubPages(page);
+		checkSubPages(page, category, new ItemStack(block).getUnlocalizedName() + ".name");
 	}
 	
 	private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
@@ -143,7 +143,7 @@ public class ManualPageHandler
 		{
 			AbstractPage page = AbstractPage.createItemPage(is, category);
 			categoryMap.get(category).add(page);
-			checkSubPages(page);
+			checkSubPages(page, category, is.getUnlocalizedName() + ".name");
 		}
 	}
 	
@@ -151,31 +151,32 @@ public class ManualPageHandler
 	{
 		AbstractPage page = AbstractPage.createTextPage(identifier, category);
 		categoryMap.get(category).add(page);
-		checkSubPages(page);
+		checkSubPages(page, category, "pe.manual." + identifier + ".header");
 	}
 	
 	private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
 	{
 		AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
 		categoryMap.get(category).add(page);
-		checkSubPages(page);
+		checkSubPages(page, category, identifier);
 	}
-	private static void addSubPage(List<String> text, PageCategory category)
+	private static void addSubPage(List<String> text, PageCategory category, String identifier, int i)
 	{
-		AbstractPage page = AbstractPage.createSubPage(text, PageCategory.NONE);
+		AbstractPage page = AbstractPage.createSubPage(text, category, identifier, i);
 		categoryMap.get(category).add(page);
 	}
 
-	private static void checkSubPages(AbstractPage page)
+	private static void checkSubPages(AbstractPage page, PageCategory category, String identifier)
 	{
 		int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.textYOffset)/GUIManual.textHeight);
-		
-		if(neededPages>1)
+		int k = 0;
+		System.out.println(page.getHeaderText() + ":" + neededPages);
+		if(neededPages>0)
 		{
 			List<List<String>> parts = chopped(page.getBodyList(), (int) Math.floor(GUIManual.textHeight/GUIManual.textYOffset));
-			for(int i = 1; i<neededPages; i++)
+			for(int i = 1; i<=neededPages; i++)
 			{
-				addSubPage(parts.get(i), PageCategory.NONE);
+				addSubPage(parts.get(i), category, identifier, k++);
 			}
 		}
 	}

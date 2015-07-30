@@ -57,8 +57,8 @@ public abstract class AbstractPage
 	{
 		return new ImagePage(header, imageLocation, category);
 	}
-	public static AbstractPage createSubPage(List<String> texts, PageCategory category)
+	public static AbstractPage createSubPage(List<String> texts, PageCategory category, String identifier, int i)
 	{
-		return new SubPage(texts, category);
+		return new SubPage(texts, category, identifier, i);
 	}
 }
