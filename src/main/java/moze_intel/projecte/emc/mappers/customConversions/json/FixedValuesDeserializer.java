@@ -7,8 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
@@ -21,7 +23,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 
 		fixed.setValueBefore = parseSetValueMapFromObject(o, "before");
 		fixed.setValueAfter = parseSetValueMapFromObject(o, "after");
-		fixed.conversion = context.deserialize(o.getAsJsonArray("conversion"), CustomConversion[].class);
+		fixed.conversion = context.deserialize(o.getAsJsonArray("conversion"), new TypeToken<List<CustomConversion>>(){}.getType());
 		return fixed;
 	}
 

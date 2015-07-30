@@ -1,7 +1,9 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
+import java.util.List;
+
 public class ConversionGroup
 {
 	public String comment;
-	public CustomConversion[] conversions;
+	public List<CustomConversion> conversions;
 }

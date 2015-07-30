@@ -9,6 +9,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFi
 import org.junit.Test;
 
 import java.io.StringReader;
+import java.util.List;
 
 public class CustomConversionMapperTest
 {
@@ -39,7 +40,7 @@ public class CustomConversionMapperTest
 		ConversionGroup group = f.groups.get("groupa");
 		assertNotNull(group);
 		assertEquals("Group contains specific comment", group.comment, "A conversion group for something");
-		assertEquals(0, group.conversions.length);
+		assertEquals(0, group.conversions.size());
 	}
 
 	@Test
@@ -62,10 +63,10 @@ public class CustomConversionMapperTest
 		assertTrue("Map contains key for group", f.groups.containsKey("groupa"));
 		ConversionGroup group = f.groups.get("groupa");
 		assertNotNull(group);
-		assertEquals(3, group.conversions.length);
-		CustomConversion[] conversions = group.conversions;
+		assertEquals(3, group.conversions.size());
+		List<CustomConversion> conversions = group.conversions;
 		{
-			CustomConversion conversion = conversions[0];
+			CustomConversion conversion = conversions.get(0);
 			assertEquals("outA", conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
@@ -74,7 +75,7 @@ public class CustomConversionMapperTest
 			assertEquals(3, (int)conversion.ingredients.get("ing3"));
 		}
 		{
-			CustomConversion conversion = conversions[1];
+			CustomConversion conversion = conversions.get(1);
 			assertEquals("outB", conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
@@ -83,7 +84,7 @@ public class CustomConversionMapperTest
 			assertEquals(1, (int)conversion.ingredients.get("ing3"));
 		}
 		{
-			CustomConversion conversion = conversions[2];
+			CustomConversion conversion = conversions.get(2);
 			assertEquals("outC", conversion.output);
 			assertEquals(3, conversion.count);
 			assertEquals(1, conversion.ingredients.size());
@@ -127,8 +128,8 @@ public class CustomConversionMapperTest
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
 		assertNotNull(f.values.conversion);
-		assertEquals(1, f.values.conversion.length);
-		CustomConversion conversion = f.values.conversion[0];
+		assertEquals(1, f.values.conversion.size());
+		CustomConversion conversion = f.values.conversion.get(0);
 		assertEquals("outA", conversion.output);
 		assertEquals(1, conversion.count);
 		assertEquals(3, conversion.ingredients.size());
