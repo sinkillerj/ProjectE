@@ -18,6 +18,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.io.IOUtils;
 
@@ -155,15 +157,24 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	{
 		if (s.startsWith("OD|")) {
 			return NormalizedSimpleStack.forOreDictionary(s.substring(3));
-		} else if (s.startsWith("FAKE|")) {
+		} else if (s.startsWith("FAKE|"))
+		{
 			String fakeIdentifier = s.substring(5);
-			if (fakes.containsKey(fakeIdentifier)) {
+			if (fakes.containsKey(fakeIdentifier))
+			{
 				return fakes.get(fakeIdentifier);
-			} else {
+			}
+			else
+			{
 				NormalizedSimpleStack nssFake = NormalizedSimpleStack.createFake(fakeIdentifier);
 				fakes.put(fakeIdentifier, nssFake);
 				return nssFake;
 			}
+		} else if (s.startsWith("FLUID|")) {
+			String fluidName = s.substring("FLUID|".length());
+			Fluid fluid = FluidRegistry.getFluid(fluidName);
+			if (fluid == null) return null;
+			return NormalizedSimpleStack.getFor(fluid);
 		} else {
 			return NormalizedSimpleStack.fromSerializedItem(s);
 		}
