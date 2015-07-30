@@ -12,7 +12,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -99,6 +101,9 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 				String itemName = Item.itemRegistry.getNameForObject(itemObject);
 				if (itemName != null)
 				{
+					if (((NormalizedSimpleStack.NSSItem) stack).damage == OreDictionary.WILDCARD_VALUE) {
+						return String.format("%s|*", itemName);
+					}
 					return String.format("%s|%d", itemName, item.damage);
 				}
 			}

@@ -236,10 +236,19 @@ public abstract class NormalizedSimpleStack {
 		String itemName = serializedItem.substring(0, pipeIndex);
 		String itemDamageString = serializedItem.substring(pipeIndex + 1);
 		int itemDamage;
-		try {
-			itemDamage = Integer.parseInt(itemDamageString);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException(String.format("Could not parse '%s' to metadata-integer", itemDamageString), e);
+		if (itemDamageString.equals("*"))
+		{
+			itemDamage = OreDictionary.WILDCARD_VALUE;
+		}
+		else
+		{
+			try
+			{
+				itemDamage = Integer.parseInt(itemDamageString);
+			} catch (NumberFormatException e)
+			{
+				throw new IllegalArgumentException(String.format("Could not parse '%s' to metadata-integer", itemDamageString), e);
+			}
 		}
 
 		Object itemObject = Item.itemRegistry.getObject(itemName);
