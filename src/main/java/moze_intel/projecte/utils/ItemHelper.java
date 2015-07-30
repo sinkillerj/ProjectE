@@ -511,6 +511,11 @@ public final class ItemHelper
 		return new ItemStack(state.getBlock(), stackSize, state.getBlock().getMetaFromState(state));
 	}
 
+	public static ItemStack stateToDroppedStack(IBlockState state, int stackSize)
+	{
+		return new ItemStack(state.getBlock(), stackSize, state.getBlock().damageDropped(state));
+	}
+
 	/**
 	 * Takes an array of ItemStacks and turns it into an NBTTaglist.
 	 */

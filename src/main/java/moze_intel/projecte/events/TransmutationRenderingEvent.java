@@ -79,13 +79,9 @@ public class TransmutationRenderingEvent
 		World world = player.worldObj;
 		ItemStack stack = player.getHeldItem();
 		
-		if (stack == null || stack.getItem() != ObjHandler.philosStone)
+		if (stack == null || stack.getItem() != ObjHandler.philosStone || !stack.hasTagCompound())
 		{
-			if (transmutationResult != null)
-			{
-				transmutationResult = null;
-			}
-			
+			transmutationResult = null;
 			return;
 		}
 		

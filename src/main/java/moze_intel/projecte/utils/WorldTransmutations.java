@@ -1,26 +1,18 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockNewLeaf;
-import net.minecraft.block.BlockNewLog;
-import net.minecraft.block.BlockOldLeaf;
-import net.minecraft.block.BlockOldLog;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.block.BlockSapling;
+import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public final class WorldTransmutations
@@ -40,8 +32,12 @@ public final class WorldTransmutations
 		registerDefault(Blocks.ice, Blocks.water, null);
 		registerDefault(Blocks.lava, Blocks.obsidian, null);
 		registerDefault(Blocks.obsidian, Blocks.lava, null);
-		registerDefault(Blocks.melon_block, Blocks.pumpkin, null);
-		registerDefault(Blocks.pumpkin, Blocks.melon_block, null);
+		register(Blocks.melon_block.getDefaultState(), Blocks.pumpkin.getDefaultState().withProperty(BlockPumpkin.FACING, EnumFacing.SOUTH), null);
+
+		for (EnumFacing e : EnumFacing.HORIZONTALS)
+		{
+			register(Blocks.pumpkin.getDefaultState().withProperty(BlockPumpkin.FACING, e), Blocks.melon_block.getDefaultState(), null);
+		}
 
 		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
 				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE),

@@ -31,6 +31,11 @@ minecraft {
 }
 
 repositories {
+	maven { //MinecraftForge
+		name "MinecraftForge Maven"
+		url "http://files.minecraftforge.net/maven/"
+	}
+
     maven { //Waila Repo
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
@@ -62,10 +67,10 @@ dependencies {
 
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
-	
-	// These require the newer version of forge
-    //compile "codechicken:CodeChickenCore:1.7.10-1.0.7.46:dev"
-    //compile "codechicken:NotEnoughItems:1.7.10-1.0.5.111:dev"
+
+    compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
+    compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
+    compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
 }
 
 processResources

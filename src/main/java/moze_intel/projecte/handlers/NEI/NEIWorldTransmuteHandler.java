@@ -1,27 +1,26 @@
 package moze_intel.projecte.handlers.NEI;
 
-import java.awt.Rectangle;
-import java.util.List;
-import java.util.Map.Entry;
-
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
-import codechicken.nei.api.DefaultOverlayRenderer;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.PhilosophersStone;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.awt.Rectangle;
+import java.util.Map.Entry;
 
 public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
 
@@ -42,37 +41,53 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
 	{
 		private IBlockState input;
 		private IBlockState output;
-		public boolean sneaking;
-		
+		private boolean sneaking;
+
 		public CachedTransmutationRecipe(IBlockState in, boolean sneak)
 		{
 			input = in;
 			sneaking = sneak;
 			output = WorldTransmutations.getWorldTransmutation(in, sneaking);
-			
 		}
 		
 		@Override
-		public PositionedStack getIngredient() {
-			ItemStack is = ItemHelper.stateToStack(input, 1);
-			return new PositionedStack(is,22,23);
-			
+		public PositionedStack getIngredient()
+		{
+			return new PositionedStack(getStack(input), 22, 23);
 		}
 		
-		
-		
 		@Override
-		public PositionedStack getResult() {
-			ItemStack result = ItemHelper.stateToStack(output, 1);
-			return new PositionedStack(result,128,23);
-			
+		public PositionedStack getResult()
+		{
+			return new PositionedStack(getStack(output), 128, 23);
 		}
 		
 	    @Override
 	    public PositionedStack getOtherStack(){
 	    	return new PositionedStack(new ItemStack(ObjHandler.philosStone), 60, 23);
 	    }
-		
+
+		private ItemStack getStack(IBlockState state)
+		{
+			Fluid f = FluidRegistry.lookupFluidForBlock(state.getBlock());
+			if (f != null)
+			{
+				for (FluidContainerRegistry.FluidContainerData fd : FluidContainerRegistry.getRegisteredFluidContainerData())
+				{
+					if (fd.fluid.getFluid() == f)
+					{
+						// Cheat, find first container for this fluid
+						return fd.filledContainer.copy().setStackDisplayName(f.getLocalizedName(fd.fluid));
+					}
+				}
+
+				// If no containers are registered
+				return new ItemStack(Blocks.barrier).setStackDisplayName(f.getLocalizedName(new FluidStack(f, 1000)));
+			} else
+			{
+				return ItemHelper.stateToDroppedStack(state, 1);
+			}
+		}
 	}
 	
     @Override
@@ -98,12 +113,15 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
     @Override
     public void loadCraftingRecipes(ItemStack result) {
         for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry: WorldTransmutations.getWorldTransmutations().entrySet()) {
-           	if (NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(entry.getValue().getLeft(), 1), result))
+           	IBlockState resultState = entry.getValue().getLeft();
+			IBlockState altResultState = entry.getValue().getRight();
+
+			if (resultState != null && NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(resultState, 1), result))
 			{
-				arecipes.add(new CachedTransmutationRecipe(entry.getKey(),false));
-           	} else if (NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(entry.getValue().getRight(), 1), result))
+				arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
+           	} else if (altResultState != null && NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(altResultState, 1), result))
 			{
-				arecipes.add(new CachedTransmutationRecipe(entry.getKey(),true));
+				arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));
            	}
         }
     }
@@ -125,21 +143,21 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
     }
     
     @Override
-	public void drawForeground( int recipe )
+	public void drawForeground(int recipe)
 	{
-			String sneak = StatCollector.translateToLocal("key.sneak");
-			
-			CachedTransmutationRecipe r = (CachedTransmutationRecipe) arecipes.get(recipe);
-			
-			FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-			if(r.sneaking)fr.drawString( sneak, 70, 40,0);
-
+		CachedTransmutationRecipe r = (CachedTransmutationRecipe) arecipes.get(recipe);
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+		if (r.sneaking)
+		{
+			fr.drawString(StatCollector.translateToLocal("key.sneak"), 70, 40,0);
+		}
 	}
     
 
     @Override
-    public void loadTransferRects(){
-    	this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83,23,25,10), id, new Object[0]));
+    public void loadTransferRects()
+	{
+    	this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83,23,25,10), id));
     }
 	
 }
