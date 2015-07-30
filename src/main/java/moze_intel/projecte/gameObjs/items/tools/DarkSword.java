@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

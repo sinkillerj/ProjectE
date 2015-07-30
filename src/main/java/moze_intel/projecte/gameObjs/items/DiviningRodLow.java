@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;

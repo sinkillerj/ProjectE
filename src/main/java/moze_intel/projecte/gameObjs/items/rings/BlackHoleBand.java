@@ -3,15 +3,18 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import moze_intel.projecte.api.IAlchBagItem;
-import moze_intel.projecte.api.IAlchChestItem;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IAlchBagItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+
+import java.util.List;
+
+import cpw.mods.fml.common.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -23,8 +26,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
@@ -160,8 +161,9 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	public void updateInAlchChest(World world, int x, int y, int z, ItemStack stack)
 	{
+		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(x, y, z));
 		if (stack.getItemDamage() == 1)
 		{
 			AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(tile.xCoord - 5, tile.yCoord - 5, tile.zCoord - 5, tile.xCoord + 5, tile.yCoord + 5, tile.zCoord + 5);

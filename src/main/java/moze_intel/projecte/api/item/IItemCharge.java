@@ -1,10 +1,10 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Used by items that have a "charge".
+ * This interface specifies items that have a charge that changes when the respective keybinding is activated (default V)
  */
 public interface IItemCharge 
 {
@@ -16,9 +16,9 @@ public interface IItemCharge
 	byte getCharge(ItemStack stack);
 
 	/**
-	 * Called serverside when the player presses the change mode button (V and Shift-V by default)
+	 * Called serverside when the player presses the charge keybinding; reading sneaking state is up to you
 	 * @param player The player
-	 * @param stack The item whose mode we are changing
+	 * @param stack The item being charged
 	 */
 	void changeCharge(EntityPlayer player, ItemStack stack);
 }

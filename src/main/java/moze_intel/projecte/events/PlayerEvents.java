@@ -9,6 +9,7 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -68,6 +69,11 @@ public class PlayerEvents
 	{
 		if (evt.entity instanceof EntityPlayer)
 		{
+			if (!evt.entity.worldObj.isRemote)
+			{
+				TransmutationOffline.clear(evt.entity.getUniqueID());
+				PELogger.logDebug("Clearing offline data cache in preparation to load online data");
+			}
 			TransmutationProps.register(((EntityPlayer) evt.entity));
 			AlchBagProps.register(((EntityPlayer) evt.entity));
 		}
