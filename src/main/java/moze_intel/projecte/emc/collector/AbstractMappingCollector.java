@@ -8,17 +8,8 @@ import java.util.Map;
 
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>> implements IMappingCollector<T, V>
 {
-	protected IValueArithmetic<V> arithmetic;
-	public AbstractMappingCollector(IValueArithmetic<V> arithmetic) {
-		this.arithmetic = arithmetic;
-	}
-
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		addConversion(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
-	}
-
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
-		addConversion(outnumber, output, ingredients, arithmetic.getZero());
+		addConversion(outnumber, output, listToMapOfCounts(ingredients));
 	}
 
 	protected Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
@@ -42,9 +33,5 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>> imple
 
 	public abstract void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
 
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
-		this.addConversion(outnumber, output, listToMapOfCounts(ingredients), baseValueForConversion);
-	}
-
-	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion);
+	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
 }

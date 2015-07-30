@@ -1,12 +1,12 @@
 package moze_intel.projecte.emc.valuetranslators;
 
+import moze_intel.projecte.emc.IValueArithmetic;
 import moze_intel.projecte.emc.IValueGenerator;
 
 import java.util.Map;
 
 public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT extends Comparable<OUT>> implements IValueGenerator<T, OUT>
 {
-
 	protected IValueGenerator<T, IN> inner;
 	public AbstractTranslator(IValueGenerator<T, IN> inner)
 	{
@@ -22,21 +22,9 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	}
 
 	@Override
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, OUT baseValueForConversion)
-	{
-		inner.addConversion(outnumber, output, ingredientsWithAmount, translateValue(baseValueForConversion));
-	}
-
-	@Override
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients)
 	{
 		inner.addConversion(outnumber, output, ingredients);
-	}
-
-	@Override
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, OUT baseValueForConversion)
-	{
-		inner.addConversion(outnumber,output, ingredients, translateValue(baseValueForConversion));
 	}
 
 	@Override

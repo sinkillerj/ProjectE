@@ -14,6 +14,11 @@ import java.util.Map;
 public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMappingCollector<T,V> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
+	protected IValueArithmetic<V> arithmetic;
+	public GraphMapper(IValueArithmetic<V> arithmetic) {
+		this.arithmetic = arithmetic;
+	}
+
 	protected static void debugFormat(String format, Object... args) {
 		if (DEBUG_GRAPHMAPPER)
 			PELogger.logInfo(String.format(format, args));
@@ -29,10 +34,6 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
 	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
 	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
-
-	public GraphMapper(IValueArithmetic<V> arithmetic) {
-		super(arithmetic);
-	}
 
 	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
 		List<V> list;
@@ -72,7 +73,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		}
 	}
 
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
@@ -82,7 +83,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
-		conversion.value = baseValueForConversion;
+		conversion.value = arithmetic.getZero();
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
