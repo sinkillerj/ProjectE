@@ -57,7 +57,10 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
-		tryToWriteDefaultFiles();
+		if (config.getBoolean("writeDefaultFiles", "", true, "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present."))
+		{
+			tryToWriteDefaultFiles();
+		}
 
 		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory()) {
