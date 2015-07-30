@@ -34,7 +34,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 				out.output = element.getAsString();
 			} else if (isInList(entry.getKey(), "ingredients", "ingr", "i")) {
 				if (foundIngredients) {
-					throw new JsonParseException("Multiple values for output field");
+					throw new JsonParseException("Multiple values for ingredient field");
 				}
 				foundIngredients = true;
 				if (element.isJsonArray()) {
