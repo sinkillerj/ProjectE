@@ -58,6 +58,8 @@ If you set a value for a fake item the value will only be used in conversions th
       Example:
       "minecraft:dirt|0": 255, "minecraft:sand|0": 0
       will set the EMC value of dirt to 255 and remove the EMC value for Sand.
+
+      You can use the special value "FREE" to make something free in conversions. (Like Water)
        */
     },
     "after": {
@@ -66,7 +68,14 @@ If you set a value for a fake item the value will only be used in conversions th
       */
     },
     "conversion": [
-      /* List of Conversions */
+      /* List of Conversions
+
+      Define special conversions here, that will overwrite all other conversions for an item.
+      Use this if you want an item to always have a value dependent on other item values.
+
+      Here you can use the "evalOD":true option for the conversion to 'unwrap' an OreDictionary name.
+      It will then add the same setValueConversion to all the items in the specified oredict list.
+      */
     ]
   }
 }
