@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc;
+package moze_intel.projecte.emc.collector;
 
 import java.util.Map;
 

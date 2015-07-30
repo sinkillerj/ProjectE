@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import net.minecraft.item.ItemStack;

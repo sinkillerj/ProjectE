@@ -2,6 +2,8 @@ package moze_intel.projecte.emc;
 
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.emc.collector.AbstractMappingCollector;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;

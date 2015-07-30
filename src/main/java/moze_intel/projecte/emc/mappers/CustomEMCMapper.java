@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.common.config.Configuration;

@@ -1,11 +1,14 @@
-package moze_intel.projecte.emc;
+package moze_intel.projecte.emc.collector;
+
+import moze_intel.projecte.emc.IValueArithmetic;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>> implements IMappingCollector<T, V>
 {
-	IValueArithmetic<V> arithmetic;
+	protected IValueArithmetic<V> arithmetic;
 	public AbstractMappingCollector(IValueArithmetic<V> arithmetic) {
 		this.arithmetic = arithmetic;
 	}

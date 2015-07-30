@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;

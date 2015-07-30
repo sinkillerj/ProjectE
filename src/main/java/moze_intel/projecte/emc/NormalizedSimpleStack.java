@@ -3,6 +3,7 @@ package moze_intel.projecte.emc;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
