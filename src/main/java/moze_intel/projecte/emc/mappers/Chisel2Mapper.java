@@ -73,6 +73,5 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 			mapper.addConversion(1, stacks.get(0), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(i)}));
 			mapper.addConversion(1, stacks.get(i), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(0)}));
 		}
-		PELogger.logInfo(String.format("Added %d Blocks for CarvingGroup %s", stacks.size(), group.getName()));
 	}
 }
