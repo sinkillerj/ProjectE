@@ -12,7 +12,7 @@ public class CustomConversion
 	public int count = 1;
 	public String output;
 	public Map<String, Integer> ingredients;
-	public boolean evalOD = false;
+	public transient boolean evalOD = false;
 
 	public static CustomConversion getFor(int count, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredients) {
 		CustomConversion conversion = new CustomConversion();
