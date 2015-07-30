@@ -4,13 +4,12 @@ package moze_intel.projecte.emc;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.PELogger;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueGenerator<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMappingCollector<T,V> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected static void debugFormat(String format, Object... args) {
@@ -29,9 +28,8 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
 	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
-	IValueArithmetic<V> arithmetic;
 	public GraphMapper(IValueArithmetic<V> arithmetic) {
-		this.arithmetic = arithmetic;
+		super(arithmetic);
 	}
 
 	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
@@ -63,10 +61,6 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
 	}
 
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		addConversion(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
-	}
-
 	protected void addConversionToIngredientUsages(Conversion conversion) {
 		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
 			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
@@ -93,27 +87,6 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		addConversionToIngredientUsages(conversion);
 	}
 
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
-		addConversion(outnumber, output, ingredients, arithmetic.getZero());
-	}
-
-	protected Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
-		Map<T, Integer> map = new HashMap<T, Integer>();
-		for (T ingredient : iterable) {
-			if (map.containsKey(ingredient)) {
-				int amount = map.get(ingredient);
-				map.put(ingredient, amount + 1);
-			} else {
-				map.put(ingredient, 1);
-			}
-		}
-		return map;
-	}
-
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
-		this.addConversion(outnumber, output, listToMapOfCounts(ingredients), baseValueForConversion);
-	}
-
 	@Override
 	public void setValueBefore(T something, V value) {
 		if (fixValueBeforeInherit.containsKey(something))
@@ -128,11 +101,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		fixValueAfterInherit.put(something, value);
 	}
 
-	@Override
-	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
-	{
-		this.setValueFromConversion(outnumber, something, listToMapOfCounts(ingredients));
-	}
+
 
 	@Override
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
