@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -199,6 +200,11 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
 	{
+		if (!mindStone.hasTagCompound())
+		{
+			mindStone.setTagCompound(new NBTTagCompound());
+		}
+		
 		if (canStore(mindStone))
 		{
 			long l = getStoredXP(mindStone);
