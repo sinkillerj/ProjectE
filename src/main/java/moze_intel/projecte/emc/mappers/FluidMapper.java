@@ -21,14 +21,14 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		mapper.setValue(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/, IMappingCollector.FixedValue.FixAndInherit);
-		mapper.setValue(NormalizedSimpleStack.getFor(FluidRegistry.LAVA), 64, IMappingCollector.FixedValue.FixAndInherit);
+		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.LAVA), 64);
 		Map<String, Integer> fixValue = Maps.newHashMap();
 		fixValue.put("milk", 16);
 		for (Map.Entry<String, Integer> entry : fixValue.entrySet()) {
 			Fluid f = FluidRegistry.getFluid(entry.getKey());
 			if (f != null) {
-				mapper.setValue(NormalizedSimpleStack.getFor(f), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+				mapper.setValueBefore(NormalizedSimpleStack.getFor(f), entry.getValue());
 			}
 		}
 

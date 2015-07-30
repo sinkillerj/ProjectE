@@ -89,7 +89,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 				NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
 				if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 				{
-					mapper.setValue(normStack, entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+					mapper.setValueBefore(normStack, entry.getValue());
 					PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
 				}
 				else

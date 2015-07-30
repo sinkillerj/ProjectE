@@ -26,9 +26,9 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void slabRecipe()
 	{
-		graphMapper.setValue("s", 1, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("redstone", 64, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("glass", 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("s", 1);
+		graphMapper.setValueBefore("redstone", 64);
+		graphMapper.setValueBefore("glass", 1);
 		graphMapper.addConversion(6, "slab", Arrays.asList("s", "s", "s"));
 		graphMapper.addConversion(1, "doubleslab", Arrays.asList("slab", "slab"));
 		graphMapper.addConversion(1, "transferpipe", Arrays.asList("slab", "slab", "slab", "glass", "redstone", "glass", "slab", "slab", "slab"));
@@ -45,8 +45,8 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void nuggetExploits()
 	{
-		graphMapper.setValue("ingot", 2048, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("melon", 16, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("ingot", 2048);
+		graphMapper.setValueBefore("melon", 16);
 		graphMapper.addConversion(9, "nugget", Arrays.asList("ingot"));
 		graphMapper.addConversion(1, "goldmelon", Arrays.asList(
 				"nugget", "nugget", "nugget",
@@ -65,8 +65,8 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void moltenEnderpearl()
 	{
-		graphMapper.setValue("enderpearl", 1024, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("bucket", 768, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("enderpearl", 1024);
+		graphMapper.setValueBefore("bucket", 768);
 
 		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
 		graphMapper.addConversion(250*1000, "moltenEnder", Arrays.asList("enderpearl"));
@@ -84,7 +84,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void reliquaryVials()
 	{
-		graphMapper.setValue("glass", 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("glass", 1);
 
 		graphMapper.addConversion(16, "pane", ImmutableMap.of("glass", 6));
 		graphMapper.addConversion(5, "vial", ImmutableMap.of("pane", 5));
@@ -104,7 +104,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void propagation()
 	{
-		graphMapper.setValue("a", 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a", 1);
 
 		graphMapper.addConversion(2, "ahalf", ImmutableMap.of("a", 1));
 		graphMapper.addConversion(1, "ahalf2", ImmutableMap.of("ahalf", 1));

@@ -13,7 +13,7 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Intege
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		for (Map.Entry<NormalizedSimpleStack,Integer> entry : CustomEMCParser.userValues.entrySet()) {
 			PELogger.logInfo("Adding custom EMC value for " + entry.getKey() + ": " + entry.getValue());
-			mapper.setValue(entry.getKey(), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+			mapper.setValueBefore(entry.getKey(), entry.getValue());
 		}
 	}
 

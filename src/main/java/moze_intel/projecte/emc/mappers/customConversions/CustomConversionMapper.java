@@ -117,14 +117,14 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				if (file.values.setValueBefore != null) {
 					for (Map.Entry<String, Integer> entry : file.values.setValueBefore.entrySet())
 					{
-						mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+						mapper.setValueBefore(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue());
 					}
 				}
 				if (file.values.setValueAfter != null)
 				{
 					for (Map.Entry<String, Integer> entry : file.values.setValueAfter.entrySet())
 					{
-						mapper.setValue(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue(), IMappingCollector.FixedValue.FixAfterInherit);
+						mapper.setValueAfter(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue());
 					}
 				}
 				if (file.values.conversion != null)

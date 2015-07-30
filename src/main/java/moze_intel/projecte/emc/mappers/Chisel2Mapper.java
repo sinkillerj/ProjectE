@@ -46,7 +46,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		for (String name: chiselBlockNames) {
 			Block block = Block.getBlockFromName("chisel:" + name);
 			if (block != null) {
-				mapper.setValue(NormalizedSimpleStack.getFor(block), 1, IMappingCollector.FixedValue.FixAndInherit);
+				mapper.setValueBefore(NormalizedSimpleStack.getFor(block), 1);
 			}
 		}
 

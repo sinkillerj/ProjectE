@@ -40,9 +40,15 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	}
 
 	@Override
-	public void setValue(T something, OUT value, FixedValue type)
+	public void setValueBefore(T something, OUT value)
 	{
-		inner.setValue(something, translateValue(value), type);
+		inner.setValueBefore(something, translateValue(value));
+	}
+
+	@Override
+	public void setValueAfter(T something, OUT value)
+	{
+		inner.setValueAfter(something, translateValue(value));
 	}
 
 	@Override

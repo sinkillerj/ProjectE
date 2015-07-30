@@ -114,39 +114,19 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		this.addConversion(outnumber, output, listToMapOfCounts(ingredients), baseValueForConversion);
 	}
 
-	public void setValue(T something, V value, FixedValue type) {
-		if (something == null) return;
-		switch (type) {
-			case FixAndInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
-				fixValueBeforeInherit.put(something, value);
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Removing fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
-				fixValueAfterInherit.remove(something);
-				break;
-			case FixAndDoNotInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + 0.0);
-				fixValueBeforeInherit.put(something, arithmetic.getZero());
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
-				fixValueAfterInherit.put(something, value);
-				break;
-			case FixAfterInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Removing fixValueBeforeInherit for " + something + " before: " + fixValueBeforeInherit.get(something));
-				fixValueBeforeInherit.remove(something);
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
-				fixValueAfterInherit.put(something, value);
-				break;
-			case SuggestionAndInherit:
-				this.addConversion(1, something, new HashMap<T, Integer>(), value);
-				break;
-		}
+	@Override
+	public void setValueBefore(T something, V value) {
+		if (fixValueBeforeInherit.containsKey(something))
+			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
+		fixValueBeforeInherit.put(something, value);
 	}
 
+	@Override
+	public void setValueAfter(T something, V value) {
+		if (fixValueAfterInherit.containsKey(something))
+			PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
+		fixValueAfterInherit.put(something, value);
+	}
 
 	@Override
 	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
