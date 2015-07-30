@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
@@ -53,6 +54,10 @@ public final class EMCMapper
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
+		if (config.getBoolean("dumpEverythingToFile", "general", false,"Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
+			graphMapper = new DumpToFileCollector(new File(PECore.CONFIG_DIR, "mappingdump.json"), graphMapper);
+		}
+
 		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
 						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
@@ -77,6 +82,7 @@ public final class EMCMapper
 				{
 					if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
 					{
+						DumpToFileCollector.currentGroupName = emcMapper.getName();
 						emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
 						PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
 					}
@@ -86,6 +92,7 @@ public final class EMCMapper
 					e.printStackTrace();
 				}
 			}
+			DumpToFileCollector.currentGroupName = "NSSHelper";
 			NormalizedSimpleStack.addMappings(graphMapper);
 			PELogger.logInfo("Starting to generate Values:");
 
