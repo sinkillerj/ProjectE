@@ -63,9 +63,9 @@ dependencies {
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
 	
-	// These require the newer version of forge
-    //compile "codechicken:CodeChickenCore:1.7.10-1.0.7.46:dev"
-    //compile "codechicken:NotEnoughItems:1.7.10-1.0.5.111:dev"
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.110:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
 }
 
 processResources
