@@ -81,6 +81,7 @@ public abstract class NormalizedSimpleStack {
 	}
 
 	public abstract boolean equals(Object o);
+	public abstract String json();
 
 
 	private static Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
@@ -138,6 +139,17 @@ public abstract class NormalizedSimpleStack {
 		}
 
 		@Override
+		public String json()
+		{
+			Object obj = Item.itemRegistry.getObjectById(id);
+
+			if (obj != null) {
+				return String.format("%s|%s", Item.itemRegistry.getNameForObject(obj),  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+			}
+			throw new IllegalArgumentException("Cannot get json Representation for  " + this.toString());
+		}
+
+		@Override
 		public String toString() {
 			Object obj = Item.itemRegistry.getObjectById(id);
 
@@ -171,6 +183,12 @@ public abstract class NormalizedSimpleStack {
 		}
 
 		@Override
+		public String json()
+		{
+			return "FAKE|" + this.counter + " " + this.description;
+		}
+
+		@Override
 		public String toString() {
 			return "NSSFAKE" + counter + ": " + description;
 		}
@@ -188,6 +206,13 @@ public abstract class NormalizedSimpleStack {
 			}
 			return false;
 		}
+
+		@Override
+		public String json()
+		{
+			return "FLUID|"+this.name;
+		}
+
 		@Override
 		public int hashCode() {
 			return this.name.hashCode();
@@ -219,6 +244,12 @@ public abstract class NormalizedSimpleStack {
 				return this.od.equals(((NSSOreDictionary) o).od);
 			}
 			return false;
+		}
+
+		@Override
+		public String json()
+		{
+			return "OD|" + this.od;
 		}
 
 		@Override

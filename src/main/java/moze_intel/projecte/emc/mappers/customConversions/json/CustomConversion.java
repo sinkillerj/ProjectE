@@ -17,10 +17,10 @@ public class CustomConversion
 	public static CustomConversion getFor(int count, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredients) {
 		CustomConversion conversion = new CustomConversion();
 		conversion.count = count;
-		conversion.output = DumpToFileCollector.nssToJson(output);
+		conversion.output = output.json();
 		conversion.ingredients = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: ingredients.entrySet()) {
-			conversion.ingredients.put(DumpToFileCollector.nssToJson(entry.getKey()), entry.getValue());
+			conversion.ingredients.put(entry.getKey().json(), entry.getValue());
 		}
 		return conversion;
 	}

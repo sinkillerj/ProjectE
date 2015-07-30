@@ -61,7 +61,7 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 		if (something == null) return;
 		if (out.values == null) out.values = new FixedValues();
 		if (out.values.setValueBefore == null) out.values.setValueBefore = Maps.newHashMap();
-		out.values.setValueBefore.put(nssToJson(something), value);
+		out.values.setValueBefore.put(something.json(), value);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 		if (something == null) return;
 		if (out.values == null) out.values = new FixedValues();
 		if (out.values.setValueAfter == null) out.values.setValueAfter = Maps.newHashMap();
-		out.values.setValueAfter.put(nssToJson(something), value);
+		out.values.setValueAfter.put(something.json(), value);
 	}
 
 	@Override
@@ -90,30 +90,5 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 		}
 
 		return inner.generateValues();
-	}
-
-	public static String nssToJson(NormalizedSimpleStack stack) {
-		if (stack instanceof NormalizedSimpleStack.NSSItem) {
-			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem) stack;
-			Object itemObject = Item.itemRegistry.getObjectById(item.id);
-			if (itemObject != null)
-			{
-				String itemName = Item.itemRegistry.getNameForObject(itemObject);
-				if (itemName != null)
-				{
-					if (((NormalizedSimpleStack.NSSItem) stack).damage == OreDictionary.WILDCARD_VALUE) {
-						return String.format("%s|*", itemName);
-					}
-					return String.format("%s|%d", itemName, item.damage);
-				}
-			}
-		} else if (stack instanceof NormalizedSimpleStack.NSSOreDictionary) {
-			return "OD|" + ((NormalizedSimpleStack.NSSOreDictionary) stack).od;
-		} else if (stack instanceof NormalizedSimpleStack.NSSFake) {
-			return "FAKE|" + ((NormalizedSimpleStack.NSSFake) stack).counter + " " + ((NormalizedSimpleStack.NSSFake) stack).description;
-		} else if (stack instanceof NormalizedSimpleStack.NSSFluid) {
-			return "FLUID|" + ((NormalizedSimpleStack.NSSFluid) stack).name;
-		}
-		throw new IllegalArgumentException("No JSON String representation for " + stack);
 	}
 }
