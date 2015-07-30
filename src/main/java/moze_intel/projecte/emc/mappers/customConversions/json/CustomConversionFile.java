@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
+import com.google.common.collect.Maps;
+
 import java.util.Map;
 
 /**
@@ -54,6 +56,6 @@ Valid names for items include:
 public class CustomConversionFile
 {
 	public String comment;
-	public Map<String, ConversionGroup> groups;
-	public FixedValues values;
+	public Map<String, ConversionGroup> groups = Maps.newHashMap();
+	public FixedValues values = new FixedValues();
 }

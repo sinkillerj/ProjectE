@@ -38,8 +38,6 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	{
 		inner.setValueFromConversion(outnumber, something, ingredientsWithAmount);
 		if (something == null || ingredientsWithAmount.containsKey(null)) return;
-		if (out.values == null) out.values = new FixedValues();
-		if (out.values.conversion == null) out.values.conversion = Lists.newArrayList();
 		out.values.conversion.add(CustomConversion.getFor(outnumber, something, ingredientsWithAmount));
 	}
 
@@ -48,7 +46,6 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	{
 		inner.addConversion(outnumber, output, ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) return;
-		if (out.groups == null) out.groups = Maps.newHashMap();
 		if (!out.groups.containsKey(currentGroupName)) out.groups.put(currentGroupName, new ConversionGroup());
 		ConversionGroup group = out.groups.get(currentGroupName);
 		group.conversions.add(CustomConversion.getFor(outnumber, output, ingredientsWithAmount));
@@ -59,8 +56,6 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	{
 		inner.setValueBefore(something, value);
 		if (something == null) return;
-		if (out.values == null) out.values = new FixedValues();
-		if (out.values.setValueBefore == null) out.values.setValueBefore = Maps.newHashMap();
 		out.values.setValueBefore.put(something.json(), value);
 	}
 
@@ -69,8 +64,6 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	{
 		inner.setValueAfter(something, value);
 		if (something == null) return;
-		if (out.values == null) out.values = new FixedValues();
-		if (out.values.setValueAfter == null) out.values.setValueAfter = Maps.newHashMap();
 		out.values.setValueAfter.put(something.json(), value);
 	}
 
