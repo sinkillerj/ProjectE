@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;

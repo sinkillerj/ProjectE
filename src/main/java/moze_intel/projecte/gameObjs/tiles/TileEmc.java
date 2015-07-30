@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.ITileEmc;
+import moze_intel.projecte.api.tile.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.utils.Constants;

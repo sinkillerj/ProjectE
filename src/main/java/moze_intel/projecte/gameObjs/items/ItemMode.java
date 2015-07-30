@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.item.IModeChanger;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IModeChanger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;

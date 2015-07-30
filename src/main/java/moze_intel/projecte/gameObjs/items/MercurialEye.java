@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.IExtraFunction;
+import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;

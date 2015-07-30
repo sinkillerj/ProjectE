@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;

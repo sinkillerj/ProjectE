@@ -1,6 +1,7 @@
 package moze_intel.projecte.events;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
@@ -28,6 +29,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class TransmutationRenderingEvent
 	private double playerY;
 	private double playerZ;
 	private IBlockState transmutationResult;
-	
+
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
 	{
@@ -121,19 +123,16 @@ public class TransmutationRenderingEvent
 	private void drawAll()
 	{
 		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableCull();
 		GlStateManager.disableLighting();
 		GlStateManager.depthMask(false);
 
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 0.35f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer r = tessellator.getWorldRenderer();
-		
-		float colorR = 1.0f;
-		float colorG = 1.0f;
-		float colorB = 1.0f;
 		
 		for (AxisAlignedBB b : renderList)
 		{
@@ -198,5 +197,10 @@ public class TransmutationRenderingEvent
 		AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
 		box = box.offset(-playerX, -playerY, -playerZ);
 		renderList.add(box);
+	}
+
+	private float getPulseProportion()
+	{
+		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}
 }

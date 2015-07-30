@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;

@@ -12,17 +12,18 @@ import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.proxies.CommonProxy;
+import moze_intel.projecte.playerData.TransmutationOffline;
+import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
-import moze_intel.projecte.utils.IMCHandler;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -35,7 +36,6 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -62,8 +62,8 @@ public class PECore
 	@Instance(MODID)
 	public static PECore instance;
 	
-	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.CommonProxy")
-	public static CommonProxy proxy;
+	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
+	public static IProxy proxy;
 
 	public static final List<String> uuids = Lists.newArrayList();
 	
@@ -94,6 +94,8 @@ public class PECore
 
 		FMLCommonHandler.instance().bus().register(new TickEvents());
 		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+
+		proxy.registerClientOnlyEvents();
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();
@@ -155,8 +157,7 @@ public class PECore
 	@Mod.EventHandler
 	public void serverStopping (FMLServerStoppingEvent event)
 	{
-//		IOHandler.saveData();
-//		PELogger.logInfo("Saved transmutation and alchemical bag data.");
+		TransmutationOffline.cleanAll();
 	}
 	
 	@Mod.EventHandler
@@ -174,11 +175,11 @@ public class PECore
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
 	}
-	
+
 	@Mod.EventHandler
 	public void onIMCMessage(FMLInterModComms.IMCEvent event)
 	{
-		for (IMCMessage msg : event.getMessages())
+		for (FMLInterModComms.IMCMessage msg : event.getMessages())
 		{
 			IMCHandler.handleIMC(msg);
 		}

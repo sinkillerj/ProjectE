@@ -1,13 +1,15 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import moze_intel.projecte.api.IAlchBagItem;
-import moze_intel.projecte.api.IAlchChestItem;
-import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.api.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.api.item.IAlchBagItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IPedestalItem;
+
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,8 +18,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-
-import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
@@ -78,9 +78,9 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	public void updateInAlchChest(World world, BlockPos pos, ItemStack stack)
 	{
-		super.updateInAlchChest(tile, stack); // Gem of Eternal Density
-		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(tile, stack);
+		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
+		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(world, pos, stack);
 	}
 }

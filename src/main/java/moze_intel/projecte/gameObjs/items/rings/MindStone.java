@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -201,6 +202,11 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
 	{
+		if (!mindStone.hasTagCompound())
+		{
+			mindStone.setTagCompound(new NBTTagCompound());
+		}
+		
 		if (canStore(mindStone))
 		{
 			long l = getStoredXP(mindStone);

@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;

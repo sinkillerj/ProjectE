@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -18,11 +19,13 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public final class WorldTransmutations
 {
-	private static final HashMap<IBlockState, Pair<IBlockState, IBlockState>> MAP = Maps.newHashMap();
+	private static final Map<IBlockState, Pair<IBlockState, IBlockState>> MAP = Maps.newHashMap();
 
 	static
 	{
@@ -130,6 +133,11 @@ public final class WorldTransmutations
 		}
 
 		return null;
+	}
+
+	public static Map<IBlockState, Pair<IBlockState, IBlockState>> getWorldTransmutations()
+	{
+		return Collections.unmodifiableMap(MAP);
 	}
 
 	public static void register(IBlockState from, IBlockState result, IBlockState altResult)

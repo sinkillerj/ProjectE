@@ -153,6 +153,7 @@ public class TransmutationContainer extends Container
 	@Override
 	public boolean canDragIntoSlot(Slot slot) 
 	{
-		return false;
+		if (slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock||slot instanceof SlotOutput) return false;
+		return true;
 	}
 }

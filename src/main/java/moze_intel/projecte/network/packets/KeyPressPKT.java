@@ -1,10 +1,10 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import moze_intel.projecte.api.IExtraFunction;
-import moze_intel.projecte.api.IItemCharge;
-import moze_intel.projecte.api.IModeChanger;
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;

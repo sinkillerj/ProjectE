@@ -1,4 +1,4 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
@@ -8,21 +8,20 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * Used by items that provide special functionality in an activated DM pedestal.
+ * This interface specifies items that perform a specific function every tick when inside an activated Dark Matter Pedestal
  */
 public interface IPedestalItem {
 
 	String TOOLTIPDISABLED = EnumChatFormatting.RED + StatCollector.translateToLocal("pe.pedestal.item_disabled");
+
 	/***
-	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside.
-	 * @param world
-	 * @param pos
+	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside
 	 */
     void updateInPedestal(World world, BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
-	 * @return Brief string describing item function in pedestal.
+	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
 	List<String> getPedestalDescription();
 }

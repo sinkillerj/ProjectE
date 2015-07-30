@@ -15,11 +15,11 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
@@ -51,7 +52,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy implements IProxy
 {
 	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received
 	// and the wrapped methods are called directly.
@@ -369,6 +370,12 @@ public class ClientProxy extends CommonProxy
 		PlayerRender pr = new PlayerRender();
 		MinecraftForge.EVENT_BUS.register(pr);
 		FMLCommonHandler.instance().bus().register(pr);
+	}
+
+	@Override
+	public EntityPlayer getClientPlayer()
+	{
+		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
 }
 

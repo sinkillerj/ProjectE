@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.IAlchBagItem;
+import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.playerData.AlchemicalBags;

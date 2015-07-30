@@ -24,9 +24,8 @@ public class PregeneratedEMC
 			map.putAll(m);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return false;
 	}
 
 	public static Map<NormalizedSimpleStack, Integer> read(File file) throws FileNotFoundException

@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.IAlchChestItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -210,7 +210,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		{
 			if (stack != null && stack.getItem() instanceof IAlchChestItem)
 			{
-				((IAlchChestItem) stack.getItem()).updateInAlchChest(this, stack);
+				((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, pos, stack);
 			}
 		}
 	}
