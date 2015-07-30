@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
@@ -17,6 +18,7 @@ import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
 import com.google.common.collect.Maps;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.math.Fraction;
@@ -116,6 +118,7 @@ public final class EMCMapper
 			}
 		}
 
+		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
 	}

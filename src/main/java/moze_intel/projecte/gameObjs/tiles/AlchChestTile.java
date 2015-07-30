@@ -1,22 +1,12 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.IAlchChestItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.gameObjs.items.rings.RingToggle;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory
 {
@@ -212,7 +202,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 		{
 			if (stack != null && stack.getItem() instanceof IAlchChestItem)
 			{
-				((IAlchChestItem) stack.getItem()).updateInAlchChest(this, stack);
+				((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, xCoord, yCoord, zCoord, stack);
 			}
 		}
 	}

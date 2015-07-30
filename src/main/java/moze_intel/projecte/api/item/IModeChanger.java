@@ -1,10 +1,10 @@
-package moze_intel.projecte.api;
+package moze_intel.projecte.api.item;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Used by items that have different modes
+ * This interface specifies items that switch between modes when the mode switch keybind is activated (default G)
  */
 public interface IModeChanger 
 {
@@ -16,7 +16,7 @@ public interface IModeChanger
 	byte getMode(ItemStack stack);
 
 	/**
-	 * Called serverside when the player presses change mode (G by default)
+	 * Called serverside when the player presses change mode
 	 * @param player The player pressing the change mode key
 	 * @param stack The stack whose mode we are changing
 	 */

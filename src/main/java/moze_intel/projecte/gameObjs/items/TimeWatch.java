@@ -2,13 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IModeChanger;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
@@ -35,11 +35,12 @@ import net.minecraftforge.fluids.BlockFluidBase;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
 {
-	private static ImmutableSet<String> internalBlacklist = ImmutableSet.of(
+	private static Set<String> internalBlacklist = Sets.newHashSet(
 			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
 			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
 			"com.sci.torcherino.tile.TileTorcherino",
@@ -414,5 +415,10 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 					String.format(StatCollector.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
 		}
 		return list;
+	}
+
+	public static void blacklist(Class<? extends TileEntity> clazz)
+	{
+		internalBlacklist.add(clazz.getName());
 	}
 }

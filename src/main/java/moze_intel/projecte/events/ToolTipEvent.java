@@ -3,7 +3,7 @@ package moze_intel.projecte.events;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIPedestal;

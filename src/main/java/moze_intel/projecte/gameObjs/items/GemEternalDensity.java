@@ -3,13 +3,10 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.IAlchBagItem;
-import moze_intel.projecte.api.IAlchChestItem;
-import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.item.IAlchBagItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -19,6 +16,13 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,9 +36,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
@@ -401,10 +402,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(AlchChestTile tile, ItemStack stack)
+	public void updateInAlchChest(World world, int x, int y, int z, ItemStack stack)
 	{
-		if (!tile.getWorldObj().isRemote && stack.getItemDamage() == 1)
+		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
+			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(x, y, z));
 			condense(stack, tile.getBackingInventoryArray());
 			tile.markDirty();
 		}

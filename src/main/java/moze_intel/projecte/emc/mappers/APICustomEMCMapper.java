@@ -1,19 +1,22 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.api.ProjectEAPI;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer>, ProjectEAPI.IRegisterCustomEMC {
+public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public static APICustomEMCMapper instance = new APICustomEMCMapper();
 	public static final int PRIORITY_MIN_VALUE = 0;
 	public static final int PRIORITY_MAX_VALUE = 512;

@@ -20,6 +20,7 @@ public final class NBTWhitelist
 			return false;
 		}
 
+		s.qnty = 1;
 		s.damage = OreDictionary.WILDCARD_VALUE;
 
 		if (!LIST.contains(s))
