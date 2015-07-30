@@ -70,17 +70,4 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 		}
 		return false;
 	}
-
-	private static JsonElement getElementWithMultipleNames(JsonObject o, String ... names) throws JsonParseException {
-		String found = null;
-		JsonElement out = null;
-		for (String n: names) {
-			if (o.has(n)) {
-				if (found != null) throw new JsonParseException("Field '" + found + "' would be overwritten by '" + n + "'");
-				found = n;
-				out = o.get(found);
-			}
-		}
-		return out;
-	}
 }
