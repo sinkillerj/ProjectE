@@ -154,8 +154,8 @@ public abstract class NormalizedSimpleStack {
 	}
 
 	public static class NSSFake extends NormalizedSimpleStack {
-		private final String description;
-		private final int counter;
+		public final String description;
+		public final int counter;
 		private static int fakeItemCounter = 0;
 		public NSSFake(String description)
 		{
@@ -178,7 +178,7 @@ public abstract class NormalizedSimpleStack {
 
 	public static class NSSFluid extends NormalizedSimpleStack {
 
-		String name;
+		public final String name;
 		private NSSFluid(net.minecraftforge.fluids.Fluid f) {
 			this.name = f.getName();
 		}
