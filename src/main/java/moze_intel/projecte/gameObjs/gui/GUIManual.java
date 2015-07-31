@@ -37,22 +37,25 @@ public class GUIManual extends GuiScreen
 	private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 
 	private final int INDEX_PAGE_ID = -1;
-	private final int CHARACTER_HEIGHT = Math.round(9 / 2.5f);
+	private final int CHARACTER_HEIGHT = Math.round(9);
 	private int currentPageID;
 	private int offset = 3;
 	
 	public static List<String> bodyTexts = Lists.newArrayList();
-	public static int textWidth = 220;
-	public static int textHeight = 180 - 43 - 10;
+	public static int windowWidth = 256;
+	public static int textWidth = 145;
+    public static int pageHeight = 180;
+	public static int textHeight = pageHeight - 43 - 10;
 	public static int textYOffset = 10;
+	public static float guiScaleFactor = 1.5f;
 
 	@Override
 	public void initGui()
 	{
-		int i = (this.width - 256) / 2;
+		int i = (this.width - windowWidth) / 2;
 		
-        this.buttonList.add(new PageTurnButton(0, i + 210, 160, true));
-        this.buttonList.add(new PageTurnButton(1, i + 16, 160, false));
+        this.buttonList.add(new PageTurnButton(0, Math.round((i + 210)*(guiScaleFactor*0.75f)), 160, true));
+        this.buttonList.add(new PageTurnButton(1, Math.round((i + 16)/guiScaleFactor), 160, false));
         
     	String text = StatCollector.translateToLocal("pe.manual.index_button");
     	int width = mc.fontRenderer.getStringWidth(text);
@@ -69,6 +72,7 @@ public class GUIManual extends GuiScreen
 		width = scaledresolution.getScaledWidth();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+
 		if (isViewingIndex())
 		{
 	    	this.mc.getTextureManager().bindTexture(tocTexture);
@@ -77,41 +81,23 @@ public class GUIManual extends GuiScreen
 	    	this.mc.getTextureManager().bindTexture(bookTexture);
 		}
 		
-	    int k = (this.width - 256) / 2;
-	    int pageHeight = 180;
-	    this.drawTexturedModalRect(k, 5, 0, 0, 256, pageHeight);
 
-
+	    GL11.glScalef(guiScaleFactor, 1, guiScaleFactor);
+	    int k = (Math.round(this.width/guiScaleFactor) - windowWidth) / 2;
+	    this.drawTexturedModalRect(k, 5, 0, 0, windowWidth, pageHeight);
+	    GL11.glScalef(1/guiScaleFactor, 1, 1/guiScaleFactor);
+	    
 		if (!isViewingIndex())
 		{
 			AbstractPage currentPage = ManualPageHandler.pages.get(currentPageID);
-			this.fontRendererObj.drawString(currentPage.getHeaderText(), k + 39, 27, 0, false);
-
-			if (currentPage instanceof ImagePage)
-			{
-	    		drawImage(((ImagePage) currentPage).getImageLocation(),(scaledresolution.getScaledWidth() + 256) / 2, 80);
-	    	} else
-			{
-	    		
-	    		bodyTexts = ManualPageHandler.pages.get(currentPageID).getBodyList();
+			AbstractPage nextPage = ManualPageHandler.pages.get(currentPageID+1);
 			
-				for(int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.textHeight/GUIManual.textYOffset); i++)
-				{
-					this.fontRendererObj.drawString(bodyTexts.get(i), k + 18, 43 + textYOffset * i, Color.black.getRGB());
-					
-				}
-				
-				if (currentPage instanceof ItemPage)
-				{
-					ItemPage itemPage = ((ItemPage) currentPage);
-					drawItemStackToGui(mc, itemPage.getItemStack(), k + 19, 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
-					|| ItemHelper.areItemStacksEqual(itemPage.getItemStack(), new ItemStack(ObjHandler.confuseTorch)));
-				}
-			}
-	    } else
+			if(currentPage != null) drawPage(scaledresolution, currentPage, k+40, k+20, 0);
+			if(nextPage != null) drawPage(scaledresolution, nextPage, k+160, k+140, 0);
+		} else
 		{
-	    	this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 39, 27, 0, false);
-	    	drawIndex();
+	    	
+	    	drawIndex(k+40);
 		}
 
 		this.updateButtons();
@@ -128,10 +114,16 @@ public class GUIManual extends GuiScreen
 	{
 		switch (button.id)
 		{
-			case 0: currentPageID++; break;
-			case 1: currentPageID--; break;
+			case 0: 
+				if(currentPageID!=-1)currentPageID+=2; 
+				else currentPageID++;
+				break;
+			case 1: 
+				if(currentPageID!=0)currentPageID-=2; 
+				else currentPageID--;
+				break;
 			case 2: currentPageID = INDEX_PAGE_ID; break;
-			default: currentPageID = button.id - 3;
+			default: currentPageID = button.id - 3 - ((button.id-3)%2);
 		}
     	this.updateButtons();
     }
@@ -147,7 +139,7 @@ public class GUIManual extends GuiScreen
 			{
     			((IndexLinkButton)this.buttonList.get(i)).visible = true;
     		}
-    	} else if (this.currentPageID == ManualPageHandler.pages.size() - 1)
+    	} else if (this.currentPageID >= ManualPageHandler.pages.size() - 2)
 		{
     		((PageTurnButton) this.buttonList.get(0)).visible = false;
     		((PageTurnButton) this.buttonList.get(1)).visible = true;
@@ -192,10 +184,8 @@ public class GUIManual extends GuiScreen
 		{
 			if (visible)
 			{
-				GL11.glScaled(0.4f, 0.4f, 0.4f);
 				drawRect(xPosition, yPosition,(xPosition + width), (yPosition + height), 0);
-				mc.fontRenderer.drawString(displayString, Math.round(xPosition * 2.5f), Math.round(yPosition * 2.5f), 0);
-				GL11.glScaled(2.5f, 2.5f, 2.5f);
+				mc.fontRenderer.drawString(displayString, Math.round(xPosition), Math.round(yPosition), 0);
 			}
 		}
     }    	
@@ -279,24 +269,24 @@ public class GUIManual extends GuiScreen
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	public void drawCategory(String name, int xOffset, int yOffset)
+	public void drawCategory(String name, int xOffset, int yOffset, int x)
 	{
-		GL11.glScalef(0.5F, 0.5F, 1F);
-		mc.fontRenderer.drawString(EnumChatFormatting.UNDERLINE + name, (((this.width - 256) / 2) + xOffset)*2, yOffset * 2, 0);
-		GL11.glScalef(2, 2F, 1F);
+		mc.fontRenderer.drawString(EnumChatFormatting.BOLD + (EnumChatFormatting.UNDERLINE + name), Math.round(x*guiScaleFactor)/2 + xOffset, yOffset, 0);
 	}
 	
-	public void drawIndex()
+	public void drawIndex(int x)
 	{
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), x, 27, 0, false);
     	int xOffset = 30;
     	int yOffset = 0;
     	int yValue = -1;
+    	int widestString = 50;
 
     	for (Entry<PageCategory, List<AbstractPage>> entry : ManualPageHandler.categoryMap.entrySet())
 		{
 			yValue++;
 			yOffset = yValue * CHARACTER_HEIGHT + 40;
-			drawCategory(StatCollector.translateToLocal(entry.getKey().getUnlocalName()), xOffset, yOffset);
+			drawCategory(StatCollector.translateToLocal(entry.getKey().getUnlocalName()), xOffset, yOffset, x);
 			yValue += 1;
 			yOffset = yValue * CHARACTER_HEIGHT + 40;
 
@@ -307,14 +297,16 @@ public class GUIManual extends GuiScreen
 				}
 				yValue++;
 				if (yOffset >= 150) {
-					xOffset += 50;
+					xOffset += widestString;
 					yValue = -1;
 				}
 
 				yOffset = yValue * CHARACTER_HEIGHT + 40;
 				String text = page.getHeaderText();
 				int buttonID = ManualPageHandler.pages.indexOf(page) + offset;
-				buttonList.add(new IndexLinkButton(buttonID, ((this.width - 256) / 2) + xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text) / 2.5f), CHARACTER_HEIGHT, text));
+				int stringWidth = Math.round(mc.fontRenderer.getStringWidth(text));
+				if(stringWidth > widestString) widestString = stringWidth;
+				buttonList.add(new IndexLinkButton(buttonID, Math.round(x*guiScaleFactor)/2 + xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text)), CHARACTER_HEIGHT, text));
 			}
 		}
 	}
@@ -322,5 +314,35 @@ public class GUIManual extends GuiScreen
 	private boolean isViewingIndex()
 	{
 		return currentPageID == INDEX_PAGE_ID;
+	}
+	
+	// Header = k+40, k+160, Image/Text = k+20, k+140
+	public void drawPage(ScaledResolution scaledresolution, AbstractPage page, int headerX, int contentX, int side)
+	{		
+		this.fontRendererObj.drawString(page.getHeaderText(), Math.round(headerX*guiScaleFactor), 27, 0, false);
+		
+		if (page instanceof ImagePage)
+		{
+    		drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX*guiScaleFactor*2), 80);
+    	} else
+		{
+    		
+    		bodyTexts = page.getBodyList();
+		
+			for(int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.textHeight/GUIManual.textYOffset); i++)
+			{
+				this.fontRendererObj.drawString(bodyTexts.get(i), Math.round(contentX*guiScaleFactor), 43 + textYOffset * i, Color.black.getRGB());
+			}
+			
+			if (page instanceof ItemPage)
+			{
+				ItemPage itemPage = ((ItemPage) page);
+				drawItemStackToGui(mc, itemPage.getItemStack(), Math.round(contentX*guiScaleFactor), 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
+				|| ItemHelper.areItemStacksEqual(itemPage.getItemStack(), new ItemStack(ObjHandler.confuseTorch)));
+			}
+
+		}
+		
+		
 	}
 }
