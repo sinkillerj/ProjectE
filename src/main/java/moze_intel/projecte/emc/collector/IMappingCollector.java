@@ -31,7 +31,8 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	/**
 	 * Set a fixed {@code value} for {@code something} before the calculation happens.<br/>
 	 * {@code value} has to be >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable) Free}, which indicates that {@code something} can be used in
-	 * Conversions, but does not add anything to the value of the Conversion-result.
+	 * Conversions, but does not add anything to the value of the Conversion-result.<br/>
+	 * ALL {@code setValueAfter} WILL BE CLEARED!
 	 * @param something The thing that should get the Value.
 	 * @param value The value. >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable)}{@code == true}
 	 */
@@ -39,7 +40,8 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Set a fixed {@code value} for {@code something} after the calculation was done. This value will not be propagated.<br/>
-	 * {@code value} has to be >= 0.
+	 * {@code value} has to be >= 0. <br/>
+	 * THIS WILL BE OVERWRITTEN, IF {@code setValueBefore} IS CALLED!
 	 * @param something The thing that should get the Value.
 	 * @param value The value. >= 0
 	 */

@@ -96,6 +96,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		if (fixValueBeforeInherit.containsKey(something))
 			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
 		fixValueBeforeInherit.put(something, value);
+		fixValueAfterInherit.remove(something);
 	}
 
 	@Override
