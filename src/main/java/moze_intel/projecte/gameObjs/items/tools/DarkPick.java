@@ -57,8 +57,7 @@ public class DarkPick extends PEToolBase
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				Block b = world.getBlockState(mop.getBlockPos()).getBlock();
-				if (ItemHelper.isOre(b))
+				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
 				{
 					tryVeinMine(stack, player, mop);
 				}

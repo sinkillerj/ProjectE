@@ -376,8 +376,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	
 	private void pushToInventories()
 	{
-		EnumFacing iSide = EnumFacing.DOWN;
-		
 		for (EnumFacing dir : EnumFacing.HORIZONTALS)
 		{
 			TileEntity tile = this.worldObj.getTileEntity(pos.offset(dir));
@@ -387,52 +385,49 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				continue;
 			}
 			
-			if (tile != null && tile instanceof ISidedInventory)
+			if (tile instanceof ISidedInventory)
 			{
 				ISidedInventory inv = (ISidedInventory) tile;
 				
-				if (inv != null)
+				int[] slots = inv.getSlotsForFace(dir.getOpposite());
+
+				if (slots.length > 0)
 				{
-					int[] slots = inv.getSlotsForFace(iSide.getOpposite());
-					
-					if (slots.length > 0)
+					for (int j = outputStorage[0]; j < outputStorage[1]; j++)
 					{
-						for (int j = outputStorage[0]; j < outputStorage[1]; j++)
+						ItemStack stack = inventory[j];
+
+						if (stack == null)
 						{
-							ItemStack stack = inventory[j];
-							
-							if (stack == null)
+							continue;
+						}
+
+						for (int k : slots)
+						{
+							if (inv.canInsertItem(k, stack, dir.getOpposite()))
 							{
-								continue;
-							}
-							
-							for (int k : slots)
-							{
-								if (inv.canInsertItem(k, stack, iSide.getOpposite()))
+								ItemStack otherStack = inv.getStackInSlot(k);
+
+								if (otherStack == null)
 								{
-									ItemStack otherStack = inv.getStackInSlot(k);
-									
-									if (otherStack == null)
+									inv.setInventorySlotContents(k, stack);
+									inventory[j] = null;
+									break;
+								}
+								else if (ItemHelper.areItemStacksEqual(stack, otherStack))
+								{
+									int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
+
+									if (stack.stackSize <= remain)
 									{
-										inv.setInventorySlotContents(k, stack);
+										otherStack.stackSize += stack.stackSize;
 										inventory[j] = null;
 										break;
 									}
-									else if (ItemHelper.areItemStacksEqual(stack, otherStack))
+									else
 									{
-										int remain = otherStack.getMaxStackSize() - otherStack.stackSize;
-										
-										if (stack.stackSize <= remain)
-										{
-											otherStack.stackSize += stack.stackSize;
-											inventory[j] = null;
-											break;
-										}
-										else
-										{
-											otherStack.stackSize += remain;
-											inventory[j].stackSize -= remain;
-										}
+										otherStack.stackSize += remain;
+										inventory[j].stackSize -= remain;
 									}
 								}
 							}

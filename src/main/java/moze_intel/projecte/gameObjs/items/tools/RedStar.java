@@ -88,7 +88,8 @@ public class RedStar extends PEToolBase
 			}
 			else if (mop.typeOfHit == MovingObjectType.BLOCK)
 			{
-				Block block = world.getBlockState(mop.getBlockPos()).getBlock();
+				IBlockState state = world.getBlockState(mop.getBlockPos());
+				Block block = state.getBlock();
 
 				if (block instanceof BlockGravel || block instanceof BlockClay)
 				{
@@ -101,7 +102,7 @@ public class RedStar extends PEToolBase
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (ItemHelper.isOre(block))
+				else if (ItemHelper.isOre(state))
 				{
 					if (!ProjectEConfig.pickaxeAoeVeinMining)
 					{
