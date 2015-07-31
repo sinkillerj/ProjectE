@@ -1,9 +1,9 @@
 {
   "comment": "Sets default conversions for metals and alloys.",
   "groups": {
-    "conversiongroupname" : [
+    "conversiongroupname" : {
       /**/
-    ]
+    }
   },
   "values": {
     "before": {
