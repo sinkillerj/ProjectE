@@ -57,13 +57,12 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
 	{
-		if (config.getBoolean("writeDefaultFiles", "", true, "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present."))
-		{
-			tryToWriteDefaultFiles();
-		}
-
 		File customConversionFolder = getCustomConversionFolder();
-		if (customConversionFolder.isDirectory()) {
+		if (customConversionFolder.isDirectory() || customConversionFolder.mkdir()) {
+			if (config.getBoolean("writeDefaultFiles", "", true, "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present."))
+			{
+				tryToWriteDefaultFiles();
+			}
 			for (File f: customConversionFolder.listFiles()) {
 				if (f.isFile() && f.canRead()) {
 					if (f.getName().toLowerCase().endsWith(".json")) {
@@ -81,9 +80,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				}
 			}
 		} else {
-			if (!customConversionFolder.mkdir()) {
-				PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
-			}
+			PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
 		}
 	}
 
