@@ -92,6 +92,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 
 	@Override
 	public void setValueBefore(T something, V value) {
+		if (something == null) return;
 		if (fixValueBeforeInherit.containsKey(something))
 			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
 		fixValueBeforeInherit.put(something, value);
@@ -99,6 +100,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 
 	@Override
 	public void setValueAfter(T something, V value) {
+		if (something == null) return;
 		if (fixValueAfterInherit.containsKey(something))
 			PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
 		fixValueAfterInherit.put(something, value);
