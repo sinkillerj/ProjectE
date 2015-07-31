@@ -17,8 +17,12 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		ZERO = arithmetic.getZero();
 	}
 
+	protected static <K, V extends Comparable<V>> boolean hasSmallerOrEqual(Map<K, V> m, K key, V value) {
+		return (m.containsKey(key) && m.get(key).compareTo(value) <= 0);
+	}
+
 	protected static<K,V extends Comparable<V>> boolean hasSmaller(Map<K,V> m, K key, V value) {
-		return (m.containsKey(key) && value.compareTo(m.get(key)) >= 0);
+		return (m.containsKey(key) && m.get(key).compareTo(value) < 0);
 	}
 
 	public static void setLogFoundExploits(boolean log) {
@@ -71,7 +75,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
 							if (conversionValue.compareTo(ZERO) > 0 || arithmetic.isFree(conversionValue)) {
 								//We could calculate a valid value for the conversion
-								if (!hasSmaller(values, conversion.output, conversionValue)) {
+								if (!hasSmallerOrEqual(values, conversion.output, conversionValue)) {
 									//And there is no smaller value for that conversion output yet
 									if (updateMapWithMinimum(nextValueFor, conversion.output, conversionValue)) {
 										//So we mark that new value to set it in the next iteration.
