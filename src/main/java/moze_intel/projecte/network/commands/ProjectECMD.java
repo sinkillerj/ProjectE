@@ -1,16 +1,8 @@
 package moze_intel.projecte.network.commands;
 
-import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.ChatHelper;
-import moze_intel.projecte.utils.MathUtils;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import moze_intel.projecte.utils.LowerCasePrefixPredicate;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +43,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	{
 		if (params.length == 1)
 		{
-			return Lists.newArrayList(Iterables.filter(commands, new LowerCasePrefixPredicate(params[0])));
+			return LowerCasePrefixPredicate.autocompletionOptions(commands, params[0]);
 		}
 
 		return null;
@@ -140,21 +132,5 @@ public class ProjectECMD extends ProjectEBaseCMD
 			}
 		}
 
-	}
-
-
-	private static class LowerCasePrefixPredicate implements Predicate<String>
-	{
-		private final String prefix;
-		public LowerCasePrefixPredicate(String prefix)
-		{
-			this.prefix = prefix;
-		}
-
-		@Override
-		public boolean apply(String input)
-		{
-			return input.toLowerCase().startsWith(prefix.toLowerCase());
-		}
 	}
 }

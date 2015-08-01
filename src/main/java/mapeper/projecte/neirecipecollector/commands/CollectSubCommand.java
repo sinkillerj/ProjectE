@@ -10,7 +10,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mapeper.projecte.neirecipecollector.ChatUtils;
-import mapeper.projecte.neirecipecollector.LowerCasePrefixPredicate;
+import moze_intel.projecte.utils.LowerCasePrefixPredicate;
 import mapeper.projecte.neirecipecollector.NEIRecipeCollector;
 import mapeper.projecte.neirecipecollector.OreDictSearcher;
 import net.minecraft.command.ICommandSender;

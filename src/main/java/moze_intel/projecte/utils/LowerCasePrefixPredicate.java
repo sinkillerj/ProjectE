@@ -1,4 +1,4 @@
-package mapeper.projecte.neirecipecollector;
+package moze_intel.projecte.utils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
