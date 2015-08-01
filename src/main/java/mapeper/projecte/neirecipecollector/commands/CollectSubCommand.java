@@ -39,10 +39,10 @@ public class CollectSubCommand implements ISubCommand
 	{
 		return "collect";
 	}
-	Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o)(\\=|\\*)(\\d+)$");
-	Pattern overwriteOrMultiplyPatternWithoutOperator = Pattern.compile("^s(\\d+|o)$");
+	Pattern overwriteOrMultiplyPattern = Pattern.compile("^s(\\d+|o|i)(\\=|\\*)(\\d+)$");
+	Pattern overwriteOrMultiplyPatternWithoutOperator = Pattern.compile("^s(\\d+|o|i)$");
 
-	List<String> otherOptions = Lists.newArrayList("skip=", "oredict", "some", "log", "unlocal", "fulllist", "so", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9");
+	List<String> otherOptions = Lists.newArrayList("skip=", "oredict", "some", "log", "unlocal", "fulllist", "si", "so", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9");
 	@Override
 	public List<String> addTabCompletionOptions(List<String> params)
 	{
@@ -69,8 +69,8 @@ public class CollectSubCommand implements ISubCommand
 			ChatUtils.addChatError(sender, "Usage: '%s <IRecipeHandler class name> [options]'", previousCommands);
 			ChatUtils.addChatError(sender, "Options: ");
 			ChatUtils.addChatError(sender, "skip=<a>,<b>,... Skip specific slots");
-			ChatUtils.addChatError(sender, "s<slotnum or o>=<n>   overwrite stacksize of slot in recipe (number from 0 to n or 'o' for output)");
-			ChatUtils.addChatError(sender, "s<slotnum or o>*<n>   multiply stacksize of slot in recipe (number from 0 to n or 'o' for output)");
+			ChatUtils.addChatError(sender, "s<slotnum or o or i>=<n>   overwrite stacksize of slot in recipe (number from 0 to n, 'o' for output or 'i' for all ingredients)");
+			ChatUtils.addChatError(sender, "s<slotnum or o or i>*<n>   multiply stacksize of slot in recipe (number from 0 to n, 'o' for output or 'i' for all ingredients)");
 			ChatUtils.addChatError(sender, "oredict          try to find oredictionary replacements for all the ingredients");
 			ChatUtils.addChatError(sender, "some             Show the first 3 recipes");
 			ChatUtils.addChatError(sender, "log              Log all recipes");
@@ -145,8 +145,11 @@ public class CollectSubCommand implements ISubCommand
 				int slotNum = 0;
 				String operand = stacksizeOperandMatcher.group(2);
 				String number = stacksizeOperandMatcher.group(3);
-				if (slot.equals("o")) {
+				if (slot.equals("o"))
+				{
 					slotNum = -1;
+				} else if (slot.equals("i")) {
+					slotNum = -2;
 				} else {
 					slotNum = Integer.parseInt(slot);
 				}
@@ -193,6 +196,12 @@ public class CollectSubCommand implements ISubCommand
 		conversions.add(conversion);
 		conversion.output = NormalizedSimpleStack.getFor(outStack.item).json();
 		conversion.count  = outStack.item.stackSize;
+		if (setStacksizeForSlot.containsKey(-1)) {
+			conversion.count = setStacksizeForSlot.get(-1);
+		}
+		if (multiplyStacksizeForSlot.containsKey(-1)) {
+			conversion.count*=multiplyStacksizeForSlot.get(-1);
+		}
 		conversion.ingredients = Maps.newHashMap();
 		for (int slotNum = 0; slotNum < ingredients.size(); slotNum++) {
 			String oreDict = null;
@@ -215,8 +224,14 @@ public class CollectSubCommand implements ISubCommand
 			}
 
 			int stacksize = positionedStack.item.stackSize;
+			if (setStacksizeForSlot.containsKey(-2)) {
+				stacksize = setStacksizeForSlot.get(-2);
+			}
 			if (setStacksizeForSlot.containsKey(slotNum)) {
 				stacksize = setStacksizeForSlot.get(slotNum);
+			}
+			if (multiplyStacksizeForSlot.containsKey(-2)) {
+				stacksize *= multiplyStacksizeForSlot.get(-2);
 			}
 			if (multiplyStacksizeForSlot.containsKey(slotNum)) {
 				stacksize *= setStacksizeForSlot.get(slotNum);
@@ -245,9 +260,17 @@ public class CollectSubCommand implements ISubCommand
 	private String itemToStringWithStacksize(ItemStack itemStack, int slotNum) {
 		boolean changedStackSize = false;
 		int stacksize = itemStack.stackSize;
+		if (setStacksizeForSlot.containsKey(-2)) {
+			changedStackSize = true;
+			stacksize = setStacksizeForSlot.get(-2);
+		}
 		if (setStacksizeForSlot.containsKey(slotNum)) {
 			changedStackSize = true;
 			stacksize = setStacksizeForSlot.get(slotNum);
+		}
+		if (multiplyStacksizeForSlot.containsKey(-2)) {
+			changedStackSize = true;
+			stacksize *= multiplyStacksizeForSlot.get(-2);
 		}
 		if (multiplyStacksizeForSlot.containsKey(slotNum)) {
 			changedStackSize = true;
