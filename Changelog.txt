@@ -1,3 +1,15 @@
+###Version 1.7.10-PE1.8.0
+* NOTICE: A new and proper API has been introduced with this update, addon authors will need to update to this new API.
+* NEW: Philosophers Stone world transmutations are now shown in NEI if it is installed
+* NEW: A optional pulse has been added to the Philosophers Stone world transmutation highlight
+* NEW: The new API lives
+* FIXED: Vein mining ignoring ores with metadata
+* FIXED: A siding issue with the matter furnaces
+* FIXED: A rare but possible Mind Stone crash
+* FIXED: Corrupt pregen files will now cause a crash instead of being silently overwritten
+* FIXED: A ConcurrentModificationException that was missed in 1.7.2
+* FIXED: Right click dragging in the player inventory section of the transmutation GUI
+
 ###Version 1.7.10-PE1.7.3
 * NEW: Portuguese language file updates
 * NEW: German language file updates

@@ -602,7 +602,7 @@ public abstract class PEToolBase extends ItemMode
 				{
 					Block block = world.getBlock(x, y, z);
 
-					if (ItemHelper.isOre(block) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
+					if (ItemHelper.isOre(block, world.getBlockMetadata(x, y, z)) && block.getBlockHardness(player.worldObj, x, y, z) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(x, y, z), stack)))
 					{
 						WorldHelper.harvestVein(world, player, stack, new Coordinates(x, y, z), block, drops, 0);
 					}
