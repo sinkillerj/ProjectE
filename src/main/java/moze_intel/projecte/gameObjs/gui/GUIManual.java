@@ -36,10 +36,13 @@ public class GUIManual extends GuiScreen
   private ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
   private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 
-  private final int INDEX_PAGE_ID = -1;
   private final int CHARACTER_HEIGHT = Math.round(9);
+  private int indexPages = 1;
   private int currentPageID;
   private int offset = 3;
+  private int indexPageID = 0;
+  private int entriesPerPage = 0;
+  private int indexEntries = 0;
 
   public static List<String> bodyTexts = Lists.newArrayList();
   public static int windowWidth = 256;
@@ -48,28 +51,42 @@ public class GUIManual extends GuiScreen
   public static int textHeight = pageHeight - 43 - 10;
   public static int textYOffset = 10;
   public static float guiScaleFactor = 1.5f;
+  private static boolean firstRun = true;
 
   @Override
   public void initGui()
   {
+    ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+
+    width = scaledresolution.getScaledWidth();
+
     int i = (this.width - windowWidth) / 2;
 
     this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), 160, true));
     this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), 160, false));
 
     String text = StatCollector.translateToLocal("pe.manual.index_button");
-    int width = mc.fontRenderer.getStringWidth(text);
+    int stringWidth = mc.fontRenderer.getStringWidth(text);
 
-    this.buttonList.add(new TocButton(2, (this.width / 2) - (width / 2), 192, width, 15, text));
+    this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), 192, stringWidth, 15, text));
 
-    currentPageID = INDEX_PAGE_ID;
+    entriesPerPage = (int) Math.floor(textHeight / CHARACTER_HEIGHT) - 2;
+    indexPages = (int) Math.ceil(ManualPageHandler.pages.size() / entriesPerPage);
+
+    addIndexButtons(((Math.round(this.width / guiScaleFactor) - windowWidth) / 2) + 40);
+
+    if(firstRun)
+      indexPageID -= indexPages;
+    currentPageID = indexPageID;
+    firstRun = false;
   }
 
   @Override
   public void drawScreen(int mouseX, int mouseY, float partialTicks)
   {
+    System.out.println("PEDEBUG:" + currentPageID);
     ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-    width = scaledresolution.getScaledWidth();
+
     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
     if(isViewingIndex())
@@ -97,7 +114,7 @@ public class GUIManual extends GuiScreen
     } else
     {
 
-      drawIndex(k + 40);
+      this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 40, 27, 0, false);
     }
 
     this.updateButtons();
@@ -127,7 +144,7 @@ public class GUIManual extends GuiScreen
         currentPageID--;
       break;
     case 2:
-      currentPageID = INDEX_PAGE_ID;
+      currentPageID = indexPageID;
       break;
     default:
       currentPageID = button.id - 3 - ((button.id - 3) % 2);
@@ -140,11 +157,19 @@ public class GUIManual extends GuiScreen
     if(isViewingIndex())
     {
       ((PageTurnButton) this.buttonList.get(0)).visible = true;
-      ((PageTurnButton) this.buttonList.get(1)).visible = false;
+      if(currentPageID != indexPageID)
+        ((PageTurnButton) this.buttonList.get(1)).visible = true;
+      else
+        ((PageTurnButton) this.buttonList.get(1)).visible = false;
       ((TocButton) this.buttonList.get(2)).visible = false;
       for (int i = 3; i < this.buttonList.size(); i++)
       {
-        ((IndexLinkButton) this.buttonList.get(i)).visible = true;
+        if(i > (entriesPerPage * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + offset &&
+            i <= (entriesPerPage * (indexPages + 1 - Math.abs(currentPageID + 1))) + offset)
+        {
+          ((IndexLinkButton) this.buttonList.get(i)).visible = true;
+        } else
+          ((IndexLinkButton) this.buttonList.get(i)).visible = false;
       }
     } else if(this.currentPageID >= ManualPageHandler.pages.size() - 2)
     {
@@ -280,48 +305,50 @@ public class GUIManual extends GuiScreen
     mc.fontRenderer.drawString(EnumChatFormatting.BOLD + (EnumChatFormatting.UNDERLINE + name), Math.round(x * guiScaleFactor) / 2 + xOffset, yOffset, 0);
   }
 
-  public void drawIndex(int x)
+  public void addIndexButtons(int x)
   {
-    this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), x, 27, 0, false);
-    int xOffset = 30;
-    int yOffset = 0;
-    int yValue = -1;
-    int widestString = 50;
 
-    for (Entry<PageCategory, List<AbstractPage>> entry : ManualPageHandler.categoryMap.entrySet())
+    int yOffset = 37;
+    int side = 0;
+    int sideWas = 0;
+    int skipped = 0;
+    x *= guiScaleFactor;
+
+    for (AbstractPage page : ManualPageHandler.pages)
     {
-      yValue++;
-      yOffset = yValue * CHARACTER_HEIGHT + 40;
-      drawCategory(StatCollector.translateToLocal(entry.getKey().getUnlocalName()), xOffset, yOffset, x);
-      yValue += 1;
-      yOffset = yValue * CHARACTER_HEIGHT + 40;
-
-      for (AbstractPage page : entry.getValue())
-      {
-        if(!page.shouldAppearInIndex()) {
-          continue;
-        }
-        yValue++;
-        if(yOffset >= 150) {
-          xOffset += widestString;
-          yValue = -1;
-        }
-
-        yOffset = yValue * CHARACTER_HEIGHT + 40;
-        String text = page.getHeaderText();
-        int buttonID = ManualPageHandler.pages.indexOf(page) + offset;
-        int stringWidth = Math.round(mc.fontRenderer.getStringWidth(text));
-        if(stringWidth > widestString)
-          widestString = stringWidth;
-        buttonList.add(new IndexLinkButton(buttonID, Math.round(x * guiScaleFactor) / 2 + xOffset, yOffset, Math.round(mc.fontRenderer.getStringWidth(text)),
-            CHARACTER_HEIGHT, text));
+      if(!page.shouldAppearInIndex()) {
+        skipped++;
+        continue;
       }
+
+      if(side != sideWas)
+      {
+        yOffset = 37;
+        if(side == 1)
+          x += 160 * guiScaleFactor;
+        else
+          x -= 160 * guiScaleFactor;
+        sideWas = side;
+      }
+
+      String text = page.getHeaderText();
+      int buttonID = ManualPageHandler.pages.indexOf(page) + offset;
+      addIndexButton(buttonID, x, yOffset, text);
+      yOffset += CHARACTER_HEIGHT + 1;
+      side = ((ManualPageHandler.pages.indexOf(page) - skipped) / (entriesPerPage)) % 2;
     }
+
   }
 
   private boolean isViewingIndex()
   {
-    return currentPageID == INDEX_PAGE_ID;
+    return currentPageID < 0;
+  }
+
+  private void addIndexButton(int buttonID, int x, int yOffset, String text)
+  {
+    buttonList.add(new IndexLinkButton(buttonID, Math.round((x * guiScaleFactor) / 2), yOffset, Math.round(mc.fontRenderer.getStringWidth(text)),
+        CHARACTER_HEIGHT, text));
   }
 
   // Header = k+40, k+160, Image/Text = k+20, k+140
