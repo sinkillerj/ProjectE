@@ -114,7 +114,7 @@ public class GUIManual extends GuiScreen
     } else
     {
 
-      this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 40, 27, 0, false);
+      this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 60, 27, 0, false);
     }
 
     this.updateButtons();
@@ -308,7 +308,7 @@ public class GUIManual extends GuiScreen
   public void addIndexButtons(int x)
   {
 
-    int yOffset = 37;
+    int yOffset = 42;
     int side = 0;
     int sideWas = 0;
     int skipped = 0;
@@ -323,7 +323,7 @@ public class GUIManual extends GuiScreen
 
       if(side != sideWas)
       {
-        yOffset = 37;
+        yOffset = 42;
         if(side == 1)
           x += 160 * guiScaleFactor;
         else
