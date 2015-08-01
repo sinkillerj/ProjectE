@@ -1,5 +1,8 @@
 package mapeper.projecte.neirecipecollector;
 
+import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
+import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
+
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -75,5 +78,17 @@ public class NEIRecipeCollector
 		{
 			throw new IllegalStateException("Could not get crafting handlers from NEI!", e);
 		}
+	}
+
+
+	private CustomConversionFile bufferFile = new CustomConversionFile();
+	public void addConversionGroupToBuffer(String groupname, ConversionGroup group) {
+		bufferFile.groups.put(groupname, group);
+	}
+	public void clearBuffer() {
+		bufferFile = new CustomConversionFile();
+	}
+	public CustomConversionFile getBufferFile() {
+		return bufferFile;
 	}
 }

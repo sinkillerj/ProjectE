@@ -15,6 +15,7 @@ import java.util.List;
 
 public class NEIRecipeCollectorCommand extends CommandBase
 {
+	public static final String COMMANDNAME = "neircollect";
 	ImmutableList<ISubCommand> subCommands = ImmutableList.<ISubCommand>of(new CollectSubCommand(), new StoreSubCommand());
 	ImmutableMap<String, ISubCommand> subCommandsPerName = Maps.uniqueIndex(subCommands, new Function<ISubCommand, String>()
 	{
@@ -29,7 +30,7 @@ public class NEIRecipeCollectorCommand extends CommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "neircollect";
+		return COMMANDNAME;
 	}
 
 	@Override

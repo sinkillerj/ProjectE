@@ -84,7 +84,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		}
 	}
 
-	private static File getCustomConversionFolder()
+	public static File getCustomConversionFolder()
 	{
 		return new File(PECore.CONFIG_DIR, "customConversions");
 	}

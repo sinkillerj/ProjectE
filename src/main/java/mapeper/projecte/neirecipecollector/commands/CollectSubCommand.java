@@ -1,9 +1,13 @@
 package mapeper.projecte.neirecipecollector.commands;
 
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
+import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.utils.PELogger;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,6 +23,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.apache.logging.log4j.Logger;
 import scala.actors.threadpool.Arrays;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +165,9 @@ public class CollectSubCommand implements ISubCommand
 			}
 		}
 
+
+		ConversionGroup group = new ConversionGroup();
+		group.comment = "Generated with " + previousCommands + " " + Joiner.on(" ").join(params);
 		for (int i = 0; i < numRecipes; i++) {
 			List<PositionedStack> ingredients = handler.getIngredientStacks(i);
 			PositionedStack outStack = handler.getResultStack(i);
@@ -169,8 +177,54 @@ public class CollectSubCommand implements ISubCommand
 			if (log) {
 				LOGGER.info(listOfPositionedStacksToStringForLog(ingredients, outStack, skip));
 			}
+			Collection<CustomConversion> conversions = createCustomConversionsFromNEI(ingredients, outStack);
+			group.conversions.addAll(conversions);
 		}
+		NEIRecipeCollector.getInstance().addConversionGroupToBuffer(className, group);
+		ChatUtils.addChatMessage(sender, "Wrote Conversions for %s to Buffer file. Save buffer with '/%s store'", className, NEIRecipeCollectorCommand.COMMANDNAME);
  	}
+
+	private Collection<CustomConversion> createCustomConversionsFromNEI(List<PositionedStack> ingredients, PositionedStack outStack)
+	{
+		List<CustomConversion> conversions = Lists.newArrayList();
+		CustomConversion conversion = new CustomConversion();
+		conversions.add(conversion);
+		conversion.output = NormalizedSimpleStack.getFor(outStack.item).json();
+		conversion.count  = outStack.item.stackSize;
+		Map<String, Integer> ingredientMap = Maps.newHashMap();
+		for (int slotNum = 0; slotNum < ingredients.size(); slotNum++) {
+			String oreDict = null;
+			PositionedStack positionedStack = ingredients.get(slotNum);
+			NormalizedSimpleStack stack;
+			if (tryToFindOreDict) {
+				oreDict = OreDictSearcher.tryToFindOreDict(positionedStack.items);
+			}
+			if (oreDict != null) {
+				stack = NormalizedSimpleStack.forOreDictionary(oreDict);
+			} else {
+				if (positionedStack.items.length > 1) {
+					stack = NormalizedSimpleStack.createFake(positionedStack.items.toString());
+					for (ItemStack itemStack: positionedStack.items) {
+						conversions.add(CustomConversion.getFor(stack, NormalizedSimpleStack.getFor(itemStack)));
+					}
+				} else {
+					stack = NormalizedSimpleStack.getFor(positionedStack.item);
+				}
+			}
+
+			int stacksize = positionedStack.item.stackSize;
+			if (setStacksizeForSlot.containsKey(slotNum)) {
+				stacksize = setStacksizeForSlot.get(slotNum);
+			}
+			if (multiplyStacksizeForSlot.containsKey(slotNum)) {
+				stacksize *= setStacksizeForSlot.get(slotNum);
+			}
+
+			ingredientMap.put(stack.json(), stacksize);
+
+		}
+		return conversions;
+	}
 
 	void resetSettings() {
 		fulllists = false;

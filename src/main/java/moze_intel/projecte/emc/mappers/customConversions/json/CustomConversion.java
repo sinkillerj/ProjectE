@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.mappers.customConversions.json;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -23,5 +24,9 @@ public class CustomConversion
 			conversion.ingredients.put(entry.getKey().json(), entry.getValue());
 		}
 		return conversion;
+	}
+
+	public static CustomConversion getFor(NormalizedSimpleStack output, NormalizedSimpleStack singleIngredient) {
+		return getFor(1, output, ImmutableMap.of(singleIngredient, 1));
 	}
 }
