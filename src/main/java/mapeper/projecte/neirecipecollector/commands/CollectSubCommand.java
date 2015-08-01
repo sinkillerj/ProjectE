@@ -191,7 +191,7 @@ public class CollectSubCommand implements ISubCommand
 		conversions.add(conversion);
 		conversion.output = NormalizedSimpleStack.getFor(outStack.item).json();
 		conversion.count  = outStack.item.stackSize;
-		Map<String, Integer> ingredientMap = Maps.newHashMap();
+		conversion.ingredients = Maps.newHashMap();
 		for (int slotNum = 0; slotNum < ingredients.size(); slotNum++) {
 			String oreDict = null;
 			PositionedStack positionedStack = ingredients.get(slotNum);
@@ -220,7 +220,7 @@ public class CollectSubCommand implements ISubCommand
 				stacksize *= setStacksizeForSlot.get(slotNum);
 			}
 
-			ingredientMap.put(stack.json(), stacksize);
+			conversion.ingredients.put(stack.json(), stacksize);
 
 		}
 		return conversions;

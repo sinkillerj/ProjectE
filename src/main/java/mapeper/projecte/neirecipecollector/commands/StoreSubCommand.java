@@ -71,6 +71,7 @@ public class StoreSubCommand implements ISubCommand
 			try
 			{
 				buffer.write(f);
+				ChatUtils.addChatMessage(sender, "Wrote file.");
 			} catch (IOException e)
 			{
 				throw new RuntimeException(e);
