@@ -236,8 +236,12 @@ public class CollectSubCommand implements ISubCommand
 			if (multiplyStacksizeForSlot.containsKey(slotNum)) {
 				stacksize *= setStacksizeForSlot.get(slotNum);
 			}
-
-			conversion.ingredients.put(stack.json(), stacksize);
+			String json = stack.json();
+			int count = 0;
+			if (conversion.ingredients.containsKey(json)) {
+				count = conversion.ingredients.get(json);
+			}
+			conversion.ingredients.put(stack.json(), count + stacksize);
 
 		}
 		return conversions;
