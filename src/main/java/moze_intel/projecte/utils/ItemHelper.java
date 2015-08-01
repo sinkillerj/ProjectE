@@ -376,14 +376,13 @@ public final class ItemHelper
 		return false;
 	}
 
-	public static boolean isOre(Block block)
+	public static boolean isOre(Block block, int meta)
 	{
 		if (block.equals(Blocks.lit_redstone_ore))
 		{
 			return true;
 		}
-
-		String oreDictName = getOreDictionaryName(new ItemStack(block));
+		String oreDictName = getOreDictionaryName(new ItemStack(block, 1, meta));
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
 

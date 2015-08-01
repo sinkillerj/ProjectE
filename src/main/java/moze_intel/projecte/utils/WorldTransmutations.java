@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public final class WorldTransmutations
 {
-	private static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
+	public static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
 
 	static
 	{
