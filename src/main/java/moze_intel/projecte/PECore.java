@@ -40,6 +40,8 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
+
+import mapeper.projecte.neirecipecollector.commands.NEIRecipeCollectorCommand;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -118,6 +120,7 @@ public class PECore
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new ProjectECMD());
+		event.registerServerCommand(new NEIRecipeCollectorCommand());
 
 		if (!ThreadCheckUpdate.hasRunServer())
 		{

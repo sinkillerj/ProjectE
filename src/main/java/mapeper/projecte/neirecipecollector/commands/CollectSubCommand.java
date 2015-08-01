@@ -1,5 +1,7 @@
 package mapeper.projecte.neirecipecollector.commands;
 
+import moze_intel.projecte.utils.PELogger;
+
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Splitter;
@@ -11,7 +13,6 @@ import mapeper.projecte.neirecipecollector.ChatUtils;
 import mapeper.projecte.neirecipecollector.LowerCasePrefixPredicate;
 import mapeper.projecte.neirecipecollector.NEIRecipeCollector;
 import mapeper.projecte.neirecipecollector.OreDictSearcher;
-import mapeper.projecte.neirecipecollector.ProjectENEIRecipeCollector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class CollectSubCommand implements ISubCommand
 {
-	private Logger LOGGER = ProjectENEIRecipeCollector.logger;
+	private Logger LOGGER = PELogger.logger;
 	@Override
 	public String getCommandName()
 	{
