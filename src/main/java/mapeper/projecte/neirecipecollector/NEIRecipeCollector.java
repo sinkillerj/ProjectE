@@ -5,6 +5,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFi
 
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import com.google.common.collect.Maps;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class NEIRecipeCollector
@@ -87,8 +89,14 @@ public class NEIRecipeCollector
 	}
 	public void clearBuffer() {
 		bufferFile = new CustomConversionFile();
+		comments.clear();
 	}
 	public CustomConversionFile getBufferFile() {
+		bufferFile.comment = Joiner.on("\n").join(comments);
 		return bufferFile;
+	}
+	List<String> comments = Lists.newArrayList();
+	public void addCommentLine(String comment) {
+		comments.add(comment);
 	}
 }

@@ -167,7 +167,9 @@ public class CollectSubCommand implements ISubCommand
 
 
 		ConversionGroup group = new ConversionGroup();
-		group.comment = "Generated with " + previousCommands + " " + Joiner.on(" ").join(params);
+		String thisCommand = previousCommands + " " + Joiner.on(" ").join(params);
+		group.comment = "Generated with " + thisCommand;
+		NEIRecipeCollector.getInstance().addCommentLine(thisCommand);
 		for (int i = 0; i < numRecipes; i++) {
 			List<PositionedStack> ingredients = handler.getIngredientStacks(i);
 			PositionedStack outStack = handler.getResultStack(i);
