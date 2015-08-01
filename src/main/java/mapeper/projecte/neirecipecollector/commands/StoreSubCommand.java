@@ -71,7 +71,8 @@ public class StoreSubCommand implements ISubCommand
 			try
 			{
 				buffer.write(f);
-				ChatUtils.addChatMessage(sender, "Wrote file.");
+				NEIRecipeCollector.getInstance().clearBuffer();
+				ChatUtils.addChatMessage(sender, "Wrote Buffer to %s. Cleared Buffer.", f);
 			} catch (IOException e)
 			{
 				throw new RuntimeException(e);
