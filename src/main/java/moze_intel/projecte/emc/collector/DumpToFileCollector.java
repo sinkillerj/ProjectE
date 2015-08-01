@@ -1,23 +1,12 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.IValueArithmetic;
 import moze_intel.projecte.emc.IValueGenerator;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
-import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
@@ -72,11 +61,7 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	{
 		try
 		{
-			FileWriter fileWriter = new FileWriter(file);
-			GsonBuilder builder = new GsonBuilder();
-			Gson gson = builder.setPrettyPrinting().create();
-			gson.toJson(out, fileWriter);
-			fileWriter.close();
+			out.write(file);
 		} catch (IOException e)
 		{
 			e.printStackTrace();
