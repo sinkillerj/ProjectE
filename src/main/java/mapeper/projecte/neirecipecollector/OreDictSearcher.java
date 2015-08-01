@@ -33,14 +33,7 @@ public class OreDictSearcher
 				boolean thisOreIDvalid = true;
 				for (final ItemStack ore: ores) {
 					//Check if 'ore' is present in 'stacks'
-					if (!Iterators.any(Arrays.asList(stacks).iterator(), new Predicate<ItemStack>()
-					{
-						@Override
-						public boolean apply(ItemStack input)
-						{
-							return ore.getItem() == input.getItem() && ore.getItemDamage() == input.getItemDamage();
-						}
-					})) {
+					if (!itemStackInArray(stacks, ore)) {
 						//Found an 'ore' that is not in 'stacks'
 						thisOreIDvalid = false;
 						break;
@@ -59,5 +52,17 @@ public class OreDictSearcher
 			}
 		}
 		return null;
+	}
+
+	private static boolean itemStackInArray(ItemStack[] stacks, final ItemStack ore)
+	{
+		return Iterators.any(Arrays.asList(stacks).iterator(), new Predicate<ItemStack>()
+		{
+			@Override
+			public boolean apply(ItemStack input)
+			{
+				return ore.getItem() == input.getItem() && ore.getItemDamage() == input.getItemDamage();
+			}
+		});
 	}
 }
