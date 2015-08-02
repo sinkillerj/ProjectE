@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -45,8 +47,7 @@ public class EntityWaterProjectile extends PEProjectile
 					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
 					{
 						Block block = this.worldObj.getBlock(x, y, z);
-						boolean flag = false;
-						
+
 						if (block == Blocks.lava)
 						{
 							this.worldObj.setBlock(x, y, z, Blocks.obsidian);
@@ -88,9 +89,12 @@ public class EntityWaterProjectile extends PEProjectile
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-			if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ))
+			int x = mop.blockX + dir.offsetX;
+			int y = mop.blockY + dir.offsetY;
+			int z = mop.blockZ + dir.offsetZ;
+			if (worldObj.isAirBlock(x, y, z) && PlayerHelper.hasEditPermission(worldObj, ((EntityPlayerMP) getThrower()), x, y, z))
 			{
-				this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water);
+				this.worldObj.setBlock(x, y, z, Blocks.flowing_water);
 			}
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)

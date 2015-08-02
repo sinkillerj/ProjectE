@@ -2,9 +2,11 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
@@ -85,7 +87,13 @@ public class EntityLavaProjectile extends PEProjectile
 			{
 				case BLOCK:
 					ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-					this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava);
+					int x = mop.blockX + dir.offsetX;
+					int y = mop.blockY + dir.offsetY;
+					int z = mop.blockZ + dir.offsetZ;
+					if (worldObj.isAirBlock(x, y, z) && PlayerHelper.hasEditPermission(worldObj, ((EntityPlayerMP) getThrower()), x, y, z))
+					{
+						this.worldObj.setBlock(x, y, z, Blocks.flowing_lava);
+					}
 					break;
 				case ENTITY:
 					Entity ent = mop.entityHit;

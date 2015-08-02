@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -43,7 +45,7 @@ public class EntityFireProjectile extends PEProjectile
 				for(int x1 = x - 2; x1 <= x + 2; x1++)
 					for(int y1 = y - 2; y1 <= y + 2; y1++)
 						for(int z1 = z - 2; z1 <= z + 2; z1++)
-							if(worldObj.getBlock(x1, y1, z1) == Blocks.sand)
+							if(PlayerHelper.hasEditPermission(worldObj, ((EntityPlayerMP) getThrower()), x1, y1, z1) && worldObj.getBlock(x1, y1, z1) == Blocks.sand)
 								worldObj.setBlock(x1, y1, z1, Blocks.glass);
 			}
 			else
@@ -51,7 +53,7 @@ public class EntityFireProjectile extends PEProjectile
 				for(int x1 = x - 1; x1 <= x + 1; x1++)
 					for(int y1 = y - 1; y1 <= y + 1; y1++)
 						for(int z1 = z - 1; z1 <= z + 1; z1++)
-							if(worldObj.getBlock(x1, y1, z1) == Blocks.air)
+							if(PlayerHelper.hasEditPermission(worldObj, ((EntityPlayerMP) getThrower()), x1, y1, z1) && worldObj.getBlock(x1, y1, z1) == Blocks.air)
 								worldObj.setBlock(x1, y1, z1, Blocks.fire);
 			}
 		}

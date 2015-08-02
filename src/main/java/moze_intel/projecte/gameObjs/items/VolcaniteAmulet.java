@@ -52,7 +52,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
 		{
 			TileEntity tile = world.getTileEntity(x, y, z);
 
