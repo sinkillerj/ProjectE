@@ -12,6 +12,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -63,7 +64,7 @@ public class DestructionCatalyst extends ItemCharge
 						Block block = world.getBlock(x, y, z);
 						float hardness = block.getBlockHardness(world, x, y, z);
 						
-						if (block == Blocks.air || hardness >= 50.0F || hardness == -1.0F)
+						if (block == Blocks.air || hardness >= 50.0F || hardness == -1.0F || !PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
 						{
 							continue;
 						}

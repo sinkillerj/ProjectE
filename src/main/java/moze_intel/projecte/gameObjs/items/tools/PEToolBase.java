@@ -6,11 +6,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -25,6 +21,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
@@ -37,7 +34,9 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -152,10 +151,13 @@ public abstract class PEToolBase extends ItemMode
 					{
 						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
-						if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
+						if (!blockDrops.isEmpty())
 						{
-							drops.addAll(blockDrops);
-							world.setBlockToAir(x, y, z);
+							if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z) && consumeFuel(player, stack, emcCost, true)) {
+								PELogger.logDebug("Break event passed for DeforestAOE");
+								drops.addAll(blockDrops);
+								world.setBlockToAir(x, y, z);
+							}
 						}
 					}
 				}
@@ -167,13 +169,9 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, int emcCost)
+	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int emcCost)
 	{
-		if (!player.canPlayerEdit(x, y, z, meta, stack))
-		{
-			return;
-		}
-		else
+		if (PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
 		{
 			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
 			if (MinecraftForge.EVENT_BUS.post(event))
@@ -335,8 +333,12 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
-						world.setBlockToAir(i, j, k);
+						if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), i, j, k))
+						{
+							PELogger.logDebug("Break event passed for DigBasedOnMode");
+							drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
+							world.setBlockToAir(i, j, k);
+						}
 					}
 				}
 
@@ -373,11 +375,14 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1
 							&& canHarvestBlock(b, stack)
-							&& consumeFuel(player, stack, emcCost, true)
 							)
 					{
-						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
-						world.setBlockToAir(i, j, k);
+						if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), i, j, k) && consumeFuel(player, stack, emcCost, true))
+						{
+							PELogger.logDebug("Break event passed for digAOE");
+							drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
+							world.setBlockToAir(i, j, k);
+						}
 					}
 				}
 
@@ -465,7 +470,6 @@ public abstract class PEToolBase extends ItemMode
 			{
 				ArrayList<ItemStack> drops = target.onSheared(stack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 				Random rand = new Random();
-
 				for(ItemStack drop : drops)
 				{
 					float f = 0.7F;

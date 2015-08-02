@@ -73,7 +73,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 				if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt)
 				{
 					// Hoe
-					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), 0);
+					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, 0);
 				}
 				else if (blockHit instanceof BlockLog)
 				{

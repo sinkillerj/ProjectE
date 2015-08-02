@@ -38,6 +38,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -126,8 +127,8 @@ public final class WorldHelper
 		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
 			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
 				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-					if (world.getBlock(x, y, z) == Blocks.fire)
-						world.setBlockToAir(x, y, z);
+					for (int facing = 0; facing < 6; facing++)
+						world.extinguishFire(player, x, y, z, facing);
 	}
 	
 	public static void freezeNearby(World world, EntityPlayer player)
@@ -325,9 +326,9 @@ public final class WorldHelper
 
 			return ent;
 		}
-		catch (Exception e)
+		catch (ReflectiveOperationException e)
 		{
-			PELogger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
+			PELogger.logFatal("Could not create new entity instance for: " + c.getCanonicalName());
 			e.printStackTrace();
 		}
 
@@ -483,7 +484,7 @@ public final class WorldHelper
 				}
 	}
 
-	public static void growNearbyRandomly(boolean harvest, World world, Entity player)
+	public static void growNearbyRandomly(boolean harvest, World world, EntityPlayer player)
 	{
 		growNearbyRandomly(harvest, world, player.posX, player.posY, player.posZ);
 	}
@@ -508,8 +509,10 @@ public final class WorldHelper
 
 					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
-						currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
-						world.setBlockToAir(x, y, z);
+						if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z)) {
+							currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
+							world.setBlockToAir(x, y, z);
+						}
 						numMined++;
 						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
@@ -521,7 +524,8 @@ public final class WorldHelper
 		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
 			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
-					if (world.rand.nextInt(128) == 0 && world.getBlock(x, y, z) == Blocks.air)
+					if (world.rand.nextInt(128) == 0 && world.getBlock(x, y, z) == Blocks.air
+							&& PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
 						world.setBlock(x, y, z, Blocks.fire);
 	}
 

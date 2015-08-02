@@ -5,11 +5,13 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -64,13 +66,11 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
 	{
-		if (world.isRemote || !player.canPlayerEdit(x, y, z, par7, stack))
+		if (world.isRemote || !PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
 		{
 			return false;
 		}
-		
-		Block block = world.getBlock(x, y, z);
-		
+
 		if (player.isSneaking())
 		{
 			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.dye, 15, 4);

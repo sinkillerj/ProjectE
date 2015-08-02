@@ -9,9 +9,12 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 /**
  * Helper class for player-related methods.
@@ -73,6 +76,18 @@ public final class PlayerHelper
 		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return new Tuple(src, dest);
+	}
+
+	public static boolean hasBreakPermission(World world, EntityPlayerMP player, int x, int y, int z)
+	{
+		return hasEditPermission(world, player, x, y, z)
+				&& !ForgeHooks.onBlockBreakEvent(world, player.theItemInWorldManager.getGameType(), player, x, y, z).isCanceled();
+	}
+
+	public static boolean hasEditPermission(World world, EntityPlayerMP player, int x, int y, int z)
+	{
+		return player.canPlayerEdit(x, y, z, world.getBlockMetadata(x, y, z), null)
+				&& !MinecraftServer.getServer().isBlockProtected(world, x, y, z, player);
 	}
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)

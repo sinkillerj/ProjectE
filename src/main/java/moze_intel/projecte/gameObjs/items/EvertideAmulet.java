@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -104,7 +105,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 						default: break;
                     }
 
-					if (world.isAirBlock(i, j, k))
+					if (world.isAirBlock(i, j, k) && PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), i, j, k))
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
 						placeWater(world, i, j, k);

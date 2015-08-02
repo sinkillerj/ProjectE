@@ -22,6 +22,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,7 +56,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ, int sideHit, float px, float py, float pz)
 	{
-		if (world.isRemote)
+		if (world.isRemote || !PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), blockX, blockY, blockZ))
 		{
 			return false;
 		}
