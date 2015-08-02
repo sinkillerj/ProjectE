@@ -47,44 +47,43 @@ public class GUIManual extends GuiScreen
   public static List<String> bodyTexts = Lists.newArrayList();
   public static int windowWidth = 256;
   public static int textWidth = 145;
-  public static int pageHeight = 180;
-  public static int textHeight = pageHeight - 43 - 10;
+  public static int pageHeight = 226;
+  public static int textHeight = pageHeight - 43 - 20;
   public static int textYOffset = 10;
   public static float guiScaleFactor = 1.5f;
-  private static boolean firstRun = true;
+  public static final int bHeight = 13;
 
   @Override
   public void initGui()
   {
+    indexPageID = 0;
     ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
     width = scaledresolution.getScaledWidth();
 
     int i = (this.width - windowWidth) / 2;
 
-    this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), 160, true));
-    this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), 160, false));
+    this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), pageHeight - Math.round(bHeight * 1.1f), true));
+    this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), pageHeight - Math.round(bHeight * 1.1f), false));
 
     String text = StatCollector.translateToLocal("pe.manual.index_button");
     int stringWidth = mc.fontRenderer.getStringWidth(text);
 
-    this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), 192, stringWidth, 15, text));
+    this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), pageHeight - Math.round(bHeight * 1.3f), stringWidth, 15, text));
 
     entriesPerPage = (int) Math.floor(textHeight / CHARACTER_HEIGHT) - 2;
     indexPages = (int) Math.ceil(ManualPageHandler.pages.size() / entriesPerPage);
 
     addIndexButtons(((Math.round(this.width / guiScaleFactor) - windowWidth) / 2) + 40);
 
-    if(firstRun)
-      indexPageID -= indexPages;
+    indexPageID -= indexPages;
     currentPageID = indexPageID;
-    firstRun = false;
+
   }
 
   @Override
   public void drawScreen(int mouseX, int mouseY, float partialTicks)
   {
-    System.out.println("PEDEBUG:" + currentPageID);
     ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -226,7 +225,6 @@ public class GUIManual extends GuiScreen
   private static class PageTurnButton extends GuiButton
   {
     private static final int bWidth = 23;
-    private static final int bHeight = 13;
     private boolean pointsRight;
 
     public PageTurnButton(int ID, int xPos, int yPos, boolean par4)
