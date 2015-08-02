@@ -170,7 +170,6 @@ public class ManualPageHandler
   {
     int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.textYOffset) / GUIManual.textHeight);
     int k = 0;
-    System.out.println(page.getHeaderText() + ":" + neededPages);
     if(neededPages > 0)
     {
       List<List<String>> parts = chopped(page.getBodyList(), (int) Math.floor(GUIManual.textHeight / GUIManual.textYOffset));

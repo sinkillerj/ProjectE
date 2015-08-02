@@ -364,7 +364,8 @@ public class GUIManual extends GuiScreen
 
       for (int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.textHeight / GUIManual.textYOffset); i++)
       {
-        this.fontRendererObj.drawString(bodyTexts.get(i), Math.round(contentX * guiScaleFactor), 43 + textYOffset * i, Color.black.getRGB());
+        this.fontRendererObj.drawString(bodyTexts.get(i).charAt(0) == 32 ? bodyTexts.get(i).substring(1) : bodyTexts.get(i),
+            Math.round(contentX * guiScaleFactor), 43 + textYOffset * i, Color.black.getRGB());
       }
 
       if(page instanceof ItemPage)
