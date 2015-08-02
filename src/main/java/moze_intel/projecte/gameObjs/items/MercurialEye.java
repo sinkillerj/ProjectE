@@ -6,9 +6,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -150,6 +152,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 						{
 							Block oldBlock = world.getBlock(x, y, z);
 							int oldMeta = oldBlock.getDamageValue(world, x, y, z);
+							if (!PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
+							{
+								continue;
+							}
 
 							if (mode == NORMAL_MODE && oldBlock == Blocks.air)
 							{
