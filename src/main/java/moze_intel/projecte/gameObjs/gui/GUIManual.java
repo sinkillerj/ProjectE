@@ -63,8 +63,8 @@ public class GUIManual extends GuiScreen
 
     int i = (this.width - windowWidth) / 2;
 
-    this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), pageHeight - Math.round(bHeight * 1.1f), true));
-    this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), pageHeight - Math.round(bHeight * 1.1f), false));
+    this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), pageHeight - Math.round(bHeight * 1.2f), true));
+    this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), pageHeight - Math.round(bHeight * 1.2f), false));
 
     String text = StatCollector.translateToLocal("pe.manual.index_button");
     int stringWidth = mc.fontRenderer.getStringWidth(text);
