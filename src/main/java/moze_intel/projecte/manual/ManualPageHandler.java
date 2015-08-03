@@ -2,8 +2,11 @@ package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -17,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@SideOnly(Side.CLIENT)
 public class ManualPageHandler
 {
     public static final List<AbstractPage> pages = Lists.newArrayList();
@@ -33,13 +37,13 @@ public class ManualPageHandler
                 public void onResourceManagerReload(IResourceManager p_110549_1_)
                 {
                     ManualPageHandler.clear();
-                    ManualPageHandler.bake();
+                    ManualPageHandler.setupPages();
                 }
             });
         }
 
         clear();
-        bake();
+        setupPages();
     }
 
     private static void clear()
@@ -48,7 +52,7 @@ public class ManualPageHandler
         categoryMap.clear();
     }
 
-    private static void bake()
+    private static void setupPages()
     {
         for (PageCategory e : PageCategory.values())
         {
@@ -58,27 +62,27 @@ public class ManualPageHandler
         addTextPage("introduction", PageCategory.NONE);
 
         //Blocks
-        addItem(ObjHandler.alchChest, PageCategory.BLOCK);
+        addBlock(ObjHandler.alchChest, PageCategory.BLOCK);
         addImagePage("img_alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"), PageCategory.BLOCK);
-        addItem(ObjHandler.confuseTorch, PageCategory.BLOCK);
-        addItem(ObjHandler.transmuteStone, PageCategory.BLOCK);
-        addItem(ObjHandler.condenser, PageCategory.BLOCK);
-        addItem(ObjHandler.condenserMk2, PageCategory.BLOCK);
-        addItem(ObjHandler.rmFurnaceOff, PageCategory.BLOCK);
-        addItem(ObjHandler.dmFurnaceOff, PageCategory.BLOCK);
-        addItem(ObjHandler.dmPedestal, PageCategory.BLOCK);
-        addItem(ObjHandler.energyCollector, PageCategory.BLOCK);
-        addItem(ObjHandler.collectorMK2, PageCategory.BLOCK);
-        addItem(ObjHandler.collectorMK3, PageCategory.BLOCK);
-        addItem(ObjHandler.relay, PageCategory.BLOCK);
-        addItem(ObjHandler.relayMK2, PageCategory.BLOCK);
-        addItem(ObjHandler.relayMK3, PageCategory.BLOCK);
-        addItem(ObjHandler.novaCatalyst, PageCategory.BLOCK);
-        addItem(ObjHandler.novaCataclysm, PageCategory.BLOCK);
+        addBlock(ObjHandler.confuseTorch, PageCategory.BLOCK);
+        addBlock(ObjHandler.transmuteStone, PageCategory.BLOCK);
+        addBlock(ObjHandler.condenser, PageCategory.BLOCK);
+        addBlock(ObjHandler.condenserMk2, PageCategory.BLOCK);
+        addBlock(ObjHandler.rmFurnaceOff, PageCategory.BLOCK);
+        addBlock(ObjHandler.dmFurnaceOff, PageCategory.BLOCK);
+        addBlock(ObjHandler.dmPedestal, PageCategory.BLOCK);
+        addBlock(ObjHandler.energyCollector, PageCategory.BLOCK);
+        addBlock(ObjHandler.collectorMK2, PageCategory.BLOCK);
+        addBlock(ObjHandler.collectorMK3, PageCategory.BLOCK);
+        addBlock(ObjHandler.relay, PageCategory.BLOCK);
+        addBlock(ObjHandler.relayMK2, PageCategory.BLOCK);
+        addBlock(ObjHandler.relayMK3, PageCategory.BLOCK);
+        addBlock(ObjHandler.novaCatalyst, PageCategory.BLOCK);
+        addBlock(ObjHandler.novaCataclysm, PageCategory.BLOCK);
 
         // Blocks with different meta forms
-        addItemAndSubs(getSubItems(ObjHandler.matterBlock), PageCategory.BLOCK);
-        addItemAndSubs(getSubItems(ObjHandler.fuelBlock), PageCategory.BLOCK);
+        addBlock(ObjHandler.matterBlock, PageCategory.BLOCK);
+        addBlock(ObjHandler.fuelBlock, PageCategory.BLOCK);
 
         //Items
         addItem(ObjHandler.philosStone, PageCategory.ITEM);
@@ -140,10 +144,10 @@ public class ManualPageHandler
         addItem(ObjHandler.transmutationTablet, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
 
         // Items with different meta forms
-        addItemAndSubs(getSubItems(ObjHandler.matter), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
-        addItemAndSubs(getSubItems(ObjHandler.fuels), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
-        addItemAndSubs(getSubItems(ObjHandler.covalence), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
-        addItemAndSubs(getSubItems(ObjHandler.kleinStars), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+        addItem(ObjHandler.matter, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+        addItem(ObjHandler.fuels, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+        addItem(ObjHandler.covalence, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
+        addItem(ObjHandler.kleinStars, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
 
         for (List<AbstractPage> categoryPages : categoryMap.values())
         {
@@ -153,30 +157,32 @@ public class ManualPageHandler
                 pages.add(page);
             }
         }
+
+        bakeIndex();
+    }
+
+    private static void bakeIndex()
+    {
+
     }
 
     private static void addItem(Item item, PageCategory category)
     {
-        AbstractPage page = AbstractPage.createItemPage(item, category);
-        categoryMap.get(category).add(page);
-        categoryMap.get(category).addAll(page.subPages);
-    }
+        // Manually exclude alchBag from having 16 of the same entry
+        List<ItemStack> list = (item == ObjHandler.alchBag || !item.getHasSubtypes()) ? Collections.singletonList(new ItemStack(item)) : getSubItems(item);
 
-    private static void addItem(Block block, PageCategory category)
-    {
-        AbstractPage page = AbstractPage.createItemPage(block, category);
-        categoryMap.get(category).add(page);
-        categoryMap.get(category).addAll(page.subPages);
-    }
-
-    private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
-    {
-        for (ItemStack is : list)
+        for (ItemStack s : list)
         {
-            AbstractPage page = AbstractPage.createItemPage(is, category);
+            AbstractPage page = AbstractPage.createItemPage(s, category);
             categoryMap.get(category).add(page);
             categoryMap.get(category).addAll(page.subPages);
+            PELogger.logDebug("Added %d item pages for stack %s", page.subPages.size() + 1, s.toString());
         }
+    }
+
+    private static void addBlock(Block block, PageCategory category)
+    {
+        addItem(Item.getItemFromBlock(block), category);
     }
 
     private static void addTextPage(String identifier, PageCategory category)
@@ -184,7 +190,7 @@ public class ManualPageHandler
         AbstractPage page = AbstractPage.createTextPages(identifier, category);
         categoryMap.get(category).add(page);
         categoryMap.get(category).addAll(page.subPages);
-        System.out.println("Added " + (page.subPages.size() + 1) + " pages for identifier " + identifier);
+        PELogger.logDebug("Added %d text pages for identifier %s", page.subPages.size() + 1, identifier);
     }
 
     private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
@@ -206,5 +212,4 @@ public class ManualPageHandler
         i.getSubItems(i, null, list);
         return list;
     }
-
 }

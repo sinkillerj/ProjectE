@@ -1,9 +1,10 @@
 package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.CollectionHelper;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public abstract class AbstractPage
 {
     protected final PageCategory category;
@@ -54,11 +56,6 @@ public abstract class AbstractPage
         return createItemPage(new ItemStack(item), category);
     }
 
-    public static AbstractPage createItemPage(Block block, PageCategory category)
-    {
-        return createItemPage(new ItemStack(block), category);
-    }
-
     public static AbstractPage createItemPage(ItemStack stack, PageCategory category)
     {
         String body = StatCollector.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5));
@@ -66,7 +63,7 @@ public abstract class AbstractPage
         AbstractPage ret = new ItemPage(stack.copy(), category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)
         {
-            ret.addSubPage(new ItemPage(stack.copy(), category, StringUtils.join(parts.get(i), "")));
+            ret.addSubPage(new ItemPage(stack.copy(), category, StringUtils.join(parts.get(i), "")).setIndexed(false));
         }
         return ret;
     }
@@ -78,7 +75,7 @@ public abstract class AbstractPage
         AbstractPage ret = new TextPage(identifier, category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)
         {
-            ret.addSubPage(new TextPage(identifier, category, StringUtils.join(parts.get(i), "")));
+            ret.addSubPage(new TextPage(identifier, category, StringUtils.join(parts.get(i), "")).setIndexed(false));
         }
         return ret;
     }
