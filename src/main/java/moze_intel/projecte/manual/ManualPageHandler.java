@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
@@ -14,6 +15,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,21 +41,20 @@ public class ManualPageHandler
                 @Override
                 public void onResourceManagerReload(IResourceManager p_110549_1_)
                 {
-                    ManualPageHandler.clear();
-                    ManualPageHandler.setupPages();
+                    ManualPageHandler.reset();
                 }
             });
         }
 
-        clear();
-        setupPages();
+        reset();
     }
 
-    private static void clear()
+    private static void reset()
     {
         pages.clear();
         categoryMap.clear();
         spreads.clear();
+        setupPages();
     }
 
     private static void setupPages()
@@ -161,29 +162,52 @@ public class ManualPageHandler
                 pages.add(page);
             }
         }
-        PELogger.logDebug("Built %d pages", pages.size());
-        bakeIndex();
-        buildSpreads();
+        PELogger.logDebug("Built %d standard pages", pages.size());
+        generateDummyIndexPages();
+        buildPageSpreads();
     }
 
-    private static void bakeIndex()
+    private static void generateDummyIndexPages()
     {
-
-    }
-
-    private static void buildSpreads()
-    {
-        for (int i = 0; i < pages.size(); i += 2)
+        List<IndexPage> indexPages = Lists.newArrayList();
+        int numIndexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
+        for (int i = 0; i < numIndexPages; i++)
         {
-            if (i == pages.size() - 1)
+            indexPages.add(new IndexPage(i));
+        }
+        pages.addAll(0, indexPages);
+        PELogger.logDebug("Created dummy index pages with %d pages, total pages now %d", indexPages.size(), pages.size());
+    }
+
+    private static void buildPageSpreads()
+    {
+        int firstNormalPage = 0;
+        for (AbstractPage page : pages)
+        {
+            if (!(page instanceof IndexPage))
+            {
+                firstNormalPage = pages.indexOf(page);
+                break;
+            }
+        }
+        doBuildSpread(pages.subList(0, firstNormalPage)); // Index Spreads
+        PELogger.logDebug("There are %d index spreads", spreads.size());
+        doBuildSpread(pages.subList(firstNormalPage, pages.size())); // Normal Spreads
+        PELogger.logDebug("There are %d spreads total", spreads.size());
+    }
+
+    private static void doBuildSpread(List<AbstractPage> list)
+    {
+        for (int i = 0; i < list.size(); i += 2)
+        {
+            if (i == list.size() - 1)
             {
                 // Handle last page being odd
-                spreads.add(ImmutablePair.of(pages.get(i), ((AbstractPage) null)));
+                spreads.add(ImmutablePair.of(list.get(i), ((AbstractPage) null)));
                 continue;
             }
-            spreads.add(ImmutablePair.of(pages.get(i), pages.get(i + 1)));
+            spreads.add(ImmutablePair.of(list.get(i), list.get(i + 1)));
         }
-        PELogger.logDebug("There are %d spreads", spreads.size());
     }
 
     private static void addItem(Item item, PageCategory category)
@@ -217,13 +241,6 @@ public class ManualPageHandler
     {
         AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
         categoryMap.get(category).add(page);
-    }
-
-    private static List<ItemStack> getSubItems(Block b)
-    {
-        List<ItemStack> list = Lists.newArrayList();
-        b.getSubBlocks(Item.getItemFromBlock(b), null, list);
-        return list;
     }
 
     private static List<ItemStack> getSubItems(Item i)
