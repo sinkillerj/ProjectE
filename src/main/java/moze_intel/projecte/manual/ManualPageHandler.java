@@ -172,13 +172,14 @@ public class ManualPageHandler
     {
         List<IndexPage> toAdd = Lists.newArrayList();
         int numIndexPages = Math.round(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
+        PELogger.logDebug("" + (float) ManualPageHandler.pages.size() / GUIManual.ENTRIES_PER_PAGE);
         for (int i = 0; i < numIndexPages; i++)
         {
             toAdd.add(new IndexPage());
         }
         indexPages.addAll(toAdd);
         pages.addAll(0, indexPages);
-        PELogger.logDebug("Built %d dummy index pages", indexPages.size(), pages.size());
+        PELogger.logDebug("Built %d dummy index pages", indexPages.size());
     }
 
     private static void buildPageSpreads()
@@ -195,9 +196,9 @@ public class ManualPageHandler
 
         // Build index and normal spreads separately
         doBuildSpread(pages.subList(0, firstNormalPage));
-        PELogger.logDebug("There are %d index spreads", spreads.size());
+        PELogger.logDebug("Built %d index spreads", spreads.size());
         doBuildSpread(pages.subList(firstNormalPage, pages.size()));
-        PELogger.logDebug("There are %d spreads total", spreads.size());
+        PELogger.logDebug("Built %d spreads total", spreads.size());
     }
 
     private static void doBuildSpread(List<AbstractPage> list)

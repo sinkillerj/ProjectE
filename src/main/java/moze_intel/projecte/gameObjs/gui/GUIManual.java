@@ -42,8 +42,7 @@ public class GUIManual extends GuiScreen
     public static final int BUTTON_HEIGHT = 13;
     private static final int CHARACTER_HEIGHT = 9;
     private static final int BUTTON_ID_OFFSET = 3; // Offset of button ID's due to the page turn and TOC buttons
-    private static final ResourceLocation bookTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
-    private static final ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
+    private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation("projecte:textures/gui/bookTexture.png");
     private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
     public static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
     public static final Multimap<IndexPage, IndexLinkButton> indexLinks = ArrayListMultimap.create(); // IndexPage -> IndexLinkButtons
@@ -75,6 +74,7 @@ public class GUIManual extends GuiScreen
         return peFontRenderer.listFormattedStringToWidth(s, TEXT_WIDTH);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
@@ -95,18 +95,13 @@ public class GUIManual extends GuiScreen
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if (isViewingIndex())
-        {
-            this.mc.getTextureManager().bindTexture(tocTexture);
-        } else
-        {
-            this.mc.getTextureManager().bindTexture(bookTexture);
-        }
+        this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
 
         GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
         int k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
@@ -145,8 +140,9 @@ public class GUIManual extends GuiScreen
                 currentSpread = 0;
                 break;
             default:
-                PELogger.logDebug("Clicked button %d, taking you to spread %d which has page %d on the left", button.id, (button.id - 3) / 2, ManualPageHandler.pages.indexOf(ManualPageHandler.spreads.get((button.id - 3) / 2).getLeft()));
-                currentSpread = (button.id - 3) / 2;
+                int val = Math.round((button.id - 3) / 2.0F);
+                PELogger.logDebug("Clicked button %d which is supposed to be page %d, taking you to spread %d which has page %d on the left", button.id, button.id - 3, val, ManualPageHandler.pages.indexOf(ManualPageHandler.spreads.get(val).getLeft()));
+                currentSpread = val;
         }
         this.updateButtons();
     }
@@ -161,8 +157,10 @@ public class GUIManual extends GuiScreen
             for (int i = 3; i < this.buttonList.size(); i++)
             {
                 Pair<AbstractPage, AbstractPage> spread = ManualPageHandler.spreads.get(currentSpread);
-                boolean flag = indexLinks.get(((IndexPage) spread.getLeft())).contains(buttonList.get(i)) || (spread.getRight() != null && indexLinks.get(((IndexPage) spread.getRight())).contains(buttonList.get(i))); // TODO BLEH
-                ((IndexLinkButton) buttonList.get(i)).visible = flag;
+
+                // Display if the indexLinks map has this button for the current spread, handling nulls on the right as necessary
+                ((IndexLinkButton) buttonList.get(i)).visible = indexLinks.get(((IndexPage) spread.getLeft())).contains(buttonList.get(i))
+                        || (spread.getRight() != null && indexLinks.get(((IndexPage) spread.getRight())).contains(buttonList.get(i)));
             }
         } else if (currentSpread == ManualPageHandler.spreads.size() - 1)
         {
@@ -211,7 +209,7 @@ public class GUIManual extends GuiScreen
         x *= GUI_SCALE_FACTOR;
         Iterator<IndexPage> iter = ManualPageHandler.indexPages.iterator();
         IndexPage addingTo = iter.next();
-        int counter = 0;
+        int entriesOnCurrentPage = 0;
 
         for (AbstractPage page : ManualPageHandler.pages)
         {
@@ -220,17 +218,17 @@ public class GUIManual extends GuiScreen
                 continue;
             }
 
-            if (counter == ENTRIES_PER_PAGE)
+            if (entriesOnCurrentPage == ENTRIES_PER_PAGE)
             {
-                // Reset for page switch
-                counter = 0;
+                // Reset when changing pages
+                entriesOnCurrentPage = 0;
                 addingTo = iter.next();
                 if (ManualPageHandler.indexPages.indexOf(addingTo) % 2 == 0)
                 {
-                    x -= 160 * GUI_SCALE_FACTOR;
+                    x -= 160 * GUI_SCALE_FACTOR; // Left
                 } else
                 {
-                    x += 160 * GUI_SCALE_FACTOR;
+                    x += 160 * GUI_SCALE_FACTOR; // Right
                 }
                 yOffset = 42;
             }
@@ -242,7 +240,7 @@ public class GUIManual extends GuiScreen
             buttonList.add(button);
             indexLinks.put(addingTo, button);
 
-            counter++;
+            entriesOnCurrentPage++;
             yOffset += CHARACTER_HEIGHT + 1;
         }
 
@@ -260,7 +258,7 @@ public class GUIManual extends GuiScreen
 
         if (page instanceof IndexPage)
         {
-
+            // Noop
         } else if (page instanceof ImagePage)
         {
             drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX * GUI_SCALE_FACTOR * 2), 80);
