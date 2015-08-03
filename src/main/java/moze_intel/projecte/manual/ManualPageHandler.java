@@ -166,11 +166,11 @@ public class ManualPageHandler
 
     private static void checkSubPages(AbstractPage page, PageCategory category, String identifier)
     {
-        int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.TEXT_Y_OFFSET) / GUIManual.TEXT_HEIGHT);
+        int neededPages = GUIManual.splitBody(page).size() * GUIManual.TEXT_Y_OFFSET / GUIManual.TEXT_HEIGHT;
         int k = 0;
         if (neededPages > 0)
         {
-            List<List<String>> parts = CollectionHelper.splitToLength(page.getBodyList(), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
+            List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(page), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
             for (int i = 1; i <= neededPages; i++)
             {
                 addSubPage(parts.get(i), category, identifier, k++);

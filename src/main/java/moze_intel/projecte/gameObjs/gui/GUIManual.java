@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.manual.AbstractPage;
 import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.ItemPage;
+import moze_intel.projecte.manual.ManualFontRenderer;
 import moze_intel.projecte.manual.ManualPageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -38,6 +39,7 @@ public class GUIManual extends GuiScreen
     private static final int BUTTON_ID_OFFSET = 3;
     private static final ResourceLocation bookTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
     private static final ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
+    private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
     private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
     public List<String> bodyTexts = Lists.newArrayList();
     private int indexPages = 1;
@@ -273,7 +275,7 @@ public class GUIManual extends GuiScreen
             drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX * GUI_SCALE_FACTOR * 2), 80);
         } else
         {
-            bodyTexts = page.getBodyList();
+            bodyTexts = splitBody(page);
 
             for (int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET); i++)
             {
@@ -356,6 +358,11 @@ public class GUIManual extends GuiScreen
                 GL11.glDisable(GL11.GL_BLEND);
             }
         }
+    }
 
+    @SuppressWarnings("unchecked")
+    public static List<String> splitBody(AbstractPage page)
+    {
+        return peFontRenderer.listFormattedStringToWidth(page.getBodyText(), TEXT_WIDTH);
     }
 }

@@ -1,4 +1,4 @@
-package moze_intel.projecte.utils;
+package moze_intel.projecte.manual;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -9,43 +9,42 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A shim class that very slightly modifies the behavior of the default fontrenderer. The modifed area is indicated via comment.
+ */
 @SideOnly(Side.CLIENT)
-public class PEFontRenderer extends FontRenderer
+public class ManualFontRenderer extends FontRenderer
 {
-
-    private FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
-
-    public PEFontRenderer()
+    public ManualFontRenderer()
     {
         super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
     }
 
     @Override
-    public List listFormattedStringToWidth(String p_78271_1_, int p_78271_2_)
+    public List listFormattedStringToWidth(String string, int width)
     {
-        return Arrays.asList(this.wrapFormStringToWidth(p_78271_1_, p_78271_2_).split("\n"));
+        return Arrays.asList(this.wrapFormStringToWidth(string, width).split("\n"));
     }
 
-    String wrapFormStringToWidth(String p_78280_1_, int p_78280_2_)
+    String wrapFormStringToWidth(String str, int width)
     {
-        int j = this.sizeStringToWidth(p_78280_1_, p_78280_2_);
+        int j = this.sizeStringToWidth(str, width);
 
-        if (p_78280_1_.length() <= j)
+        if (str.length() <= j)
         {
-            return p_78280_1_;
+            return str;
         } else
         {
-            String s1 = p_78280_1_.substring(0, j);
-            char c0 = p_78280_1_.charAt(j);
-            boolean flag = c0 == 10;
-            String s2 = getFormatFromString(s1) + p_78280_1_.substring(j + (flag ? 1 : 0));
-            return s1 + "\n" + this.wrapFormStringToWidth(s2, p_78280_2_);
+            String s1 = str.substring(0, j);
+            char c0 = str.charAt(j);
+            boolean flag = c0 == 10; // Changed here: Remove check for space (ascii 32)
+            String s2 = getFormatFromString(s1) + str.substring(j + (flag ? 1 : 0));
+            return s1 + "\n" + this.wrapFormStringToWidth(s2, width);
         }
     }
 
-    /**
-     * Determines how many characters from the string will fit into the specified
-     * width.
+    /*
+     * Copy of some fontrenderer methods because they are private in the superclass
      */
     private int sizeStringToWidth(String p_78259_1_, int p_78259_2_)
     {
@@ -85,7 +84,7 @@ public class PEFontRenderer extends FontRenderer
                 case 32:
                     i1 = l;
                 default:
-                    k += fontRendererObj.getCharWidth(c0);
+                    k += Minecraft.getMinecraft().fontRenderer.getCharWidth(c0); // Need to call it on the real fontrenderer due to state stuff >.>
 
                     if (flag)
                     {
@@ -109,10 +108,6 @@ public class PEFontRenderer extends FontRenderer
         return l != j && i1 != -1 && i1 < l ? i1 : l;
     }
 
-    /**
-     * Digests a string for nonprinting formatting characters then returns a
-     * string containing only that formatting.
-     */
     private static String getFormatFromString(String p_78282_0_)
     {
         String s1 = "";
@@ -138,17 +133,11 @@ public class PEFontRenderer extends FontRenderer
         return s1;
     }
 
-    /**
-     * Checks if the char code is a hexadecimal character, used to set colour.
-     */
     private static boolean isFormatColor(char p_78272_0_)
     {
         return p_78272_0_ >= 48 && p_78272_0_ <= 57 || p_78272_0_ >= 97 && p_78272_0_ <= 102 || p_78272_0_ >= 65 && p_78272_0_ <= 70;
     }
 
-    /**
-     * Checks if the char code is O-K...lLrRk-o... used to set special formatting.
-     */
     private static boolean isFormatSpecial(char p_78270_0_)
     {
         return p_78270_0_ >= 107 && p_78270_0_ <= 111 || p_78270_0_ >= 75 && p_78270_0_ <= 79 || p_78270_0_ == 114 || p_78270_0_ == 82;
