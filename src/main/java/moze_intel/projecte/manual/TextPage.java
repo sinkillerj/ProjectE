@@ -5,6 +5,7 @@ import net.minecraft.util.StatCollector;
 public class TextPage extends AbstractPage
 {
     private final String header;
+
     protected TextPage(String identifier, PageCategory category)
     {
         super(category);
