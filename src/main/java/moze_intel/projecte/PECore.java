@@ -27,7 +27,6 @@ import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -41,13 +40,12 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
-
-import java.io.File;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.io.File;
+import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
@@ -114,7 +112,7 @@ public class PECore
 	{
 		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.readUserData();
-		ManualPageHandler.init();
+		proxy.initializeManual();
 	}
 	
 	@Mod.EventHandler
