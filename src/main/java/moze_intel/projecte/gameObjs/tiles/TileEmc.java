@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
-import moze_intel.projecte.api.ITileEmc;
+import moze_intel.projecte.api.tile.ITileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;

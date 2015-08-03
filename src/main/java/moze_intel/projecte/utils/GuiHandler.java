@@ -69,8 +69,6 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.ALCH_BAG_GUI:
 				return new AlchBagContainer(player.inventory, new AlchBagInventory(player, player.getHeldItem()));
-			case Constants.TRANSMUTE_STONE_GUI:
-				return null;
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);

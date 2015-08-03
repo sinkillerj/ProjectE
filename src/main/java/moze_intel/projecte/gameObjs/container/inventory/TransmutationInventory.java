@@ -14,7 +14,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -126,7 +125,7 @@ public class TransmutationInventory implements IInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = ((ArrayList<ItemStack>) ((ArrayList<ItemStack>) Transmutation.getKnowledge(player)).clone()); // double cast because List is not cloneable and clone() returns Object
+		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
 
 		for (int i : MATTER_INDEXES)
 		{

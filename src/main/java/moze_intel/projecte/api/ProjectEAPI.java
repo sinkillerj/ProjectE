@@ -1,51 +1,75 @@
 package moze_intel.projecte.api;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.FMLLog;
+import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.IBlacklistProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 
-/**
- * Class for basic mod interactions with ProjectE.<br>
- * For now, it's very simplistic, will be expanded in the future.<br>
- */
 public final class ProjectEAPI
 {
-	public static interface IRegisterCustomEMC {
-		public void registerCustomEMC(ItemStack stack, int emcValue);
-	}
-	/**
-	 * Register an EMC value for the specified itemstack.<br>
-	 * If the emcValue is <= 0, then the ItemStack will be blacklisted from any EMC mapping.<br>
-	 * The ItemStack's NBT data is completely ignored in registration.<br>
-	 * Users can still modify inter-mod EMC registration via command/configuration file.<br>
-	 * Can be called during pre-init, init or post-init.
-	 */
-	public static void registerCustomEMC(ItemStack stack, int emcValue)
-	{
-		try {
-			Class<?> clazz = Class.forName("moze_intel.projecte.emc.mappers.APICustomEMCMapper");
-			IRegisterCustomEMC instance = (IRegisterCustomEMC)clazz.getField("instance").get(null);
-			instance.registerCustomEMC(stack, emcValue);
-		} catch (Throwable t) {
+	private static IEMCProxy emcProxy;
+	private static ITransmutationProxy transProxy;
+	private static IBlacklistProxy blacklistProxy;
 
+	private ProjectEAPI() {}
+
+	/**
+	 * Retrieves the proxy for EMC-based API queries.
+	 * @return The proxy for EMC-based API queries
+	 */
+	public static IEMCProxy getEMCProxy()
+	{
+		if (emcProxy == null)
+		{
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.EMCProxyImpl");
+				emcProxy = (IEMCProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
 		}
+		return emcProxy;
 	}
 
 	/**
-	 * Blacklist an entity for the interdiction torches.<br> 
-	 * Can be called during pre-init, init or post-init.
+	 * Retrieves the proxy for Transmutation-based API queries.
+	 * @return The proxy for Transmutation-based API queries
 	 */
-	public static void registerInterdictionBlacklist(Class entityClass)
+	public static ITransmutationProxy getTransmutationProxy()
 	{
-		FMLInterModComms.sendMessage("ProjectE", "interdictionblacklist", entityClass.getCanonicalName());
+		if (transProxy == null)
+		{
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.TransmutationProxyImpl");
+				transProxy = (ITransmutationProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
+		}
+		return transProxy;
 	}
 
 	/**
-	 * Make an ItemStack keep it's NBT data when condensed.<br>
-	 * Can be called during pre-init, init or post-init.
+	 * Retrieves the proxy for black/whitelist-based API queries.
+	 * @return The proxy for black/whitelist-based API queries
 	 */
-	public static void registerCondenserNBTException(ItemStack stack)
+	public static IBlacklistProxy getBlacklistProxy()
 	{
-		FMLInterModComms.sendMessage("ProjectE", "condensernbtcopy", stack);
+		if (blacklistProxy == null)
+		{
+			try
+			{
+				Class<?> clazz = Class.forName("moze_intel.projecte.impl.BlacklistProxyImpl");
+				blacklistProxy = (IBlacklistProxy) clazz.getField("instance").get(null);
+			} catch (ReflectiveOperationException ex)
+			{
+				FMLLog.warning("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+			}
+		}
+		return blacklistProxy;
 	}
 }

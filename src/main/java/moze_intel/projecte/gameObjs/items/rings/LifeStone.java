@@ -4,7 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
@@ -46,7 +46,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		{
 			double itemEmc = getEmc(stack);
 			
-			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
+			if (itemEmc < 2*64 && !consumeFuel(player, stack, 2*64, false))
 			{
 				stack.setItemDamage(0);
 			}

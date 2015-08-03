@@ -6,9 +6,9 @@ import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.Optional;
-import moze_intel.projecte.api.IFireProtectionItem;
-import moze_intel.projecte.api.IPedestalItem;
-import moze_intel.projecte.api.IProjectileShooter;
+import moze_intel.projecte.utils.IFireProtectionItem;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;

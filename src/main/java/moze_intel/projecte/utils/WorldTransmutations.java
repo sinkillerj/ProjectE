@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public final class WorldTransmutations
 {
-	private static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
+	public static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
 
 	static
 	{
@@ -87,12 +87,6 @@ public final class WorldTransmutations
 		MAP.put(new MetaBlock(result), new MetaBlock[] {new MetaBlock(block), new MetaBlock(block)});
 	}
 
-	private static void register(MetaBlock block, MetaBlock result)
-	{
-		MAP.put(block, new MetaBlock[] {result, result});
-		MAP.put(result, new MetaBlock[] {block, block});
-	}
-
 	private static void register(Block block, Block b1, Block b2)
 	{
 		MAP.put(new MetaBlock(block), new MetaBlock[] {new MetaBlock(b1), new MetaBlock(b2)});
@@ -101,5 +95,18 @@ public final class WorldTransmutations
 	private static void register(MetaBlock block, MetaBlock[] result)
 	{
 		MAP.put(block, result);
+	}
+
+	public static void register(MetaBlock origin, MetaBlock result1, MetaBlock result2)
+	{
+		// Stopgap method for API impl. This class is much improved in 1.8 in terms of cleanliness
+		if (result2 != null)
+		{
+			MAP.put(origin, new MetaBlock[]{result1, result2});
+		}
+		else
+		{
+			MAP.put(origin, new MetaBlock[]{result1});
+		}
 	}
 }

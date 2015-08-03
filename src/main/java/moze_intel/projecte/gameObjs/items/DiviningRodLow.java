@@ -3,10 +3,11 @@ package moze_intel.projecte.gameObjs.items;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -24,10 +25,9 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class DiviningRodLow extends ItemPE implements IModeChanger
@@ -88,18 +88,19 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 							continue;
 						}
 
-						ArrayList<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+						List<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 
 						if (drops.size() == 0)
 						{
 							continue;
 						}
 
-						int blockEmc = EMCHelper.getEmcValue(drops.get(0));
+						ItemStack blockStack = drops.get(0);
+						int blockEmc = EMCHelper.getEmcValue(blockStack);
 
 						if (blockEmc == 0)
 						{
-							HashMap<ItemStack, ItemStack> map = (HashMap) FurnaceRecipes.smelting().getSmeltingList();
+							Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting().getSmeltingList();
 
 							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 							{
@@ -108,7 +109,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 									continue;
 								}
 
-								if (entry.getKey().getItem() == drops.get(0).getItem())
+								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 								{
 									int currentValue = EMCHelper.getEmcValue(entry.getValue());
 

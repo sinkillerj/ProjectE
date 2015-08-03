@@ -26,7 +26,7 @@ public class GUIRelayMK1 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.relay.mk1"), 30, 6, 4210752);
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.relay.mk1"), 10, 6, 4210752);
 		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 88, 24, 4210752);
 	}
 

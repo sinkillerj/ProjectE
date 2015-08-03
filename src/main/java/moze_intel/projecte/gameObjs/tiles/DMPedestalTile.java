@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.IPedestalItem;
+import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +29,14 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public void updateEntity()
 	{
+		if (worldObj.isRemote)
+		{
+			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty())
+			{
+				// Handle condition where this method is called even after the clientside chunk has unloaded. Don't you love vanilla???
+				return;
+			}
+		}
 		centeredX = xCoord + 0.5;
 		centeredY = yCoord + 0.5;
 		centeredZ = zCoord + 0.5;

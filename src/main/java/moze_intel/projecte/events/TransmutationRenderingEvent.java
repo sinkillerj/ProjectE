@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.MetaBlock;
@@ -36,7 +37,7 @@ public class TransmutationRenderingEvent
 	private double playerY;
 	private double playerZ;
 	private MetaBlock transmutationResult;
-	
+
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
 	{
@@ -167,18 +168,14 @@ public class TransmutationRenderingEvent
 	private void drawAll()
 	{
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
-
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.35f);
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tessellator = Tessellator.instance;
-		
-		float colorR = 1.0f;
-		float colorG = 1.0f;
-		float colorB = 1.0f;
 		
 		for (AxisAlignedBB b : renderList)
 		{
@@ -246,5 +243,10 @@ public class TransmutationRenderingEvent
 			box = box.offset(-playerX, -playerY, -playerZ);
 			renderList.add(box);
 		}
+	}
+
+	private float getPulseProportion()
+	{
+		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}
 }

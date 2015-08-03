@@ -62,13 +62,13 @@ import java.util.Set;
  */
 public final class WorldHelper
 {
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
 			EntityWolf.class, EntityHorse.class
 	);
-	public static final ImmutableList<? extends Class<? extends EntityLiving>> mobs = ImmutableList.of(
+	public static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
@@ -77,7 +77,19 @@ public final class WorldHelper
 
 	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
+	public static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
+	{
+		if (!interdictionBlacklist.contains(clazz))
+		{
+			interdictionBlacklist.add(clazz);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean blacklistSwrg(Class<? extends Entity> clazz)
 	{
 		if (!interdictionBlacklist.contains(clazz))
 		{
@@ -209,8 +221,7 @@ public final class WorldHelper
 
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && block.canSilkHarvest(world, player, x, y, z, meta))
 		{
-			ArrayList<ItemStack> list = Lists.newArrayList(new ItemStack(block, 1, meta));
-			return list;
+			return Lists.newArrayList(new ItemStack(block, 1, meta));
 		}
 
 		return block.getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
@@ -288,12 +299,12 @@ public final class WorldHelper
 		return AxisAlignedBB.getBoundingBox(coords.x - offset, coords.y, coords.z - offset, coords.x + offset, coords.y, coords.z + offset);
 	}
 
-	public static Entity getNewEntityInstance(Class c, World world)
+	public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world)
 	{
 		try
 		{
-			Constructor constr = c.getConstructor(World.class);
-			Entity ent = (Entity) constr.newInstance(world);
+			Constructor<T> constr = c.getConstructor(World.class);
+			T ent = constr.newInstance(world);
 
 			if (ent instanceof EntitySkeleton)
 			{
@@ -323,17 +334,17 @@ public final class WorldHelper
 		return null;
 	}
 
-	public static Entity getRandomEntity(World world, Entity toRandomize)
+	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
 	{
-		Class entClass = toRandomize.getClass();
+		Class<? extends EntityLiving> entClass = toRandomize.getClass();
 
 		if (peacefuls.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
 		}
 		else if (mobs.contains(entClass))
 		{
-			return getNewEntityInstance((Class) CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			return getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
@@ -521,7 +532,6 @@ public final class WorldHelper
 
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
-	 * If isSWRG is true, then the blacklist is not checked.
 	 */
 	public static void repelEntitiesInAABBFromPoint(World world, AxisAlignedBB effectBounds, double x, double y, double z, boolean isSWRG)
 	{
@@ -529,11 +539,11 @@ public final class WorldHelper
 
 		for (Entity ent : list)
 		{
-			if (isSWRG || !interdictionBlacklist.contains(ent.getClass())) {
-				// SWRG repels all, only the torch respects blacklist
+			if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
+					if (!isSWRG && ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}

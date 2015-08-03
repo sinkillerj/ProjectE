@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
@@ -17,6 +18,7 @@ import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
 import com.google.common.collect.Maps;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.math.Fraction;
@@ -71,15 +73,23 @@ public final class EMCMapper
 			PELogger.logInfo("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)
 			{
-				if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
+				try
 				{
-					emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
-					PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+					if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
+					{
+						emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+						PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+					}
+				} catch (Exception e)
+				{
+					PELogger.logFatal(String.format("Exception during Mapping Collection from Mapper %s. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName()));
+					e.printStackTrace();
 				}
 			}
 			NormalizedSimpleStack.addMappings(graphMapper);
 			PELogger.logInfo("Starting to generate Values:");
 
+			config.save();
 
 			graphMapperValues = graphMapper.generateValues();
 			PELogger.logInfo("Generated Values...");
@@ -98,7 +108,7 @@ public final class EMCMapper
 				}
 			}
 		}
-		config.save();
+
 
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
@@ -108,6 +118,7 @@ public final class EMCMapper
 			}
 		}
 
+		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
 	}

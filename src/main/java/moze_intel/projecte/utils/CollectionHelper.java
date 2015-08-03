@@ -23,9 +23,9 @@ public final class CollectionHelper
 		return parts;
 	}
 
-	public static Object getRandomListEntry(List<?> list, Object toExclude)
+	public static <T> T getRandomListEntry(List<T> list, T toExclude)
 	{
-		Object obj;
+		T obj;
 
 		do
 		{

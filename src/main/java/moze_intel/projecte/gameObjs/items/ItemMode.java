@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.IModeChanger;
+import moze_intel.projecte.api.item.IModeChanger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;

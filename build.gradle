@@ -23,6 +23,7 @@ archivesBaseName = "ProjectE"
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
+    //version = "1.7.10-10.13.4.1448-1.7.10" //This version is required for the codechicken files
     runDir = "eclipse"
 
     replace "@VERSION@", project.version
@@ -61,6 +62,10 @@ dependencies {
 
     //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
+	
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.110:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
 }
 
 processResources
@@ -82,3 +87,5 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+idea.module.inheritOutputDirs = true

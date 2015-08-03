@@ -1,6 +1,7 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
@@ -13,7 +14,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -76,6 +79,10 @@ public final class Transmutation
 		if (!data.hasFullKnowledge())
 		{
 			data.getKnowledge().add(stack);
+			if (!player.worldObj.isRemote)
+			{
+				MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+			}
 		}
 	}
 
@@ -91,6 +98,10 @@ public final class Transmutation
 				if (ItemStack.areItemStacksEqual(stack, iter.next()))
 				{
 					iter.remove();
+					if (!player.worldObj.isRemote)
+					{
+						MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+					}
 					break;
 				}
 			}
@@ -105,7 +116,8 @@ public final class Transmutation
 
 	public static ItemStack[] getInputsAndLock(EntityPlayer player)
 	{
-		return TransmutationProps.getDataFor(player).getInputLocks().clone();
+		ItemStack[] locks = TransmutationProps.getDataFor(player).getInputLocks();
+		return Arrays.copyOf(locks, locks.length);
 	}
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
@@ -129,6 +141,10 @@ public final class Transmutation
 	public static void setFullKnowledge(EntityPlayer player)
 	{
 		TransmutationProps.getDataFor(player).setFullKnowledge(true);
+		if (!player.worldObj.isRemote)
+		{
+			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		}
 	}
 
 	public static void clearKnowledge(EntityPlayer player)
@@ -136,6 +152,10 @@ public final class Transmutation
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		data.setFullKnowledge(false);
 		data.getKnowledge().clear();
+		if (!player.worldObj.isRemote)
+		{
+			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+		}
 	}
 
 	public static double getEmc(EntityPlayer player)
@@ -256,4 +276,5 @@ public final class Transmutation
 	{
 		EMC_STORAGE.put(username, emc);
 	}
+
 }

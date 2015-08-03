@@ -1,3 +1,37 @@
+###Version 1.7.10-PE1.8.0
+* NOTICE: A new and proper API has been introduced with this update, addon authors will need to update to this new API.
+* NEW: Philosophers Stone world transmutations are now shown in NEI if it is installed
+* NEW: A optional pulse has been added to the Philosophers Stone world transmutation highlight
+* NEW: The new API lives
+* FIXED: Vein mining ignoring ores with metadata
+* FIXED: A siding issue with the matter furnaces
+* FIXED: A rare but possible Mind Stone crash
+* FIXED: Corrupt pregen files will now cause a crash instead of being silently overwritten
+* FIXED: A ConcurrentModificationException that was missed in 1.7.2
+* FIXED: Right click dragging in the player inventory section of the transmutation GUI
+
+###Version 1.7.10-PE1.7.3
+* NEW: Portuguese language file updates
+* NEW: German language file updates
+* FIXED: Some duplicate knowledge caused by the End bug was not removed in 1.7.2. This has been corrected and all duplicate knowledge should now be automatically removed
+* FIXED: A potential Life Stone crash
+* FIXED: Workaround added for a crash caused by using outdated Chisel versions
+* FIXED: Another ArithmeticException
+* FIXED: All mapping exceptions should now be caught and logged
+
+###Version 1.7.10-PE1.7.2
+* NEW: French language file updates
+* NEW: Russian language file updates
+* NEW: German language file updates
+* NEW: Italian language file updates
+* NEW: Chinese language file updates
+* NEW: Shift clicking added in some GUIs that were missing it
+* FIXED: Knowledge entries duplicating when exiting the End. Thanks Mojang
+* FIXED: A SSP ConcurrentModificationException
+* FIXED: A ArithmeticException caused by the rent...erm...the EMC value of a recipe being too damn high
+* FIXED: A calculation issue resulting from a items damage being higher than its max damage
+* FIXED: Divining rod ignoring metadata
+
 ###Version 1.7.10-PE1.7.1
 * NOTICE: It is recommended that you take a world backup prior to updating to 1.7.1 or higher
 * NOTICE: Remove all items from the left side and lock slots of the transmutation GUI prior to updating or they will be lost

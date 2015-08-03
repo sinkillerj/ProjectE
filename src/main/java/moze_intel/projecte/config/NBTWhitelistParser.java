@@ -108,7 +108,7 @@ public final class NBTWhitelistParser
 
 				if (NBTWhitelist.register(stack))
 				{
-					PELogger.logInfo("Registered NBT whitelist for: " + line);
+					PELogger.logInfo("Registered user-defined NBT whitelist for: " + line);
 				}
 			}
 		}
