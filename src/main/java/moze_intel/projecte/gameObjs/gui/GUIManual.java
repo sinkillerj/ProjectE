@@ -9,6 +9,7 @@ import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualFontRenderer;
 import moze_intel.projecte.manual.ManualPageHandler;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,7 +17,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
@@ -45,6 +45,7 @@ public class GUIManual extends GuiScreen
     public List<String> bodyTexts = Lists.newArrayList();
     private int indexPages = 1;
     private int currentPageID;
+    private int currentSpread;
     private int indexPageID = 0;
 
     public static void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
@@ -63,12 +64,6 @@ public class GUIManual extends GuiScreen
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<String> splitBody(AbstractPage page)
-    {
-        return peFontRenderer.listFormattedStringToWidth(page.getBodyText(), TEXT_WIDTH);
     }
 
     @SuppressWarnings("unchecked")
@@ -93,18 +88,20 @@ public class GUIManual extends GuiScreen
         int stringWidth = mc.fontRenderer.getStringWidth(text);
         this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f), stringWidth, 15, text));
 
-        indexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / ENTRIES_PER_PAGE);
-
-        addIndexButtons(((Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2) + 40);
-
-        indexPageID -= indexPages;
-        currentPageID = indexPageID;
+//        indexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / ENTRIES_PER_PAGE);
+//
+//        addIndexButtons(((Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2) + 40);
+//
+//        indexPageID -= indexPages;
+//        currentPageID = indexPageID;
+        currentSpread = 0;
 
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        PELogger.logDebug("Current spread %d", currentSpread);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (isViewingIndex())
@@ -122,8 +119,8 @@ public class GUIManual extends GuiScreen
 
         if (!isViewingIndex())
         {
-            AbstractPage currentPage = ManualPageHandler.pages.get(currentPageID);
-            AbstractPage nextPage = currentPageID == ManualPageHandler.pages.size() || currentPageID == ManualPageHandler.pages.size() - 1 ? null : ManualPageHandler.pages.get(currentPageID + 1); // todo clean
+            AbstractPage currentPage = ManualPageHandler.spreads.get(currentSpread).getLeft();
+            AbstractPage nextPage = ManualPageHandler.spreads.get(currentSpread).getRight();
 
             if (currentPage != null)
                 drawPage(currentPage, k + 40, k + 20);
@@ -149,22 +146,16 @@ public class GUIManual extends GuiScreen
         switch (button.id)
         {
             case 0:
-                if (currentPageID != -1)
-                    currentPageID += 2;
-                else
-                    currentPageID++;
+                currentSpread++;
                 break;
             case 1:
-                if (currentPageID != 0)
-                    currentPageID -= 2;
-                else
-                    currentPageID--;
+                currentSpread--;
                 break;
             case 2:
-                currentPageID = indexPageID;
+                // currentPageID = indexPageID;
                 break;
             default:
-                currentPageID = button.id - 3 - ((button.id - 3) % 2);
+                currentSpread = (button.id - 3) / 2;
         }
         this.updateButtons();
     }
@@ -174,21 +165,14 @@ public class GUIManual extends GuiScreen
         if (isViewingIndex())
         {
             ((PageTurnButton) this.buttonList.get(0)).visible = true;
-            if (currentPageID != indexPageID)
-                ((PageTurnButton) this.buttonList.get(1)).visible = true;
-            else
-                ((PageTurnButton) this.buttonList.get(1)).visible = false;
+            ((PageTurnButton) this.buttonList.get(1)).visible = currentPageID != indexPageID;
             ((TocButton) this.buttonList.get(2)).visible = false;
             for (int i = 3; i < this.buttonList.size(); i++)
             {
-                if (i > (ENTRIES_PER_PAGE * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + BUTTON_ID_OFFSET &&
-                        i <= (ENTRIES_PER_PAGE * (indexPages + 1 - Math.abs(currentPageID + 1))) + BUTTON_ID_OFFSET)
-                {
-                    ((IndexLinkButton) this.buttonList.get(i)).visible = true;
-                } else
-                    ((IndexLinkButton) this.buttonList.get(i)).visible = false;
+//                ((IndexLinkButton) this.buttonList.get(i)).visible = i > (ENTRIES_PER_PAGE * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + BUTTON_ID_OFFSET &&
+//                        i <= (ENTRIES_PER_PAGE * (indexPages + 1 - Math.abs(currentPageID + 1))) + BUTTON_ID_OFFSET;
             }
-        } else if (this.currentPageID >= ManualPageHandler.pages.size() - 2)
+        } else if (currentSpread == ManualPageHandler.spreads.size() - 1)
         {
             ((PageTurnButton) this.buttonList.get(0)).visible = false;
             ((PageTurnButton) this.buttonList.get(1)).visible = true;
@@ -265,7 +249,7 @@ public class GUIManual extends GuiScreen
 
     private boolean isViewingIndex()
     {
-        return currentPageID < 0;
+        return currentSpread < 0;
     }
 
     private void addIndexButton(int buttonID, int x, int yOffset, String text)
@@ -284,7 +268,7 @@ public class GUIManual extends GuiScreen
             drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX * GUI_SCALE_FACTOR * 2), 80);
         } else
         {
-            bodyTexts = splitBody(page);
+            bodyTexts = splitBody(page.getBodyText());
 
             for (int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET); i++)
             {
@@ -324,7 +308,6 @@ public class GUIManual extends GuiScreen
         {
             if (visible)
             {
-                drawRect(xPosition, yPosition, (xPosition + width), (yPosition + height), 0);
                 mc.fontRenderer.drawString(displayString, Math.round(xPosition), Math.round(yPosition), 0);
             }
         }

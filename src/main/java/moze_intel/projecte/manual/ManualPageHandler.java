@@ -15,6 +15,8 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ManualPageHandler
 {
     public static final List<AbstractPage> pages = Lists.newArrayList();
     public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
+    public static final List<Pair<AbstractPage, AbstractPage>> spreads = Lists.newArrayList();
 
     public static void init()
     {
@@ -50,6 +53,7 @@ public class ManualPageHandler
     {
         pages.clear();
         categoryMap.clear();
+        spreads.clear();
     }
 
     private static void setupPages()
@@ -157,13 +161,29 @@ public class ManualPageHandler
                 pages.add(page);
             }
         }
-
+        PELogger.logDebug("Built %d pages", pages.size());
         bakeIndex();
+        buildSpreads();
     }
 
     private static void bakeIndex()
     {
 
+    }
+
+    private static void buildSpreads()
+    {
+        for (int i = 0; i < pages.size(); i += 2)
+        {
+            if (i == pages.size() - 1)
+            {
+                // Handle last page being odd
+                spreads.add(ImmutablePair.of(pages.get(i), ((AbstractPage) null)));
+                continue;
+            }
+            spreads.add(ImmutablePair.of(pages.get(i), pages.get(i + 1)));
+        }
+        PELogger.logDebug("There are %d spreads", spreads.size());
     }
 
     private static void addItem(Item item, PageCategory category)

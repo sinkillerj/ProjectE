@@ -16,12 +16,7 @@ public class ImagePage extends AbstractPage
         super(category);
         this.header = header;
         this.imageLocation = imageLocation;
-    }
-
-    @Override
-    public boolean shouldAppearInIndex()
-    {
-        return false;
+        this.setIndexed(false);
     }
 
     public ResourceLocation getImageLocation()
