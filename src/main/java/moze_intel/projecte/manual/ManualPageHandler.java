@@ -15,7 +15,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,6 +26,7 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class ManualPageHandler
 {
+    public static final List<IndexPage> indexPages = Lists.newArrayList();
     public static final List<AbstractPage> pages = Lists.newArrayList();
     public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
     public static final List<Pair<AbstractPage, AbstractPage>> spreads = Lists.newArrayList();
@@ -51,6 +51,7 @@ public class ManualPageHandler
 
     private static void reset()
     {
+        indexPages.clear();
         pages.clear();
         categoryMap.clear();
         spreads.clear();
@@ -169,14 +170,15 @@ public class ManualPageHandler
 
     private static void generateDummyIndexPages()
     {
-        List<IndexPage> indexPages = Lists.newArrayList();
-        int numIndexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
+        List<IndexPage> toAdd = Lists.newArrayList();
+        int numIndexPages = Math.round(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
         for (int i = 0; i < numIndexPages; i++)
         {
-            indexPages.add(new IndexPage(i));
+            toAdd.add(new IndexPage());
         }
+        indexPages.addAll(toAdd);
         pages.addAll(0, indexPages);
-        PELogger.logDebug("Created dummy index pages with %d pages, total pages now %d", indexPages.size(), pages.size());
+        PELogger.logDebug("Built %d dummy index pages", indexPages.size(), pages.size());
     }
 
     private static void buildPageSpreads()
@@ -190,9 +192,11 @@ public class ManualPageHandler
                 break;
             }
         }
-        doBuildSpread(pages.subList(0, firstNormalPage)); // Index Spreads
+
+        // Build index and normal spreads separately
+        doBuildSpread(pages.subList(0, firstNormalPage));
         PELogger.logDebug("There are %d index spreads", spreads.size());
-        doBuildSpread(pages.subList(firstNormalPage, pages.size())); // Normal Spreads
+        doBuildSpread(pages.subList(firstNormalPage, pages.size()));
         PELogger.logDebug("There are %d spreads total", spreads.size());
     }
 

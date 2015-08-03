@@ -7,11 +7,10 @@ import net.minecraft.util.StatCollector;
 @SideOnly(Side.CLIENT)
 public class IndexPage extends AbstractPage
 {
-    public final int id;
-    protected IndexPage(int index)
+    protected IndexPage()
     {
         super(PageCategory.INDEX);
-        this.id = index;
+        this.setIndexed(false);
     }
 
     @Override
