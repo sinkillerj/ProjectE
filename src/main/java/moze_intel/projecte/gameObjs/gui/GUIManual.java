@@ -8,14 +8,14 @@ import moze_intel.projecte.manual.AbstractPage;
 import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualPageHandler;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
@@ -27,26 +27,41 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GUIManual extends GuiScreen
 {
-    private ResourceLocation bookTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
-    private ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
+    public static final int WINDOW_WIDTH = 256;
+    public static final int TEXT_WIDTH = 145;
+    public static final int PAGE_HEIGHT = 226;
+    public static final int TEXT_HEIGHT = PAGE_HEIGHT - 43 - 20;
+    public static final int TEXT_Y_OFFSET = 10;
+    public static final float GUI_SCALE_FACTOR = 1.5f;
+    public static final int BUTTON_HEIGHT = 13;
+    private static final int CHARACTER_HEIGHT = 9;
+    private static final int BUTTON_ID_OFFSET = 3;
+    private static final ResourceLocation bookTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
+    private static final ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
     private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
-
-    private final int CHARACTER_HEIGHT = Math.round(9);
+    public List<String> bodyTexts = Lists.newArrayList();
     private int indexPages = 1;
     private int currentPageID;
-    private int offset = 3;
     private int indexPageID = 0;
     private int entriesPerPage = 0;
-    private int indexEntries = 0;
 
-    public static List<String> bodyTexts = Lists.newArrayList();
-    public static int windowWidth = 256;
-    public static int textWidth = 145;
-    public static int pageHeight = 226;
-    public static int textHeight = pageHeight - 43 - 20;
-    public static int textYOffset = 10;
-    public static float guiScaleFactor = 1.5f;
-    public static final int bHeight = 13;
+    public static void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
+    {
+        if (fixLighting)
+        {
+            GL11.glEnable(GL11.GL_LIGHTING);
+        }
+
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), item, x, y);
+
+        if (fixLighting)
+        {
+            GL11.glDisable(GL11.GL_LIGHTING);
+        }
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+    }
 
     @Override
     public void initGui()
@@ -56,20 +71,20 @@ public class GUIManual extends GuiScreen
 
         width = scaledresolution.getScaledWidth();
 
-        int i = (this.width - windowWidth) / 2;
+        int i = (this.width - WINDOW_WIDTH) / 2;
 
-        this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (guiScaleFactor * 0.75f)), pageHeight - Math.round(bHeight * 1.2f), true));
-        this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / guiScaleFactor), pageHeight - Math.round(bHeight * 1.2f), false));
+        this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (GUI_SCALE_FACTOR * 0.75f)), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), true));
+        this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), false));
 
         String text = StatCollector.translateToLocal("pe.manual.index_button");
         int stringWidth = mc.fontRenderer.getStringWidth(text);
 
-        this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), pageHeight - Math.round(bHeight * 1.3f), stringWidth, 15, text));
+        this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f), stringWidth, 15, text));
 
-        entriesPerPage = (int) Math.floor(textHeight / CHARACTER_HEIGHT) - 2;
-        indexPages = (int) Math.ceil(ManualPageHandler.pages.size() / entriesPerPage);
+        entriesPerPage = TEXT_HEIGHT / CHARACTER_HEIGHT - 2;
+        indexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / entriesPerPage);
 
-        addIndexButtons(((Math.round(this.width / guiScaleFactor) - windowWidth) / 2) + 40);
+        addIndexButtons(((Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2) + 40);
 
         indexPageID -= indexPages;
         currentPageID = indexPageID;
@@ -79,8 +94,6 @@ public class GUIManual extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (isViewingIndex())
@@ -91,31 +104,30 @@ public class GUIManual extends GuiScreen
             this.mc.getTextureManager().bindTexture(bookTexture);
         }
 
-        GL11.glScalef(guiScaleFactor, 1, guiScaleFactor);
-        int k = (Math.round(this.width / guiScaleFactor) - windowWidth) / 2;
-        this.drawTexturedModalRect(k, 5, 0, 0, windowWidth, pageHeight);
-        GL11.glScalef(1 / guiScaleFactor, 1, 1 / guiScaleFactor);
+        GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
+        int k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
+        this.drawTexturedModalRect(k, 5, 0, 0, WINDOW_WIDTH, PAGE_HEIGHT);
+        GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
         if (!isViewingIndex())
         {
             AbstractPage currentPage = ManualPageHandler.pages.get(currentPageID);
-            AbstractPage nextPage = ManualPageHandler.pages.get(currentPageID + 1);
+            AbstractPage nextPage = currentPageID == ManualPageHandler.pages.size() || currentPageID == ManualPageHandler.pages.size() - 1 ? null : ManualPageHandler.pages.get(currentPageID + 1); // todo clean
 
             if (currentPage != null)
-                drawPage(scaledresolution, currentPage, k + 40, k + 20, 0);
+                drawPage(currentPage, k + 40, k + 20);
             if (nextPage != null)
-                drawPage(scaledresolution, nextPage, k + 160, k + 140, 0);
+                drawPage(nextPage, k + 160, k + 140);
         } else
         {
-
             this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.manual.index"), k + 60, 27, 0, false);
         }
 
         this.updateButtons();
 
-        for (Object aButtonList : this.buttonList)
+        for (GuiButton button : ((List<GuiButton>) this.buttonList))
         {
-            ((GuiButton) aButtonList).drawButton(this.mc, mouseX, mouseY);
+            button.drawButton(this.mc, mouseX, mouseY);
         }
 
     }
@@ -158,8 +170,8 @@ public class GUIManual extends GuiScreen
             ((TocButton) this.buttonList.get(2)).visible = false;
             for (int i = 3; i < this.buttonList.size(); i++)
             {
-                if (i > (entriesPerPage * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + offset &&
-                        i <= (entriesPerPage * (indexPages + 1 - Math.abs(currentPageID + 1))) + offset)
+                if (i > (entriesPerPage * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + BUTTON_ID_OFFSET &&
+                        i <= (entriesPerPage * (indexPages + 1 - Math.abs(currentPageID + 1))) + BUTTON_ID_OFFSET)
                 {
                     ((IndexLinkButton) this.buttonList.get(i)).visible = true;
                 } else
@@ -186,10 +198,101 @@ public class GUIManual extends GuiScreen
         }
     }
 
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
+    }
+
+    public void drawImage(ResourceLocation resource, int x, int y)
+    {
+        Minecraft.getMinecraft().renderEngine.bindTexture(resource);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glScalef(0.5F, 0.5F, 1F);
+        this.drawTexturedModalRect(x, y, 0, 0, 256, 256);
+        GL11.glScalef(2F, 2F, 1F);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    public void addIndexButtons(int x)
+    {
+        int yOffset = 42;
+        int side = 0;
+        int sideWas = 0;
+        int skipped = 0;
+        x *= GUI_SCALE_FACTOR;
+
+        for (AbstractPage page : ManualPageHandler.pages)
+        {
+            if (!page.shouldAppearInIndex())
+            {
+                skipped++;
+                continue;
+            }
+
+            if (side != sideWas)
+            {
+                yOffset = 42;
+                if (side == 1)
+                    x += 160 * GUI_SCALE_FACTOR;
+                else
+                    x -= 160 * GUI_SCALE_FACTOR;
+                sideWas = side;
+            }
+
+            String text = page.getHeaderText();
+            int buttonID = ManualPageHandler.pages.indexOf(page) + BUTTON_ID_OFFSET;
+            addIndexButton(buttonID, x, yOffset, text);
+            yOffset += CHARACTER_HEIGHT + 1;
+            side = ((ManualPageHandler.pages.indexOf(page) - skipped) / (entriesPerPage)) % 2;
+        }
+
+    }
+
+    private boolean isViewingIndex()
+    {
+        return currentPageID < 0;
+    }
+
+    private void addIndexButton(int buttonID, int x, int yOffset, String text)
+    {
+        buttonList.add(new IndexLinkButton(buttonID, Math.round((x * GUI_SCALE_FACTOR) / 2), yOffset, mc.fontRenderer.getStringWidth(text),
+                CHARACTER_HEIGHT, text));
+    }
+
+    // Header = k+40, k+160, Image/Text = k+20, k+140
+    public void drawPage(AbstractPage page, int headerX, int contentX)
+    {
+        this.fontRendererObj.drawString(page.getHeaderText(), Math.round(headerX * GUI_SCALE_FACTOR), 27, 0, false);
+
+        if (page instanceof ImagePage)
+        {
+            drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX * GUI_SCALE_FACTOR * 2), 80);
+        } else
+        {
+            bodyTexts = page.getBodyList();
+
+            for (int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET); i++)
+            {
+                this.fontRendererObj.drawString(bodyTexts.get(i).charAt(0) == 32 ? bodyTexts.get(i).substring(1) : bodyTexts.get(i),
+                        Math.round(contentX * GUI_SCALE_FACTOR), 43 + TEXT_Y_OFFSET * i, Color.black.getRGB());
+            }
+
+            if (page instanceof ItemPage)
+            {
+                ItemPage itemPage = ((ItemPage) page);
+                drawItemStackToGui(mc, itemPage.getItemStack(), Math.round(contentX * GUI_SCALE_FACTOR), 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
+                        || itemPage.getItemStack().getItem() == Item.getItemFromBlock(ObjHandler.confuseTorch));
+            }
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     private static class TocButton extends GuiButton
     {
-
         public TocButton(int ID, int xPos, int yPos, int bWidth, int bHeight, String text)
         {
             super(ID, xPos, yPos, bWidth, bHeight, text);
@@ -224,7 +327,7 @@ public class GUIManual extends GuiScreen
 
         public PageTurnButton(int ID, int xPos, int yPos, boolean par4)
         {
-            super(ID, xPos, yPos, bWidth, bHeight, "");
+            super(ID, xPos, yPos, bWidth, BUTTON_HEIGHT, "");
             pointsRight = par4;
         }
 
@@ -246,131 +349,12 @@ public class GUIManual extends GuiScreen
 
                 if (!pointsRight)
                 {
-                    v += bHeight;
+                    v += BUTTON_HEIGHT;
                 }
                 GL11.glEnable(GL11.GL_BLEND);
-                this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, bWidth, bHeight);
+                this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, bWidth, BUTTON_HEIGHT);
                 GL11.glDisable(GL11.GL_BLEND);
             }
-        }
-
-    }
-
-    public static void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
-    {
-        if (fixLighting)
-        {
-            GL11.glEnable(GL11.GL_LIGHTING);
-        }
-
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), item, x, y);
-
-        if (fixLighting)
-        {
-            GL11.glDisable(GL11.GL_LIGHTING);
-        }
-
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-    }
-
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return false;
-    }
-
-    public void drawImage(ResourceLocation resource, int x, int y)
-    {
-        Minecraft.getMinecraft().renderEngine.bindTexture(resource);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
-        GL11.glScalef(0.5F, 0.5F, 1F);
-        this.drawTexturedModalRect(x, y, 0, 0, 256, 256);
-        GL11.glScalef(2F, 2F, 1F);
-        GL11.glDisable(GL11.GL_BLEND);
-    }
-
-    public void drawCategory(String name, int xOffset, int yOffset, int x)
-    {
-        mc.fontRenderer.drawString(EnumChatFormatting.BOLD + (EnumChatFormatting.UNDERLINE + name), Math.round(x * guiScaleFactor) / 2 + xOffset, yOffset, 0);
-    }
-
-    public void addIndexButtons(int x)
-    {
-
-        int yOffset = 42;
-        int side = 0;
-        int sideWas = 0;
-        int skipped = 0;
-        x *= guiScaleFactor;
-
-        for (AbstractPage page : ManualPageHandler.pages)
-        {
-            if (!page.shouldAppearInIndex())
-            {
-                skipped++;
-                continue;
-            }
-
-            if (side != sideWas)
-            {
-                yOffset = 42;
-                if (side == 1)
-                    x += 160 * guiScaleFactor;
-                else
-                    x -= 160 * guiScaleFactor;
-                sideWas = side;
-            }
-
-            String text = page.getHeaderText();
-            int buttonID = ManualPageHandler.pages.indexOf(page) + offset;
-            addIndexButton(buttonID, x, yOffset, text);
-            yOffset += CHARACTER_HEIGHT + 1;
-            side = ((ManualPageHandler.pages.indexOf(page) - skipped) / (entriesPerPage)) % 2;
-        }
-
-    }
-
-    private boolean isViewingIndex()
-    {
-        return currentPageID < 0;
-    }
-
-    private void addIndexButton(int buttonID, int x, int yOffset, String text)
-    {
-        buttonList.add(new IndexLinkButton(buttonID, Math.round((x * guiScaleFactor) / 2), yOffset, Math.round(mc.fontRenderer.getStringWidth(text)),
-                CHARACTER_HEIGHT, text));
-    }
-
-    // Header = k+40, k+160, Image/Text = k+20, k+140
-    public void drawPage(ScaledResolution scaledresolution, AbstractPage page, int headerX, int contentX, int side)
-    {
-        this.fontRendererObj.drawString(page.getHeaderText(), Math.round(headerX * guiScaleFactor), 27, 0, false);
-
-        if (page instanceof ImagePage)
-        {
-            drawImage(((ImagePage) page).getImageLocation(), Math.round(contentX * guiScaleFactor * 2), 80);
-        } else
-        {
-
-            bodyTexts = page.getBodyList();
-
-            for (int i = 0; i < bodyTexts.size() && i < Math.floor(GUIManual.textHeight / GUIManual.textYOffset); i++)
-            {
-                this.fontRendererObj.drawString(bodyTexts.get(i).charAt(0) == 32 ? bodyTexts.get(i).substring(1) : bodyTexts.get(i),
-                        Math.round(contentX * guiScaleFactor), 43 + textYOffset * i, Color.black.getRGB());
-            }
-
-            if (page instanceof ItemPage)
-            {
-                ItemPage itemPage = ((ItemPage) page);
-                drawItemStackToGui(mc, itemPage.getItemStack(), Math.round(contentX * guiScaleFactor), 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
-                        || ItemHelper.areItemStacksEqual(itemPage.getItemStack(), new ItemStack(ObjHandler.confuseTorch)));
-            }
-
         }
 
     }

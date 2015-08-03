@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
+import moze_intel.projecte.utils.CollectionHelper;
 import moze_intel.projecte.utils.Comparators;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -166,11 +166,11 @@ public class ManualPageHandler
 
     private static void checkSubPages(AbstractPage page, PageCategory category, String identifier)
     {
-        int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.textYOffset) / GUIManual.textHeight);
+        int neededPages = (int) Math.ceil((page.getBodyList().size() * GUIManual.TEXT_Y_OFFSET) / GUIManual.TEXT_HEIGHT);
         int k = 0;
         if (neededPages > 0)
         {
-            List<List<String>> parts = chopped(page.getBodyList(), (int) Math.floor(GUIManual.textHeight / GUIManual.textYOffset));
+            List<List<String>> parts = CollectionHelper.splitToLength(page.getBodyList(), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
             for (int i = 1; i <= neededPages; i++)
             {
                 addSubPage(parts.get(i), category, identifier, k++);
@@ -208,17 +208,4 @@ public class ManualPageHandler
         return list;
     }
 
-    // chops a list into non-view sublists of length L
-    private static <T> List<List<T>> chopped(List<T> list, final int L)
-    {
-        List<List<T>> parts = new ArrayList<List<T>>();
-        final int N = list.size();
-        for (int i = 0; i < N; i += L)
-        {
-            parts.add(new ArrayList<T>(
-                            list.subList(i, Math.min(N, i + L)))
-            );
-        }
-        return parts;
-    }
 }

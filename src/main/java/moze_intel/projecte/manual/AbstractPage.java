@@ -3,7 +3,6 @@ package moze_intel.projecte.manual;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.PEFontRenderer;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,6 @@ public abstract class AbstractPage
 {
     protected final PageCategory category;
     private FontRenderer peFontRenderer = new PEFontRenderer();
-    private FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
 
     protected AbstractPage(PageCategory category)
     {
@@ -33,7 +31,7 @@ public abstract class AbstractPage
 
     public List<String> getBodyList()
     {
-        return peFontRenderer.listFormattedStringToWidth(getBodyText(), GUIManual.textWidth);
+        return peFontRenderer.listFormattedStringToWidth(getBodyText(), GUIManual.TEXT_WIDTH);
     }
 
     public static AbstractPage createItemPage(Item item, PageCategory category)
