@@ -3,10 +3,12 @@ package moze_intel.projecte.manual;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.CollectionHelper;
 import moze_intel.projecte.utils.Comparators;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +23,32 @@ public class ManualPageHandler
     public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
 
     public static void init()
+    {
+        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+        if (resourceManager instanceof IReloadableResourceManager)
+        {
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener()
+            {
+                @Override
+                public void onResourceManagerReload(IResourceManager p_110549_1_)
+                {
+                    ManualPageHandler.clear();
+                    ManualPageHandler.bake();
+                }
+            });
+        }
+
+        clear();
+        bake();
+    }
+
+    private static void clear()
+    {
+        pages.clear();
+        categoryMap.clear();
+    }
+
+    private static void bake()
     {
         for (PageCategory e : PageCategory.values())
         {
@@ -117,73 +145,6 @@ public class ManualPageHandler
         addItemAndSubs(getSubItems(ObjHandler.covalence), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
         addItemAndSubs(getSubItems(ObjHandler.kleinStars), PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
 
-        registerAll();
-    }
-
-    private static void addItem(Item item, PageCategory category)
-    {
-        AbstractPage page = AbstractPage.createItemPage(item, category);
-        categoryMap.get(category).add(page);
-        checkSubPages(page, category, new ItemStack(item).getUnlocalizedName() + ".name");
-    }
-
-    private static void addItem(Block block, PageCategory category)
-    {
-        AbstractPage page = AbstractPage.createItemPage(block, category);
-        categoryMap.get(category).add(page);
-        checkSubPages(page, category, new ItemStack(block).getUnlocalizedName() + ".name");
-    }
-
-    private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
-    {
-        for (ItemStack is : list)
-        {
-            AbstractPage page = AbstractPage.createItemPage(is, category);
-            categoryMap.get(category).add(page);
-            checkSubPages(page, category, is.getUnlocalizedName() + ".name");
-        }
-    }
-
-    private static void addTextPage(String identifier, PageCategory category)
-    {
-        AbstractPage page = AbstractPage.createTextPage(identifier, category);
-        categoryMap.get(category).add(page);
-        checkSubPages(page, category, "pe.manual." + identifier + ".header");
-    }
-
-    private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
-    {
-        AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
-        categoryMap.get(category).add(page);
-        checkSubPages(page, category, identifier);
-    }
-
-    private static void addSubPage(List<String> text, PageCategory category, String identifier, int i)
-    {
-        AbstractPage page = AbstractPage.createSubPage(text, category, identifier, i);
-        categoryMap.get(category).add(page);
-    }
-
-    private static void checkSubPages(AbstractPage page, PageCategory category, String identifier)
-    {
-        int neededPages = GUIManual.splitBody(page).size() * GUIManual.TEXT_Y_OFFSET / GUIManual.TEXT_HEIGHT;
-        int k = 0;
-        if (neededPages > 0)
-        {
-            List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(page), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
-            for (int i = 1; i <= neededPages; i++)
-            {
-                addSubPage(parts.get(i), category, identifier, k++);
-            }
-        }
-    }
-
-    /**
-     * Iterates through all categories in enum order, sorts the list
-     * alphabetically by localized header, then adds them to the page list
-     */
-    private static void registerAll()
-    {
         for (List<AbstractPage> categoryPages : categoryMap.values())
         {
             Collections.sort(categoryPages, Comparators.PAGE_HEADER);
@@ -192,6 +153,44 @@ public class ManualPageHandler
                 pages.add(page);
             }
         }
+    }
+
+    private static void addItem(Item item, PageCategory category)
+    {
+        AbstractPage page = AbstractPage.createItemPage(item, category);
+        categoryMap.get(category).add(page);
+        categoryMap.get(category).addAll(page.subPages);
+    }
+
+    private static void addItem(Block block, PageCategory category)
+    {
+        AbstractPage page = AbstractPage.createItemPage(block, category);
+        categoryMap.get(category).add(page);
+        categoryMap.get(category).addAll(page.subPages);
+    }
+
+    private static void addItemAndSubs(List<ItemStack> list, PageCategory category)
+    {
+        for (ItemStack is : list)
+        {
+            AbstractPage page = AbstractPage.createItemPage(is, category);
+            categoryMap.get(category).add(page);
+            categoryMap.get(category).addAll(page.subPages);
+        }
+    }
+
+    private static void addTextPage(String identifier, PageCategory category)
+    {
+        AbstractPage page = AbstractPage.createTextPages(identifier, category);
+        categoryMap.get(category).add(page);
+        categoryMap.get(category).addAll(page.subPages);
+        System.out.println("Added " + (page.subPages.size() + 1) + " pages for identifier " + identifier);
+    }
+
+    private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
+    {
+        AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
+        categoryMap.get(category).add(page);
     }
 
     private static List<ItemStack> getSubItems(Block b)

@@ -5,11 +5,13 @@ import net.minecraft.util.StatCollector;
 public class TextPage extends AbstractPage
 {
     private final String header;
+    private final String text;
 
-    protected TextPage(String identifier, PageCategory category)
+    protected TextPage(String identifier, PageCategory category, String text)
     {
         super(category);
         this.header = identifier;
+        this.text = text;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class TextPage extends AbstractPage
     @Override
     public String getBodyText()
     {
-        return StatCollector.translateToLocal("pe.manual." + header);
+        return text;
     }
 
 }

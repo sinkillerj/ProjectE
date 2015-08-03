@@ -36,16 +36,16 @@ public class GUIManual extends GuiScreen
     public static final float GUI_SCALE_FACTOR = 1.5f;
     public static final int BUTTON_HEIGHT = 13;
     private static final int CHARACTER_HEIGHT = 9;
-    private static final int BUTTON_ID_OFFSET = 3;
+    private static final int BUTTON_ID_OFFSET = 3; // Offset of button ID's due to the page turn and TOC buttons
     private static final ResourceLocation bookTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
     private static final ResourceLocation tocTexture = new ResourceLocation("projecte:textures/gui/bookTexture.png");
     private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
+    private static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
     private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
     public List<String> bodyTexts = Lists.newArrayList();
     private int indexPages = 1;
     private int currentPageID;
     private int indexPageID = 0;
-    private int entriesPerPage = 0;
 
     public static void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
     {
@@ -65,6 +65,18 @@ public class GUIManual extends GuiScreen
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<String> splitBody(AbstractPage page)
+    {
+        return peFontRenderer.listFormattedStringToWidth(page.getBodyText(), TEXT_WIDTH);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> splitBody(String s)
+    {
+        return peFontRenderer.listFormattedStringToWidth(s, TEXT_WIDTH);
+    }
+
     @Override
     public void initGui()
     {
@@ -74,17 +86,14 @@ public class GUIManual extends GuiScreen
         width = scaledresolution.getScaledWidth();
 
         int i = (this.width - WINDOW_WIDTH) / 2;
-
         this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (GUI_SCALE_FACTOR * 0.75f)), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), true));
         this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), false));
 
         String text = StatCollector.translateToLocal("pe.manual.index_button");
         int stringWidth = mc.fontRenderer.getStringWidth(text);
-
         this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f), stringWidth, 15, text));
 
-        entriesPerPage = TEXT_HEIGHT / CHARACTER_HEIGHT - 2;
-        indexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / entriesPerPage);
+        indexPages = MathHelper.ceiling_float_int(((float) ManualPageHandler.pages.size()) / ENTRIES_PER_PAGE);
 
         addIndexButtons(((Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2) + 40);
 
@@ -172,8 +181,8 @@ public class GUIManual extends GuiScreen
             ((TocButton) this.buttonList.get(2)).visible = false;
             for (int i = 3; i < this.buttonList.size(); i++)
             {
-                if (i > (entriesPerPage * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + BUTTON_ID_OFFSET &&
-                        i <= (entriesPerPage * (indexPages + 1 - Math.abs(currentPageID + 1))) + BUTTON_ID_OFFSET)
+                if (i > (ENTRIES_PER_PAGE * ((indexPages + 1 - Math.abs(currentPageID)) - 1)) + BUTTON_ID_OFFSET &&
+                        i <= (ENTRIES_PER_PAGE * (indexPages + 1 - Math.abs(currentPageID + 1))) + BUTTON_ID_OFFSET)
                 {
                     ((IndexLinkButton) this.buttonList.get(i)).visible = true;
                 } else
@@ -249,7 +258,7 @@ public class GUIManual extends GuiScreen
             int buttonID = ManualPageHandler.pages.indexOf(page) + BUTTON_ID_OFFSET;
             addIndexButton(buttonID, x, yOffset, text);
             yOffset += CHARACTER_HEIGHT + 1;
-            side = ((ManualPageHandler.pages.indexOf(page) - skipped) / (entriesPerPage)) % 2;
+            side = ((ManualPageHandler.pages.indexOf(page) - skipped) / (ENTRIES_PER_PAGE)) % 2;
         }
 
     }
@@ -358,11 +367,5 @@ public class GUIManual extends GuiScreen
                 GL11.glDisable(GL11.GL_BLEND);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<String> splitBody(AbstractPage page)
-    {
-        return peFontRenderer.listFormattedStringToWidth(page.getBodyText(), TEXT_WIDTH);
     }
 }

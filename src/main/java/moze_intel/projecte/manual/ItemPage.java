@@ -6,11 +6,13 @@ import net.minecraft.util.StatCollector;
 public class ItemPage extends AbstractPage
 {
     private final ItemStack stack;
+    private final String body;
 
-    protected ItemPage(ItemStack stack, PageCategory category)
+    protected ItemPage(ItemStack stack, PageCategory category, String body)
     {
         super(category);
         this.stack = stack;
+        this.body = body;
     }
 
     public ItemStack getItemStack()
@@ -27,6 +29,6 @@ public class ItemPage extends AbstractPage
     @Override
     public String getBodyText()
     {
-        return StatCollector.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5)); // Strip "item." or "tile."
+        return body;
     }
 }

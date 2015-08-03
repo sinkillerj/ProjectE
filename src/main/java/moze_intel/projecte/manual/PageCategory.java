@@ -2,6 +2,7 @@ package moze_intel.projecte.manual;
 
 public enum PageCategory
 {
+    INDEX("index"),
     NONE("none"),
     ITEM("items"),
     BLOCK("blocks"),
