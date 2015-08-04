@@ -72,7 +72,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		this.blockIcon = register.registerIcon("obsidian");
+		this.blockIcon = register.registerIcon("projecte:alchemy_chest");
 	}
 
 	@Override

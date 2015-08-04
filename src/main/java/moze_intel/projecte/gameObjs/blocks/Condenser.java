@@ -87,7 +87,7 @@ public class Condenser extends AlchemicalChest implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		this.blockIcon = register.registerIcon("obsidian");
+		this.blockIcon = register.registerIcon("projecte:condenser");
 	}
 
 	@Override
