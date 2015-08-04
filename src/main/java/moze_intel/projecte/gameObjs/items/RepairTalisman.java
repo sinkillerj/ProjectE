@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import com.cricketcraft.chisel.api.IChiselItem;
 import com.google.common.collect.Lists;
@@ -20,6 +21,7 @@ import java.util.List;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -67,26 +69,43 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public void repairAllItems(EntityPlayer player)
 	{
 		IInventory inv = player.inventory;
+        IInventory bInv = BaublesApi.getBaubles(player);
 
-		for (int i = 0; i < 40; i++)
-		{
-			ItemStack invStack = inv.getStackInSlot(i);
+        PELogger.logDebug("Start repairAll");
+        for (int i = 0; i < 40; i++)
+        {
+            ItemStack invStack = inv.getStackInSlot(i);
+            PELogger.logDebug("Slot:" + i);
+            if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable() || invStack.getItem() instanceof IChiselItem)
+            {
+                continue;
+            }
 
-			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable() || invStack.getItem() instanceof IChiselItem)
-			{
-				continue;
-			}
+            if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress)
+            {
+                //Don't repair item that is currently used by the player.
+                continue;
+            }
 
-			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress) {
-				//Don't repair item that is currently used by the player.
-				continue;
-			}
+            if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+            {
+                invStack.setItemDamage(invStack.getItemDamage() - 1);
+            }
+        }
 
-			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-			{
-				invStack.setItemDamage(invStack.getItemDamage() - 1);
-			}
-		}
+        for (int i = 0; i < 4; i++)
+        {
+            ItemStack bInvStack = bInv.getStackInSlot(i);
+            if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable() || bInvStack.getItem() instanceof IChiselItem)
+            {
+                continue;
+            }
+
+            if (!bInvStack.getHasSubtypes() && bInvStack.getMaxDamage() != 0 && bInvStack.getItemDamage() > 0)
+            {
+                bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
+            }
+        }
 	}
 
 	@Override
