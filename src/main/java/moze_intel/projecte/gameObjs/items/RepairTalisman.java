@@ -5,6 +5,10 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import com.cricketcraft.chisel.api.IChiselItem;
 import com.google.common.collect.Lists;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -15,13 +19,6 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.MathUtils;
-
-import java.util.List;
-
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,6 +30,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
@@ -69,43 +68,62 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public void repairAllItems(EntityPlayer player)
 	{
 		IInventory inv = player.inventory;
-        IInventory bInv = BaublesApi.getBaubles(player);
 
-        PELogger.logDebug("Start repairAll");
-        for (int i = 0; i < 40; i++)
-        {
-            ItemStack invStack = inv.getStackInSlot(i);
-            PELogger.logDebug("Slot:" + i);
-            if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable() || invStack.getItem() instanceof IChiselItem)
-            {
-                continue;
-            }
+		for (int i = 0; i < 40; i++)
+		{
+			ItemStack invStack = inv.getStackInSlot(i);
 
-            if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress)
-            {
-                //Don't repair item that is currently used by the player.
-                continue;
-            }
+			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
+			{
+				continue;
+			}
 
-            if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
-            {
-                invStack.setItemDamage(invStack.getItemDamage() - 1);
-            }
-        }
+			if (Loader.isModLoaded("chisel"))
+			{
+				if (chiselCheck(invStack)) continue;
+			}
 
-        for (int i = 0; i < 4; i++)
-        {
-            ItemStack bInvStack = bInv.getStackInSlot(i);
-            if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable() || bInvStack.getItem() instanceof IChiselItem)
-            {
-                continue;
-            }
+			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress)
+			{
+				//Don't repair item that is currently used by the player.
+				continue;
+			}
 
-            if (!bInvStack.getHasSubtypes() && bInvStack.getMaxDamage() != 0 && bInvStack.getItemDamage() > 0)
-            {
-                bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
-            }
-        }
+			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+			{
+				invStack.setItemDamage(invStack.getItemDamage() - 1);
+			}
+		}
+
+		if (Loader.isModLoaded("Baubles")) baubleRepair(player);
+	}
+
+	@Optional.Method(modid = "chisel")
+	public boolean chiselCheck(ItemStack is)
+	{
+
+		return is.getItem() instanceof IChiselItem;
+	}
+
+	@Optional.Method(modid = "Baubles")
+	public void baubleRepair(EntityPlayer player)
+	{
+
+		IInventory bInv = BaublesApi.getBaubles(player);
+
+		for (int i = 0; i < 4; i++)
+		{
+			ItemStack bInvStack = bInv.getStackInSlot(i);
+			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
+			{
+				continue;
+			}
+
+			if (!bInvStack.getHasSubtypes() && bInvStack.getMaxDamage() != 0 && bInvStack.getItemDamage() > 0)
+			{
+				bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
+			}
+		}
 	}
 
 	@Override
