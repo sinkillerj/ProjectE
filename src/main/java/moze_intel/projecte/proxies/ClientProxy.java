@@ -5,22 +5,8 @@ import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
 import moze_intel.projecte.events.TransmutationRenderingEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
-import moze_intel.projecte.gameObjs.blocks.Condenser;
-import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
-import moze_intel.projecte.gameObjs.blocks.FuelBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
-import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
-import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.blocks.*;
+import moze_intel.projecte.gameObjs.entity.*;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
@@ -28,20 +14,21 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationProps;
-import moze_intel.projecte.rendering.ChestRenderer;
-import moze_intel.projecte.rendering.CondenserMK2Renderer;
-import moze_intel.projecte.rendering.CondenserRenderer;
-import moze_intel.projecte.rendering.NovaCataclysmRenderer;
-import moze_intel.projecte.rendering.NovaCatalystRenderer;
+import moze_intel.projecte.rendering.*;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.ReflectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
@@ -51,6 +38,9 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class ClientProxy implements IProxy
 {
@@ -358,6 +348,20 @@ public class ClientProxy implements IProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer(mc.getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.fireProjectile, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.windProjectile, mc.getRenderItem()));
+
+		try
+		{
+			Map<String, RenderPlayer> skinMap = ReflectionHelper.getSkinMap(mc.getRenderManager());
+			RenderPlayer render = skinMap.get("default");
+			Method addLayer = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(RendererLivingEntity.class, render, new String[] {"addLayer", "a", "func_177094_a"}, LayerRenderer.class);
+			addLayer.invoke(render, new LayerModelYue(render));
+			render = skinMap.get("slim");
+			addLayer.invoke(render, new LayerModelYue(render));
+		} catch (ReflectiveOperationException e)
+		{
+			e.printStackTrace();
+			PELogger.logWarn("Reflection failed: ModelYue not available");
+		}
 	}
 
 	@Override

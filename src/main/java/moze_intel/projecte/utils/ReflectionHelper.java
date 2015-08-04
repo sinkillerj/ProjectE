@@ -1,9 +1,15 @@
 package moze_intel.projecte.utils;
 
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.world.Explosion;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Map;
 
 /**
  * Helper class for anything that is accessed using reflection. Should only be accessed from other utils.
@@ -16,6 +22,7 @@ public final class ReflectionHelper
 	private static final String[] entityFireImmuneNames = new String[] {"isImmuneToFire", "ae", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = new String[] {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] explosionSizeNames = new String[] {"explosionSize", "i", "field_77280_f"};
+	private static final String[] skinMapNames = new String[] {"skinMap", "l", "field_178636_l"};
 
 	protected static boolean getArrowInGround(EntityArrow instance)
 	{
@@ -25,6 +32,12 @@ public final class ReflectionHelper
 	protected static float getExplosionSize(Explosion instance)
 	{
 		return net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue(Explosion.class, instance, explosionSizeNames);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static Map<String, RenderPlayer> getSkinMap(RenderManager instance)
+	{
+		return net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue(RenderManager.class, instance, skinMapNames);
 	}
 
 	protected static void setEntityFireImmunity(Entity instance, boolean value)
