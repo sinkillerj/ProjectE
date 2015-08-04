@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import com.cricketcraft.chisel.api.IChiselItem;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
@@ -71,7 +72,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 
-			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
+			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable() || invStack.getItem() instanceof IChiselItem)
 			{
 				continue;
 			}
