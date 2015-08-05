@@ -358,3 +358,6 @@ pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
+
+pe.nei.worldtransmute=World Transmutation
+pe.nei.philo=Philosopher's Smelting

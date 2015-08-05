@@ -20,6 +20,8 @@ public class NEIPEConfig implements IConfigureNEI {
 	public void loadConfig() {
 		API.registerRecipeHandler(new NEIWorldTransmuteHandler());
 		API.registerUsageHandler(new NEIWorldTransmuteHandler());
+		API.registerRecipeHandler(new NEIPhiloSmeltingHandler());
+		API.registerUsageHandler(new NEIPhiloSmeltingHandler());
 	}
 	
 	
