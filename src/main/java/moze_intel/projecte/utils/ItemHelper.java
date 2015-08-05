@@ -23,6 +23,24 @@ import java.util.List;
 public final class ItemHelper
 {
 	/**
+	 * @return True if the two stacks are equal in every which way: both null, or the item, nbt, meta, and stack size all match.
+	 */
+	public static boolean areItemStacksFullyEqual(ItemStack stack1, ItemStack stack2)
+	{
+		if (stack1 == null && stack2 == null)
+		{
+			return true;
+		}
+
+		if (stack1 == null || stack2 == null)
+		{
+			return false;
+		}
+
+		return stack1.stackSize == stack2.stackSize && areItemStacksEqual(stack1, stack2);
+	}
+
+	/**
 	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
 	 */
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)

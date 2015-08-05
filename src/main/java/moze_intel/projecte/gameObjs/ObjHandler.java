@@ -20,6 +20,7 @@ import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
+import moze_intel.projecte.gameObjs.customRecipes.RecipesGemArmor;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -597,11 +598,6 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(zero, 1, OreDictionary.WILDCARD_VALUE), Items.water_bucket);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.lava_bucket), volcanite, Items.bucket, Items.redstone);
 		
-		GameRegistry.addShapelessRecipe(new ItemStack(gemHelmet), rmHelmet, new ItemStack(kleinStars, 1, 5), everTide, soulStone);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemChest), rmChest, new ItemStack(kleinStars, 1, 5), volcanite, bodyStone);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemLegs), rmLegs, new ItemStack(kleinStars, 1, 5), blackHole, timeWatch);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemFeet), rmFeet, new ItemStack(kleinStars, 1, 5), swrg, swrg);
-		
 		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 0), matterBlock);
 		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 1), new ItemStack(matterBlock, 1, 1));
 		
@@ -624,9 +620,17 @@ public class ObjHandler
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
 		GameRegistry.addRecipe(new RecipesKleinStars());
+		GameRegistry.addRecipe(new RecipesGemArmor.Helm());
+		GameRegistry.addRecipe(new RecipesGemArmor.Chest());
+		GameRegistry.addRecipe(new RecipesGemArmor.Legs());
+		GameRegistry.addRecipe(new RecipesGemArmor.Feet());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipesAlchemyBags.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Klein Star Recipes", RecipesKleinStars.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Gem Helmet Recipe", RecipesGemArmor.Helm.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Gem Chest Recipe", RecipesGemArmor.Chest.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Gem Legs Recipe", RecipesGemArmor.Legs.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Gem Boots Recipe", RecipesGemArmor.Feet.class, Category.SHAPELESS, "before:minecraft:shaped");
 		
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());

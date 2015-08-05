@@ -54,22 +54,13 @@ public class KleinStar extends ItemPE
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		/*if (!world.isRemote)
+		if (!world.isRemote)
 		{
-			this.setEmc(stack, Utils.GetKleinStarMaxEmc(stack));
-		}*/
+			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+		}
 		
 		return stack;
 	}
-	
-	/*@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (!world.isRemote)
-		{
-			stack.stackTagCompound = new NBTTagCompound();
-		}
-	}*/
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
