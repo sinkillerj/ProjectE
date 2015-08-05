@@ -56,7 +56,7 @@ public class KleinStar extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+			// setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
 		}
 		
 		return stack;
