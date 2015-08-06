@@ -261,7 +261,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack)
+	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
 	{
 		return true;
 	}

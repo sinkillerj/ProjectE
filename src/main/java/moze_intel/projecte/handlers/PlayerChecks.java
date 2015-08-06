@@ -101,7 +101,7 @@ public final class PlayerChecks
 		{
 			if (stack != null
 					&& stack.getItem() instanceof IFlightProvider
-					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack))
+					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
 				return true;
 			}
@@ -113,7 +113,7 @@ public final class PlayerChecks
 
 			if (stack != null
 					&& stack.getItem() instanceof IFlightProvider
-					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack))
+					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
 				return true;
 			}
@@ -127,7 +127,7 @@ public final class PlayerChecks
 				ItemStack stack = baubles.getStackInSlot(i);
 				if (stack != null
 						&& stack.getItem() instanceof IFlightProvider
-						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack))
+						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 				{
 					return true;
 				}
@@ -197,7 +197,7 @@ public final class PlayerChecks
 		{
 			if (stack != null
 					&& stack.getItem() instanceof IStepAssister
-					&& ((IStepAssister) stack.getItem()).canAssistStep(stack))
+					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
 				return true;
 			}
@@ -209,7 +209,7 @@ public final class PlayerChecks
 
 			if (stack != null
 					&& stack.getItem() instanceof IStepAssister
-					&& ((IStepAssister) stack.getItem()).canAssistStep(stack))
+					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
 				return true;
 			}
@@ -223,7 +223,7 @@ public final class PlayerChecks
 				ItemStack stack = baubles.getStackInSlot(i);
 				if (stack != null
 						&& stack.getItem() instanceof IStepAssister
-						&& ((IStepAssister) stack.getItem()).canAssistStep(stack))
+						&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 				{
 					return true;
 				}

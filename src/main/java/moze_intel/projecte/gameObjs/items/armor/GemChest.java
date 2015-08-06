@@ -75,6 +75,6 @@ public class GemChest extends GemArmorBase implements IFireProtector
     @Override
     public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
     {
-        return player.getCurrentArmor(2) != null && player.getCurrentArmor(2).getItem() == this;
+        return player.getCurrentArmor(2) == stack;
     }
 }

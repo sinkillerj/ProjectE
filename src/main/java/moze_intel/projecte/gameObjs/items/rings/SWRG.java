@@ -177,7 +177,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack)
+	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
 	{
 		// Dummy result - swrg needs special-casing
 		return false;

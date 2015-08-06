@@ -88,10 +88,15 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         tooltips.add(String.format(
                 StatCollector.translateToLocal("pe.gem.stepassist.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-        EnumChatFormatting e = canAssistStep(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
-        String s = canAssistStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+        EnumChatFormatting e = canStep(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        String s = canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
         tooltips.add(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
                 + e + StatCollector.translateToLocal(s));
+    }
+
+    private boolean canStep(ItemStack stack)
+    {
+        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("StepAssist") && stack.getTagCompound().getBoolean("StepAssist");
     }
 
     @Override
@@ -103,14 +108,15 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     }
 
     @Override
-    public boolean canProvideFlight(ItemStack stack)
+    public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
     {
-        return true;
+        return player.getCurrentArmor(0) == stack;
     }
 
     @Override
-    public boolean canAssistStep(ItemStack stack)
+    public boolean canAssistStep(ItemStack stack, EntityPlayerMP player)
     {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("StepAssist") && stack.getTagCompound().getBoolean("StepAssist");
+        return player.getCurrentArmor(0) == stack
+                && canStep(stack);
     }
 }
