@@ -11,6 +11,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -66,39 +67,45 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			stack.stackTagCompound = new NBTTagCompound();
 		}
 
-		if (!playerMP.capabilities.isFlying || playerMP.onGround)
+		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getItemDamage() == 3)
-			{
-				changeMode(stack, 2);
-			} else if (stack.getItemDamage() == 1)
+			if (stack.getItemDamage() > 0)
 			{
 				changeMode(stack, 0);
 			}
-		}
 
-		// Pre-consume a bit of fuel so canProvideFlight can return true, for auto-activate
-		if (getEmc(stack) <= 2.0 && !consumeFuel(player, stack, 64, true))
-		{
-			changeMode(stack, 0);
-		}
+			if (playerMP.capabilities.allowFlying)
+			{
+				PlayerChecks.disableSwrgFlightOverride(playerMP);
+			}
 
-		if (stack.getItemDamage() == 0)
-		{
 			return;
+		}
+
+		if (!playerMP.capabilities.allowFlying)
+		{
+			PlayerChecks.enableSwrgFlightOverride(playerMP);
+		}
+
+		if (playerMP.capabilities.isFlying)
+		{
+			if (!isFlyingEnabled(stack))
+			{
+				changeMode(stack, stack.getItemDamage() == 0 ? 1 : 3);
+			}
+		}
+		else
+		{
+			if (isFlyingEnabled(stack))
+			{
+				changeMode(stack, stack.getItemDamage() == 1 ? 0 : 2);
+			}
 		}
 
 		float toRemove = 0;
 
 		if (playerMP.capabilities.isFlying)
 		{
-			if (stack.getItemDamage() == 0)
-			{
-				changeMode(stack, 1);
-			} else if (stack.getItemDamage() == 2)
-			{
-				changeMode(stack, 3);
-			}
 			toRemove = 0.32F;
 		}
 
@@ -111,10 +118,12 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			toRemove = 0.64F;
 		}
 
-		if (!consumeFuel(playerMP, stack, toRemove, true) || getEmc(stack) <= 2.0)
-		{
-			changeMode(stack, 0);
-		}
+		removeEmc(stack, toRemove);
+	}
+
+	private boolean isFlyingEnabled(ItemStack stack)
+	{
+		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
 	}
 
 	@Override
@@ -170,12 +179,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	@Override
 	public boolean canProvideFlight(ItemStack stack)
 	{
-		boolean flag = getEmc(stack) > 2.0;
-		if (System.currentTimeMillis() % 50 == 0)
-		{
-			System.out.println("SWRG canProvideFlight: " + flag);
-		}
-		return flag;
+		// Dummy result - swrg needs special-casing
+		return false;
 	}
 	
 	@Override

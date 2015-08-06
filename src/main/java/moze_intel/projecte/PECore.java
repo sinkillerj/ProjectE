@@ -25,6 +25,7 @@ import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -162,7 +163,10 @@ public class PECore
 
 		Transmutation.clearCache();
 		PELogger.logDebug("Cleared cached tome knowledge");
-		
+
+		PlayerChecks.clearLists();
+		PELogger.logDebug("Cleared player check-lists: server stopping.");
+
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
 	}

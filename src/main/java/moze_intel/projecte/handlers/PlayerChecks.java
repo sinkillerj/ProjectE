@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -14,10 +13,8 @@ import java.util.Set;
 
 public final class PlayerChecks
 {
-	private static final Set<EntityPlayerMP> flyChecks = Sets.newHashSet();
-	private static final Set<EntityPlayerMP> fireChecks = Sets.newHashSet();
-	private static final Set<EntityPlayerMP> stepChecks = Sets.newHashSet();
-	public static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
+	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{
@@ -43,7 +40,6 @@ public final class PlayerChecks
 		{
 			if (player.capabilities.allowFlying)
 			{
-				PELogger.logDebug("PE says cannot fly, MC can fly, telling client it can't fly");
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
 		}
@@ -51,7 +47,6 @@ public final class PlayerChecks
 		{
 			if (!player.capabilities.allowFlying)
 			{
-				PELogger.logDebug("PE says fly, MC cannot fly, telling client it can fly");
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
 		}
@@ -97,7 +92,7 @@ public final class PlayerChecks
 
 	private static boolean shouldPlayerFly(EntityPlayerMP player)
 	{
-		if (player.capabilities.isCreativeMode)
+		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
 		{
 			return true;
 		}
@@ -236,5 +231,27 @@ public final class PlayerChecks
 		}
 
 		return false;
+	}
+
+	public static void enableSwrgFlightOverride(EntityPlayerMP player)
+	{
+		swrgOverrides.add(player);
+	}
+
+	public static void disableSwrgFlightOverride(EntityPlayerMP player)
+	{
+		swrgOverrides.remove(player);
+	}
+
+	public static void clearLists()
+	{
+		swrgOverrides.clear();
+		gemArmorReadyChecks.clear();
+	}
+
+	public static void removePlayerFromLists(EntityPlayerMP player)
+	{
+		swrgOverrides.remove(player);
+		gemArmorReadyChecks.remove(player);
 	}
 }
