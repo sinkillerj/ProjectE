@@ -2,11 +2,10 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.NovaExplosion;
-import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,7 +16,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class GemChest extends GemArmorBase
+public class GemChest extends GemArmorBase implements IFireProtector
 {
     public GemChest()
     {
@@ -61,12 +60,6 @@ public class GemChest extends GemArmorBase
             {
                 player.getFoodStats().addStats(2, 10);
             }
-
-            if (!player.isImmuneToFire())
-            {
-                PlayerHelper.setPlayerFireImmunity(player, true);
-                PlayerChecks.addPlayerFireChecks(playerMP);
-            }
         }
     }
 
@@ -77,5 +70,11 @@ public class GemChest extends GemArmorBase
         explosion.isSmoking = true;
         explosion.doExplosionA();
         explosion.doExplosionB(true);
+    }
+
+    @Override
+    public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+    {
+        return player.getCurrentArmor(2) != null && player.getCurrentArmor(2).getItem() == this;
     }
 }
