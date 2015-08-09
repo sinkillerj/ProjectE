@@ -1,23 +1,31 @@
 package moze_intel.projecte.network.packets;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import scala.actors.threadpool.BlockingQueue;
+
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
 {
-	private String search;
-	private int searchpage;
+
+
 
 	public SearchUpdatePKT() {}
-
-	public SearchUpdatePKT(String search, int page) 
+	public List<ItemStack> outslots;
+	public SearchUpdatePKT(List<ItemStack> outslots)
 	{
-		this.search = search;
-		this.searchpage = page;
+		this.outslots = outslots;
 	}
 
 	@Override
@@ -26,19 +34,13 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 		if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
 		{
 			TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
-
-			if (pkt.search != null)
+			try
 			{
-				container.transmutationInventory.filter = pkt.search;
-			}
-			else
+				container.transmutationInventory.serverOutputSlotUpdates.put(pkt.outslots);
+			} catch (InterruptedException e)
 			{
-				container.transmutationInventory.filter = "";
+				e.printStackTrace();
 			}
-
-			container.transmutationInventory.searchpage = pkt.searchpage;
-
-			container.transmutationInventory.updateOutputs();
 		}
 		
 		return null;
@@ -47,14 +49,18 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		search = ByteBufUtils.readUTF8String(buf);
-		searchpage = ByteBufUtils.readVarShort(buf);
+		List<ItemStack> l = Lists.newArrayList();
+		for (int i = 0; i < 16; i++) {
+			l.add(ByteBufUtils.readItemStack(buf));
+		}
+		this.outslots = l;
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		ByteBufUtils.writeUTF8String(buf, search);
-		ByteBufUtils.writeVarShort(buf, searchpage);
+		for (int i = 0; i < 16; i++) {
+			ByteBufUtils.writeItemStack(buf, outslots.get(i));
+		}
 	}
 }

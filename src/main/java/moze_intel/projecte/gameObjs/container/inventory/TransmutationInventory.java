@@ -3,12 +3,17 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PELogger;
+
+import com.google.common.collect.Queues;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class TransmutationInventory implements IInventory
 {
@@ -122,9 +128,31 @@ public class TransmutationInventory implements IInventory
 		}
 	}
 
+	public LinkedBlockingQueue<List<ItemStack>> serverOutputSlotUpdates = Queues.newLinkedBlockingQueue();
+
+	public void updateOutputs() {
+		updateOutputs(false);
+	}
 	@SuppressWarnings("unchecked")
-	public void updateOutputs()
+	public void updateOutputs(boolean async)
 	{
+		PELogger.logFatal("updateOutputs()" + this.player.worldObj.isRemote);
+		if (!this.player.worldObj.isRemote) {
+			if (async) {
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						readUpdate();
+					}
+				}).start();
+			} else {
+				readUpdate();
+			}
+
+			return;
+		}
 		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
 
 		for (int i : MATTER_INDEXES)
@@ -290,6 +318,30 @@ public class TransmutationInventory implements IInventory
  				}
 			}
 		}
+		PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots()));
+	}
+
+	private void readUpdate()
+	{
+		try
+		{
+			List<ItemStack> newOutputSlots = serverOutputSlotUpdates.take();
+			writeIntoOutputSlots(newOutputSlots);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
+	{
+		for (int i = 0; i < 16; i++) {
+			inventory[10 + i] = newOutputSlots.get(i);
+		}
+	}
+
+	public List<ItemStack> getOutputSlots() {
+		return Arrays.asList(inventory).subList(10,26);
 	}
 	
 	@Override
@@ -382,7 +434,7 @@ public class TransmutationInventory implements IInventory
 		emc = Transmutation.getEmc(player);
 		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
 		System.arraycopy(inputLocks, 0, inventory, 0, 9);
-		updateOutputs();
+		updateOutputs(true);
 	}
 
 	@Override
