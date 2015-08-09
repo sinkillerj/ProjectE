@@ -44,7 +44,6 @@ public class EntityLavaProjectile extends PEProjectile
 				return;
 			}
 
-			boolean flag = true;
 			if (getThrower() instanceof EntityPlayerMP)
 			{
 				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
@@ -59,12 +58,7 @@ public class EntityLavaProjectile extends PEProjectile
 								if (PlayerHelper.hasBreakPermission(player, x, y, z))
 								{
 									this.worldObj.setBlockToAir(x, y, z);
-								}
-
-								if (flag)
-								{
 									this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-									flag = false;
 								}
 							}
 						}

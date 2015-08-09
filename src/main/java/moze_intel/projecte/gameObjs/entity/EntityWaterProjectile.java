@@ -54,13 +54,14 @@ public class EntityWaterProjectile extends PEProjectile
 							if (block == Blocks.lava)
 							{
 								PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.obsidian, 0);
+								this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
 							}
 							else if (block == Blocks.flowing_lava)
 							{
 								PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.cobblestone, 0);
+								this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
 							}
 
-							this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
 						}
 			}
 
