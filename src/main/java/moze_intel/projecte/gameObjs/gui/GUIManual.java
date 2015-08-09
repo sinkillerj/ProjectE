@@ -3,15 +3,14 @@ package moze_intel.projecte.gameObjs.gui;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.manual.*;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -45,22 +44,13 @@ public class GUIManual extends GuiScreen
 	public List<String> bodyTexts = Lists.newArrayList();
 	private int currentSpread;
 
-	public void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
+	public void drawItemStackToGui(ItemStack item, int x, int y)
 	{
-		if (fixLighting)
-		{
-			GL11.glEnable(GL11.GL_LIGHTING);
-		}
-
+		RenderHelper.enableStandardItemLighting();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		itemRender.renderItemAndEffectIntoGUI(item, x, y);
-
-		if (fixLighting)
-		{
-			GL11.glDisable(GL11.GL_LIGHTING);
-		}
-
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		RenderHelper.disableStandardItemLighting();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -270,8 +260,7 @@ public class GUIManual extends GuiScreen
 			if (page instanceof ItemPage)
 			{
 				ItemPage itemPage = ((ItemPage) page);
-				drawItemStackToGui(mc, itemPage.getItemStack(), Math.round(contentX * GUI_SCALE_FACTOR), 22, !(itemPage.getItemStack().getItem() instanceof ItemBlock)
-						|| itemPage.getItemStack().getItem() == Item.getItemFromBlock(ObjHandler.confuseTorch));
+				drawItemStackToGui(itemPage.getItemStack(), Math.round(contentX * GUI_SCALE_FACTOR), 22);
 			}
 		}
 	}
@@ -299,6 +288,7 @@ public class GUIManual extends GuiScreen
 		{
 			if (visible)
 			{
+				GlStateManager.color(0, 0, 0);
 				mc.fontRendererObj.drawString(displayString, Math.round(xPosition), Math.round(yPosition), 0);
 			}
 		}
