@@ -164,6 +164,7 @@ public class TransmutationInventory implements IInventory
 			
 			if (this.emc < reqEmc)
 			{
+				PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 				return;
 			}
 
