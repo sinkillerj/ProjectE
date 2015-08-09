@@ -152,7 +152,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
-						if (!blockDrops.isEmpty() && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)
+						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)
 							&& consumeFuel(player, stack, emcCost, true))
 						{
 							drops.addAll(blockDrops);
