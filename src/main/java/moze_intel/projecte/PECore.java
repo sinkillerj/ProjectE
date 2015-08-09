@@ -117,6 +117,7 @@ public class PECore
 	{
 		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.readUserData();
+		proxy.initializeManual();
 	}
 	
 	@Mod.EventHandler

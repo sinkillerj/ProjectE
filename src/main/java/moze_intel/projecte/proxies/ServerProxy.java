@@ -10,6 +10,7 @@ public class ServerProxy implements IProxy
 	public void registerRenderers() {}
 	public void registerClientOnlyEvents() {}
 	public void registerModels() {}
+	public void initializeManual() {}
 	public void clearClientKnowledge() {}
 	public TransmutationProps getClientTransmutationProps() { return null; }
 	public AlchBagProps getClientBagProps() { return null; }

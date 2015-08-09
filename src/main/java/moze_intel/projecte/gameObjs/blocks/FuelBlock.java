@@ -54,11 +54,11 @@ public class FuelBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	public void getSubBlocks(Item fuelBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			list.add(new ItemStack(item , 1, i));
+			list.add(new ItemStack(fuelBlock , 1, i));
 		}
 	}
 

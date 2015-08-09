@@ -28,6 +28,7 @@ public class MatterBlock extends Block
 		super(Material.iron);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(TIER_PROP, EnumMatterType.DARK_MATTER));
+		this.setUnlocalizedName("pe_matter_block");
 	}
 
 	@Override
@@ -92,11 +93,11 @@ public class MatterBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs cTab, List list)
+	public void getSubBlocks(Item matterBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
-			list.add(new ItemStack(item , 1, i));
+			list.add(new ItemStack(matterBlock , 1, i));
 		}
 	}
 
