@@ -18,7 +18,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -47,9 +46,9 @@ public class GUIManual extends GuiScreen
 	public void drawItemStackToGui(ItemStack item, int x, int y)
 	{
 		RenderHelper.enableStandardItemLighting();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.enableRescaleNormal();
 		itemRender.renderItemAndEffectIntoGUI(item, x, y);
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.disableRescaleNormal();
 		RenderHelper.disableStandardItemLighting();
 	}
 
@@ -84,14 +83,14 @@ public class GUIManual extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
 
-		GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
+		GlStateManager.scale(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
 		int k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
 		this.drawTexturedModalRect(k, 5, 0, 0, WINDOW_WIDTH, PAGE_HEIGHT);
-		GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
+		GlStateManager.scale(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
 		AbstractPage currentPage = ManualPageHandler.spreads.get(currentSpread).getLeft();
 		AbstractPage nextPage = ManualPageHandler.spreads.get(currentSpread).getRight();
@@ -178,13 +177,13 @@ public class GUIManual extends GuiScreen
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(resource);
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glColor4f(1F, 1F, 1F, 1F);
-		GL11.glScalef(0.5F, 0.5F, 1F);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.color(1F, 1F, 1F, 1F);
+		GlStateManager.scale(0.5F, 0.5F, 1F);
 		this.drawTexturedModalRect(x, y, 0, 0, 256, 256);
-		GL11.glScalef(2F, 2F, 1F);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.scale(2F, 2F, 1F);
+		GlStateManager.disableBlend();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -312,7 +311,7 @@ public class GUIManual extends GuiScreen
 			if (this.visible)
 			{
 				boolean hover = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				mc.getTextureManager().bindTexture(bookGui);
 				int u = 0;
 				int v = 192;
@@ -326,9 +325,9 @@ public class GUIManual extends GuiScreen
 				{
 					v += BUTTON_HEIGHT;
 				}
-				GL11.glEnable(GL11.GL_BLEND);
+				GlStateManager.enableBlend();
 				this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, bWidth, BUTTON_HEIGHT);
-				GL11.glDisable(GL11.GL_BLEND);
+				GlStateManager.disableBlend();
 			}
 		}
 	}
