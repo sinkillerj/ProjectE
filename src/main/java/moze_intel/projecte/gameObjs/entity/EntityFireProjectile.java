@@ -38,7 +38,7 @@ public class EntityFireProjectile extends PEProjectile
 			
 			if(block == Blocks.obsidian)
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), x, y, z, Blocks.flowing_lava, 0);
+				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) getThrower()), x, y, z, Blocks.flowing_lava, 0);
 			}
 			else
 			{
@@ -51,7 +51,7 @@ public class EntityFireProjectile extends PEProjectile
 								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.fire, 0);
 							} else if (worldObj.getBlock(x1, y1, z1) == Blocks.sand)
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.glass, 0);
+								PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.glass, 0);
 							}
 
 						}

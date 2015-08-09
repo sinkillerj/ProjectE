@@ -33,7 +33,7 @@ public final class PlayerHelper
 	 */
 	public static boolean checkedPlaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace, int toPlaceMeta)
 	{
-		if (!hasEditPermission(player.worldObj, player, x, y, z))
+		if (!hasEditPermission(player, x, y, z))
 		{
 			return false;
 		}
@@ -53,6 +53,11 @@ public final class PlayerHelper
 		}
 		PELogger.logInfo("Checked place block passed!");
 		return true;
+	}
+
+	public static boolean checkedReplaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace, int toPlaceMeta)
+	{
+		return hasBreakPermission(player, x, y, z) && checkedPlaceBlock(player, x, y, z, toPlace, toPlaceMeta);
 	}
 
 	public static void disableFlight(EntityPlayerMP playerMP)
@@ -111,16 +116,16 @@ public final class PlayerHelper
 		return new Tuple(src, dest);
 	}
 
-	public static boolean hasBreakPermission(World world, EntityPlayerMP player, int x, int y, int z)
+	public static boolean hasBreakPermission(EntityPlayerMP player, int x, int y, int z)
 	{
-		return hasEditPermission(world, player, x, y, z)
-				&& !ForgeHooks.onBlockBreakEvent(world, player.theItemInWorldManager.getGameType(), player, x, y, z).isCanceled();
+		return hasEditPermission(player, x, y, z)
+				&& !ForgeHooks.onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, x, y, z).isCanceled();
 	}
 
-	public static boolean hasEditPermission(World world, EntityPlayerMP player, int x, int y, int z)
+	public static boolean hasEditPermission(EntityPlayerMP player, int x, int y, int z)
 	{
-		return player.canPlayerEdit(x, y, z, world.getBlockMetadata(x, y, z), null)
-				&& !MinecraftServer.getServer().isBlockProtected(world, x, y, z, player);
+		return player.canPlayerEdit(x, y, z, player.worldObj.getBlockMetadata(x, y, z), null)
+				&& !MinecraftServer.getServer().isBlockProtected(player.worldObj, x, y, z, player);
 	}
 
 

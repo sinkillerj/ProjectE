@@ -174,7 +174,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 								if (emc > reqEmc)
 								{
-									if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
+									if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
 									{
 										int difference = emc - reqEmc;
 										kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
@@ -187,7 +187,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 									if (kleinEmc >= difference)
 									{
-										if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
+										if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
 										{
 											kleinEmc -= difference;
 											removeKleinEMC(stack, difference);
@@ -196,7 +196,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 								}
 								else
 								{
-									PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
+									PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
 								}
 							}
 						}

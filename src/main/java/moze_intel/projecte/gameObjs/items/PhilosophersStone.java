@@ -249,7 +249,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (block.equals(pointed))
 		{
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
+			PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
 			if (world.rand.nextInt(8) == 0)
 			{
 				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));

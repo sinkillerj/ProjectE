@@ -142,7 +142,7 @@ public final class WorldHelper
 		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
 			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
 				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-					if (world.getBlock(x, y, z) == Blocks.fire && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+					if (world.getBlock(x, y, z) == Blocks.fire && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 					{
 						world.setBlockToAir(x, y, z);
 					}
@@ -162,7 +162,7 @@ public final class WorldHelper
 					{
 						if (player != null)
 						{
-							PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.ice, 0);
+							PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.ice, 0);
 						}
 						else
 						{
@@ -177,7 +177,7 @@ public final class WorldHelper
 						{
 							if (player != null)
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y + 1, z, Blocks.snow_layer, 0);
+								PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y + 1, z, Blocks.snow_layer, 0);
 							}
 							else
 							{
@@ -405,7 +405,7 @@ public final class WorldHelper
 					{
 						if (harvest)
 						{
-							if (player != null && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+							if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 							{
 								world.func_147480_a(x, y, z, true);
 							} else if (player == null)
@@ -421,7 +421,7 @@ public final class WorldHelper
 						IGrowable growable = (IGrowable) crop;
 						if(harvest && !growable.func_149851_a(world, x, y, z, false))
 						{
-							if (player != null && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+							if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 							{
 								world.func_147480_a(x, y, z, true);
 							} else if (player == null)
@@ -453,7 +453,7 @@ public final class WorldHelper
 						{
 							if (crop instanceof BlockFlower)
 							{
-								if (player != null && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 								{
 									world.func_147480_a(x, y, z, true);
 								} else if (player == null)
@@ -478,7 +478,7 @@ public final class WorldHelper
 								{
 									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 									{
-										if (player != null && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+										if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 										{
 											world.func_147480_a(x, y, z, true);
 										} else if (player == null)
@@ -493,7 +493,7 @@ public final class WorldHelper
 								int meta = ((IPlantable) crop).getPlantMetadata(world, x, y, z);
 								if (meta == 3)
 								{
-									if (player != null && PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+									if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 									{
 										world.func_147480_a(x, y, z, true);
 									} else if (player == null)
@@ -527,7 +527,7 @@ public final class WorldHelper
 
 					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
-						if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
+						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 						{
 							currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
 							world.setBlockToAir(x, y, z);

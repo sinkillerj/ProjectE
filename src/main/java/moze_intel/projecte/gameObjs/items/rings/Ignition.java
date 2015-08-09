@@ -103,7 +103,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
 				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT
-						&& PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), mop.blockX, mop.blockY, mop.blockZ))
+						&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.blockX, mop.blockY, mop.blockZ))
 				{
 					// Ignite TNT or derivatives
 					((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
