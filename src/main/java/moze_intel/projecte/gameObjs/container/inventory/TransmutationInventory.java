@@ -136,21 +136,10 @@ public class TransmutationInventory implements IInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs(boolean async)
 	{
-		PELogger.logFatal("updateOutputs()" + this.player.worldObj.isRemote);
+		PELogger.logFatal("updateOutputs(" + async +") isRemote = " + this.player.worldObj.isRemote);
 		if (!this.player.worldObj.isRemote) {
-			if (async) {
-				new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						readUpdate();
-					}
-				}).start();
-			} else {
-				readUpdate();
-			}
-
+			if (async) new RuntimeException("updateOutput but async on server").printStackTrace();
+			readUpdate();
 			return;
 		}
 		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
@@ -318,7 +307,7 @@ public class TransmutationInventory implements IInventory
  				}
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots()));
+		PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 	}
 
 	private void readUpdate()
@@ -333,7 +322,7 @@ public class TransmutationInventory implements IInventory
 		}
 	}
 
-	private void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
+	public void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
 	{
 		for (int i = 0; i < 16; i++) {
 			inventory[10 + i] = newOutputSlots.get(i);
@@ -434,7 +423,10 @@ public class TransmutationInventory implements IInventory
 		emc = Transmutation.getEmc(player);
 		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
 		System.arraycopy(inputLocks, 0, inventory, 0, 9);
-		updateOutputs(true);
+		if (this.player.worldObj.isRemote)
+		{
+			updateOutputs(true);
+		}
 	}
 
 	@Override

@@ -118,7 +118,7 @@ public class GUITransmutation extends GuiContainer
 			{
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs();
+				inv.updateOutputs(true);
 			}
 		}
 
@@ -142,7 +142,7 @@ public class GUITransmutation extends GuiContainer
 		{
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs();
+			inv.updateOutputs(true);
 			this.textBoxFilter.setText("");
 		}
 
@@ -177,6 +177,6 @@ public class GUITransmutation extends GuiContainer
 			}
 		}
 		inv.filter = srch;
-		inv.updateOutputs();
+		inv.updateOutputs(true);
 	}
 }
