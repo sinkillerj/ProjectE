@@ -12,6 +12,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -20,7 +21,6 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DestructionCatalyst extends ItemCharge
@@ -77,19 +77,21 @@ public class DestructionCatalyst extends ItemCharge
 						{
 							hasAction = true;
 						}
-						
-						ArrayList<ItemStack> list = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
-						
-						if (list != null && list.size() > 0)
+
+						if (PlayerHelper.hasBreakPermission(world, ((EntityPlayerMP) player), x, y, z))
 						{
-							drops.addAll(list);
-						}
-						
-						world.setBlockToAir(x, y, z);
-						
-						if (world.rand.nextInt(8) == 0)
-						{
-							PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+							List<ItemStack> list = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
+							if (list != null && list.size() > 0)
+                            {
+                                drops.addAll(list);
+                            }
+
+							world.setBlockToAir(x, y, z);
+
+							if (world.rand.nextInt(8) == 0)
+                            {
+                                PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+                            }
 						}
 					}
 

@@ -6,9 +6,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -155,9 +157,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							{
 								if (kleinEmc < reqEmc)
 									break;
-								world.setBlock(x, y, z, newBlock, newMeta, 3);
-								removeKleinEMC(stack, reqEmc);
-								kleinEmc -= reqEmc;
+								if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
+								{
+									removeKleinEMC(stack, reqEmc);
+									kleinEmc -= reqEmc;
+								}
 							}
 							else if (mode == TRANSMUTATION_MODE)
 							{
@@ -170,12 +174,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 								if (emc > reqEmc)
 								{
-									int difference = emc - reqEmc;
-
-									kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-
-									addKleinEMC(stack, difference);
-									world.setBlock(x, y, z, newBlock, newMeta, 3);
+									if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
+									{
+										int difference = emc - reqEmc;
+										kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+										addKleinEMC(stack, difference);
+									}
 								}
 								else if (emc < reqEmc)
 								{
@@ -183,14 +187,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 									if (kleinEmc >= difference)
 									{
-										kleinEmc -= difference;
-										removeKleinEMC(stack, difference);
-										world.setBlock(x, y, z, newBlock, newMeta, 3);
+										if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
+										{
+											kleinEmc -= difference;
+											removeKleinEMC(stack, difference);
+										}
 									}
 								}
 								else
 								{
-									world.setBlock(x, y, z, newBlock, newMeta, 3);
+									PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
 								}
 							}
 						}

@@ -22,6 +22,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,11 +115,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			
 			if (mode == 0)
 			{
-				doWorldTransmutation(world, mBlock, result, pos, 0, 0, charge);
+				doWorldTransmutation(world, mBlock, result, pos, 0, 0, charge, player);
 			}
 			else if (mode == 1)
 			{
-				getAxisOrientedPanel(direction, charge, mBlock, result, pos, world);
+				getAxisOrientedPanel(direction, charge, mBlock, result, pos, world, player);
 			}
 			else 
 			{
@@ -133,7 +134,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return true;
 	}
 	
-	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world)
+	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
 	{
 		int side;
 		
@@ -150,7 +151,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			side = 2;
 		}
 		
-		doWorldTransmutation(world, pointed, result, coords, 1, side, charge);
+		doWorldTransmutation(world, pointed, result, coords, 1, side, charge, player);
 	}
 	
 	private void getAxisOrientedLine(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
@@ -179,13 +180,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			}
 		}
 		
-		doWorldTransmutation(world, pointed, result, coords, 2, side, charge);
+		doWorldTransmutation(world, pointed, result, coords, 2, side, charge, player);
 	}
 	
 	/**
 	 * type 0 = cube, type 1 = panel, type 2 = line
 	 */
-	private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type, int side, int charge)
+	private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type, int side, int charge, EntityPlayer player)
 	{
 		if (type == 0)
 		{
@@ -193,7 +194,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				for (int j = coords.y - charge; j <= coords.y + charge; j++)
 					for (int k = coords.z - charge; k <= coords.z + charge; k++)
 					{
-						changeBlock(world, pointed, result, i, j, k);
+						changeBlock(world, pointed, result, i, j, k, player);
 					}
 		}
 		else if (type == 1)
@@ -203,7 +204,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				for (int i = coords.x - charge; i <= coords.x + charge; i++)
 					for (int j = coords.z - charge; j <= coords.z + charge; j++)
 					{
-						changeBlock(world, pointed, result, i, coords.y, j);
+						changeBlock(world, pointed, result, i, coords.y, j, player);
 					}
 			}
 			else if (side == 1)
@@ -211,7 +212,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				for (int i = coords.y - charge; i <= coords.y + charge; i++)
 					for (int j = coords.z - charge; j <= coords.z + charge; j++)
 					{
-						changeBlock(world, pointed, result, coords.x, i, j);
+						changeBlock(world, pointed, result, coords.x, i, j, player);
 					}
 			}
 			else
@@ -219,7 +220,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				for (int i = coords.x - charge; i <= coords.x + charge; i++)
 					for (int j = coords.y - charge; j <= coords.y + charge; j++)
 					{
-						changeBlock(world, pointed, result, i, j, coords.z);
+						changeBlock(world, pointed, result, i, j, coords.z, player);
 					}
 			}
 		}
@@ -229,27 +230,26 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			{
 				for (int i = coords.z - charge; i <= coords.z + charge; i++)
 				{
-					changeBlock(world, pointed, result, coords.x, coords.y, i);
+					changeBlock(world, pointed, result, coords.x, coords.y, i, player);
 				}
 			}
 			else 
 			{
 				for (int i = coords.x - charge; i <= coords.x + charge; i++)
 				{
-					changeBlock(world, pointed, result, i, coords.y, coords.z);
+					changeBlock(world, pointed, result, i, coords.y, coords.z, player);
 				}
 			}
 		}
 	}
 	
-	private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z)
+	private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z, EntityPlayer player)
 	{
 		MetaBlock block = new MetaBlock(world, x, y, z);
 
 		if (block.equals(pointed))
 		{
-			result.setInWorld(world, x, y, z);
-
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
 			if (world.rand.nextInt(8) == 0)
 			{
 				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));

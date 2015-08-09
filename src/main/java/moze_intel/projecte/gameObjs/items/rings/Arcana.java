@@ -88,13 +88,13 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 			switch(stack.getItemDamage())
 			{
 				case 0:
-					WorldHelper.freezeNearbyRandomly(world, player);
+					WorldHelper.freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5), player, true);
 					break;
 				case 1:
 					WorldHelper.igniteNearby(world, player);
 					break;
 				case 2:
-					WorldHelper.growNearbyRandomly(true, world, player);
+					WorldHelper.growNearbyRandomly(true, world, player.posX, player.posY, player.posZ, player);
 					break;
 				case 3:
 					WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
@@ -133,17 +133,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onEquipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onUnequipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
@@ -234,16 +228,22 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 						for(int x = (int) (player.posX - 30); x <= player.posX + 30; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+									if(world.isAirBlock(x, y, z))
+									{
+										PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+									}
 						break;
 					case 1: // west, -x
 					case 3: // east, +x
 						for(int x = (int) (player.posX - 3); x <= player.posX + 3; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+								{
+									if(world.isAirBlock(x, y, z))
+									{
+										PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+									}
+								}
 						break;
 				}
 				break;

@@ -2,13 +2,10 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
-
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.utils.IFireProtectionItem;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -18,10 +15,10 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.IFireProtectionItem;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -52,7 +49,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && PlayerHelper.hasEditPermission(world, ((EntityPlayerMP) player), x, y, z))
 		{
 			TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -100,7 +97,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 					if (world.isAirBlock(i, j, k) && consumeFuel(player, stack, 32, true))
 					{
-						placeLava(world, i, j, k);
+						placeLava(world, player, i, j, k);
 						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 						PlayerHelper.swingItem(player);
 					}
@@ -112,14 +109,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 
-	private void placeLava(World world, int i, int j, int k)
+	private void placeLava(World world, EntityPlayer player, int i, int j, int k)
 	{
-		Material material = world.getBlock(i, j, k).getMaterial();
-		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
-		{
-			world.func_147480_a(i, j, k, true);
-		}
-		world.setBlock(i, j, k, Blocks.flowing_lava, 0, 3);
+		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), i, j, k, Blocks.flowing_lava, 0);
 	}
 
 	@Override

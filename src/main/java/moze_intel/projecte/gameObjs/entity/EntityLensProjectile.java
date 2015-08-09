@@ -4,7 +4,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.NovaExplosion;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
@@ -59,9 +59,7 @@ public class EntityLensProjectile extends PEProjectile
 	protected void apply(MovingObjectPosition mop)
 	{
 		if (this.worldObj.isRemote) return;
-		NovaExplosion explosion = new NovaExplosion(this.worldObj, this.getThrower(), this.posX, this.posY, this.posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
-		explosion.doExplosionA();
-		explosion.doExplosionB(true);
+		WorldHelper.createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)
