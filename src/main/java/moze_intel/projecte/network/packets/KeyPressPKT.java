@@ -17,7 +17,6 @@ import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 
@@ -37,75 +36,78 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 	{
 		EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 		ItemStack stack = player.getHeldItem();
-		
-		if (message.key == PEKeybind.ARMOR_TOGGLE)
+		switch (message.key)
 		{
-			if (player.isSneaking())
-			{
-				ItemStack helm = player.inventory.armorItemInSlot(3);
-				
-				if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
+			case ARMOR_TOGGLE:
+				if (player.isSneaking())
 				{
-					GemHelmet.toggleNightVision(helm, player);
+					ItemStack helm = player.inventory.armorItemInSlot(3);
+
+					if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
+					{
+						GemHelmet.toggleNightVision(helm, player);
+					}
 				}
-			}
-			else
-			{
-				ItemStack boots = player.inventory.armorItemInSlot(0);
-			
-				if (boots != null && boots.getItem() == ObjHandler.gemFeet)
+				else
 				{
-					((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
+					ItemStack boots = player.inventory.armorItemInSlot(0);
+
+					if (boots != null && boots.getItem() == ObjHandler.gemFeet)
+					{
+						((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
+					}
 				}
-			}
-		}
-		
-		if (stack == null)
-		{
-			if (message.key == PEKeybind.CHARGE && GemArmorBase.hasAnyPiece(player))
-			{
-				PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
-				player.addChatMessage(new ChatComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
-				return null;
-			}
+				break;
+			case CHARGE:
+				if (stack == null && GemArmorBase.hasAnyPiece(player))
+				{
+					PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
+					player.addChatMessage(new ChatComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
+				}
 
-			if (PlayerChecks.getGemState(player)) {
-				ItemStack[] armor = player.inventory.armorInventory;
-				if (armor[2] != null && armor[2].getItem() == ObjHandler.gemChest && message.key == PEKeybind.EXTRA_FUNCTION)
-                {
-                    GemChest.doExplode(player);
-                }
-				if (armor[3] != null && armor[3].getItem() == ObjHandler.gemHelmet && message.key == PEKeybind.FIRE_PROJECTILE)
-                {
-                    GemHelmet.doZap(player);
-                }
-			}
+				if (stack != null && stack.getItem() instanceof IItemCharge)
+				{
+					((IItemCharge) stack.getItem()).changeCharge(player, stack);
+				}
+				break;
+			case EXTRA_FUNCTION:
+				if (stack == null && PlayerChecks.getGemState(player))
+				{
+					if (player.getCurrentArmor(2) != null && player.getCurrentArmor(2).getItem() == ObjHandler.gemChest)
+					{
+						GemChest.doExplode(player);
+					}
+				}
 
-			return null;
+				if (stack != null && stack.getItem() instanceof IExtraFunction)
+				{
+					((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
+				}
+				break;
+			case FIRE_PROJECTILE:
+				if (stack == null && PlayerChecks.getGemState(player))
+				{
+					if (player.getCurrentArmor(3) != null && player.getCurrentArmor(3).getItem() == ObjHandler.gemHelmet)
+					{
+						GemHelmet.doZap(player);
+					}
+				}
+
+				if (stack != null && stack.getItem() instanceof IProjectileShooter)
+				{
+					if (((IProjectileShooter) stack.getItem()).shootProjectile(player, stack))
+					{
+						PlayerHelper.swingItem((player));
+					}
+				}
+				break;
+			case MODE:
+				if (stack != null && stack.getItem() instanceof IModeChanger)
+				{
+					((IModeChanger) stack.getItem()).changeMode(player, stack);
+				}
+				break;
 		}
-		
-		Item item = stack.getItem();
-		
-		if (message.key == PEKeybind.CHARGE && item instanceof IItemCharge)
-		{
-			((IItemCharge) item).changeCharge(player, stack);
-		}
-		else if (message.key == PEKeybind.MODE && item instanceof IModeChanger)
-		{
-			((IModeChanger) item).changeMode(player, stack);
-		}
-		else if (message.key == PEKeybind.FIRE_PROJECTILE && item instanceof IProjectileShooter)
-		{
-			if (((IProjectileShooter) item).shootProjectile(player, stack))
-			{
-				PlayerHelper.swingItem((player));
-			}
-		}
-		else if (message.key == PEKeybind.EXTRA_FUNCTION && item instanceof IExtraFunction)
-		{
-			((IExtraFunction) item).doExtraFunction(stack, player);
-		}
-		
 		return null;
 	}
 

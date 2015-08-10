@@ -36,6 +36,7 @@ public final class ProjectEConfig
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
 	public static boolean useOldDamage;
+	public static int keybindCooldown;
 	public static int archangelPedCooldown;
 	public static int bodyPedCooldown;
 	public static int evertidePedCooldown;
@@ -100,6 +101,8 @@ public final class ProjectEConfig
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
 			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from 1.4.7 and before will be used for weapons.");
+			keybindCooldown = config.getInt("keybindCooldown", "difficulty", 0, 0, Integer.MAX_VALUE, "For server admins: Set a cooldown, in ticks, to limit the rate at which the fire projectile and extra function keybinds can be triggered");
+
 
 			config.getCategory("pedestalcooldown").setComment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.\n" +
 					"A cooldown of 0 will cause the actions happens every tick. Use caution as a very low value could cause TPS issues.");
