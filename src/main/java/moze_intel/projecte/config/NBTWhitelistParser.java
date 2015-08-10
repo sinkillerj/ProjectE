@@ -22,7 +22,7 @@ public final class NBTWhitelistParser
 
 	public static void init()
 	{
-		CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
+		CONFIG = new File(PECore.instance.CONFIG_DIR, "nbt_whitelist.cfg");
 		loaded = false;
 
 		if (!CONFIG.exists())

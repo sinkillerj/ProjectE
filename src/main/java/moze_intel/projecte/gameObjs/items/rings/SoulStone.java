@@ -23,8 +23,6 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 {
-	private int healCooldown;
-
 	public SoulStone()
 	{
 		super("soul_stone");

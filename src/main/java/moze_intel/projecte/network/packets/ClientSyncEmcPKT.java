@@ -11,7 +11,6 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmcPKT, IMessage>
 {
@@ -34,7 +33,6 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 			PELogger.logInfo("Receiving EMC data from server.");
 
 			EMCMapper.emc.clear();
-			EMCMapper.emc = new LinkedHashMap<SimpleStack, Integer>();
 		}
 
 		for (Object obj : pkt.data)

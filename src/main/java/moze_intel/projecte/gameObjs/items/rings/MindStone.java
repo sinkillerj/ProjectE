@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MindStone extends RingToggle implements IPedestalItem
 {
-	private final int TRANSFER_RATE = 50;
+	private static final int TRANSFER_RATE = 50;
 
 	public MindStone() 
 	{
@@ -141,6 +141,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private boolean canStore(ItemStack stack)
 	{
+		// Todo: Always true??
 		return getStoredXP(stack) <= Integer.MAX_VALUE;
 	}
 

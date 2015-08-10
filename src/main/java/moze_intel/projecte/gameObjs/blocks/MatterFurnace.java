@@ -33,7 +33,6 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	private static boolean isUpdating;
 	@SideOnly(Side.CLIENT) 
 	private IIcon front;
-	private Random rand = new Random();
 
 	public MatterFurnace(boolean active, boolean isRM) 
 	{

@@ -1,9 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
 import moze_intel.projecte.api.tile.ITileEmc;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
@@ -46,13 +43,6 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		this.markDirty();
 	}
 	
-	public void addEmcWithPKT(double amount)
-	{
-		addEmc(amount);
-		
-		sendUpdatePKT();
-	}
-	
 	public void addEmc(ItemStack stack)
 	{
 		addEmc(EMCHelper.getEmcValue(stack) * stack.stackSize);
@@ -69,25 +59,7 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 		}
 		this.markDirty();
 	}
-	
-	public void removeEmcWithPKT(double amount)
-	{
-		removeEmc(amount);
-		
-		sendUpdatePKT();
-	}
-	
-	public void removeItemRelativeEmc(ItemStack stack)
-	{
-		removeEmc(EMCHelper.getEmcValue(stack));
-	}
-	
-	public void removeItemRelativeEmcWithPKT(ItemStack stack)
-	{
-		removeItemRelativeEmc(stack);
-		
-		sendUpdatePKT();
-	}
+
 	
 	@Override
 	public double getStoredEmc()
@@ -110,21 +82,5 @@ public abstract class TileEmc extends TileEntity implements ITileEmc
 	{
 		emc = value;
 		this.markDirty();
-	}
-	
-	public void setEmcValueWithPKT(double value)
-	{
-		setEmcValue(value);
-		
-		sendUpdatePKT();
-	}
-	
-	public void sendUpdatePKT()
-	{
-		if (this.worldObj != null && !this.worldObj.isRemote)
-		{
-			PacketHandler.sendToAllAround(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord),
-					new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
-		}
 	}
 }

@@ -13,8 +13,8 @@ import java.util.List;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger
 {
-	private byte numModes;
-	private String[] modes;
+	private final byte numModes;
+	private final String[] modes;
 	
 	public ItemMode(String unlocalName, byte numCharge, String[] modeDescrp)
 	{

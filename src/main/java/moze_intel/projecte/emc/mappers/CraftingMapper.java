@@ -19,6 +19,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -161,7 +162,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable recipeItems = null;
+			Iterable recipeItems = Collections.emptySet();
 			if (recipe instanceof ShapedRecipes) {
 				recipeItems = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
 			} else if (recipe instanceof ShapelessRecipes) {
@@ -201,7 +202,6 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			List<IngredientMap<ItemStack>> inputs = new LinkedList<IngredientMap<ItemStack>>();
 			Iterable<Object> recipeItems = null;
 			if (recipe instanceof ShapedOreRecipe) {
 				recipeItems = Arrays.asList(((ShapedOreRecipe) recipe).getInput());

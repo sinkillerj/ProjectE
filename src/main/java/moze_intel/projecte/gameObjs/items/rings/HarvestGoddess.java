@@ -68,9 +68,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			return false;
 		}
-		
-		Block block = world.getBlock(x, y, z);
-		
+
 		if (player.isSneaking())
 		{
 			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.dye, 15, 4);
@@ -282,7 +280,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return list;
 	}
 
-	private class StackWithSlot
+	private static class StackWithSlot
 	{
 		public final int slot;
 		public final ItemStack stack;

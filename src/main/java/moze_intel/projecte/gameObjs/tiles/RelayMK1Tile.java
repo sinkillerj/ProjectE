@@ -117,7 +117,7 @@ public class RelayMK1Tile extends TileEmcProducer implements IInventory, ISidedI
 		}
 		else 
 		{
-			this.sendEmcToRequesting(chargeRate / numRequesting);
+			this.sendEmcToRequesting(chargeRate / (double) numRequesting);
 			this.removeEmc(chargeRate);
 		}
 	}

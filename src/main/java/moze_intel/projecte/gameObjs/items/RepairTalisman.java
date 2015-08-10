@@ -3,6 +3,9 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -13,12 +16,6 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.MathUtils;
-
-import java.util.List;
-
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +27,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
@@ -131,6 +130,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{

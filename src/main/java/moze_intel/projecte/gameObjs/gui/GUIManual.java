@@ -304,7 +304,7 @@ public class GUIManual extends GuiScreen
 		{
 			if (visible)
 			{
-				mc.fontRenderer.drawString(displayString, Math.round(xPosition), Math.round(yPosition), 0);
+				mc.fontRenderer.drawString(displayString, xPosition, yPosition, 0);
 			}
 		}
 	}

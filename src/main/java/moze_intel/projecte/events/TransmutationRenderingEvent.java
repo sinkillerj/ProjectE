@@ -154,10 +154,6 @@ public class TransmutationRenderingEvent
 				drawAll();
 				renderList.clear();
 			}
-			else if (transmutationResult != null)
-			{
-				transmutationResult = null;
-			}
 		}
 		else if (transmutationResult != null)
 		{
