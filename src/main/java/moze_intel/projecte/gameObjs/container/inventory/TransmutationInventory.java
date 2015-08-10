@@ -313,13 +313,13 @@ public class TransmutationInventory implements IInventory
 
 	private void readUpdate()
 	{
-		try
+		List<ItemStack> newOutputSlots = serverOutputSlotUpdates.poll();
+		if (newOutputSlots == null) {
+			throw new RuntimeException("Server could not read output-slot-update from client. Playername: " + this.player.getCommandSenderName());
+		}
+		else
 		{
-			List<ItemStack> newOutputSlots = serverOutputSlotUpdates.take();
 			writeIntoOutputSlots(newOutputSlots);
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
 		}
 	}
 
