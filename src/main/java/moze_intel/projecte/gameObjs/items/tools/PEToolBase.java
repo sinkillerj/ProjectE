@@ -323,7 +323,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air
 							&& b.getBlockHardness(world, i, j, k) != -1
-							&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)
+							&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), i, j, k)
 							&& (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
