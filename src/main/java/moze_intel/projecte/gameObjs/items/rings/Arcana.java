@@ -168,7 +168,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	@Override
 	public IIcon getIconIndex(ItemStack stack)
 	{
-		boolean active = (stack.hasTagCompound() ? stack.getTagCompound().getBoolean("Active") : false);
+		boolean active = stack.hasTagCompound() && stack.getTagCompound().getBoolean("Active");
 		return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
 	}
 

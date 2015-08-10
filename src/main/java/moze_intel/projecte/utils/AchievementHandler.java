@@ -29,7 +29,7 @@ public final class AchievementHandler
 	public final static Achievement KLEIN_BASIC = new Achievement("klein", "klein", 0, 4, new ItemStack(ObjHandler.kleinStars, 1, 0), PHIL_STONE).registerStat();
 	public final static Achievement KLEIN_MASTER = new Achievement("klein_big", "klein_big", -2, 4, new ItemStack(ObjHandler.kleinStars, 1, 5), KLEIN_BASIC).setSpecial().registerStat();
 
-	public static ImmutableList<Achievement> list = ImmutableList.of(
+	public static final ImmutableList<Achievement> list = ImmutableList.of(
 			PHIL_STONE, ALCH_CHEST, ALCH_BAG, TRANSMUTATION, CONDENSER,
 			COLLECTOR, RELAY, PORTABLE_TRANSMUTATION, DARK_MATTER, RED_MATTER, DM_BLOCK,
 			RM_BLOCK, DM_FURNACE, RM_FURNACE, DM_PICK, RM_PICK, KLEIN_BASIC, KLEIN_MASTER
@@ -38,25 +38,5 @@ public final class AchievementHandler
 	public static void init()
 	{
 		AchievementPage.registerAchievementPage(new AchievementPage("ProjectE", list.toArray(new Achievement[list.size()])));
-	}
-
-	public static Achievement getAchievementForItem(ItemStack stack)
-	{
-		if (stack == null)
-		{
-			return null;
-		}
-		
-		for (Achievement ach : list)
-		{
-			ItemStack s = ach.theItemStack;
-			
-			if (s.getItem() == stack.getItem() && s.getItemDamage() == stack.getItemDamage())
-			{
-				return ach;
-			}
-		}
-		
-		return null;
 	}
 }

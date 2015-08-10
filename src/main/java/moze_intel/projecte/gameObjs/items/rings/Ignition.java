@@ -57,14 +57,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 
 		if (stack.getItemDamage() != 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
 				stack.setItemDamage(0);
 			}
 			else 
 			{
 				WorldHelper.igniteNearby(world, player);
-				this.removeEmc(stack, 0.32F);
+				removeEmc(stack, 0.32F);
 			}
 		}
 		else 
@@ -79,7 +79,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		
 		if (stack.getItemDamage() == 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
 				//NOOP (used to be sounds)
 			}

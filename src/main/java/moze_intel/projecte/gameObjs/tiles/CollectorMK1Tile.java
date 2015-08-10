@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import java.util.Arrays;
+
 public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
 {
 	private ItemStack[] inventory;
@@ -160,8 +162,6 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			{
 				inventory[nextIndex] = current;
 				decrStackSize(i, current.stackSize);
-				
-				continue;
 			}
 			else if (ItemHelper.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
@@ -177,8 +177,6 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 					inventory[nextIndex].stackSize += missingForFullStack;
 					decrStackSize(i, missingForFullStack);
 				}
-				
-				continue;
 			}
 		}
 	}
@@ -211,61 +209,60 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	{
 		this.checkSurroundingBlocks(false);
 		int numRequest = this.getNumRequesting();
-		
-		if (this.getStoredEmc() == 0)
-		{
-			return;
-		}
-		else if (hasKleinStar)
-		{
-			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
-			
-			double starEmc = ItemPE.getEmc(inventory[0]);
-			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(inventory[0]);
-			
-			if ((starEmc + toSend) > maxStarEmc)
-			{
-				toSend = maxStarEmc - starEmc;
-			}
-			
-			ItemPE.addEmc(inventory[0], toSend);
-			this.removeEmc(toSend);
-		}
-		else if (hasFuel)
-		{
-			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
-			{
-				this.setInventorySlotContents(0, null);
-			}
 
-			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
-			
-			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
-			
-			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
+		if (this.getStoredEmc() != 0)
+		{
+			if (hasKleinStar)
 			{
-				ItemStack upgrade = inventory[upgradedSlot];
+				double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 
-				if (inventory[upgradedSlot] == null)
+				double starEmc = ItemPE.getEmc(inventory[0]);
+				int maxStarEmc = EMCHelper.getKleinStarMaxEmc(inventory[0]);
+
+				if ((starEmc + toSend) > maxStarEmc)
 				{
-					this.removeEmc(upgradeCost);
-					this.setInventorySlotContents(upgradedSlot, result);
-					this.decrStackSize(0, 1);
+					toSend = maxStarEmc - starEmc;
 				}
-				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
+
+				ItemPE.addEmc(inventory[0], toSend);
+				this.removeEmc(toSend);
+			}
+			else if (hasFuel)
+			{
+				if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
 				{
-					this.removeEmc(upgradeCost);
-					inventory[upgradedSlot].stackSize++;
-					this.decrStackSize(0, 1);
+					this.setInventorySlotContents(0, null);
+				}
+
+				ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
+
+				int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
+
+				if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
+				{
+					ItemStack upgrade = inventory[upgradedSlot];
+
+					if (inventory[upgradedSlot] == null)
+					{
+						this.removeEmc(upgradeCost);
+						this.setInventorySlotContents(upgradedSlot, result);
+						this.decrStackSize(0, 1);
+					}
+					else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
+					{
+						this.removeEmc(upgradeCost);
+						inventory[upgradedSlot].stackSize++;
+						this.decrStackSize(0, 1);
+					}
 				}
 			}
-		}
-		else if (numRequest > 0 && !this.isRequestingEmc)
-		{
-			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
-			this.sendEmcToRequesting(toSend / numRequest);
-			this.sendRelayBonus();
-			this.removeEmc(toSend);
+			else if (numRequest > 0 && !this.isRequestingEmc)
+			{
+				double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+				this.sendEmcToRequesting(toSend / numRequest);
+				this.sendRelayBonus();
+				this.removeEmc(toSend);
+			}
 		}
 	}
 	
@@ -523,7 +520,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			return new int[] {upgradedSlot};
 		}
 		
-		return accessibleSlots;
+		return Arrays.copyOf(accessibleSlots, accessibleSlots.length);
 	}
 
 	@Override

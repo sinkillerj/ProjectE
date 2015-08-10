@@ -92,7 +92,7 @@ public final class EMCMapper
 			graphMapperValues = graphMapper.generateValues();
 			PELogger.logInfo("Generated Values...");
 
-			filterEMCMap(graphMapperValues);
+			filterEMCMap();
 
 			if (shouldUsePregenerated) {
 				//Should have used pregenerated, but the file was not read => regenerate.
@@ -123,9 +123,8 @@ public final class EMCMapper
 
 	/**
 	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
-	 * @param map
 	 */
-	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
+	static void filterEMCMap() {
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();

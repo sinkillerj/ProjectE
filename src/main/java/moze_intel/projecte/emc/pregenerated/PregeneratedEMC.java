@@ -1,14 +1,16 @@
 package moze_intel.projecte.emc.pregenerated;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
-import com.google.common.reflect.TypeToInstanceMap;
+import com.google.common.base.Throwables;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import scala.Int;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class PregeneratedEMC
 			map.putAll(m);
 			return true;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Throwables.propagate(e);
 		}
 	}
 

@@ -24,7 +24,7 @@ public final class PlayerChecks
 	private static final List<EntityPlayerMP> flyChecks = Lists.newArrayList();
 	private static final List<EntityPlayerMP> fireChecks = Lists.newArrayList();
 	private static final List<EntityPlayerMP> stepChecks = Lists.newArrayList();
-	public static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{

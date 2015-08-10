@@ -141,7 +141,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private boolean canStore(ItemStack stack)
 	{
-		// Todo: Always true??
+		// TODO Verify: Always true??
 		return getStoredXP(stack) <= Integer.MAX_VALUE;
 	}
 

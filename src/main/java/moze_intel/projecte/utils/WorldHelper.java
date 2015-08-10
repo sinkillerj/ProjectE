@@ -75,9 +75,9 @@ public final class WorldHelper
 			EntitySlime.class, EntityWitch.class
 	);
 
-	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
+	public static final Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
-	public static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+	public static final Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{

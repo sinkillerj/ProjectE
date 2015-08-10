@@ -45,7 +45,6 @@ public final class CustomEMCParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-				return;
 			}
 		}
 		else
@@ -211,7 +210,7 @@ public final class CustomEMCParser
 				result = true;
 			}
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -426,7 +425,7 @@ public final class CustomEMCParser
 		return null;
 	}
 
-	private static void writeDefaultFile() throws IOException
+	private static void writeDefaultFile()
 	{
 		PrintWriter writer = null;
 

@@ -1,16 +1,9 @@
 package moze_intel.projecte.network.commands;
 
-import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.ChatHelper;
-import moze_intel.projecte.utils.MathUtils;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
