@@ -33,19 +33,37 @@ public final class PlayerChecks
 		return gemArmorReadyChecks.contains(player);
 	}
 
+	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
-		// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
-		boolean shouldFly = shouldPlayerFly(player);
-		if (shouldFly != player.capabilities.allowFlying)
+		if (!shouldPlayerFly(player))
 		{
-			PlayerHelper.updateClientServerFlight(player, shouldFly);
+			if (player.capabilities.allowFlying)
+			{
+				PlayerHelper.updateClientServerFlight(player, false);
+			}
+		}
+		else
+		{
+			if (!player.capabilities.allowFlying)
+			{
+				PlayerHelper.updateClientServerFlight(player, true);
+			}
 		}
 
-		boolean shouldFireResist = shouldPlayerResistFire(player);
-		if (shouldFireResist != player.isImmuneToFire())
+		if (!shouldPlayerResistFire(player))
 		{
-			PlayerHelper.setPlayerFireImmunity(player, shouldFireResist);
+			if (player.isImmuneToFire())
+			{
+				PlayerHelper.setPlayerFireImmunity(player, false);
+			}
+		}
+		else
+		{
+			if (!player.isImmuneToFire())
+			{
+				PlayerHelper.setPlayerFireImmunity(player, true);
+			}
 		}
 
 		if (!shouldPlayerStep(player))
