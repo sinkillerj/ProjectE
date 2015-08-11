@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -326,7 +328,15 @@ public class TransmutationInventory implements IInventory
 	public void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
 	{
 		for (int i = 0; i < 16; i++) {
-			inventory[10 + i] = newOutputSlots.get(i);
+			ItemStack item = newOutputSlots.get(i);
+			if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
+			{
+				inventory[10 + i] = item;
+			}
+			else
+			{
+				inventory[10 + i] = null;
+			}
 		}
 	}
 
