@@ -122,6 +122,7 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
+		if (hasFullKnowledge(player)) return EMCHelper.doesItemHaveEmc(stack);
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
