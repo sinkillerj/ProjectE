@@ -41,6 +41,11 @@ public class ToolTipEvent
 			event.toolTip.add(StatCollector.translateToLocal("pe.pedestal.tooltip2"));
 		}
 
+		if (currentItem == ObjHandler.manual)
+		{
+			event.toolTip.add(StatCollector.translateToLocal("pe.manual.tooltip1"));
+		}
+
 		if (ProjectEConfig.showPedestalTooltip
 			&& currentItem instanceof IPedestalItem)
 		{
