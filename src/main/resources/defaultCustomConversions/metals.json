@@ -1,15 +1,8 @@
 {
   "comment": "Sets default conversions for metals and alloys.",
-  "groups": {
-    "conversiongroupname" : {
-      /**/
-    }
-  },
   "values": {
     "before": {
-      "OD|ingotIron":256,
-      "OD|itemSilicon": 32,
-      "OD|logWood": 32
+      "OD|ingotIron":256
     },
     "conversion": [
       /*

@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
-	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example");
+	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults");
 
 
 	@Override
