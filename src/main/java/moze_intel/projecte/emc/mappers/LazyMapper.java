@@ -23,7 +23,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Blocks.netherrack), 1);
 		addMapping(new ItemStack(Blocks.dirt), 1);
 		addMapping(new ItemStack(Blocks.dirt, 1, 2), 2);
-		mapper.addConversion(1, NormalizedSimpleStack.getFor(Blocks.dirt), ImmutableMap.of(NormalizedSimpleStack.getFor(Blocks.dirt), 2));
+		mapper.addConversion(1, NormalizedSimpleStack.getFor(Blocks.grass), ImmutableMap.of(NormalizedSimpleStack.getFor(Blocks.dirt), 2));
 		addMapping(new ItemStack(Blocks.mycelium), 2);
 		addMapping(new ItemStack(Blocks.leaves), 1);
 		addMapping(new ItemStack(Blocks.leaves2), 1);
