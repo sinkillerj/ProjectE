@@ -60,6 +60,11 @@ If you set a value for a fake item the value will only be used in conversions th
       will set the EMC value of dirt to 255 and remove the EMC value for Sand.
 
       You can use the special value "FREE" to make something free in conversions. (Like Water)
+
+      If you use an OreDictionary here it will also apply that value to all items that belong to this OreDictionary name.
+
+      Example: "OD|logWood": 32
+      Sets the emc value for all items that have the oreDictionary name logWood to 32
        */
     },
     "after": {
