@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
-	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example");
+	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults");
 
 
 	@Override
@@ -119,14 +119,32 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				if (file.values.setValueBefore != null) {
 					for (Map.Entry<String, Integer> entry : file.values.setValueBefore.entrySet())
 					{
-						mapper.setValueBefore(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue());
+						NormalizedSimpleStack something = getNSSfromJsonString(entry.getKey(), fakes);
+						mapper.setValueBefore(something, entry.getValue());
+						if (something instanceof NormalizedSimpleStack.NSSOreDictionary)
+						{
+							String odName = ((NormalizedSimpleStack.NSSOreDictionary) something).od;
+							for (ItemStack itemStack : OreDictionary.getOres(odName))
+							{
+								mapper.setValueBefore(NormalizedSimpleStack.getFor(itemStack), entry.getValue());
+							}
+						}
 					}
 				}
 				if (file.values.setValueAfter != null)
 				{
 					for (Map.Entry<String, Integer> entry : file.values.setValueAfter.entrySet())
 					{
-						mapper.setValueAfter(getNSSfromJsonString(entry.getKey(), fakes), entry.getValue());
+						NormalizedSimpleStack something = getNSSfromJsonString(entry.getKey(), fakes);
+						mapper.setValueAfter(something, entry.getValue());
+						if (something instanceof NormalizedSimpleStack.NSSOreDictionary)
+						{
+							String odName = ((NormalizedSimpleStack.NSSOreDictionary) something).od;
+							for (ItemStack itemStack : OreDictionary.getOres(odName))
+							{
+								mapper.setValueAfter(NormalizedSimpleStack.getFor(itemStack), entry.getValue());
+							}
+						}
 					}
 				}
 				if (file.values.conversion != null)
