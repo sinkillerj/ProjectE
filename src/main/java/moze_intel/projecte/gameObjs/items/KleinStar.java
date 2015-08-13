@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class KleinStar extends ItemPE
+public class KleinStar extends ItemPE implements IItemEmc
 {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -134,5 +135,51 @@ public class KleinStar extends ItemPE
 		{
 			icons[i] = register.registerIcon(this.getTexture("stars", "klein_star_"+(i + 1)));
 		}
+	}
+
+	// -- IItemEmc -- //
+
+	@Override
+	public double addEmc(ItemStack stack, double toAdd)
+	{
+		double current = getStoredEmc(stack);
+		if (current + toAdd >= getMaximumEmc(stack))
+		{
+			ItemPE.setEmc(stack, getMaximumEmc(stack));
+			return getStoredEmc(stack) - current;
+		}
+		else
+		{
+			ItemPE.addEmcToStack(stack, toAdd);
+			return toAdd;
+		}
+	}
+
+	@Override
+	public double extractEmc(ItemStack stack, double toRemove)
+	{
+		double current = getStoredEmc(stack);
+		if (current <= toRemove)
+		{
+			ItemPE.setEmc(stack, 0.0);
+			return toRemove;
+		}
+		else
+		{
+			removeEmc(stack, toRemove);
+			return current - getStoredEmc(stack);
+		}
+	}
+
+	@Override
+	public double getStoredEmc(ItemStack stack)
+	{
+		return ItemPE.getEmc(stack);
+	}
+
+	@Override
+	public double getMaximumEmc(ItemStack stack)
+	{
+		return EMCHelper.getKleinStarMaxEmc(stack);
 	}
 }

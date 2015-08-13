@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,19 +35,20 @@ public class SlotLock extends Slot
 		
 		super.putStack(stack);
 		
-		if (stack.getItem() == ObjHandler.kleinStars)
+		if (stack.getItem() instanceof IItemEmc)
 		{
+			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
 			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.emc);
 			
-			if (ItemPE.getEmc(stack) >= remainEmc)
+			if (itemEmc.getStoredEmc(stack) >= remainEmc)
 			{
 				inv.addEmc(remainEmc);
-				ItemPE.removeEmc(stack, remainEmc);
+				itemEmc.extractEmc(stack, remainEmc);
 			}
 			else
 			{
-				inv.addEmc(ItemPE.getEmc(stack));
-				ItemPE.setEmc(stack, 0);
+				inv.addEmc(itemEmc.getStoredEmc(stack));
+				itemEmc.extractEmc(stack, itemEmc.getStoredEmc(stack));
 			}
 			
 			inv.handleKnowledge(stack.copy());

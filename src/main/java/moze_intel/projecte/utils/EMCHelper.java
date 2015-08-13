@@ -1,11 +1,10 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -48,11 +47,12 @@ public final class EMCHelper
 			{
 				continue;
 			}
-			else if (stack.getItem() == ObjHandler.kleinStars)
+			else if (stack.getItem() instanceof IItemEmc)
 			{
-				if (ItemPE.getEmc(stack) >= minFuel)
+				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+				if (itemEmc.getStoredEmc(stack) >= minFuel)
 				{
-					ItemPE.removeEmc(stack, minFuel);
+					itemEmc.extractEmc(stack, minFuel);
 					player.inventoryContainer.detectAndSendChanges();
 					return minFuel;
 				}

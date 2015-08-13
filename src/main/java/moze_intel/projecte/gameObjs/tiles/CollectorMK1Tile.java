@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
@@ -30,7 +30,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	public double storedFuelEmc;
 	public int displayEmc;
 	public int displaySunLevel;
-	public int displayKleinCharge;
+	public double displayKleinCharge;
 	private int numUsing;
 	
 	public CollectorMK1Tile()
@@ -185,9 +185,10 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	
 	public void checkFuelOrKlein()
 	{
-		if (inventory[0].getItem().equals(ObjHandler.kleinStars))
+		if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
 		{
-			if(ItemPE.getEmc(inventory[0]) != EMCHelper.getKleinStarMaxEmc(inventory[0]))
+			IItemEmc itemEmc = ((IItemEmc) inventory[0].getItem());
+			if(itemEmc.getStoredEmc(inventory[0]) != itemEmc.getMaximumEmc(inventory[0]))
 			{
 				hasKleinStar = true;
 				hasFuel = false;
@@ -228,7 +229,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 				toSend = maxStarEmc - starEmc;
 			}
 			
-			ItemPE.addEmc(inventory[0], toSend);
+			ItemPE.addEmcToStack(inventory[0], toSend);
 			this.removeEmc(toSend);
 		}
 		else if (hasFuel)
@@ -291,11 +292,11 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 	}
 
-	public int getKleinStarCharge()
+	public double getKleinStarCharge()
 	{
-		if (inventory[0] != null && inventory[0].getItem().equals(ObjHandler.kleinStars))
+		if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
 		{
-			return (int) ItemPE.getEmc(inventory[0]);
+			return ((IItemEmc) inventory[0].getItem()).getStoredEmc(inventory[0]);
 		}
 		
 		return -1;
@@ -308,7 +309,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			return 0;
 		}
 		
-		return displayKleinCharge * i / EMCHelper.getKleinStarMaxEmc(inventory[0]);
+		return ((int) Math.round(displayKleinCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
 	}
 	
 	public int getSunLevel()

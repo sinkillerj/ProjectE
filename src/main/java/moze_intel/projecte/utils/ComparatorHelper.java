@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -27,10 +26,11 @@ public final class ComparatorHelper
 		ItemStack charging = tile.getChargingItem();
 		if (charging != null)
 		{
-			if (charging.getItem() == ObjHandler.kleinStars)
+			if (charging.getItem() instanceof IItemEmc)
 			{
-				double max = EMCHelper.getKleinStarMaxEmc(charging);
-				double current = ItemPE.getEmc(charging);
+				IItemEmc itemEmc = ((IItemEmc) charging.getItem());
+				double max = itemEmc.getMaximumEmc(charging);
+				double current = itemEmc.getStoredEmc(charging);
 				return MathUtils.scaleToRedstone(current, max);
 			} else
 			{

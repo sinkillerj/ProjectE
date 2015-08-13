@@ -5,8 +5,11 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
 
+import java.text.DecimalFormat;
+
 public final class Constants 
 {
+	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("##.##");
 	public static final float PLAYER_WALK_SPEED = 0.1F;
 	
 	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
