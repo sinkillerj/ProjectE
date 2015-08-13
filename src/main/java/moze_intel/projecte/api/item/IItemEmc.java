@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 
 /**
  * This interface defines the contract for items that wish to expose their internal EMC storage for external manipulation
+ *
+ * @author williewillus
  */
 public interface IItemEmc
 {

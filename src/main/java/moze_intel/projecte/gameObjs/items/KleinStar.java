@@ -142,33 +142,17 @@ public class KleinStar extends ItemPE implements IItemEmc
 	@Override
 	public double addEmc(ItemStack stack, double toAdd)
 	{
-		double current = getStoredEmc(stack);
-		if (current + toAdd >= getMaximumEmc(stack))
-		{
-			ItemPE.setEmc(stack, getMaximumEmc(stack));
-			return getStoredEmc(stack) - current;
-		}
-		else
-		{
-			ItemPE.addEmcToStack(stack, toAdd);
-			return toAdd;
-		}
+		double add = Math.min(getMaximumEmc(stack) - getStoredEmc(stack), toAdd);
+		ItemPE.addEmcToStack(stack, add);
+		return add;
 	}
 
 	@Override
 	public double extractEmc(ItemStack stack, double toRemove)
 	{
-		double current = getStoredEmc(stack);
-		if (current <= toRemove)
-		{
-			ItemPE.setEmc(stack, 0.0);
-			return toRemove;
-		}
-		else
-		{
-			removeEmc(stack, toRemove);
-			return current - getStoredEmc(stack);
-		}
+		double sub = Math.min(getStoredEmc(stack), toRemove);
+		ItemPE.removeEmc(stack, sub);
+		return sub;
 	}
 
 	@Override
