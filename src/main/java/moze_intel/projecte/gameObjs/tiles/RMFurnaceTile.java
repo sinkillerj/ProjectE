@@ -55,7 +55,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		
 		if (!worldObj.isRemote)
 		{
-			if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
+			if (canSmelt() && inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) inventory[0].getItem());
 				if (itemEmc.getStoredEmc(inventory[0]) >= EMC_CONSUMPTION)
