@@ -43,7 +43,7 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		{
 			RelayMK1Tile relay = (RelayMK1Tile) tile;
 			relay.displayEmc = pkt.displayEmc;
-			relay.displayKleinEmc = pkt.displayKleinEmc;
+			relay.displayChargingEmc = pkt.displayKleinEmc;
 			relay.displayRawEmc = pkt.displayRawEmc;
 		}
 		

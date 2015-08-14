@@ -4,7 +4,7 @@ package moze_intel.projecte.api.tile;
  * Interface for TileEntities with an EMC buffer
  * NOTE: Changes can be called on both sides, but it is up to you to handle syncing between client and server
  *
- * This interface is now DEPRECATED. Do not use! Update to IEmcAcceptor, IEmcProvider, or TileEmc ASAP!!
+ * This interface is now DEPRECATED. Do not use! Update to IEMCAcceptor, IEMCProvider, or TileEmcHandler ASAP!!
  */
 @Deprecated
 public interface ITileEmc 

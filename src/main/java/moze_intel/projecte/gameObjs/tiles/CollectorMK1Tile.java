@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEMCProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
@@ -9,14 +10,19 @@ import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISidedInventory
+import java.util.Map;
+
+public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEMCProvider
 {
 	private ItemStack[] inventory;
 	private int[] accessibleSlots;
@@ -24,13 +30,12 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	private final int emcGen;
 	private final int lockSlot;
 	private final int upgradedSlot;
-	private boolean hasKleinStar;
+	private boolean hasChargeableItem;
 	private boolean hasFuel;
-	private boolean isRequestingEmc;
 	public double storedFuelEmc;
 	public int displayEmc;
 	public int displaySunLevel;
-	public double displayKleinCharge;
+	public double displayItemCharge;
 	private int numUsing;
 	
 	public CollectorMK1Tile()
@@ -81,9 +86,8 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		if (inventory[0] == null)
 		{
-			hasKleinStar = false;
+			hasChargeableItem = false;
 			hasFuel = false;
-			this.isRequestingEmc = false;
 		}
 		else 
 		{
@@ -92,18 +96,18 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		
 		if (!this.hasMaxedEmc())
 		{
-			this.addEmc(getSunRelativeEmc(emcGen) / 20.0f);
+			this.addEMC(getSunRelativeEmc(emcGen) / 20.0f);
 		}
 		
 		updateEmc();
 		
 		displayEmc = (int) this.getStoredEmc();
 		displaySunLevel = getSunLevel();
-		displayKleinCharge = getKleinStarCharge();
+		displayItemCharge = getItemCharge();
 		
 		if (numUsing > 0)
 		{
-			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayKleinCharge, this.xCoord, this.yCoord, this.zCoord),
+			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
 					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
 		}
 	}
@@ -190,34 +194,28 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			IItemEmc itemEmc = ((IItemEmc) inventory[0].getItem());
 			if(itemEmc.getStoredEmc(inventory[0]) != itemEmc.getMaximumEmc(inventory[0]))
 			{
-				hasKleinStar = true;
+				hasChargeableItem = true;
 				hasFuel = false;
-				this.isRequestingEmc = true;
 			}
 			else
 			{
-				hasKleinStar = false;
-				this.isRequestingEmc = false;
+				hasChargeableItem = false;
 			}
 		}
 		else
 		{
 			hasFuel = true;
-			hasKleinStar = false;
-			this.isRequestingEmc = true;
+			hasChargeableItem = false;
 		}
 	}
 	
 	public void updateEmc()
 	{
-		this.checkSurroundingBlocks(false);
-		int numRequest = this.getNumRequesting();
-		
 		if (this.getStoredEmc() == 0)
 		{
 			return;
 		}
-		else if (hasKleinStar)
+		else if (hasChargeableItem)
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
@@ -230,7 +228,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 			}
 			
 			ItemPE.addEmcToStack(inventory[0], toSend);
-			this.removeEmc(toSend);
+			this.removeEMC(toSend);
 		}
 		else if (hasFuel)
 		{
@@ -249,24 +247,23 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 
 				if (inventory[upgradedSlot] == null)
 				{
-					this.removeEmc(upgradeCost);
+					this.removeEMC(upgradeCost);
 					this.setInventorySlotContents(upgradedSlot, result);
 					this.decrStackSize(0, 1);
 				}
 				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
 				{
-					this.removeEmc(upgradeCost);
+					this.removeEMC(upgradeCost);
 					inventory[upgradedSlot].stackSize++;
 					this.decrStackSize(0, 1);
 				}
 			}
 		}
-		else if (numRequest > 0 && !this.isRequestingEmc)
+		else
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
-			this.sendEmcToRequesting(toSend / numRequest);
+			this.sendToAllAcceptors(toSend);
 			this.sendRelayBonus();
-			this.removeEmc(toSend);
 		}
 	}
 	
@@ -292,7 +289,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		}
 	}
 
-	public double getKleinStarCharge()
+	private double getItemCharge()
 	{
 		if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
 		{
@@ -304,12 +301,12 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	
 	public int getKleinStarChargeScaled(int i)
 	{
-		if (inventory[0] == null || displayKleinCharge <= 0)
+		if (inventory[0] == null || displayItemCharge <= 0)
 		{
 			return 0;
 		}
 		
-		return ((int) Math.round(displayKleinCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
+		return ((int) Math.round(displayItemCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
 	}
 	
 	public int getSunLevel()
@@ -327,7 +324,7 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		{
 			return 0;
 		}
-		return displayEmc * i / this.getMaxEmc();
+		return ((int) Math.round(displayEmc * i / this.getMaximumEmc()));
 	}
 	
 	public int getSunLevelScaled(int i)
@@ -379,7 +376,6 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.setEmcValue(nbt.getDouble("EMC"));
 		storedFuelEmc = nbt.getDouble("FuelEMC");
 		
 		NBTTagList list = nbt.getTagList("Items", 10);
@@ -549,9 +545,39 @@ public class CollectorMK1Tile extends TileEmcProducer implements IInventory, ISi
 		return false;
 	}
 
-	@Override
-	public boolean isRequestingEmc() 
+	private void sendRelayBonus()
 	{
-		return isRequestingEmc;
+		for (Map.Entry<ForgeDirection, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this).entrySet())
+		{
+			ForgeDirection dir = entry.getKey();
+			TileEntity tile = entry.getValue();
+
+			if (tile instanceof RelayMK3Tile)
+			{
+				double provide = this.provideEMC(dir.getOpposite(), 0.5);
+				double remain = provide - ((RelayMK3Tile) tile).acceptEMC(dir, provide);
+				this.addEMC(remain);
+			}
+			else if (tile instanceof RelayMK2Tile)
+			{
+				double provide = this.provideEMC(dir.getOpposite(), 0.15);
+				double remain = provide - ((RelayMK2Tile) tile).acceptEMC(dir, provide);
+				this.addEMC(remain);
+			}
+			else if (tile instanceof RelayMK1Tile)
+			{
+				double provide = this.provideEMC(dir.getOpposite(), 0.05);
+				double remain = provide - ((RelayMK1Tile) tile).acceptEMC(dir, provide);
+				this.addEMC(remain);
+			}
+		}
+	}
+
+	@Override
+	public double provideEMC(ForgeDirection side, double toExtract)
+	{
+		double toRemove = Math.min(currentEMC, toExtract);
+		removeEMC(toRemove);
+		return toRemove;
 	}
 }

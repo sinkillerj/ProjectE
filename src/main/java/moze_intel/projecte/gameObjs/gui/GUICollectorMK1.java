@@ -26,7 +26,7 @@ public class GUICollectorMK1 extends GuiContainer
 	{
 		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 60, 32, 4210752);
 		
-		double kleinCharge = tile.displayKleinCharge;
+		double kleinCharge = tile.displayItemCharge;
 		
 		if (kleinCharge != -1)
 		{

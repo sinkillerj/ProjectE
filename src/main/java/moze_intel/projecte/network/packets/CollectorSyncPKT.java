@@ -41,7 +41,7 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 		{
 			CollectorMK1Tile collector = (CollectorMK1Tile) tile;
 			collector.displayEmc = pkt.displayEmc;
-			collector.displayKleinCharge = pkt.displayKleinCharge;
+			collector.displayItemCharge = pkt.displayKleinCharge;
 		}
 		
 		return null;

@@ -34,14 +34,13 @@ public final class ComparatorHelper
 				return MathUtils.scaleToRedstone(current, max);
 			} else
 			{
-
 				double needed = tile.getEmcToNextGoal();
 				double current = tile.getStoredEmc();
 				return MathUtils.scaleToRedstone(current, needed);
 			}
 		} else
 		{
-			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaxEmc());
+			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaximumEmc());
 		}
 	}
 
@@ -58,6 +57,6 @@ public final class ComparatorHelper
 	public static int getForRelay(World world, int x, int y, int z)
 	{
 		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(x, y, z));
-		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaxEmc());
+		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 	}
 }

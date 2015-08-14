@@ -61,14 +61,14 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 				if (itemEmc.getStoredEmc(inventory[0]) >= EMC_CONSUMPTION)
 				{
 					itemEmc.extractEmc(inventory[0], EMC_CONSUMPTION);
-					this.addEmc(EMC_CONSUMPTION);
+					this.addEMC(EMC_CONSUMPTION);
 				}
 			}
 			
 			if (this.getStoredEmc() >= EMC_CONSUMPTION)
 			{
 				furnaceBurnTime = 1;
-				this.removeEmc(EMC_CONSUMPTION);
+				this.removeEMC(EMC_CONSUMPTION);
 			}
 			
 			if (furnaceBurnTime == 0 && canSmelt())
@@ -547,7 +547,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.setEmcValue(nbt.getDouble("EMC"));
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
 		currentItemBurnTime = getItemBurnTime(inventory[0]);
@@ -567,7 +566,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEmc());
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		
@@ -733,11 +731,5 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
 		return slot >= outputStorage[0];
-	}
-
-	@Override
-	public boolean isRequestingEmc() 
-	{
-		return true;
 	}
 }

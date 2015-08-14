@@ -3,12 +3,14 @@ package moze_intel.projecte.api.tile;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
- * Defines the contract for Tile Entities that can provide EMC to the public
- * Reference implementation provided in TileEmc
+ * Implement this interface to specify that "EMC can be taken from this Tile Entity from an external source"
+ * The contract of this interface is only the above statement. Implementors must auto-pull from providers or auto-push to acceptors on their own
+ * ProjectE implements an "active-push" system, where providers automatically send EMC to acceptors
+ * Reference implementation provided in TileEmcHandler
  *
  * @author williewillus
  */
-public interface IEmcProvider extends IEmcStorage
+public interface IEMCProvider extends IEMCStorage
 {
 	/**
 	 * Extract, at most, the given amount of EMC from the given side
@@ -16,5 +18,5 @@ public interface IEmcProvider extends IEmcStorage
 	 * @param toExtract The maximum amount to extract
 	 * @return The amount actually extracted
 	 */
-	double extractEmc(ForgeDirection side, double toExtract);
+	double provideEMC(ForgeDirection side, double toExtract);
 }

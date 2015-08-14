@@ -1,7 +1,10 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -51,9 +54,11 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -198,21 +203,22 @@ public final class WorldHelper
 	
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
-		int x = tile.xCoord;
-		int y = tile.yCoord;
-		int z = tile.zCoord;
+		return Lists.newArrayList(getAdjacentTileEntitiesMapped(world, tile).values());
+	}
 
-		List<TileEntity> list = Lists.newArrayList();
-		for (int i = 0; i <= 5; i++)
+	public static Map<ForgeDirection, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
+	{
+		Map<ForgeDirection, TileEntity> ret2 = Maps.asMap(Sets.newHashSet(ForgeDirection.VALID_DIRECTIONS), new Function<ForgeDirection, TileEntity>()
 		{
-			ForgeDirection direction = ForgeDirection.getOrientation(i);
-			TileEntity te = world.getTileEntity(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
-			if (te != null)
+			@Nullable
+			@Override
+			public TileEntity apply(ForgeDirection input)
 			{
-				list.add(te);
+				return world.getTileEntity(tile.xCoord + input.offsetX, tile.yCoord + input.offsetY, tile.zCoord + input.offsetZ);
 			}
-		}
-		return list;
+		});
+
+		return Maps.filterValues(ret2, Predicates.notNull());
 	}
 
 	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
