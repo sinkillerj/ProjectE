@@ -5,14 +5,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockTorch;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
+public class InterdictionTorch extends BlockTorch
 {
 	public InterdictionTorch()
 	{
@@ -21,9 +20,15 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}
-	
+
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int meta)
 	{
 		return new InterdictionTile();
 	}
