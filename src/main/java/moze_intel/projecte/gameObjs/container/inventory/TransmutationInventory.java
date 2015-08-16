@@ -12,6 +12,7 @@ import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 
@@ -159,7 +160,7 @@ public class TransmutationInventory implements IInventory
 		ItemStack lockCopy = null;
 
 		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
-		
+		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
@@ -196,24 +197,7 @@ public class TransmutationInventory implements IInventory
 					continue;
 				}
 
-				String displayName;
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (displayName == null)
-				{
-					iter.remove();
-					continue;
-				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-				{
+				if (!searchHelper.doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
@@ -241,24 +225,7 @@ public class TransmutationInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (displayName == null)
-				{
-					iter.remove();
-					continue;
-				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-				{
+				if (!searchHelper.doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
