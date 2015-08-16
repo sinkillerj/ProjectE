@@ -33,7 +33,7 @@ public class CondenserMK2Tile extends CondenserTile
 			{
 				ItemStack stack = inventory[i];
 
-				if (stack == null || isStackEqualToLock(stack))
+				if (stack == null)
 				{
 					continue;
 				}
