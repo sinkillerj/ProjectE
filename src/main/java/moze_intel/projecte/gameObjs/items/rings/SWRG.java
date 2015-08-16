@@ -119,6 +119,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		}
 
 		removeEmc(stack, toRemove);
+
+		playerMP.fallDistance = 0;
 	}
 
 	private boolean isFlyingEnabled(ItemStack stack)
