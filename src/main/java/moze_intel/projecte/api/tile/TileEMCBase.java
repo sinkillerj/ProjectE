@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Base class for the reference implementations TileEMCProvider, TileEmcAcceptor, and TileEmcHandler
+ * Base class for the reference implementations TileEmcProvider, TileEmcAcceptor, and TileEmcHandler
  * Usually you want to use one of three derived reference implementations
  * Extend this if you want fine-grained control over all aspects of how your tile provides or accepts EMC
  *
