@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author williewillus
  */
-public class TileEMCAcceptor extends TileEMCBase implements IEMCAcceptor
+public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor
 {
 	@Override
 	public double acceptEMC(ForgeDirection side, double toAccept)

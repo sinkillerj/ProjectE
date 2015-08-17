@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.tile.IEMCProvider;
+import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
@@ -22,7 +22,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEMCProvider
+public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider
 {
 	private ItemStack[] inventory;
 	private int[] accessibleSlots;
@@ -554,21 +554,15 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
 			if (tile instanceof RelayMK3Tile)
 			{
-				double provide = this.provideEMC(dir.getOpposite(), 0.5);
-				double remain = provide - ((RelayMK3Tile) tile).acceptEMC(dir, provide);
-				this.addEMC(remain);
+				((RelayMK3Tile) tile).acceptEMC(dir, 0.5);
 			}
 			else if (tile instanceof RelayMK2Tile)
 			{
-				double provide = this.provideEMC(dir.getOpposite(), 0.15);
-				double remain = provide - ((RelayMK2Tile) tile).acceptEMC(dir, provide);
-				this.addEMC(remain);
+				((RelayMK2Tile) tile).acceptEMC(dir, 0.15);
 			}
 			else if (tile instanceof RelayMK1Tile)
 			{
-				double provide = this.provideEMC(dir.getOpposite(), 0.05);
-				double remain = provide - ((RelayMK1Tile) tile).acceptEMC(dir, provide);
-				this.addEMC(remain);
+				((RelayMK1Tile) tile).acceptEMC(dir, 0.05);
 			}
 		}
 	}

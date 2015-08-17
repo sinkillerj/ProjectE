@@ -7,14 +7,14 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author williewillus
  */
-public class TileEMCHandler extends TileEMCBase implements IEMCAcceptor, IEMCProvider
+public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcProvider
 {
-	public TileEMCHandler()
+	public TileEmcHandler()
 	{
 		this.maximumEMC = Double.MAX_VALUE;
 	}
 
-	public TileEMCHandler(double max)
+	public TileEmcHandler(double max)
 	{
 		this.maximumEMC = max;
 	}

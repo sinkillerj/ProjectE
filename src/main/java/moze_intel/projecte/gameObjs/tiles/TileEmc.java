@@ -2,9 +2,9 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
-import moze_intel.projecte.api.tile.IEMCAcceptor;
-import moze_intel.projecte.api.tile.IEMCProvider;
-import moze_intel.projecte.api.tile.TileEMCBase;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.tileentity.TileEntity;
@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Map;
 
-public abstract class TileEmc extends TileEMCBase
+public abstract class TileEmc extends TileEmcBase
 {
 	public TileEmc()
 	{
@@ -37,14 +37,14 @@ public abstract class TileEmc extends TileEMCBase
 	 */
 	public void sendToAllAcceptors(double emc)
 	{
-		if (!(this instanceof IEMCProvider))
+		if (!(this instanceof IEmcProvider))
 		{
 			// todo move this method somewhere
 			throw new UnsupportedOperationException("sending without being a provider");
 		}
 
 
-		Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEMCAcceptor.class));
+		Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEmcAcceptor.class));
 
 		double emcPer = emc / tiles.size();
 		for (Map.Entry<ForgeDirection, TileEntity> entry : tiles.entrySet())
@@ -53,8 +53,8 @@ public abstract class TileEmc extends TileEMCBase
 			{
 				continue;
 			}
-			double provide = ((IEMCProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
-			double remain = provide - ((IEMCAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
 			this.addEMC(remain);
 		}
 	}

@@ -10,12 +10,12 @@ import net.minecraft.tileentity.TileEntity;
  *
  * @author williewillus
  */
-public class TileEMCBase extends TileEntity implements IEMCStorage
+public class TileEmcBase extends TileEntity implements IEmcStorage
 {
 	protected double maximumEMC;
 	protected double currentEMC = 0;
 
-	protected TileEMCBase()
+	protected TileEmcBase()
 	{
 		setMaximumEMC(Double.MAX_VALUE);
 	}

@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.tile.IEMCAcceptor;
-import moze_intel.projecte.api.tile.IEMCProvider;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.RelaySyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEMCAcceptor, IEMCProvider
+public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor, IEmcProvider
 {
 	private ItemStack[] inventory;
 	private int invBufferSize;

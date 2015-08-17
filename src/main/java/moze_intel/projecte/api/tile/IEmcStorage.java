@@ -7,7 +7,7 @@ package moze_intel.projecte.api.tile;
  *
  * @author williewillus
  */
-public interface IEMCStorage
+public interface IEmcStorage
 {
 	/**
 	 * Gets the current amount of EMC in this IEMCStorage

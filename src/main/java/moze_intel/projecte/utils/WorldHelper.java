@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -203,12 +204,12 @@ public final class WorldHelper
 	
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
-		return Lists.newArrayList(getAdjacentTileEntitiesMapped(world, tile).values());
+		return ImmutableList.copyOf(getAdjacentTileEntitiesMapped(world, tile).values());
 	}
 
 	public static Map<ForgeDirection, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
-		Map<ForgeDirection, TileEntity> ret2 = Maps.asMap(Sets.newHashSet(ForgeDirection.VALID_DIRECTIONS), new Function<ForgeDirection, TileEntity>()
+		Map<ForgeDirection, TileEntity> ret2 = Maps.asMap(ImmutableSet.copyOf(ForgeDirection.VALID_DIRECTIONS), new Function<ForgeDirection, TileEntity>()
 		{
 			@Nullable
 			@Override
