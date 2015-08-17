@@ -54,6 +54,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -425,7 +426,7 @@ public final class WorldHelper
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
+							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 							{
 								growable.func_149853_b(world, world.rand, x, y, z);
 							}
