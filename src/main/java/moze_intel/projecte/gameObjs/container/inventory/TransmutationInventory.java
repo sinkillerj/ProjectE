@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class TransmutationInventory implements IInventory
 {
@@ -192,7 +193,7 @@ public class TransmutationInventory implements IInventory
 					iter.remove();
 					continue;
 				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				else if (filter.length() > 0 && !displayName.toLowerCase(Locale.ROOT).contains(filter))
 				{
 					iter.remove();
 					continue;
@@ -237,7 +238,7 @@ public class TransmutationInventory implements IInventory
 					iter.remove();
 					continue;
 				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
+				else if (filter.length() > 0 && !displayName.toLowerCase(Locale.ROOT).contains(filter))
 				{
 					iter.remove();
 					continue;
