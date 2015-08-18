@@ -40,7 +40,7 @@ public abstract class ItemPE extends Item
 		stack.stackTagCompound.setDouble("StoredEMC", amount);
 	}
 	
-	public static void addEmc(ItemStack stack, double amount)
+	public static void addEmcToStack(ItemStack stack, double amount)
 	{
 		setEmc(stack, getEmc(stack) + amount);
 	}
@@ -75,11 +75,11 @@ public abstract class ItemPE extends Item
 			
 			if (consume == -1)
 			{
-				addEmc(stack, current);
+				addEmcToStack(stack, current);
 				return false;
 			}
 			
-			addEmc(stack, consume);
+			addEmcToStack(stack, consume);
 		}
 		
 		if (shouldRemove)

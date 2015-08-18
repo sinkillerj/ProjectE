@@ -5,7 +5,6 @@ import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public abstract class BlockDirection extends BlockContainer
+public abstract class BlockDirection extends Block
 {
 	public BlockDirection(Material material)
 	{

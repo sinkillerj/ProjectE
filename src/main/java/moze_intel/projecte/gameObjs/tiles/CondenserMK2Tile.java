@@ -20,11 +20,10 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected void condense()
 	{
-
 		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc)
 		{
 			pushStack();
-			this.removeEmc(requiredEmc);
+			this.removeEMC(requiredEmc);
 		}
 
 		if (this.hasSpace())
@@ -38,7 +37,7 @@ public class CondenserMK2Tile extends CondenserTile
 					continue;
 				}
 
-				this.addEmc(EMCHelper.getEmcValue(stack) * stack.stackSize);
+				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
 				inventory[i] = null;
 				break;
 			}

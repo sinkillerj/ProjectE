@@ -15,12 +15,12 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
-	
+
 	public AlchChestTile()
 	{
 		super();
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -247,11 +247,5 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isRequestingEmc() 
-	{
-		return false;
 	}
 }

@@ -12,14 +12,14 @@ import net.minecraft.tileentity.TileEntity;
 public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSyncPKT, IMessage>
 {
 	private int displayEmc;
-	private int displayKleinCharge;
+	private double displayKleinCharge;
 	private int x;
 	private int y;
 	private int z;
 	
 	public CollectorSyncPKT() {}
 	
-	public CollectorSyncPKT(int displayEmc, int displayKleinCharge, int x, int y, int z) 
+	public CollectorSyncPKT(int displayEmc, double displayKleinCharge, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinCharge = displayKleinCharge;
@@ -41,7 +41,7 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 		{
 			CollectorMK1Tile collector = (CollectorMK1Tile) tile;
 			collector.displayEmc = pkt.displayEmc;
-			collector.displayKleinCharge = pkt.displayKleinCharge;
+			collector.displayItemCharge = pkt.displayKleinCharge;
 		}
 		
 		return null;
@@ -51,7 +51,7 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 	public void fromBytes(ByteBuf buf) 
 	{
 		displayEmc = buf.readInt();
-		displayKleinCharge = buf.readInt();
+		displayKleinCharge = buf.readDouble();
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -61,7 +61,7 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(displayEmc);
-		buf.writeInt(displayKleinCharge);
+		buf.writeDouble(displayKleinCharge);
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);

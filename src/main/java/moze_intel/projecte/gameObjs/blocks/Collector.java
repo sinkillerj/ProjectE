@@ -98,7 +98,13 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) {
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int meta) {
 		switch (tier) {
 			case 3:
 				return new CollectorMK3Tile();

@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -33,18 +33,19 @@ public class SlotInput extends Slot
 		
 		super.putStack(stack);
 		
-		if (stack.getItem() == ObjHandler.kleinStars)
+		if (stack.getItem() instanceof IItemEmc)
 		{
-			int remainingEmc = EMCHelper.getKleinStarMaxEmc(stack) - (int) Math.ceil(ItemPE.getEmc(stack));
+			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+			double remainingEmc = itemEmc.getMaximumEmc(stack) - (int) Math.ceil(itemEmc.getStoredEmc(stack));
 			
 			if (inv.emc >= remainingEmc)
 			{
-				ItemPE.addEmc(stack, remainingEmc);
+				itemEmc.addEmc(stack, remainingEmc);
 				inv.removeEmc(remainingEmc);
 			}
 			else
 			{
-				ItemPE.addEmc(stack, inv.emc);
+				itemEmc.addEmc(stack, inv.emc);
 				inv.emc = 0;
 			}
 		}
