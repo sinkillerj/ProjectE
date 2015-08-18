@@ -31,23 +31,23 @@ public class PedestalItemRenderer implements IItemRenderer
 		switch (type)
 		{
 			case ENTITY:
-				renderPedestal(0.0F, 1.0F, 0.0F, 0);
+				renderPedestal(0.0F, 1.0F, 0.0F);
 				break;
 			case EQUIPPED:
-				renderPedestal(1.0F, 1.15F, 1.00F, 0);
+				renderPedestal(1.0F, 1.15F, 1.00F);
 				break;
 			case EQUIPPED_FIRST_PERSON:
-				renderPedestal(1.0F, 1.6F, 1.0F, 0);
+				renderPedestal(1.0F, 1.6F, 1.0F);
 				break;
 			case INVENTORY:
-				renderPedestal(0.0F, 1.0F, 0.0F, 0);
+				renderPedestal(0.0F, 1.0F, 0.0F);
 				break;
 			default:
 				break;
 		}
 	}
 
-	private void renderPedestal(float x, float y, float z, int meta)
+	private void renderPedestal(float x, float y, float z)
 	{
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		GL11.glPushMatrix();

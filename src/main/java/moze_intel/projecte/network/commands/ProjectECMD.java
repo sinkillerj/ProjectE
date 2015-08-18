@@ -1,6 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
@@ -12,7 +13,7 @@ import java.util.Locale;
 
 public class ProjectECMD extends ProjectEBaseCMD
 {
-	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
+	private static final List<String> commands = ImmutableList.of("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
 	ChangelogCMD changelogcmd = new ChangelogCMD();
 	ReloadEmcCMD reloademccmd = new ReloadEmcCMD();

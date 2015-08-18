@@ -1,7 +1,6 @@
 package moze_intel.projecte;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -45,6 +44,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
@@ -63,7 +63,7 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
 
-	public static final List<String> uuids = Lists.newArrayList();
+	public static List<String> haUUIDs = Collections.emptyList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)

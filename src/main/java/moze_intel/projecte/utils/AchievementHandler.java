@@ -39,24 +39,4 @@ public final class AchievementHandler
 	{
 		AchievementPage.registerAchievementPage(new AchievementPage("ProjectE", list.toArray(new Achievement[list.size()])));
 	}
-
-	public static Achievement getAchievementForItem(ItemStack stack)
-	{
-		if (stack == null)
-		{
-			return null;
-		}
-		
-		for (Achievement ach : list)
-		{
-			ItemStack s = ach.theItemStack;
-			
-			if (s.getItem() == stack.getItem() && s.getItemDamage() == stack.getItemDamage())
-			{
-				return ach;
-			}
-		}
-		
-		return null;
-	}
 }

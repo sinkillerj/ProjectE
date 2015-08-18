@@ -1,7 +1,7 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.utils.ItemHelper;
@@ -22,9 +22,9 @@ import java.util.UUID;
 
 public class TransmutationOffline
 {
-    private static Map<UUID, List<ItemStack>> cachedKnowledge = Maps.newHashMap();
-    private static Map<UUID, Double> cachedEmc = Maps.newHashMap();
-    private static Map<UUID, Boolean> cachedFullKnowledge = Maps.newHashMap();
+    private static final Map<UUID, List<ItemStack>> cachedKnowledge = Maps.newHashMap();
+    private static final Map<UUID, Double> cachedEmc = Maps.newHashMap();
+    private static final Map<UUID, Boolean> cachedFullKnowledge = Maps.newHashMap();
 
     public static void cleanAll()
     {
@@ -95,7 +95,7 @@ public class TransmutationOffline
                     cachedEmc.put(playerUUID, props.getDouble("transmutationEmc"));
                     cachedFullKnowledge.put(playerUUID, props.getBoolean("tome"));
 
-                    List<ItemStack> knowledge = Lists.newArrayList();
+                    ImmutableList.Builder<ItemStack> knowledge = ImmutableList.builder();
                     NBTTagList list = props.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
                     for (int i = 0; i < list.tagCount(); i++)
                     {
@@ -105,7 +105,7 @@ public class TransmutationOffline
                             knowledge.add(item);
                         }
                     }
-                    cachedKnowledge.put(playerUUID, knowledge);
+                    cachedKnowledge.put(playerUUID, knowledge.build());
                     PELogger.logDebug("Caching offline data for UUID: %s", playerUUID);
                 } catch (IOException e) {
                     PELogger.logWarn("Failed to cache offline data for API calls for UUID: %s", playerUUID);

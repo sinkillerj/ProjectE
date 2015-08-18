@@ -34,23 +34,23 @@ public class CondenserMK2ItemRenderer implements IItemRenderer
 		switch (type)
 		{
 			case ENTITY:
-				renderCondenser(0.5F, 0.5F, 0.5F, 0);
+				renderCondenser(0.5F, 0.5F, 0.5F);
 				break;
 			case EQUIPPED:
-				renderCondenser(1.0F, 1.0F, 1.0F, 0);
+				renderCondenser(1.0F, 1.0F, 1.0F);
 				break;
 			case EQUIPPED_FIRST_PERSON:
-				renderCondenser(1.0F, 1.0F, 1.0F, 0);
+				renderCondenser(1.0F, 1.0F, 1.0F);
 				break;
 			case INVENTORY:
-				renderCondenser(0.0F, 0.075F, 0.0F, 0);
+				renderCondenser(0.0F, 0.075F, 0.0F);
 				break;
 			default:
 				break;
 		}
 	}
 
-	private void renderCondenser(float x, float y, float z, int metaData)
+	private void renderCondenser(float x, float y, float z)
 	{
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		GL11.glPushMatrix();

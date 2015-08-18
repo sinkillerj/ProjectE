@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
@@ -104,12 +105,8 @@ public final class ItemHelper
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
-		Iterator<ItemStack> iter = list.iterator();
-
-		while (iter.hasNext())
+		for (ItemStack stack : list)
 		{
-			ItemStack stack = iter.next();
-
 			if (stack == null)
 			{
 				continue;
@@ -117,7 +114,7 @@ public final class ItemHelper
 
 			if (stack.getItem().equals(toSearch.getItem()))
 			{
-				if( !stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
+				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
 				{
 					return true;
 				}
@@ -128,22 +125,7 @@ public final class ItemHelper
 
 	public static boolean containsItemStack(ItemStack[] stacks, ItemStack toSearch)
 	{
-		for (ItemStack stack : stacks)
-		{
-			if (stack == null)
-			{
-				continue;
-			}
-
-			if (stack.getItem() == toSearch.getItem())
-			{
-				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
-				{
-					return true;
-				}
-			}
-		}
-		return false;
+		return containsItemStack(ImmutableList.copyOf(stacks), toSearch);
 	}
 
 	/**
@@ -175,7 +157,7 @@ public final class ItemHelper
 	 */
 	public static List<ItemStack> getODItems(String oreName)
 	{
-		List<ItemStack> result = Lists.newArrayList();
+		ImmutableList.Builder<ItemStack> result = ImmutableList.builder();
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
@@ -231,7 +213,7 @@ public final class ItemHelper
 			}
 		}
 
-		return result;
+		return result.build();
 	}
 
 	public static String getOreDictionaryName(ItemStack stack)
@@ -284,9 +266,6 @@ public final class ItemHelper
 		return null;
 	}
 
-	/**
-	 *	@throws NullPointerException
-	 */
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
 		Item item = (Item) Item.itemRegistry.getObject(internal);

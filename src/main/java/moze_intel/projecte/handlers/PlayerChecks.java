@@ -36,34 +36,18 @@ public final class PlayerChecks
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
-		if (!shouldPlayerFly(player))
+		boolean shouldFly = shouldPlayerFly(player);
+
+		if (shouldFly != player.capabilities.allowFlying)
 		{
-			if (player.capabilities.allowFlying)
-			{
-				PlayerHelper.updateClientServerFlight(player, false);
-			}
-		}
-		else
-		{
-			if (!player.capabilities.allowFlying)
-			{
-				PlayerHelper.updateClientServerFlight(player, true);
-			}
+			PlayerHelper.updateClientServerFlight(player, shouldFly);
 		}
 
-		if (!shouldPlayerResistFire(player))
+		boolean shouldFireResist = shouldPlayerResistFire(player);
+
+		if (shouldFireResist != player.isImmuneToFire())
 		{
-			if (player.isImmuneToFire())
-			{
-				PlayerHelper.setPlayerFireImmunity(player, false);
-			}
-		}
-		else
-		{
-			if (!player.isImmuneToFire())
-			{
-				PlayerHelper.setPlayerFireImmunity(player, true);
-			}
+			PlayerHelper.setPlayerFireImmunity(player, shouldFireResist);
 		}
 
 		if (!shouldPlayerStep(player))
