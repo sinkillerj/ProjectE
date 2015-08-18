@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import com.google.common.math.LongMath;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -105,8 +106,13 @@ public class ToolTipEvent
 
 				if (current.stackSize > 1)
 				{
-					long total = value * current.stackSize;
-
+					long total;
+					try
+					{
+						total = LongMath.checkedMultiply(value, current.stackSize);
+					} catch (ArithmeticException e) {
+						total = Long.MAX_VALUE;
+					}
 					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
@@ -115,6 +121,7 @@ public class ToolTipEvent
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
 					}
+
 				}
 			}
 		}
