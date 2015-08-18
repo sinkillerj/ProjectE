@@ -364,7 +364,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
 		}
 		
-		if (this.getStoredEmc() >= reqEmc)
+		if (displayEmc >= reqEmc)
 		{
 			return i;
 		}
