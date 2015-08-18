@@ -148,7 +148,13 @@ public class NovaExplosion extends Explosion
 			}
 			
 			Entity ent = this.getExplosivePlacedBy();
-			WorldHelper.createLootDrop(list, worldObj, explosionX, explosionY, explosionZ);
+			if (ent == null)
+			{
+				WorldHelper.createLootDrop(list, worldObj, explosionX, explosionY, explosionZ);
+			} else
+			{
+				WorldHelper.createLootDrop(list, worldObj, ent.posX, ent.posY, ent.posZ);
+			}
 		}
 	}
 }

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 
 public class EternalDensityContainer extends Container
 {
-	private EternalDensityInventory inventory;
+	private final EternalDensityInventory inventory;
 	
 	public EternalDensityContainer(InventoryPlayer invPlayer, EternalDensityInventory gemInv)
 	{

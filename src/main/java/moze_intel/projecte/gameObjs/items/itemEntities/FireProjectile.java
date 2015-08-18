@@ -15,6 +15,7 @@ public class FireProjectile extends ItemPE
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon(getTexture("entities", "fireball"));

@@ -14,9 +14,9 @@ import net.minecraft.world.World;
 
 public class PhilosStoneContainer extends Container
 {
-	private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-	private IInventory craftResult = new InventoryCraftResult();
-	private World worldObj;
+	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+	private final IInventory craftResult = new InventoryCraftResult();
+	private final World worldObj;
 	
 	public PhilosStoneContainer(InventoryPlayer invPlayer) 
 	{

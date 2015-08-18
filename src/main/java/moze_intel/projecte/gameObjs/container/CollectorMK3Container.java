@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 
 public class CollectorMK3Container extends Container
 {
-	private CollectorMK3Tile tile;
+	private final CollectorMK3Tile tile;
 	private int sunLevel;
 	
 	public CollectorMK3Container(InventoryPlayer invPlayer, CollectorMK3Tile collector)

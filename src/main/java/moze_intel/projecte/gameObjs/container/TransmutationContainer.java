@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 
 public class TransmutationContainer extends Container
 {
-	public TransmutationInventory transmutationInventory;
+	public final TransmutationInventory transmutationInventory;
 
 	public TransmutationContainer(InventoryPlayer invPlayer, TransmutationInventory inventory)
 	{

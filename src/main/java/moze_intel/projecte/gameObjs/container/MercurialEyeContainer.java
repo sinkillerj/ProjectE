@@ -11,17 +11,13 @@ import net.minecraft.item.ItemStack;
 
 public class MercurialEyeContainer extends Container
 {
-	private MercurialEyeInventory inventory;
-	
 	public MercurialEyeContainer(InventoryPlayer invPlayer, MercurialEyeInventory mercEyeInv)
 	{
-		inventory = mercEyeInv;
-		
 		//Klein Star
-		this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 50, 26));
+		this.addSlotToContainer(new SlotMercurialKlein(mercEyeInv, 0, 50, 26));
 		
 		//Target
-		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
+		this.addSlotToContainer(new SlotMercurialTarget(mercEyeInv, 1, 104, 26));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -87,7 +83,7 @@ public class MercurialEyeContainer extends Container
 		}
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{

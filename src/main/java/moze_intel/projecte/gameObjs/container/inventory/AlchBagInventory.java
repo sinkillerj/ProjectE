@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 public class AlchBagInventory implements IInventory
 {
 	private final ItemStack invItem;
-	private ItemStack[] inventory;
-	private EntityPlayer player;
+	private final ItemStack[] inventory;
+	private final EntityPlayer player;
 	
 	public AlchBagInventory(EntityPlayer player, ItemStack stack)
 	{

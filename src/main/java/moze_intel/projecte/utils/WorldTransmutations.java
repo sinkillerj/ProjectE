@@ -5,11 +5,11 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public final class WorldTransmutations
 {
-	public static final HashMap<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
+	public static final Map<MetaBlock, MetaBlock[]> MAP = Maps.newHashMap();
 
 	static
 	{

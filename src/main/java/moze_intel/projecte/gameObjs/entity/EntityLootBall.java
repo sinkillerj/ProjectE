@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EntityLootBall extends Entity
 {
-	private final int lifespan = 6000;
+	private static final int lifespan = 6000;
 	private List<ItemStack> items;
 	private int age;
 
@@ -155,7 +155,6 @@ public class EntityLootBall extends Entity
 							playSound = true;
 						}
 							
-						continue;
 					}
 					else
 					{
@@ -196,7 +195,6 @@ public class EntityLootBall extends Entity
 					this.setDead();
 				}
 				
-				return;
 			}
 		}
 		else
@@ -218,7 +216,6 @@ public class EntityLootBall extends Entity
 							playSound = true;
 						}
 							
-						continue;
 					}
 					else
 					{
