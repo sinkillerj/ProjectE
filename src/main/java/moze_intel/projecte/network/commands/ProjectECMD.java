@@ -1,21 +1,14 @@
 package moze_intel.projecte.network.commands;
 
-import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.ChatHelper;
-import moze_intel.projecte.utils.MathUtils;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Locale;
 
 public class ProjectECMD extends ProjectEBaseCMD
 {
@@ -73,7 +66,9 @@ public class ProjectECMD extends ProjectEBaseCMD
 			relayparams = Arrays.copyOfRange(params, 1, params.length);
 		}
 
-		if (params[0].toLowerCase().equals("setemc"))
+		String subName = params[0].toLowerCase(Locale.ROOT);
+
+		if ("setemc".equals(subName))
 		{
 			if (setemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -84,7 +79,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("resetemc"))
+		else if ("resetemc".equals(subName))
 		{
 			if (resetemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -95,7 +90,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("removeemc"))
+		else if ("removeemc".equals(subName))
 		{
 			if (removeemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -106,7 +101,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("reloademc"))
+		else if ("reloademc".equals(subName))
 		{
 			if (reloademccmd.canCommandSenderUseCommand(sender))
 			{
@@ -117,7 +112,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("clearknowledge"))
+		else if ("clearknowledge".equals(subName))
 		{
 			if (clearknowledgecmd.canCommandSenderUseCommand(sender))
 			{
@@ -128,7 +123,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("changelog"))
+		else if ("changelog".equals(subName))
 		{
 			if (changelogcmd.canCommandSenderUseCommand(sender))
 			{
@@ -154,7 +149,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 		@Override
 		public boolean apply(String input)
 		{
-			return input.toLowerCase().startsWith(prefix.toLowerCase());
+			return input.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT));
 		}
 	}
 }

@@ -20,24 +20,27 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected void condense()
 	{
-		for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
-
-			if (stack == null || isStackEqualToLock(stack))
-			{
-				continue;
-			}
-
-			this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-			inventory[i] = null;
-			break;
-		}
-
 		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc)
 		{
 			pushStack();
 			this.removeEMC(requiredEmc);
+		}
+
+		if (this.hasSpace())
+		{
+			for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
+			{
+				ItemStack stack = inventory[i];
+
+				if (stack == null)
+				{
+					continue;
+				}
+
+				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
+				inventory[i] = null;
+				break;
+			}
 		}
 	}
 

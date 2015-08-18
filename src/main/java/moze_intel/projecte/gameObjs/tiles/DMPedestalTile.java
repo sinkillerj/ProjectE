@@ -33,7 +33,9 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		{
 			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty())
 			{
-				// Handle condition where this method is called even after the clientside chunk has unloaded. Don't you love vanilla???
+				// Handle condition where this method is called even after the clientside chunk has unloaded.
+				// This will make IPedestalItems below crash with an NPE since the TE they get back is null
+				// Don't you love vanilla???
 				return;
 			}
 		}
