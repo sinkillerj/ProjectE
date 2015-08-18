@@ -55,8 +55,8 @@ public abstract class PEToolBase extends ItemMode
 	public static final float KATAR_DEATHATTACK = 1000.0F;
 	protected String pePrimaryToolClass;
 	protected String peToolMaterial;
-	protected Set<Material> harvestMaterials;
-	protected Set<String> secondaryClasses;
+	protected final Set<Material> harvestMaterials;
+	protected final Set<String> secondaryClasses;
 
 	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
 	{

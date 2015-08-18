@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 public class RelayMK2Container extends Container
 {
-	private RelayMK2Tile tile;
+	private final RelayMK2Tile tile;
 	
 	public RelayMK2Container(InventoryPlayer invPlayer, RelayMK2Tile relay)
 	{

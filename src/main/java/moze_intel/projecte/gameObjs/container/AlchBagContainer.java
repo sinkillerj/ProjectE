@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchBagContainer extends Container
 {
-	public AlchBagInventory inventory;
+	public final AlchBagInventory inventory;
 	
 	public AlchBagContainer(InventoryPlayer invPlayer, AlchBagInventory invBag)
 	{

@@ -69,8 +69,11 @@ public class PlayerEvents
 	{
 		if (evt.entity instanceof EntityPlayer)
 		{
-			TransmutationOffline.clear(evt.entity.getUniqueID());
-			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
+			if (evt.entity instanceof EntityPlayerMP)
+			{
+				TransmutationOffline.clear(evt.entity.getUniqueID());
+				PELogger.logDebug("Clearing offline data cache in preparation to load online data");
+			}
 
 			TransmutationProps.register(((EntityPlayer) evt.entity));
 			AlchBagProps.register(((EntityPlayer) evt.entity));
@@ -80,12 +83,12 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onHighAlchemistJoin(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
-		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		if (PECore.haUUIDs.contains((evt.player.getUniqueID().toString())))
 		{
 			IChatComponent prior = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.high_alchemist"), EnumChatFormatting.BLUE);
 			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getCommandSenderName() + " "), EnumChatFormatting.GOLD);
 			IChatComponent latter = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.has_joined"), EnumChatFormatting.BLUE);
-			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
+			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter));
 		}
 	}
 

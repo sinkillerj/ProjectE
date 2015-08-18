@@ -21,7 +21,7 @@ import java.util.List;
 public class KleinStar extends ItemPE implements IItemEmc
 {
 	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
+	private final IIcon[] icons = new IIcon[6];
 	
 	public KleinStar()
 	{
@@ -129,8 +129,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)
 	{
-		icons = new IIcon[6];
-		
 		for (int i = 0; i < 6; i++)
 		{
 			icons[i] = register.registerIcon(this.getTexture("stars", "klein_star_"+(i + 1)));

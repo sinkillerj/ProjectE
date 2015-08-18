@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 public class CondenserMK2Container extends Container
 {
-	public CondenserMK2Tile tile;
+	public final CondenserMK2Tile tile;
 
 	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
 	{

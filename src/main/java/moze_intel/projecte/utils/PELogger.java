@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 public final class PELogger 
 {
-	private static Logger logger = LogManager.getLogger(PECore.MODID);
+	private static final Logger logger = LogManager.getLogger(PECore.MODID);
 
 	public static void log(Level level, String msg)
 	{

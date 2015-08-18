@@ -1,6 +1,6 @@
 package moze_intel.projecte.network;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 
@@ -9,14 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 public class ThreadCheckUUID extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/haUUID.txt";
-	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private static final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/haUUID.txt";
+	private static final String githubURL = "https://github.com/sinkillerj/ProjectE";
 	private boolean isServerSide;
 	
 	public ThreadCheckUUID(boolean isServer) 
@@ -47,7 +46,7 @@ public class ThreadCheckUUID extends Thread
 				throw new IOException("No data from github UUID list!");
 			}
 
-			List<String> uuids = Lists.newArrayList();
+			ImmutableList.Builder<String> uuids = ImmutableList.builder();
 					
 			while ((line = reader.readLine()) != null)
 			{
@@ -62,7 +61,7 @@ public class ThreadCheckUUID extends Thread
 				}
 			}
 
-			PECore.uuids.addAll(uuids);
+			PECore.haUUIDs = uuids.build();
 		}
 		catch(Exception e)
 		{

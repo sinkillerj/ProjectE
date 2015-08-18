@@ -445,14 +445,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
+	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		if (slot == 0) 
-		{
-			return false;
-		}
-		
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
+		return slot != 0 && !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override

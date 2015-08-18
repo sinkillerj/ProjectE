@@ -1,5 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
@@ -25,18 +28,17 @@ import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {
-	private final String[] colors = new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"};
+	private static final List<String> colors = ImmutableList.of("white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black");
 
 	// MC Lang files have these unlocalized names mapped to raw color names
-	private final String[] unlocalizedColors = new String[] {
-			"item.fireworksCharge.white", "item.fireworksCharge.orange",
-			"item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
-			"item.fireworksCharge.yellow", "item.fireworksCharge.lime",
-			"item.fireworksCharge.pink", "item.fireworksCharge.gray",
-			"item.fireworksCharge.silver", "item.fireworksCharge.cyan",
-			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
-			"item.fireworksCharge.brown", "item.fireworksCharge.green",
-			"item.fireworksCharge.red", "item.fireworksCharge.black"};
+	private static final List<String> unlocalizedColors = Lists.transform(colors, new Function<String, String>()
+	{
+		@Override
+		public String apply(String input)
+		{
+			return "item.fireworksCharge." + input;
+		}
+	});
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -121,7 +123,7 @@ public class AlchemicalBag extends ItemPE
 			return name + " (" + StatCollector.translateToLocal("pe.debug.metainvalid.name") + ")";
 		}
 
-		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
+		String color = " (" + StatCollector.translateToLocal(unlocalizedColors.get(i)) + ")";
 		return name + color;
 	}
 	
@@ -157,7 +159,7 @@ public class AlchemicalBag extends ItemPE
 		
 		for (int i = 0; i < 16; i++)
 		{
-			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors[i]));
+			icons[i] = register.registerIcon(this.getTexture("alchemy_bags", colors.get(i)));
 		}
 	}
 

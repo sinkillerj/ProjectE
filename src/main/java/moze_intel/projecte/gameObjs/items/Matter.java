@@ -18,7 +18,7 @@ public class Matter extends ItemPE
 {
 	private final String[] names = new String[] {"dark", "red"};
 	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
+	private final IIcon[] icons = new IIcon[2];
 	
 	public Matter()
 	{
@@ -70,8 +70,6 @@ public class Matter extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)
 	{
-		icons = new IIcon[2];
-		
 		for (int i = 0; i < 2; i++)
 		{
 			icons[i] = register.registerIcon(this.getTexture("matter", names[i]));

@@ -1,6 +1,6 @@
 package moze_intel.projecte.playerData;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -31,10 +32,11 @@ public final class Transmutation
 	@Deprecated
 	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
 
-	private static final List<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newArrayList();
+	private static List<ItemStack> CACHED_TOME_KNOWLEDGE = Collections.emptyList();
 	
 	public static void cacheFullKnowledge()
 	{
+		ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
 		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
 			if (!stack.isValid())
@@ -50,7 +52,7 @@ public final class Transmutation
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{
-					CACHED_TOME_KNOWLEDGE.add(s);
+					builder.add(s);
 				}
 			}
 			catch (Exception e)
@@ -58,6 +60,7 @@ public final class Transmutation
 				PELogger.logInfo("Failed to cache knowledge for " + stack + ": " + e.toString());
 			}
 		}
+		CACHED_TOME_KNOWLEDGE = builder.build();
 	}
 
 	public static List<ItemStack> getKnowledge(EntityPlayer player)
@@ -69,7 +72,7 @@ public final class Transmutation
 		}
 		else
 		{
-			return data.getKnowledge();
+			return ImmutableList.copyOf(data.getKnowledge());
 		}
 	}
 

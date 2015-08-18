@@ -3,11 +3,11 @@ package moze_intel.projecte.handlers;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class PlayerTimers
 {
-	private static final LinkedHashMap<String, TimerSet> MAP = Maps.newLinkedHashMap();
+	private static final Map<String, TimerSet> MAP = Maps.newLinkedHashMap();
 
 	public static void update()
 	{
