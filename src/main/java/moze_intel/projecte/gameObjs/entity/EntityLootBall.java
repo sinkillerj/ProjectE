@@ -122,7 +122,7 @@ public class EntityLootBall extends Entity
 			return;
 		}
 		other.setDead();
-		items.addAll(Lists.newArrayList(other.getItemList()));
+		items.addAll(other.getItemList());
 		other.getItemList().clear();
 		ItemHelper.compactItemList(items);
 	}

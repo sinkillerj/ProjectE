@@ -126,7 +126,7 @@ public class TransmutationInventory implements IInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs()
 	{
-		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
+		knowledge = Transmutation.getKnowledge(player);
 
 		for (int i : MATTER_INDEXES)
 		{
