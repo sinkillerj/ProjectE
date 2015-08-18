@@ -108,7 +108,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		if (numUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
-					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
 		}
 	}
 	

@@ -9,8 +9,11 @@ import net.minecraft.item.ItemStack;
 
 public class PedestalContainer extends Container
 {
+	private final DMPedestalTile tile;
 	public PedestalContainer(InventoryPlayer inventory, DMPedestalTile tile)
 	{
+		this.tile = tile;
+
 		//Pedestal Inventory
 		this.addSlotToContainer(new Slot(tile, 0, 80, 20));
 
@@ -67,8 +70,8 @@ public class PedestalContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer p_75145_1_)
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return true;
+		return player.getDistanceSq(tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5) <= 64.0;
 	}
 }

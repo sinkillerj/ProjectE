@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
+import com.google.common.collect.Maps;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -21,6 +22,7 @@ import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
+import moze_intel.projecte.gameObjs.customRecipes.RecipesShapelessHidden;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -236,6 +238,8 @@ public class ObjHandler
 	public static Item windProjectile = new LightningProjectile();
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
+
+	public static final HashMap<ItemStack, ItemStack> MAP = Maps.newHashMap();
 
 	public static void register()
 	{
@@ -642,6 +646,7 @@ public class ObjHandler
 	 */
 	public static void registerPhiloStoneSmelting()
 	{
+
 		for (Entry<ItemStack, ItemStack> entry : (((HashMap<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList()).entrySet()))
 		{
 			if (entry.getKey() == null || entry.getValue() == null)
@@ -653,8 +658,11 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			GameRegistry.addShapelessRecipe(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
+			MAP.put(input, output);
+			GameRegistry.addRecipe(new RecipesShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+
 		}
+		RecipeSorter.register("Philosopher's Smelting Recipes", RecipesShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}
 
 	public static class FuelHandler implements IFuelHandler
@@ -690,4 +698,3 @@ public class ObjHandler
 		}
 	}
 }
-

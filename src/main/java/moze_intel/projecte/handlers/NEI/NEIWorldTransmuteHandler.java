@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 {
 
-	private static String name = "World Transmutation";
+	private static String name = StatCollector.translateToLocal("pe.nei.worldtransmute");
 	private static String id = "worldTransmutation";
 
 	@Override
@@ -112,18 +112,6 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, new ItemStack(ObjHandler.philosStone)))
-		{
-			for (Entry<MetaBlock, MetaBlock[]> entry : WorldTransmutations.MAP.entrySet())
-			{
-				if (entry != null)
-				{
-					if (entry.getValue()[0] != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
-					if (entry.getValue()[1] != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));
-				}
-			}
-		}
-
 		for (Entry<MetaBlock, MetaBlock[]> entry : WorldTransmutations.MAP.entrySet())
 		{
 			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey().toItemStack(), ingredient))
@@ -153,7 +141,7 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id, new Object[0]));
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
 	}
 
 
