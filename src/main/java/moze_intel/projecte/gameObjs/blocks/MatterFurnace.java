@@ -11,7 +11,6 @@ import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +24,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class MatterFurnace extends BlockDirection implements ITileEntityProvider
+public class MatterFurnace extends BlockDirection
 {
 	private String textureName;
 	private boolean isActive;
@@ -217,7 +216,13 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int meta)
 	{
 		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
 	}

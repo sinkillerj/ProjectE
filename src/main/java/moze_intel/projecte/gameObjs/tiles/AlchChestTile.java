@@ -15,12 +15,12 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
-	
+
 	public AlchChestTile()
 	{
 		super();
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -198,6 +198,17 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 			}
 		}
 
+		if (worldObj.isRemote)
+		{
+			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty())
+			{
+				// Handle condition where this method is called even after the clientside chunk has unloaded.
+				// This will make IAlchChestItems below crash with an NPE since the TE they get back is null
+				// Don't you love vanilla???
+				return;
+			}
+		}
+
 		for (ItemStack stack : inventory)
 		{
 			if (stack != null && stack.getItem() instanceof IAlchChestItem)
@@ -236,11 +247,5 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isRequestingEmc() 
-	{
-		return false;
 	}
 }

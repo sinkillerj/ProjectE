@@ -6,7 +6,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class CondenserMK2 extends Condenser implements ITileEntityProvider
+public class CondenserMK2 extends Condenser
 {
 	public CondenserMK2()
 	{
@@ -36,7 +35,13 @@ public class CondenserMK2 extends Condenser implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2)
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int meta)
 	{
 		return new CondenserMK2Tile();
 	}

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -27,9 +28,9 @@ public class GUICollectorMK2 extends GuiContainer
 	{
 		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 75, 32, 4210752);
 		
-		int kleinCharge = tile.displayKleinCharge;
+		double kleinCharge = tile.displayItemCharge;
 		if (kleinCharge != -1)
-			this.fontRendererObj.drawString(Integer.toString(kleinCharge), 75, 44, 4210752);
+			this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
 	}
 
 	@Override

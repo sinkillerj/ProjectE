@@ -1,130 +1,61 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import moze_intel.projecte.api.tile.ITileEmc;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientTableSyncPKT;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.item.ItemStack;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileEmc extends TileEntity implements ITileEmc
+import java.util.Map;
+
+public abstract class TileEmc extends TileEmcBase
 {
-	private double emc;
-	private final int maxAmount;
-	
 	public TileEmc()
 	{
-		maxAmount = Constants.TILE_MAX_EMC;
+		setMaximumEMC(Constants.TILE_MAX_EMC);
 	}
 	
 	public TileEmc(int maxAmount)
 	{
-		this.maxAmount = maxAmount;
+		setMaximumEMC(maxAmount);
 	}
 	
-	@Override
-	public void setEmc(double value) 
-	{
-		this.emc = value <= maxAmount ? value : maxAmount;
-	}
-	
-	@Override
-	public void addEmc(double amount)
-	{
-		emc += amount;
-		
-		if (emc > maxAmount)
-		{
-			emc = maxAmount;
-		}
-		else if (emc < 0)
-		{
-			emc = 0;
-		}
-		this.markDirty();
-	}
-	
-	public void addEmcWithPKT(double amount)
-	{
-		addEmc(amount);
-		
-		sendUpdatePKT();
-	}
-	
-	public void addEmc(ItemStack stack)
-	{
-		addEmc(EMCHelper.getEmcValue(stack) * stack.stackSize);
-	}
-	
-	@Override
-	public void removeEmc(double amount)
-	{
-		emc -= amount;
-		
-		if (emc < 0)
-		{
-			emc = 0;
-		}
-		this.markDirty();
-	}
-	
-	public void removeEmcWithPKT(double amount)
-	{
-		removeEmc(amount);
-		
-		sendUpdatePKT();
-	}
-	
-	public void removeItemRelativeEmc(ItemStack stack)
-	{
-		removeEmc(EMCHelper.getEmcValue(stack));
-	}
-	
-	public void removeItemRelativeEmcWithPKT(ItemStack stack)
-	{
-		removeItemRelativeEmc(stack);
-		
-		sendUpdatePKT();
-	}
-	
-	@Override
-	public double getStoredEmc()
-	{
-		return emc;
-	}
-	
-	public int getMaxEmc()
-	{
-		return maxAmount;
-	}
-	
-	@Override
 	public boolean hasMaxedEmc()
 	{
-		return emc >= maxAmount;
+		return getStoredEmc() >= getMaximumEmc();
 	}
-	
-	public void setEmcValue(double value)
+
+	/**
+	 * The amount provided will be divided and evenly distributed as best as possible between adjacent IEMCAcceptors
+	 * Remainder or rejected EMC is added back to this provider
+	 *
+	 * @param emc The maximum combined emc to send to others
+	 */
+	public void sendToAllAcceptors(double emc)
 	{
-		emc = value;
-		this.markDirty();
-	}
-	
-	public void setEmcValueWithPKT(double value)
-	{
-		setEmcValue(value);
-		
-		sendUpdatePKT();
-	}
-	
-	public void sendUpdatePKT()
-	{
-		if (this.worldObj != null && !this.worldObj.isRemote)
+		if (!(this instanceof IEmcProvider))
 		{
-			PacketHandler.sendToAllAround(new ClientTableSyncPKT(emc, this.xCoord, this.yCoord, this.zCoord),
-					new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
+			// todo move this method somewhere
+			throw new UnsupportedOperationException("sending without being a provider");
+		}
+
+
+		Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEmcAcceptor.class));
+
+		double emcPer = emc / tiles.size();
+		for (Map.Entry<ForgeDirection, TileEntity> entry : tiles.entrySet())
+		{
+			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
+			{
+				continue;
+			}
+			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+			this.addEMC(remain);
 		}
 	}
 }

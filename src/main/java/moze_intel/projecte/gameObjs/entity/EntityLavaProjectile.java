@@ -2,9 +2,11 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
@@ -42,25 +44,26 @@ public class EntityLavaProjectile extends PEProjectile
 				return;
 			}
 
-			boolean flag = true;
-
-			for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
-				for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
-					for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
-					{
-						Block block = this.worldObj.getBlock(x, y, z);
-
-						if (block == Blocks.water || block == Blocks.flowing_water)
+			if (getThrower() instanceof EntityPlayerMP)
+			{
+				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
+				for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
+					for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
+						for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
 						{
-							this.worldObj.setBlockToAir(x, y, z);
+							Block block = this.worldObj.getBlock(x, y, z);
 
-							if (flag)
+							if (block == Blocks.water || block == Blocks.flowing_water)
 							{
-								this.worldObj.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-								flag = false;
+								if (PlayerHelper.hasBreakPermission(player, x, y, z))
+								{
+									this.worldObj.setBlockToAir(x, y, z);
+									this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+								}
 							}
 						}
-					}
+
+			}
 
 			if (this.posY > 128)
 			{
@@ -85,7 +88,7 @@ public class EntityLavaProjectile extends PEProjectile
 			{
 				case BLOCK:
 					ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-					this.worldObj.setBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava);
+					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava, 0);
 					break;
 				case ENTITY:
 					Entity ent = mop.entityHit;

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -43,7 +43,7 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
 		
 		if (slot == 0)
 		{
-			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars;
+			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc;
 		}
 		else if (slot >= 1 && slot <= 9)
 		{

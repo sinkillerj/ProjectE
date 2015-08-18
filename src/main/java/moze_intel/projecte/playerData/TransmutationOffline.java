@@ -1,7 +1,9 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import cpw.mods.fml.common.FMLCommonHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
@@ -82,6 +84,7 @@ public class TransmutationOffline
     }
 
     private static void cacheOfflineData(UUID playerUUID) {
+        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "CRITICAL: Trying to read filesystem on client!!");
         File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
         if (playerData.exists())
         {
