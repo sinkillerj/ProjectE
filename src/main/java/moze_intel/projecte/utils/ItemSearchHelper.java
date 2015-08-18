@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class ItemSearchHelper
 {
@@ -49,7 +50,7 @@ public abstract class ItemSearchHelper
 
 			try
 			{
-				displayName = stack.getDisplayName();
+				displayName = stack.getDisplayName().toLowerCase(Locale.ROOT);
 			} catch (Exception e)
 			{
 				e.printStackTrace();
@@ -61,7 +62,7 @@ public abstract class ItemSearchHelper
 			{
 				return false;
 			}
-			else if (searchString.length() > 0 && !displayName.toLowerCase().contains(searchString))
+			else if (searchString.length() > 0 && !displayName.contains(searchString))
 			{
 				return false;
 			}
