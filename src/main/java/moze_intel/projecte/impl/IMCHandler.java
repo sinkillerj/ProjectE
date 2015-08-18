@@ -6,11 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
+import java.util.Locale;
+
 public class IMCHandler
 {
     public static void handleIMC(FMLInterModComms.IMCMessage msg)
     {
-        String messageKey = msg.key.toLowerCase();
+        String messageKey = msg.key.toLowerCase(Locale.ROOT);
         if ("registeremc".equals(messageKey)) {
             PELogger.logWarn("Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored", msg.getSender());
         } else if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {

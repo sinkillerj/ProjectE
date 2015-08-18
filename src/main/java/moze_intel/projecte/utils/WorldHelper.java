@@ -60,6 +60,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -442,7 +443,7 @@ public final class WorldHelper
 				{
 					for (int i = 0; i < (harvest ? 8 : 4); i++)
 					{
-						crop.updateTick(world, currentPos, state, world.rand);
+						crop.updateTick(world, currentPos, world.getBlockState(currentPos), world.rand);
 					}
 				}
 
@@ -450,7 +451,7 @@ public final class WorldHelper
 				{
 					if (crop instanceof BlockFlower)
 					{
-						world.destroyBlock(currentPos, true);
+						world.destroyBlock(pos, true);
 					}
 					if (crop == Blocks.reeds || crop == Blocks.cactus)
 					{
@@ -458,7 +459,7 @@ public final class WorldHelper
 
 						for (int i = 1; i < 3; i++)
 						{
-							if (world.getBlockState(currentPos.up(i)).getBlock() != crop)
+							if (world.getBlockState(pos.up()).getBlock() != crop)
 							{
 								shouldHarvest = false;
 								break;
@@ -469,15 +470,16 @@ public final class WorldHelper
 						{
 							for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 							{
-								world.destroyBlock(currentPos.up(i), true);
+								world.destroyBlock(pos.offset(EnumFacing.UP, i), true);
 							}
 						}
 					}
 					if (crop == Blocks.nether_wart)
 					{
-						if (((Integer) state.getValue(BlockNetherWart.AGE)) == 3)
+						int growth = ((Integer) world.getBlockState(pos).getValue(BlockNetherWart.AGE));
+						if (growth == 3)
 						{
-							world.destroyBlock(currentPos, true);
+							world.destroyBlock(pos, true);
 						}
 					}
 				}

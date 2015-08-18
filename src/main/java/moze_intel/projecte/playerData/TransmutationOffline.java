@@ -1,5 +1,6 @@
 package moze_intel.projecte.playerData;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.utils.ItemHelper;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,6 +84,7 @@ public class TransmutationOffline
     }
 
     private static void cacheOfflineData(UUID playerUUID) {
+        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "CRITICAL: Trying to read filesystem on client!!");
         File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
         if (playerData.exists())
         {

@@ -10,6 +10,7 @@ import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class ProjectECMD extends ProjectEBaseCMD
 {
@@ -67,7 +68,9 @@ public class ProjectECMD extends ProjectEBaseCMD
 			relayparams = Arrays.copyOfRange(params, 1, params.length);
 		}
 
-		if (params[0].toLowerCase().equals("setemc"))
+		String subName = params[0].toLowerCase(Locale.ROOT);
+
+		if ("setemc".equals(subName))
 		{
 			if (setemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -78,7 +81,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("resetemc"))
+		else if ("resetemc".equals(subName))
 		{
 			if (resetemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -89,7 +92,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("removeemc"))
+		else if ("removeemc".equals(subName))
 		{
 			if (removeemccmd.canCommandSenderUseCommand(sender))
 			{
@@ -100,7 +103,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("reloademc"))
+		else if ("reloademc".equals(subName))
 		{
 			if (reloademccmd.canCommandSenderUseCommand(sender))
 			{
@@ -111,7 +114,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("clearknowledge"))
+		else if ("clearknowledge".equals(subName))
 		{
 			if (clearknowledgecmd.canCommandSenderUseCommand(sender))
 			{
@@ -122,7 +125,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if (params[0].toLowerCase().equals("changelog"))
+		else if ("changelog".equals(subName))
 		{
 			if (changelogcmd.canCommandSenderUseCommand(sender))
 			{
@@ -148,7 +151,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 		@Override
 		public boolean apply(String input)
 		{
-			return input.toLowerCase().startsWith(prefix.toLowerCase());
+			return input.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT));
 		}
 	}
 }

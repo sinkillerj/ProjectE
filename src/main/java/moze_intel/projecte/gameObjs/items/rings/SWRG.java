@@ -3,13 +3,13 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import moze_intel.projecte.utils.IFlightItem;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.Optional;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider
 {
 	public SWRG()
 	{
@@ -37,29 +37,21 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		this.setMaxDamage(0);
 		this.setNoRepair();
 	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
-	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer))
-		{
-			return;
-		}
-		
-		EntityPlayer player = (EntityPlayer) entity;
 
+	private void tick(ItemStack stack, EntityPlayer player)
+	{
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
 		}
 
-		if (world.isRemote)
+		if (player.worldObj.isRemote)
 		{
 			return;
 		}
 
-		EntityPlayerMP playerMP = (EntityPlayerMP) entity;
+		EntityPlayerMP playerMP = (EntityPlayerMP) player;
 
 		if (!stack.hasTagCompound())
 		{
@@ -70,44 +62,44 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		{
 			if (stack.getItemDamage() > 0)
 			{
-				changeMode(player, stack, 0);
+				changeMode(stack, 0);
 			}
-			
+
 			if (playerMP.capabilities.allowFlying)
 			{
-				PlayerHelper.disableFlight(playerMP);
+				PlayerChecks.disableSwrgFlightOverride(playerMP);
 			}
-			
+
 			return;
 		}
-		
+
 		if (!playerMP.capabilities.allowFlying)
 		{
-			PlayerHelper.enableFlight(playerMP);
+			PlayerChecks.enableSwrgFlightOverride(playerMP);
 		}
 
 		if (playerMP.capabilities.isFlying)
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
+				changeMode(stack, stack.getItemDamage() == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
+				changeMode(stack, stack.getItemDamage() == 1 ? 0 : 2);
 			}
 		}
-		
+
 		float toRemove = 0;
-		
+
 		if (playerMP.capabilities.isFlying)
 		{
 			toRemove = 0.32F;
 		}
-		
+
 		if (stack.getItemDamage() == 2)
 		{
 			toRemove = 0.32F;
@@ -116,8 +108,25 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 		{
 			toRemove = 0.64F;
 		}
-		
+
 		removeEmc(stack, toRemove);
+
+		playerMP.fallDistance = 0;
+	}
+
+	private boolean isFlyingEnabled(ItemStack stack)
+	{
+		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
+	{
+		if (invSlot > 8 || !(entity instanceof EntityPlayer))
+		{
+			return;
+		}
+		tick(stack, ((EntityPlayer) entity));
 	}
 	
 	@Override
@@ -143,78 +152,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 					break;
 			}
 			
-			if (newMode > 1)
-			{
-				if (getEmc(stack) > 0)
-				{
-					changeMode(player, stack, newMode);
-				}
-				else 
-				{
-					if (consumeFuel(player, stack, 64, false))
-					{
-						changeMode(player, stack, newMode);
-					}
-				}
-			}
-			else 
-			{
-				changeMode(player, stack, newMode);
-			}
+			changeMode(stack, newMode);
 		}
 		return stack;
 	}
-	
-	public void ToggleFlight(EntityPlayer player, ItemStack ring)
-	{
-		if (getEmc(ring) == 0 && !consumeFuel(player, ring, 64, false))
-		{
-			return;
-		}
-		
-		switch (ring.getItemDamage())
-		{
-			case 0:
-				changeMode(player, ring, 1);
-				break;
-			case 1:
-				changeMode(player, ring, 0);
-				break;
-			case 2:
-				changeMode(player, ring, 3);
-				break;
-			case 3:
-				changeMode(player, ring, 2);
-				break;
-		}
-	}
-	
-	public void enableFlightNoChecks(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientServerFlight(playerMP, true);
-		}
-	}
-	
-	public void disableFlightNoChecks(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-		
-		if (playerMP.capabilities.allowFlying)
-		{
-			PlayerHelper.updateClientServerFlight(playerMP, false);
-		}
-	}
-	
+
 	/**
 	 * Change the mode of SWRG. Modes:<p>
 	 * 0 = Ring Off<p>  
@@ -222,32 +164,16 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 	 * 2 = Shield<p>
 	 * 3 = Flight + Shield<p>
 	 */
-	public void changeMode(EntityPlayer player, ItemStack stack, int mode)
+	public void changeMode(ItemStack stack, int mode)
 	{
 		stack.setItemDamage(mode);
 	}
-	
-	public boolean isFlyingEnabled(ItemStack stack)
+
+	@Override
+	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
 	{
-		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
-	}
-	
-	public float getEmcToRemove(ItemStack stack)
-	{
-		int damage = stack.getItemDamage();
-		
-		if (damage == 0)
-		{
-			return 0;
-		}
-		else if (damage < 3)
-		{
-			return 0.32F;
-		}
-		else
-		{
-			return 0.64F;
-		}
+		// Dummy result - swrg needs special-casing
+		return false;
 	}
 	
 	@Override
@@ -272,78 +198,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 			return;
 		}
 
-		EntityPlayer player = (EntityPlayer) ent;
-
-		if (stack.getItemDamage() > 1)
-		{
-			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.worldObj, player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
-		}
-
-		if (player.worldObj.isRemote)
-		{
-			return;
-		}
-
-		EntityPlayerMP playerMP = (EntityPlayerMP) player;
-
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
-		{
-			if (stack.getItemDamage() > 0)
-			{
-				changeMode(player, stack, 0);
-			}
-			
-			if (playerMP.capabilities.allowFlying)
-			{
-				disableFlightNoChecks(playerMP);
-			}
-			
-			return;
-		}
-		
-		if (!playerMP.capabilities.allowFlying)
-		{
-			enableFlightNoChecks(playerMP);
-		}
-			
-		if (playerMP.capabilities.isFlying)
-		{
-			if (!isFlyingEnabled(stack))
-			{
-				changeMode(player, stack, stack.getItemDamage() == 0 ? 1 : 3);
-			}
-		}
-		else
-		{
-			if (isFlyingEnabled(stack))
-			{
-				changeMode(player, stack, stack.getItemDamage() == 1 ? 0 : 2);
-			}
-		}
-		
-		float toRemove = 0;
-		
-		if (playerMP.capabilities.isFlying)
-		{
-			toRemove = 0.32F;
-		}
-		
-		if (stack.getItemDamage() == 2)
-		{
-			toRemove = 0.32F;
-		}
-		else if (stack.getItemDamage() == 3)
-		{
-			toRemove = 0.64F;
-		}
-		
-		removeEmc(stack, toRemove);
+		tick(stack, ((EntityPlayer) ent));
 	}
 
 	@Override
@@ -352,15 +207,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightItem
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) 
-	{
-		if (player.worldObj.isRemote || !(player instanceof EntityPlayer))
-		{
-			return;
-		}
-
-		disableFlightNoChecks((EntityPlayerMP) player);
-	}
+	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")

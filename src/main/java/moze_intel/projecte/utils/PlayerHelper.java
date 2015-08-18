@@ -1,17 +1,19 @@
 package moze_intel.projecte.utils;
 
+import baubles.api.BaublesApi;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,26 +23,6 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
-	public static void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (!playerMP.capabilities.isCreativeMode)
-		{
-			updateClientServerFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
-		}
-	}
-
-	public static void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-
-		updateClientServerFlight(playerMP, true);
-		PlayerChecks.addPlayerFlyChecks(playerMP);
-	}
-
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
@@ -51,6 +33,17 @@ public final class PlayerHelper
 			}
 		}
 		return null;
+	}
+
+	public static IInventory getBaubles(EntityPlayer player)
+	{
+		if (!Loader.isModLoaded("Baubles"))
+		{
+			return null;
+		} else
+		{
+			return BaublesApi.getBaubles(player);
+		}
 	}
 
 	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
@@ -106,8 +99,9 @@ public final class PlayerHelper
 		}
 	}
 
-	public static void updateClientStepHeight(EntityPlayerMP player, float value)
+	public static void updateClientServerStepHeight(EntityPlayerMP player, float value)
 	{
+		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 }

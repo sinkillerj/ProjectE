@@ -93,4 +93,15 @@ processResources
     }
 }
 
+// Dev jar (deobfuscated)
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    version = "${project.version}"
+}
+
+artifacts {
+    archives devJar
+}
+
 idea.module.inheritOutputDirs = true

@@ -39,8 +39,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static boolean isNightVisionEnabled(ItemStack helm)
     {
-        return !helm.hasTagCompound() || !helm.getTagCompound().hasKey("NightVision") || helm.getTagCompound().getBoolean("NightVision");
-
+        return helm.hasTagCompound() && helm.getTagCompound().hasKey("NightVision") && helm.getTagCompound().getBoolean("NightVision");
     }
 
     public static void toggleNightVision(ItemStack helm, EntityPlayer player)

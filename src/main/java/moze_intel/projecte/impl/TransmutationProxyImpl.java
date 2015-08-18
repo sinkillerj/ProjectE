@@ -120,6 +120,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     {
         Preconditions.checkNotNull(playerUUID);
         Preconditions.checkNotNull(stack);
+        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "Cannot modify knowledge clientside!");
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
@@ -134,6 +135,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     {
         Preconditions.checkNotNull(playerUUID);
         Preconditions.checkNotNull(stack);
+        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "Cannot modify knowledge clientside!");
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
@@ -147,6 +149,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     public void setEMC(UUID playerUUID, double emc)
     {
         Preconditions.checkNotNull(playerUUID);
+        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "Cannot modify EMC clientside!");
         Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to modify player EMC!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)

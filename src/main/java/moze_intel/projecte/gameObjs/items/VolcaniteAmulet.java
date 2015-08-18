@@ -3,18 +3,16 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import moze_intel.projecte.utils.IFireProtectionItem;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -39,7 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtectionItem
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector
 {
 	public VolcaniteAmulet()
 	{
@@ -108,8 +106,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
 	}
 
-	private void handleWalkOnLava(EntityPlayer player)
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
+		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
+		
+		EntityPlayer player = (EntityPlayer) entity;
+
 		int x = (int) Math.floor(player.posX);
 		int y = (int) (player.posY - player.getYOffset());
 		int z = (int) Math.floor(player.posZ);
@@ -135,26 +138,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
-		}
-	}
-
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
-	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
-		
-		EntityPlayer player = (EntityPlayer) entity;
-
-		handleWalkOnLava(player);
-
-		if (!world.isRemote)
-		{
-			if (!player.isImmuneToFire())
-			{
-				PlayerHelper.setPlayerFireImmunity(player, true);
-			}
-
-			PlayerChecks.addPlayerFireChecks((EntityPlayerMP) player);
 		}
 	}
 	
@@ -194,11 +177,31 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		
 		EntityPlayer player = (EntityPlayer) ent;
 
-		handleWalkOnLava(player);
-		
-		if (!player.worldObj.isRemote && !player.isImmuneToFire())
+		int x = (int) Math.floor(player.posX);
+		int y = (int) (player.posY - player.getYOffset());
+		int z = (int) Math.floor(player.posZ);
+		BlockPos pos = new BlockPos(x, y, z);
+
+		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.lava || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && player.worldObj.isAirBlock(pos))
 		{
-			PlayerHelper.setPlayerFireImmunity(player, true);
+			if (!player.isSneaking())
+			{
+				player.motionY = 0.0D;
+				player.fallDistance = 0.0F;
+				player.onGround = true;
+			}
+
+			if (!player.worldObj.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+			{
+				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
+			}
+		}
+		else if (!player.worldObj.isRemote)
+		{
+			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			{
+				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+			}
 		}
 	}
 
@@ -208,13 +211,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) 
-	{
-		if (player instanceof EntityPlayer && !player.worldObj.isRemote)
-		{
-			PlayerHelper.setPlayerFireImmunity((EntityPlayer) player, false);
-		}
-	}
+	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
@@ -262,5 +259,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	{
+		return true;
 	}
 }

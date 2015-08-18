@@ -172,7 +172,7 @@ public class PECore
 
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
-		
+
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
 	}

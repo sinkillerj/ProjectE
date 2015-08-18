@@ -15,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
+import java.util.Locale;
+
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {

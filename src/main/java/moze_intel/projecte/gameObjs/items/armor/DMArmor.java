@@ -12,6 +12,8 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Locale;
+
 public class DMArmor extends ItemArmor implements ISpecialArmor
 {
 	private final EnumArmorType armorPiece;

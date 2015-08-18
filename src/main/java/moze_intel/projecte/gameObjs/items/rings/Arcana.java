@@ -7,11 +7,9 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.IFireProtectionItem;
-import moze_intel.projecte.utils.IFlightItem;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +28,7 @@ import net.minecraftforge.fml.common.Optional;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter
+public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
 	public Arcana()
 	{
@@ -55,21 +53,6 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)
 	{
-		if(!player.capabilities.isCreativeMode)
-		{
-			if(!player.capabilities.allowFlying)
-			{
-				PlayerHelper.enableFlight(player);
-				PlayerChecks.addPlayerFlyChecks(player);
-			}
-			
-			if(!player.isImmuneToFire())
-			{
-				PlayerHelper.setPlayerFireImmunity(player, true);
-				PlayerChecks.addPlayerFireChecks(player);
-			}
-		}
-
 		if(stack.getTagCompound().getBoolean("Active"))
 		{
 			switch(stack.getItemDamage())
@@ -120,17 +103,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onEquipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onUnequipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
@@ -243,6 +220,18 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 				break;
 		}
 		
+		return true;
+	}
+
+	@Override
+	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
+	{
 		return true;
 	}
 }

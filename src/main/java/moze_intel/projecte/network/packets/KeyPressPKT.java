@@ -72,7 +72,7 @@ public class KeyPressPKT implements IMessage
 
 							if (boots != null && boots.getItem() == ObjHandler.gemFeet)
 							{
-								GemFeet.toggleStepAssist(boots, player);
+								((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
 							}
 						}
 					}
@@ -122,6 +122,9 @@ public class KeyPressPKT implements IMessage
 					{
 						((IExtraFunction) item).doExtraFunction(stack, player);
 					}
+
+					return;
+
 				}
 			});
 

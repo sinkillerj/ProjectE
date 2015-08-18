@@ -26,9 +26,8 @@ public class ConnectionHandler
 	public void playerDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
 	{
 		PlayerTimers.removePlayer(event.player);
-
-		PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled checklists: Player disconnected.");
-		PlayerChecks.removePlayerFromLists(event.player.getCommandSenderName());
+		PELogger.logInfo("Removing " + event.player.getCommandSenderName() + " from scheduled timers: Player disconnected.");
+		PlayerChecks.removePlayerFromLists(((EntityPlayerMP) event.player));
 	}
 
 }
