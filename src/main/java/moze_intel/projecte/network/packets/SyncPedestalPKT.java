@@ -10,16 +10,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSyncPedestalPKT, IMessage>
+public class SyncPedestalPKT implements IMessage
 {
-
 	public int x, y, z;
 	public boolean isActive;
 	public ItemStack itemStack;
 
-	public ClientSyncPedestalPKT() {}
+	public SyncPedestalPKT() {}
 
-	public ClientSyncPedestalPKT(DMPedestalTile tile)
+	public SyncPedestalPKT(DMPedestalTile tile)
 	{
 		x = tile.xCoord;
 		y = tile.yCoord;
@@ -48,18 +47,21 @@ public class ClientSyncPedestalPKT implements IMessage, IMessageHandler<ClientSy
 		ByteBufUtils.writeItemStack(buf, itemStack);
 	}
 
-	@Override
-	public IMessage onMessage(ClientSyncPedestalPKT message, MessageContext ctx)
+	public static class Handler implements IMessageHandler<SyncPedestalPKT, IMessage>
 	{
-		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
-
-		if (te instanceof DMPedestalTile)
+		@Override
+		public IMessage onMessage(final SyncPedestalPKT message, MessageContext ctx)
 		{
-			DMPedestalTile pedestal = ((DMPedestalTile) te);
-			pedestal.setActive(message.isActive);
-			pedestal.setInventorySlotContents(0, message.itemStack);
-		}
+			TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
 
-		return null;
+			if (te instanceof DMPedestalTile)
+			{
+				DMPedestalTile pedestal = ((DMPedestalTile) te);
+				pedestal.setActive(message.isActive);
+				pedestal.setInventorySlotContents(0, message.itemStack);
+			}
+
+			return null;
+		}
 	}
 }

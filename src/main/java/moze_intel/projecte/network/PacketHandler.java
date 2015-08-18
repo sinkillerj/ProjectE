@@ -9,13 +9,13 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.network.packets.ClientCheckUpdatePKT;
-import moze_intel.projecte.network.packets.ClientKnowledgeClearPKT;
-import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
-import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
-import moze_intel.projecte.network.packets.ClientSyncEmcPKT;
-import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.CheckUpdatePKT;
+import moze_intel.projecte.network.packets.KnowledgeClearPKT;
+import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.OrientationSyncPKT;
+import moze_intel.projecte.network.packets.SyncBagDataPKT;
+import moze_intel.projecte.network.packets.SyncEmcPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
@@ -42,24 +42,24 @@ public final class PacketHandler
 	
 	public static void register()
 	{
-		HANDLER.registerMessage(ClientSyncEmcPKT.class, ClientSyncEmcPKT.class, 0, Side.CLIENT);
+		HANDLER.registerMessage(SyncEmcPKT.class, SyncEmcPKT.class, 0, Side.CLIENT);
 		HANDLER.registerMessage(KeyPressPKT.class, KeyPressPKT.class, 1, Side.SERVER);
 		HANDLER.registerMessage(ParticlePKT.class, ParticlePKT.class, 2, Side.CLIENT);
 		HANDLER.registerMessage(SwingItemPKT.class, SwingItemPKT.class, 3, Side.CLIENT);
 		HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
 		HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
-		HANDLER.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
+		HANDLER.registerMessage(KnowledgeSyncPKT.class, KnowledgeSyncPKT.class, 6, Side.CLIENT);
 		HANDLER.registerMessage(ClientTableSyncPKT.class, ClientTableSyncPKT.class, 7, Side.CLIENT);
 		HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
 		HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
 		HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);
-		HANDLER.registerMessage(ClientCheckUpdatePKT.class, ClientCheckUpdatePKT.class, 11, Side.CLIENT);
-		HANDLER.registerMessage(ClientSyncBagDataPKT.class, ClientSyncBagDataPKT.class, 12, Side.CLIENT);
+		HANDLER.registerMessage(CheckUpdatePKT.class, CheckUpdatePKT.class, 11, Side.CLIENT);
+		HANDLER.registerMessage(SyncBagDataPKT.class, SyncBagDataPKT.class, 12, Side.CLIENT);
 		HANDLER.registerMessage(SearchUpdatePKT.class, SearchUpdatePKT.class, 13, Side.SERVER);
-		HANDLER.registerMessage(ClientKnowledgeClearPKT.class, ClientKnowledgeClearPKT.class, 14, Side.CLIENT);
-		HANDLER.registerMessage(ClientOrientationSyncPKT.class, ClientOrientationSyncPKT.class, 15, Side.CLIENT);
+		HANDLER.registerMessage(KnowledgeClearPKT.class, KnowledgeClearPKT.class, 14, Side.CLIENT);
+		HANDLER.registerMessage(OrientationSyncPKT.class, OrientationSyncPKT.class, 15, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.class, UpdateGemModePKT.class, 16, Side.SERVER);
-		HANDLER.registerMessage(ClientSyncPedestalPKT.class, ClientSyncPedestalPKT.class, 17, Side.CLIENT);
+		HANDLER.registerMessage(SyncPedestalPKT.class, SyncPedestalPKT.class, 17, Side.CLIENT);
 	}
 
 	public static Packet getMCPacket(IMessage message)
@@ -86,7 +86,7 @@ public final class PacketHandler
 
 			if (list.size() >= MAX_PKT_SIZE)
 			{
-				PacketHandler.sendTo(new ClientSyncEmcPKT(counter, list), player);
+				PacketHandler.sendTo(new SyncEmcPKT(counter, list), player);
 				list.clear();
 				counter++;
 			}
@@ -94,7 +94,7 @@ public final class PacketHandler
 
 		if (list.size() > 0)
 		{
-			PacketHandler.sendTo(new ClientSyncEmcPKT(-1, list), player);
+			PacketHandler.sendTo(new SyncEmcPKT(-1, list), player);
 			list.clear();
 			counter++;
 		}
@@ -122,7 +122,7 @@ public final class PacketHandler
 
 			if (list.size() >= MAX_PKT_SIZE)
 			{
-				PacketHandler.sendToAll(new ClientSyncEmcPKT(counter, list));
+				PacketHandler.sendToAll(new SyncEmcPKT(counter, list));
 				list.clear();
 				counter++;
 			}
@@ -130,7 +130,7 @@ public final class PacketHandler
 
 		if (list.size() > 0)
 		{
-			PacketHandler.sendToAll(new ClientSyncEmcPKT(-1, list));
+			PacketHandler.sendToAll(new SyncEmcPKT(-1, list));
 			list.clear();
 			counter++;
 		}

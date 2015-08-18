@@ -9,7 +9,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
-public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMessage>
+public class RelaySyncPKT implements IMessage
 {
 	private int displayEmc;
 	private double displayKleinEmc;
@@ -28,26 +28,6 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-	
-	@Override
-	public IMessage onMessage(RelaySyncPKT pkt, MessageContext ctx) 
-	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
-		}
-		else
-		{
-			RelayMK1Tile relay = (RelayMK1Tile) tile;
-			relay.displayEmc = pkt.displayEmc;
-			relay.displayChargingEmc = pkt.displayKleinEmc;
-			relay.displayRawEmc = pkt.displayRawEmc;
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -70,5 +50,28 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);
+	}
+
+	public static class Handler implements IMessageHandler<RelaySyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final RelaySyncPKT pkt, MessageContext ctx)
+		{
+			TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
+
+			if (tile == null)
+			{
+				PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
+			}
+			else
+			{
+				RelayMK1Tile relay = (RelayMK1Tile) tile;
+				relay.displayEmc = pkt.displayEmc;
+				relay.displayChargingEmc = pkt.displayKleinEmc;
+				relay.displayRawEmc = pkt.displayRawEmc;
+			}
+
+			return null;
+		}
 	}
 }
