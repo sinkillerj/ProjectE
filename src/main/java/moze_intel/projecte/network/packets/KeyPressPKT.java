@@ -55,7 +55,7 @@ public class KeyPressPKT implements IMessage, IMessageHandler<KeyPressPKT, IMess
 			
 				if (boots != null && boots.getItem() == ObjHandler.gemFeet)
 				{
-					GemFeet.toggleStepAssist(boots, player);
+					((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
 				}
 			}
 		}
