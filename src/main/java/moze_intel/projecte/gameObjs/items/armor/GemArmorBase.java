@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
 
+import java.util.Locale;
+
 public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {
 	private final EnumArmorType armorPiece;
@@ -87,7 +89,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		String type = this.armorPiece.name.toLowerCase();
+		String type = this.armorPiece.name.toLowerCase(Locale.ROOT);
 		this.itemIcon = par1IconRegister.registerIcon("projecte:gem_armor/" + type);
 	}
 

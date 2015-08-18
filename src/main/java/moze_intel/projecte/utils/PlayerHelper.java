@@ -1,7 +1,8 @@
 package moze_intel.projecte.utils;
 
+import baubles.api.BaublesApi;
+import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
@@ -10,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
@@ -60,26 +62,6 @@ public final class PlayerHelper
 		return hasBreakPermission(player, x, y, z) && checkedPlaceBlock(player, x, y, z, toPlace, toPlaceMeta);
 	}
 
-	public static void disableFlight(EntityPlayerMP playerMP)
-	{
-		if (!playerMP.capabilities.isCreativeMode)
-		{
-			updateClientServerFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
-		}
-	}
-
-	public static void enableFlight(EntityPlayerMP playerMP)
-	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-
-		updateClientServerFlight(playerMP, true);
-		PlayerChecks.addPlayerFlyChecks(playerMP);
-	}
-
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
@@ -90,6 +72,17 @@ public final class PlayerHelper
 			}
 		}
 		return null;
+	}
+
+	public static IInventory getBaubles(EntityPlayer player)
+	{
+		if (!Loader.isModLoaded("Baubles"))
+		{
+			return null;
+		} else
+		{
+			return BaublesApi.getBaubles(player);
+		}
 	}
 
 	public static Coordinates getBlockLookingAt(EntityPlayer player, double maxDistance)
@@ -158,8 +151,9 @@ public final class PlayerHelper
 		}
 	}
 
-	public static void updateClientStepHeight(EntityPlayerMP player, float value)
+	public static void updateClientServerStepHeight(EntityPlayerMP player, float value)
 	{
+		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 }

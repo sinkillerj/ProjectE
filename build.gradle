@@ -23,7 +23,6 @@ archivesBaseName = "ProjectE"
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
-    //version = "1.7.10-10.13.4.1448-1.7.10" //This version is required for the codechicken files
     runDir = "eclipse"
 
     replace "@VERSION@", project.version
@@ -86,6 +85,17 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+// Dev jar (deobfuscated)
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    version = "${project.version}"
+}
+
+artifacts {
+    archives devJar
 }
 
 idea.module.inheritOutputDirs = true
