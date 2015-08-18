@@ -1,29 +1,19 @@
 package moze_intel.projecte.handlers;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import moze_intel.projecte.utils.IFireProtectionItem;
-import moze_intel.projecte.utils.IFlightItem;
-import moze_intel.projecte.utils.IStepAssistItem;
-
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.armor.GemFeet;
-import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
+import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public final class PlayerChecks
 {
-	private static final List<EntityPlayerMP> flyChecks = Lists.newArrayList();
-	private static final List<EntityPlayerMP> fireChecks = Lists.newArrayList();
-	private static final List<EntityPlayerMP> stepChecks = Lists.newArrayList();
+	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
@@ -43,291 +33,225 @@ public final class PlayerChecks
 		return gemArmorReadyChecks.contains(player);
 	}
 
-	public static void update()
+	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
+	public static void update(EntityPlayerMP player)
 	{
-		Iterator<EntityPlayerMP> iter = flyChecks.iterator();
-
-		while (iter.hasNext())
+		if (!shouldPlayerFly(player))
 		{
-			EntityPlayerMP player = iter.next();
-
-			if (!canPlayerFly(player))
+			if (player.capabilities.allowFlying)
 			{
-				if (player.capabilities.allowFlying)
-				{
-					PlayerHelper.updateClientServerFlight(player, false);
-				}
-
-				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
+				PlayerHelper.updateClientServerFlight(player, false);
+			}
+		}
+		else
+		{
+			if (!player.capabilities.allowFlying)
+			{
+				PlayerHelper.updateClientServerFlight(player, true);
 			}
 		}
 
-		iter = fireChecks.iterator();
-
-		while (iter.hasNext())
+		if (!shouldPlayerResistFire(player))
 		{
-			EntityPlayerMP player = iter.next();
-
-			if (!isPlayerFireImmune(player))
+			if (player.isImmuneToFire())
 			{
-				if (player.isImmuneToFire())
-				{
-					PlayerHelper.setPlayerFireImmunity(player, false);
-				}
-
-				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from fire checks.");
+				PlayerHelper.setPlayerFireImmunity(player, false);
+			}
+		}
+		else
+		{
+			if (!player.isImmuneToFire())
+			{
+				PlayerHelper.setPlayerFireImmunity(player, true);
 			}
 		}
 
-		iter = stepChecks.iterator();
-
-		while (iter.hasNext())
+		if (!shouldPlayerStep(player))
 		{
-			EntityPlayerMP player = iter.next();
-
-			if (!canPlayerStep(player))
+			if (player.stepHeight > 0.5F)
 			{
-				player.stepHeight = 0.5f;
-				PlayerHelper.updateClientStepHeight(player, 0.5F);
-
-				iter.remove();
-				PELogger.logDebug("Removed " + player.getCommandSenderName() + " from step checks.");
+				PlayerHelper.updateClientServerStepHeight(player, 0.5F);
+			}
+		}
+		else
+		{
+			if (player.stepHeight < 1.0F)
+			{
+				PlayerHelper.updateClientServerStepHeight(player, 1.0F);
 			}
 		}
 	}
+
 
 	public static void onPlayerChangeDimension(EntityPlayerMP playerMP)
 	{
-		if (canPlayerFly(playerMP))
-		{
-			PlayerHelper.updateClientServerFlight(playerMP, true);
-		}
-
-		if (isPlayerFireImmune(playerMP))
-		{
-			PlayerHelper.setPlayerFireImmunity(playerMP, true);
-		}
-
-		if (canPlayerStep(playerMP))
-		{
-			playerMP.stepHeight = 1.0f;
-			PlayerHelper.updateClientStepHeight(playerMP, 1.0F);
-		}
+		// Resend everything needed on clientside (all except fire resist)
+		PlayerHelper.updateClientServerFlight(playerMP, playerMP.capabilities.allowFlying);
+		PlayerHelper.updateClientServerStepHeight(playerMP, playerMP.stepHeight);
 	}
 
-	public static void addPlayerFlyChecks(EntityPlayerMP player)
+	private static boolean shouldPlayerFly(EntityPlayerMP player)
 	{
-		if (!flyChecks.contains(player))
+		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
 		{
-			flyChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to flight checks.");
+			return true;
 		}
-	}
-	
-	public static void addPlayerFireChecks(EntityPlayerMP player)
-	{
-		if (!fireChecks.contains(player))
-		{
-			fireChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to fire checks.");
-		}
-	}
-	
-	public static void addPlayerStepChecks(EntityPlayerMP player)
-	{
-		if (!stepChecks.contains(player))
-		{
-			stepChecks.add(player);
-			PELogger.logDebug("Added " + player.getCommandSenderName() + " to step height checks.");
-		}
-	}
 
-	public static void removePlayerFlyChecks(EntityPlayerMP player)
-	{
-		if (flyChecks.contains(player))
+		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			Iterator<EntityPlayerMP> iterator = flyChecks.iterator();
-			
-			while (iterator.hasNext())
-			{
-				if (iterator.next().equals(player))
-				{
-					iterator.remove();
-					PELogger.logDebug("Removed " + player.getCommandSenderName() + " from flight checks.");
-					return;
-				}
-			}
-		}
-	}
-	
-	public static void removePlayerFireChecks(EntityPlayerMP player)
-	{
-		if (fireChecks.contains(player))
-		{
-			Iterator<EntityPlayerMP> iterator = fireChecks.iterator();
-			
-			while (iterator.hasNext())
-			{
-				if (iterator.next().equals(player))
-				{
-					iterator.remove();
-					PELogger.logDebug("Removed " + player + " from fire checks.");
-					return;
-				}
-			}
-		}
-	}
-	
-	public static void removePlayerStepChecks(EntityPlayerMP player)
-	{
-		if (stepChecks.contains(player))
-		{
-			Iterator<EntityPlayerMP> iterator = stepChecks.iterator();
-			
-			while (iterator.hasNext())
-			{
-				if (iterator.next().equals(player))
-				{
-					iterator.remove();
-					PELogger.logDebug("Removed " + player + " from step height checks.");
-					return;
-				}
-			}
-		}
-	}
-	
-	public static void removePlayerFromLists(String username)
-	{
-		Iterator<EntityPlayerMP> iterator = flyChecks.iterator();
-		
-		while (iterator.hasNext())
-		{
-			if (iterator.next().getCommandSenderName().equals(username))
-			{
-				iterator.remove();
-				break;
-			}
-		}
-		
-		iterator = fireChecks.iterator();
-		
-		while (iterator.hasNext())
-		{
-			if (iterator.next().getCommandSenderName().equals(username))
-			{
-				iterator.remove();
-				break;
-			}
-		}
-		
-		iterator = stepChecks.iterator();
-		
-		while (iterator.hasNext())
-		{
-			if (iterator.next().getCommandSenderName().equals(username))
-			{
-				iterator.remove();
-				break;
-			}
-		}
-	}
-
-	public static boolean isPlayerCheckedForStep(String player)
-	{
-		Iterator<EntityPlayerMP> iter = stepChecks.iterator();
-
-		while (iter.hasNext())
-		{
-			if (iter.next().getCommandSenderName().equals(player))
+			if (stack != null
+					&& stack.getItem() instanceof IFlightProvider
+					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
 				return true;
+			}
+		}
+
+		for (int i = 0; i <= 8; i++)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+
+			if (stack != null
+					&& stack.getItem() instanceof IFlightProvider
+					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				ItemStack stack = baubles.getStackInSlot(i);
+				if (stack != null
+						&& stack.getItem() instanceof IFlightProvider
+						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
+				{
+					return true;
+				}
 			}
 		}
 
 		return false;
 	}
 	
+	private static boolean shouldPlayerResistFire(EntityPlayerMP player)
+	{
+		if (player.capabilities.isCreativeMode)
+		{
+			return true;
+		}
+
+
+		for (ItemStack stack : player.inventory.armorInventory)
+		{
+			if (stack != null
+					&& stack.getItem() instanceof IFireProtector
+					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+			{
+				return true;
+			}
+		}
+
+		for (int i = 0; i <= 8; i++)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+
+			if (stack != null
+					&& stack.getItem() instanceof IFireProtector
+					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				ItemStack stack = baubles.getStackInSlot(i);
+				if (stack != null
+						&& stack.getItem() instanceof IFireProtector
+						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+	
+	private static boolean shouldPlayerStep(EntityPlayerMP player)
+	{
+		if (player.capabilities.isCreativeMode)
+		{
+			return true;
+		}
+
+
+		for (ItemStack stack : player.inventory.armorInventory)
+		{
+			if (stack != null
+					&& stack.getItem() instanceof IStepAssister
+					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
+			{
+				return true;
+			}
+		}
+
+		for (int i = 0; i <= 8; i++)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+
+			if (stack != null
+					&& stack.getItem() instanceof IStepAssister
+					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				ItemStack stack = baubles.getStackInSlot(i);
+				if (stack != null
+						&& stack.getItem() instanceof IStepAssister
+						&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static void enableSwrgFlightOverride(EntityPlayerMP player)
+	{
+		swrgOverrides.add(player);
+	}
+
+	public static void disableSwrgFlightOverride(EntityPlayerMP player)
+	{
+		swrgOverrides.remove(player);
+	}
+
 	public static void clearLists()
 	{
-		flyChecks.clear();
-		fireChecks.clear();
-		stepChecks.clear();
+		swrgOverrides.clear();
+		gemArmorReadyChecks.clear();
 	}
-	
-	private static boolean canPlayerFly(EntityPlayer player)
-	{
-		if (player.capabilities.isCreativeMode)
-		{
-			return true;
-		}
 
-		ItemStack armor = player.getCurrentArmor(0);
-		if (armor != null && armor.getItem() instanceof GemFeet)
-		{
-			return true;
-		}
-
-		for (int i = 0; i <= 8; i++)
-		{
-			ItemStack stack = player.inventory.getStackInSlot(i);
-			
-			if (stack != null && stack.getItem() instanceof IFlightItem)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private static boolean isPlayerFireImmune(EntityPlayer player)
+	public static void removePlayerFromLists(EntityPlayerMP player)
 	{
-		if (player.capabilities.isCreativeMode)
-		{
-			return true;
-		}
-		
-		ItemStack chest = player.getCurrentArmor(2);
-		
-		if (chest != null && chest.getItem() == ObjHandler.gemChest)
-		{
-			return true;
-		}
-		
-		for (int i = 0; i <= 8; i++)
-		{
-			ItemStack stack = player.inventory.getStackInSlot(i);
-			
-			if (stack != null && stack.getItem() instanceof IFireProtectionItem)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private static boolean canPlayerStep(EntityPlayer player)
-	{
-		ItemStack boots = player.getCurrentArmor(0);
-		
-		return ((boots != null && boots.getItem() == ObjHandler.gemFeet && GemFeet.isStepAssistEnabled(boots)) || hasPlayerEquippedStepAssist(player));
-	}
-	
-	private static boolean hasPlayerEquippedStepAssist(EntityPlayer player)
-	{
-		for (int i = 0; i <= 8; i++)
-		{
-			ItemStack stack = player.inventory.getStackInSlot(i);
-			
-			if (stack != null && stack.getItem() instanceof IStepAssistItem)
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		swrgOverrides.remove(player);
+		gemArmorReadyChecks.remove(player);
 	}
 }

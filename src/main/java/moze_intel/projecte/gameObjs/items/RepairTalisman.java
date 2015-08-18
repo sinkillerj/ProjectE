@@ -1,8 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import com.cricketcraft.chisel.api.IChiselItem;
 import com.google.common.collect.Lists;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -75,7 +78,13 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress) {
+			if (Loader.isModLoaded("chisel"))
+			{
+				if (chiselCheck(invStack)) continue;
+			}
+
+			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress)
+			{
 				//Don't repair item that is currently used by the player.
 				continue;
 			}
@@ -83,6 +92,36 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 			{
 				invStack.setItemDamage(invStack.getItemDamage() - 1);
+			}
+		}
+
+		if (Loader.isModLoaded("Baubles")) baubleRepair(player);
+	}
+
+	@Optional.Method(modid = "chisel")
+	public boolean chiselCheck(ItemStack is)
+	{
+
+		return is.getItem() instanceof IChiselItem;
+	}
+
+	@Optional.Method(modid = "Baubles")
+	public void baubleRepair(EntityPlayer player)
+	{
+
+		IInventory bInv = BaublesApi.getBaubles(player);
+
+		for (int i = 0; i < 4; i++)
+		{
+			ItemStack bInvStack = bInv.getStackInSlot(i);
+			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
+			{
+				continue;
+			}
+
+			if (!bInvStack.getHasSubtypes() && bInvStack.getMaxDamage() != 0 && bInvStack.getItemDamage() > 0)
+			{
+				bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
 			}
 		}
 	}

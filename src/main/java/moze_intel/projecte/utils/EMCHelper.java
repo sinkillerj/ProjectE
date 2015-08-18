@@ -37,7 +37,6 @@ public final class EMCHelper
 		IInventory inv = player.inventory;
 		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
 		boolean metRequirement = false;
-		int decrement = 0;
 		int emcConsumed = 0;
 
 		for (int i = 0; i < inv.getSizeInventory(); i++)
