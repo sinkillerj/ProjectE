@@ -74,6 +74,9 @@ item.pe_void_ring.name=Void Ring
 item.pe_zero_ring.name=Zero Ring
 item.pe_tome.name=Tome of Knowledge
 item.pe_transmutation_tablet.name=Transmutation Tablet
+item.pe_manual.name=Book of the Alchemist
+
+pe.manual.tooltip1=Vol. 2
 
 tile.pe_alchemy_chest.name=Alchemical Chest
 tile.pe_interdiction_torch.name=Interdiction Torch
@@ -358,3 +361,18 @@ pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
+
+pe.manual.index=Index
+pe.manual.index_button=ToC
+
+# ItemPages bodies
+pe.manual.pe_alchemical_bag=A practicing alchemist like yourself has no time to constantly pick up and place down Alchemical Chests for storage. By sprinkling High power Covalence Dust on an alchemical chest and wrapping it in cloth, you've managed to shrink the chest down to the size of a pouch. The bag has all the capacity of the chest. Curiously, the bags seem to be bound to some metaphysical network, as all bags of the same color seem to contain the same items, regardless of if the bag was yours or your neighbor's. The bag also seems to activate magical items the same way the chest does.
+pe.manual.pe_collector_MK1=You wonder if there is a way to harness the most prevalent and constant energy in this world - light. After several weeks of tinkering and lots of trips into that dreaded underworld for the glowing dust, you manage to throw a contraption together. It seems to generate about 4 EMC per second when given strong light, and about 0.25 EMC less per second as the light deteriorates. This light has no need to be natural - you find pumpkin-based lighting as capable as the sun. Since you have worked a furnace into the devices, you find that the EMC is infused into specific items placed in the input slots, transmuting them into higher-powered materials by collecting the EMC value difference through light energy. It holds about 10000 EMC.  The sheer heat of the nether world seems to negate the need for light energy, as the Collector operates at full speed there, not that any Alchemist in their right mind would stay in the underworld long...  The device also seems capable of focusing EMC into the powerful Klein Stars, when they are placed in the machine. Transmutation Order Findings:  Charcoal, Redstone, Coal, Gunpowder, Glowstone, Alchemical Coal, Block of Redstone, Blaze Powder, Coal Block, Glowstone Block, Mobius Fuel, Alchemical Coal Block, Aeternalis Fuel, Mobius Fuel Block, Aeternalis Fuel Block
+pe.manual.pe_collector_MK3=BLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdf
+
+# TextPages headers and bodies
+pe.manual.introduction=Congratulations on embarking on your new journey, Minecrafter! Perhaps you are weary of performing the same grindy tasks over and over every day in your world, or you simply desire more power for... purposes, or you'd simply like the utility and art of magic at your disposal. Whatever it is, alchemy is sure to fit your needs. The art of alchemy has been known since ancient times. It was discovered by a man by the name of x3n0ph0b3, and refined through multiple iterations. After x3n0ph0b3's retirement, a new apprentice, Pahimar, took up the development of the art. Our story grows more complex after this. The people of the country began speaking out, shaming alchemists for their work, calling them "lazy cheaters", uttering strange words to the kin of "EE2 OP!!!!!!". The art of alchemy itself was deemed too powerful ("OP") by the people. In response to this, Pahimar abandoned his developments and began research anew, preferring investigation of other means of alchemy, while other alchemists were driven into hiding or gave up on alchemy altogether. ... Though many in the world above believe that the true art of alchemy, the knowledge of x3n0ph0b3 himself, has been lost, we gladly beg to differ. A wanderer, MozeIntel, happened upon a piece of lore from the distant past and attempted to reproduce it in its entirety. Eventually, for reasons unknown (reasons he strangely described as "IRL"), Moze had to retire. Another apprentice, SinkillerJ, eager to lead the investigation, stepped up and forged onward. Following clues, he eventually happened upon the abode of old x3n0ph0b3! With his blessing, he set to work rewriting, setting into new stone, the knowledge of ages past. Now we step into the light. The eyes of the world are upon us once more. How will the alchemists be accepted this time? ... With our hardest work, our team:     SinkillerJ  Blubberblub     Williewillus    Moze_Intel do impart upon you, fellow crafter, our most extensive knowledge of the alchemical arts and the magical powers associated with their use. We welcome you, player, to the world of ProjectE. - williewillus, Honored Master of Lore
+pe.manual.introduction.header=Introduction
+
+# ImagePage headers
+pe.manual.img_alchchest.header=alchchest.png

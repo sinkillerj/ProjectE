@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -128,7 +128,7 @@ public class DMFurnaceContainer extends Container
 		else
 		{
 			
-			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() == ObjHandler.kleinStars)
+			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

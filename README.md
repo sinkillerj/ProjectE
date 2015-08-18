@@ -27,6 +27,8 @@ MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer
 
 Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
 
+Lilylicious - Lady of Little Big Things - Assistant developer: https://twitter.com/Lilyliciously
+
 #Former Team Members
 MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
 

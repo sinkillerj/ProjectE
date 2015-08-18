@@ -39,7 +39,7 @@ public class ClientTableSyncPKT implements IMessage, IMessageHandler<ClientTable
 		}
 		else if (tile instanceof TileEmc)
 		{
-			((TileEmc) tile).setEmcValue(pkt.emc);
+			// noop (this class will be removed soon anyway)
 		}
 		
 		return null;

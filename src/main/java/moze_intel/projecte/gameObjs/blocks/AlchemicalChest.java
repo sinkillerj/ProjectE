@@ -7,7 +7,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +16,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class AlchemicalChest extends BlockDirection implements ITileEntityProvider
+public class AlchemicalChest extends BlockDirection
 {
 	public AlchemicalChest() 
 	{
@@ -63,7 +62,13 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World var1, int meta)
 	{
 		return new AlchChestTile();
 	}
@@ -72,7 +77,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		this.blockIcon = register.registerIcon("obsidian");
+		this.blockIcon = register.registerIcon("projecte:alchemy_chest");
 	}
 
 	@Override

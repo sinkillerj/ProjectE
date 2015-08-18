@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,7 +24,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
@@ -42,7 +39,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static boolean isNightVisionEnabled(ItemStack helm)
     {
-        return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+        return helm.hasTagCompound() && helm.getTagCompound().hasKey("NightVision") && helm.getTagCompound().getBoolean("NightVision");
 
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -20,9 +21,11 @@ public class NovaExplosion extends Explosion
 {
 	private World worldObj;
 	
-	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius) 
+	NovaExplosion(World world, Entity entity, double x, double y, double z, float radius)
 	{
 		super(world, entity, x, y, z, radius);
+		isFlaming = true;
+		isSmoking = true;
 		worldObj = world;
 	}
 	
@@ -79,6 +82,7 @@ public class NovaExplosion extends Explosion
 
 		this.affectedBlockPositions.addAll(hashset);
 		this.explosionSize = f;
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), this.explosionSize);
 	}
 	
 	@Override

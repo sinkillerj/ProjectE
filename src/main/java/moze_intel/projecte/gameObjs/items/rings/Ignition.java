@@ -2,19 +2,15 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
-
 import cpw.mods.fml.common.Optional;
-import moze_intel.projecte.utils.IFireProtectionItem;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
@@ -32,7 +28,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtectionItem, IProjectileShooter
+public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtector, IProjectileShooter
 {
 	public Ignition()
 	{
@@ -47,24 +43,17 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
 		EntityPlayerMP player = (EntityPlayerMP)entity;
-		
-		if(!player.capabilities.isCreativeMode && !player.isImmuneToFire())
-		{
-			//System.out.println("Immunising against fire");
-			PlayerHelper.setPlayerFireImmunity(player, true);
-			PlayerChecks.addPlayerFireChecks(player);
-		}
 
 		if (stack.getItemDamage() != 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
 				stack.setItemDamage(0);
 			}
 			else 
 			{
 				WorldHelper.igniteNearby(world, player);
-				this.removeEmc(stack, 0.32F);
+				removeEmc(stack, 0.32F);
 			}
 		}
 		else 
@@ -79,7 +68,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		
 		if (stack.getItemDamage() == 0)
 		{
-			if (this.getEmc(stack) == 0 && !this.consumeFuel(player, stack, 64, false))
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
 				//NOOP (used to be sounds)
 			}
@@ -102,7 +91,8 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT)
+				if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT
+						&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.blockX, mop.blockY, mop.blockZ))
 				{
 					// Ignite TNT or derivatives
 					((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
@@ -197,6 +187,12 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		EntityFireProjectile fire = new EntityFireProjectile(world, player);
 		world.spawnEntityInWorld(fire);
 		
+		return true;
+	}
+
+	@Override
+	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	{
 		return true;
 	}
 }

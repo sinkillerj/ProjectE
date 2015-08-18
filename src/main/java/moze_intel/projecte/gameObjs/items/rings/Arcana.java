@@ -8,11 +8,9 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.IFireProtectionItem;
-import moze_intel.projecte.utils.IFlightItem;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -32,7 +30,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem, IFireProtectionItem, IExtraFunction, IProjectileShooter
+public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
 	private IIcon[] icons = new IIcon[4];
 	private IIcon[] iconsOn = new IIcon[4];
@@ -66,35 +64,18 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)
 	{
-		if(!player.capabilities.isCreativeMode)
-		{
-			if(!player.capabilities.allowFlying)
-			{
-				//System.out.println("Enabling flight");
-				PlayerHelper.enableFlight(player);
-				PlayerChecks.addPlayerFlyChecks(player);
-			}
-			
-			if(!player.isImmuneToFire())
-			{
-				//System.out.println("Immunising against fire");
-				PlayerHelper.setPlayerFireImmunity(player, true);
-				PlayerChecks.addPlayerFireChecks(player);
-			}
-		}
-		
 		if(stack.getTagCompound().getBoolean("Active"))
 		{
 			switch(stack.getItemDamage())
 			{
 				case 0:
-					WorldHelper.freezeNearbyRandomly(world, player);
+					WorldHelper.freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5), player, true);
 					break;
 				case 1:
 					WorldHelper.igniteNearby(world, player);
 					break;
 				case 2:
-					WorldHelper.growNearbyRandomly(true, world, player);
+					WorldHelper.growNearbyRandomly(true, world, player.posX, player.posY, player.posZ, player);
 					break;
 				case 3:
 					WorldHelper.repelEntitiesInAABBFromPoint(world, player.boundingBox.expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
@@ -133,17 +114,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onEquipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onUnequipped(ItemStack stack, EntityLivingBase player)
-	{
-		
-	}
+	public void onUnequipped(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	@Optional.Method(modid = "Baubles")
@@ -168,7 +143,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 	@Override
 	public IIcon getIconIndex(ItemStack stack)
 	{
-		boolean active = (stack.hasTagCompound() ? stack.getTagCompound().getBoolean("Active") : false);
+		boolean active = stack.hasTagCompound() && stack.getTagCompound().getBoolean("Active");
 		return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
 	}
 
@@ -234,16 +209,22 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 						for(int x = (int) (player.posX - 30); x <= player.posX + 30; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+									if(world.isAirBlock(x, y, z))
+									{
+										PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+									}
 						break;
 					case 1: // west, -x
 					case 3: // east, +x
 						for(int x = (int) (player.posX - 3); x <= player.posX + 3; x++)
 							for(int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 								for(int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++)
-									if(world.getBlock(x, y, z) == Blocks.air)
-										world.setBlock(x, y, z, Blocks.fire);
+								{
+									if(world.isAirBlock(x, y, z))
+									{
+										PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+									}
+								}
 						break;
 				}
 				break;
@@ -276,6 +257,18 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightItem
 				break;
 		}
 		
+		return true;
+	}
+
+	@Override
+	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
+	{
 		return true;
 	}
 }

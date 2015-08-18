@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Locale;
+
 public class GUITransmutation extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
@@ -160,7 +162,7 @@ public class GUITransmutation extends GuiContainer
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		String srch = this.textBoxFilter.getText().toLowerCase();
+		String srch = this.textBoxFilter.getText().toLowerCase(Locale.ROOT);
 
 		if (button.id == 1)
 		{

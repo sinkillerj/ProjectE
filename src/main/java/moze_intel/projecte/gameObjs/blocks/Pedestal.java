@@ -13,7 +13,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Pedestal extends Block implements ITileEntityProvider {
+public class Pedestal extends Block {
 
     public Pedestal() {
         super(Material.rock);
@@ -80,7 +79,6 @@ public class Pedestal extends Block implements ITileEntityProvider {
 		}
 	}
 
-
 	@Override
     public boolean renderAsNormalBlock()
     {
@@ -106,7 +104,13 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int par2) {
+    public boolean hasTileEntity(int meta)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, int meta) {
         return new DMPedestalTile();
     }
 }

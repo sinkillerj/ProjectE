@@ -112,6 +112,7 @@ public class PECore
 	{
 		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.readUserData();
+		proxy.initializeManual();
 	}
 	
 	@Mod.EventHandler
@@ -166,7 +167,7 @@ public class PECore
 
 		PlayerChecks.clearLists();
 		PELogger.logDebug("Cleared player check-lists: server stopping.");
-		
+
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
 	}

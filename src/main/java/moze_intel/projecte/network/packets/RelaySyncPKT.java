@@ -12,15 +12,15 @@ import net.minecraft.tileentity.TileEntity;
 public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMessage>
 {
 	private int displayEmc;
-	private int displayKleinEmc;
-	private int displayRawEmc;
+	private double displayKleinEmc;
+	private double displayRawEmc;
 	private int x;
 	private int y;
 	private int z;
 	
 	public RelaySyncPKT() {}
 	
-	public RelaySyncPKT(int displayEmc, int displayKleinEmc, int displayRawEmc, int x, int y, int z) 
+	public RelaySyncPKT(int displayEmc, double displayKleinEmc, double displayRawEmc, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinEmc = displayKleinEmc;
@@ -43,7 +43,7 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 		{
 			RelayMK1Tile relay = (RelayMK1Tile) tile;
 			relay.displayEmc = pkt.displayEmc;
-			relay.displayKleinEmc = pkt.displayKleinEmc;
+			relay.displayChargingEmc = pkt.displayKleinEmc;
 			relay.displayRawEmc = pkt.displayRawEmc;
 		}
 		
@@ -54,8 +54,8 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 	public void fromBytes(ByteBuf buf) 
 	{
 		displayEmc = buf.readInt();
-		displayKleinEmc = buf.readInt();
-		displayRawEmc = buf.readInt();
+		displayKleinEmc = buf.readDouble();
+		displayRawEmc = buf.readDouble();
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -65,8 +65,8 @@ public class RelaySyncPKT implements IMessage, IMessageHandler<RelaySyncPKT, IMe
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(displayEmc);
-		buf.writeInt(displayKleinEmc);
-		buf.writeInt(displayRawEmc);
+		buf.writeDouble(displayKleinEmc);
+		buf.writeDouble(displayRawEmc);
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);
