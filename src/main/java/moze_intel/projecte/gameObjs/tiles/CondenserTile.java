@@ -64,7 +64,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		if (numPlayersUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
-				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 6));
+				new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 10));
 		}
 	}
 
