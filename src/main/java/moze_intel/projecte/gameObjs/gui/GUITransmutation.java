@@ -118,10 +118,9 @@ public class GUITransmutation extends GuiContainer
 
 			if (!inv.filter.equals(srch))
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs();
+				inv.updateOutputs(true);
 			}
 		}
 
@@ -143,10 +142,9 @@ public class GUITransmutation extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs();
+			inv.updateOutputs(true);
 			this.textBoxFilter.setText("");
 		}
 
@@ -180,8 +178,7 @@ public class GUITransmutation extends GuiContainer
 				inv.searchpage++;
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(srch, inv.searchpage));
 		inv.filter = srch;
-		inv.updateOutputs();
+		inv.updateOutputs(true);
 	}
 }
