@@ -19,11 +19,11 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -53,7 +53,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), x, y, z))
 		{
 			TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -107,7 +107,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 					if (world.isAirBlock(i, j, k))
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
-						placeWater(world, i, j, k);
+						placeWater(world, player, i, j, k);
 						PlayerHelper.swingItem(player);
 					}
 				}
@@ -117,10 +117,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return stack;
 	}
 
-	private void placeWater(World world, int i, int j, int k)
+	private void placeWater(World world, EntityPlayer player, int i, int j, int k)
 	{
-		Material material = world.getBlock(i, j, k).getMaterial();
-
 		if (world.provider.isHellWorld)
 		{
 			world.playSoundEffect((double)((float)i + 0.5F), (double)((float)j + 0.5F), (double)((float)k + 0.5F), "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -132,11 +130,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 		else
 		{
-			if (!world.isRemote && !material.isSolid() && !material.isLiquid())
-			{
-				world.func_147480_a(i, j, k, true);
-			}
-			world.setBlock(i, j, k, Blocks.flowing_water, 0, 3);
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), i, j, k, Blocks.flowing_water, 0);
 		}
 
 	}
