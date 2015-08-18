@@ -54,8 +54,8 @@ public class PECore
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
 
-	public static File CONFIG_DIR;
-	public static File PREGENERATED_EMC_FILE;
+	public File CONFIG_DIR;
+	public File PREGENERATED_EMC_FILE;
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -63,7 +63,7 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
 
-	public static final List<String> uuids = Lists.newArrayList();
+	public final List<String> uuids = Lists.newArrayList();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)

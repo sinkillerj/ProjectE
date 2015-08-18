@@ -1,10 +1,11 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
-import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -16,8 +17,6 @@ import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
-
-import com.google.common.collect.Maps;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -27,13 +26,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static Map<SimpleStack, Integer> emc = new LinkedHashMap<SimpleStack, Integer>();
+	public static final Map<SimpleStack, Integer> emc = Maps.newLinkedHashMap();
 	public static Map<NormalizedSimpleStack, Integer> graphMapperValues;
 
 	public static void map()
@@ -50,13 +48,13 @@ public final class EMCMapper
 		);
 		IValueGenerator<NormalizedSimpleStack, Integer> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
 
-		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
+		Configuration config = new Configuration(new File(PECore.instance.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
 		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
 						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
-		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap()))
+		if (shouldUsePregenerated && PECore.instance.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.instance.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap()))
 		{
 			PELogger.logInfo(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
 		}
@@ -94,13 +92,13 @@ public final class EMCMapper
 			graphMapperValues = graphMapper.generateValues();
 			PELogger.logInfo("Generated Values...");
 
-			filterEMCMap(graphMapperValues);
+			filterEMCMap();
 
 			if (shouldUsePregenerated) {
 				//Should have used pregenerated, but the file was not read => regenerate.
 				try
 				{
-					PregeneratedEMC.write(PECore.PREGENERATED_EMC_FILE, graphMapperValues);
+					PregeneratedEMC.write(PECore.instance.PREGENERATED_EMC_FILE, graphMapperValues);
 					PELogger.logInfo("Wrote Pregen-file!");
 				} catch (IOException e)
 				{
@@ -125,9 +123,8 @@ public final class EMCMapper
 
 	/**
 	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
-	 * @param map
 	 */
-	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
+	static void filterEMCMap() {
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();

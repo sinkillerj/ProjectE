@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -25,12 +24,6 @@ public class Tome extends ItemPE
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemstack)
 	{
 		return false; 
-	}
-
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
 	}
 
 	@Override

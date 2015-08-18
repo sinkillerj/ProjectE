@@ -29,10 +29,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		this.setNoRepair();
 	}
 	
-	final private int NORMAL_MODE = 0;
-	final private int TRANSMUTATION_MODE = 1;
+	private static final int NORMAL_MODE = 0;
+	private static final int TRANSMUTATION_MODE = 1;
 
-	final private double WALL_MODE = Math.sin(Math.toRadians(45));
+	private static final double WALL_MODE = Math.sin(Math.toRadians(45));
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)

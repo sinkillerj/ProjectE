@@ -28,7 +28,7 @@ public final class CustomEMCParser
 
 	public static void init()
 	{
-		CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.cfg");
+		CONFIG = new File(PECore.instance.CONFIG_DIR, "custom_emc.cfg");
 		loaded = false;
 
 		if (!CONFIG.exists())
@@ -45,7 +45,6 @@ public final class CustomEMCParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-				return;
 			}
 		}
 		else
@@ -142,7 +141,7 @@ public final class CustomEMCParser
 				}
 			}
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -211,7 +210,7 @@ public final class CustomEMCParser
 				result = true;
 			}
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -371,7 +370,7 @@ public final class CustomEMCParser
 
 					try
 					{
-						meta = Integer.valueOf(line.substring(2));
+						meta = Integer.parseInt(line.substring(2));
 					}
 					catch (NumberFormatException e)
 					{
@@ -392,7 +391,7 @@ public final class CustomEMCParser
 
 				try
 				{
-					emc = Integer.valueOf(line.substring(2));
+					emc = Integer.parseInt(line.substring(2));
 				}
 				catch (NumberFormatException e)
 				{
@@ -426,7 +425,7 @@ public final class CustomEMCParser
 		return null;
 	}
 
-	private static void writeDefaultFile() throws IOException
+	private static void writeDefaultFile()
 	{
 		PrintWriter writer = null;
 

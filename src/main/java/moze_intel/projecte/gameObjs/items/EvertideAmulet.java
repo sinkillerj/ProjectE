@@ -176,7 +176,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				player.setAir(300);
 			}
 				
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			if (Math.abs(player.capabilities.getWalkSpeed() - Constants.PLAYER_WALK_SPEED) > 0.001)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}

@@ -1,11 +1,10 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
-
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;

@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 public class GUICollectorMK1 extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector1.png");
-	private CollectorMK1Tile tile;
+	private final CollectorMK1Tile tile;
 	
 	public GUICollectorMK1(InventoryPlayer invPlayer, CollectorMK1Tile tile)
 	{

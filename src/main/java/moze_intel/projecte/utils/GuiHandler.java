@@ -178,7 +178,6 @@ public class GuiHandler implements IGuiHandler
 			case Constants.TRANSMUTATION_GUI:
 				return new GUITransmutation(player.inventory, new TransmutationInventory(player));
 			case Constants.ETERNAL_DENSITY_GUI:
-				player.getHeldItem();
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(), player));
 			case Constants.CONDENSER_MK2_GUI:
 				return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);

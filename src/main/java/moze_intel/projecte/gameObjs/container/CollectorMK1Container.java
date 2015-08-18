@@ -106,7 +106,7 @@ public class CollectorMK1Container extends Container
 				return null;
 			}
 		}
-		else if (slotIndex >= 11 && slotIndex <= 46)
+		else if (slotIndex <= 46)
 		{
 			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 8, false))
 			{

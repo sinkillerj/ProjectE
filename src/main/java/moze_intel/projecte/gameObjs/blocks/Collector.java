@@ -24,7 +24,7 @@ public class Collector extends BlockDirection
 	private IIcon front;
 	@SideOnly(Side.CLIENT)
 	private IIcon top;
-	private int tier;
+	private final int tier;
 	
 	public Collector(int tier) 
 	{

@@ -73,15 +73,10 @@ public class NovaCataclysmRenderer extends Render
 
 		GL11.glPopMatrix();
 	}
-
-	protected ResourceLocation getEntityTexture(EntityNovaCataclysmPrimed entity) 
-	{
-		return TextureMap.locationBlocksTexture;
-	}
 	
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity)
 	{
-		return this.getEntityTexture((EntityNovaCataclysmPrimed) entity);
+		return TextureMap.locationBlocksTexture;
 	}
 }

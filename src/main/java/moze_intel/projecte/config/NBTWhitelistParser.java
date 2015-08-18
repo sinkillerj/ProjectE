@@ -22,7 +22,7 @@ public final class NBTWhitelistParser
 
 	public static void init()
 	{
-		CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
+		CONFIG = new File(PECore.instance.CONFIG_DIR, "nbt_whitelist.cfg");
 		loaded = false;
 
 		if (!CONFIG.exists())
@@ -39,7 +39,6 @@ public final class NBTWhitelistParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-				return;
 			}
 		}
 		else
@@ -122,7 +121,7 @@ public final class NBTWhitelistParser
 		}
 	}
 
-	private static void writeDefaultFile() throws IOException
+	private static void writeDefaultFile()
 	{
 		PrintWriter writer = null;
 

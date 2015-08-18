@@ -40,7 +40,7 @@ public class KleinStar extends ItemPE
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		double starEmc = this.getEmc(stack);
+		double starEmc = getEmc(stack);
 		
 		if (starEmc == 0)
 		{

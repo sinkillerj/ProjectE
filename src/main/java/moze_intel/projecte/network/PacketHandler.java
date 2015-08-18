@@ -16,7 +16,6 @@ import moze_intel.projecte.network.packets.ClientOrientationSyncPKT;
 import moze_intel.projecte.network.packets.ClientSyncBagDataPKT;
 import moze_intel.projecte.network.packets.ClientSyncEmcPKT;
 import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
-import moze_intel.projecte.network.packets.ClientTableSyncPKT;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
@@ -49,7 +48,6 @@ public final class PacketHandler
 		HANDLER.registerMessage(StepHeightPKT.class, StepHeightPKT.class, 4, Side.CLIENT);
 		HANDLER.registerMessage(SetFlyPKT.class, SetFlyPKT.class, 5, Side.CLIENT);
 		HANDLER.registerMessage(ClientKnowledgeSyncPKT.class, ClientKnowledgeSyncPKT.class, 6, Side.CLIENT);
-		HANDLER.registerMessage(ClientTableSyncPKT.class, ClientTableSyncPKT.class, 7, Side.CLIENT);
 		HANDLER.registerMessage(CondenserSyncPKT.class, CondenserSyncPKT.class, 8, Side.CLIENT);
 		HANDLER.registerMessage(CollectorSyncPKT.class, CollectorSyncPKT.class, 9, Side.CLIENT);
 		HANDLER.registerMessage(RelaySyncPKT.class, RelaySyncPKT.class, 10, Side.CLIENT);

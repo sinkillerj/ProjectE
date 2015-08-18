@@ -145,7 +145,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 		else if (!world.isRemote)
 		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			if (Math.abs(player.capabilities.getWalkSpeed() - Constants.PLAYER_WALK_SPEED) > 0.001)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}
@@ -222,7 +222,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 		else if (!world.isRemote)
 		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			if (Math.abs(player.capabilities.getWalkSpeed() - Constants.PLAYER_WALK_SPEED) > 0.001)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
 			}

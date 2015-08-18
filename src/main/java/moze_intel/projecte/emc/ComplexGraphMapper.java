@@ -55,7 +55,7 @@ public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<
 						debugFormat("Set value for %s to %d because %d/%d Conversions solved\n", something.toString(), minValue, getNoDependencyConversionCountFor(something), getConversionsFor(something).size());
 					}
 				}
-				System.out.format("lookat: %d solvable: %d\n", lookAt.size(), solvableThings.size());
+				System.out.format("lookat: %d solvable: %d%n", lookAt.size(), solvableThings.size());
 				lookAt.clear();
 				if (solvableThings.isEmpty()) break;
 				for (Map.Entry<T, V> solvableThing : solvableThings.entrySet()) {

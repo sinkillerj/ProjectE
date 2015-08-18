@@ -34,23 +34,23 @@ public class ChestItemRenderer implements IItemRenderer
 		switch (type)
 		{
 			case ENTITY:
-				renderChest(0.5F, 0.5F, 0.5F, 0);
+				renderChest(0.5F, 0.5F, 0.5F);
 				break;
 			case EQUIPPED:
-				renderChest(1.0F, 1.0F, 1.0F, 0);
+				renderChest(1.0F, 1.0F, 1.0F);
 				break;
 			case EQUIPPED_FIRST_PERSON:
-				renderChest(1.0F, 1.0F, 1.0F, 0);
+				renderChest(1.0F, 1.0F, 1.0F);
 				break;
 			case INVENTORY:
-				renderChest(0.0F, 0.075F, 0.0F, 0);
+				renderChest(0.0F, 0.075F, 0.0F);
 				break;
 			default:
 				break;
 		}
 	}
 
-	private void renderChest(float x, float y, float z, int metaData)
+	private void renderChest(float x, float y, float z)
 	{
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		GL11.glPushMatrix(); 
