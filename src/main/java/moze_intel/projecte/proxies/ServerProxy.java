@@ -9,6 +9,7 @@ public class ServerProxy implements IProxy
 	public void registerKeyBinds() {} 
 	public void registerRenderers() {}
 	public void registerClientOnlyEvents() {}
+	public void initializeManual() {}
 	public void clearClientKnowledge() {}
 	public TransmutationProps getClientTransmutationProps() { return null; }
 	public AlchBagProps getClientBagProps() { return null; }

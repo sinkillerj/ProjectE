@@ -47,6 +47,7 @@ import moze_intel.projecte.gameObjs.items.HyperkineticLens;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.Matter;
 import moze_intel.projecte.gameObjs.items.MercurialEye;
+import moze_intel.projecte.gameObjs.items.PEManual;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.items.RepairTalisman;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
@@ -235,8 +236,8 @@ public class ObjHandler
 	public static Item lensExplosive = new LensExplosive();
 	public static Item fireProjectile = new FireProjectile();
 	public static Item windProjectile = new LightningProjectile();
-
 	public static Item transmutationTablet = new TransmutationTablet();
+	public static Item manual = new PEManual();
 
 	public static final HashMap<ItemStack, ItemStack> MAP = Maps.newHashMap();
 
@@ -346,6 +347,7 @@ public class ObjHandler
 
 		GameRegistry.registerItem(tome, tome.getUnlocalizedName());
 		GameRegistry.registerItem(transmutationTablet, transmutationTablet.getUnlocalizedName());
+		GameRegistry.registerItem(manual, manual.getUnlocalizedName());
 
 		//Tile Entities
 		GameRegistry.registerTileEntityWithAlternatives(AlchChestTile.class, "AlchChestTile", "Alchemical Chest Tile");
@@ -561,6 +563,9 @@ public class ObjHandler
 			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
 		}
 
+		//Manual
+		GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, matter);
+
 		//TransmutationTablet
 		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);
 
@@ -623,7 +628,6 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 1), Blocks.dirt);
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 2), Blocks.dirt);
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 3), Blocks.dirt);
-
 
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
@@ -694,4 +698,3 @@ public class ObjHandler
 		}
 	}
 }
-
