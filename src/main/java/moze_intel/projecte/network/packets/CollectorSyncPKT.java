@@ -9,7 +9,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
-public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSyncPKT, IMessage>
+public class CollectorSyncPKT implements IMessage
 {
 	private int displayEmc;
 	private double displayKleinCharge;
@@ -26,25 +26,6 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-	
-	@Override
-	public IMessage onMessage(CollectorSyncPKT pkt, MessageContext ctx) 
-	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in Collector sync packet! Please report to dev!");
-		}
-		else
-		{
-			CollectorMK1Tile collector = (CollectorMK1Tile) tile;
-			collector.displayEmc = pkt.displayEmc;
-			collector.displayItemCharge = pkt.displayKleinCharge;
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -65,5 +46,27 @@ public class CollectorSyncPKT implements IMessage, IMessageHandler<CollectorSync
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);
+	}
+
+	public static class Handler implements IMessageHandler<CollectorSyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(CollectorSyncPKT pkt, MessageContext ctx)
+		{
+			TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
+
+			if (tile == null)
+			{
+				PELogger.logFatal("NULL tile entity reference in Collector sync packet! Please report to dev!");
+			}
+			else
+			{
+				CollectorMK1Tile collector = (CollectorMK1Tile) tile;
+				collector.displayEmc = pkt.displayEmc;
+				collector.displayItemCharge = pkt.displayKleinCharge;
+			}
+
+			return null;
+		}
 	}
 }

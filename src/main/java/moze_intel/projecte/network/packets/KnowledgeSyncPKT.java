@@ -9,34 +9,38 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ClientSyncBagDataPKT implements IMessage, IMessageHandler<ClientSyncBagDataPKT, IMessage>
+public class KnowledgeSyncPKT implements IMessage
 {
 	private NBTTagCompound nbt;
-	
-	public ClientSyncBagDataPKT() {}
-	
-	public ClientSyncBagDataPKT(NBTTagCompound nbt) 
+
+	public KnowledgeSyncPKT() {}
+
+	public KnowledgeSyncPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
 
 	@Override
-	public IMessage onMessage(ClientSyncBagDataPKT message, MessageContext ctx)
-	{
-		PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
-		PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
-		return null;
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		nbt = ByteBufUtils.readTag(buf);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) 
+	public void toBytes(ByteBuf buf)
 	{
 		ByteBufUtils.writeTag(buf, nbt);
+	}
+
+	public static class Handler implements IMessageHandler<KnowledgeSyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final KnowledgeSyncPKT message, MessageContext ctx)
+		{
+			PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
+			PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
+
+			return null;
+		}
 	}
 }
