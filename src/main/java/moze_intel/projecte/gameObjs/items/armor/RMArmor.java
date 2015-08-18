@@ -16,6 +16,8 @@ import net.minecraftforge.common.ISpecialArmor;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
+import java.util.Locale;
+
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
@@ -66,8 +68,8 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@SideOnly(Side.CLIENT)
 	public void registerIcons (IIconRegister par1IconRegister)
 	{
-		String type = this.armorPiece.name.toLowerCase();
-		this.itemIcon = par1IconRegister.registerIcon("projecte:rm_armor/"+type);
+		String type = this.armorPiece.name.toLowerCase(Locale.ROOT);
+		this.itemIcon = par1IconRegister.registerIcon("projecte:rm_armor/" + type);
 	}
 
 	@Override
