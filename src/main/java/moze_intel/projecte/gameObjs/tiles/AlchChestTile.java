@@ -208,7 +208,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 
 		if (worldObj.isRemote)
 		{
-			if (worldObj.isBlockLoaded(pos, false))
+			if (!worldObj.isBlockLoaded(pos, false))
 			{
 				// Handle condition where this method is called even after the clientside chunk has unloaded.
 				// This will make IAlchChestItems below crash with an NPE since the TE they get back is null
