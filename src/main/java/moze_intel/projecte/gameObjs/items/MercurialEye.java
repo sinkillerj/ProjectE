@@ -6,9 +6,11 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -133,34 +135,36 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			{
 				for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
 				{
-					IBlockState state = world.getBlockState(currentPos);
-					Block oldBlock = state.getBlock();
+					IBlockState oldState = world.getBlockState(currentPos);
+					Block oldBlock = oldState.getBlock();
 
-					if (mode == NORMAL_MODE && world.isAirBlock(currentPos))
+					if (mode == NORMAL_MODE && oldBlock == Blocks.air)
 					{
 						if (kleinEmc < reqEmc)
 							break;
-						world.setBlockState(pos, newState, 3);
-						removeKleinEMC(stack, reqEmc);
-						kleinEmc -= reqEmc;
+						if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
+						{
+							removeKleinEMC(stack, reqEmc);
+							kleinEmc -= reqEmc;
+						}
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						if (newState == state || oldBlock.isAir(world, currentPos) || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(state, 1)))
+						if (oldState == newState || oldBlock == Blocks.air || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
 						{
 							continue;
 						}
 
-						int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(state, 1));
+						int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
 
 						if (emc > reqEmc)
 						{
-							int difference = emc - reqEmc;
-
-							kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-
-							addKleinEMC(stack, difference);
-							world.setBlockState(pos, newState, 3);
+							if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+							{
+								int difference = emc - reqEmc;
+								kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+								addKleinEMC(stack, difference);
+							}
 						}
 						else if (emc < reqEmc)
 						{
@@ -168,16 +172,19 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 							if (kleinEmc >= difference)
 							{
-								kleinEmc -= difference;
-								removeKleinEMC(stack, difference);
-								world.setBlockState(pos, newState, 3);
+								if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+								{
+									kleinEmc -= difference;
+									removeKleinEMC(stack, difference);
+								}
 							}
 						}
 						else
 						{
-							world.setBlockState(pos, newState, 3);
+							PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
 						}
 					}
+
 				}
 
 				player.worldObj.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));

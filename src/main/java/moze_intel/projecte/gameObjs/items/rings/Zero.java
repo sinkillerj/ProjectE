@@ -38,13 +38,13 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		super.onUpdate(stack, world, entity, par4, par5);
 		
-		if (world.isRemote || par4 > 8 || stack.getItemDamage() == 0)
+		if (world.isRemote || !(entity instanceof EntityPlayer) || par4 > 8 || stack.getItemDamage() == 0)
 		{
 			return;
 		}
 
 		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		WorldHelper.freezeInBoundingBox(world, box);
+		WorldHelper.freezeInBoundingBox(world, box, ((EntityPlayer) entity), true);
 	}
 
 
@@ -56,7 +56,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
 			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
-			WorldHelper.freezeInBoundingBox(world, box);
+			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
 		
 		return stack;
@@ -118,7 +118,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0) {
 				AxisAlignedBB aabb = tile.getEffectBounds();
-				WorldHelper.freezeInBoundingBox(world, aabb);
+				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
 				for (Entity ent : list)
 				{

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class KleinStar extends ItemPE
+public class KleinStar extends ItemPE implements IItemEmc
 {
 	public KleinStar()
 	{
@@ -118,5 +119,35 @@ public class KleinStar extends ItemPE
 		{
 			this.name = name;
 		}
+	}
+
+	// -- IItemEmc -- //
+
+	@Override
+	public double addEmc(ItemStack stack, double toAdd)
+	{
+		double add = Math.min(getMaximumEmc(stack) - getStoredEmc(stack), toAdd);
+		ItemPE.addEmcToStack(stack, add);
+		return add;
+	}
+
+	@Override
+	public double extractEmc(ItemStack stack, double toRemove)
+	{
+		double sub = Math.min(getStoredEmc(stack), toRemove);
+		ItemPE.removeEmc(stack, sub);
+		return sub;
+	}
+
+	@Override
+	public double getStoredEmc(ItemStack stack)
+	{
+		return ItemPE.getEmc(stack);
+	}
+
+	@Override
+	public double getMaximumEmc(ItemStack stack)
+	{
+		return EMCHelper.getKleinStarMaxEmc(stack);
 	}
 }

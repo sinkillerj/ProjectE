@@ -14,6 +14,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,6 +84,7 @@ public class NovaExplosion extends Explosion
 
 		this.func_180343_e().addAll(hashset);
 		ReflectionHelper.setExplosionSize(this, initialSize);
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), ReflectionHelper.getExplosionSize(this));
 	}
 	
 	@Override

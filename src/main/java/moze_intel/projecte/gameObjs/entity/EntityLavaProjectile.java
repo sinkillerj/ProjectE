@@ -2,10 +2,12 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
@@ -43,22 +45,22 @@ public class EntityLavaProjectile extends PEProjectile
 				return;
 			}
 
-			boolean flag = true;
-
-			for (BlockPos pos : WorldHelper.getPositionsFromCorners(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+			if (getThrower() instanceof EntityPlayerMP)
 			{
-				Block block = this.worldObj.getBlockState(pos).getBlock();
+				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
+				for (BlockPos pos : WorldHelper.getPositionsFromCorners(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+                {
+                    Block block = this.worldObj.getBlockState(pos).getBlock();
 
-				if (block == Blocks.water || block == Blocks.flowing_water)
-				{
-					this.worldObj.setBlockToAir(pos);
-
-					if (flag)
-					{
-						this.worldObj.playSoundAtEntity(this, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-						flag = false;
-					}
-				}
+                    if (block == Blocks.water || block == Blocks.flowing_water)
+                    {
+                        if (PlayerHelper.hasBreakPermission(player, pos))
+                        {
+                            this.worldObj.setBlockToAir(pos);
+                            this.worldObj.playSoundEffect(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                        }
+                    }
+                }
 			}
 
 			if (this.posY > 128)
@@ -83,7 +85,7 @@ public class EntityLavaProjectile extends PEProjectile
 			switch (mop.typeOfHit)
 			{
 				case BLOCK:
-					this.worldObj.setBlockState(mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
+					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
 					break;
 				case ENTITY:
 					Entity ent = mop.entityHit;

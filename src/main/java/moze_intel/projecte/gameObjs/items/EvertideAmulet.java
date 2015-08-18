@@ -8,33 +8,20 @@ import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,7 +42,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
@@ -99,7 +86,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)))
 					{
 						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
-						placeWater(world, blockPosHit.offset(mop.sideHit));
+						placeWater(world, player, blockPosHit.offset(mop.sideHit));
 						PlayerHelper.swingItem(player);
 					}
 				}
@@ -109,7 +96,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return stack;
 	}
 
-	private void placeWater(World world, BlockPos pos)
+	private void placeWater(World world, EntityPlayer player, BlockPos pos)
 	{
 		Material material = world.getBlockState(pos).getBlock().getMaterial();
 
@@ -129,6 +116,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.flowing_water.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.flowing_water.getDefaultState());
 		}
 
 	}
@@ -253,7 +241,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}

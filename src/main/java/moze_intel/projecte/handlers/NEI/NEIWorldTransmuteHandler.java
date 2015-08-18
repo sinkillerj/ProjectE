@@ -1,55 +1,59 @@
 package moze_intel.projecte.handlers.NEI;
 
+import codechicken.nei.NEIServerUtils;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.TemplateRecipeHandler;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import codechicken.nei.NEIServerUtils;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.recipe.TemplateRecipeHandler;
-import moze_intel.projecte.utils.WorldTransmutations;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.Map.Entry;
 
-public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
+public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
+{
 
-	private static final String name = "World Transmutation";
-	private static final String id = "worldTransmutation";
-	
+	private static String name = "World Transmutation";
+	private static String id = "worldTransmutation";
+
 	@Override
-	public String getRecipeName() {
+	public String getRecipeName()
+	{
 		return name;
 	}
 
 	@Override
-	public String getGuiTexture() {
+	public String getGuiTexture()
+	{
 		return "projecte:textures/gui/nei.png";
 	}
-	
+
 	public class CachedTransmutationRecipe extends CachedRecipe
 	{
+
 		private IBlockState input;
 		private IBlockState output;
-		private boolean sneaking;
+		public boolean sneaking;
 
 		public CachedTransmutationRecipe(IBlockState in, boolean sneak)
 		{
+
 			input = in;
 			sneaking = sneak;
 			output = WorldTransmutations.getWorldTransmutation(in, sneaking);
 		}
-		
+
 		@Override
 		public PositionedStack getIngredient()
 		{
@@ -91,23 +95,22 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
 	}
 	
     @Override
-    public void loadCraftingRecipes(String outputId, Object... results) {
-        if (outputId.equals(id) && getClass() == NEIWorldTransmuteHandler.class) {
-            for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry: WorldTransmutations.getWorldTransmutations().entrySet()) {
-            	if (entry!=null){
-            		if (entry.getValue().getLeft() != null)
-					{
-						arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
-					}
-            		if (entry.getValue().getRight() !=null)
-					{
-						arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));
-					}
-            	}
-            }
-        } else {
-            super.loadCraftingRecipes(outputId, results);
-        }
+    public void loadCraftingRecipes(String outputId, Object... results)
+	{
+		if (outputId.equals(id) && getClass() == NEIWorldTransmuteHandler.class)
+		{
+			for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry : WorldTransmutations.getWorldTransmutations().entrySet())
+			{
+				if (entry != null)
+				{
+					if (entry.getValue().getLeft() != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
+					if (entry.getValue().getRight() != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));
+				}
+			}
+		} else
+		{
+			super.loadCraftingRecipes(outputId, results);
+		}
     }
 
     @Override
@@ -141,23 +144,24 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
             }
         }
     }
-    
-    @Override
+
+	@Override
 	public void drawForeground(int recipe)
 	{
-		CachedTransmutationRecipe r = (CachedTransmutationRecipe) arecipes.get(recipe);
-		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-		if (r.sneaking)
-		{
-			fr.drawString(StatCollector.translateToLocal("key.sneak"), 70, 40,0);
-		}
-	}
-    
+		String sneak = StatCollector.translateToLocal("key.sneak");
 
-    @Override
-    public void loadTransferRects()
+		CachedTransmutationRecipe r = (CachedTransmutationRecipe) arecipes.get(recipe);
+
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+		if (r.sneaking) fr.drawString(sneak, 70, 40, 0);
+
+	}
+
+	@Override
+	public void loadTransferRects()
 	{
-    	this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83,23,25,10), id));
-    }
-	
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id, new Object[0]));
+	}
+
+
 }

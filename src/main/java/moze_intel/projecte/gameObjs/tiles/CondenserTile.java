@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
@@ -21,12 +22,12 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.Arrays;
 
-public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory
+public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory, IEmcAcceptor
 {
 	protected ItemStack[] inventory;
 	private ItemStack lock;
 	protected boolean loadChecks;
-	protected boolean isRequestingEmc;
+	protected boolean isAcceptingEmc;
 	private int ticksSinceSync;
 	public int displayEmc;
 	public float lidAngle;
@@ -79,7 +80,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		{
 			displayEmc = 0;
 			requiredEmc = 0;
-			this.isRequestingEmc = false;
+			this.isAcceptingEmc = false;
 			return;
 		}
 
@@ -90,7 +91,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			if (requiredEmc != lockEmc)
 			{
 				requiredEmc = lockEmc;
-				this.isRequestingEmc = true;
+				this.isAcceptingEmc = true;
 			}
 
 			if (this.getStoredEmc() > requiredEmc)
@@ -105,7 +106,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 			displayEmc = 0;
 			requiredEmc = 0;
-			this.isRequestingEmc = false;
+			this.isAcceptingEmc = false;
 		}
 	}
 
@@ -114,7 +115,8 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		while(hasSpace() && this.getStoredEmc() > requiredEmc)
 		{
 			pushStack();
-			this.removeEmc(requiredEmc);
+
+			this.removeEMC(requiredEmc);
 		}
 	}
 	
@@ -130,15 +132,14 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			}
 			
 			decrStackSize(i, 1);
-			this.addEmc(EMCHelper.getEmcValue(stack));
+			this.addEMC(EMCHelper.getEmcValue(stack));
 			break;
 		}
 		
 		if (this.getStoredEmc() >= requiredEmc && this.hasSpace())
 		{
-			double result = this.getStoredEmc() - requiredEmc;
+			this.removeEMC(requiredEmc);
 			pushStack();
-			this.setEmcValue(result);
 		}
 	}
 	
@@ -237,11 +238,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		
 		return (displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc;
 	}
-	
-	public void sendUpdate()
-	{
-		worldObj.markBlockForUpdate(pos);
-	}
 
 	@Override
 	public void invalidate()
@@ -260,11 +256,8 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-
-		this.setEmcValue(nbt.getDouble("EMC"));
 		NBTTagList list = nbt.getTagList("Items", 10);
-		//inventory = new ItemStack[92];
-		
+
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound subNBT = list.getCompoundTagAt(i);
@@ -276,8 +269,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-
-		nbt.setDouble("EMC", this.getStoredEmc());
 		NBTTagList list = new NBTTagList();
 
 		for (int i = 0; i < inventory.length; i++)
@@ -531,8 +522,17 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public boolean isRequestingEmc() 
+	public double acceptEMC(EnumFacing side, double toAccept)
 	{
-		return isRequestingEmc;
+		if (isAcceptingEmc)
+		{
+			double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+			addEMC(toAdd);
+			return toAdd;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }

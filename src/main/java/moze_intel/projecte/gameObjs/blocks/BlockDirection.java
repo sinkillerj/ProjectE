@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -18,7 +18,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public abstract class BlockDirection extends BlockContainer
+public abstract class BlockDirection extends Block
 {
 	public static final IProperty FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public BlockDirection(Material material)

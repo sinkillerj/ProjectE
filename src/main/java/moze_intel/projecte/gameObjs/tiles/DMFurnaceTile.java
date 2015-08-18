@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -42,7 +42,7 @@ public class DMFurnaceTile extends RMFurnaceTile
 		
 		if (slot == 0)
 		{
-			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars;
+			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc;
 		}
 		else if (slot >= 1 && slot <= 9)
 		{

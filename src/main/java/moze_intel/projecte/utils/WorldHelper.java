@@ -1,7 +1,11 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -10,6 +14,7 @@ import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -42,6 +47,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -57,10 +63,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ExplosionEvent;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -135,62 +145,62 @@ public final class WorldHelper
 			}
 		}
 	}
-	
+
+	/**
+	 * Equivalent of World.newExplosion
+	 */
+	public static void createNovaExplosion(World world, Entity exploder, double x, double y, double z, float power)
+	{
+		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power, true, true);
+		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion)))
+		{
+			explosion.doExplosionA();
+			explosion.doExplosionB(true);
+		}
+	}
+
 	public static void extinguishNearby(World world, EntityPlayer player)
 	{
 		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
 		{
-			if (world.getBlockState(pos).getBlock() == Blocks.fire)
+			if (world.getBlockState(pos).getBlock() == Blocks.fire && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
 				world.setBlockToAir(pos);
 			}
 		}
 	}
 	
-	public static void freezeNearby(World world, EntityPlayer player)
-	{
-		freezeInBoundingBox(world, player.getEntityBoundingBox().expand(5, 5, 5));
-	}
-	
-	public static void freezeInBoundingBox(World world, AxisAlignedBB box)
-	{
-		for (BlockPos pos : getPositionsFromBox(box))
-		{
-			Block b = world.getBlockState(pos).getBlock();
-			if (b == Blocks.water || b == Blocks.flowing_water)
-			{
-				world.setBlockState(pos, Blocks.ice.getDefaultState());
-			}
-			else if (b.isSideSolid(world, pos, EnumFacing.UP))
-			{
-				if (world.isAirBlock(pos.up()))
-				{
-					world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
-				}
-			}
-		}
-	}
-		
-	public static void freezeNearbyRandomly(World world, EntityPlayer player)
-	{
-		freezeInBoundingBoxRandomly(world, player.getEntityBoundingBox().expand(5, 5, 5));
-	}
-	
-	public static void freezeInBoundingBoxRandomly(World world, AxisAlignedBB box)
+	public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random)
 	{
 		for (BlockPos pos : getPositionsFromBox(box))
 		{
 			Block b = world.getBlockState(pos).getBlock();
 
-			if ((b == Blocks.water || b == Blocks.flowing_water) && world.rand.nextInt(128) == 0)
+			if ((b == Blocks.water || b == Blocks.flowing_water) && (!random || world.rand.nextInt(128) == 0))
 			{
-				world.setBlockState(pos, Blocks.ice.getDefaultState());
+				if (player != null)
+				{
+					PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos, Blocks.ice.getDefaultState());
+				}
+				else
+				{
+					world.setBlockState(pos, Blocks.ice.getDefaultState());
+				}
 			}
 			else if (b.isSideSolid(world, pos, EnumFacing.UP))
 			{
-				if (world.isAirBlock(pos.up()) && world.rand.nextInt(128) == 0)
+				Block b2 = world.getBlockState(pos.up()).getBlock();
+
+				if (b2 == Blocks.air && (!random || world.rand.nextInt(128) == 0))
 				{
-					world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
+					if (player != null)
+					{
+						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos.up(), Blocks.snow_layer.getDefaultState());
+					}
+					else
+					{
+						world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
+					}
 				}
 			}
 		}
@@ -198,16 +208,22 @@ public final class WorldHelper
 	
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
-		List<TileEntity> list = Lists.newArrayList();
-		for (EnumFacing e : EnumFacing.VALUES)
+		return ImmutableList.copyOf(getAdjacentTileEntitiesMapped(world, tile).values());
+	}
+
+	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
+	{
+		Map<EnumFacing, TileEntity> ret2 = Maps.asMap(ImmutableSet.copyOf(EnumFacing.VALUES), new Function<EnumFacing, TileEntity>()
 		{
-			TileEntity t = world.getTileEntity(tile.getPos().offset(e));
-			if (t != null)
+			@Nullable
+			@Override
+			public TileEntity apply(EnumFacing input)
 			{
-				list.add(t);
+				return world.getTileEntity(tile.getPos().offset(input));
 			}
-		}
-		return list;
+		});
+
+		return Maps.filterValues(ret2, Predicates.notNull());
 	}
 
 	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
@@ -400,8 +416,8 @@ public final class WorldHelper
 			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
 		}
 	}
-	
-	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos)
+
+	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, EntityPlayer player)
 	{
 		int chance = harvest ? 16 : 32;
 
@@ -422,16 +438,19 @@ public final class WorldHelper
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof IGrowable)
 			{
-				IGrowable growable = (IGrowable) crop;
-				if(harvest && !growable.canGrow(world, currentPos, state, false))
+				IGrowable growable = ((IGrowable) crop);
+				if (harvest && !growable.canGrow(world, pos, state, false))
 				{
-					world.destroyBlock(currentPos, true);
+					if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+					{
+						world.destroyBlock(pos, true);
+					}
 				}
 				else if (world.rand.nextInt(chance) == 0)
 				{
-					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
+					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 					{
-						growable.grow(world, world.rand, currentPos, state);
+						growable.grow(world, world.rand, pos, state);
 					}
 				}
 			}
@@ -443,7 +462,7 @@ public final class WorldHelper
 				{
 					for (int i = 0; i < (harvest ? 8 : 4); i++)
 					{
-						crop.updateTick(world, currentPos, world.getBlockState(currentPos), world.rand);
+						crop.updateTick(world, pos, state, world.rand);
 					}
 				}
 
@@ -451,7 +470,10 @@ public final class WorldHelper
 				{
 					if (crop instanceof BlockFlower)
 					{
-						world.destroyBlock(pos, true);
+						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+						{
+							world.destroyBlock(pos, true);
+						}
 					}
 					if (crop == Blocks.reeds || crop == Blocks.cactus)
 					{
@@ -459,7 +481,7 @@ public final class WorldHelper
 
 						for (int i = 1; i < 3; i++)
 						{
-							if (world.getBlockState(pos.up()).getBlock() != crop)
+							if (world.getBlockState(pos.up(i)) != crop)
 							{
 								shouldHarvest = false;
 								break;
@@ -470,26 +492,28 @@ public final class WorldHelper
 						{
 							for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 							{
-								world.destroyBlock(pos.offset(EnumFacing.UP, i), true);
+								if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+								{
+									world.destroyBlock(pos, true);
+								}
 							}
 						}
 					}
 					if (crop == Blocks.nether_wart)
 					{
-						int growth = ((Integer) world.getBlockState(pos).getValue(BlockNetherWart.AGE));
-						if (growth == 3)
+						int age = ((Integer) state.getValue(BlockNetherWart.AGE));
+						if (age == 3)
 						{
-							world.destroyBlock(pos, true);
+							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+							{
+								world.destroyBlock(pos, true);
+							}
 						}
 					}
 				}
+
 			}
 		}
-	}
-
-	public static void growNearbyRandomly(boolean harvest, World world, Entity player)
-	{
-		growNearbyRandomly(harvest, world, new BlockPos(player.posX, player.posY, player.posZ));
 	}
 
 	/**
@@ -510,9 +534,11 @@ public final class WorldHelper
 
 			if (currentState == target || (target.getBlock() == Blocks.lit_redstone_ore && currentState.getBlock() == Blocks.redstone_ore))
 			{
-				currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
-				world.setBlockToAir(pos);
-				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(currentState.getBlock())], 1);
+				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+				{
+					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
+					world.setBlockToAir(pos);
+				}
 				numMined++;
 				harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 			}
@@ -525,6 +551,7 @@ public final class WorldHelper
 		{
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
 				world.setBlockState(pos, Blocks.fire.getDefaultState());
 			}
 		}

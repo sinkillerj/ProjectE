@@ -6,6 +6,8 @@ import net.minecraft.world.World;
 
 /**
  * This interface specifies items that perform a specific function every tick when inside an Alchemical Chest
+ *
+ * @author williewillus
  */
 public interface IAlchChestItem
 {

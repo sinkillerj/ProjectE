@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * This interface specifies items that perform a specific function every tick when inside an activated Dark Matter Pedestal
+ *
+ * @author williewillus
  */
 public interface IPedestalItem {
 

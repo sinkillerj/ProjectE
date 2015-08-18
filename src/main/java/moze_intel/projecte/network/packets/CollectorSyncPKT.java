@@ -13,12 +13,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class CollectorSyncPKT implements IMessage
 {
 	private int displayEmc;
-	private int displayKleinCharge;
+	private double displayKleinCharge;
 	private BlockPos pos;
 	
 	public CollectorSyncPKT() {}
 	
-	public CollectorSyncPKT(int displayEmc, int displayKleinCharge, CollectorMK1Tile tile)
+	public CollectorSyncPKT(int displayEmc, double displayKleinCharge, CollectorMK1Tile tile)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinCharge = displayKleinCharge;
@@ -29,16 +29,16 @@ public class CollectorSyncPKT implements IMessage
 	public void fromBytes(ByteBuf buf) 
 	{
 		displayEmc = buf.readInt();
-		displayKleinCharge = buf.readInt();
 		pos = BlockPos.fromLong(buf.readLong());
+		displayKleinCharge = buf.readDouble();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(displayEmc);
-		buf.writeInt(displayKleinCharge);
 		buf.writeLong(pos.toLong());
+		buf.writeDouble(displayKleinCharge);
 	}
 
 	public static class Handler implements IMessageHandler<CollectorSyncPKT, IMessage>
@@ -59,7 +59,7 @@ public class CollectorSyncPKT implements IMessage
 					{
 						CollectorMK1Tile collector = (CollectorMK1Tile) tile;
 						collector.displayEmc = pkt.displayEmc;
-						collector.displayKleinCharge = pkt.displayKleinCharge;
+						collector.displayItemCharge = pkt.displayKleinCharge;
 					}
 				}
 			});

@@ -7,6 +7,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -67,6 +68,22 @@ public class DestructionCatalyst extends ItemCharge
 				if (!hasAction)
 				{
 					hasAction = true;
+				}
+
+				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+				{
+					List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
+					if (list != null && list.size() > 0)
+					{
+						drops.addAll(list);
+					}
+
+					world.setBlockToAir(pos);
+
+					if (world.rand.nextInt(8) == 0)
+					{
+						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+					}
 				}
 
 				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);

@@ -13,13 +13,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class RelaySyncPKT implements IMessage
 {
 	private int displayEmc;
-	private int displayKleinEmc;
-	private int displayRawEmc;
+	private double displayKleinEmc;
+	private double displayRawEmc;
 	private BlockPos pos;
 	
 	public RelaySyncPKT() {}
 	
-	public RelaySyncPKT(int displayEmc, int displayKleinEmc, int displayRawEmc, RelayMK1Tile tile)
+	public RelaySyncPKT(int displayEmc, double displayKleinEmc, double displayRawEmc, RelayMK1Tile tile)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinEmc = displayKleinEmc;
@@ -31,8 +31,8 @@ public class RelaySyncPKT implements IMessage
 	public void fromBytes(ByteBuf buf) 
 	{
 		displayEmc = buf.readInt();
-		displayKleinEmc = buf.readInt();
-		displayRawEmc = buf.readInt();
+		displayKleinEmc = buf.readDouble();
+		displayRawEmc = buf.readDouble();
 		pos = BlockPos.fromLong(buf.readLong());
 	}
 
@@ -40,8 +40,8 @@ public class RelaySyncPKT implements IMessage
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(displayEmc);
-		buf.writeInt(displayKleinEmc);
-		buf.writeInt(displayRawEmc);
+		buf.writeDouble(displayKleinEmc);
+		buf.writeDouble(displayRawEmc);
 		buf.writeLong(pos.toLong());
 	}
 
@@ -63,7 +63,7 @@ public class RelaySyncPKT implements IMessage
 					{
 						RelayMK1Tile relay = (RelayMK1Tile) tile;
 						relay.displayEmc = pkt.displayEmc;
-						relay.displayKleinEmc = pkt.displayKleinEmc;
+						relay.displayChargingEmc = pkt.displayKleinEmc;
 						relay.displayRawEmc = pkt.displayRawEmc;
 					}
 				}

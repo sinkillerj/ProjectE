@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.NovaExplosion;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.util.EnumParticleTypes;
@@ -56,8 +56,6 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 
 	private void explode()
 	{
-		NovaExplosion explosion = new NovaExplosion(worldObj, getTntPlacedBy(), this.posX, this.posY, this.posZ, 48.0F, true, true);
-		explosion.doExplosionA();
-		explosion.doExplosionB(true);
+		WorldHelper.createNovaExplosion(worldObj, this, posX, posY, posZ, 48.0F);
 	}
 }

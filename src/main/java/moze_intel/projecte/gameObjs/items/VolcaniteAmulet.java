@@ -8,13 +8,7 @@ import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.block.material.Material;
+import moze_intel.projecte.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,11 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -49,7 +39,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote)
+		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
@@ -84,7 +74,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				{
 					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)) && consumeFuel(player, stack, 32, true))
 					{
-						placeLava(world, blockPosHit.offset(mop.sideHit));
+						placeLava(world, player, blockPosHit.offset(mop.sideHit));
 						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 						PlayerHelper.swingItem(player);
 					}
@@ -95,15 +85,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		return stack;
 	}
 
-
-	private void placeLava(World world, BlockPos pos)
+	private void placeLava(World world, EntityPlayer player, BlockPos pos)
 	{
-		Material material = world.getBlockState(pos).getBlock().getMaterial();
-		if (!world.isRemote && !material.isSolid() && !material.isLiquid())
-		{
-			world.destroyBlock(pos, true);
-		}
-		world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
+		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.flowing_lava.getDefaultState());
 	}
 
 	@Override
@@ -168,7 +152,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	@Override
 	@Optional.Method(modid = "Baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase ent) 
+	public void onWornTick(ItemStack stack, EntityLivingBase ent)
 	{
 		if (!(ent instanceof EntityPlayer)) 
 		{

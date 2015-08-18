@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockTorch;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -15,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
+public class InterdictionTorch extends BlockTorch
 {
 	public InterdictionTorch()
 	{
@@ -24,9 +23,15 @@ public class InterdictionTorch extends BlockTorch implements ITileEntityProvider
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}
-	
+
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		return new InterdictionTile();
 	}

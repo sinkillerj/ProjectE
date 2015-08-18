@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.EnumArmorType;
-import moze_intel.projecte.utils.NovaExplosion;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -67,9 +67,7 @@ public class GemChest extends GemArmorBase implements IFireProtector
 
     public static void doExplode(EntityPlayer player)
     {
-        NovaExplosion explosion = new NovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F, true, true);
-        explosion.doExplosionA();
-        explosion.doExplosionB(true);
+        WorldHelper.createNovaExplosion(player.worldObj, player, player.posX, player.posY, player.posZ, 9.0F);
     }
 
     @Override

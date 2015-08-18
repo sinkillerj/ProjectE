@@ -384,16 +384,4 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		}
 		this.isActive = newState;
 	}
-
-	@Override
-	public double getStoredEmc()
-	{
-		return 0.0;
-	}
-
-	@Override
-	public boolean isRequestingEmc()
-	{
-		return false;
-	}
 }

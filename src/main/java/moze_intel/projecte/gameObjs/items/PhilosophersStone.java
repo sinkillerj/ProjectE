@@ -19,7 +19,9 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -105,7 +107,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
-				world.setBlockState(currentPos, result);
+				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
 				if (world.rand.nextInt(8) == 0)
 				{
 					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY() + 1, pos.getZ()), new TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
@@ -119,7 +121,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		
 		return true;
 	}
-	
+
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{

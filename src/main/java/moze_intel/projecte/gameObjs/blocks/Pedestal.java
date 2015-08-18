@@ -12,7 +12,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class Pedestal extends Block implements ITileEntityProvider {
+public class Pedestal extends Block {
 
     public Pedestal() {
         super(Material.rock);
@@ -82,7 +81,6 @@ public class Pedestal extends Block implements ITileEntityProvider {
 		}
 	}
 
-
 	@Override
     public boolean isFullCube()
     {
@@ -102,7 +100,13 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int par2) {
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
         return new DMPedestalTile();
     }
 }

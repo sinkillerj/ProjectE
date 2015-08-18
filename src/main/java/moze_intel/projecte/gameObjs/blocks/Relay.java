@@ -53,7 +53,13 @@ public class Relay extends BlockDirection
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		switch (tier)
 		{

@@ -10,7 +10,9 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,13 +60,13 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			switch(stack.getItemDamage())
 			{
 				case 0:
-					WorldHelper.freezeNearbyRandomly(world, player);
+					WorldHelper.freezeInBoundingBox(world, player.getEntityBoundingBox().expand(5, 5, 5), player, true);
 					break;
 				case 1:
 					WorldHelper.igniteNearby(world, player);
 					break;
 				case 2:
-					WorldHelper.growNearbyRandomly(true, world, player);
+					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 					break;
 				case 3:
 					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
@@ -171,7 +173,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								world.setBlockState(pos, Blocks.fire.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
 							}
 						}
 						break;
@@ -183,7 +185,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								world.setBlockState(pos, Blocks.fire.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
 							}
 						}
 						break;

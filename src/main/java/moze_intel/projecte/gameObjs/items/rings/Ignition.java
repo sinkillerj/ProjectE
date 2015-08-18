@@ -10,20 +10,16 @@ import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -93,11 +89,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
 			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			{
-				IBlockState state = world.getBlockState(mop.getBlockPos());
-				if (state.getBlock() instanceof BlockTNT)
+				if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockTNT
+						&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.getBlockPos()))
 				{
 					// Ignite TNT or derivatives
-					((BlockTNT) state.getBlock()).explode(world, mop.getBlockPos(), state.withProperty(BlockTNT.EXPLODE, true), player);
+					((BlockTNT) world.getBlockState(mop.getBlockPos()).getBlock()).explode(world, mop.getBlockPos(), world.getBlockState(mop.getBlockPos()).withProperty(BlockTNT.EXPLODE, true), player);
 					world.setBlockToAir(mop.getBlockPos());
 				}
 			}

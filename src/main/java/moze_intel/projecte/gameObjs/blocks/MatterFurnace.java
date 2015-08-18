@@ -7,7 +7,6 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class MatterFurnace extends BlockDirection implements ITileEntityProvider
+public class MatterFurnace extends BlockDirection
 {
 	private boolean isActive;
 	private boolean isHighTier;
@@ -182,7 +181,13 @@ public class MatterFurnace extends BlockDirection implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) 
+	public boolean hasTileEntity(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
 	}

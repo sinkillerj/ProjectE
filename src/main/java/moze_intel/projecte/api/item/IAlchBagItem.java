@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 
 /**
  * This interfaces specifies items that perform a specific function every tick when inside an Alchemical Bag, on a player
+ *
+ * @author williewillus
  */
 public interface IAlchBagItem
 {

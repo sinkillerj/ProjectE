@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -128,7 +129,7 @@ public class RMFurnaceContainer extends Container
 		else
 		{
 			
-			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() == ObjHandler.kleinStars)
+			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -43,7 +45,7 @@ public class EntityFireProjectile extends PEProjectile
 				{
 					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.sand)
 					{
-						worldObj.setBlockState(currentPos, Blocks.glass.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.glass.getDefaultState());
 					}
 				}
 			}
@@ -53,7 +55,7 @@ public class EntityFireProjectile extends PEProjectile
 				{
 					if(worldObj.isAirBlock(currentPos))
 					{
-						worldObj.setBlockState(currentPos, Blocks.fire.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.fire.getDefaultState());
 					}
 				}
 			}

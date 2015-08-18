@@ -6,13 +6,22 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,6 +32,38 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
+	/**
+	 * Tries placing a block and fires an event for it.
+	 * @return Whether the block was successfully placed
+	 */
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	{
+		if (!hasEditPermission(player, pos))
+		{
+			return false;
+		}
+		World world = player.worldObj;
+		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
+		world.setBlockState(pos, state);
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.air.getDefaultState(), player); // Todo verify can use air here
+		MinecraftForge.EVENT_BUS.post(evt);
+		if (evt.isCanceled())
+		{
+			world.restoringBlockSnapshots = true;
+			before.restore(true, false);
+			world.restoringBlockSnapshots = false;
+			PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
+			return false;
+		}
+		PELogger.logInfo("Checked place block passed!");
+		return true;
+	}
+
+	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	{
+		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
+	}
+
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
@@ -69,6 +110,19 @@ public final class PlayerHelper
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
+
+	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
+	{
+		return hasEditPermission(player, pos)
+				&& !(ForgeHooks.onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, pos) == -1);
+	}
+
+	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
+	{
+		return player.canPlayerEdit(pos, EnumFacing.NORTH, null) // todo 1.8 shim value, does this still work?
+				&& !MinecraftServer.getServer().isBlockProtected(player.worldObj, pos, player);
+	}
+
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{

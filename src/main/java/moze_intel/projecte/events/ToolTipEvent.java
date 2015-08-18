@@ -1,6 +1,7 @@
 package moze_intel.projecte.events;
 
 import com.google.common.math.LongMath;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -210,13 +211,22 @@ public class ToolTipEvent
 							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("EMC")));
 				}
 			}
-			
-			if (current.getTagCompound().hasKey("StoredEMC"))
+
+			if (current.getItem() instanceof IItemEmc || current.getTagCompound().hasKey("StoredEMC"))
 			{
-				event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("StoredEMC")));
+				double value = 0;
+				if (current.getTagCompound().hasKey("StoredEMC"))
+				{
+					value = current.getTagCompound().getDouble("StoredEMC");
+				} else
+				{
+					value = ((IItemEmc) current.getItem()).getStoredEmc(current);
+				}
+
+				event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + Constants.EMC_FORMATTER.format(value));
 			}
-			else if (current.getTagCompound().hasKey("StoredXP"))
+
+			if (current.getTagCompound().hasKey("StoredXP"))
 			{
 				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.getTagCompound().getInteger("StoredXP")));
 			}

@@ -19,7 +19,6 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.SyncPedestalPKT;
-import moze_intel.projecte.network.packets.TileEmcSyncPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -48,7 +47,6 @@ public final class PacketHandler
 		HANDLER.registerMessage(StepHeightPKT.Handler.class, StepHeightPKT.class, 4, Side.CLIENT);
 		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, 5, Side.CLIENT);
 		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, 6, Side.CLIENT);
-		HANDLER.registerMessage(TileEmcSyncPKT.Handler.class, TileEmcSyncPKT.class, 7, Side.CLIENT);
 		HANDLER.registerMessage(CondenserSyncPKT.Handler.class, CondenserSyncPKT.class, 8, Side.CLIENT);
 		HANDLER.registerMessage(CollectorSyncPKT.Handler.class, CollectorSyncPKT.class, 9, Side.CLIENT);
 		HANDLER.registerMessage(RelaySyncPKT.Handler.class, RelaySyncPKT.class, 10, Side.CLIENT);
