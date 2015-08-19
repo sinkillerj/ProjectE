@@ -19,10 +19,10 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
-import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeKleinStar;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
-import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
-import moze_intel.projecte.gameObjs.customRecipes.RecipesShapelessHidden;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -599,7 +599,7 @@ public class ObjHandler
 		for (int i = 1; i < 6; i++)
 		{	//Unused shapeless recipe to get it to give us EMC pending Blubber's rewrite of some code
 			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
-			GameRegistry.addRecipe(new RecipesKleinStars(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1)));
+			GameRegistry.addRecipe(new RecipeKleinStar(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1)));
 		}
 
 		//Other items
@@ -633,11 +633,16 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 3), Blocks.dirt);
 
 		//Custom Recipe managment
-		GameRegistry.addRecipe(new RecipesAlchemyBags());
+		for(int i = 1; i <= 15; i++){
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.dye, 1, i)));
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.dye, 1, 15)));
+		}
+		//GameRegistry.addRecipe(new RecipeAlchemyBag());
+		
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
-		RecipeSorter.register("Alchemical Bags Recipes", RecipesAlchemyBags.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register("Klein Star Recipes", RecipesKleinStars.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Klein Star Recipes", RecipeKleinStar.class, Category.SHAPELESS, "before:minecraft:shaped");
 
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
@@ -661,10 +666,10 @@ public class ObjHandler
 			output.stackSize *= 7;
 
 			MAP.put(input, output);
-			GameRegistry.addRecipe(new RecipesShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}
-		RecipeSorter.register("Philosopher's Smelting Recipes", RecipesShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}
 
 	public static class FuelHandler implements IFuelHandler

@@ -8,13 +8,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class RecipesKleinStars implements IRecipe
+public class RecipeKleinStar implements IRecipe
 {
 	private ItemStack output;
 	private ItemStack input;
 	private int inputDamage;
 
-	public RecipesKleinStars(ItemStack output, ItemStack input)
+	public RecipeKleinStar(ItemStack output, ItemStack input)
 	{
 		this.output = output;
 		this.input = input;

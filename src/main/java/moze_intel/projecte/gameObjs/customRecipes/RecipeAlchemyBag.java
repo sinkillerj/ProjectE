@@ -7,71 +7,67 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class RecipesAlchemyBags implements IRecipe
+public class RecipeAlchemyBag implements IRecipe
 {
 	private ItemStack output;
+	private ItemStack inputBag;
+	private ItemStack inputDye;
+
+	public RecipeAlchemyBag(ItemStack output, ItemStack inputBag, ItemStack inputDye)
+	{
+		this.output = output;
+		this.inputBag = inputBag;
+		this.inputDye = inputDye;
+
+		if (inputBag.hasTagCompound())
+		{
+			output.stackTagCompound = inputBag.stackTagCompound;
+		}
+	}
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) 
 	{
-		ItemStack bag = null;
-		ItemStack dye = null;
 		boolean foundBag = false;
 		boolean foundDye = false;
 		
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			ItemStack input = inv.getStackInSlot(i);
+			ItemStack isInSlot = inv.getStackInSlot(i);
 
-			if (input == null)
+			if (isInSlot == null)
 			{
 				continue;
 			}
 
-			if (input.getItem() == ObjHandler.alchBag)
+			if (isInSlot.getItem() == ObjHandler.alchBag)
 			{
-				if (foundBag)
+				if (foundBag || isInSlot.getItemDamage() != inputBag.getItemDamage())
 				{
 					return false;
 				}
-
-				bag = input;
+				
 				foundBag = true;
 			}
-			if (input.getItem() == Items.dye)
+			if (isInSlot.getItem() == Items.dye)
 			{
-				if (foundDye)
+				if (foundDye || isInSlot.getItemDamage() != inputDye.getItemDamage())
 				{
 					return false;
 				}
 
-				dye = input;
 				foundDye = true;
 			}
 		}
 		
 		if (foundBag && foundDye)
 		{
-			if (bag.getItemDamage() != 0 && dye.getItemDamage() == 15)
+			if (inputBag.getItemDamage() != 0 && inputDye.getItemDamage() == 15)
 			{
-				output = new ItemStack(ObjHandler.alchBag, 1, 0);
-
-				if (bag.hasTagCompound())
-				{
-					output.stackTagCompound = bag.stackTagCompound;
-				}
-
 				return true;
 			}
-			else if (bag.getItemDamage() == 0 && dye.getItemDamage() != 15)
+			else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15)
 			{
-				output = new ItemStack(ObjHandler.alchBag, 1, 15 - dye.getItemDamage());
-
-				if (bag.hasTagCompound())
-				{
-					output.stackTagCompound = bag.stackTagCompound;
-				}
-
 				return true;
 			}
 			else
