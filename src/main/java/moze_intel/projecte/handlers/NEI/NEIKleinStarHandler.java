@@ -148,16 +148,21 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
-			if (irecipe instanceof RecipeKleinStar)
-			{
-				List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-				for (int i = 0; i < irecipe.getRecipeSize(); i++)
+			
+				if (irecipe instanceof RecipeKleinStar)
 				{
-					ingList.add(((RecipeKleinStar) irecipe).getRecipeInput());
-				}
+					if (NEIServerUtils.areStacksSameTypeCrafting(((RecipeKleinStar) irecipe).getRecipeInput(), ingredient))
+					{
+						
+					List<ItemStack> ingList = new ArrayList<ItemStack>();
 
-				arecipes.add(new CachedKleinStarRecipe(ingList, irecipe.getRecipeOutput()));
+					for (int i = 0; i < irecipe.getRecipeSize(); i++)
+					{
+						ingList.add(((RecipeKleinStar) irecipe).getRecipeInput());
+					}
+
+					arecipes.add(new CachedKleinStarRecipe(ingList, irecipe.getRecipeOutput()));
+				}
 			}
 		}
 	}
