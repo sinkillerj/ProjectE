@@ -24,6 +24,8 @@ public class NEIPEConfig implements IConfigureNEI {
 		API.registerUsageHandler(new NEIPhiloSmeltingHandler());
 		API.registerRecipeHandler(new NEIKleinStarHandler());
 		API.registerUsageHandler(new NEIKleinStarHandler());
+		API.registerRecipeHandler(new NEIAlchBagHandler());
+		API.registerUsageHandler(new NEIAlchBagHandler());
 	}
 	
 	

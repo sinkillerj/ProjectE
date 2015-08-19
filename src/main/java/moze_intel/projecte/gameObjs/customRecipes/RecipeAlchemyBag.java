@@ -26,11 +26,11 @@ public class RecipeAlchemyBag implements IRecipe
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(InventoryCrafting inv, World world)
 	{
 		boolean foundBag = false;
 		boolean foundDye = false;
-		
+
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack isInSlot = inv.getStackInSlot(i);
@@ -46,7 +46,7 @@ public class RecipeAlchemyBag implements IRecipe
 				{
 					return false;
 				}
-				
+
 				foundBag = true;
 			}
 			if (isInSlot.getItem() == Items.dye)
@@ -59,18 +59,16 @@ public class RecipeAlchemyBag implements IRecipe
 				foundDye = true;
 			}
 		}
-		
+
 		if (foundBag && foundDye)
 		{
 			if (inputBag.getItemDamage() != 0 && inputDye.getItemDamage() == 15)
 			{
 				return true;
-			}
-			else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15)
+			} else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15)
 			{
 				return true;
-			}
-			else
+			} else
 			{
 				return false;
 			}
@@ -79,20 +77,30 @@ public class RecipeAlchemyBag implements IRecipe
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) 
+	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
 		return output.copy();
 	}
 
 	@Override
-	public int getRecipeSize() 
+	public int getRecipeSize()
 	{
 		return 10;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() 
+	public ItemStack getRecipeOutput()
 	{
 		return output;
+	}
+
+	public ItemStack getRecipeInputBag()
+	{
+		return inputBag;
+	}
+
+	public ItemStack getRecipeInputDye()
+	{
+		return inputDye;
 	}
 }
