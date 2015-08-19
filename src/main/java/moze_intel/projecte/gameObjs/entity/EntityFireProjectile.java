@@ -55,7 +55,7 @@ public class EntityFireProjectile extends PEProjectile
 				{
 					if(worldObj.isAirBlock(currentPos))
 					{
-						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.fire.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), currentPos, Blocks.fire.getDefaultState());
 					}
 				}
 			}
