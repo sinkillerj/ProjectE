@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 {
 
-	private static String name = "World Transmutation";
+	private static String name = StatCollector.translateToLocal("pe.nei.worldtransmute");
 	private static String id = "worldTransmutation";
 
 	@Override
@@ -118,7 +118,6 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
         for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry: WorldTransmutations.getWorldTransmutations().entrySet()) {
            	IBlockState resultState = entry.getValue().getLeft();
 			IBlockState altResultState = entry.getValue().getRight();
-
 			if (resultState != null && NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(resultState, 1), result))
 			{
 				arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
@@ -129,15 +128,14 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
         }
     }
 
-    @Override
-    public void loadUsageRecipes(ItemStack ingredient) {
-    	for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry: WorldTransmutations.getWorldTransmutations().entrySet()) {
-    		if(NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(entry.getKey(), 1), ingredient)) {
-				if (entry.getValue().getLeft() != null)
-				{
-					arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
-				}
-				if (entry.getValue().getRight() !=null)
+	@Override
+	public void loadUsageRecipes(ItemStack ingredient)
+	{
+		for (Entry<IBlockState, Pair<IBlockState, IBlockState>> entry : WorldTransmutations.getWorldTransmutations().entrySet())
+		{
+			if (NEIServerUtils.areStacksSameTypeCrafting(ItemHelper.stateToStack(entry.getKey(), 1), ingredient))
+			{
+				if (entry != null)
 				{
 					arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));
 				}
@@ -160,7 +158,7 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id, new Object[0]));
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
 	}
 
 

@@ -1,0 +1,86 @@
+/*
+Files in this folder can be used to add Conversions and values to the EMC Calculation.
+All files in this folder that end with .json will be loaded and can be enabled/disabled in the mapping.cfg.
+
+There are 5 different ways to describe an object in this file:
+Direct access to an item:
+* "<item name>|<item metadata>"
+  The direct way to access an item. Uses the unified identifier and the metadata to describe an item.
+  Example: "minecraft:cobblestone|0"
+Fake items:
+The Mapping code makes heavy use of fake items. These are totally separate from the actual items.
+If you set a value for a fake item the value will only be used in conversions that use the exact same fake item.
+* "<item name>|*"
+  Access the fake item that represents all possible metadata values for an item.
+  Example: "minecraft:wool|*" could be used in a conversion that allows any color of wool.
+* "OD|<OreDictionary name>"
+  Access the fake item that represents OreDictionary Entries.
+  Example: "OD|ingotIron" or "OD|ingotGold".
+"FAKE|<fake identifier>"
+  Create a new fake item. There are no default conversions for this fake item. You would have to create them yourself.
+  Example:
+  {"o": "<some item that is made from different seeds>", "i": ["FAKE|AnySeed"]},
+  {"o": "FAKE|AnySeed", "i":["minecraft:pumpkin_seeds|0"]},
+  {"o": "FAKE|AnySeed", "i":["minecraft:melon_seeds|0"]},
+  {"o": "FAKE|AnySeed", "i":["minecraft:wheat_seeds|0"]}
+"FLUID|<fluid identifier>"
+  A fake item for Forge-Fluids.
+*/
+{
+  "comment": "Optional comment describing the file",
+  "groups": {
+    "a name describing the group of conversions": {
+      "comment":"An optional comment for the group of conversions",
+      "conversions": [
+        /* List of Conversions
+
+        Example Conversions:
+        {"o":"minecraft:furnace|0", "i":{"minecraft:cobblestone|0": 8}},
+        {"output":"minecraft:stone_slab|0", "count": 6, "ingredients":["OD|stone", "OD|stone", "OD|stone"]}
+        A conversion has 3 Arguments:
+        The string "output" (or "out" or "o") defines which object will be the result of the conversion.
+
+        The integer "count" (or "c") defines how many objects are created as an output. The default value is 1.
+
+        "ingredients" (or "ingr" or "i") defines which ingredients are used to create the output.
+        You can either define the ingredients as a dictionary with strings to integers or as a list of strings.
+        When you use the dictionary form the key describes the ingredient item and the value the amount.
+        In a list each string describes one item that is consumed.
+        */
+      ]
+    },
+    "another group": {/*...*/}
+  },
+  "values": {
+    "before": {
+      /*
+      use "<object>":<value> to set an emc value that will be used to calculate more emc values.
+      Example:
+      "minecraft:dirt|0": 255, "minecraft:sand|0": 0
+      will set the EMC value of dirt to 255 and remove the EMC value for Sand.
+
+      You can use the special value "FREE" to make something free in conversions. (Like Water)
+
+      If you use an OreDictionary here it will also apply that value to all items that belong to this OreDictionary name.
+
+      Example: "OD|logWood": 32
+      Sets the emc value for all items that have the oreDictionary name logWood to 32
+       */
+    },
+    "after": {
+      /*
+      Just like in "before" you can specify values. But these will overwrite other values that were calculated or set before.
+      */
+    },
+    "conversion": [
+      /* List of Conversions
+
+      Define special conversions here, that will overwrite all other conversions for an item.
+      Use this if you want an item to always have a value dependent on other item values.
+
+      Here you can use the "evalOD":true option for the conversion to 'unwrap' an OreDictionary name.
+      It will then add the same setValueConversion to all the items in the specified oredict list.
+      */
+    ]
+  }
+}

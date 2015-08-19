@@ -9,22 +9,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class StepHeightPKT implements IMessage
 {
 	private float value;
-	
+
 	public StepHeightPKT() {}
-	
+
 	public StepHeightPKT(float value)
 	{
 		this.value = value;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		value = buf.readFloat();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) 
+	public void toBytes(ByteBuf buf)
 	{
 		buf.writeFloat(value);
 	}

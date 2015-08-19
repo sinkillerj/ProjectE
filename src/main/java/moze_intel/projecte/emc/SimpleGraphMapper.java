@@ -17,8 +17,12 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		ZERO = arithmetic.getZero();
 	}
 
+	protected static <K, V extends Comparable<V>> boolean hasSmallerOrEqual(Map<K, V> m, K key, V value) {
+		return (m.containsKey(key) && m.get(key).compareTo(value) <= 0);
+	}
+
 	protected static<K,V extends Comparable<V>> boolean hasSmaller(Map<K,V> m, K key, V value) {
-		return (m.containsKey(key) && value.compareTo(m.get(key)) >= 0);
+		return (m.containsKey(key) && m.get(key).compareTo(value) < 0);
 	}
 
 	public static void setLogFoundExploits(boolean log) {
@@ -63,11 +67,15 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 						debugFormat("Set Value for %s to %s because %s", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
 						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
 						for (Conversion conversion : getUsesFor(entry.getKey())) {
+							if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
+								//There is a "SetValue-Conversion" for this item and its not this one, so we skip it.
+								continue;
+							}
 							//Calculate how much the conversion-output costs with the new Value for entry.getKey
 							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
 							if (conversionValue.compareTo(ZERO) > 0 || arithmetic.isFree(conversionValue)) {
 								//We could calculate a valid value for the conversion
-								if (!hasSmaller(values, conversion.output, conversionValue)) {
+								if (!hasSmallerOrEqual(values, conversion.output, conversionValue)) {
 									//And there is no smaller value for that conversion output yet
 									if (updateMapWithMinimum(nextValueFor, conversion.output, conversionValue)) {
 										//So we mark that new value to set it in the next iteration.
@@ -109,7 +117,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
 					//This is a Loophole. We remove it by setting the value to 0.
 					if (ZERO.compareTo(conversionValue) < 0 && conversionValueSingle.compareTo(resultValueSingle) < 0) {
-						if (canOverride(entry.getKey(), ZERO)) {
+						if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
+							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s value of result: %s setValueFromConversion: %s", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output)));
+						} else if (canOverride(entry.getKey(), ZERO)) {
 							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValueSingle, conversionValue, conversion);
 							newValueFor.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
@@ -155,6 +165,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 			return valueForConversionUnsafe(values, conversion);
 		} catch (Exception e) {
 			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
+			e.printStackTrace();
 			return ZERO;
 		}
 	}

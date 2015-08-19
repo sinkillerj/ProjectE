@@ -74,7 +74,7 @@ item.pe_void_ring.name=Void Ring
 item.pe_zero_ring.name=Zero Ring
 item.pe_tome.name=Tome of Knowledge
 item.pe_transmutation_tablet.name=Transmutation Tablet
-item.pe_manual.name=Book of the Alchemist
+item.pe_manual.name=Book of the Alchemist [WIP]
 
 pe.manual.tooltip1=Vol. 2
 
@@ -361,6 +361,9 @@ pe.zero.pedestal2=Freezes surroundings
 pe.zero.pedestal3=Activates every %s
 
 pe.debug.metainvalid.name=Invalid metadata set
+
+pe.nei.worldtransmute=World Transmutation
+pe.nei.philo=Philosopher's Stone Smelting
 
 pe.manual.index=Index
 pe.manual.index_button=ToC

@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +10,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RMFurnaceContainer extends Container
 {
@@ -55,9 +54,9 @@ public class RMFurnaceContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) 
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return true;
+		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	
 	@Override
@@ -151,7 +150,7 @@ public class RMFurnaceContainer extends Container
 		
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{
@@ -160,13 +159,4 @@ public class RMFurnaceContainer extends Container
 		
 		return newStack;
 	}
-	
-	/*@Override
-	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
-	{
-		if (!par4EntityPlayer.worldObj.isRemote)
-			System.out.println(par1);
-		
-		return super.slotClick(par1, par2, par3, par4EntityPlayer);
-	}*/
 }

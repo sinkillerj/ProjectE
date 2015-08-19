@@ -13,9 +13,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class SyncPedestalPKT implements IMessage
 {
-	private BlockPos pos;
-	private boolean isActive;
-	private ItemStack itemStack;
+	public BlockPos pos;
+	public boolean isActive;
+	public ItemStack itemStack;
 
 	public SyncPedestalPKT() {}
 
@@ -57,7 +57,6 @@ public class SyncPedestalPKT implements IMessage
 						DMPedestalTile pedestal = ((DMPedestalTile) te);
 						pedestal.setActive(message.isActive);
 						pedestal.setInventorySlotContents(0, message.itemStack);
-						pedestal.checkGhostItem();
 					}
 				}
 			});

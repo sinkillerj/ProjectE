@@ -70,6 +70,7 @@ public class ParticlePKT implements IMessage
 					Minecraft.getMinecraft().theWorld.spawnParticle(message.particleName, message.x, message.y, message.z, message.velX, message.velY, message.velZ);
 				}
 			});
+
 			return null;
 		}
 	}

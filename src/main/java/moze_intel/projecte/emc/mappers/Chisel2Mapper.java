@@ -4,9 +4,9 @@ import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
 import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.cricketcraft.chisel.api.carving.ICarvingVariation;
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.PELogger;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -46,7 +46,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		for (String name: chiselBlockNames) {
 			Block block = Block.getBlockFromName("chisel:" + name);
 			if (block != null) {
-				mapper.setValue(NormalizedSimpleStack.getNormalizedSimpleStackFor(block), 1, IMappingCollector.FixedValue.FixAndInherit);
+				mapper.setValueBefore(NormalizedSimpleStack.getFor(block), 1);
 			}
 		}
 
@@ -62,17 +62,16 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		}*/
 		List<NormalizedSimpleStack> stacks = new ArrayList<NormalizedSimpleStack>();
 		for (ICarvingVariation v : group.getVariations()) {
-			stacks.add(NormalizedSimpleStack.getNormalizedSimpleStackFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
+			stacks.add(NormalizedSimpleStack.getFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
 		}
 		if (group.getOreName() != null) {
 			for (ItemStack ore : OreDictionary.getOres(group.getOreName())) {
-				stacks.add(NormalizedSimpleStack.getNormalizedSimpleStackFor(ore));
+				stacks.add(NormalizedSimpleStack.getFor(ore));
 			}
 		}
 		for (int i = 1; i < stacks.size(); i++) {
 			mapper.addConversion(1, stacks.get(0), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(i)}));
 			mapper.addConversion(1, stacks.get(i), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(0)}));
 		}
-		PELogger.logInfo(String.format("Added %d Blocks for CarvingGroup %s", stacks.size(), group.getName()));
 	}
 }

@@ -3,8 +3,6 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -15,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import java.io.IOException;
-
 import java.util.Locale;
 
 public class GUITransmutation extends GuiContainer
@@ -120,10 +117,9 @@ public class GUITransmutation extends GuiContainer
 
 			if (!inv.filter.equals(srch))
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs();
+				inv.updateOutputs(true);
 			}
 		}
 
@@ -145,10 +141,9 @@ public class GUITransmutation extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs();
+			inv.updateOutputs(true);
 			this.textBoxFilter.setText("");
 		}
 
@@ -182,8 +177,7 @@ public class GUITransmutation extends GuiContainer
 				inv.searchpage++;
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(srch, inv.searchpage));
 		inv.filter = srch;
-		inv.updateOutputs();
+		inv.updateOutputs(true);
 	}
 }

@@ -1,0 +1,59 @@
+{
+  "comment": "Sets default conversions for metals and alloys.",
+  "values": {
+    "before": {
+      "OD|ingotIron":256
+    },
+    "conversion": [
+      /*
+      We register some of the base metals as multiplies of iron.
+      The "evalOD": true flag copys the value-conversion from the OreDictionary entry to the actual items.
+      This is needed, so the nugget recipes don't cause the value to be rounded down to multiplies of 9.
+      Normal recipe conversions don't need to be defined here, but in the Conversion Groups above.
+      Normally you also don't need 'evalOD'.
+      */
+      {"evalOD": true, "o": "OD|ingotGold", "c": 1, "i": {"OD|ingotIron":8}},
+      {"evalOD": true, "o": "OD|ingotCopper", "c": 2, "i": {"OD|ingotIron":1}},
+      {"evalOD": true, "o": "OD|ingotTin", "c": 1, "i": {"OD|ingotIron":1}},
+      {"evalOD": true, "o": "OD|ingotSilver", "c": 1, "i": {"OD|ingotIron":2}},
+      {"evalOD": true, "o": "OD|ingotLead", "c": 1, "i": {"OD|ingotIron":2}},
+      {"evalOD": true, "o": "OD|ingotNickel", "c": 1, "i": {"OD|ingotIron":4}},
+      {"evalOD": true, "o": "OD|ingotAluminum", "c": 2, "i": {"OD|ingotIron":1}},
+      {"evalOD": true, "o": "OD|ingotArdite", "c": 1, "i": {"OD|ingotIron":4}},
+      {"evalOD": true, "o": "OD|ingotCobalt", "c": 1, "i": {"OD|ingotIron":4}},
+      {"evalOD": true, "o": "OD|ingotPlatinum", "c": 1, "i": {"OD|ingotIron":16}},
+
+      {"evalOD": true, "o": "OD|ingotObsidian", "c": 2, "i": {"minecraft:obsidian|0": 1}},
+
+      /* Thermal Expansion alloys */
+      {"evalOD": true, "o": "OD|ingotElectrum", "c": 2, "i": ["OD|ingotGold", "OD|ingotSilver"]},
+      {"evalOD": true, "o": "OD|ingotInvar", "c": 3, "i": ["OD|ingotNickel", "OD|ingotIron", "OD|ingotIron"]},
+      {"evalOD": true, "o": "OD|ingotSignalum", "c": 4, "i": {"OD|ingotCopper": 3, "OD|ingotSilver":1 , "OD|dustRedstone":10}},
+      {"evalOD": true, "o": "OD|ingotLumium", "c": 4, "i": {"OD|ingotTin": 3, "OD|ingotSilver":1 , "OD|dustGlowstone":4}},
+      {"evalOD": true, "o": "OD|ingotEnderium", "c": 4, "i": {
+        "OD|ingotTin": 2, "OD|ingotSilver":1 , "OD|ingotPlatinum":1,
+        "minecraft:coal|1": 1, "OD|dustRedstone": 1, "minecraft:blaze_powder|0":1, /*This is missing 1 Sulfur*/
+        "minecraft:ender_pearl|0":4}
+      },
+
+      /* Ender IO alloys*/
+      {"evalOD": true, "o": "OD|ingotElectricalSteel", "c": 1, "i": ["OD|ingotIron", "minecraft:coal|1", "OD|itemSilicon"]},
+      {"evalOD": true, "o": "OD|ingotEnergeticAlloy", "c": 1, "i": ["OD|dustRedstone", "OD|ingotGold", "OD|dustGlowstone"]},
+      {"evalOD": true, "o": "OD|ingotPhasedGold", "c": 1, "i": ["OD|ingotEnergeticAlloy", "minecraft:ender_pearl|0"]},
+      {"evalOD": true, "o": "OD|ingotRedstoneAlloy", "c": 1, "i": ["OD|dustRedstone", "OD|itemSilicon"]},
+      {"evalOD": true, "o": "OD|ingotConductiveIron", "c": 1, "i": ["OD|dustRedstone", "OD|ingotIron"]},
+      {"evalOD": true, "o": "OD|ingotPhasedIron", "c": 1, "i": ["OD|ingotIron", "minecraft:ender_pearl|0"]},
+      {"evalOD": true, "o": "OD|ingotDarkSteel", "c": 1, "i": ["OD|ingotIron", "minecraft:coal|1", "minecraft:obsidian|0"]},
+      {"evalOD": true, "o": "OD|ingotSoularium", "c": 1, "i": ["OD|ingotGold", "minecraft:soul_sand|0"]},
+      {"evalOD": true, "o": "OD|ingotEnderiumBase", "c": 4, "i": {"OD|ingotTin": 2, "OD|ingotSilver":1 , "OD|ingotPlatinum":1}},
+
+      {"evalOD": true, "o": "OD|ingotBronze", "c": 4, "i": {"OD|ingotCopper": 3, "OD|ingotTin": 1}},
+
+      /* Tinkers Construct alloys */
+      {"evalOD": true, "o": "OD|ingotAluminumBrass", "c": 64, "i": {"OD|ingotAluminum": 48, "OD|ingotCopper": 16}},
+      {"evalOD": true, "o": "OD|ingotManyullyn", "c": 1, "i": {"OD|ingotCobalt": 1, "OD|ingotArdite": 1}},
+      {"evalOD": true, "o": "OD|ingotAlumite", "c": 48, "i": {"OD|ingotAluminum": 80, "OD|ingotIron": 32, "OD|ingotObsidian": 32}}
+    ]
+  }
+}
+

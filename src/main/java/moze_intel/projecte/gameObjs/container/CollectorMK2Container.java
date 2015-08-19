@@ -117,7 +117,7 @@ public class CollectorMK2Container extends Container
 		
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{
@@ -129,8 +129,8 @@ public class CollectorMK2Container extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1)
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return true;
+		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

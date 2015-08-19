@@ -107,7 +107,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 		if (numUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayChargingEmc, displayRawEmc, this),
-					new TargetPoint(this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 6));
+					new TargetPoint(this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 8));
 		}
 	}
 	

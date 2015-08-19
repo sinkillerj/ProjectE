@@ -13,22 +13,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class SyncBagDataPKT implements IMessage
 {
 	private NBTTagCompound nbt;
-	
+
 	public SyncBagDataPKT() {}
-	
+
 	public SyncBagDataPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		nbt = ByteBufUtils.readTag(buf);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) 
+	public void toBytes(ByteBuf buf)
 	{
 		ByteBufUtils.writeTag(buf, nbt);
 	}

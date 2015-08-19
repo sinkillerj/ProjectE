@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -46,7 +46,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	}
 	protected NormalizedSimpleStack deserializeFromString(String s) {
 		String[] splits = s.split("@", 2);
-		return NormalizedSimpleStack.getNormalizedSimpleStackFor((Item)Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
+		return NormalizedSimpleStack.getFor((Item) Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 				NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
 				if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 				{
-					mapper.setValue(normStack, entry.getValue(), IMappingCollector.FixedValue.FixAndInherit);
+					mapper.setValueBefore(normStack, entry.getValue());
 					PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
 				}
 				else

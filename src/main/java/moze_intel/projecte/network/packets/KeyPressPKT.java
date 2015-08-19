@@ -24,22 +24,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class KeyPressPKT implements IMessage
 {
 	private PEKeybind key;
-	
+
 	public KeyPressPKT() {}
-	
+
 	public KeyPressPKT(PEKeybind key)
 	{
 		this.key = key;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		key = PEKeybind.values()[buf.readInt()];
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) 
+	public void toBytes(ByteBuf buf)
 	{
 		buf.writeInt(key.ordinal());
 	}
@@ -122,8 +122,6 @@ public class KeyPressPKT implements IMessage
 					{
 						((IExtraFunction) item).doExtraFunction(stack, player);
 					}
-
-					return;
 
 				}
 			});

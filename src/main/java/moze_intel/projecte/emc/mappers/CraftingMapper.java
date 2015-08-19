@@ -3,7 +3,7 @@ package moze_intel.projecte.emc.mappers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
@@ -41,7 +41,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
-			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getNormalizedSimpleStackFor(recipeOutput);
+			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getFor(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (!config.getBoolean("enable" + recipeMapper.getName(),"IRecipeImplementations", true, recipeMapper.getDescription())) continue;
 				if (recipeMapper.canHandle(recipe)) {
@@ -49,48 +49,36 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
 					if (craftingIngredientIterable != null) {
 						for (CraftingIngredients variation : craftingIngredientIterable) {
-
-							// TODO 1.8 verify container item values with 1.7 (old code commented out below)
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
 							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
-								ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
-								if (stack.getItem().hasContainerItem(stack)) {
-									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
-								}
+								//if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
+									if (stack.getItem().hasContainerItem(stack)) {
+										ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
+									}
+								//	ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+								//} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
+								//	//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
+								//	ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+								//} TODO 1.8 method doesContainerItemLeave... no longer exists
 							}
-
-//							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
-//							for (ItemStack stack : variation.fixedIngredients) {
-//								if (stack == null || stack.getItem() == null) continue;
-//								if (stack.getItem().hasContainerItem(stack)) {
-//									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), 1);
-//									if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
-//										//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-//										ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 0);
-//									}
-//								} else {
-//									ingredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
-//								}
-//							}
-
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
-								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createGroup(multiIngredient);
+								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createFake(multiIngredient.toString());
 								ingredientMap.addIngredient(normalizedSimpleStack,1);
 								for (ItemStack stack: multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
 									//if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
 										if (stack.getItem().hasContainerItem(stack)) {
-											groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack.getItem().getContainerItem(stack)), -1);
+											groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
 										}
-										groupIngredientMap.addIngredient(NormalizedSimpleStack.getNormalizedSimpleStackFor(stack), 1);
-										mapper.addConversionMultiple(1, normalizedSimpleStack, groupIngredientMap.getMap());
-									//} TODO 1.8 check effects of removing this check as the method in question is now gone
+										groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+										mapper.addConversion(1, normalizedSimpleStack, groupIngredientMap.getMap());
+									//} TODO 1.8 method doesContainerItemLeave... no longer exists
 								}
 							}
 							if (recipeOutput.stackSize > 0) {
-								mapper.addConversionMultiple(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
+								mapper.addConversion(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
 							} else {
 								PELogger.logWarn("Ignoring Recipe because outnumber <= 0: " + ingredientMap.getMap().toString() + " -> " + recipeOutput);
 							}

@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class UpdateGemModePKT implements IMessage
 {
 	private boolean mode;
-	
+
 	public UpdateGemModePKT() {}
-	
-	public UpdateGemModePKT(boolean mode) 
+
+	public UpdateGemModePKT(boolean mode)
 	{
 		this.mode = mode;
 	}

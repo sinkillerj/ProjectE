@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.blocks.BlockDirection;
+import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
