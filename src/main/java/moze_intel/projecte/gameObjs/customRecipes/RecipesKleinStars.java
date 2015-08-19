@@ -61,7 +61,7 @@ public class RecipesKleinStars implements IRecipe
 				return false;
 			}
 			
-			storedEMC += KleinStar.getEmc(input);
+			storedEMC += KleinStar.getEmc(isInSlot);
 		}
 		
 		if (starCount == 4)
