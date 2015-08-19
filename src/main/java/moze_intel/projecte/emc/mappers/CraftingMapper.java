@@ -56,10 +56,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 									if (stack.getItem().hasContainerItem(stack)) {
 										ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
 									}
-								//	ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
 								//} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
 								//	//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-								//	ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
 								//} TODO 1.8 method doesContainerItemLeave... no longer exists
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
