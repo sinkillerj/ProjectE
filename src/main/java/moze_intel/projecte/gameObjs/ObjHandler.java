@@ -596,7 +596,8 @@ public class ObjHandler
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
 		{
-			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
+			GameRegistry.addRecipe(new RecipesKleinStars(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1)));
+					//new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
 		}
 
 		//Other items
@@ -632,7 +633,6 @@ public class ObjHandler
 		//Custom Recipe managment
 		GameRegistry.addRecipe(new RecipesAlchemyBags());
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
-		GameRegistry.addRecipe(new RecipesKleinStars());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipesAlchemyBags.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Klein Star Recipes", RecipesKleinStars.class, Category.SHAPELESS, "before:minecraft:shaped");

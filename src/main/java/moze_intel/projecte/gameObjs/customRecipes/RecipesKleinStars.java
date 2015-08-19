@@ -11,40 +11,44 @@ import net.minecraft.world.World;
 public class RecipesKleinStars implements IRecipe
 {
 	private ItemStack output;
-	
+	private ItemStack input;
+	private int inputDamage;
+
+	public RecipesKleinStars(ItemStack output, ItemStack input)
+	{
+		this.output = output;
+		this.input = input;
+		this.inputDamage = input.getItemDamage();
+	}
+
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) 
 	{
 		double storedEMC = 0;
-		int starDamage = -1;
 		int starCount = 0;
 		
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			ItemStack input = inv.getStackInSlot(i);
+			ItemStack isInSlot = inv.getStackInSlot(i);
 			
-			if (input == null)
+			if (isInSlot == null)
 			{
 				continue;
 			}
 			
-			if (input.getItem() != ObjHandler.kleinStars)
+			if (isInSlot.getItem() != ObjHandler.kleinStars)
 			{
 				return false;
 			}
 			
-			if (starDamage == -1)
+			if (inputDamage >= 5)
 			{
-				starDamage = input.getItemDamage();
-				
-				if (starDamage >= 5)
-				{
-					return false;
-				}
+				return false;
 			}
+			
 			else
 			{
-				if (input.getItemDamage() != starDamage)
+				if (isInSlot.getItemDamage() != inputDamage)
 				{
 					return false;
 				}
@@ -62,7 +66,6 @@ public class RecipesKleinStars implements IRecipe
 		
 		if (starCount == 4)
 		{
-			output = new ItemStack(ObjHandler.kleinStars, 1, ++starDamage);
 			output.setTagCompound(new NBTTagCompound());
 			KleinStar.setEmc(output, storedEMC);
 			
