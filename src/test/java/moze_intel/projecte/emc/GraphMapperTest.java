@@ -47,7 +47,7 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesSimple() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
@@ -60,7 +60,7 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesSimpleMultiRecipe() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a1", 1);
 		//2 Recipes for c4
 		graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		graphMapper.addConversion(2, "c4", Arrays.asList("b2", "b2"));
@@ -74,7 +74,7 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesSimpleMultiRecipeWithEmptyAlternative() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a1", 1);
 		//2 Recipes for c4
 		graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		graphMapper.addConversion(1, "c4", new LinkedList<String>());
@@ -88,10 +88,10 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesSimpleFixedAfterInherit() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
-		graphMapper.setValue("b2", 20, GraphMapper.FixedValue.FixAfterInherit);
+		graphMapper.setValueAfter("b2", 20);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1, getValue(values, "a1"));
@@ -101,10 +101,11 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesSimpleFixedDoNotInherit() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "c4", Arrays.asList("b2", "b2"));
-		graphMapper.setValue("b2", 20, GraphMapper.FixedValue.FixAndDoNotInherit);
+		graphMapper.setValueBefore("b2", 0);
+		graphMapper.setValueAfter("b2", 20);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1, getValue(values, "a1"));
@@ -113,11 +114,13 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "c", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "c", Arrays.asList("a1", "b"));
-		graphMapper.setValue("b", 20, GraphMapper.FixedValue.FixAndDoNotInherit);
+		graphMapper.setValueBefore("b", 0);
+		graphMapper.setValueAfter("b", 20);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1, getValue(values, "a1"));
@@ -126,9 +129,10 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesSimpleSelectMinValue() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("b2", 2, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesSimpleSelectMinValue() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
+		graphMapper.setValueBefore("b2", 2);
 		graphMapper.addConversion(1, "c", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "c", Arrays.asList("b2", "b2"));
 
@@ -139,9 +143,10 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesSimpleSelectMinValueWithDependency() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("b2", 2, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesSimpleSelectMinValueWithDependency() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
+		graphMapper.setValueBefore("b2", 2);
 		graphMapper.addConversion(1, "c", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "c", Arrays.asList("b2", "b2"));
 		graphMapper.addConversion(1, "d", Arrays.asList("c", "c"));
@@ -154,8 +159,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesSimpleWoodToWorkBench() throws Exception {
-		graphMapper.setValue("planks", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesSimpleWoodToWorkBench() throws Exception
+	{
+		graphMapper.setValueBefore("planks", 1);
 		graphMapper.addConversion(4, "planks", Arrays.asList("wood"));
 		graphMapper.addConversion(1, "workbench", Arrays.asList("planks", "planks", "planks", "planks"));
 
@@ -167,8 +173,9 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGenerateValuesWood() throws Exception {
-		for (char i : "ABCD".toCharArray()) {
-			graphMapper.setValue("wood" + i, 32, GraphMapper.FixedValue.FixAndInherit);
+		for (char i : "ABCD".toCharArray())
+		{
+			graphMapper.setValueBefore("wood" + i, 32);
 			graphMapper.addConversion(4, "planks" + i, Arrays.asList("wood" + i));
 		}
 
@@ -196,8 +203,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesDeepConversions() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesDeepConversions() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "b1", Arrays.asList("a1"));
 		graphMapper.addConversion(1, "c1", Arrays.asList("b1"));
 
@@ -208,8 +216,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesDeepInvalidConversion() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesDeepInvalidConversion() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "b", Arrays.asList("a1", "invalid1"));
 		graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
 		graphMapper.addConversion(1, "invalid2", Arrays.asList("a1", "invalid3"));
@@ -224,8 +233,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesMultiRecipeDeepInvalid() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesMultiRecipeDeepInvalid() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "b2", Arrays.asList("invalid1"));
 		graphMapper.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
@@ -239,8 +249,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesMultiRecipesInvalidIngredient() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesMultiRecipesInvalidIngredient() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		graphMapper.addConversion(1, "b2", Arrays.asList("invalid"));
 
@@ -252,8 +263,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesCycleRecipe() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesCycleRecipe() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
 		graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
 		graphMapper.addConversion(1, "cycle-1", Arrays.asList("cycle-2"));
@@ -266,8 +278,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesBigCycleRecipe() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesBigCycleRecipe() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		graphMapper.addConversion(1, "cycle-1", Arrays.asList("a1"));
 		graphMapper.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
 		graphMapper.addConversion(1, "cycle-3", Arrays.asList("cycle-2"));
@@ -296,7 +309,7 @@ public class GraphMapperTest {
 		final String aFuelBlock = "aeternalisFuelBlock";
 		String repeat;
 
-		graphMapper.setValue(coal, 128, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore(coal, 128);
 
 		graphMapper.addConversion(1, aCoal, Arrays.asList(coal, coal, coal, coal));
 		graphMapper.addConversion(4, aCoal, Arrays.asList(mFuel));
@@ -315,7 +328,7 @@ public class GraphMapperTest {
 		repeat = aFuel;
 		graphMapper.addConversion(1, aFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
 
-		graphMapper.setValue("diamondBlock", 73728, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("diamondBlock", 73728);
 		final String dMatter = "darkMatter";
 		final String dMatterBlock = "darkMatterBlock";
 
@@ -349,15 +362,16 @@ public class GraphMapperTest {
 	public void testGenerateValuesWool() throws Exception {
 		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
 		final int[] dyeValue = new int[]{864, 176, 48, 16};
-		for (int i = 0; i < dyes.length; i++) {
-			graphMapper.setValue("dye" + dyes[i], dyeValue[i], GraphMapper.FixedValue.FixAndInherit);
+		for (int i = 0; i < dyes.length; i++)
+		{
+			graphMapper.setValueBefore("dye" + dyes[i], dyeValue[i]);
 			graphMapper.addConversion(1, "wool" + dyes[i], Arrays.asList("woolWhite", "dye" + dyes[i]));
 		}
-		graphMapper.setValue("string", 12, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("string", 12);
 		graphMapper.addConversion(1, "woolWhite", Arrays.asList("string", "string", "string", "string"));
 
-		graphMapper.setValue("stick", 4, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("plank", 8, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("stick", 4);
+		graphMapper.setValueBefore("plank", 8);
 		for (String dye : dyes) {
 			graphMapper.addConversion(1, "bed", Arrays.asList("plank", "plank", "plank", "wool" + dye, "wool" + dye, "wool" + dye));
 			graphMapper.addConversion(3, "carpet" + dye, Arrays.asList("wool" + dye, "wool" + dye));
@@ -384,10 +398,11 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesBucketRecipe() throws Exception {
-		graphMapper.setValue("somethingElse", 9, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("container", 23, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("fluid", 17, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesBucketRecipe() throws Exception
+	{
+		graphMapper.setValueBefore("somethingElse", 9);
+		graphMapper.setValueBefore("container", 23);
+		graphMapper.setValueBefore("fluid", 17);
 		graphMapper.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
@@ -395,7 +410,7 @@ public class GraphMapperTest {
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
-		graphMapper.addConversionMultiple(1, "fluidCraft", map);
+		graphMapper.addConversion(1, "fluidCraft", map);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(9, getValue(values, "somethingElse"));
@@ -407,10 +422,11 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesWaterBucketRecipe() throws Exception {
-		graphMapper.setValue("somethingElse", 9, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("container", 23, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("fluid", Integer.MIN_VALUE, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesWaterBucketRecipe() throws Exception
+	{
+		graphMapper.setValueBefore("somethingElse", 9);
+		graphMapper.setValueBefore("container", 23);
+		graphMapper.setValueBefore("fluid", Integer.MIN_VALUE);
 		graphMapper.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
@@ -418,7 +434,7 @@ public class GraphMapperTest {
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
-		graphMapper.addConversionMultiple(1, "fluidCraft", map);
+		graphMapper.addConversion(1, "fluidCraft", map);
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(9, getValue(values, "somethingElse"));
@@ -430,8 +446,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesCycleRecipeExploit() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesCycleRecipeExploit() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
 		graphMapper.addConversion(1, "exploitable", Arrays.asList("a1"));
 		graphMapper.addConversion(2, "exploitable", Arrays.asList("exploitable"));
@@ -447,8 +464,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesDelayedCycleRecipeExploit() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesDelayedCycleRecipeExploit() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
 		graphMapper.addConversion(1, "exploitable1", Arrays.asList("a1"));
 		graphMapper.addConversion(2, "exploitable2", Arrays.asList("exploitable1"));
@@ -461,8 +479,9 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesCycleRecipeExploit2() throws Exception {
-		graphMapper.setValue("a1", 1, GraphMapper.FixedValue.FixAndInherit);
+	public void testGenerateValuesCycleRecipeExploit2() throws Exception
+	{
+		graphMapper.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
 		graphMapper.addConversion(1, "exploitable", Arrays.asList("a1"));
 		graphMapper.addConversion(2, "exploitable", Arrays.asList("exploitable"));
@@ -485,17 +504,19 @@ public class GraphMapperTest {
 		String[] log2Types = new String[]{"log2A", "log2B", "log2C"};
 		String[] coalTypes = new String[]{"coal0", "coal1"};
 
-		graphMapper.setValue("coalore", 0, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("coal0", 128, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("gunpowder", 192, GraphMapper.FixedValue.FixAndInherit);
-		graphMapper.setValue("blazepowder", 768, GraphMapper.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("coalore", 0);
+		graphMapper.setValueBefore("coal0", 128);
+		graphMapper.setValueBefore("gunpowder", 192);
+		graphMapper.setValueBefore("blazepowder", 768);
 
-		for (String logType : logTypes) {
-			graphMapper.setValue(logType, 32, GraphMapper.FixedValue.FixAndInherit);
+		for (String logType : logTypes)
+		{
+			graphMapper.setValueBefore(logType, 32);
 			graphMapper.addConversion(1, "log*", Arrays.asList(logType));
 		}
-		for (String log2Type : log2Types) {
-			graphMapper.setValue(log2Type, 32, GraphMapper.FixedValue.FixAndInherit);
+		for (String log2Type : log2Types)
+		{
+			graphMapper.setValueBefore(log2Type, 32);
 			graphMapper.addConversion(1, "log2*", Arrays.asList(log2Type));
 		}
 		graphMapper.addConversion(1, "coal1", Arrays.asList("log*"));
@@ -506,25 +527,25 @@ public class GraphMapperTest {
 		graphMapper.addConversion(1, "firecharge*", Arrays.asList("firecharge"));
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("coal0", 9);
-		graphMapper.addConversionMultiple(1, "coalblock", m);
+		graphMapper.addConversion(1, "coalblock", m);
 
 		m.clear();
 		//Philosophers stone smelting 7xCoalOre -> 7xCoal
 		m.put("coalore", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal0", m);
+		graphMapper.addConversion(7, "coal0", m);
 
 		m.clear();
 		//Philosophers stone smelting logs
 		m.put("log*", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal1", m);
+		graphMapper.addConversion(7, "coal1", m);
 
 		m.clear();
 		//Philosophers stone smelting log2s
 		m.put("log2*", 7);
 		m.put("coal*", 1);
-		graphMapper.addConversionMultiple(7, "coal1", m);
+		graphMapper.addConversion(7, "coal1", m);
 
 
 		//Smelting single coal ore
@@ -550,8 +571,9 @@ public class GraphMapperTest {
 
 		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
 		final int[] dyeValue = new int[]{864, 176, 48, 16};
-		for (int i = 0; i < dyes.length; i++) {
-			graphMapper.setValue("dye" + dyes[i], dyeValue[i], GraphMapper.FixedValue.FixAndInherit);
+		for (int i = 0; i < dyes.length; i++)
+		{
+			graphMapper.setValueBefore("dye" + dyes[i], dyeValue[i]);
 			graphMapper.addConversion(8, "antiblock" + dyes[i], Arrays.asList(
 					"antiblock_all", "antiblock_all", "antiblock_all",
 					"antiblock_all", "dye" + dyes[i], "antiblock_all",
@@ -560,8 +582,8 @@ public class GraphMapperTest {
 			graphMapper.addConversion(1, "antiblock_all", Arrays.asList("antiblock" + dyes[i]));
 		}
 
-		graphMapper.setValue(gDust, 384, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue(stone, 1, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore(gDust, 384);
+		graphMapper.setValueBefore(stone, 1);
 		graphMapper.addConversion(8, "antiblockWhite", Arrays.asList(
 				stone, stone, stone,
 				stone, gDust, stone,
@@ -577,18 +599,19 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesZeroCountIngredientDependency() throws Exception {
-		graphMapper.setValue("a", 2, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("b", 3, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("notConsume1", 1, IMappingCollector.FixedValue.FixAndInherit);
+	public void testGenerateValuesZeroCountIngredientDependency() throws Exception
+	{
+		graphMapper.setValueBefore("a", 2);
+		graphMapper.setValueBefore("b", 3);
+		graphMapper.setValueBefore("notConsume1", 1);
 		HashMap<String, Integer> ingredients = new HashMap<String, Integer>();
 		ingredients.put("a", 1);
 		ingredients.put("b", 1);
 		ingredients.put("notConsume1", 0);
-		graphMapper.addConversionMultiple(1, "c1", ingredients);
+		graphMapper.addConversion(1, "c1", ingredients);
 		ingredients.remove("notConsume1");
 		ingredients.put("notConsume2", 0);
-		graphMapper.addConversionMultiple(1, "c2", ingredients);
+		graphMapper.addConversion(1, "c2", ingredients);
 
 
 		Map<String, Integer> values = graphMapper.generateValues();
@@ -602,12 +625,13 @@ public class GraphMapperTest {
 
 
 	@org.junit.Test
-	public void testGenerateValuesFreeAlternatives() throws Exception {
-		graphMapper.setValue("freeWater", Integer.MIN_VALUE/* = 'Free' */, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("waterBottle", 0, IMappingCollector.FixedValue.FixAndInherit);
+	public void testGenerateValuesFreeAlternatives() throws Exception
+	{
+		graphMapper.setValueBefore("freeWater", Integer.MIN_VALUE/* = 'Free' */);
+		graphMapper.setValueBefore("waterBottle", 0);
 		graphMapper.addConversion(1, "waterGroup", Arrays.asList("freeWater"));
 		graphMapper.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
-		graphMapper.setValue("a", 3, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a", 3);
 		graphMapper.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
 		Map<String, Integer> values = graphMapper.generateValues();
@@ -619,16 +643,17 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testGenerateValuesFreeAlternativesWithNegativeIngredients() throws Exception {
-		graphMapper.setValue("bucket", 768, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("waterBucket", 768, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("waterBottle", 0, IMappingCollector.FixedValue.FixAndInherit);
+	public void testGenerateValuesFreeAlternativesWithNegativeIngredients() throws Exception
+	{
+		graphMapper.setValueBefore("bucket", 768);
+		graphMapper.setValueBefore("waterBucket", 768);
+		graphMapper.setValueBefore("waterBottle", 0);
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("waterBucket", 1);
 		m.put("bucket", -1);
-		graphMapper.addConversionMultiple(1, "waterGroup", m);
+		graphMapper.addConversion(1, "waterGroup", m);
 		graphMapper.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
-		graphMapper.setValue("a", 3, IMappingCollector.FixedValue.FixAndInherit);
+		graphMapper.setValueBefore("a", 3);
 		graphMapper.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
 		Map<String, Integer> values = graphMapper.generateValues();
@@ -641,9 +666,10 @@ public class GraphMapperTest {
 
 
 	@org.junit.Test
-	public void testOverflowWithIngredients() throws Exception {
-		graphMapper.setValue("a", Integer.MAX_VALUE / 2 + 1, IMappingCollector.FixedValue.FixAndInherit);
-		graphMapper.setValue("b", Integer.MAX_VALUE / 2 + 1, IMappingCollector.FixedValue.FixAndInherit);
+	public void testOverflowWithIngredients() throws Exception
+	{
+		graphMapper.setValueBefore("a", Integer.MAX_VALUE / 2 + 1);
+		graphMapper.setValueBefore("b", Integer.MAX_VALUE / 2 + 1);
 		graphMapper.addConversion(1, "c", Arrays.asList("a", "b"));
 
 		Map<String, Integer> values = graphMapper.generateValues();
@@ -653,12 +679,27 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
-	public void testOverflowWithAmount() throws Exception {
-		graphMapper.setValue("a", Integer.MAX_VALUE / 2, IMappingCollector.FixedValue.FixAndInherit);
+	public void testOverflowWithAmount() throws Exception
+	{
+		graphMapper.setValueBefore("a", Integer.MAX_VALUE / 2);
 		graphMapper.addConversion(3, "a", Arrays.asList("something"));
 
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(Integer.MAX_VALUE/2, getValue(values, "a"));
+	}
+
+	@org.junit.Test
+	public void testOverwriteConversions()
+	{
+		graphMapper.setValueBefore("a", 1);
+		graphMapper.setValueFromConversion(1, "b", Arrays.asList("a", "a", "a"));
+		graphMapper.addConversion(1, "b", Arrays.asList("a"));
+		graphMapper.addConversion(1, "c", Arrays.asList("b", "b"));
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1, getValue(values, "a"));
+		assertEquals(3, getValue(values, "b"));
+		assertEquals(6, getValue(values, "c"));
+
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {

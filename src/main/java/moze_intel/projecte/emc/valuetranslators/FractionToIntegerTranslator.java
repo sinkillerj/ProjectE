@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.valuetranslators;
 
-import moze_intel.projecte.emc.IMappingCollector;
 import moze_intel.projecte.emc.IValueGenerator;
 
 import com.google.common.collect.Maps;
