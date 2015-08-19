@@ -22,74 +22,77 @@ public class RecipeKleinStar implements IRecipe
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(InventoryCrafting inv, World world)
 	{
 		double storedEMC = 0;
 		int starCount = 0;
-		
+
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack isInSlot = inv.getStackInSlot(i);
-			
+
 			if (isInSlot == null)
 			{
 				continue;
 			}
-			
+
 			if (isInSlot.getItem() != ObjHandler.kleinStars)
 			{
 				return false;
 			}
-			
+
 			if (inputDamage >= 5)
 			{
 				return false;
-			}
-			
-			else
+			} else
 			{
 				if (isInSlot.getItemDamage() != inputDamage)
 				{
 					return false;
 				}
 			}
-			
+
 			starCount++;
-			
+
 			if (starCount > 4)
 			{
 				return false;
 			}
-			
+
 			storedEMC += KleinStar.getEmc(isInSlot);
 		}
-		
+
 		if (starCount == 4)
 		{
 			output.setTagCompound(new NBTTagCompound());
 			KleinStar.setEmc(output, storedEMC);
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) 
+	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
 	{
 		return output.copy();
 	}
 
 	@Override
-	public int getRecipeSize() 
+	public int getRecipeSize()
 	{
 		return 4;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() 
+	public ItemStack getRecipeOutput()
 	{
 		return output;
+	}
+
+	public ItemStack getRecipeInput()
+	{
+		return input;
 	}
 }

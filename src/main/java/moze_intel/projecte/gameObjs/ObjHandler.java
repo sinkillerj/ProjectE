@@ -637,8 +637,6 @@ public class ObjHandler
 			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.dye, 1, i)));
 			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.dye, 1, 15)));
 		}
-		//GameRegistry.addRecipe(new RecipeAlchemyBag());
-		
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
