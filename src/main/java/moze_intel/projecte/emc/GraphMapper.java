@@ -2,16 +2,22 @@ package moze_intel.projecte.emc;
 
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.emc.collector.AbstractMappingCollector;
 import moze_intel.projecte.utils.PELogger;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueGenerator<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMappingCollector<T,V> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
+
+	protected IValueArithmetic<V> arithmetic;
+	public GraphMapper(IValueArithmetic<V> arithmetic) {
+		this.arithmetic = arithmetic;
+	}
 
 	protected static void debugFormat(String format, Object... args) {
 		if (DEBUG_GRAPHMAPPER)
@@ -22,16 +28,12 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		debugFormat("%s", s);
 	}
 
+	protected Map<T, Conversion> overwriteConversion = Maps.newHashMap();
 	protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
 	protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
 	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
 	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
 	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
-
-	IValueArithmetic<V> arithmetic;
-	public GraphMapper(IValueArithmetic<V> arithmetic) {
-		this.arithmetic = arithmetic;
-	}
 
 	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
 		List<V> list;
@@ -62,11 +64,16 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
 	}
 
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		addConversionMultiple(outnumber, output, ingredientsWithAmount, arithmetic.getZero());
+	protected void addConversionToIngredientUsages(Conversion conversion) {
+		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
+			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
+			if (ingredient.getValue() == null)
+				throw new IllegalArgumentException("ingredient amount value has to be != null");
+			usesForIngredient.add(conversion);
+		}
 	}
 
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, V baseValueForConversion) {
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
@@ -76,67 +83,51 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
-		conversion.value = baseValueForConversion;
+		conversion.value = arithmetic.getZero();
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
+		addConversionToIngredientUsages(conversion);
+	}
 
-		for (Map.Entry<T, Integer> ingredient : ingredientsWithAmount.entrySet()) {
-			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
-			if (ingredient.getValue() == null)
-				throw new IllegalArgumentException("ingredient amount value has to be != null");
-			usesForIngredient.add(conversion);
+	@Override
+	public void setValueBefore(T something, V value) {
+		if (something == null) return;
+		if (fixValueBeforeInherit.containsKey(something))
+			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
+		fixValueBeforeInherit.put(something, value);
+		fixValueAfterInherit.remove(something);
+	}
+
+	@Override
+	public void setValueAfter(T something, V value) {
+		if (something == null) return;
+		if (fixValueAfterInherit.containsKey(something))
+			PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
+		fixValueAfterInherit.put(something, value);
+	}
+
+
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
+	{
+		if (something == null || ingredientsWithAmount.containsKey(null)) {
+			PELogger.logWarn(String.format("Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, something));
+			return;
 		}
-	}
-
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
-		addConversion(outnumber, output, ingredients, arithmetic.getZero());
-	}
-
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, V baseValueForConversion) {
-		Map<T, Integer> ingredientsWithAmount = new HashMap<T, Integer>();
-		for (T ingredient : ingredients) {
-			if (ingredientsWithAmount.containsKey(ingredient)) {
-				int amount = ingredientsWithAmount.get(ingredient);
-				ingredientsWithAmount.put(ingredient, amount + 1);
-			} else {
-				ingredientsWithAmount.put(ingredient, 1);
+		if (outnumber <= 0)
+			throw new IllegalArgumentException("outnumber has to be > 0!");
+		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
+		if (overwriteConversion.containsKey(something)) {
+			Conversion oldConversion = overwriteConversion.get(something);
+			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
+			for (T ingredient: ingredientsWithAmount.keySet()) {
+				getUsesFor(ingredient).remove(oldConversion);
 			}
 		}
-		this.addConversionMultiple(outnumber, output, ingredientsWithAmount, baseValueForConversion);
-	}
-
-	public void setValue(T something, V value, FixedValue type) {
-		if (something == null) return;
-		switch (type) {
-			case FixAndInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
-				fixValueBeforeInherit.put(something, value);
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Removing fixValueAfterInherit for " + something + " before: " + fixValueAfterInherit.get(something));
-				fixValueAfterInherit.remove(something);
-				break;
-			case FixAndDoNotInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + 0.0);
-				fixValueBeforeInherit.put(something, arithmetic.getZero());
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
-				fixValueAfterInherit.put(something, value);
-				break;
-			case FixAfterInherit:
-				if (fixValueBeforeInherit.containsKey(something))
-					PELogger.logWarn("Removing fixValueBeforeInherit for " + something + " before: " + fixValueBeforeInherit.get(something));
-				fixValueBeforeInherit.remove(something);
-				if (fixValueAfterInherit.containsKey(something))
-					PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
-				fixValueAfterInherit.put(something, value);
-				break;
-			case SuggestionAndInherit:
-				this.addConversionMultiple(1, something, new HashMap<T, Integer>(), value);
-				break;
-		}
+		addConversionToIngredientUsages(conversion);
+		overwriteConversion.put(something, conversion);
 	}
 
 
@@ -146,7 +137,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> implements IValueG
 		T output;
 
 		int outnumber = 1;
-		V value;
+		V value = arithmetic.getZero();
 		Map<T, Integer> ingredientsWithAmount;
 
 		protected Conversion(T output) {

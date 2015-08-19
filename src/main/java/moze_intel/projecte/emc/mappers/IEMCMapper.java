@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.IMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -30,7 +30,7 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	public boolean isAvailable();
 
 	/**
-	 * The method that allows the IEMCMapper to contribute to the EMC Mapping. Use the methods provided by the {@link moze_intel.projecte.emc.IMappingCollector}.
+	 * The method that allows the IEMCMapper to contribute to the EMC Mapping. Use the methods provided by the {@link IMappingCollector}.
 	 * <br/>
 	 * Use the config object to generate a useful Configuration for your IEMCMapper.
 	 * <br/>

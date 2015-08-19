@@ -8,7 +8,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
@@ -60,7 +60,7 @@ public class Pedestal extends Block {
                 }
                 PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
-            PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
+            PacketHandler.sendToAllAround(new SyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
         }
         return true;
     }

@@ -564,7 +564,9 @@ public class ObjHandler
 		}
 
 		//Manual
-		GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, matter);
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 0));
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 1));
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 2));
 
 		//TransmutationTablet
 		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);

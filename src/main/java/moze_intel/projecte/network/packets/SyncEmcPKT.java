@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import com.google.common.collect.Maps;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -10,54 +11,19 @@ import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.List;
 
-public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmcPKT, IMessage>
+public class SyncEmcPKT implements IMessage
 {
 	private int packetNum;
 	private Object[] data;
 
-	public ClientSyncEmcPKT() {}
+	public SyncEmcPKT() {}
 
-	public ClientSyncEmcPKT(int packetNum, ArrayList<Integer[]> arrayList)
+	public SyncEmcPKT(int packetNum, List<Integer[]> arrayList)
 	{
 		this.packetNum = packetNum;
 		data = arrayList.toArray();
-	}
-
-	@Override
-	public IMessage onMessage(ClientSyncEmcPKT pkt, MessageContext ctx)
-	{
-		if (pkt.packetNum == 0)
-		{
-			PELogger.logInfo("Receiving EMC data from server.");
-
-			EMCMapper.emc.clear();
-			EMCMapper.emc = new LinkedHashMap<SimpleStack, Integer>();
-		}
-
-		for (Object obj : pkt.data)
-		{
-			Integer[] array = (Integer[]) obj;
-
-			SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
-
-			if (stack.isValid())
-			{
-				EMCMapper.emc.put(stack, array[3]);
-			}
-		}
-
-		if (pkt.packetNum == -1)
-		{
-			PELogger.logInfo("Received all packets!");
-
-			Transmutation.cacheFullKnowledge();
-			FuelMapper.loadMap();
-		}
-
-		return null;
 	}
 
 	@Override
@@ -94,6 +60,42 @@ public class ClientSyncEmcPKT implements IMessage, IMessageHandler<ClientSyncEmc
 			{
 				buf.writeInt(array[i]);
 			}
+		}
+	}
+
+	public static class Handler implements IMessageHandler<SyncEmcPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx)
+		{
+			if (pkt.packetNum == 0)
+			{
+				PELogger.logInfo("Receiving EMC data from server.");
+
+				EMCMapper.emc.clear();
+				EMCMapper.emc = Maps.newLinkedHashMap();
+			}
+
+			for (Object obj : pkt.data)
+			{
+				Integer[] array = (Integer[]) obj;
+
+				SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+
+				if (stack.isValid())
+				{
+					EMCMapper.emc.put(stack, array[3]);
+				}
+			}
+
+			if (pkt.packetNum == -1)
+			{
+				PELogger.logInfo("Received all packets!");
+
+				Transmutation.cacheFullKnowledge();
+				FuelMapper.loadMap();
+			}
+			return null;
 		}
 	}
 }

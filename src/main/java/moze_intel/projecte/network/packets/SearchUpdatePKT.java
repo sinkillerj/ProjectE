@@ -13,9 +13,8 @@ import moze_intel.projecte.utils.PELogger;
 
 import java.util.List;
 
-public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePKT, IMessage> 
+public class SearchUpdatePKT implements IMessage
 {
-
 	public SearchUpdatePKT() {}
 
 	public boolean applyImmediately = false;
@@ -27,34 +26,7 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 	}
 
 	@Override
-	public IMessage onMessage(SearchUpdatePKT pkt, MessageContext ctx) 
-	{
-		if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
-		{
-			TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
-			if (pkt.applyImmediately)
-			{
-				container.transmutationInventory.writeIntoOutputSlots(pkt.outslots);
-				PELogger.logFatal("Wrote Output Slots from UpdatePacket immediately");
-			}
-			else
-			{
-				try
-				{
-					container.transmutationInventory.serverOutputSlotUpdates.put(pkt.outslots);
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-				PELogger.logFatal("Got Output Slots from UpdatePacket... Size: " + container.transmutationInventory.serverOutputSlotUpdates.size());
-			}
-		}
-		
-		return null;
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		applyImmediately = buf.readBoolean();
 		List<ItemStack> l = Lists.newArrayList();
@@ -70,6 +42,36 @@ public class SearchUpdatePKT implements IMessage, IMessageHandler<SearchUpdatePK
 		buf.writeBoolean(applyImmediately);
 		for (int i = 0; i < 16; i++) {
 			ByteBufUtils.writeItemStack(buf, outslots.get(i));
+		}
+	}
+
+	public static class Handler implements IMessageHandler<SearchUpdatePKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
+		{
+			if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
+			{
+				TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
+				if (pkt.applyImmediately)
+				{
+					container.transmutationInventory.writeIntoOutputSlots(pkt.outslots);
+					PELogger.logFatal("Wrote Output Slots from UpdatePacket immediately");
+				}
+				else
+				{
+					try
+					{
+						container.transmutationInventory.serverOutputSlotUpdates.put(pkt.outslots);
+					} catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					PELogger.logFatal("Got Output Slots from UpdatePacket... Size: " + container.transmutationInventory.serverOutputSlotUpdates.size());
+				}
+			}
+
+			return null;
 		}
 	}
 }

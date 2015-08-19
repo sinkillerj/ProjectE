@@ -1,14 +1,12 @@
 package moze_intel.projecte.emc.valuetranslators;
 
+import moze_intel.projecte.emc.IValueArithmetic;
 import moze_intel.projecte.emc.IValueGenerator;
-
-import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Map;
 
 public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT extends Comparable<OUT>> implements IValueGenerator<T, OUT>
 {
-
 	protected IValueGenerator<T, IN> inner;
 	public AbstractTranslator(IValueGenerator<T, IN> inner)
 	{
@@ -18,15 +16,9 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	public abstract IN translateValue(OUT v);
 
 	@Override
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount)
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount)
 	{
-		inner.addConversionMultiple(outnumber, output, ingredientsWithAmount);
-	}
-
-	@Override
-	public void addConversionMultiple(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, OUT baseValueForConversion)
-	{
-		inner.addConversionMultiple(outnumber, output, ingredientsWithAmount, translateValue(baseValueForConversion));
+		inner.addConversion(outnumber, output, ingredientsWithAmount);
 	}
 
 	@Override
@@ -36,14 +28,26 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	}
 
 	@Override
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients, OUT baseValueForConversion)
+	public void setValueBefore(T something, OUT value)
 	{
-		inner.addConversion(outnumber,output, ingredients, translateValue(baseValueForConversion));
+		inner.setValueBefore(something, translateValue(value));
 	}
 
 	@Override
-	public void setValue(T something, OUT value, FixedValue type)
+	public void setValueAfter(T something, OUT value)
 	{
-		inner.setValue(something, translateValue(value), type);
+		inner.setValueAfter(something, translateValue(value));
+	}
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
+	{
+		inner.setValueFromConversion(outnumber, something, ingredients);
+	}
+
+	@Override
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
+	{
+		inner.setValueFromConversion(outnumber, something, ingredientsWithAmount);
 	}
 }
