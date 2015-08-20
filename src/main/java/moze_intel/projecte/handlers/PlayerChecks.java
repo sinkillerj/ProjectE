@@ -1,6 +1,7 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Sets;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
@@ -92,6 +93,11 @@ public final class PlayerChecks
 
 	private static boolean shouldPlayerFly(EntityPlayerMP player)
 	{
+		if (!hasSwrg(player))
+		{
+			disableSwrgFlightOverride(player);
+		}
+
 		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
 		{
 			return true;
@@ -230,6 +236,30 @@ public final class PlayerChecks
 			}
 		}
 
+		return false;
+	}
+
+	private static boolean hasSwrg(EntityPlayerMP player)
+	{
+		for (int i = 0; i <= 8; i++)
+		{
+			if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg)
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
