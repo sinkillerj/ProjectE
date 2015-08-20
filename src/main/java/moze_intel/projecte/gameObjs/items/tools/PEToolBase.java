@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
@@ -25,6 +24,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
@@ -152,7 +152,8 @@ public abstract class PEToolBase extends ItemMode
 					{
 						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
-						if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
+						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)
+							&& consumeFuel(player, stack, emcCost, true))
 						{
 							drops.addAll(blockDrops);
 							world.setBlockToAir(x, y, z);
@@ -169,75 +170,62 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, int emcCost)
 	{
-		if (!player.canPlayerEdit(x, y, z, meta, stack))
+		byte charge = this.getCharge(stack);
+		boolean hasAction = false;
+		boolean hasSoundPlayed = false;
+
+		for (int i = x - charge; i <= x + charge; i++)
 		{
-			return;
-		}
-		else
-		{
-			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
-			if (MinecraftForge.EVENT_BUS.post(event))
+			for (int j = z - charge; j <= z + charge; j++)
 			{
-				return;
-			}
+				Block block = world.getBlock(i, y, j);
+				Block blockAbove = world.getBlock(i, y + 1, j);
 
-			if (event.getResult() == Event.Result.ALLOW)
-			{
-				return;
-			}
-
-			byte charge = this.getCharge(stack);
-			boolean hasAction = false;
-			boolean hasSoundPlayed = false;
-
-			for (int i = x - charge; i <= x + charge; i++)
-			{
-				for (int j = z - charge; j <= z + charge; j++)
+				if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
 				{
-					Block block = world.getBlock(i, y, j);
-					Block blockAbove = world.getBlock(i, y + 1, j);
-
-					if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
+					if (!hasSoundPlayed)
 					{
-						Block block1 = Blocks.farmland;
+						world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), Blocks.farmland.stepSound.getStepResourcePath(), (Blocks.farmland.stepSound.getVolume() + 1.0F) / 2.0F, Blocks.farmland.stepSound.getPitch() * 0.8F);
+						hasSoundPlayed = true;
+					}
 
-						if (!hasSoundPlayed)
+					if (world.isRemote)
+					{
+						return;
+					}
+					else
+					{
+						if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(player, stack, world, i, y, j)))
 						{
-							world.playSoundEffect((double)((float)i + 0.5F), (double)((float)y + 0.5F), (double)((float)j + 0.5F), block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
-							hasSoundPlayed = true;
+							continue;
 						}
 
-						if (world.isRemote)
+						// The initial block we target is always free
+						if ((i == x && j == z) || consumeFuel(player, stack, emcCost, true))
 						{
-							return;
-						}
-						else
-						{
-							// The initial block we target is always free
-							if ((i == x && j == z) || consumeFuel(player, stack, emcCost, true))
-							{
-								world.setBlock(i, y, j, block1);
+							PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), i, y, j, Blocks.farmland, 0);
 
-								if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
-										&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
-										) {
-									// Fancy break block - get rid of tall grass
+							if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
+									&& !(blockAbove instanceof ITileEntityProvider)
+									) {
+								if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), i, y + 1, j))
+								{
 									world.func_147480_a(i, y + 1, j, true);
 								}
+							}
 
-								if (!hasAction)
-								{
-									hasAction = true;
-								}
+							if (!hasAction)
+							{
+								hasAction = true;
 							}
 						}
 					}
 				}
 			}
-			if (hasAction)
-			{
-				player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
-			}
+		}
+		if (hasAction)
+		{
+			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
 		}
 	}
 
@@ -333,7 +321,10 @@ public abstract class PEToolBase extends ItemMode
 				{
 					Block b = world.getBlock(i, j, k);
 
-					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1 && (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
+					if (b != Blocks.air
+							&& b.getBlockHardness(world, i, j, k) != -1
+							&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), i, j, k)
+							&& (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(block, world.getBlockMetadata(i, j, k), stack)))
 					{
 						drops.addAll(WorldHelper.getBlockDrops(world, player, b, stack, i, j, k));
 						world.setBlockToAir(i, j, k);
@@ -373,6 +364,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (b != Blocks.air && b.getBlockHardness(world, i, j, k) != -1
 							&& canHarvestBlock(b, stack)
+							&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), i, j, k)
 							&& consumeFuel(player, stack, emcCost, true)
 							)
 					{
@@ -461,7 +453,7 @@ public abstract class PEToolBase extends ItemMode
 		{
 			IShearable target = (IShearable) block;
 
-			if (target.isShearable(stack, player.worldObj, x, y, z))
+			if (target.isShearable(stack, player.worldObj, x, y, z) && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 			{
 				ArrayList<ItemStack> drops = target.onSheared(stack, player.worldObj, x, y, z, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
 				Random rand = new Random();

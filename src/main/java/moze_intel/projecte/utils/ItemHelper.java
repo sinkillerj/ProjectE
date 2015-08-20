@@ -378,7 +378,7 @@ public final class ItemHelper
 
 	public static boolean isOre(Block block, int meta)
 	{
-		if (block.equals(Blocks.lit_redstone_ore))
+		if (block == Blocks.lit_redstone_ore)
 		{
 			return true;
 		}

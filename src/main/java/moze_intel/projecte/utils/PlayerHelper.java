@@ -1,17 +1,27 @@
 package moze_intel.projecte.utils;
 
+import baubles.api.BaublesApi;
+import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.world.BlockEvent;
 
 /**
  * Helper class for player-related methods.
@@ -19,24 +29,37 @@ import net.minecraft.util.Vec3;
  */
 public final class PlayerHelper
 {
-	public static void disableFlight(EntityPlayerMP playerMP)
+	/**
+	 * Tries placing a block and fires an event for it.
+	 * @return Whether the block was successfully placed
+	 */
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace, int toPlaceMeta)
 	{
-		if (!playerMP.capabilities.isCreativeMode)
+		if (!hasEditPermission(player, x, y, z))
 		{
-			updateClientServerFlight(playerMP, false);
-			PlayerChecks.removePlayerFlyChecks(playerMP);
+			return false;
 		}
+		World world = player.worldObj;
+		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, x, y, z);
+		world.setBlock(x, y, z, toPlace);
+		world.setBlockMetadataWithNotify(x, y, z, toPlaceMeta, 3);
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.air, player); // Todo verify can use air here
+		MinecraftForge.EVENT_BUS.post(evt);
+		if (evt.isCanceled())
+		{
+			world.restoringBlockSnapshots = true;
+			before.restore(true, false);
+			world.restoringBlockSnapshots = false;
+			PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
+			return false;
+		}
+		PELogger.logInfo("Checked place block passed!");
+		return true;
 	}
 
-	public static void enableFlight(EntityPlayerMP playerMP)
+	public static boolean checkedReplaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace, int toPlaceMeta)
 	{
-		if (playerMP.capabilities.isCreativeMode)
-		{
-			return;
-		}
-
-		updateClientServerFlight(playerMP, true);
-		PlayerChecks.addPlayerFlyChecks(playerMP);
+		return hasBreakPermission(player, x, y, z) && checkedPlaceBlock(player, x, y, z, toPlace, toPlaceMeta);
 	}
 
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
@@ -49,6 +72,17 @@ public final class PlayerHelper
 			}
 		}
 		return null;
+	}
+
+	public static IInventory getBaubles(EntityPlayer player)
+	{
+		if (!Loader.isModLoaded("Baubles"))
+		{
+			return null;
+		} else
+		{
+			return BaublesApi.getBaubles(player);
+		}
 	}
 
 	public static Coordinates getBlockLookingAt(EntityPlayer player, double maxDistance)
@@ -74,6 +108,19 @@ public final class PlayerHelper
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return new Tuple(src, dest);
 	}
+
+	public static boolean hasBreakPermission(EntityPlayerMP player, int x, int y, int z)
+	{
+		return hasEditPermission(player, x, y, z)
+				&& !ForgeHooks.onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, x, y, z).isCanceled();
+	}
+
+	public static boolean hasEditPermission(EntityPlayerMP player, int x, int y, int z)
+	{
+		return player.canPlayerEdit(x, y, z, player.worldObj.getBlockMetadata(x, y, z), null)
+				&& !MinecraftServer.getServer().isBlockProtected(player.worldObj, x, y, z, player);
+	}
+
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{
@@ -104,8 +151,9 @@ public final class PlayerHelper
 		}
 	}
 
-	public static void updateClientStepHeight(EntityPlayerMP player, float value)
+	public static void updateClientServerStepHeight(EntityPlayerMP player, float value)
 	{
+		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 }

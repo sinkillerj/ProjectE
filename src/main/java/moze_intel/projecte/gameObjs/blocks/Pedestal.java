@@ -8,12 +8,11 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Pedestal extends Block implements ITileEntityProvider {
+public class Pedestal extends Block {
 
     public Pedestal() {
         super(Material.rock);
@@ -61,7 +60,7 @@ public class Pedestal extends Block implements ITileEntityProvider {
                 }
                 PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
             }
-            PacketHandler.sendToAllAround(new ClientSyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
+            PacketHandler.sendToAllAround(new SyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
         }
         return true;
     }
@@ -79,7 +78,6 @@ public class Pedestal extends Block implements ITileEntityProvider {
 			tile.readFromNBT(stack.stackTagCompound);
 		}
 	}
-
 
 	@Override
     public boolean renderAsNormalBlock()
@@ -106,7 +104,13 @@ public class Pedestal extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int par2) {
+    public boolean hasTileEntity(int meta)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, int meta) {
         return new DMPedestalTile();
     }
 }

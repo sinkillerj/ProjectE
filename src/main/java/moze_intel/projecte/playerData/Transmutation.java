@@ -5,7 +5,7 @@ import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientKnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
@@ -122,6 +122,7 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
+		if (hasFullKnowledge(player)) return EMCHelper.doesItemHaveEmc(stack);
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
@@ -170,7 +171,7 @@ public final class Transmutation
 
 	public static void sync(EntityPlayer player)
 	{
-		PacketHandler.sendTo(new ClientKnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new KnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
 		PELogger.logDebug("** SENT TRANSMUTATION DATA **");
 	}
 

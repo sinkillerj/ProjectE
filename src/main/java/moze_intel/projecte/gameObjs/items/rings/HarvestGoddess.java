@@ -52,13 +52,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			}
 			else
 			{
-				WorldHelper.growNearbyRandomly(true, world, player);
+				WorldHelper.growNearbyRandomly(true, world, player.posX, player.posY, player.posZ, player);
 				removeEmc(stack, 0.32F);
 			}
 		}
 		else
 		{
-			WorldHelper.growNearbyRandomly(false, world, player);
+			WorldHelper.growNearbyRandomly(false, world, player.posX, player.posY, player.posZ, player);
 		}
 	}
 	
@@ -68,8 +68,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			return false;
 		}
-		
-		Block block = world.getBlock(x, y, z);
 		
 		if (player.isSneaking())
 		{
@@ -258,7 +256,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(x, y, z);
 			if (tile.getActivityCooldown() == 0)
 			{
-				WorldHelper.growNearbyRandomly(true, world, x, y, z);
+				WorldHelper.growNearbyRandomly(true, world, x, y, z, null);
 				tile.setActivityCooldown(ProjectEConfig.harvestPedCooldown);
 			}
 			else

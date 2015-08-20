@@ -22,6 +22,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationProps;
@@ -108,6 +109,12 @@ public class ClientProxy implements IProxy
 		PlayerRender pr = new PlayerRender();
 		MinecraftForge.EVENT_BUS.register(pr);
 		FMLCommonHandler.instance().bus().register(pr);
+	}
+
+	@Override
+	public void initializeManual()
+	{
+		ManualPageHandler.init();
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ClientSyncPedestalPKT;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -33,7 +33,9 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		{
 			if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty())
 			{
-				// Handle condition where this method is called even after the clientside chunk has unloaded. Don't you love vanilla???
+				// Handle condition where this method is called even after the clientside chunk has unloaded.
+				// This will make IPedestalItems below crash with an NPE since the TE they get back is null
+				// Don't you love vanilla???
 				return;
 			}
 		}
@@ -266,7 +268,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketHandler.getMCPacket(new ClientSyncPedestalPKT(this));
+		return PacketHandler.getMCPacket(new SyncPedestalPKT(this));
 	}
 
 	public boolean getActive()
@@ -302,17 +304,5 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			}
 		}
 		this.isActive = newState;
-	}
-
-	@Override
-	public double getStoredEmc()
-	{
-		return 0.0;
-	}
-
-	@Override
-	public boolean isRequestingEmc()
-	{
-		return false;
 	}
 }

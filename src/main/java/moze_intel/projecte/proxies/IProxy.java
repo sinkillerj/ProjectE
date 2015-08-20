@@ -9,6 +9,7 @@ public interface IProxy
     void registerKeyBinds();
     void registerRenderers();
     void registerClientOnlyEvents();
+    void initializeManual();
     void clearClientKnowledge();
     TransmutationProps getClientTransmutationProps();
     AlchBagProps getClientBagProps();

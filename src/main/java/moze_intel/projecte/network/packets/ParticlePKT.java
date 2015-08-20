@@ -7,7 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 
-public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMessage>
+public class ParticlePKT implements IMessage
 {
 	private String particleName;
 	private double x;
@@ -17,7 +17,6 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 	private double velY;
 	private double velZ;
 
-	//Needs to have an empty constructor
 	public ParticlePKT() {}
 	
 	public ParticlePKT(String name, double x, double y, double z)
@@ -34,13 +33,6 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 		this.velX = velX;
 		this.velY = velY;
 		this.velZ = velZ;
-	}
-
-	@Override
-	public IMessage onMessage(ParticlePKT message, MessageContext ctx) 
-	{
-		Minecraft.getMinecraft().theWorld.spawnParticle(message.particleName, message.x, message.y, message.z, message.velX, message.velY, message.velZ);
-		return null;
 	}
 
 	@Override
@@ -65,5 +57,15 @@ public class ParticlePKT implements IMessage, IMessageHandler<ParticlePKT, IMess
 		buffer.writeDouble(velX);
 		buffer.writeDouble(velY);
 		buffer.writeDouble(velZ);
+	}
+
+	public static class Handler implements IMessageHandler<ParticlePKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(final ParticlePKT message, MessageContext ctx)
+		{
+			Minecraft.getMinecraft().theWorld.spawnParticle(message.particleName, message.x, message.y, message.z, message.velX, message.velY, message.velZ);
+			return null;
+		}
 	}
 }

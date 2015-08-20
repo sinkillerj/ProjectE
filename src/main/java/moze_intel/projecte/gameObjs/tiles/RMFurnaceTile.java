@@ -2,9 +2,8 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,19 +55,20 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		
 		if (!worldObj.isRemote)
 		{
-			if (inventory[0] != null && inventory[0].getItem() == ObjHandler.kleinStars)
+			if (canSmelt() && inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
 			{
-				if (KleinStar.getEmc(inventory[0]) >= EMC_CONSUMPTION)
+				IItemEmc itemEmc = ((IItemEmc) inventory[0].getItem());
+				if (itemEmc.getStoredEmc(inventory[0]) >= EMC_CONSUMPTION)
 				{
-					KleinStar.removeEmc(inventory[0], EMC_CONSUMPTION);
-					this.addEmc(EMC_CONSUMPTION);
+					itemEmc.extractEmc(inventory[0], EMC_CONSUMPTION);
+					this.addEMC(EMC_CONSUMPTION);
 				}
 			}
 			
 			if (this.getStoredEmc() >= EMC_CONSUMPTION)
 			{
 				furnaceBurnTime = 1;
-				this.removeEmc(EMC_CONSUMPTION);
+				this.removeEMC(EMC_CONSUMPTION);
 			}
 			
 			if (furnaceBurnTime == 0 && canSmelt())
@@ -237,7 +237,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					
 					if (inv.canExtractItem(i, stack, side))
 					{
-						if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars)
+						if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc)
 						{
 							if (inventory[0] == null)
 							{
@@ -309,7 +309,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					continue;
 				}
 				
-				if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars)
+				if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc)
 				{
 					if (inventory[0] == null)
 					{
@@ -547,7 +547,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.setEmcValue(nbt.getDouble("EMC"));
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
 		currentItemBurnTime = getItemBurnTime(inventory[0]);
@@ -567,7 +566,6 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEmc());
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		
@@ -686,7 +684,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 		
 		if (slot == 0)
 		{
-			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() == ObjHandler.kleinStars;
+			return TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc;
 		}
 		else if (slot >= 1 && slot <= 13)
 		{
@@ -733,11 +731,5 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
 		return slot >= outputStorage[0];
-	}
-
-	@Override
-	public boolean isRequestingEmc() 
-	{
-		return true;
 	}
 }

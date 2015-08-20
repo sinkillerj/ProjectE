@@ -1,7 +1,11 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -38,6 +42,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -49,11 +54,16 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.ExplosionEvent;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -120,22 +130,32 @@ public final class WorldHelper
 			}
 		}
 	}
-	
+
+	/**
+	 * Equivalent of World.newExplosion
+	 */
+	public static void createNovaExplosion(World world, Entity exploder, double x, double y, double z, float power)
+	{
+		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power);
+		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion)))
+		{
+			explosion.doExplosionA();
+			explosion.doExplosionB(true);
+		}
+	}
+
 	public static void extinguishNearby(World world, EntityPlayer player)
 	{
 		for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++)
 			for (int y = (int) (player.posY - 1); y <= player.posY + 1; y++)
 				for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++)
-					if (world.getBlock(x, y, z) == Blocks.fire)
+					if (world.getBlock(x, y, z) == Blocks.fire && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+					{
 						world.setBlockToAir(x, y, z);
+					}
 	}
-	
-	public static void freezeNearby(World world, EntityPlayer player)
-	{
-		freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5));
-	}
-	
-	public static void freezeInBoundingBox(World world, AxisAlignedBB box)
+
+	public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random)
 	{
 		for (int x = (int) box.minX; x <= box.maxX; x++)
 		{
@@ -145,50 +165,31 @@ public final class WorldHelper
 				{
 					Block b = world.getBlock(x, y, z);
 
-					if (b == Blocks.water || b == Blocks.flowing_water)
+					if ((b == Blocks.water || b == Blocks.flowing_water) && (!random || world.rand.nextInt(128) == 0))
 					{
-						world.setBlock(x, y, z, Blocks.ice);
-					}
-					else if (b.isSideSolid(world, x, y, z, ForgeDirection.UP))
-					{
-						Block b2 = world.getBlock(x, y + 1, z);
-
-						if (b2 == Blocks.air)
+						if (player != null)
 						{
-							world.setBlock(x, y + 1, z, Blocks.snow_layer);
+							PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.ice, 0);
+						}
+						else
+						{
+							world.setBlock(x, y, z, Blocks.ice);
 						}
 					}
-				}
-			}
-		}
-	}
-		
-	public static void freezeNearbyRandomly(World world, EntityPlayer player)
-	{
-		freezeInBoundingBoxRandomly(world, player.boundingBox.expand(5, 5, 5));
-	}
-	
-	public static void freezeInBoundingBoxRandomly(World world, AxisAlignedBB box)
-	{
-		for (int x = (int) box.minX; x <= box.maxX; x++)
-		{
-			for (int y = (int) box.minY; y <= box.maxY; y++)
-			{
-				for (int z = (int) box.minZ; z <= box.maxZ; z++)
-				{
-					Block b = world.getBlock(x, y, z);
-
-					if ((b == Blocks.water || b == Blocks.flowing_water) && world.rand.nextInt(128) == 0)
-					{
-						world.setBlock(x, y, z, Blocks.ice);
-					}
 					else if (b.isSideSolid(world, x, y, z, ForgeDirection.UP))
 					{
 						Block b2 = world.getBlock(x, y + 1, z);
 
-						if (b2 == Blocks.air && world.rand.nextInt(128) == 0)
+						if (b2 == Blocks.air && (!random || world.rand.nextInt(128) == 0))
 						{
-							world.setBlock(x, y + 1, z, Blocks.snow_layer);
+							if (player != null)
+							{
+								PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y + 1, z, Blocks.snow_layer, 0);
+							}
+							else
+							{
+								world.setBlock(x, y + 1, z, Blocks.snow_layer);
+							}
 						}
 					}
 				}
@@ -198,21 +199,22 @@ public final class WorldHelper
 	
 	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
 	{
-		int x = tile.xCoord;
-		int y = tile.yCoord;
-		int z = tile.zCoord;
+		return ImmutableList.copyOf(getAdjacentTileEntitiesMapped(world, tile).values());
+	}
 
-		List<TileEntity> list = Lists.newArrayList();
-		for (int i = 0; i <= 5; i++)
+	public static Map<ForgeDirection, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
+	{
+		Map<ForgeDirection, TileEntity> ret2 = Maps.asMap(ImmutableSet.copyOf(ForgeDirection.VALID_DIRECTIONS), new Function<ForgeDirection, TileEntity>()
 		{
-			ForgeDirection direction = ForgeDirection.getOrientation(i);
-			TileEntity te = world.getTileEntity(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ);
-			if (te != null)
+			@Nullable
+			@Override
+			public TileEntity apply(ForgeDirection input)
 			{
-				list.add(te);
+				return world.getTileEntity(tile.xCoord + input.offsetX, tile.yCoord + input.offsetY, tile.zCoord + input.offsetZ);
 			}
-		}
-		return list;
+		});
+
+		return Maps.filterValues(ret2, Predicates.notNull());
 	}
 
 	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
@@ -395,8 +397,8 @@ public final class WorldHelper
 			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
 		}
 	}
-	
-	public static void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord)
+
+	public static void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord, EntityPlayer player)
 	{
 		int chance = harvest ? 16 : 32;
 
@@ -411,7 +413,13 @@ public final class WorldHelper
 					{
 						if (harvest)
 						{
-							world.func_147480_a(x, y, z, true);
+							if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+							{
+								world.func_147480_a(x, y, z, true);
+							} else if (player == null)
+							{
+								world.func_147480_a(x, y, z, true);
+							}
 						}
 					}
 					// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
@@ -421,11 +429,17 @@ public final class WorldHelper
 						IGrowable growable = (IGrowable) crop;
 						if(harvest && !growable.func_149851_a(world, x, y, z, false))
 						{
-							world.func_147480_a(x, y, z, true);
+							if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+							{
+								world.func_147480_a(x, y, z, true);
+							} else if (player == null)
+							{
+								world.func_147480_a(x, y, z, true);
+							}
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase().contains("grass"))
+							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 							{
 								growable.func_149853_b(world, world.rand, x, y, z);
 							}
@@ -447,7 +461,13 @@ public final class WorldHelper
 						{
 							if (crop instanceof BlockFlower)
 							{
-								world.func_147480_a(x, y, z, true);
+								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+								{
+									world.func_147480_a(x, y, z, true);
+								} else if (player == null)
+								{
+									world.func_147480_a(x, y, z, true);
+								}
 							}
 							if (crop == Blocks.reeds || crop == Blocks.cactus)
 							{
@@ -466,7 +486,13 @@ public final class WorldHelper
 								{
 									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 									{
-										world.func_147480_a(x, y + i, z, true);
+										if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+										{
+											world.func_147480_a(x, y, z, true);
+										} else if (player == null)
+										{
+											world.func_147480_a(x, y, z, true);
+										}
 									}
 								}
 							}
@@ -475,17 +501,18 @@ public final class WorldHelper
 								int meta = ((IPlantable) crop).getPlantMetadata(world, x, y, z);
 								if (meta == 3)
 								{
-									world.func_147480_a(x, y, z, true);
+									if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+									{
+										world.func_147480_a(x, y, z, true);
+									} else if (player == null)
+									{
+										world.func_147480_a(x, y, z, true);
+									}
 								}
 							}
 						}
 					}
 				}
-	}
-
-	public static void growNearbyRandomly(boolean harvest, World world, Entity player)
-	{
-		growNearbyRandomly(harvest, world, player.posX, player.posY, player.posZ);
 	}
 
 	/**
@@ -508,8 +535,11 @@ public final class WorldHelper
 
 					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
-						currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
-						world.setBlockToAir(x, y, z);
+						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+						{
+							currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
+							world.setBlockToAir(x, y, z);
+						}
 						numMined++;
 						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
@@ -521,8 +551,10 @@ public final class WorldHelper
 		for (int x = (int) (player.posX - 8); x <= player.posX + 8; x++)
 			for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
 				for (int z = (int) (player.posZ - 8); z <= player.posZ + 8; z++)
-					if (world.rand.nextInt(128) == 0 && world.getBlock(x, y, z) == Blocks.air)
-						world.setBlock(x, y, z, Blocks.fire);
+					if (world.rand.nextInt(128) == 0 && world.isAirBlock(x, y, z))
+					{
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+					}
 	}
 
 	public static boolean isArrowInGround(EntityArrow arrow)
