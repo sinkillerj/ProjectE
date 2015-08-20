@@ -1,12 +1,8 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
-
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
@@ -14,9 +10,6 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
-
-import com.google.common.collect.Queues;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class TransmutationInventory implements IInventory
 {
@@ -131,20 +123,13 @@ public class TransmutationInventory implements IInventory
 		}
 	}
 
-	public LinkedBlockingQueue<List<ItemStack>> serverOutputSlotUpdates = Queues.newLinkedBlockingQueue();
-
-	public void updateOutputs() {
-		updateOutputs(false);
-	}
-	@SuppressWarnings("unchecked")
-	public void updateOutputs(boolean async)
+	public void updateOutputs()
 	{
-		PELogger.logFatal("updateOutputs(" + async +") isRemote = " + this.player.worldObj.isRemote);
-		if (!this.player.worldObj.isRemote) {
-			if (async) new RuntimeException("updateOutput but async on server").printStackTrace();
-			readUpdate();
+		if (!player.worldObj.isRemote)
+		{
 			return;
 		}
+
 		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
 
 		for (int i : MATTER_INDEXES)
@@ -167,7 +152,6 @@ public class TransmutationInventory implements IInventory
 			
 			if (this.emc < reqEmc)
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 				return;
 			}
 
@@ -206,7 +190,6 @@ public class TransmutationInventory implements IInventory
 				{
 					pagecounter++;
 					iter.remove();
-					continue;
 				}
 			}
 		}
@@ -234,7 +217,6 @@ public class TransmutationInventory implements IInventory
 				{
 					pagecounter++;
 					iter.remove();
-					continue;
 				}
 			}
 		}
@@ -277,40 +259,8 @@ public class TransmutationInventory implements IInventory
  				}
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 	}
 
-	private void readUpdate()
-	{
-		List<ItemStack> newOutputSlots = serverOutputSlotUpdates.poll();
-		if (newOutputSlots == null) {
-			throw new RuntimeException("Server could not read output-slot-update from client. Playername: " + this.player.getCommandSenderName());
-		}
-		else
-		{
-			writeIntoOutputSlots(newOutputSlots);
-		}
-	}
-
-	public void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
-	{
-		for (int i = 0; i < 16; i++) {
-			ItemStack item = newOutputSlots.get(i);
-			if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
-			{
-				inventory[10 + i] = item;
-			}
-			else
-			{
-				inventory[10 + i] = null;
-			}
-		}
-	}
-
-	public List<ItemStack> getOutputSlots() {
-		return Arrays.asList(inventory).subList(10,26);
-	}
-	
 	@Override
 	public int getSizeInventory() 
 	{
@@ -401,10 +351,7 @@ public class TransmutationInventory implements IInventory
 		emc = Transmutation.getEmc(player);
 		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
 		System.arraycopy(inputLocks, 0, inventory, 0, 9);
-		if (this.player.worldObj.isRemote)
-		{
-			updateOutputs(true);
-		}
+		updateOutputs();
 	}
 
 	@Override
