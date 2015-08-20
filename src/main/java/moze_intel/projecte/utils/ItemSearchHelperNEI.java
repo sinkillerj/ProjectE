@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ItemSearchHelperNEI extends ItemSearchHelper
+class ItemSearchHelperNEI extends ItemSearchHelper // package-protected
 {
 
 	ItemFilter filter;
@@ -18,7 +18,7 @@ public class ItemSearchHelperNEI extends ItemSearchHelper
 		filter = getFilter(searchString);
 	}
 
-	public ItemFilter getFilter(String s_filter)
+	private ItemFilter getFilter(String s_filter)
 	{
 		//based on https://github.com/Chicken-Bones/NotEnoughItems/blob/a1879a96548d17f5c4d95b40956d68f6f9db82f8/src/codechicken/nei/SearchField.java#L124-L139
 		List<ItemFilter> primary = new LinkedList<ItemFilter>();

@@ -3,8 +3,6 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -120,7 +118,7 @@ public class GUITransmutation extends GuiContainer
 			{
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs(true);
+				inv.updateOutputs();
 			}
 		}
 
@@ -144,7 +142,7 @@ public class GUITransmutation extends GuiContainer
 		{
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs(true);
+			inv.updateOutputs();
 			this.textBoxFilter.setText("");
 		}
 
@@ -179,6 +177,6 @@ public class GUITransmutation extends GuiContainer
 			}
 		}
 		inv.filter = srch;
-		inv.updateOutputs(true);
+		inv.updateOutputs();
 	}
 }

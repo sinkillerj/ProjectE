@@ -7,6 +7,8 @@ import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotInput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotLock;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotOutput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotUnlearn;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.RequestTransmutationPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -145,6 +147,15 @@ public class TransmutationContainer extends Container
 			{
 				return null;
 			}
+
+			if (player.worldObj.isRemote && getSlot(slot).getStack() != null)
+			{
+				if (slot <= 25 && slot >= 10)
+				{
+					PacketHandler.sendToServer(new RequestTransmutationPKT(getSlot(slot).getStack()));
+					return null;
+				}
+			}
 		}
 
 		return super.slotClick(slot, button, flag, player);
@@ -153,7 +164,6 @@ public class TransmutationContainer extends Container
 	@Override
 	public boolean canDragIntoSlot(Slot slot) 
 	{
-		if (slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock||slot instanceof SlotOutput) return false;
-		return true;
+		return !(slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock || slot instanceof SlotOutput);
 	}
 }

@@ -1,6 +1,7 @@
 package moze_intel.projecte.playerData;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
@@ -122,24 +123,48 @@ public class TransmutationProps implements IExtendedEntityProperties
 		return compound;
 	}
 
+	protected NBTTagCompound saveForPartialPacket()
+	{
+		NBTTagCompound ret = new NBTTagCompound();
+		ret.setDouble("transmutationEmc", transmutationEmc);
+		return ret;
+	}
+
 	public void readFromPacket(NBTTagCompound compound)
 	{
-		transmutationEmc = compound.getDouble("transmutationEmc");
-		hasFullKnowledge = compound.getBoolean("tome");
-
-		NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-		knowledge.clear();
-		for (int i = 0; i < list.tagCount(); i++)
+		if (compound.hasKey("transmutationEmc"))
 		{
-			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-			if (item != null)
+			transmutationEmc = compound.getDouble("transmutationEmc");
+			if (player.openContainer instanceof TransmutationContainer)
 			{
-				knowledge.add(item);
+				((TransmutationContainer) player.openContainer).transmutationInventory.emc = transmutationEmc;
 			}
 		}
 
-		NBTTagList list2 = compound.getTagList("inputlocks", Constants.NBT.TAG_COMPOUND);
-		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
+		if (compound.hasKey("tome"))
+		{
+			hasFullKnowledge = compound.getBoolean("tome");
+		}
+
+		if (compound.hasKey("knowledge"))
+		{
+			NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+			knowledge.clear();
+			for (int i = 0; i < list.tagCount(); i++)
+			{
+				ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+				if (item != null)
+				{
+					knowledge.add(item);
+				}
+			}
+		}
+
+		if (compound.hasKey("inputlocks"))
+		{
+			NBTTagList list2 = compound.getTagList("inputlocks", Constants.NBT.TAG_COMPOUND);
+			inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
+		}
 	}
 
 	@Override

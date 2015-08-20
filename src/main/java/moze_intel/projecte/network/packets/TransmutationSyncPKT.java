@@ -9,13 +9,13 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class KnowledgeSyncPKT implements IMessage
+public class TransmutationSyncPKT implements IMessage
 {
 	private NBTTagCompound nbt;
 
-	public KnowledgeSyncPKT() {}
+	public TransmutationSyncPKT() {}
 
-	public KnowledgeSyncPKT(NBTTagCompound nbt)
+	public TransmutationSyncPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
@@ -32,10 +32,10 @@ public class KnowledgeSyncPKT implements IMessage
 		ByteBufUtils.writeTag(buf, nbt);
 	}
 
-	public static class Handler implements IMessageHandler<KnowledgeSyncPKT, IMessage>
+	public static class Handler implements IMessageHandler<TransmutationSyncPKT, IMessage>
 	{
 		@Override
-		public IMessage onMessage(final KnowledgeSyncPKT message, MessageContext ctx)
+		public IMessage onMessage(final TransmutationSyncPKT message, MessageContext ctx)
 		{
 			PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
 			PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
