@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -145,12 +146,15 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         return true;
     }
 
-    public static void doZap(EntityPlayer player)
+    public void doZap(EntityPlayer player)
     {
-        Coordinates strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
-        if (strikePos != null)
+        if (ProjectEConfig.offensiveAbilities)
         {
-            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.x, strikePos.y, strikePos.z));
+            Coordinates strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
+            if (strikePos != null)
+			{
+				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.x, strikePos.y, strikePos.z));
+			}
         }
     }
 }
