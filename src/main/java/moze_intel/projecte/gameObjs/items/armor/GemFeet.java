@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ChatHelper;
@@ -65,6 +66,11 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         }
         else
         {
+            if (!player.capabilities.isFlying && PECore.proxy.isJumpPressed())
+            {
+                player.motionY += 0.1;
+            }
+
             if (!player.onGround)
             {
                 if (player.motionY <= 0)

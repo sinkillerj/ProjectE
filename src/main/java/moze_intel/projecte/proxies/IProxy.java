@@ -14,4 +14,5 @@ public interface IProxy
     TransmutationProps getClientTransmutationProps();
     AlchBagProps getClientBagProps();
     EntityPlayer getClientPlayer();
+    boolean isJumpPressed();
 }

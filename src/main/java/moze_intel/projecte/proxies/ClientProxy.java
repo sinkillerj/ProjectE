@@ -122,5 +122,11 @@ public class ClientProxy implements IProxy
 	{
 		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
+
+	@Override
+	public boolean isJumpPressed()
+	{
+		return FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed();
+	}
 }
 
