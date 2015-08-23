@@ -17,15 +17,15 @@ public class HiddenShapeless
 	@ZenMethod
 	public static void removeRecipe(ItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(output));
+		MineTweakerAPI.apply(new RemoveAction(output));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class RemoveAction implements IUndoableAction
 	{
 		IRecipe recipe = null;
 		ItemStack remove;
 
-		public Remove(ItemStack rem){
+		public RemoveAction(ItemStack rem){
 			remove = rem;
 		}
 
