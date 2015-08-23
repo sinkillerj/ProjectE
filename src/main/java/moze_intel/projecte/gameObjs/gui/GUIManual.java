@@ -16,7 +16,6 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -49,6 +48,7 @@ public class GUIManual extends GuiScreen
 	private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 	public List<String> bodyTexts = Lists.newArrayList();
 	private int currentSpread;
+	private int k;
 
 	public static void drawItemStackToGui(Minecraft mc, ItemStack item, int x, int y, boolean fixLighting)
 	{
@@ -78,19 +78,18 @@ public class GUIManual extends GuiScreen
 	@Override
 	public void initGui()
 	{
-		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+		GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
+		k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
+		GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
-		width = scaledresolution.getScaledWidth();
-
-		int i = (this.width - WINDOW_WIDTH) / 2;
-		this.buttonList.add(new PageTurnButton(0, Math.round((i + 210) * (GUI_SCALE_FACTOR * 0.75f)), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), true));
-		this.buttonList.add(new PageTurnButton(1, Math.round((i + 16) / GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.2f), false));
+		this.buttonList.add(new PageTurnButton(0, Math.round((k + 256 - 40) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), true));
+		this.buttonList.add(new PageTurnButton(1, Math.round((k + 20) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), false));
 
 		String text = StatCollector.translateToLocal("pe.manual.index_button");
 		int stringWidth = mc.fontRenderer.getStringWidth(text);
 		this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f), stringWidth, 15, text));
 
-		addIndexButtons(((Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2) + 40);
+		addIndexButtons(Math.round((k + 20) * GUI_SCALE_FACTOR));
 		currentSpread = 0;
 
 	}
@@ -104,7 +103,6 @@ public class GUIManual extends GuiScreen
 		this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
 
 		GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
-		int k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
 		this.drawTexturedModalRect(k, 5, 0, 0, WINDOW_WIDTH, PAGE_HEIGHT);
 		GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
@@ -206,7 +204,7 @@ public class GUIManual extends GuiScreen
 	private void addIndexButtons(int x)
 	{
 		int yOffset = 42;
-		x *= GUI_SCALE_FACTOR;
+
 		Iterator<IndexPage> iter = ManualPageHandler.indexPages.iterator();
 		IndexPage addingTo = iter.next();
 		int entriesOnCurrentPage = 0;
@@ -225,17 +223,17 @@ public class GUIManual extends GuiScreen
 				addingTo = iter.next();
 				if (ManualPageHandler.indexPages.indexOf(addingTo) % 2 == 0)
 				{
-					x -= 160 * GUI_SCALE_FACTOR; // Left
+					x -= 175; // Left
 				} else
 				{
-					x += 160 * GUI_SCALE_FACTOR; // Right
+					x += 175; // Right
 				}
 				yOffset = 42;
 			}
 
 			String text = page.getHeaderText();
 			int buttonID = ManualPageHandler.pages.indexOf(page) + BUTTON_ID_OFFSET;
-			IndexLinkButton button = new IndexLinkButton(buttonID, Math.round((x * GUI_SCALE_FACTOR) / 2), yOffset, mc.fontRenderer.getStringWidth(text),
+			IndexLinkButton button = new IndexLinkButton(buttonID, x, yOffset, mc.fontRenderer.getStringWidth(text),
 					CHARACTER_HEIGHT, text);
 			buttonList.add(button);
 			indexLinks.put(addingTo, button);
