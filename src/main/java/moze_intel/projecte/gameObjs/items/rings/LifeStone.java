@@ -44,9 +44,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		
 		if (stack.getItemDamage() != 0)
 		{
-			double itemEmc = getEmc(stack);
-			
-			if (itemEmc < 2*64 && !consumeFuel(player, stack, 2*64, false))
+			if (!consumeFuel(player, stack, 2*64, false))
 			{
 				stack.setItemDamage(0);
 			}
