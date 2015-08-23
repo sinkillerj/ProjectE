@@ -1,4 +1,4 @@
-package moze_intel.projecte.handlers.NEI;
+package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
