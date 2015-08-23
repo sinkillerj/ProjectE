@@ -27,23 +27,39 @@ public class Integration
 
 	public static void init()
 	{
+		modChecks();
+
 		if (mtweak)
 		{
-			MineTweakerAPI.registerClass(WorldTransmutation.class);
-			MineTweakerAPI.registerClass(HiddenShapeless.class);
-			MineTweakerAPI.registerClass(KleinStar.class);
-			MineTweakerAPI.registerClass(AlchBag.class);
+			try
+			{
+				MineTweakerAPI.registerClass(WorldTransmutation.class);
+				MineTweakerAPI.registerClass(HiddenShapeless.class);
+				MineTweakerAPI.registerClass(KleinStar.class);
+				MineTweakerAPI.registerClass(AlchBag.class);
+			} catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
 		}
-		
-		if(NEI){
-			API.registerRecipeHandler(new NEIWorldTransmuteHandler());
-			API.registerUsageHandler(new NEIWorldTransmuteHandler());
-			API.registerRecipeHandler(new NEIPhiloSmeltingHandler());
-			API.registerUsageHandler(new NEIPhiloSmeltingHandler());
-			API.registerRecipeHandler(new NEIKleinStarHandler());
-			API.registerUsageHandler(new NEIKleinStarHandler());
-			API.registerRecipeHandler(new NEIAlchBagHandler());
-			API.registerUsageHandler(new NEIAlchBagHandler());
+
+		if (NEI)
+		{
+
+			try
+			{
+				API.registerRecipeHandler(new NEIWorldTransmuteHandler());
+				API.registerUsageHandler(new NEIWorldTransmuteHandler());
+				API.registerRecipeHandler(new NEIPhiloSmeltingHandler());
+				API.registerUsageHandler(new NEIPhiloSmeltingHandler());
+				API.registerRecipeHandler(new NEIKleinStarHandler());
+				API.registerUsageHandler(new NEIKleinStarHandler());
+				API.registerRecipeHandler(new NEIAlchBagHandler());
+				API.registerUsageHandler(new NEIAlchBagHandler());
+			} catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }
