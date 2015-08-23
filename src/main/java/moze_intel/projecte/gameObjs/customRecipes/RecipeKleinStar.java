@@ -8,85 +8,91 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class RecipesKleinStars implements IRecipe
+public class RecipeKleinStar implements IRecipe
 {
 	private ItemStack output;
-	
+	private ItemStack input;
+	private int inputDamage;
+
+	public RecipeKleinStar(ItemStack output, ItemStack input)
+	{
+		this.output = output;
+		this.input = input;
+		this.inputDamage = input.getItemDamage();
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(InventoryCrafting inv, World world)
 	{
 		double storedEMC = 0;
-		int starDamage = -1;
 		int starCount = 0;
-		
+
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			ItemStack input = inv.getStackInSlot(i);
-			
-			if (input == null)
+			ItemStack isInSlot = inv.getStackInSlot(i);
+
+			if (isInSlot == null)
 			{
 				continue;
 			}
-			
-			if (input.getItem() != ObjHandler.kleinStars)
+
+			if (isInSlot.getItem() != ObjHandler.kleinStars)
 			{
 				return false;
 			}
-			
-			if (starDamage == -1)
+
+			if (inputDamage >= 5)
 			{
-				starDamage = input.getItemDamage();
-				
-				if (starDamage >= 5)
+				return false;
+			} else
+			{
+				if (isInSlot.getItemDamage() != inputDamage)
 				{
 					return false;
 				}
 			}
-			else
-			{
-				if (input.getItemDamage() != starDamage)
-				{
-					return false;
-				}
-			}
-			
+
 			starCount++;
-			
+
 			if (starCount > 4)
 			{
 				return false;
 			}
-			
-			storedEMC += KleinStar.getEmc(input);
+
+			storedEMC += KleinStar.getEmc(isInSlot);
 		}
-		
+
 		if (starCount == 4)
 		{
-			output = new ItemStack(ObjHandler.kleinStars, 1, ++starDamage);
 			output.setTagCompound(new NBTTagCompound());
 			KleinStar.setEmc(output, storedEMC);
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) 
+	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
 	{
 		return output.copy();
 	}
 
 	@Override
-	public int getRecipeSize() 
+	public int getRecipeSize()
 	{
 		return 4;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() 
+	public ItemStack getRecipeOutput()
 	{
 		return output;
+	}
+
+	public ItemStack getRecipeInput()
+	{
+		return input;
 	}
 }

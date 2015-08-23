@@ -17,22 +17,22 @@ import java.util.Map.Entry;
 
 // This is literally just ShapelessOreRecipe, unchanged. NEI doesn't auto-pick up shapeless recipes registered this way,
 // thus hiding those recipes from the Shapeless Recipes list.
-public class RecipesShapelessHidden implements IRecipe
+public class RecipeShapelessHidden implements IRecipe
 {
 	private ItemStack output = null;
 	private ArrayList<Object> input = new ArrayList<Object>();
 
-	public RecipesShapelessHidden(Block result, Object... recipe)
+	public RecipeShapelessHidden(Block result, Object... recipe)
 	{
 		this(new ItemStack(result), recipe);
 	}
 
-	public RecipesShapelessHidden(Item result, Object... recipe)
+	public RecipeShapelessHidden(Item result, Object... recipe)
 	{
 		this(new ItemStack(result), recipe);
 	}
 
-	public RecipesShapelessHidden(ItemStack result, Object... recipe)
+	public RecipeShapelessHidden(ItemStack result, Object... recipe)
 	{
 		output = result.copy();
 		for (Object in : recipe)
@@ -63,7 +63,7 @@ public class RecipesShapelessHidden implements IRecipe
 	}
 
 	@SuppressWarnings("unchecked")
-	RecipesShapelessHidden(ShapelessRecipes recipe, Map<ItemStack, String> replacements)
+	RecipeShapelessHidden(ShapelessRecipes recipe, Map<ItemStack, String> replacements)
 	{
 		output = recipe.getRecipeOutput();
 
