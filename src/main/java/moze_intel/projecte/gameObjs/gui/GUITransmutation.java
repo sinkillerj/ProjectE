@@ -52,6 +52,7 @@ public class GUITransmutation extends GuiContainer
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.textBoxFilter.drawTextBox();
 	}
 	
 	@Override
@@ -89,10 +90,6 @@ public class GUITransmutation extends GuiContainer
 			
 			inv.unlearnFlag--;
 		}
-		GL11.glPushMatrix();
-		GL11.glTranslatef(-(float) guiLeft, -(float) guiTop, 0.0F);
-		this.textBoxFilter.drawTextBox();
-		GL11.glPopMatrix();
 	}
 	
 	@Override
