@@ -6,6 +6,6 @@ public class TweakInit
 {
 	public static void init()
 	{
-		MineTweakerAPI.registerClass(HiddenShapeless.class);
+		MineTweakerAPI.registerClass(PhiloStone.class);
 	}
 }

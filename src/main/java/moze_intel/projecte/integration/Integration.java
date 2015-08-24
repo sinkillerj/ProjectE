@@ -2,12 +2,7 @@ package moze_intel.projecte.integration;
 
 import codechicken.nei.api.API;
 import cpw.mods.fml.common.Loader;
-import minetweaker.MineTweakerAPI;
-import moze_intel.projecte.integration.MineTweaker.AlchBag;
-import moze_intel.projecte.integration.MineTweaker.HiddenShapeless;
-import moze_intel.projecte.integration.MineTweaker.KleinStar;
 import moze_intel.projecte.integration.MineTweaker.TweakInit;
-import moze_intel.projecte.integration.MineTweaker.WorldTransmutation;
 import moze_intel.projecte.integration.NEI.NEIAlchBagHandler;
 import moze_intel.projecte.integration.NEI.NEIKleinStarHandler;
 import moze_intel.projecte.integration.NEI.NEIPhiloSmeltingHandler;
