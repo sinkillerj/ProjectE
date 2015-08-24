@@ -6,6 +6,7 @@ import minetweaker.MineTweakerAPI;
 import moze_intel.projecte.integration.MineTweaker.AlchBag;
 import moze_intel.projecte.integration.MineTweaker.HiddenShapeless;
 import moze_intel.projecte.integration.MineTweaker.KleinStar;
+import moze_intel.projecte.integration.MineTweaker.TweakInit;
 import moze_intel.projecte.integration.MineTweaker.WorldTransmutation;
 import moze_intel.projecte.integration.NEI.NEIAlchBagHandler;
 import moze_intel.projecte.integration.NEI.NEIKleinStarHandler;
@@ -33,10 +34,7 @@ public class Integration
 		{
 			try
 			{
-				MineTweakerAPI.registerClass(WorldTransmutation.class);
-				MineTweakerAPI.registerClass(HiddenShapeless.class);
-				MineTweakerAPI.registerClass(KleinStar.class);
-				MineTweakerAPI.registerClass(AlchBag.class);
+				TweakInit.init();
 			} catch (Throwable e)
 			{
 				e.printStackTrace();
