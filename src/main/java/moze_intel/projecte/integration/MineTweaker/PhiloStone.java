@@ -15,11 +15,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@ZenClass("mods.projecte.HiddenShapeless")
-public class HiddenShapeless
+@ZenClass("mods.projecte.PhiloStone")
+public class PhiloStone
 {
 	@ZenMethod
 	public static void addPhiloSmelting(IItemStack output, IItemStack input)
@@ -34,7 +33,7 @@ public class HiddenShapeless
 	}
 
 	@ZenMethod
-	public static void removeRecipe(ItemStack output)
+	public static void removeRecipe(IItemStack output)
 	{
 		MineTweakerAPI.apply(new RemoveRecipeAction(output));
 	}
@@ -47,6 +46,8 @@ public class HiddenShapeless
 		private final ItemStack output;
 		private final ItemStack input;
 		private final ItemStack fuel;
+		private final ItemStack[] inputs = new ItemStack[2];
+		
 
 		IRecipe irecipe;
 
@@ -55,22 +56,29 @@ public class HiddenShapeless
 		public AddRecipeAction(IItemStack output, IItemStack input)
 		{
 			this.output = MineTweakerMC.getItemStack(output);
-			this.input =  MineTweakerMC.getItemStack(input);
-			this.fuel =  new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
-			this.irecipe = new RecipeShapelessHidden(this.output, ObjHandler.philosStone, this.input, this.input, this.input, this.input, this.input, this.input, this.input, fuel);
+			this.input = MineTweakerMC.getItemStack(input);
+			this.fuel = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
+			this.irecipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
+
+			this.inputs[0] = this.input;
+			this.inputs[1] = this.fuel;
 		}
 
 		public AddRecipeAction(IItemStack output, IItemStack input, IItemStack fuel)
 		{
 			this.output = MineTweakerMC.getItemStack(output);
-			this.input =  MineTweakerMC.getItemStack(input);
+			this.input = MineTweakerMC.getItemStack(input);
 			this.fuel = MineTweakerMC.getItemStack(fuel);
-			this.irecipe = new RecipeShapelessHidden(this.output, ObjHandler.philosStone, this.input, this.input, this.input, this.input, this.input, this.input, this.input, fuel);
+			this.irecipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
+
+			this.inputs[0] = this.input;
+			this.inputs[1] = this.fuel;
 		}
 
 		@Override
 		public void apply()
 		{
+			ObjHandler.MAP.put(inputs, output);
 			GameRegistry.addRecipe(irecipe);
 		}
 
@@ -111,9 +119,9 @@ public class HiddenShapeless
 		IRecipe recipe = null;
 		ItemStack remove;
 
-		public RemoveRecipeAction(ItemStack rem)
+		public RemoveRecipeAction(IItemStack rem)
 		{
-			remove = rem;
+			remove = MineTweakerMC.getItemStack(rem);
 		}
 
 		@Override
