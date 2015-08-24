@@ -100,7 +100,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	{
 		if (outputId.equals(id) && getClass() == NEIPhiloSmeltingHandler.class)
 		{
-			for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+			for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
 			{
 				if (entry != null)
 				{
@@ -109,9 +109,9 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 					ingList.add(new ItemStack(ObjHandler.philosStone));
 					for (int i = 0; i < 7; i++)
 					{
-						ingList.add(entry.getKey());
+						ingList.add(entry.getKey()[0]);
 					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
+					ingList.add(entry.getKey()[1]);
 
 					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
 				}
@@ -125,7 +125,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+		for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
 		{
 			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getValue(), result))
 			{
@@ -136,9 +136,9 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 					ingList.add(new ItemStack(ObjHandler.philosStone));
 					for (int i = 0; i < 7; i++)
 					{
-						ingList.add(entry.getKey());
+						ingList.add(entry.getKey()[0]);
 					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
+					ingList.add(entry.getKey()[1]);
 
 					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
 				}
@@ -150,9 +150,9 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+		for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
 		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey(), ingredient))
+			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey()[0], ingredient) || (NEIServerUtils.areStacksSameTypeCrafting(new ItemStack(ObjHandler.philosStone), ingredient)))
 			{
 				if (entry != null)
 				{
@@ -161,9 +161,9 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 					ingList.add(new ItemStack(ObjHandler.philosStone));
 					for (int i = 0; i < 7; i++)
 					{
-						ingList.add(entry.getKey());
+						ingList.add(entry.getKey()[0]);
 					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
+					ingList.add(entry.getKey()[1]);
 
 					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
 				}

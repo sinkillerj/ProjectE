@@ -239,7 +239,7 @@ public class ObjHandler
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
 
-	public static final HashMap<ItemStack, ItemStack> MAP = Maps.newHashMap();
+	public static final HashMap<ItemStack[], ItemStack> MAP = Maps.newHashMap();
 
 	public static void register()
 	{
@@ -659,12 +659,15 @@ public class ObjHandler
 				continue;
 			}
 
-			ItemStack input = entry.getKey();
+			ItemStack[] inputs = new ItemStack[2];
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			MAP.put(input, output);
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+			inputs[0] = entry.getKey();
+			inputs[1] = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
+			
+			MAP.put(inputs, output);
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[1]));
 
 		}
 		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
