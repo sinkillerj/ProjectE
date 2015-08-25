@@ -16,6 +16,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.List;
+import java.util.Map;
 
 @ZenClass("mods.projecte.PhiloStone")
 public class PhiloStone
@@ -33,7 +34,7 @@ public class PhiloStone
 	}
 
 	@ZenMethod
-	public static void removeRecipe(IItemStack output)
+	public static void removePhiloSmelting(IItemStack output)
 	{
 		MineTweakerAPI.apply(new RemoveRecipeAction(output));
 	}
@@ -47,7 +48,7 @@ public class PhiloStone
 		private final ItemStack input;
 		private final ItemStack fuel;
 		private final ItemStack[] inputs = new ItemStack[2];
-		
+
 
 		IRecipe irecipe;
 
@@ -92,6 +93,7 @@ public class PhiloStone
 		public void undo()
 		{
 			CraftingManager.getInstance().getRecipeList().remove(irecipe);
+			ObjHandler.MAP.remove(inputs);
 		}
 
 		@Override
@@ -119,9 +121,31 @@ public class PhiloStone
 		IRecipe recipe = null;
 		ItemStack remove;
 
+		private ItemStack input = null;
+		private ItemStack fuel = null;
+		private final ItemStack[] inputs = new ItemStack[2];
+
+
 		public RemoveRecipeAction(IItemStack rem)
 		{
 			remove = MineTweakerMC.getItemStack(rem);
+			boolean entryFound = false;
+
+			for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
+			{
+				
+				if (entryFound == false && remove.isItemEqual(entry.getValue()))
+				{
+					input = entry.getKey()[0];
+					fuel = entry.getKey()[1];
+
+					this.inputs[0] = this.input;
+					this.inputs[1] = this.fuel;
+					entryFound = true;
+				}
+
+			}
+			
 		}
 
 		@Override
@@ -137,6 +161,7 @@ public class PhiloStone
 					if (irecipe.getRecipeOutput().isItemEqual(remove))
 					{
 						CraftingManager.getInstance().getRecipeList().remove(irecipe);
+						ObjHandler.MAP.remove(inputs);
 					}
 				}
 			}
@@ -152,18 +177,19 @@ public class PhiloStone
 		public void undo()
 		{
 			CraftingManager.getInstance().getRecipeList().add(recipe);
+			ObjHandler.MAP.put(inputs, remove);
 		}
 
 		@Override
 		public String describe()
 		{
-			return "Removing Hidden Crafting Recipe for " + recipe.getRecipeOutput().getDisplayName();
+			return "Removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput().getDisplayName();
 		}
 
 		@Override
 		public String describeUndo()
 		{
-			return "Un-removing Hidden Crafting Recipe for " + recipe.getRecipeOutput().getDisplayName();
+			return "Un-removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput().getDisplayName();
 		}
 
 		@Override
