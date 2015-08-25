@@ -29,11 +29,16 @@ public final class FileHelper
 		}
 	}
 
-	private static void writeDefaultFile(String filename, String directory, List<String> lines)
+	public static void writeDefaultFile(String filename, String directory, List<String> lines)
 	{
 		File folder = new File(directory);
 		File f = new File(folder, filename);
 		PrintWriter writer = null;
+
+		if (!folder.isDirectory())
+		{
+			folder.mkdir();
+		}
 
 		if (f.exists())
 		{
