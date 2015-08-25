@@ -29,6 +29,10 @@ public class TweakInit
 		defaultLines.add("#PhiloStone.addPhiloSmelting(<minecraft:stone_pickaxe>, <minecraft:iron_ingot>);");
 		defaultLines.add("#PhiloStone.addPhiloSmelting(<minecraft:stone_pickaxe>, <minecraft:iron_ingot>, <minecraft:coal>);");
 		defaultLines.add("#PhiloStone.addPhiloSmelting(<minecraft:stone_pickaxe>, <minecraft:iron_ingot>, <minecraft:stone>);");
+		defaultLines.add("");
+		defaultLines.add("#removePhiloSmelting(output)");
+		defaultLines.add("#PhiloStone.removePhiloSmelting(<minecraft:stone_pickaxe>);");
+
 
 		return defaultLines;
 	}
