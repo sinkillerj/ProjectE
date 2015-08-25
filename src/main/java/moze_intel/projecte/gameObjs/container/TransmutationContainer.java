@@ -140,7 +140,7 @@ public class TransmutationContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
 	{
-		if (player.worldObj.isRemote && 10 <= slot && slot <= 25) {
+		if (player.worldObj.isRemote && 10 <= slot && slot <= 25 && getSlot(slot).getHasStack()) {
 			PacketHandler.sendToServer(new SearchUpdatePKT(slot, getSlot(slot).getStack()));
 		}
 		if (slot >= 0 && getSlot(slot) != null)
