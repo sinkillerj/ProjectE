@@ -274,11 +274,9 @@ public class PhiloStone
 				{
 					if (entry.getValue().length > 1 && !entry.getValue()[1].equals(this.sneakOutput))
 					{
-						PELogger.logInfo("First check failed");
 						continue;
 					} else
 					{
-						PELogger.logInfo("Removal Succeeded");
 						it.remove();
 					}
 				}
@@ -341,33 +339,15 @@ public class PhiloStone
 				{
 					if (entry.getValue().length > 1 && !entry.getValue()[1].equals(this.sneakOutput))
 					{
-						PELogger.logInfo("First check failed");
 						continue;
 					} else
 					{
-						PELogger.logInfo("Removal Succeeded");
 						it.remove();
 					}
 				}
 
 			}
-			
-			/*for (Map.Entry<MetaBlock, MetaBlock[]> entry : WorldTransmutations.MAP.entrySet())
-			{
 
-				if (entry.getKey().equals(this.input) && entry.getValue()[0].equals(this.output))
-				{
-					if (entry.getValue().length > 1 && !entry.getValue()[1].equals(this.sneakOutput))
-					{
-						PELogger.logInfo("First check failed");
-						continue;
-					} else
-					{
-						PELogger.logInfo("Removal Succeeded");
-						WorldTransmutations.MAP.remove(entry);
-					}
-				}
-			}*/
 		}
 
 		@Override
