@@ -239,8 +239,6 @@ public class ObjHandler
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
 
-	public static final HashMap<ItemStack[], ItemStack> MAP = Maps.newHashMap();
-
 	public static void register()
 	{
 		// Blocks without ItemBlock

@@ -8,7 +8,6 @@ import minetweaker.api.minecraft.MineTweakerMC;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.utils.MetaBlock;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -75,10 +74,9 @@ public class PhiloStone
 		private final ItemStack output;
 		private final ItemStack input;
 		private final ItemStack fuel;
-		private final ItemStack[] inputs = new ItemStack[2];
 
 
-		IRecipe irecipe;
+		IRecipe recipe;
 
 
 		//GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
@@ -87,10 +85,7 @@ public class PhiloStone
 			this.output = MineTweakerMC.getItemStack(output);
 			this.input = MineTweakerMC.getItemStack(input);
 			this.fuel = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
-			this.irecipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
-
-			this.inputs[0] = this.input;
-			this.inputs[1] = this.fuel;
+			this.recipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
 		}
 
 		public AddRecipeAction(IItemStack output, IItemStack input, IItemStack fuel)
@@ -98,17 +93,13 @@ public class PhiloStone
 			this.output = MineTweakerMC.getItemStack(output);
 			this.input = MineTweakerMC.getItemStack(input);
 			this.fuel = MineTweakerMC.getItemStack(fuel);
-			this.irecipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
-
-			this.inputs[0] = this.input;
-			this.inputs[1] = this.fuel;
+			this.recipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
 		}
 
 		@Override
 		public void apply()
 		{
-			ObjHandler.MAP.put(inputs, output);
-			GameRegistry.addRecipe(irecipe);
+			GameRegistry.addRecipe(recipe);
 		}
 
 		@Override
@@ -120,8 +111,7 @@ public class PhiloStone
 		@Override
 		public void undo()
 		{
-			CraftingManager.getInstance().getRecipeList().remove(irecipe);
-			ObjHandler.MAP.remove(inputs);
+			CraftingManager.getInstance().getRecipeList().remove(recipe);
 		}
 
 		@Override
@@ -149,50 +139,27 @@ public class PhiloStone
 		IRecipe recipe = null;
 		ItemStack remove;
 
-		private ItemStack input = null;
-		private ItemStack fuel = null;
-		private final ItemStack[] inputs = new ItemStack[2];
-
-
 		public RemoveRecipeAction(IItemStack rem)
 		{
 			remove = MineTweakerMC.getItemStack(rem);
-			boolean entryFound = false;
 
-			for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
+			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+			for (IRecipe irecipe : allrecipes)
 			{
-				
-				if (entryFound == false && remove.isItemEqual(entry.getValue()))
+				if (irecipe instanceof RecipeShapelessHidden)
 				{
-					input = entry.getKey()[0];
-					fuel = entry.getKey()[1];
-
-					this.inputs[0] = this.input;
-					this.inputs[1] = this.fuel;
-					entryFound = true;
+					if (remove.isItemEqual(irecipe.getRecipeOutput()))
+					{
+						recipe = irecipe;
+					}
 				}
-
 			}
-			
 		}
 
 		@Override
 		public void apply()
 		{
-
-			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-
-			for (IRecipe irecipe : recipes)
-			{
-				if (irecipe instanceof RecipeShapelessHidden)
-				{
-					if (irecipe.getRecipeOutput().isItemEqual(remove))
-					{
-						CraftingManager.getInstance().getRecipeList().remove(irecipe);
-						ObjHandler.MAP.remove(inputs);
-					}
-				}
-			}
+			CraftingManager.getInstance().getRecipeList().remove(recipe);
 		}
 
 		@Override
@@ -205,7 +172,6 @@ public class PhiloStone
 		public void undo()
 		{
 			CraftingManager.getInstance().getRecipeList().add(recipe);
-			ObjHandler.MAP.put(inputs, remove);
 		}
 
 		@Override
