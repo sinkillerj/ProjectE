@@ -659,15 +659,11 @@ public class ObjHandler
 				continue;
 			}
 
-			ItemStack[] inputs = new ItemStack[2];
+			ItemStack input = entry.getKey();
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			inputs[0] = entry.getKey();
-			inputs[1] = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
-			
-			MAP.put(inputs, output);
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[0], inputs[1]));
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}
 		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");

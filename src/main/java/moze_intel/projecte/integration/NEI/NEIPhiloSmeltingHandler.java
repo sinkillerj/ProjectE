@@ -4,17 +4,16 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.init.Items;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
@@ -100,20 +99,12 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	{
 		if (outputId.equals(id) && getClass() == NEIPhiloSmeltingHandler.class)
 		{
-			for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
+			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+			for (IRecipe irecipe : allrecipes)
 			{
-				if (entry != null)
+				if (irecipe instanceof RecipeShapelessHidden)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
-					{
-						ingList.add(entry.getKey()[0]);
-					}
-					ingList.add(entry.getKey()[1]);
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
+					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
 			}
 		} else
@@ -125,22 +116,14 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
+		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe irecipe : allrecipes)
 		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getValue(), result))
+			if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result))
 			{
-				if (entry != null && entry.getValue() != null)
+				if (irecipe instanceof RecipeShapelessHidden)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
-					{
-						ingList.add(entry.getKey()[0]);
-					}
-					ingList.add(entry.getKey()[1]);
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
+					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
 			}
 		}
@@ -150,22 +133,18 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (Map.Entry<ItemStack[], ItemStack> entry : ObjHandler.MAP.entrySet())
+		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe irecipe : allrecipes)
 		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey()[0], ingredient) || (NEIServerUtils.areStacksSameTypeCrafting(new ItemStack(ObjHandler.philosStone), ingredient)))
+			if (irecipe instanceof RecipeShapelessHidden)
 			{
-				if (entry != null)
+				for (Object is : ((RecipeShapelessHidden) irecipe).getInput())
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
+					if (NEIServerUtils.areStacksSameTypeCrafting((ItemStack) is, ingredient))
 					{
-						ingList.add(entry.getKey()[0]);
+						arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
+						break;
 					}
-					ingList.add(entry.getKey()[1]);
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
 				}
 			}
 		}
