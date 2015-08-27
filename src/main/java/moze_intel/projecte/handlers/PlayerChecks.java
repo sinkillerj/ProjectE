@@ -16,7 +16,7 @@ public final class PlayerChecks
 {
 	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
-	private static boolean hadFlightItem = false;
+	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{
@@ -38,23 +38,23 @@ public final class PlayerChecks
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
-		if (!shouldPlayerFly(player) && hadFlightItem)
+		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))
 		{
 			if (player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
 			
-			hadFlightItem = false;
+			hadFlightItem.remove(player);
 		}
-		else if(shouldPlayerFly(player) && !hadFlightItem)
+		else if(shouldPlayerFly(player) && !hadFlightItem.contains(player))
 		{
 			if (!player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
 			
-			hadFlightItem = true;
+			hadFlightItem.add(player);
 		}
 
 		if (!shouldPlayerResistFire(player))
