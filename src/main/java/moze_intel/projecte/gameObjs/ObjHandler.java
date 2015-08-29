@@ -595,9 +595,6 @@ public class ObjHandler
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
 		{
-			//Unused shapeless recipe to get it to give us EMC pending Blubber's rewrite of some code
-			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
-			
 			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
 			ItemStack output = new ItemStack(kleinStars, 1, i);
 			GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));

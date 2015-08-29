@@ -23,6 +23,7 @@ public class TweakInit
 		List<String> defaultLines = new ArrayList<String>();
 
 		defaultLines.add("import mods.projecte.PhiloStone;");
+		defaultLines.add("import mods.projecte.KleinStar;");
 		defaultLines.add("");
 		defaultLines.add("#Example script for projecte");
 		defaultLines.add("");
@@ -39,6 +40,13 @@ public class TweakInit
 		defaultLines.add("#PhiloStone.addWorldTransmutation(<minecraft:obsidian>, <minecraft:cobblestone>, <minecraft:grass>);");
 		defaultLines.add("# or");
 		defaultLines.add("#PhiloStone.addWorldTransmutation(<minecraft:obsidian>, <minecraft:grass>);");
+		defaultLines.add("");
+		defaultLines.add("");
+		defaultLines.add("#KleinStar.addShaped(<ProjectE:item.pe_klein_star:2>, [[<ProjectE:item.pe_klein_star:1>, <minecraft:dirt>, <ProjectE:item.pe_klein_star:1>], [<minecraft:dirt>, <ProjectE:item.pe_klein_star:1>, <minecraft:dirt>], [<ProjectE:item.pe_klein_star:1>, <minecraft:dirt>, <ProjectE:item.pe_klein_star:1>]]);");
+		defaultLines.add("#KleinStar.addShapeless(<ProjectE:item.pe_klein_star:2>, [<ProjectE:item.pe_klein_star:1>, <ProjectE:item.pe_klein_star:1>]);");
+		defaultLines.add("");
+		defaultLines.add("#KleinStar.removeRecipe(<ProjectE:item.pe_klein_star:2>);");
+		defaultLines.add("");
 
 
 		return defaultLines;

@@ -6,6 +6,8 @@ import com.google.common.collect.Sets;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -156,16 +158,20 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes;
+			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes || recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden;
 		}
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable recipeItems = null;
-			if (recipe instanceof ShapedRecipes) {
+			if (recipe instanceof ShapedRecipes ) {
 				recipeItems = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
 			} else if (recipe instanceof ShapelessRecipes) {
 				recipeItems = ((ShapelessRecipes) recipe).recipeItems;
+			} else if (recipe instanceof RecipeShapedKleinStar) {
+				recipeItems = Arrays.asList(((RecipeShapedKleinStar) recipe).recipeItems);
+			} else if (recipe instanceof RecipeShapelessHidden) {
+				recipeItems = ((RecipeShapelessHidden) recipe).getInput();
 			}
 			List<ItemStack> inputs = new LinkedList<ItemStack>();
 			for (Object o : recipeItems) {
