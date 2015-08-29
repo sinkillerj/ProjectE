@@ -164,7 +164,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable recipeItems = null;
-			if (recipe instanceof ShapedRecipes ) {
+			if (recipe instanceof ShapedRecipes) {
 				recipeItems = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
 			} else if (recipe instanceof ShapelessRecipes) {
 				recipeItems = ((ShapelessRecipes) recipe).recipeItems;
