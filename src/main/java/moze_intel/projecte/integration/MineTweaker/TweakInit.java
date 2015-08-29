@@ -13,6 +13,7 @@ public class TweakInit
 	public static void init()
 	{
 		MineTweakerAPI.registerClass(PhiloStone.class);
+		MineTweakerAPI.registerClass(KleinStar.class);
 
 		FileHelper.writeDefaultFile("projecte_default.zs", "scripts", generateLines());
 	}
@@ -33,11 +34,11 @@ public class TweakInit
 		defaultLines.add("#removePhiloSmelting(output)");
 		defaultLines.add("#PhiloStone.removePhiloSmelting(<minecraft:stone_pickaxe>);");
 		defaultLines.add("");
-		defaultLines.add("#addWorldTransmutation(output,(optional)smeakOutput, input), two or three parameters");
+		defaultLines.add("#addWorldTransmutation(output,(optional)sneakOutput, input), two or three parameters");
 		defaultLines.add("#PhiloStone.removeWorldTransmutation(<minecraft:sand>, <minecraft:cobblestone>, <minecraft:grass>);");
 		defaultLines.add("#PhiloStone.addWorldTransmutation(<minecraft:obsidian>, <minecraft:cobblestone>, <minecraft:grass>);");
 		defaultLines.add("# or");
-		defaultLines.add("#PhiloStone.addWorldTransmutation(<minecraft:obsidian>, <minecraft:grass>)");
+		defaultLines.add("#PhiloStone.addWorldTransmutation(<minecraft:obsidian>, <minecraft:grass>);");
 
 
 		return defaultLines;

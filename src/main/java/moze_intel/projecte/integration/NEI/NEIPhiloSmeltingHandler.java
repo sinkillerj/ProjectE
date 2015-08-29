@@ -4,6 +4,7 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -102,7 +103,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe irecipe : allrecipes)
 			{
-				if (irecipe instanceof RecipeShapelessHidden)
+				if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 				{
 					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
@@ -121,7 +122,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 		{
 			if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result))
 			{
-				if (irecipe instanceof RecipeShapelessHidden)
+				if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 				{
 					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
@@ -136,7 +137,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
-			if (irecipe instanceof RecipeShapelessHidden)
+			if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 			{
 				for (Object is : ((RecipeShapelessHidden) irecipe).getInput())
 				{
