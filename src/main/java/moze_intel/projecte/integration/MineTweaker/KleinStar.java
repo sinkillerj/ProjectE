@@ -15,16 +15,12 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
 @ZenClass("mods.projecte.KleinStar")
 public class KleinStar
 {
-	//TEMP RECIPE GameRegistry.addRecipe(new RecipeKleinStar(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1)));
-	//GameRegistry.addRecipe(new RecipeShapedKleinStar(new ItemStack(kleinStars, 1, 3), "FAF", "   ", "   ", 'F', new ItemStack(kleinStars, 1, 2), 'A', Blocks.dirt));
-
 	@ZenMethod
 	public static void addShaped(IItemStack output, IItemStack[][] inputs)
 	{
