@@ -121,6 +121,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>,  A extends IValueA
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
+		conversion.arithmeticForConversion = this.arithmetic;
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
 			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
