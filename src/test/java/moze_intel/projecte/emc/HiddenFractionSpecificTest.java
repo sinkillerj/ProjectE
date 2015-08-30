@@ -2,6 +2,7 @@ package moze_intel.projecte.emc;
 
 import static org.junit.Assert.assertEquals;
 
+import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 
@@ -75,6 +76,24 @@ public class HiddenFractionSpecificTest
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1024, getValue(values, "enderpearl"));
 		assertEquals(0, getValue(values, "moltenEnder"));
+		assertEquals(768, getValue(values, "bucket"));
+		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
+
+	}
+
+	@Test
+	public void moltenEnderpearlWithConversionArithmetic()
+	{
+		FullFractionArithmetic fullFractionArithmetic = new FullFractionArithmetic();
+		graphMapper.setValueBefore("enderpearl", 1024);
+		graphMapper.setValueBefore("bucket", 768);
+
+		//Conversion using milibuckets with a "don't round anything down"-arithmetic
+		graphMapper.addConversion(250, "moltenEnder", Arrays.asList("enderpearl"), fullFractionArithmetic);
+		graphMapper.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000, "bucket", 1));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(1024, getValue(values, "enderpearl"));
 		assertEquals(768, getValue(values, "bucket"));
 		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
 
