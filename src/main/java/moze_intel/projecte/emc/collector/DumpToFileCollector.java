@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
+import moze_intel.projecte.emc.IValueArithmetic;
 import moze_intel.projecte.emc.IValueGenerator;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
@@ -10,14 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimpleStack, Integer> implements IValueGenerator<NormalizedSimpleStack, Integer>
+public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Integer, A> implements IValueGenerator<NormalizedSimpleStack, Integer, A>
 {
 	public static String currentGroupName="default";
 	CustomConversionFile out = new CustomConversionFile();
-	IValueGenerator<NormalizedSimpleStack, Integer> inner;
+	IValueGenerator<NormalizedSimpleStack, Integer, A> inner;
 	final File file;
-	public DumpToFileCollector(File f, IValueGenerator<NormalizedSimpleStack, Integer> inner)
+	public DumpToFileCollector(File f, IValueGenerator<NormalizedSimpleStack, Integer, A> inner)
 	{
+		super(null); //XXX
 		file = f;
 		this.inner = inner;
 	}
@@ -31,7 +33,7 @@ public class DumpToFileCollector extends AbstractMappingCollector<NormalizedSimp
 	}
 
 	@Override
-	public void addConversion(int outnumber, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredientsWithAmount)
+	public void addConversion(int outnumber, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredientsWithAmount, A arithmeticForConversion)
 	{
 		inner.addConversion(outnumber, output, ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) return;

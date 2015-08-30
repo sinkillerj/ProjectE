@@ -15,12 +15,12 @@ import java.util.Map;
 
 public class HiddenFractionSpecificTest
 {
-	public IValueGenerator<String, Integer> graphMapper;
+	public IValueGenerator<String, Integer, IValueArithmetic<Fraction>> graphMapper;
 
 	@Before
 	public void setup()
 	{
-		graphMapper = new FractionToIntegerTranslator<String>(new SimpleGraphMapper<String, Fraction>(new HiddenFractionArithmetic()));
+		graphMapper = new FractionToIntegerTranslator<String, IValueArithmetic<Fraction>>(new SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>>(new HiddenFractionArithmetic()));
 	}
 
 	@Test

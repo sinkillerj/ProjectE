@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A> implements IValueGenerator<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A> implements IValueGenerator<T, V, A> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected A arithmetic;
