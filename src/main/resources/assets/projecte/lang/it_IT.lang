@@ -150,7 +150,7 @@ pe.bhb.pedestal1=Risucchia i drop vicini
 pe.bhb.pedestal2=Deposita negli inventari adiacenti
 
 pe.body.pedestal1=Ripristina la fame dei giocatori vicini
-pe.body.pedestal2=Mezzo cosciotto ogni %s
+pe.body.pedestal2=Un punto fame ogni %s
 
 pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
 
@@ -256,7 +256,7 @@ pe.key.fire_projectile=Proiettile di Fuoco
 pe.key.mode=Modalità Carica
 
 pe.life.pedestal1=Ripristina sia la fame e sia i cuori
-pe.life.pedestal2=Mezzo cuore e cosciotto ogni %s
+pe.life.pedestal2=Mezzo cuore e un punto fame ogni %s
 
 pe.mind.pedestal1=Risucchia le sfere di XP vicine nella Pietra della Mente
 
