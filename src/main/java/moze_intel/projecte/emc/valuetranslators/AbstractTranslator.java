@@ -5,10 +5,10 @@ import moze_intel.projecte.emc.IValueGenerator;
 
 import java.util.Map;
 
-public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT extends Comparable<OUT>> implements IValueGenerator<T, OUT>
+public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT extends Comparable<OUT>, A extends IValueArithmetic> implements IValueGenerator<T, OUT, A>
 {
-	protected IValueGenerator<T, IN> inner;
-	public AbstractTranslator(IValueGenerator<T, IN> inner)
+	protected IValueGenerator<T, IN, A> inner;
+	public AbstractTranslator(IValueGenerator<T, IN, A> inner)
 	{
 		this.inner = inner;
 	}
@@ -49,5 +49,17 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
 	{
 		inner.setValueFromConversion(outnumber, something, ingredientsWithAmount);
+	}
+
+	@Override
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion)
+	{
+		inner.addConversion(outnumber, output, ingredientsWithAmount, arithmeticForConversion);
+	}
+
+	@Override
+	public void addConversion(int outnumber, T output, Iterable<T> ingredients, A arithmeticForConversion)
+	{
+		inner.addConversion(outnumber, output, ingredients, arithmeticForConversion);
 	}
 }

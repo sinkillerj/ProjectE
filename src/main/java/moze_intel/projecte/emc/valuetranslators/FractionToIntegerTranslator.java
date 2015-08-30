@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.valuetranslators;
 
+import moze_intel.projecte.emc.IValueArithmetic;
 import moze_intel.projecte.emc.IValueGenerator;
 
 import com.google.common.collect.Maps;
@@ -7,9 +8,9 @@ import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Map;
 
-public class FractionToIntegerTranslator<T> extends AbstractTranslator<T, Fraction, Integer>
+public class FractionToIntegerTranslator<T, A extends IValueArithmetic> extends AbstractTranslator<T, Fraction, Integer, A>
 {
-	public FractionToIntegerTranslator(IValueGenerator<T, Fraction> inner)
+	public FractionToIntegerTranslator(IValueGenerator<T, Fraction, A> inner)
 	{
 		super(inner);
 	}

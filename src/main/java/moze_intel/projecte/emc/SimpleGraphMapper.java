@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
+public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends GraphMapper<T, V, A> {
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
 
 	private static boolean logFoundExploits = true;
-	public SimpleGraphMapper(IValueArithmetic<V> arithmetic) {
+	public SimpleGraphMapper(A arithmetic) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
 	}

@@ -11,11 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMappingCollector<T,V> implements IValueGenerator<T, V> {
+public abstract class GraphMapper<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A> implements IValueGenerator<T, V> {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
-	protected IValueArithmetic<V> arithmetic;
-	public GraphMapper(IValueArithmetic<V> arithmetic) {
+	protected A arithmetic;
+	public GraphMapper(A arithmetic) {
+		super(arithmetic);
 		this.arithmetic = arithmetic;
 	}
 
@@ -73,7 +74,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		}
 	}
 
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
@@ -84,6 +85,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
 		conversion.value = arithmetic.getZero();
+		conversion.arithmeticForConversion = arithmeticForConversion;
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
@@ -139,6 +141,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		int outnumber = 1;
 		V value = arithmetic.getZero();
 		Map<T, Integer> ingredientsWithAmount;
+		public A arithmeticForConversion;
 
 		protected Conversion(T output) {
 			this.output = output;

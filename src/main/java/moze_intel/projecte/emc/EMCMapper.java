@@ -51,7 +51,7 @@ public final class EMCMapper
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper()
 		);
-		IValueGenerator<NormalizedSimpleStack, Integer> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
+		IValueGenerator<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack, IValueArithmetic<Fraction>>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
