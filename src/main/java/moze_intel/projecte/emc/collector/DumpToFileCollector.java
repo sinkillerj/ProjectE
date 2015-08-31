@@ -19,7 +19,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	final File file;
 	public DumpToFileCollector(File f, IValueGenerator<NormalizedSimpleStack, Integer, A> inner)
 	{
-		super(null); //XXX
+		super(inner.getArithmetic());
 		file = f;
 		this.inner = inner;
 	}

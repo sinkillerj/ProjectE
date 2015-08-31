@@ -62,4 +62,9 @@ public abstract class AbstractTranslator<T, IN extends Comparable<IN>, OUT exten
 	{
 		inner.addConversion(outnumber, output, ingredients, arithmeticForConversion);
 	}
+
+	@Override
+	public A getArithmetic() {
+		return inner.getArithmetic();
+	}
 }

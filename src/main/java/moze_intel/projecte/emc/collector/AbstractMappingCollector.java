@@ -49,4 +49,8 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 	}
 
 	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion);
+
+	public A getArithmetic() {
+		return this.defaultArithmetic;
+	}
 }
