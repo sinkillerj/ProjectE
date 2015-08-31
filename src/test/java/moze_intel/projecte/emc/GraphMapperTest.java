@@ -3,6 +3,7 @@ package moze_intel.projecte.emc;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Rule;
@@ -700,6 +701,24 @@ public class GraphMapperTest {
 		assertEquals(3, getValue(values, "b"));
 		assertEquals(6, getValue(values, "c"));
 
+	}
+
+	@org.junit.Test
+	public void testNegativeIngredientProblem()
+	{
+		//negativeIngredient has 10 emc at first - this is ued for "r".
+		//Later the negativeIngredient EMC goes down to 5, but "r" is not updated
+		graphMapper.setValueBefore("a", 10);
+		graphMapper.addConversion(1, "negativeIngredient", Arrays.asList("a"));
+		graphMapper.addConversion(2, "b", Arrays.asList("a"));
+		graphMapper.addConversion(1, "negativeIngredient", Arrays.asList("b"));
+		graphMapper.addConversion(1, "r", ImmutableMap.of("a", 2, "negativeIngredient", -1));
+
+		Map<String, Integer> values = graphMapper.generateValues();
+		assertEquals(10, getValue(values, "a"));
+		assertEquals(5, getValue(values, "b"));
+		assertEquals(5, getValue(values, "negativeIngredient"));
+		assertEquals(2*10 - 5, getValue(values, "r"));
 	}
 
 	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
