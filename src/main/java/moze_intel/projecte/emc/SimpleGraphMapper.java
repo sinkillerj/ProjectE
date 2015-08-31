@@ -136,6 +136,19 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 						newValueFor.put(entry.getKey(), ZERO);
 						reasonForChange.put(entry.getKey(), "all conversions dead");
 					}
+				} else {
+					//We found a valid conversion
+					if (values.containsKey(entry.getKey()) && values.get(entry.getKey()).compareTo(ZERO) > 0 && minConversionValue.compareTo(values.get(entry.getKey())) > 0) {
+						//Item has a nonZero EMC value, but all conversions we found would make the item have a higher emc value.
+						//Reset value.
+						if (canOverride(entry.getKey(), minConversionValue))
+						{
+							debugFormat("Value for %s appeared higher than it should. Setting it from %s to %s.", entry.getKey(), values.get(entry.getKey()), minConversionValue);
+							newValueFor.put(entry.getKey(), minConversionValue);
+							reasonForChange.put(entry.getKey(), "Value was higher than all conversions.");
+							values.remove(entry.getKey());
+						}
+					}
 				}
 			}
 		}
