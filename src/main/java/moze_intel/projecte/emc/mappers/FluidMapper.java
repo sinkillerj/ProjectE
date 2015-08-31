@@ -1,21 +1,17 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -25,7 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private static List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
