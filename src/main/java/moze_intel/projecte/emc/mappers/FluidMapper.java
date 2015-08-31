@@ -89,13 +89,15 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.LAVA), 64);
-		Map<String, Integer> fixValue = Maps.newHashMap();
-		fixValue.put("milk", 16);
-		for (Map.Entry<String, Integer> entry : fixValue.entrySet()) {
-			Fluid f = FluidRegistry.getFluid(entry.getKey());
-			if (f != null) {
-				mapper.setValueBefore(NormalizedSimpleStack.getFor(f), entry.getValue());
-			}
+
+		//Add Conversion in case MFR is not present and milk is not an actual fluid
+		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
+		mapper.setValueBefore(fakeMilkFluid, 16);
+		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.milk_bucket), Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
+
+		Fluid milkFluid = FluidRegistry.getFluid("milk");
+		if (milkFluid != null) {
+			mapper.setValueBefore(NormalizedSimpleStack.getFor(milkFluid), 16);
 		}
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
