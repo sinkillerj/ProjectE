@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
@@ -92,10 +93,16 @@ public class HiddenFractionSpecificTest
 		graphMapper.addConversion(250, "moltenEnder", Arrays.asList("enderpearl"), fullFractionArithmetic);
 		graphMapper.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000, "bucket", 1));
 
+		//Without using the full fraction arithmetic
+		graphMapper.addConversion(250, "moltenEnder2", Arrays.asList("enderpearl"));
+		graphMapper.addConversion(1, "moltenEnderBucket2", ImmutableMap.of("moltenEnder2", 1000, "bucket", 1));
+
 		Map<String, Integer> values = graphMapper.generateValues();
 		assertEquals(1024, getValue(values, "enderpearl"));
 		assertEquals(768, getValue(values, "bucket"));
 		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
+
+		assertNotEquals(4*1024+767, getValue(values, "moltenEnderBucket2"));
 
 	}
 
