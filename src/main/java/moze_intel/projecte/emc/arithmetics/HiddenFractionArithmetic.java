@@ -53,7 +53,7 @@ public class HiddenFractionArithmetic implements IValueArithmetic<Fraction>
 			// * the numerator or denumerator exceeds Integer.MAX_VALUE.
 			// Because we only divide by values > 1 it means the denumerator overflowed.
 			// This means we reached something/infinity, which is basically 0.
-			return Fraction.ZERO;
+			return getFree();
 		}
 	}
 
