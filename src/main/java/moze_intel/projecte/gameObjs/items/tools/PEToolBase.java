@@ -141,12 +141,21 @@ public abstract class PEToolBase extends ItemMode
 					ItemStack s = new ItemStack(block);
 					int[] oreIds = OreDictionary.getOreIDs(s);
 
+					String oreName;
 					if (oreIds.length == 0)
 					{
-						continue;
+						if (block == Blocks.brown_mushroom_block || block == Blocks.red_mushroom_block)
+						{
+							oreName = "logWood";
+						}
+						else
+						{
+							continue;
+						}
 					}
-
-					String oreName = OreDictionary.getOreName(oreIds[0]);
+					else {
+						oreName = OreDictionary.getOreName(oreIds[0]);
+					}
 
 					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
 					{
