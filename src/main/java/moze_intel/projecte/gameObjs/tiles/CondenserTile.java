@@ -82,7 +82,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 		if (EMCHelper.doesItemHaveEmc(lock))
 		{
-			int lockEmc = EMCHelper.getEmcValue(lock);
+			int lockEmc = EMCHelper.getEmcValueForCreation(lock);
 
 			if (requiredEmc != lockEmc)
 			{
@@ -128,7 +128,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			}
 			
 			decrStackSize(i, 1);
-			this.addEMC(EMCHelper.getEmcValue(stack));
+			this.addEMC(EMCHelper.getEmcValueForDestruction(stack));
 			break;
 		}
 		

@@ -159,7 +159,7 @@ public class TransmutationInventory implements IInventory
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValueForCreation(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{
@@ -180,7 +180,7 @@ public class TransmutationInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (EMCHelper.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValueForCreation(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
@@ -214,7 +214,7 @@ public class TransmutationInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (emc < EMCHelper.getEmcValue(stack))
+				if (emc < EMCHelper.getEmcValueForCreation(stack))
 				{
 					iter.remove();
 					continue;
