@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -205,11 +206,16 @@ public final class EMCHelper
 		{
 			if (EMCMapper.mapContains(iStack))
 			{
-				return (int) (EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack));
+				return
+						ProjectEConfig.emcMultiplierForDestructionNominator * (int) (
+								EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack)
+						) / ProjectEConfig.emcMultiplierForDestructionDenominator;
 			} else if(!itemStack.getHasSubtypes()){
 				iStack.damage = 0;
 				if (EMCMapper.mapContains(iStack)) {
-					return (int) (EMCMapper.getEmcValue(iStack) * getDamageFactor(itemStack) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack));
+					return ProjectEConfig.emcMultiplierForDestructionNominator *(int) (
+							EMCMapper.getEmcValue(iStack) * getDamageFactor(itemStack) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack)
+					) / ProjectEConfig.emcMultiplierForDestructionDenominator;
 				}
 			}
 		}
