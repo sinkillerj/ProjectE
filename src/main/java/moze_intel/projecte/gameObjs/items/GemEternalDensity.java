@@ -87,7 +87,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		{
 			ItemStack s = inv[i];
 			
-			if (s == null || !EMCHelper.hasEmcValueForDestruction(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
+			if (s == null || !EMCHelper.hasEmcValueForDestruction(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValueForDestruction(s) >= EMCHelper.getEmcValueForCreation(target))
 			{
 				continue;
 			}
@@ -106,7 +106,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					inv[i] = null;
 				}
 				
-				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
+				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValueForDestruction(copy) * copy.stackSize);
 				hasChanged = true;
 				break;
 			}
