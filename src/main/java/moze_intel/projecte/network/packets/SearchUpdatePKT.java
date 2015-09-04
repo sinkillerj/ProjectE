@@ -46,7 +46,6 @@ public class SearchUpdatePKT implements IMessage
 			{
 				TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
 				container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
-				PELogger.logFatal("Wrote Output Slots from UpdatePacket immediately");
 			}
 
 			return null;
