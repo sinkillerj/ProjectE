@@ -98,6 +98,7 @@ public final class EMCHelper
 		return -1;
 	}
 
+	@Deprecated
 	public static boolean doesBlockHaveEmc(Block block)
 	{
 		if (block == null)
@@ -108,6 +109,7 @@ public final class EMCHelper
 		return doesItemHaveEmc(new ItemStack(block));
 	}
 
+	@Deprecated
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
 		if (stack == null)
@@ -130,6 +132,7 @@ public final class EMCHelper
 		return EMCMapper.mapContains(iStack);
 	}
 
+	@Deprecated
 	public static boolean doesItemHaveEmc(Item item)
 	{
 		if (item == null)
@@ -140,6 +143,7 @@ public final class EMCHelper
 		return doesItemHaveEmc(new ItemStack(item));
 	}
 
+	@Deprecated
 	public static int getEmcValue(Block Block)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(Block));
@@ -152,6 +156,7 @@ public final class EMCHelper
 		return 0;
 	}
 
+	@Deprecated
 	public static int getEmcValue(Item item)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(item));
@@ -167,6 +172,8 @@ public final class EMCHelper
 	/**
 	 * Does not consider stack size
 	 */
+
+	@Deprecated
 	public static int getEmcValue(ItemStack stack)
 	{
 		if (stack == null)
