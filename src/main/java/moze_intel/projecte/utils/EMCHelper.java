@@ -61,7 +61,7 @@ public final class EMCHelper
 			{
 				if(FuelMapper.isStackFuel(stack))
 				{
-					int emc = getEmcValue(stack);
+					int emc = getEmcValueForDestruction(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 
 					if (stack.stackSize >= toRemove)
