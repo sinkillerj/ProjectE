@@ -22,7 +22,7 @@ public class SlotLock extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return EMCHelper.hasEmcValueForCreation(stack);
 	}
 	
 	@Override

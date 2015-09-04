@@ -94,7 +94,7 @@ public class CondenserMK2Tile extends CondenserTile
 			return false;
 		}
 
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
+		return !isStackEqualToLock(stack) && EMCHelper.hasEmcValueForDestruction(stack);
 	}
 
 	@Override
