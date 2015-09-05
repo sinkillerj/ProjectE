@@ -1,8 +1,7 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.IValueArithmetic;
-import moze_intel.projecte.emc.IValueGenerator;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
@@ -11,13 +10,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Integer, A> implements IValueGenerator<NormalizedSimpleStack, Integer, A>
+public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Integer, A>
 {
 	public static String currentGroupName="default";
 	CustomConversionFile out = new CustomConversionFile();
-	IValueGenerator<NormalizedSimpleStack, Integer, A> inner;
+	IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
 	final File file;
-	public DumpToFileCollector(File f, IValueGenerator<NormalizedSimpleStack, Integer, A> inner)
+	public DumpToFileCollector(File f, IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner)
 	{
 		super(inner.getArithmetic());
 		file = f;
@@ -59,7 +58,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	}
 
 	@Override
-	public Map<NormalizedSimpleStack, Integer> generateValues()
+	public void finishCollection()
 	{
 		try
 		{
@@ -68,7 +67,6 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 		{
 			e.printStackTrace();
 		}
-
-		return inner.generateValues();
+		inner.finishCollection();
 	}
 }

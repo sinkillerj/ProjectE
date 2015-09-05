@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.IValueArithmetic;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +49,13 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 
 	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion);
 
-	public A getArithmetic() {
+	public A getArithmetic()
+	{
 		return this.defaultArithmetic;
+	}
+
+	@Override
+	public void finishCollection() {
+
 	}
 }
