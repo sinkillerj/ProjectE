@@ -1,6 +1,9 @@
 package moze_intel.projecte.emc;
 
 
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.MappingCollector;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -12,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ComplexGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
+public class ComplexGraphMapper<T, V extends Comparable<V>> extends MappingCollector<T, V>
+{
 	public ComplexGraphMapper(IValueArithmetic arithmetic) {
 		super(arithmetic);
 	}
