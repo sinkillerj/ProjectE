@@ -185,6 +185,10 @@ public final class EMCHelper
 		return getBaseEMC(itemStack);
 	}
 
+	public static int getEmcValueForCreationOrZero(ItemStack itemStack) {
+		return hasEmcValueForCreation(itemStack) ? getEmcValueForCreation(itemStack) : 0;
+	}
+
 	public static int getBaseEMC(ItemStack itemStack) {
 		SimpleStack iStack = new SimpleStack(itemStack);
 
