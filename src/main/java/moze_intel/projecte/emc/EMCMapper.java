@@ -1,10 +1,12 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
+import moze_intel.projecte.emc.generators.DestructionValueMultiplier;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IMultiValueGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
@@ -57,7 +59,8 @@ public final class EMCMapper
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, Fraction> mapper = new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
-		IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new SameValueMultiGenerator<NormalizedSimpleStack, Integer>(valueGenerator);
+		//IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new SameValueMultiGenerator<NormalizedSimpleStack, Integer>(valueGenerator);
+		IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new DestructionValueMultiplier<NormalizedSimpleStack>(valueGenerator, Fraction.getFraction(ProjectEConfig.emcMultiplierForDestructionNominator, ProjectEConfig.emcMultiplierForDestructionDenominator));
 		IMappingCollector<NormalizedSimpleStack, Integer> mappingCollector = new IntToFractionCollector<NormalizedSimpleStack>(mapper);
 
 		Map<NormalizedSimpleStack, Integer> graphMapperValuesForCreation = Maps.newHashMap();
