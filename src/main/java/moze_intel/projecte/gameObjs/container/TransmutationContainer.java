@@ -107,6 +107,7 @@ public class TransmutationContainer extends Container
 		}
 		else if (slotIndex >= 26)
 		{
+			if (!EMCHelper.hasEmcValueForDestruction(stack)) return null;
 			int emc = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack);
 			
 			if (emc == 0 && stack.getItem() != ObjHandler.tome)
