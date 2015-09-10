@@ -99,13 +99,17 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
+			if (EMCHelper.hasEmcValueForCreation(current)) {
+				int value = EMCHelper.getEmcValueForCreation(current);
+				event.toolTip.add(EnumChatFormatting.YELLOW + "Create " + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
+			}
 			if (EMCHelper.hasBaseEmcValueForDestruction(current))
 			{
 				int value = EMCHelper.getBaseEmcValueForDestruction(current);
 
 				StringBuilder builder = new StringBuilder();
 				builder
-						.append(EnumChatFormatting.YELLOW)
+						.append(EnumChatFormatting.YELLOW).append("Destroy ")
 						.append(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix"))
 						.append(" ")
 						.append(EnumChatFormatting.WHITE);
