@@ -74,10 +74,11 @@ public class SyncEmcPKT implements IMessage
 		{
 			if (pkt.packetNum == 0)
 			{
-				PELogger.logInfo("Receiving EMC data from server.");
 				if (pkt.isCreateEmc) {
+					PELogger.logInfo("Receiving create-EMC data from server.");
 					EMCMapper.emcForCreation = Maps.newLinkedHashMap();;
 				} else {
+					PELogger.logInfo("Receiving destroy-EMC data from server.");
 					EMCMapper.emcForDestruction = Maps.newLinkedHashMap();;
 				}
 			}
