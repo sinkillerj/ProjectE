@@ -159,7 +159,7 @@ public final class EMCMapper
 		FuelMapper.loadMap();
 	}
 
-	static boolean shouldBeFiltered(Map.Entry<NormalizedSimpleStack, Integer> entry) {
+	public static boolean shouldBeFiltered(Map.Entry<NormalizedSimpleStack, Integer> entry) {
 		NormalizedSimpleStack normStack = entry.getKey();
 		if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
 			NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;

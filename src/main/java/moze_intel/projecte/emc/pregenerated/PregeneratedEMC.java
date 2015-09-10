@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.pregenerated;
 
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.utils.PELogger;
 
@@ -94,7 +95,10 @@ public class PregeneratedEMC
 	private static Map<String, Integer> serializeMap(Map<NormalizedSimpleStack, Integer> map) {
 		Map<String, Integer> out = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: map.entrySet()) {
-			out.put(entry.getKey().json(), entry.getValue());
+			if (!EMCMapper.shouldBeFiltered(entry))
+			{
+				out.put(entry.getKey().json(), entry.getValue());
+			}
 		}
 		return out;
 	}
