@@ -114,7 +114,7 @@ public final class EMCHelper
 			if (EMCMapper.emcForDestruction.containsKey(iStack))
 			{
 				return true;
-			} else if(!itemStack.getHasSubtypes()){
+			} else if(!itemStack.getHasSubtypes() && itemStack.getMaxDamage() != 0){
 				iStack.damage = 0;
 				return EMCMapper.emcForDestruction.containsKey(iStack);
 			}
@@ -159,7 +159,7 @@ public final class EMCHelper
 			if (EMCMapper.emcForDestruction.containsKey(iStack))
 			{
 				return EMCMapper.emcForDestruction.get(iStack);
-			} else if(!itemStack.getHasSubtypes()){
+			} else if(!itemStack.getHasSubtypes() && itemStack.getMaxDamage() != 0){
 				iStack.damage = 0;
 				if (EMCMapper.emcForDestruction.containsKey(iStack)) {
 					return EMCMapper.emcForDestruction.get(iStack);
