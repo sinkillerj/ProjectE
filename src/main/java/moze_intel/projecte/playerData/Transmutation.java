@@ -35,7 +35,7 @@ public final class Transmutation
 	
 	public static void cacheFullKnowledge()
 	{
-		for (SimpleStack stack : EMCMapper.emc.keySet())
+		for (SimpleStack stack : EMCMapper.emcForCreation.keySet())
 		{
 			if (!stack.isValid())
 			{

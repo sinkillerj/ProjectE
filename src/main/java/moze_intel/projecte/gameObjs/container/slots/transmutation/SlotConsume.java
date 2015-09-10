@@ -30,7 +30,7 @@ public class SlotConsume extends Slot
 		
 		while (!inv.hasMaxedEmc() && stack.stackSize > 0)
 		{
-			toAdd += EMCHelper.getEmcValueForDestruction(stack);
+			toAdd += EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack);
 			stack.stackSize--;
 		}
 		

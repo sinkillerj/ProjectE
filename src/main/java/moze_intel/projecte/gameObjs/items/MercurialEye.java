@@ -170,7 +170,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 									continue;
 								}
 
-								int emc = EMCHelper.getEmcValueForDestruction(new ItemStack(oldBlock, 1, oldMeta));
+								int emc = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(new ItemStack(oldBlock, 1, oldMeta));
 
 								if (emc > reqEmc)
 								{

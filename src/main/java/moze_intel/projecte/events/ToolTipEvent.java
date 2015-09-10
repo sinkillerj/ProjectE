@@ -99,9 +99,9 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (EMCHelper.doesItemHaveEmc(current))
+			if (EMCHelper.hasBaseEmcValueForDestruction(current))
 			{
-				int value = EMCHelper.getEmcAsIfUndamaged(current);
+				int value = EMCHelper.getBaseEmcValueForDestruction(current);
 
 				StringBuilder builder = new StringBuilder();
 				builder

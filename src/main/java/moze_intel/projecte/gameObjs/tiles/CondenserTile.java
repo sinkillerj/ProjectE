@@ -128,7 +128,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			}
 			
 			decrStackSize(i, 1);
-			this.addEMC(EMCHelper.getEmcValueForDestruction(stack));
+			this.addEMC(EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack));
 			break;
 		}
 		
