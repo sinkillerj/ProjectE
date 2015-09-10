@@ -17,20 +17,25 @@ import java.util.Map;
 public class PregeneratedEMC
 {
 	public static class CreateDestroyValueBag {
-		public Map<NormalizedSimpleStack, Integer> create;
-		public Map<NormalizedSimpleStack, Integer> destroy;
+		public Map<String, Integer> create;
+		public Map<String, Integer> destroy;
 	}
-	static final Gson gson =  new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe()).enableComplexMapKeySerialization().setPrettyPrinting().create();
+	static final Gson gson =  new GsonBuilder().setPrettyPrinting().create();
 
 	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction)
 	{
 
 		try {
-			readMultiValueFile(f, mapForCreation, mapForDestruction);
-			return true;
+			if (readMultiValueFile(f, mapForCreation, mapForDestruction))
+			{
+				return true;
+			}
+			 else
+			{
+				PELogger.logFatal("Could not read %s as multi value file!", f);
+			}
 		} catch (Exception e) {
-			PELogger.logFatal("Could not read %s as multi value file!", f);
-			e.printStackTrace();
+			throw new RuntimeException("Could not parse Multi Value Pregen File!", e);
 		}
 		PELogger.logFatal("Fallback to old (same value) file format", f);
 		mapForCreation.clear();
@@ -45,29 +50,52 @@ public class PregeneratedEMC
 		}
 	}
 
-	public static void readMultiValueFile(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws FileNotFoundException {
+	public static boolean readMultiValueFile(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws FileNotFoundException {
 		CreateDestroyValueBag map = gson.fromJson(new FileReader(file), CreateDestroyValueBag.class);
-		mapForCreation.putAll(map.create);
-		mapForCreation.remove(null);
-		mapForDestruction.putAll(map.destroy);
-		mapForDestruction.remove(null);
+		if (map.create == null || map.destroy == null) return false;
+		deserializeMap(map.create, mapForCreation);
+		deserializeMap(map.destroy, mapForDestruction);
+		return true;
+	}
+
+	private static void deserializeMap(Map<String, Integer> from, Map<NormalizedSimpleStack, Integer> to) {
+		for (Map.Entry<String, Integer> entry: from.entrySet())
+		{
+			try
+			{
+				NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.fromSerializedItem(entry.getKey());
+				to.put(normalizedSimpleStack, entry.getValue());
+			} catch (Exception e)
+			{
+				PELogger.logWarn("Could not create NormalizedSimpleStack from '%s' when reading pregen file!", entry.getKey());
+			}
+		}
 	}
 
 	public static Map<NormalizedSimpleStack, Integer> readSameValue(File file) throws FileNotFoundException
 	{
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
-		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(new FileReader(file), type);
-		map.remove(null);
-		return map;
+		Type type = new TypeToken<Map<String, Integer>>() {}.getType();
+		Map<String, Integer> map = gson.fromJson(new FileReader(file), type);
+		Map<NormalizedSimpleStack, Integer> out = Maps.newHashMap();
+		deserializeMap(map, out);
+		return out;
 	}
 
 	public static void write(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws IOException
 	{
 		CreateDestroyValueBag bag = new CreateDestroyValueBag();
-		bag.create = mapForCreation;
-		bag.destroy = mapForDestruction;
+		bag.create = serializeMap(mapForCreation);
+		bag.destroy = serializeMap(mapForDestruction);
 		FileWriter writer = new FileWriter(file);
 		gson.toJson(bag, CreateDestroyValueBag.class, writer);
 		writer.close();
+	}
+
+	private static Map<String, Integer> serializeMap(Map<NormalizedSimpleStack, Integer> map) {
+		Map<String, Integer> out = Maps.newHashMap();
+		for (Map.Entry<NormalizedSimpleStack, Integer> entry: map.entrySet()) {
+			out.put(entry.getKey().json(), entry.getValue());
+		}
+		return out;
 	}
 }
