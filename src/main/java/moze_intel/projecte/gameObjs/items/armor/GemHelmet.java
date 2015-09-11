@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -20,6 +21,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -144,12 +146,15 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         return true;
     }
 
-    public static void doZap(EntityPlayer player)
+    public void doZap(EntityPlayer player)
     {
-        BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
-        if (strikePos != null)
+        if (ProjectEConfig.offensiveAbilities)
         {
-            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ()));
+            BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
+            if (strikePos != null)
+			{
+				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ()));
+			}
         }
     }
 }

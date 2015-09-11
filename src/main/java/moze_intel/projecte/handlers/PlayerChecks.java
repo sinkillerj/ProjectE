@@ -1,6 +1,7 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Sets;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
@@ -15,6 +16,7 @@ public final class PlayerChecks
 {
 	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{
@@ -36,19 +38,23 @@ public final class PlayerChecks
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
-		if (!shouldPlayerFly(player))
+		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))
 		{
 			if (player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
+			
+			hadFlightItem.remove(player);
 		}
-		else
+		else if(shouldPlayerFly(player) && !hadFlightItem.contains(player))
 		{
 			if (!player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
+			
+			hadFlightItem.add(player);
 		}
 
 		if (!shouldPlayerResistFire(player))
@@ -92,6 +98,11 @@ public final class PlayerChecks
 
 	private static boolean shouldPlayerFly(EntityPlayerMP player)
 	{
+		if (!hasSwrg(player))
+		{
+			disableSwrgFlightOverride(player);
+		}
+
 		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
 		{
 			return true;
@@ -230,6 +241,30 @@ public final class PlayerChecks
 			}
 		}
 
+		return false;
+	}
+
+	private static boolean hasSwrg(EntityPlayerMP player)
+	{
+		for (int i = 0; i <= 8; i++)
+		{
+			if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg)
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

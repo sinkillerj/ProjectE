@@ -7,6 +7,8 @@ import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotInput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotLock;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotOutput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotUnlearn;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -138,6 +140,9 @@ public class TransmutationContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
 	{
+		if (player.worldObj.isRemote && 10 <= slot && slot <= 25) {
+			PacketHandler.sendToServer(new SearchUpdatePKT(slot, getSlot(slot).getStack()));
+		}
 		if (slot >= 0 && getSlot(slot) != null)
 		{
 			if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet

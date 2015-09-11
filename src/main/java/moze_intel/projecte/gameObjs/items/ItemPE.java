@@ -75,14 +75,10 @@ public abstract class ItemPE extends Item
 		
 		if (current < amount)
 		{
-			removeEmc(stack, current);
-			amount -= current;
-			
-			double consume = EMCHelper.consumePlayerFuel(player, amount);
+			double consume = EMCHelper.consumePlayerFuel(player, amount - current);
 			
 			if (consume == -1)
 			{
-				addEmcToStack(stack, current);
 				return false;
 			}
 			

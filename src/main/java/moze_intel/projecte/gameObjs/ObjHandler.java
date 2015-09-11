@@ -7,7 +7,6 @@ import moze_intel.projecte.gameObjs.blocks.*;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesAlchemyBags;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesKleinStars;
-import moze_intel.projecte.gameObjs.customRecipes.RecipesShapelessHidden;
 import moze_intel.projecte.gameObjs.entity.*;
 import moze_intel.projecte.gameObjs.items.*;
 import moze_intel.projecte.gameObjs.items.armor.*;
@@ -16,6 +15,120 @@ import moze_intel.projecte.gameObjs.items.itemEntities.*;
 import moze_intel.projecte.gameObjs.items.rings.*;
 import moze_intel.projecte.gameObjs.items.tools.*;
 import moze_intel.projecte.gameObjs.tiles.*;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
+import moze_intel.projecte.gameObjs.blocks.Collector;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
+import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
+import moze_intel.projecte.gameObjs.blocks.FuelBlock;
+import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
+import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
+import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
+import moze_intel.projecte.gameObjs.blocks.Pedestal;
+import moze_intel.projecte.gameObjs.blocks.Relay;
+import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
+import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
+import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
+import moze_intel.projecte.gameObjs.items.CataliticLens;
+import moze_intel.projecte.gameObjs.items.CovalenceDust;
+import moze_intel.projecte.gameObjs.items.DestructionCatalyst;
+import moze_intel.projecte.gameObjs.items.DiviningRodHigh;
+import moze_intel.projecte.gameObjs.items.DiviningRodLow;
+import moze_intel.projecte.gameObjs.items.DiviningRodMedium;
+import moze_intel.projecte.gameObjs.items.EvertideAmulet;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity;
+import moze_intel.projecte.gameObjs.items.HyperkineticLens;
+import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.gameObjs.items.Matter;
+import moze_intel.projecte.gameObjs.items.MercurialEye;
+import moze_intel.projecte.gameObjs.items.PEManual;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone;
+import moze_intel.projecte.gameObjs.items.RepairTalisman;
+import moze_intel.projecte.gameObjs.items.TimeWatch;
+import moze_intel.projecte.gameObjs.items.Tome;
+import moze_intel.projecte.gameObjs.items.TransmutationTablet;
+import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
+import moze_intel.projecte.gameObjs.items.armor.DMArmor;
+import moze_intel.projecte.gameObjs.items.armor.GemChest;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
+import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
+import moze_intel.projecte.gameObjs.items.armor.GemLegs;
+import moze_intel.projecte.gameObjs.items.armor.RMArmor;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemAlchemyChestBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCollectorBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCondenserBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemDMFurnaceBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemFuelBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemMatterBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRMFurnaceBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRelayBlock;
+import moze_intel.projecte.gameObjs.items.itemBlocks.ItemTransmutationBlock;
+import moze_intel.projecte.gameObjs.items.itemEntities.FireProjectile;
+import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
+import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
+import moze_intel.projecte.gameObjs.items.itemEntities.LightningProjectile;
+import moze_intel.projecte.gameObjs.items.itemEntities.LootBallItem;
+import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
+import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
+import moze_intel.projecte.gameObjs.items.rings.Arcana;
+import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
+import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
+import moze_intel.projecte.gameObjs.items.rings.BodyStone;
+import moze_intel.projecte.gameObjs.items.rings.HarvestGoddess;
+import moze_intel.projecte.gameObjs.items.rings.Ignition;
+import moze_intel.projecte.gameObjs.items.rings.IronBand;
+import moze_intel.projecte.gameObjs.items.rings.LifeStone;
+import moze_intel.projecte.gameObjs.items.rings.MindStone;
+import moze_intel.projecte.gameObjs.items.rings.SWRG;
+import moze_intel.projecte.gameObjs.items.rings.SoulStone;
+import moze_intel.projecte.gameObjs.items.rings.VoidRing;
+import moze_intel.projecte.gameObjs.items.rings.Zero;
+import moze_intel.projecte.gameObjs.items.tools.DarkAxe;
+import moze_intel.projecte.gameObjs.items.tools.DarkHammer;
+import moze_intel.projecte.gameObjs.items.tools.DarkHoe;
+import moze_intel.projecte.gameObjs.items.tools.DarkPick;
+import moze_intel.projecte.gameObjs.items.tools.DarkShears;
+import moze_intel.projecte.gameObjs.items.tools.DarkShovel;
+import moze_intel.projecte.gameObjs.items.tools.DarkSword;
+import moze_intel.projecte.gameObjs.items.tools.RedAxe;
+import moze_intel.projecte.gameObjs.items.tools.RedHammer;
+import moze_intel.projecte.gameObjs.items.tools.RedHoe;
+import moze_intel.projecte.gameObjs.items.tools.RedKatar;
+import moze_intel.projecte.gameObjs.items.tools.RedPick;
+import moze_intel.projecte.gameObjs.items.tools.RedShears;
+import moze_intel.projecte.gameObjs.items.tools.RedShovel;
+import moze_intel.projecte.gameObjs.items.tools.RedStar;
+import moze_intel.projecte.gameObjs.items.tools.RedSword;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EnumArmorType;
 import net.minecraft.block.Block;
@@ -139,8 +252,6 @@ public class ObjHandler
 	public static Item windProjectile = new LightningProjectile();
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
-
-	public static final HashMap<ItemStack, ItemStack> MAP = Maps.newHashMap();
 
 	public static void register()
 	{
@@ -343,8 +454,8 @@ public class ObjHandler
 		}
 
 		//Matter Blocks
-		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 0), "DD", "DD", 'D', matter);
-		GameRegistry.addRecipe(new ItemStack(matterBlock, 4, 1), "DD", "DD", 'D', new ItemStack(matter, 1, 1));
+		GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 0), "DD", "DD", 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 1), "DD", "DD", 'D', new ItemStack(matter, 1, 1));
 
 		//Matter Furnaces
 		if (ProjectEConfig.enableDarkFurnace)
@@ -499,7 +610,9 @@ public class ObjHandler
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
 		{
-			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
+			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
+			ItemStack output = new ItemStack(kleinStars, 1, i);
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
 		}
 
 		//Other items
@@ -514,8 +627,8 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(gemLegs), rmLegs, new ItemStack(kleinStars, 1, 5), blackHole, timeWatch);
 		GameRegistry.addShapelessRecipe(new ItemStack(gemFeet), rmFeet, new ItemStack(kleinStars, 1, 5), swrg, swrg);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 0), matterBlock);
-		GameRegistry.addShapelessRecipe(new ItemStack(matter, 1, 1), new ItemStack(matterBlock, 1, 1));
+		GameRegistry.addShapelessRecipe(new ItemStack(matter, 4, 0), matterBlock);
+		GameRegistry.addShapelessRecipe(new ItemStack(matter, 4, 1), new ItemStack(matterBlock, 1, 1));
 
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 0), new ItemStack(fuelBlock, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 1), new ItemStack(fuelBlock, 1, 1));
@@ -533,12 +646,15 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 3), Blocks.dirt);
 
 		//Custom Recipe managment
-		GameRegistry.addRecipe(new RecipesAlchemyBags());
+		for(int i = 1; i <= 15; i++){
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.dye, 1, i)));
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.dye, 1, 15)));
+		}
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
-		GameRegistry.addRecipe(new RecipesKleinStars());
-		RecipeSorter.register("Alchemical Bags Recipes", RecipesAlchemyBags.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register("Klein Star Recipes", RecipesKleinStars.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
+		RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
@@ -561,11 +677,10 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			MAP.put(input, output);
-			GameRegistry.addRecipe(new RecipesShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}
-		RecipeSorter.register("Philosopher's Smelting Recipes", RecipesShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}
 
 	public static class FuelHandler implements IFuelHandler

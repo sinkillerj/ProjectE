@@ -134,18 +134,13 @@ public class TransmutationInventory implements IInventory
 		}
 	}
 
-	public LinkedBlockingQueue<List<ItemStack>> serverOutputSlotUpdates = Queues.newLinkedBlockingQueue();
-
 	public void updateOutputs() {
 		updateOutputs(false);
 	}
 	@SuppressWarnings("unchecked")
 	public void updateOutputs(boolean async)
 	{
-		PELogger.logFatal("updateOutputs(" + async +") isRemote = " + this.player.worldObj.isRemote);
 		if (!this.player.worldObj.isRemote) {
-			if (async) new RuntimeException("updateOutput but async on server").printStackTrace();
-			readUpdate();
 			return;
 		}
 		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
@@ -170,7 +165,6 @@ public class TransmutationInventory implements IInventory
 			
 			if (this.emc < reqEmc)
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 				return;
 			}
 
@@ -280,33 +274,18 @@ public class TransmutationInventory implements IInventory
  				}
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(getOutputSlots(), async));
 	}
 
-	private void readUpdate()
+	public void writeIntoOutputSlot(int slot, ItemStack item)
 	{
-		List<ItemStack> newOutputSlots = serverOutputSlotUpdates.poll();
-		if (newOutputSlots == null) {
-			throw new RuntimeException("Server could not read output-slot-update from client. Playername: " + this.player.getCommandSenderName());
+
+		if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
+		{
+			inventory[slot] = item;
 		}
 		else
 		{
-			writeIntoOutputSlots(newOutputSlots);
-		}
-	}
-
-	public void writeIntoOutputSlots(List<ItemStack> newOutputSlots)
-	{
-		for (int i = 0; i < 16; i++) {
-			ItemStack item = newOutputSlots.get(i);
-			if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
-			{
-				inventory[10 + i] = item;
-			}
-			else
-			{
-				inventory[10 + i] = null;
-			}
+			inventory[slot] = null;
 		}
 	}
 

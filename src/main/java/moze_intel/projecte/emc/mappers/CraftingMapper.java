@@ -6,6 +6,8 @@ import com.google.common.collect.Sets;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -27,7 +29,7 @@ import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper());
+	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
 	Set<Class> canNotMap = Sets.newHashSet();
 	Map<Class, Integer> recipeCount = Maps.newHashMap();
 
@@ -240,5 +242,45 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			}
 			return Arrays.asList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
+	}
+
+	protected static class PECustomRecipeMapper implements IRecipeMapper {
+
+		@Override
+		public String getName() {
+			return "PECustomRecipeMapper";
+		}
+
+		@Override
+		public String getDescription() {
+			return "Maps custom IRecipe's from ProjectE";
+		}
+
+		@Override
+		public boolean canHandle(IRecipe recipe) {
+			return recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden;
+		}
+
+		@Override
+		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
+			Iterable recipeItems = null;
+			if (recipe instanceof RecipeShapedKleinStar) {
+				recipeItems = Arrays.asList(((RecipeShapedKleinStar) recipe).recipeItems);
+			} else if (recipe instanceof RecipeShapelessHidden) {
+				recipeItems = ((RecipeShapelessHidden) recipe).getInput();
+			}
+			List<ItemStack> inputs = new LinkedList<ItemStack>();
+			for (Object o : recipeItems) {
+				if (o == null) continue;
+				if (o instanceof ItemStack) {
+					ItemStack recipeItem = (ItemStack) o;
+					inputs.add(recipeItem);
+				} else {
+					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
+				}
+			}
+			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList()));
+		}
+
 	}
 }
