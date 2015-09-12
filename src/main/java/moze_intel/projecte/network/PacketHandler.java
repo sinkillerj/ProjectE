@@ -67,10 +67,16 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
+		sendFragmentedEmcPacket(player, EMCMapper.emcForCreation, true);
+		sendFragmentedEmcPacket(player, EMCMapper.emcForDestruction, false);
+	}
+
+	public static void sendFragmentedEmcPacket(EntityPlayerMP player, Map<SimpleStack, Integer> map, boolean isCreateEmc)
+	{
 		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(map).entrySet()) // Copy constructor to prevent race condition CME in SP
 		{
 			SimpleStack stack = entry.getKey();
 
@@ -84,7 +90,7 @@ public final class PacketHandler
 
 			if (list.size() >= MAX_PKT_SIZE)
 			{
-				PacketHandler.sendTo(new SyncEmcPKT(counter, list), player);
+				PacketHandler.sendTo(new SyncEmcPKT(counter, isCreateEmc, list), player);
 				list.clear();
 				counter++;
 			}
@@ -92,7 +98,7 @@ public final class PacketHandler
 
 		if (list.size() > 0)
 		{
-			PacketHandler.sendTo(new SyncEmcPKT(-1, list), player);
+			PacketHandler.sendTo(new SyncEmcPKT(-1, isCreateEmc, list), player);
 			list.clear();
 			counter++;
 		}
@@ -103,10 +109,16 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
+		sendFragmentedEmcPacketToAll(EMCMapper.emcForCreation, true);
+		sendFragmentedEmcPacketToAll(EMCMapper.emcForDestruction, false);
+	}
+
+	public static void sendFragmentedEmcPacketToAll(Map<SimpleStack, Integer> map, boolean isCreateEmc)
+	{
 		ArrayList<Integer[]> list = Lists.newArrayList();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(map).entrySet()) // Copy constructor to prevent race condition CME in SP
 		{
 			SimpleStack stack = entry.getKey();
 
@@ -120,7 +132,7 @@ public final class PacketHandler
 
 			if (list.size() >= MAX_PKT_SIZE)
 			{
-				PacketHandler.sendToAll(new SyncEmcPKT(counter, list));
+				PacketHandler.sendToAll(new SyncEmcPKT(counter, isCreateEmc, list));
 				list.clear();
 				counter++;
 			}
@@ -128,7 +140,7 @@ public final class PacketHandler
 
 		if (list.size() > 0)
 		{
-			PacketHandler.sendToAll(new SyncEmcPKT(-1, list));
+			PacketHandler.sendToAll(new SyncEmcPKT(-1, isCreateEmc, list));
 			list.clear();
 			counter++;
 		}

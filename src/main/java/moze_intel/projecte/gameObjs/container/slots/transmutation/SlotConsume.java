@@ -30,7 +30,7 @@ public class SlotConsume extends Slot
 		
 		while (!inv.hasMaxedEmc() && stack.stackSize > 0)
 		{
-			toAdd += EMCHelper.getEmcValue(stack);
+			toAdd += EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack);
 			stack.stackSize--;
 		}
 		
@@ -42,6 +42,6 @@ public class SlotConsume extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !inv.hasMaxedEmc() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
+		return !inv.hasMaxedEmc() && (EMCHelper.hasEmcValueForDestruction(stack) || stack.getItem() == ObjHandler.tome);
 	}
 }

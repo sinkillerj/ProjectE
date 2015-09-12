@@ -31,14 +31,14 @@ public class EMCProxyImpl implements IEMCProxy
     public boolean hasValue(Block block)
     {
         Preconditions.checkNotNull(block);
-        return EMCHelper.doesBlockHaveEmc(block);
+        return EMCHelper.hasEmcValueForCreation(new ItemStack(block));
     }
 
     @Override
     public boolean hasValue(Item item)
     {
         Preconditions.checkNotNull(item);
-        return EMCHelper.doesItemHaveEmc(item);
+        return EMCHelper.hasEmcValueForCreation(new ItemStack(item));
     }
 
     @Override
@@ -52,20 +52,20 @@ public class EMCProxyImpl implements IEMCProxy
     public int getValue(Block block)
     {
         Preconditions.checkNotNull(block);
-        return EMCHelper.getEmcValue(block);
+        return EMCHelper.getEmcValueForCreation(new ItemStack(block));
     }
 
     @Override
     public int getValue(Item item)
     {
         Preconditions.checkNotNull(item);        
-        return EMCHelper.getEmcValue(item);
+        return EMCHelper.getEmcValueForCreation(new ItemStack(item));
     }
 
     @Override
     public int getValue(ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
-        return EMCHelper.getEmcValue(stack);
+        return EMCHelper.getEmcValueForCreation(stack);
     }
 }

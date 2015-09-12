@@ -17,6 +17,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
 	final File file;
 	public DumpToFileCollector(File f, IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner)
+
 	{
 		super(inner.getArithmetic());
 		file = f;

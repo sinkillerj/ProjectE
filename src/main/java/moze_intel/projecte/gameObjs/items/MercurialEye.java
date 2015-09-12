@@ -65,7 +65,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			int newMeta = inventory[1].getItemDamage();
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
+			int reqEmc = EMCHelper.getEmcValueForCreation(inventory[1]);
 
 			byte charge = getCharge(stack);
 			byte mode = this.getMode(stack);
@@ -165,12 +165,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							}
 							else if (mode == TRANSMUTATION_MODE)
 							{
-								if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
+								if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.hasEmcValueForDestruction(new ItemStack(oldBlock, 1, oldMeta)))
 								{
 									continue;
 								}
 
-								int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+								int emc = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(new ItemStack(oldBlock, 1, oldMeta));
 
 								if (emc > reqEmc)
 								{

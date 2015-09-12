@@ -18,7 +18,7 @@ public class SlotUnlearn extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && EMCHelper.doesItemHaveEmc(stack);
+		return !this.getHasStack() && EMCHelper.hasEmcValueForCreation(stack);
 	}
 	
 	@Override

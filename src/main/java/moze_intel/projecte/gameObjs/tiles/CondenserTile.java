@@ -80,9 +80,9 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return;
 		}
 
-		if (EMCHelper.doesItemHaveEmc(lock))
+		if (EMCHelper.hasEmcValueForCreation(lock))
 		{
-			int lockEmc = EMCHelper.getEmcValue(lock);
+			int lockEmc = EMCHelper.getEmcValueForCreation(lock);
 
 			if (requiredEmc != lockEmc)
 			{
@@ -128,7 +128,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			}
 			
 			decrStackSize(i, 1);
-			this.addEMC(EMCHelper.getEmcValue(stack));
+			this.addEMC(EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack));
 			break;
 		}
 		
@@ -452,7 +452,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return false;
 		}
 		
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
+		return !isStackEqualToLock(stack) && EMCHelper.hasEmcValueForDestruction(stack);
 	}
 	
 	@Override
