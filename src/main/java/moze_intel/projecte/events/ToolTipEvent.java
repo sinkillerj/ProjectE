@@ -18,7 +18,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -94,16 +98,53 @@ public class ToolTipEvent
 			{
 				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
 			}
+			if (currentBlock instanceof BlockFluidBase) {
+				event.toolTip.add("Fluid: " + ((BlockFluidBase) currentBlock).getFluid().getName());
+			}
 		}
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (EMCHelper.doesItemHaveEmc(current))
+			if (EMCHelper.hasEmcValueForCreation(current)) {
+				int value = EMCHelper.getEmcValueForCreation(current);
+				event.toolTip.add(EnumChatFormatting.YELLOW + "Create " + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
+			}
+			if (EMCHelper.hasBaseEmcValueForDestruction(current))
 			{
-				int value = EMCHelper.getEmcValue(current);
+				int value = EMCHelper.getBaseEmcValueForDestruction(current);
 
-				event.toolTip.add(EnumChatFormatting.YELLOW +
-						StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
+				StringBuilder builder = new StringBuilder();
+				builder
+						.append(EnumChatFormatting.YELLOW).append("Destroy ")
+						.append(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix"))
+						.append(" ")
+						.append(EnumChatFormatting.WHITE);
+				int emcLostByDamage = (int) (value - value * EMCHelper.getDamageFactor(current));
+				int enchantBonus = EMCHelper.getEnchantEmcBonus(current);
+				int storedBonus = EMCHelper.getStoredEMCBonus(current);
+
+				if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
+					builder.append(String.format("%,d", value));
+					if (emcLostByDamage > 0)
+					{
+						builder.append(EnumChatFormatting.RED).append("-").append(String.format("%,d", emcLostByDamage));
+					}
+					if (enchantBonus > 0)
+					{
+						builder.append(EnumChatFormatting.GOLD).append("+").append(String.format("%,d", enchantBonus));
+					}
+					if (storedBonus > 0)
+					{
+						builder.append(EnumChatFormatting.GREEN).append("+").append(String.format("%,d", storedBonus));
+					}
+					value = value - emcLostByDamage + enchantBonus + storedBonus;
+				} else {
+					value = value - emcLostByDamage + enchantBonus + storedBonus;
+					builder.append(String.format("%,d", value));
+				}
+
+				event.toolTip.add(builder.toString());
+
 
 				if (current.stackSize > 1)
 				{
@@ -124,6 +165,7 @@ public class ToolTipEvent
 					}
 
 				}
+
 			}
 		}
 

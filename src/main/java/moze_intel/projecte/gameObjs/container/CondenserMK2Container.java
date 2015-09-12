@@ -69,7 +69,7 @@ public class CondenserMK2Container extends Container
 				return null;
 			}
 		}
-		else if (!EMCHelper.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 42, false))
+		else if (!EMCHelper.hasEmcValueForDestruction(stack) || !this.mergeItemStack(stack, 1, 42, false))
 		{
 			return null;
 		}

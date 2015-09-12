@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -60,7 +61,7 @@ public final class EMCHelper
 			{
 				if(FuelMapper.isStackFuel(stack))
 				{
-					int emc = getEmcValue(stack);
+					int emc = getEmcValueForDestructionWithDamageAndBonuses(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 
 					if (stack.stackSize >= toRemove)
@@ -98,140 +99,86 @@ public final class EMCHelper
 		return -1;
 	}
 
-	public static boolean doesBlockHaveEmc(Block block)
-	{
-		if (block == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(block));
+	public static boolean hasEmcValueForCreation(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		iStack.qnty = 1;
+		if (iStack.isValid()) return EMCMapper.emcForCreation.containsKey(iStack);
+		return false;
 	}
 
-	public static boolean doesItemHaveEmc(ItemStack stack)
-	{
-		if (stack == null)
+	public static boolean hasBaseEmcValueForDestruction(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		iStack.qnty = 1;
+		if (iStack.isValid())
 		{
-			return false;
-		}
-
-		SimpleStack iStack = new SimpleStack(stack);
-
-		if (!iStack.isValid())
-		{
-			return false;
-		}
-
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
-		{
-			iStack.damage = 0;
-		}
-
-		return EMCMapper.mapContains(iStack);
-	}
-
-	public static boolean doesItemHaveEmc(Item item)
-	{
-		if (item == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(item));
-	}
-
-	public static int getEmcValue(Block Block)
-	{
-		SimpleStack stack = new SimpleStack(new ItemStack(Block));
-
-		if (stack.isValid() && EMCMapper.mapContains(stack))
-		{
-			return EMCMapper.getEmcValue(stack);
-		}
-
-		return 0;
-	}
-
-	public static int getEmcValue(Item item)
-	{
-		SimpleStack stack = new SimpleStack(new ItemStack(item));
-
-		if (stack.isValid() && EMCMapper.mapContains(stack))
-		{
-			return EMCMapper.getEmcValue(stack);
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Does not consider stack size
-	 */
-	public static int getEmcValue(ItemStack stack)
-	{
-		if (stack == null)
-		{
-			return 0;
-		}
-
-		SimpleStack iStack = new SimpleStack(stack);
-
-		if (!iStack.isValid())
-		{
-			return 0;
-		}
-
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
-		{
-			iStack.damage = 0;
-
-			if (EMCMapper.mapContains(iStack))
+			if (EMCMapper.emcForDestruction.containsKey(iStack))
 			{
-				int emc = EMCMapper.getEmcValue(iStack);
-
-				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
-
-				if (relDamage <= 0)
-				{
-					//Not Impossible. Don't use durability or enchants for emc calculation if this happens.
-					return emc;
-				}
-
-				long result = emc * relDamage;
-
-				if (result <= 0)
-				{
-					//Congratulations, big number is big.
-					return emc;
-				}
-
-				result /= stack.getMaxDamage();
-				result += getEnchantEmcBonus(stack);
-
-				result += getStoredEMCBonus(stack);
-
-				if (result > Integer.MAX_VALUE)
-				{
-					return emc;
-				}
-
-				if (result <= 0)
-				{
-					return 1;
-				}
-
-				return (int) result;
+				return true;
+			} else if(!itemStack.getHasSubtypes() && itemStack.getMaxDamage() != 0){
+				iStack.damage = 0;
+				return EMCMapper.emcForDestruction.containsKey(iStack);
 			}
 		}
-		else
+		return false;
+	}
+
+	public static boolean hasEmcValueForDestruction(ItemStack itemStack) {
+		return hasBaseEmcValueForDestruction(itemStack) && getEmcValueForDestructionWithDamageAndBonuses(itemStack) > 0 ;
+	}
+
+	public static int getEmcValueForCreationOrZero(ItemStack itemStack) {
+		return hasEmcValueForCreation(itemStack) ? getEmcValueForCreation(itemStack) : 0;
+	}
+
+	public static int getEmcValueForCreation(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		iStack.qnty = 1;
+		if (iStack.isValid())
 		{
-			if (EMCMapper.mapContains(iStack))
+			if (EMCMapper.emcForCreation.containsKey(iStack))
 			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (int)getStoredEMCBonus(stack);
+				return EMCMapper.emcForCreation.get(iStack);
 			}
 		}
+		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+	}
 
-		return 0;
+	public static int getEmcValueForDestructionWithDamageAndBonuses(ItemStack itemStack) {
+		if (hasBaseEmcValueForDestruction(itemStack))
+		{
+			return (int)(getBaseEmcValueForDestruction(itemStack) * getDamageFactor(itemStack)) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack);
+		}
+		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+	}
+
+	public static int getBaseEmcValueForDestruction(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		iStack.qnty = 1;
+		if (iStack.isValid())
+		{
+			if (EMCMapper.emcForDestruction.containsKey(iStack))
+			{
+				return EMCMapper.emcForDestruction.get(iStack);
+			} else if(!itemStack.getHasSubtypes() && itemStack.getMaxDamage() != 0){
+				iStack.damage = 0;
+				if (EMCMapper.emcForDestruction.containsKey(iStack)) {
+					return EMCMapper.emcForDestruction.get(iStack);
+				}
+			}
+		}
+		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+	}
+
+	public static double getDamageFactor(ItemStack stack) {
+		double relDamage = (stack.getMaxDamage() - stack.getItemDamage());
+
+		if (relDamage <= 0)
+		{
+			//Don't use durability if this happens.
+			return 1;
+		}
+
+		return relDamage / stack.getMaxDamage();
 	}
 
 	public static int getEnchantEmcBonus(ItemStack stack)
@@ -263,9 +210,9 @@ public final class EMCHelper
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
-	public static double getStoredEMCBonus(ItemStack stack) {
+	public static int getStoredEMCBonus(ItemStack stack) {
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
-			return stack.stackTagCompound.getDouble("StoredEMC");
+			return (int) stack.stackTagCompound.getDouble("StoredEMC");
 		}
 		return 0;
 	}

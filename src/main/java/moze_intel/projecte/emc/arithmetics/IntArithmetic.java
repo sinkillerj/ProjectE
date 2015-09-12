@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.arithmetics;
 
-import moze_intel.projecte.emc.IValueArithmetic;
+import java.util.Collection;
 
 public class IntArithmetic implements IValueArithmetic<Integer>{
 	@Override
@@ -14,8 +14,13 @@ public class IntArithmetic implements IValueArithmetic<Integer>{
 	}
 
 	@Override
-	public Integer add(Integer a, Integer b) {
-		return a + b;
+	public Integer add(Collection<Integer> valueList) {
+		int a = 0;
+		for (Integer i: valueList) {
+			if (isFree(i)) continue;
+			a += i;
+		}
+		return a;
 	}
 
 	@Override

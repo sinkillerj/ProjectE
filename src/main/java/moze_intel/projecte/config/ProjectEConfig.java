@@ -58,6 +58,9 @@ public final class ProjectEConfig
 	public static boolean unsafeKeyBinds;
 	public static boolean offensiveAbilities;
 
+	public static int emcMultiplierForDestructionNominator;
+	public static int emcMultiplierForDestructionDenominator;
+
 	public static void init(File configFile)
 	{
 		Configuration config = new Configuration(configFile);
@@ -137,6 +140,9 @@ public final class ProjectEConfig
 
 			pickaxeAoeVeinMining = config.getBoolean("pickaxeAoeVeinMining", "items", false, "Instead of vein mining the ore you right click with your Dark/Red Matter Pick/Star it vein mines all ores in an AOE around you like it did in ProjectE before version 1.4.4.");
 			harvBandGrass = config.getBoolean("harvBandGrass", "items", false, "Allows the Harvest Goddess Band to passively grow tall grass, flowers, etc, on top of grass blocks.");
+
+			emcMultiplierForDestructionNominator = config.getInt("nominator", "emcDestructionMultiplier", 1, 1, 256, "Nominator");
+			emcMultiplierForDestructionDenominator = config.getInt("denominator", "emcDestructionMultiplier", 1, 1, 256, "Denominator");
 			PELogger.logInfo("Loaded configuration file.");
 		}
 		catch (Exception e)

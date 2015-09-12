@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.arithmetics;
 
-import moze_intel.projecte.emc.IValueArithmetic;
+import java.util.Collection;
 
 public class LongArithmetic implements IValueArithmetic<Long> {
 	@Override
@@ -14,8 +14,13 @@ public class LongArithmetic implements IValueArithmetic<Long> {
 	}
 
 	@Override
-	public Long add(Long a, Long b) {
-		return a + b;
+	public Long add(Collection<Long> valueList) {
+		long a = 0;
+		for (Long i: valueList) {
+			if (isFree(i)) continue;
+			a += i;
+		}
+		return a;
 	}
 
 	@Override
