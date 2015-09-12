@@ -716,13 +716,13 @@ public class GraphMapperTest {
 	{
 		//negativeIngredient has 10 emc at first - this is ued for "r".
 		//Later the negativeIngredient EMC goes down to 5, but "r" is not updated
-		graphMapper.setValueBefore("a", 10);
-		graphMapper.addConversion(1, "negativeIngredient", Arrays.asList("a"));
-		graphMapper.addConversion(2, "b", Arrays.asList("a"));
-		graphMapper.addConversion(1, "negativeIngredient", Arrays.asList("b"));
-		graphMapper.addConversion(1, "r", ImmutableMap.of("a", 2, "negativeIngredient", -1));
+		mappingCollector.setValueBefore("a", 10);
+		mappingCollector.addConversion(1, "negativeIngredient", Arrays.asList("a"));
+		mappingCollector.addConversion(2, "b", Arrays.asList("a"));
+		mappingCollector.addConversion(1, "negativeIngredient", Arrays.asList("b"));
+		mappingCollector.addConversion(1, "r", ImmutableMap.of("a", 2, "negativeIngredient", -1));
 
-		Map<String, Integer> values = graphMapper.generateValues();
+		Map<String, Integer> values = valueGenerator.generateValues();
 		assertEquals(10, getValue(values, "a"));
 		assertEquals(5, getValue(values, "b"));
 		assertEquals(5, getValue(values, "negativeIngredient"));
