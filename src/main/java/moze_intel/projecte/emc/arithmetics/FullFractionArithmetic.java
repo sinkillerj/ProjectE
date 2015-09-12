@@ -2,6 +2,8 @@ package moze_intel.projecte.emc.arithmetics;
 
 import org.apache.commons.lang3.math.Fraction;
 
+import java.util.Collection;
+
 public class FullFractionArithmetic implements IValueArithmetic<Fraction>
 {
 	@Override
@@ -17,12 +19,18 @@ public class FullFractionArithmetic implements IValueArithmetic<Fraction>
 	}
 
 	@Override
-	public Fraction add(Fraction a, Fraction b)
+	public Fraction add(Collection<Fraction> ingredientValues)
 	{
-		if (isFree(a)) return b;
-		if (isFree(b)) return a;
-
-		return a.add(b);
+		Fraction value = Fraction.ZERO;
+		for(Fraction f: ingredientValues) {
+			if (isFree(f)) continue;
+			try {
+				value = value.add(f);
+			} catch (ArithmeticException e) {
+				return getFree();
+			}
+		}
+		return value;
 	}
 
 	@Override

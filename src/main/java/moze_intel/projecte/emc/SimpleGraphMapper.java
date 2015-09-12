@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
@@ -190,7 +191,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 	protected V valueForConversionUnsafe(Map<T, V> values, Conversion conversion) throws Exception
 	{
-		V value = conversion.value;
+		List<V> ingredientValues = Lists.newLinkedList();
+		ingredientValues.add(conversion.value);
 		boolean allIngredientsAreFree = true;
 		boolean hasPositiveIngredientValues = false;
 		for (Map.Entry<T, Integer> entry:conversion.ingredientsWithAmount.entrySet()) {
@@ -205,8 +207,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				V ingredientValue = conversion.arithmeticForConversion.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
 					if (!conversion.arithmeticForConversion.isFree(ingredientValue)) {
-						value = conversion.arithmeticForConversion.add(value, ingredientValue);
-						if (ingredientValue.compareTo(ZERO) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
+						//value = conversion.arithmeticForConversion.add(value, ingredientValue);
+						ingredientValues.add(ingredientValue);
+						if (ingredientValue.compareTo(ZERO) > 0) hasPositiveIngredientValues = true;
 						allIngredientsAreFree = false;
 					}
 				} else {
@@ -218,8 +221,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				return ZERO;
 			}
 		}
+		V valueSum = conversion.arithmeticForConversion.add(ingredientValues);
 		//When all the ingredients for are 'free' or ingredients with negative amount made the Conversion have a value <= 0 this item should be free
-		if (allIngredientsAreFree || (hasPositiveIngredientValues && value.compareTo(ZERO) <= 0)) return conversion.arithmeticForConversion.getFree();
-		return value;
+		if (allIngredientsAreFree || (hasPositiveIngredientValues && valueSum.compareTo(ZERO) <= 0)) return conversion.arithmeticForConversion.getFree();
+		return valueSum;
 	}
 }
