@@ -38,28 +38,20 @@ repositories {
         name 'CB Repo'
         url "http://chickenbones.net/maven/"
     }
+    ivy {
+        name "MineTweaker3"
+        artifactPattern "http://minetweaker3.powerofbytes.com/download/[module]-([classifier]-)[revision].[ext]"
+    }
 }
  
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-    //compile "mcp.mobius.waila:Waila:1.5.7a_1.7.10"
 
     compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
     compile "codechicken:CodeChickenLib:1.7.10-1.1.1.110:dev"
     compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
+
+    compile name: 'MineTweaker3', version: 'Dev-1.7.10-3.0.9C', ext: 'jar'
 }
 
 processResources
