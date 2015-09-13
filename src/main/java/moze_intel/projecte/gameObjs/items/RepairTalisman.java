@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import com.cricketcraft.chisel.api.IChiselItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
@@ -101,8 +100,15 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Optional.Method(modid = "chisel")
 	public boolean chiselCheck(ItemStack is)
 	{
-
-		return is.getItem() instanceof IChiselItem;
+		try
+		{
+			Class iChiselItemClass = Class.forName("com.cricketcraft.chisel.api.IChiselItem");
+			return iChiselItemClass != null && iChiselItemClass.isInstance(is.getItem());
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Optional.Method(modid = "Baubles")
