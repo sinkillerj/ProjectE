@@ -1,9 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.cricketcraft.chisel.api.carving.CarvingUtils;
-import com.cricketcraft.chisel.api.carving.ICarvingGroup;
-import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
-import com.cricketcraft.chisel.api.carving.ICarvingVariation;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.emc.collector.IMappingCollector;
@@ -14,8 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -41,7 +40,18 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		ICarvingRegistry carvingRegistry = CarvingUtils.getChiselRegistry();
+		Chisel.ICarvingRegistry carvingRegistry;
+		try
+		{
+
+			Chisel chisel = new Chisel();
+			carvingRegistry = chisel.CarvingUtilsGetChiselRegistry();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return;
+		}
+
 		if (carvingRegistry == null) return;
 		for (String name: chiselBlockNames) {
 			Block block = Block.getBlockFromName("chisel:" + name);
@@ -50,18 +60,24 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 			}
 		}
 
-		for (String name : carvingRegistry.getSortedGroupNames()) {
-			handleCarvingGroup(mapper, config, carvingRegistry.getGroup(name));
+		try
+		{
+			for (String name : carvingRegistry.getSortedGroupNames()) {
+				handleCarvingGroup(mapper, config, carvingRegistry.getGroup(name));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 
-	protected void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, ICarvingGroup group) {
+	protected void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, Chisel.ICarvingGroup group) throws Exception {
 		//XXX: Generates way too much Configs
 		/*if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" + group.getName() + (group.getOreName() == null ? "" :  " and oreName=" + group.getOreName())) ) {
 			return;
 		}*/
 		List<NormalizedSimpleStack> stacks = new ArrayList<NormalizedSimpleStack>();
-		for (ICarvingVariation v : group.getVariations()) {
+		for (Chisel.ICarvingVariation v : group.getVariations()) {
 			stacks.add(NormalizedSimpleStack.getFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
 		}
 		if (group.getOreName() != null) {
@@ -72,6 +88,78 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		for (int i = 1; i < stacks.size(); i++) {
 			mapper.addConversion(1, stacks.get(0), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(i)}));
 			mapper.addConversion(1, stacks.get(i), Arrays.asList(new NormalizedSimpleStack[]{stacks.get(0)}));
+		}
+	}
+
+	private static class Chisel {
+		Class carvingUtilsClass  = Class.forName("com.cricketcraft.chisel.api.carving.CarvingUtils");
+		Method getChiselRegistryMethod = carvingUtilsClass.getMethod("getChiselRegistry");
+		public ICarvingRegistry CarvingUtilsGetChiselRegistry() throws Exception {
+				return new ICarvingRegistry(getChiselRegistryMethod.invoke(null));
+		}
+		public class ICarvingGroup {
+			Class iCarvingGroupClass = Class.forName("com.cricketcraft.chisel.api.carving.ICarvingGroup");
+			Object self;
+			public ICarvingGroup(Object self) throws Exception {
+				this.self = self;
+			}
+
+			Method getOreNameMethod = iCarvingGroupClass.getMethod("getOreName");
+			public String getOreName() throws Exception {
+				return (String)getOreNameMethod.invoke(self);
+			}
+
+			Method getVariationsMethod = iCarvingGroupClass.getMethod("getVariations");
+			public Collection<ICarvingVariation> getVariations() throws Exception {
+				List<ICarvingVariation> variations = Lists.newArrayList();
+				for (Object o: (Collection)getVariationsMethod.invoke(self)) {
+					variations.add(new ICarvingVariation(o));
+				}
+				return variations;
+			}
+		}
+
+		public class ICarvingRegistry
+		{
+			Class iCarvingRegistryClass = Class.forName("com.cricketcraft.chisel.api.carving.ICarvingRegistry");
+			Object self;
+			public ICarvingRegistry(Object carvingRegistry) throws Exception {
+				this.self = carvingRegistry;
+			}
+
+			Method getSortedGroupNamesMethod = iCarvingRegistryClass.getMethod("getSortedGroupNames");
+			public Collection<String> getSortedGroupNames() throws Exception {
+				return (Collection<String>)getSortedGroupNamesMethod.invoke(self);
+			}
+
+			Method getGroupMethod = iCarvingRegistryClass.getMethod("getGroup", String.class);
+			public ICarvingGroup getGroup(String name) throws Exception {
+				return new ICarvingGroup(getGroupMethod.invoke(self, name));
+			}
+		}
+		public class ICarvingVariation
+		{
+			Class iCarvingVariation  = Class.forName("com.cricketcraft.chisel.api.carving.ICarvingVariation");
+			Object self;
+
+			public ICarvingVariation(Object self) throws Exception
+			{
+				this.self = self;
+			}
+
+			Method getBlockMethod = iCarvingVariation.getMethod("getBlock");
+			public Block getBlock() throws Exception {
+				return (Block) getBlockMethod.invoke(self);
+			}
+
+			Method getBlockMetaMethod = iCarvingVariation.getMethod("getBlockMeta");
+			public int getBlockMeta() throws Exception {
+				return (Integer) getBlockMetaMethod.invoke(self);
+			}
+		}
+
+		private Chisel() throws Exception
+		{
 		}
 	}
 }
