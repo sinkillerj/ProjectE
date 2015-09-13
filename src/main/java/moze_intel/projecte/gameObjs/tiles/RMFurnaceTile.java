@@ -103,8 +103,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					flag1 = true;
 				}
 			}
-			else furnaceCookTime = 0;
-			
+
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
