@@ -1,12 +1,8 @@
 package moze_intel.projecte.integration;
 
-import codechicken.nei.api.API;
 import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.integration.MineTweaker.TweakInit;
-import moze_intel.projecte.integration.NEI.NEIAlchBagHandler;
-import moze_intel.projecte.integration.NEI.NEIKleinStarHandler;
-import moze_intel.projecte.integration.NEI.NEIPhiloSmeltingHandler;
-import moze_intel.projecte.integration.NEI.NEIWorldTransmuteHandler;
+import moze_intel.projecte.integration.NEI.NEIInit;
 
 public class Integration
 {
@@ -41,14 +37,7 @@ public class Integration
 
 			try
 			{
-				API.registerRecipeHandler(new NEIWorldTransmuteHandler());
-				API.registerUsageHandler(new NEIWorldTransmuteHandler());
-				API.registerRecipeHandler(new NEIPhiloSmeltingHandler());
-				API.registerUsageHandler(new NEIPhiloSmeltingHandler());
-				API.registerRecipeHandler(new NEIKleinStarHandler());
-				API.registerUsageHandler(new NEIKleinStarHandler());
-				API.registerRecipeHandler(new NEIAlchBagHandler());
-				API.registerUsageHandler(new NEIAlchBagHandler());
+				NEIInit.init();
 			} catch (Throwable e)
 			{
 				e.printStackTrace();
