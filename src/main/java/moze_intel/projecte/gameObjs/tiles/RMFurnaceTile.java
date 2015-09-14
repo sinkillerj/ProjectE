@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 
-public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory
+public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor
 {
 	private final float EMC_CONSUMPTION = 1.6f;
 	public ItemStack[] inventory = new ItemStack[27];
@@ -105,8 +106,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					flag1 = true;
 				}
 			}
-			else furnaceCookTime = 0;
-			
+
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
@@ -743,5 +743,18 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side)
 	{
 		return slot >= outputStorage[0];
+	}
+
+	@Override
+	public double acceptEMC(EnumFacing side, double toAccept)
+	{
+		if (this.getStoredEmc() < EMC_CONSUMPTION)
+		{
+			double needed = EMC_CONSUMPTION - this.getStoredEmc();
+			double accept = Math.min(needed, toAccept);
+			this.addEMC(accept);
+			return accept;
+		}
+		return 0;
 	}
 }

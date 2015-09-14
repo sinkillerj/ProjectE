@@ -36,7 +36,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public boolean isAvailable() {
-		return Loader.isModLoaded("chisel") && "Chisel 2".equals(FMLCommonHandler.instance().findContainerFor("chisel").getName());
+		return Loader.isModLoaded("chisel");
 	}
 
 	@Override
