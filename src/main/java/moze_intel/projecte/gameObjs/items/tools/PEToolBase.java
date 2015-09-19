@@ -2,9 +2,12 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
@@ -52,7 +55,6 @@ public abstract class PEToolBase extends ItemMode
 	public static final float REDSWORD_BASE_ATTACK = 16.0F;
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
-	public static final float KATAR_DEATHATTACK = 1000.0F;
 	protected String pePrimaryToolClass;
 	protected String peToolMaterial;
 	protected Set<Material> harvestMaterials;
@@ -115,9 +117,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Deforests in an AOE. Charge affects the AOE. Optional per-block EMC cost.
+	 * Clears the given OD name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player, int emcCost)
+	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost)
 	{
 		byte charge = getCharge(stack);
 		if (charge == 0 || world.isRemote)
@@ -157,7 +159,7 @@ public abstract class PEToolBase extends ItemMode
 						oreName = OreDictionary.getOreName(oreIds[0]);
 					}
 
-					if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
+					if (odName.equals(oreName))
 					{
 						ArrayList<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, block, stack, x, y, z);
 
@@ -166,6 +168,10 @@ public abstract class PEToolBase extends ItemMode
 						{
 							drops.addAll(blockDrops);
 							world.setBlockToAir(x, y, z);
+							if (world.rand.nextInt(5) == 0)
+							{
+								PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y, z), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+							}
 						}
 					}
 				}

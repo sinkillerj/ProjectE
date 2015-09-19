@@ -30,7 +30,8 @@ public class DarkAxe extends PEToolBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		deforestAOE(world, stack, player, 0);
+		clearOdAOE(world, stack, player, "logWood", 0);
+		clearOdAOE(world, stack, player, "treeLeaves", 0);
 		return stack;
 	}
 
