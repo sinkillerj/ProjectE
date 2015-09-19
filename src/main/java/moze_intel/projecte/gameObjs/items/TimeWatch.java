@@ -63,7 +63,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		if (!world.isRemote)
 		{
-			if (!ProjectEConfig.enableTimeWatch)
+			if (!ProjectEConfig.getBooleanProp("enableTimeWatch"))
 			{
 				player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.disabled"));
 				return stack;
@@ -97,7 +97,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			return;
 		}
 
-		if (!ProjectEConfig.enableTimeWatch)
+		if (!ProjectEConfig.getBooleanProp("enableTimeWatch"))
 		{
 			return;
 		}
@@ -387,16 +387,16 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		Now the same as activated watch in hand but more powerful.
 		Can be changed at sinkillerj's discretion. */
 
-		if (!world.isRemote && ProjectEConfig.enableTimeWatch)
+		if (!world.isRemote && ProjectEConfig.getBooleanProp("enableTimeWatch"))
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
-			if (ProjectEConfig.timePedBonus > 0) {
-				speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
-				speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);
+			if (ProjectEConfig.getIntProp("timePedBonus") > 0) {
+				speedUpTileEntities(world, ProjectEConfig.getIntProp("timePedBonus"), bBox);
+				speedUpRandomTicks(world, ProjectEConfig.getIntProp("timePedBonus"), bBox);
 			}
 
-			if (ProjectEConfig.timePedMobSlowness < 1.0F) {
-				slowMobs(world, bBox, ProjectEConfig.timePedMobSlowness);
+			if (ProjectEConfig.getFloatProp("timePedMobSlowness") < 1.0F) {
+				slowMobs(world, bBox, ProjectEConfig.getFloatProp("timePedMobSlowness"));
 			}
 		}
 	}
@@ -405,14 +405,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.timePedBonus > 0) {
+		if (ProjectEConfig.getIntProp("timePedBonus") > 0) {
 			list.add(EnumChatFormatting.BLUE +
-				String.format(StatCollector.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
+				String.format(StatCollector.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.getIntProp("timePedBonus")));
 		}
-		if (ProjectEConfig.timePedMobSlowness < 1.0F)
+		if (ProjectEConfig.getFloatProp("timePedMobSlowness") < 1.0F)
 		{
 			list.add(EnumChatFormatting.BLUE +
-					String.format(StatCollector.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
+					String.format(StatCollector.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.getFloatProp("timePedMobSlowness")));
 		}
 		return list;
 	}

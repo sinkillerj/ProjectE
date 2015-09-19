@@ -65,12 +65,9 @@ public class RecipeAlchemyBag implements IRecipe
 			if (inputBag.getItemDamage() != 0 && inputDye.getItemDamage() == 15)
 			{
 				return true;
-			} else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15)
-			{
-				return true;
 			} else
 			{
-				return false;
+				return inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15;
 			}
 		}
 		return false;

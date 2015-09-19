@@ -53,7 +53,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.getIntProp("archangelPedCooldown") != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -69,7 +69,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 						world.spawnEntityInWorld(arrow);
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.archangelPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.getIntProp("archangelPedCooldown"));
 			}
 			else
 			{
@@ -82,10 +82,10 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.archangelPedCooldown != -1) {
+		if (ProjectEConfig.getIntProp("archangelPedCooldown") != -1) {
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+					StatCollector.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("archangelPedCooldown"))));
 		}
 		return list;
 	}

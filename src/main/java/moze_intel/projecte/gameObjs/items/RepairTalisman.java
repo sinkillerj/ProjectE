@@ -172,7 +172,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.getIntProp("repairPedCooldown") != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -182,7 +182,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				{
 					repairAllItems(player);
 				}
-				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.getIntProp("repairPedCooldown"));
 			}
 			else
 			{
@@ -195,11 +195,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.repairPedCooldown != -1)
+		if (ProjectEConfig.getIntProp("repairPedCooldown") != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.repairtalisman.pedestal1"));
 			list.add(EnumChatFormatting.BLUE +
-					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
+					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("repairPedCooldown"))));
 		}
 		return list;
 	}

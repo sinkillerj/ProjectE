@@ -40,7 +40,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
+		boolean flag = ProjectEConfig.getBooleanProp("useOldDamage");
 		attackWithCharge(stack, damaged, damager, flag ? KATAR_BASE_ATTACK : 1.0F);
 		return true;
 	}
@@ -95,7 +95,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
+		attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.getFloatProp("katarDeathAura"), 0);
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (ProjectEConfig.getBooleanProp("useOldDamage"))
 		{
 			return super.getAttributeModifiers(stack);
 		}

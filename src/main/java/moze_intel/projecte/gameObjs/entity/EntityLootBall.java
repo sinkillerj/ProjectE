@@ -154,8 +154,6 @@ public class EntityLootBall extends Entity
 						{
 							playSound = true;
 						}
-							
-						continue;
 					}
 					else
 					{
@@ -195,8 +193,6 @@ public class EntityLootBall extends Entity
 				{
 					this.setDead();
 				}
-				
-				return;
 			}
 		}
 		else
@@ -217,8 +213,6 @@ public class EntityLootBall extends Entity
 						{
 							playSound = true;
 						}
-							
-						continue;
 					}
 					else
 					{

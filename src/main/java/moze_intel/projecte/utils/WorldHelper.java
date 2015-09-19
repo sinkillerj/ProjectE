@@ -118,7 +118,7 @@ public final class WorldHelper
 
 		ItemHelper.compactItemList(drops);
 
-		if (ProjectEConfig.useLootBalls)
+		if (ProjectEConfig.getBooleanProp("useLootBalls"))
 		{
 			world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
 		}
@@ -439,7 +439,7 @@ public final class WorldHelper
 						}
 						else if (world.rand.nextInt(chance) == 0)
 						{
-							if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
+							if (ProjectEConfig.getBooleanProp("harvBandGrass") || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 							{
 								growable.func_149853_b(world, world.rand, x, y, z);
 							}
@@ -575,7 +575,7 @@ public final class WorldHelper
 					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (!isSWRG && ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
+					if (!isSWRG && ProjectEConfig.getBooleanProp("interdictionMode") && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}

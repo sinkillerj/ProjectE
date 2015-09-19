@@ -173,7 +173,7 @@ public class TransmutationRenderingEvent
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.getBooleanProp("pulsatingOverlay") ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tessellator = Tessellator.instance;
 		

@@ -164,8 +164,6 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 			{
 				inventory[nextIndex] = current;
 				decrStackSize(i, current.stackSize);
-				
-				continue;
 			}
 			else if (ItemHelper.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
 			{
@@ -181,8 +179,6 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 					inventory[nextIndex].stackSize += missingForFullStack;
 					decrStackSize(i, missingForFullStack);
 				}
-				
-				continue;
 			}
 		}
 	}

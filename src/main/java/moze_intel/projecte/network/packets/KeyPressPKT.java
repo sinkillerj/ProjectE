@@ -79,7 +79,7 @@ public class KeyPressPKT implements IMessage
 					{
 						((IItemCharge) stack.getItem()).changeCharge(player, stack);
 					}
-					else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+					else if (stack == null || ProjectEConfig.getBooleanProp("unsafeKeyBinds"))
 					{
 						if (GemArmorBase.hasAnyPiece(player))
 						{
@@ -92,7 +92,7 @@ public class KeyPressPKT implements IMessage
 					if (stack != null && stack.getItem() instanceof IExtraFunction)
 					{
 						((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
-					} else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+					} else if (stack == null || ProjectEConfig.getBooleanProp("unsafeKeyBinds"))
 					{
 						if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
 						{
@@ -110,7 +110,7 @@ public class KeyPressPKT implements IMessage
 							}
 							PlayerChecks.resetCooldown(player);
 						}
-					} else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+					} else if (stack == null || ProjectEConfig.getBooleanProp("unsafeKeyBinds"))
 					{
 						if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[3] != null && player.inventory.armorInventory[3].getItem() == ObjHandler.gemHelmet)
 						{

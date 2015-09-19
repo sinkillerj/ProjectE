@@ -56,7 +56,7 @@ public class RedStar extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
+		boolean flag = ProjectEConfig.getBooleanProp("useOldDamage");
 		attackWithCharge(stack, damaged, damager, flag ? STAR_BASE_ATTACK : 1.0F);
 		return true;
 	}
@@ -73,7 +73,7 @@ public class RedStar extends PEToolBase
 	{
 		if (!world.isRemote)
 		{
-			if (ProjectEConfig.pickaxeAoeVeinMining)
+			if (ProjectEConfig.getBooleanProp("pickaxeAoeVeinMining"))
 			{
 				mineOreVeinsInAOE(stack, player);
 			}
@@ -90,7 +90,7 @@ public class RedStar extends PEToolBase
 
 				if (block instanceof BlockGravel || block instanceof BlockClay)
 				{
-					if (ProjectEConfig.pickaxeAoeVeinMining)
+					if (ProjectEConfig.getBooleanProp("pickaxeAoeVeinMining"))
 					{
 						digAOE(stack, world, player, false, 0);
 					}
@@ -101,7 +101,7 @@ public class RedStar extends PEToolBase
 				}
 				else if (ItemHelper.isOre(block, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ)))
 				{
-					if (!ProjectEConfig.pickaxeAoeVeinMining)
+					if (!ProjectEConfig.getBooleanProp("pickaxeAoeVeinMining"))
 					{
 						tryVeinMine(stack, player, mop);
 					}
@@ -134,7 +134,7 @@ public class RedStar extends PEToolBase
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (ProjectEConfig.getBooleanProp("useOldDamage"))
 		{
 			return super.getAttributeModifiers(stack);
 		}

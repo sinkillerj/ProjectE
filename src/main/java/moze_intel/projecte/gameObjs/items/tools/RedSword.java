@@ -22,7 +22,7 @@ public class RedSword extends DarkSword
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
+		boolean flag = ProjectEConfig.getBooleanProp("useOldDamage");
 		attackWithCharge(stack, damaged, damager, flag ? REDSWORD_BASE_ATTACK : 1.0F);
 		return true;
 	}

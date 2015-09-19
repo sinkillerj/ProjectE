@@ -261,7 +261,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.getIntProp("swrgPedCooldown") != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() <= 0)
@@ -271,7 +271,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 				{
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
 				}
-				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.getIntProp("swrgPedCooldown"));
 			}
 			else
 			{
@@ -284,11 +284,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.swrgPedCooldown != -1)
+		if (ProjectEConfig.getIntProp("swrgPedCooldown") != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.swrg.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
+					StatCollector.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("swrgPedCooldown"))));
 		}
 		return list;
 	}
