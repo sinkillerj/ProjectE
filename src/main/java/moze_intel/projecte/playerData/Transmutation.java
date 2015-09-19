@@ -24,15 +24,12 @@ import java.util.List;
 
 public final class Transmutation 
 {
-	@Deprecated
-	private static final LinkedHashMap<String, LinkedList<ItemStack>> MAP = new LinkedHashMap<String, LinkedList<ItemStack>>();
-	@Deprecated
-	private static final LinkedHashMap<String, Double> EMC_STORAGE = new LinkedHashMap<String, Double>();
-	@Deprecated
-	private static final LinkedList<String> TOME_KNOWLEDGE = new LinkedList<String>();
-
 	private static final List<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newArrayList();
-	
+
+	public static void clearCache() {
+		CACHED_TOME_KNOWLEDGE.clear();
+	}
+
 	public static void cacheFullKnowledge()
 	{
 		for (SimpleStack stack : EMCMapper.emc.keySet())
@@ -174,108 +171,4 @@ public final class Transmutation
 		PacketHandler.sendTo(new KnowledgeSyncPKT(TransmutationProps.getDataFor(player).saveForPacket()), (EntityPlayerMP) player);
 		PELogger.logDebug("** SENT TRANSMUTATION DATA **");
 	}
-
-	public static void clearCache()
-	{
-		MAP.clear();
-		TOME_KNOWLEDGE.clear();
-		EMC_STORAGE.clear();
-		CACHED_TOME_KNOWLEDGE.clear();
-	}
-
-	public static boolean hasLegacyData(EntityPlayer player)
-	{
-		return MAP.containsKey(player.getCommandSenderName())
-				|| TOME_KNOWLEDGE.contains(player.getCommandSenderName())
-				|| EMC_STORAGE.containsKey(player.getCommandSenderName());
-	}
-
-	public static NBTTagCompound migratePlayerData(EntityPlayer player)
-	{
-		NBTTagCompound properties = new NBTTagCompound();
-		properties.setDouble("transmutationEmc", legacyGetStoredEmc(player.getCommandSenderName()));
-		properties.setBoolean("tome", legacyHasFullKnowledge(player.getCommandSenderName()));
-
-		NBTTagList list = new NBTTagList();
-		if (!properties.getBoolean("tome"))
-		{
-			for (ItemStack s : legacyGetKnowledge(player.getCommandSenderName()))
-			{
-				list.appendTag(s.writeToNBT(new NBTTagCompound()));
-			}
-		}
-
-		properties.setTag("knowledge", list);
-		return properties;
-	}
-
-	@Deprecated
-	public static List<ItemStack> legacyGetKnowledge(String username)
-	{
-		if (TOME_KNOWLEDGE.contains(username))
-		{
-			return CACHED_TOME_KNOWLEDGE;
-		}
-
-		if (MAP.containsKey(username))
-		{
-			LinkedList<ItemStack> list = MAP.get(username);
-
-			for (int i = 0; i < list.size(); i++)
-			{
-				if (!EMCHelper.doesItemHaveEmc(list.get(i)))
-				{
-					list.remove(i);
-				}
-			}
-
-			return list;
-		}
-
-		return new LinkedList<ItemStack>();
-	}
-
-	@Deprecated
-	public static void legacySetAllKnowledge(String username)
-	{
-		if (!TOME_KNOWLEDGE.contains(username))
-		{
-			TOME_KNOWLEDGE.add(username);
-
-			MAP.remove(username);
-		}
-	}
-
-	@Deprecated
-	public static void legacySetKnowledge(String username, LinkedList<ItemStack> list)
-	{
-		if (!TOME_KNOWLEDGE.contains(username))
-		{
-			MAP.put(username, list);
-		}
-	}
-
-	@Deprecated
-	public static boolean legacyHasFullKnowledge(String username)
-	{
-		return TOME_KNOWLEDGE.contains(username);
-	}
-
-	@Deprecated
-	public static double legacyGetStoredEmc(String username)
-	{
-		if (EMC_STORAGE.containsKey(username))
-		{
-			return EMC_STORAGE.get(username);
-		}
-
-		return 0;
-	}
-
-	@Deprecated
-	public static void legacySetStoredEmc(String username, double emc)
-	{
-		EMC_STORAGE.put(username, emc);
-	}
-
 }
