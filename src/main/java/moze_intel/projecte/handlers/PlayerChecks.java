@@ -23,7 +23,7 @@ public final class PlayerChecks
 	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
 
 	public static void resetCooldown(EntityPlayerMP player) {
-		projectileCooldowns.put(player, ProjectEConfig.getIntProp("projectileCooldown"));
+		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);
 	}
 
 	public static int getCooldown(EntityPlayerMP player) {

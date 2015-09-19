@@ -144,7 +144,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.getIntProp("ignitePedCooldown") != -1)
+		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -156,7 +156,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 					living.setFire(8);
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.getIntProp("ignitePedCooldown"));
+				tile.setActivityCooldown(ProjectEConfig.ignitePedCooldown);
 			}
 			else
 			{
@@ -169,11 +169,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.getIntProp("ignitePedCooldown") != -1)
+		if (ProjectEConfig.ignitePedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.ignition.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("ignitePedCooldown"))));
+					StatCollector.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
 		}
 		return list;
 	}

@@ -48,10 +48,10 @@ public class ToolTipEvent
 			event.toolTip.add(StatCollector.translateToLocal("pe.manual.tooltip1"));
 		}
 
-		if (ProjectEConfig.getBooleanProp("showPedestalTooltip")
+		if (ProjectEConfig.showPedestalTooltip
 			&& currentItem instanceof IPedestalItem)
 		{
-			if (ProjectEConfig.getBooleanProp("showPedestalTooltipInGUI"))
+			if (ProjectEConfig.showPedestalTooltipInGUI)
 			{
 				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
 				{
@@ -83,12 +83,12 @@ public class ToolTipEvent
 			
 		}
 
-		if (ProjectEConfig.getBooleanProp("showUnlocalizedNames"))
+		if (ProjectEConfig.showUnlocalizedNames)
 		{
 			event.toolTip.add("UN: " + Item.itemRegistry.getNameForObject(current.getItem()));
 		}
 		
-		if (ProjectEConfig.getBooleanProp("showODNames"))
+		if (ProjectEConfig.showODNames)
 		{
 			for (int id : OreDictionary.getOreIDs(current))
 			{
@@ -96,7 +96,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.getBooleanProp("showEMCTooltip"))
+		if (ProjectEConfig.showEMCTooltip)
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
@@ -127,7 +127,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.getBooleanProp("showStatTooltip"))
+		if (ProjectEConfig.showStatTooltip)
 		{
 			/**
 			 * Collector ToolTips

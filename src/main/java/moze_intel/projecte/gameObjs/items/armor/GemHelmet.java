@@ -148,7 +148,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public void doZap(EntityPlayer player)
     {
-        if (ProjectEConfig.getBooleanProp("offensiveAbilities"))
+        if (ProjectEConfig.offensiveAbilities)
         {
             Vec3 strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)

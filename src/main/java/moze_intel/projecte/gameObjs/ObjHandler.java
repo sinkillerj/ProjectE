@@ -379,7 +379,7 @@ public class ObjHandler
 		ItemStack diamondReplacement = new ItemStack(Items.diamond);
 		ItemStack diamondBlockReplacement = new ItemStack(Blocks.diamond_block);
 
-		if (ProjectEConfig.getBooleanProp("altCraftingMat"))
+		if (ProjectEConfig.altCraftingMat)
 		{
 			diamondReplacement = new ItemStack(Items.nether_star);
 			diamondBlockReplacement = new ItemStack(Items.nether_star);
@@ -392,7 +392,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', diamondReplacement);
 
 		//Interdiction torch
-		if (ProjectEConfig.getBooleanProp("enableITorch"))
+		if (ProjectEConfig.enableITorch)
 		{
 			GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.redstone_torch, 'G', Items.glowstone_dust, 'D', Items.diamond, 'P', philosStone);
 		}
@@ -409,7 +409,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 1), "ADA", "ADA", "ADA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
 
 		//Alchemical Chest
-		if (ProjectEConfig.getBooleanProp("enableAlcChest"))
+		if (ProjectEConfig.enableAlcChest)
 		{
 			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'S', Blocks.stone, 'I', Items.iron_ingot, 'C', Blocks.chest);
 		}
@@ -421,19 +421,19 @@ public class ObjHandler
 		}
 
 		//Condenser
-		if (ProjectEConfig.getBooleanProp("enableCondenser"))
+		if (ProjectEConfig.enableCondenser)
 		{
 			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.diamond, 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
 		}
 
 		//Condenser MK2
-		if (ProjectEConfig.getBooleanProp("enableCondenser2"))
+		if (ProjectEConfig.enableCondenser2)
 		{
 			GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
 		}
 
 		//Transmutation Table
-		if (ProjectEConfig.getBooleanProp("enableTransTable"))
+		if (ProjectEConfig.enableTransTable)
 		{
 			GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.stone, 'O', Blocks.obsidian, 'P', philosStone);
 		}
@@ -443,45 +443,45 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 1), "DD", "DD", 'D', new ItemStack(matter, 1, 1));
 
 		//Matter Furnaces
-		if (ProjectEConfig.getBooleanProp("enableDarkFurnace"))
+		if (ProjectEConfig.enableDarkFurnace)
 		{
 			GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.furnace);
 		}
-		if (ProjectEConfig.getBooleanProp("enableRedFurnace"))
+		if (ProjectEConfig.enableRedFurnace)
 		{
 			GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
 		}
 
 		// DM Pedestal
-		if (ProjectEConfig.getBooleanProp("enableDarkPedestal"))
+		if (ProjectEConfig.enableDarkPedestal)
 		{
 			GameRegistry.addRecipe(new ItemStack(dmPedestal), "RDR", "RDR", "DDD", 'R', new ItemStack(matter, 1, 1), 'D', new ItemStack(matterBlock, 1, 0));
 		}
 
 		//Collectors
-		if (ProjectEConfig.getBooleanProp("enableCollector"))
+		if (ProjectEConfig.enableCollector)
 		{
 			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', diamondBlockReplacement, 'T', Blocks.glass);
 		}
-		if (ProjectEConfig.getBooleanProp("enableCollector2"))
+		if (ProjectEConfig.enableCollector2)
 		{
 			GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', energyCollector, 'D', matter);
 		}
-		if (ProjectEConfig.getBooleanProp("enableCollector3"))
+		if (ProjectEConfig.enableCollector3)
 		{
 			GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
 		}
 
 		//AM Relays
-		if (ProjectEConfig.getBooleanProp("enableRelay"))
+		if (ProjectEConfig.enableRelay)
 		{
 			GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.glass, 'D', Blocks.diamond_block, 'O', Blocks.obsidian);
 		}
-		if (ProjectEConfig.getBooleanProp("enableRelay2"))
+		if (ProjectEConfig.enableRelay2)
 		{
 			GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.obsidian);
 		}
-		if (ProjectEConfig.getBooleanProp("enableRelay3"))
+		if (ProjectEConfig.enableRelay3)
 		{
 			GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.obsidian);
 		}
@@ -555,7 +555,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 2), "FFF", "FFF", "FFF", 'F', new ItemStack(fuels, 1, 2));
 
 		//Tome
-		if (ProjectEConfig.getBooleanProp("craftableTome"))
+		if (ProjectEConfig.craftableTome)
 		{
 			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
 		}

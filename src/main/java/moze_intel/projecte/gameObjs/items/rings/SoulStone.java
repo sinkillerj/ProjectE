@@ -121,7 +121,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.getIntProp("soulPedCooldown") != -1)
+		if (!world.isRemote && ProjectEConfig.soulPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -137,7 +137,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.getIntProp("soulPedCooldown"));
+				tile.setActivityCooldown(ProjectEConfig.soulPedCooldown);
 			}
 			else
 			{
@@ -150,11 +150,11 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.getIntProp("soulPedCooldown") != -1)
+		if (ProjectEConfig.soulPedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.soul.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.soul.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("soulPedCooldown"))));
+					StatCollector.translateToLocal("pe.soul.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
 		}
 		return list;
 	}

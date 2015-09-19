@@ -33,7 +33,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.getBooleanProp("useOldDamage");
+		boolean flag = ProjectEConfig.useOldDamage;
 		attackWithCharge(stack, damaged, damager, flag ? DARKSWORD_BASE_ATTACK : 1.0F);
 		return true;
 	}
@@ -86,7 +86,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
-		if (ProjectEConfig.getBooleanProp("useOldDamage"))
+		if (ProjectEConfig.useOldDamage)
 		{
 			return super.getAttributeModifiers(stack);
 		}

@@ -129,7 +129,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.getIntProp("lifePedCooldown") != -1)
+		if (!world.isRemote && ProjectEConfig.lifePedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -150,7 +150,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.getIntProp("lifePedCooldown"));
+				tile.setActivityCooldown(ProjectEConfig.lifePedCooldown);
 			}
 			else
 			{
@@ -163,11 +163,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.getIntProp("lifePedCooldown") != -1)
+		if (ProjectEConfig.lifePedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.life.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("lifePedCooldown"))));
+					StatCollector.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
 		}
 		return list;
 	}

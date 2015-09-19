@@ -55,7 +55,7 @@ public class KleinStar
 				}
 			}
 
-			MineTweakerAPI.apply(new AddRecipeAction(outputStack, isInputs.toArray(new ItemStack[isInputs.size()]), shaped));
+			MineTweakerAPI.apply(new AddRecipeAction(outputStack, isInputs.toArray(new ItemStack[]{}), shaped));
 		}
 	}
 

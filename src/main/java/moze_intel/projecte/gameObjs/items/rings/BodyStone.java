@@ -122,7 +122,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.getIntProp("bodyPedCooldown") != -1)
+		if (!world.isRemote && ProjectEConfig.bodyPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0)
@@ -138,7 +138,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.getIntProp("bodyPedCooldown"));
+				tile.setActivityCooldown(ProjectEConfig.bodyPedCooldown);
 			}
 			else
 			{
@@ -151,11 +151,11 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.getIntProp("bodyPedCooldown") != -1)
+		if (ProjectEConfig.bodyPedCooldown != -1)
 		{
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.body.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.body.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("bodyPedCooldown"))));
+					StatCollector.translateToLocal("pe.body.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.bodyPedCooldown)));
 		}
 		return list;
 	}

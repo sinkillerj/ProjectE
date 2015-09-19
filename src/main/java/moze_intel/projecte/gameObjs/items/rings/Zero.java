@@ -142,7 +142,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public void updateInPedestal(World world, int x, int y, int z)
 	{
-		if (!world.isRemote && ProjectEConfig.getIntProp("zeroPedCooldown") != -1)
+		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
 			if (tile.getActivityCooldown() == 0) {
@@ -156,7 +156,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 						ent.extinguish();
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.getIntProp("zeroPedCooldown"));
+				tile.setActivityCooldown(ProjectEConfig.zeroPedCooldown);
 			}
 			else
 			{
@@ -169,11 +169,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.getIntProp("zeroPedCooldown") != -1) {
+		if (ProjectEConfig.zeroPedCooldown != -1) {
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal1"));
 			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal2"));
 			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.zero.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.getIntProp("zeroPedCooldown"))));
+					StatCollector.translateToLocal("pe.zero.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
 		}
 		return list;
 	}
