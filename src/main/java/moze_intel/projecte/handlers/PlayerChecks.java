@@ -1,6 +1,9 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Sets;
+import gnu.trove.map.hash.TObjectIntHashMap;
+import gnu.trove.procedure.TIntProcedure;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
@@ -17,6 +20,15 @@ public final class PlayerChecks
 	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
+	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
+
+	public static void resetCooldown(EntityPlayerMP player) {
+		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);
+	}
+
+	public static int getCooldown(EntityPlayerMP player) {
+		return projectileCooldowns.containsKey(player) ? projectileCooldowns.get(player) : -1;
+	}
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{
@@ -38,6 +50,10 @@ public final class PlayerChecks
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
+		if (projectileCooldowns.containsKey(player) && projectileCooldowns.get(player) > 0) {
+			projectileCooldowns.adjustValue(player, -1);
+		}
+
 		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))
 		{
 			if (player.capabilities.allowFlying)
@@ -282,11 +298,15 @@ public final class PlayerChecks
 	{
 		swrgOverrides.clear();
 		gemArmorReadyChecks.clear();
+		hadFlightItem.clear();
+		projectileCooldowns.clear();
 	}
 
 	public static void removePlayerFromLists(EntityPlayerMP player)
 	{
 		swrgOverrides.remove(player);
 		gemArmorReadyChecks.remove(player);
+		hadFlightItem.remove(player);
+		projectileCooldowns.remove(player);
 	}
 }

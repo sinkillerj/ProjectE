@@ -58,6 +58,7 @@ public final class ProjectEConfig
 	public static boolean unsafeKeyBinds;
 	public static boolean offensiveAbilities;
 	public static float katarDeathAura;
+	public static int projectileCooldown;
 
 	public static void init(File configFile)
 	{
@@ -77,6 +78,7 @@ public final class ProjectEConfig
 			useLootBalls = config.getBoolean("useLootBalls", "misc", true, "Make loot balls for drops. Disabling this may potentially cause bad performance when large amounts of loot are spawned!");
 			pulsatingOverlay = config.getBoolean("pulsatingOverlay", "misc", false, "The Philosopher's Stone overlay softly pulsates");
 			unsafeKeyBinds = config.getBoolean("unsafeKeyBinds", "misc", false, "False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered");
+			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 
