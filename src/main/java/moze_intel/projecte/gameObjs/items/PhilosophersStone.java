@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -52,20 +53,27 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		return false;
 	}
-
+	
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ, int sideHit, float px, float py, float pz)
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if (world.isRemote)
 		{
-			return false;
+			return stack;
 		}
-
-		MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
+		
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+		
+		if (mop == null)
+		{
+			return stack;
+		}
+		
+		MetaBlock mBlock = new MetaBlock(world, mop.blockX, mop.blockY, mop.blockZ);
 
 		if (mBlock.getBlock() != Blocks.air)
 		{
-			TileEntity tile = world.getTileEntity(blockX, blockY, blockZ);
+			TileEntity tile = world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 			
 			if (player.isSneaking())
 			{
@@ -88,7 +96,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					if (s.getHasSubtypes())
 					{
-						s.setItemDamage(world.getBlockMetadata(blockX, blockY, blockZ));
+						s.setItemDamage(world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
 					}
 					else
 					{
@@ -97,21 +105,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					
 					s.setTagCompound(nbt);
 					
-					world.removeTileEntity(blockX, blockY, blockZ);
-					world.setBlock(blockX, blockY, blockZ, Blocks.air, 0, 2);
-					WorldHelper.spawnEntityItem(world, s, blockX, blockY, blockZ);
+					world.removeTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+					world.setBlock(mop.blockX, mop.blockY, mop.blockZ, Blocks.air, 0, 2);
+					WorldHelper.spawnEntityItem(world, s, mop.blockX, mop.blockY, mop.blockZ);
 				}
 			}
 		}
 
-		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
+		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, mop.blockX, mop.blockY, mop.blockZ, player.isSneaking());
 
 		if (result != null)
 		{
-			Coordinates pos = new Coordinates(blockX, blockY,blockZ);
+			Coordinates pos = new Coordinates(mop);
 			int mode = this.getMode(stack);
 			int charge = this.getCharge(stack);			
-			ForgeDirection direction = ForgeDirection.getOrientation(sideHit);
+			ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 			
 			if (mode == 0)
 			{
@@ -131,7 +139,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			PlayerHelper.swingItem(player);
 		}
 		
-		return true;
+		return stack;
 	}
 	
 	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
