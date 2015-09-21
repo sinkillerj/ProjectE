@@ -33,6 +33,7 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
+		isCreateEmc = buf.readBoolean();
 		packetNum = buf.readInt();
 		int size = buf.readInt();
 		data = new Object[size];
@@ -53,6 +54,7 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
+		buf.writeBoolean(isCreateEmc);
 		buf.writeInt(packetNum);
 		buf.writeInt(data.length);
 
