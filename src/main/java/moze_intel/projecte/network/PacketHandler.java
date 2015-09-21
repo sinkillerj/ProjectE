@@ -103,7 +103,7 @@ public final class PacketHandler
 			counter++;
 		}
 
-		PELogger.logInfo("Sent EMC data packets to: " + player.getCommandSenderName());
+		PELogger.logInfo("Sent %s-EMC data packets to: %s", isCreateEmc ? "create" : "destroy", player.getCommandSenderName());
 		PELogger.logDebug("Total packets: " + counter);
 	}
 
@@ -145,7 +145,7 @@ public final class PacketHandler
 			counter++;
 		}
 
-		PELogger.logInfo("Sent EMC data packets to all players.");
+		PELogger.logInfo("Sent %s-EMC data packets to all players.", isCreateEmc ? "create" : "destroy");
 		PELogger.logDebug("Total packets per player: " + counter);
 	}
 
