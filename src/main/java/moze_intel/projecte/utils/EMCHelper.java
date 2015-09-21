@@ -1,6 +1,9 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.api.exception.NoCreationEmcValueException;
+import moze_intel.projecte.api.exception.NoDestructionEmcValueException;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
@@ -140,7 +143,7 @@ public final class EMCHelper
 				return EMCMapper.emcForCreation.get(iStack);
 			}
 		}
-		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+		throw new NoCreationEmcValueException();
 	}
 
 	public static int getEmcValueForDestructionWithDamageAndBonuses(ItemStack itemStack) {
@@ -148,7 +151,7 @@ public final class EMCHelper
 		{
 			return (int)(getBaseEmcValueForDestruction(itemStack) * getDamageFactor(itemStack)) + getEnchantEmcBonus(itemStack) + getStoredEMCBonus(itemStack);
 		}
-		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+		throw new NoDestructionEmcValueException();
 	}
 
 	public static int getBaseEmcValueForDestruction(ItemStack itemStack) {
@@ -166,7 +169,7 @@ public final class EMCHelper
 				}
 			}
 		}
-		throw new IllegalArgumentException("Cannot get EMC Value for ItemStack");
+		throw new NoDestructionEmcValueException();
 	}
 
 	public static double getDamageFactor(ItemStack stack) {
