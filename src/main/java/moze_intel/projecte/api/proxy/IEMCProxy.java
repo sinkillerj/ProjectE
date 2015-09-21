@@ -3,6 +3,8 @@ package moze_intel.projecte.api.proxy;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import moze_intel.projecte.api.exception.NoCreationEmcValueException;
+import moze_intel.projecte.api.exception.NoDestructionEmcValueException;
 
 public interface IEMCProxy
 {
@@ -15,58 +17,83 @@ public interface IEMCProxy
     void registerCustomEMC(ItemStack stack, int value);
 
     /**
-     * Queries the EMC value registry if the given block has an EMC value
-     * Can be called at any time, but will only return valid results if a world is loaded
-     * Can be called on both sides
-     * @param block The block we want to query
-     * @return Whether the block has an emc value
+     * @deprecated As of API version 8 use {@link #canBeCreatedWithEmc(ItemStack)} or {@link #canBeTurnedIntoEmc(ItemStack)} depending on your use case.
      */
+    @Deprecated
     boolean hasValue(Block block);
 
     /**
-     * Queries the EMC value registry if the given item has an EMC value
-     * Can be called at any time, but will only return valid results if a world is loaded
-     * Can be called on both sides
-     * @param item The item we want to query
-     * @return Whether the item has an emc value
+     * @deprecated As of API version 8 use {@link #canBeCreatedWithEmc(ItemStack)} or {@link #canBeTurnedIntoEmc(ItemStack)} depending on your use case.
      */
+    @Deprecated
     boolean hasValue(Item item);
 
     /**
-     * Queries the EMC value registry if the given ItemStack has an EMC value
-     * Can be called at any time, but will only return valid results if a world is loaded
-     * Can be called on both sides
-     * Note that this is simply a helper function, and is functionally equivalent to IEMCProxy.hasValue(stack.getItem())
-     * @param stack The stack we want to query
-     * @return Whether the ItemStack has an emc value
+     * @deprecated As of API version 8 use {@link #canBeCreatedWithEmc(ItemStack)} or {@link #canBeTurnedIntoEmc(ItemStack)} depending on your use case.
      */
+    @Deprecated
     boolean hasValue(ItemStack stack);
 
     /**
-     * Queries the EMC value for the provided block
-     * Can be called at any time, but will only return valid results if a world is loaded
-     * Can be called on both sides
-     * @param block The block we want to query
-     * @return The block's EMC value, or 0 if there is none
+     * @deprecated As of API version 8 use {@link #getCreationEmcCost(ItemStack)} or {@link #getDestructionEmc(ItemStack)} depending on your use case.
      */
+    @Deprecated
     int getValue(Block block);
 
     /**
-     * Queries the EMC value for the provided item
-     * Can be called at any time, but will only return valid results if a world is loaded
-     * Can be called on both sides
-     * @param item The item we want to query
-     * @return The item's EMC value, or 0 if there is none
+     * @deprecated As of API version 8 use {@link #getCreationEmcCost(ItemStack)} or {@link #getDestructionEmc(ItemStack)} depending on your use case.
      */
+    @Deprecated
     int getValue(Item item);
 
     /**
-     * Queries the EMC value for the provided stack
+     * @deprecated As of API version 8 use {@link #getCreationEmcCost(ItemStack)} or {@link #getDestructionEmc(ItemStack)} depending on your use case.
+     */
+    @Deprecated
+    int getValue(ItemStack stack);
+
+    /**
+     * Querys the EMC Registry for the provided stack using ItemId/BlockId and Metadata/Damage.
+     * Checks if the ItemStack can be created with EMC.
+     * Can be called at any time, but will only return valid results if a world is loaded.
+     * Can be called on both sides
+     * @param stack The ItemStack containing the {@code Block} or {@code Item}
+     * @return {@code true} if the stack can be created with EMC. Use {@link #getCreationEmcCost} to find out how much it should cost.
+     * @see #getCreationEmcCost(ItemStack)
+     */
+    boolean canBeCreatedWithEmc(ItemStack stack);
+
+    /**
+     * Querys the EMC Registry for the provided stack using ItemId/BlockId and Metadata/Damage. Does not use stacksize!
+     * Can only be called for ItemStacks for which {@link #canBeCreatedWithEmc(ItemStack)} returned {@code true}.
      * Can be called at any time, but will only return valid results if a world is loaded
      * Can be called on both sides
-     * This takes into account bonuses such as stored emc in power items and enchantments
-     * @param stack The stack we want to query
-     * @return The stack's EMC value, or 0 if there is none
+     * @param stack The ItemStack containing the {@code Block} or {@code Item}
+     * @return The Amount of EMC that is consumed to create the ItemStack
+     * @throws NoCreationEmcValueException when the provided {@code stack} can not be created with EMC, so {@link #canBeCreatedWithEmc(ItemStack)} returned {@code false}
      */
-    int getValue(ItemStack stack);
+    int getCreationEmcCost(ItemStack stack) throws NoCreationEmcValueException;
+
+
+    /**
+     * Querys the EMC Registry for the provided stack using ItemId/BlockId and Metadata/Damage.
+     * Checks if the ItemStack can be turned into EMC.
+     * Can be called at any time, but will only return valid results if a world is loaded.
+     * Can be called on both sides
+     * @param stack The ItemStack containing the {@code Block} or {@code Item}
+     * @return {@code true} if the stack can be turned into EMC. Use {@link #getDestructionEmc(ItemStack)} to find out how much it should yield.
+     */
+    boolean canBeTurnedIntoEmc(ItemStack stack);
+
+    /**
+     * Querys the EMC Registry for the provided stack using ItemId/BlockId and Metadata/Damage. Does not use stacksize!
+     * Will apply a multiplier for damaged tools, bonus EMC for enchantments and also include EMC stored in the Item.
+     * Can only be called for ItemStacks for which {@link #canBeTurnedIntoEmc(ItemStack)} returned {@code true}.
+     * Can be called at any time, but will only return valid results if a world is loaded
+     * Can be called on both sides
+     * @param stack The ItemStack containing the {@code Block} or {@code Item}
+     * @return The Amount of EMC that is generated when the ItemStack is consumed.
+     * @throws NoDestructionEmcValueException when the provided {@code stack} can not be turned into EMC, so {@link #canBeTurnedIntoEmc(ItemStack)} returned {@code false}
+     */
+    int getDestructionEmc(ItemStack stack) throws NoDestructionEmcValueException;
 }
