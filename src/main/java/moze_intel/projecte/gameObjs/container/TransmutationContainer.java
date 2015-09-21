@@ -11,6 +11,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -136,10 +137,28 @@ public class TransmutationContainer extends Container
 		super.onContainerClosed(player);
 		transmutationInventory.closeInventory();
 	}
-	
+
+	//From LoadController.findActiveContainerFromStack
+	private FMLSecurityManager accessibleManager = new FMLSecurityManager();
+
+	class FMLSecurityManager extends SecurityManager
+	{
+		Class<?>[] getStackClasses()
+		{
+			return getClassContext();
+		}
+	}
+
+	private boolean isNeiScrollWheel() {
+		final int stacktraceDepth = 3; //[getStackClasses(), isNeiScrollWheel(), slotClick(), [POSSIBLE POSITION FOR NEI IN STACKTRACE]
+		Class<?>[] stacktrace = accessibleManager.getStackClasses();
+		return stacktrace.length >= stacktraceDepth && stacktrace[stacktraceDepth] != null && stacktrace[stacktraceDepth].getName().equals("codechicken.nei.FastTransferManager");
+	}
+
 	@Override
 	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
 	{
+		if (player.worldObj.isRemote && isNeiScrollWheel()) return null;
 		if (player.worldObj.isRemote && 10 <= slot && slot <= 25) {
 			PacketHandler.sendToServer(new SearchUpdatePKT(slot, getSlot(slot).getStack()));
 		}
