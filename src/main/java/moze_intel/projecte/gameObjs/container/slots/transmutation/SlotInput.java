@@ -20,7 +20,7 @@ public class SlotInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && EMCHelper.doesItemHaveEmc(stack);
+		return !this.getHasStack() && (EMCHelper.hasBaseEmcValueForDestruction(stack) | EMCHelper.hasEmcValueForCreation(stack));
 	}
 	
 	@Override

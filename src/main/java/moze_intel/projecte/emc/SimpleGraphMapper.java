@@ -1,13 +1,18 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.MappingCollector;
+import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
+public class SimpleGraphMapper<T, V extends Comparable<V>> extends MappingCollector<T, V> implements IValueGenerator<T, V>
+{
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
 

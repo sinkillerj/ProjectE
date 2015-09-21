@@ -19,6 +19,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -98,32 +99,114 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (EMCHelper.doesItemHaveEmc(current))
+			boolean showExtendedTooltip = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+
+			boolean hasEmcForCreation = EMCHelper.hasEmcValueForCreation(current);
+			int emcForCreation = 0;
+			boolean hasEmcForDestruction = EMCHelper.hasBaseEmcValueForDestruction(current);
+			int emcForDestruction = 0;
+			int totalDestructionValue = 0;
+			int emcLostByDamage = 0;
+			int enchantBonus = 0;
+			if (hasEmcForCreation) {
+				emcForCreation = EMCHelper.getEmcValueForCreation(current);
+			}
+			if (hasEmcForDestruction)
 			{
-				int value = EMCHelper.getEmcValue(current);
+				emcForDestruction = EMCHelper.getBaseEmcValueForDestruction(current);
 
-				event.toolTip.add(EnumChatFormatting.YELLOW +
-						StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
+				emcLostByDamage = (int) (emcForDestruction - emcForDestruction * EMCHelper.getDamageFactor(current));
+				enchantBonus = EMCHelper.getEnchantEmcBonus(current);
+				totalDestructionValue = emcForDestruction - emcLostByDamage + enchantBonus;
+			}
 
+			if (!showExtendedTooltip && hasEmcForCreation && hasEmcForDestruction && emcForCreation == totalDestructionValue) {
+				//Creation and Destruction EMC value is the same. Only show one tooltip line
+				event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", emcForCreation));
+			} else if (hasEmcForCreation || hasEmcForDestruction)
+			{
+				if (hasEmcForCreation)
+				{
+					StringBuilder sb = new StringBuilder();
+					sb.append(EnumChatFormatting.YELLOW);
+					if (showExtendedTooltip)
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.prefix")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", emcForCreation)).append(' ');
+						sb.append(EnumChatFormatting.YELLOW);
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.postfix"));
+					}
+					else
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.prefix.short"));
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(' ').append(String.format("%,d", emcForCreation));
+					}
+					event.toolTip.add(sb.toString());
+				}
+				else if (showExtendedTooltip)
+				{
+					event.toolTip.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.emc.create.tooltip.notpossible"));
+				}
+
+				if (hasEmcForDestruction)
+				{
+					StringBuilder sb = new StringBuilder();
+					sb.append(EnumChatFormatting.YELLOW);
+					if (showExtendedTooltip)
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.prefix")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", totalDestructionValue));
+						sb.append(EnumChatFormatting.YELLOW);
+						sb.append(' ').append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.postfix"));
+
+						if (emcLostByDamage > 0 || enchantBonus > 0) {
+							sb.append(EnumChatFormatting.YELLOW);
+							sb.append(" (");
+							if (emcLostByDamage > 0)
+								sb.append(EnumChatFormatting.RED).append('-').append(EnumChatFormatting.WHITE).append(String.format("%,d", emcLostByDamage));
+							if (enchantBonus > 0)
+								sb.append(EnumChatFormatting.GREEN).append('+').append(EnumChatFormatting.WHITE).append(String.format("%,d", enchantBonus));
+							sb.append(EnumChatFormatting.YELLOW).append(')');
+						}
+					}
+					else
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.prefix.short")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", totalDestructionValue));
+					}
+					event.toolTip.add(sb.toString());
+
+				}
+				else if (showExtendedTooltip)
+				{
+					event.toolTip.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.emc.destroy.tooltip.notpossible"));
+				}
+			}
+			if (hasEmcForDestruction) {
 				if (current.stackSize > 1)
 				{
 					long total;
 					try
 					{
-						total = LongMath.checkedMultiply(value, current.stackSize);
+						total = LongMath.checkedMultiply(totalDestructionValue, current.stackSize);
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
-					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+					if (total < 0 || total <= totalDestructionValue || total > Integer.MAX_VALUE)
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
 					}
 					else
 					{
-						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
+						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", total));
 					}
 
 				}
+
 			}
 		}
 

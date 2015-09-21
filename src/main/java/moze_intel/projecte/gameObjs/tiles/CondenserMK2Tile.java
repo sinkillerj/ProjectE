@@ -37,7 +37,7 @@ public class CondenserMK2Tile extends CondenserTile
 					continue;
 				}
 
-				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
+				this.addEMC(EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack) * stack.stackSize);
 				inventory[i] = null;
 				break;
 			}
@@ -94,7 +94,7 @@ public class CondenserMK2Tile extends CondenserTile
 			return false;
 		}
 
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
+		return !isStackEqualToLock(stack) && EMCHelper.hasEmcValueForDestruction(stack);
 	}
 
 	@Override

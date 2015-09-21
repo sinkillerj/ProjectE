@@ -15,6 +15,6 @@ public class SlotCondenserInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return EMCHelper.hasEmcValueForDestruction(stack);
 	}
 }

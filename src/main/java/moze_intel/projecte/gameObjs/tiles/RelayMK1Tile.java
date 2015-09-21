@@ -77,7 +77,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			}
 			else
 			{
-				int emcVal = EMCHelper.getEmcValue(stack);
+				int emcVal = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack);
 				
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
 				{
@@ -216,7 +216,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			return ((IItemEmc) inventory[0].getItem()).getStoredEmc(inventory[0]);
 		}
 		
-		return EMCHelper.getEmcValue(inventory[0]) * inventory[0].stackSize;
+		return EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(inventory[0]) * inventory[0].stackSize;
 	}
 	
 	public int getRawEmcScaled(int i)
@@ -231,7 +231,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			return (int) Math.round(displayRawEmc * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0]));
 		}
 		
-		int emc = EMCHelper.getEmcValue(inventory[0]);
+		int emc = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(inventory[0]);
 		
 		return MathHelper.floor_double(displayRawEmc * i / (emc * inventory[0].getMaxStackSize()));
 	}
@@ -380,7 +380,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return EMCHelper.hasEmcValueForDestruction(stack);
 	}
 
 	@Override

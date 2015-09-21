@@ -2,11 +2,8 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
 
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
@@ -16,7 +13,6 @@ import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 
-import com.google.common.collect.Queues;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class TransmutationInventory implements IInventory
 {
@@ -120,8 +115,8 @@ public class TransmutationInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.hasEmcValueForCreation(inventory[MATTER_INDEXES[0]]) ? EMCHelper.getEmcValueForCreation(inventory[MATTER_INDEXES[0]]) : 0;
+		int fuelEmc = EMCHelper.hasEmcValueForCreation(inventory[FUEL_INDEXES[0]]) ? EMCHelper.getEmcValueForCreation(inventory[FUEL_INDEXES[0]]) : 0;
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -154,11 +149,11 @@ public class TransmutationInventory implements IInventory
 		
 		ItemStack lockCopy = null;
 
-		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
+		Collections.sort(knowledge, Comparators.ITEMSTACK_CREATE_EMC_DESCENDING);
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
+			int reqEmc = EMCHelper.getEmcValueForCreation(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{
@@ -179,7 +174,7 @@ public class TransmutationInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (EMCHelper.getEmcValue(stack) > reqEmc)
+				if (EMCHelper.getEmcValueForCreation(stack) > reqEmc)
 				{
 					iter.remove();
 					continue;
@@ -213,7 +208,7 @@ public class TransmutationInventory implements IInventory
 			{
 				ItemStack stack = iter.next();
 				
-				if (emc < EMCHelper.getEmcValue(stack))
+				if (emc < EMCHelper.getEmcValueForCreation(stack))
 				{
 					iter.remove();
 					continue;
@@ -276,7 +271,7 @@ public class TransmutationInventory implements IInventory
 	public void writeIntoOutputSlot(int slot, ItemStack item)
 	{
 
-		if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
+		if (EMCHelper.hasEmcValueForCreation(item) && Transmutation.hasKnowledgeForStack(item, player))
 		{
 			inventory[slot] = item;
 		}
