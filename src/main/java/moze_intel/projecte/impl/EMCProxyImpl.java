@@ -100,13 +100,13 @@ public class EMCProxyImpl implements IEMCProxy
     public boolean canBeTurnedIntoEmc(ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
-        return EMCHelper.hasBaseEmcValueForDestruction(stack);
+        return EMCHelper.hasEmcValueForDestruction(stack);
     }
 
     @Override
     public int getDestructionEmc(ItemStack stack) throws NoDestructionEmcValueException
     {
-        if (!EMCHelper.hasBaseEmcValueForDestruction(stack))
+        if (!EMCHelper.hasEmcValueForDestruction(stack))
         {
             throw new NoDestructionEmcValueException();
         }
