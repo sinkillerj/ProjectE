@@ -99,63 +99,99 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (EMCHelper.hasEmcValueForCreation(current)) {
-				int value = EMCHelper.getEmcValueForCreation(current);
-				event.toolTip.add(EnumChatFormatting.YELLOW + "Create " + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
+			boolean showExtendedTooltip = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+
+			boolean hasEmcForCreation = EMCHelper.hasEmcValueForCreation(current);
+			int emcForCreation = 0;
+			boolean hasEmcForDestruction = EMCHelper.hasBaseEmcValueForDestruction(current);
+			int emcForDestruction = 0;
+			int totalDestructionValue = 0;
+			int emcLostByDamage = 0;
+			int enchantBonus = 0;
+			if (hasEmcForCreation) {
+				emcForCreation = EMCHelper.getEmcValueForCreation(current);
 			}
-			if (EMCHelper.hasBaseEmcValueForDestruction(current))
+			if (hasEmcForDestruction)
 			{
-				int value = EMCHelper.getBaseEmcValueForDestruction(current);
+				emcForDestruction = EMCHelper.getBaseEmcValueForDestruction(current);
 
-				StringBuilder builder = new StringBuilder();
-				builder
-						.append(EnumChatFormatting.YELLOW).append("Destroy ")
-						.append(StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix"))
-						.append(" ")
-						.append(EnumChatFormatting.WHITE);
-				int emcLostByDamage = (int) (value - value * EMCHelper.getDamageFactor(current));
-				int enchantBonus = EMCHelper.getEnchantEmcBonus(current);
-				int storedBonus = EMCHelper.getStoredEMCBonus(current);
+				emcLostByDamage = (int) (emcForDestruction - emcForDestruction * EMCHelper.getDamageFactor(current));
+				enchantBonus = EMCHelper.getEnchantEmcBonus(current);
+				totalDestructionValue = emcForDestruction - emcLostByDamage + enchantBonus;
+			}
 
-				if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
-					builder.append(String.format("%,d", value));
-					if (emcLostByDamage > 0)
+			if (!showExtendedTooltip && hasEmcForCreation && hasEmcForDestruction && emcForCreation == totalDestructionValue) {
+				//Creation and Destruction EMC value is the same. Only show one tooltip line
+				event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", emcForCreation));
+			} else if (hasEmcForCreation || hasEmcForDestruction)
+			{
+				if (hasEmcForCreation)
+				{
+					StringBuilder sb = new StringBuilder();
+					sb.append(EnumChatFormatting.YELLOW);
+					if (showExtendedTooltip)
 					{
-						builder.append(EnumChatFormatting.RED).append("-").append(String.format("%,d", emcLostByDamage));
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.prefix")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", emcForCreation)).append(' ');
+						sb.append(EnumChatFormatting.YELLOW);
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.postfix"));
 					}
-					if (enchantBonus > 0)
+					else
 					{
-						builder.append(EnumChatFormatting.GOLD).append("+").append(String.format("%,d", enchantBonus));
+						sb.append(StatCollector.translateToLocal("pe.emc.create.tooltip.prefix.short"));
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(' ').append(String.format("%,d", emcForCreation));
 					}
-					if (storedBonus > 0)
-					{
-						builder.append(EnumChatFormatting.GREEN).append("+").append(String.format("%,d", storedBonus));
-					}
-					value = value - emcLostByDamage + enchantBonus + storedBonus;
-				} else {
-					value = value - emcLostByDamage + enchantBonus + storedBonus;
-					builder.append(String.format("%,d", value));
+					event.toolTip.add(sb.toString());
+				}
+				else if (showExtendedTooltip)
+				{
+					event.toolTip.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.emc.create.tooltip.notpossible"));
 				}
 
-				event.toolTip.add(builder.toString());
-
-
+				if (hasEmcForDestruction)
+				{
+					StringBuilder sb = new StringBuilder();
+					sb.append(EnumChatFormatting.YELLOW);
+					if (showExtendedTooltip)
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.prefix")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", totalDestructionValue));
+						sb.append(EnumChatFormatting.YELLOW);
+						sb.append(' ').append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.postfix"));
+					}
+					else
+					{
+						sb.append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.prefix.short")).append(' ');
+						sb.append(EnumChatFormatting.WHITE);
+						sb.append(String.format("%,d", totalDestructionValue));
+					}
+					event.toolTip.add(sb.toString());
+				}
+				else if (showExtendedTooltip)
+				{
+					event.toolTip.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.emc.destroy.tooltip.notpossible"));
+				}
+			}
+			if (hasEmcForDestruction) {
 				if (current.stackSize > 1)
 				{
 					long total;
 					try
 					{
-						total = LongMath.checkedMultiply(value, current.stackSize);
+						total = LongMath.checkedMultiply(totalDestructionValue, current.stackSize);
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
-					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+					if (total < 0 || total <= totalDestructionValue || total > Integer.MAX_VALUE)
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
 					}
 					else
 					{
-						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
+						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", total));
 					}
 
 				}

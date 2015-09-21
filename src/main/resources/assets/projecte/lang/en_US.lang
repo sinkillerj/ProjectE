@@ -197,6 +197,16 @@ pe.divining.thirdmax=Third Max EMC: %s
 pe.dmfurnace.shortname=DM Furnace
 pe.rmfurnace.shortname=RM Furnace
 
+pe.emc.create.tooltip.notpossible=Can not be created with EMC
+pe.emc.create.tooltip.prefix=Create with
+pe.emc.create.tooltip.postfix=EMC
+pe.emc.create.tooltip.prefix.short=C. EMC:
+
+pe.emc.destroy.tooltip.notpossible=Can not be turned to EMC
+pe.emc.destroy.tooltip.prefix=Yields
+pe.emc.destroy.tooltip.postfix=EMC
+pe.emc.destroy.tooltip.prefix.short=D. EMC:
+
 pe.emc.emc_tooltip_prefix=EMC:
 pe.emc.maxgenrate_tooltip=Maximum Generation Rate:
 pe.emc.maxoutrate_tooltip=Maximum Output Rate:
