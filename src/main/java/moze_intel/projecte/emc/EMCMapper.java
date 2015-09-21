@@ -57,18 +57,24 @@ public final class EMCMapper
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper()
 		);
+
+		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
+		config.load();
+
 		SimpleGraphMapper<NormalizedSimpleStack, Fraction> mapper = new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
 		//IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new SameValueMultiGenerator<NormalizedSimpleStack, Integer>(valueGenerator);
-		IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new DestructionValueMultiplier<NormalizedSimpleStack>(valueGenerator, Fraction.getFraction(ProjectEConfig.emcMultiplierForDestructionNominator, ProjectEConfig.emcMultiplierForDestructionDenominator));
+		IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new DestructionValueMultiplier<NormalizedSimpleStack>(
+				valueGenerator,
+				Fraction.getFraction(config.getString("destructionMultiplier", "general", "1/1", "Multiplier that is applied when destroying items for EMC. Items that get an EMC value < 1 will not be learnable. \nCan use Fractions"))
+		);
 		IMappingCollector<NormalizedSimpleStack, Integer> mappingCollector = new IntToFractionCollector<NormalizedSimpleStack>(mapper);
 
 		Map<NormalizedSimpleStack, Integer> graphMapperValuesForCreation = Maps.newHashMap();
 		Map<NormalizedSimpleStack, Integer> graphMapperValuesForDestruction = Maps.newHashMap();
 
 
-		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
-		config.load();
+
 
 		if (config.getBoolean("dumpEverythingToFile", "general", false,"Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
 			mappingCollector = new DumpToFileCollector(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
