@@ -1,9 +1,12 @@
 package moze_intel.projecte.emc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
+import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
@@ -19,12 +22,12 @@ import java.util.Map;
 public class HiddenFractionSpecificTest
 {
 	public IValueGenerator<String, Integer> valueGenerator;
-	public IMappingCollector<String, Integer> mappingCollector;
+	public IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
 
 	@Before
 	public void setup()
 	{
-		SimpleGraphMapper<String, Fraction> mapper = new SimpleGraphMapper<String, Fraction>(new HiddenFractionArithmetic());
+		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
 		valueGenerator = new FractionToIntGenerator(mapper);
 		mappingCollector = new IntToFractionCollector(mapper);
 	}
@@ -83,6 +86,30 @@ public class HiddenFractionSpecificTest
 		assertEquals(0, getValue(values, "moltenEnder"));
 		assertEquals(768, getValue(values, "bucket"));
 		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
+
+	}
+
+	@Test
+	public void moltenEnderpearlWithConversionArithmetic()
+	{
+		FullFractionArithmetic fullFractionArithmetic = new FullFractionArithmetic();
+		mappingCollector.setValueBefore("enderpearl", 1024);
+		mappingCollector.setValueBefore("bucket", 768);
+
+		//Conversion using milibuckets with a "don't round anything down"-arithmetic
+		mappingCollector.addConversion(250, "moltenEnder", Arrays.asList("enderpearl"), fullFractionArithmetic);
+		mappingCollector.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000, "bucket", 1));
+
+		//Without using the full fraction arithmetic
+		mappingCollector.addConversion(250, "moltenEnder2", Arrays.asList("enderpearl"));
+		mappingCollector.addConversion(1, "moltenEnderBucket2", ImmutableMap.of("moltenEnder2", 1000, "bucket", 1));
+
+		Map<String, Integer> values = valueGenerator.generateValues();
+		assertEquals(1024, getValue(values, "enderpearl"));
+		assertEquals(768, getValue(values, "bucket"));
+		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
+
+		assertNotEquals(4*1024+767, getValue(values, "moltenEnderBucket2"));
 
 	}
 

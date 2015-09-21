@@ -1,7 +1,8 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
@@ -31,7 +32,7 @@ public class GraphMapperTest {
 	@Before
 	public void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
-		SimpleGraphMapper<String, Fraction> mapper = new SimpleGraphMapper<String, Fraction>(new HiddenFractionArithmetic());
+		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
 		valueGenerator = new FractionToIntGenerator(mapper);
 		mappingCollector = new IntToFractionCollector(mapper);
 	}
@@ -39,7 +40,7 @@ public class GraphMapperTest {
 	@Rule
 	public Timeout timeout = new Timeout(3000);
 	public IValueGenerator<String, Integer> valueGenerator;
-	public IMappingCollector<String, Integer> mappingCollector;
+	public IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {

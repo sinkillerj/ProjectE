@@ -1,19 +1,18 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.api.event.EMCRemapEvent;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.DumpToFileCollector;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.generators.DestructionValueMultiplier;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IMultiValueGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
-import moze_intel.projecte.emc.generators.SameValueMultiGenerator;
-import moze_intel.projecte.emc.mappers.Chisel2Mapper;
-import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -61,14 +60,14 @@ public final class EMCMapper
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
-		SimpleGraphMapper<NormalizedSimpleStack, Fraction> mapper = new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic());
+		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
 		//IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new SameValueMultiGenerator<NormalizedSimpleStack, Integer>(valueGenerator);
 		IMultiValueGenerator<NormalizedSimpleStack, Integer> multiValueGenerator = new DestructionValueMultiplier<NormalizedSimpleStack>(
 				valueGenerator,
 				Fraction.getFraction(config.getString("destructionMultiplier", "general", "1/1", "Multiplier that is applied when destroying items for EMC. Items that get an EMC value < 1 will not be learnable. \nCan use Fractions"))
 		);
-		IMappingCollector<NormalizedSimpleStack, Integer> mappingCollector = new IntToFractionCollector<NormalizedSimpleStack>(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector(mapper);
 
 		Map<NormalizedSimpleStack, Integer> graphMapperValuesForCreation = Maps.newHashMap();
 		Map<NormalizedSimpleStack, Integer> graphMapperValuesForDestruction = Maps.newHashMap();
