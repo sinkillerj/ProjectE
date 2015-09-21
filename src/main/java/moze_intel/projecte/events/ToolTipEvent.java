@@ -161,6 +161,16 @@ public class ToolTipEvent
 						sb.append(String.format("%,d", totalDestructionValue));
 						sb.append(EnumChatFormatting.YELLOW);
 						sb.append(' ').append(StatCollector.translateToLocal("pe.emc.destroy.tooltip.postfix"));
+
+						if (emcLostByDamage > 0 || enchantBonus > 0) {
+							sb.append(EnumChatFormatting.YELLOW);
+							sb.append(" (");
+							if (emcLostByDamage > 0)
+								sb.append(EnumChatFormatting.RED).append('-').append(EnumChatFormatting.WHITE).append(String.format("%,d", emcLostByDamage));
+							if (enchantBonus > 0)
+								sb.append(EnumChatFormatting.GREEN).append('+').append(EnumChatFormatting.WHITE).append(String.format("%,d", enchantBonus));
+							sb.append(EnumChatFormatting.YELLOW).append(')');
+						}
 					}
 					else
 					{
@@ -169,6 +179,7 @@ public class ToolTipEvent
 						sb.append(String.format("%,d", totalDestructionValue));
 					}
 					event.toolTip.add(sb.toString());
+
 				}
 				else if (showExtendedTooltip)
 				{
