@@ -83,7 +83,8 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
-		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.LAVA), 64);
+		//1 Bucket of Lava = 1 Block of Obsidian
+		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
@@ -92,7 +93,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {
-			mapper.setValueBefore(NormalizedSimpleStack.getFor(milkFluid), 16);
+			mapper.addConversion(1000, NormalizedSimpleStack.getFor(milkFluid), Arrays.asList(fakeMilkFluid));
 		}
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
