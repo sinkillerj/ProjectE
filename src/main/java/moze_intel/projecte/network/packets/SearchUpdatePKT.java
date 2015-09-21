@@ -20,7 +20,7 @@ public class SearchUpdatePKT implements IMessage
 	public SearchUpdatePKT(int slot, ItemStack itemStack)
 	{
 		this.slot = slot;
-		this.itemStack = itemStack.copy();
+		this.itemStack = itemStack != null ? itemStack.copy() : null;
 	}
 
 	@Override
@@ -46,7 +46,6 @@ public class SearchUpdatePKT implements IMessage
 			{
 				TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
 				container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
-				PELogger.logFatal("Wrote Output Slots from UpdatePacket immediately");
 			}
 
 			return null;

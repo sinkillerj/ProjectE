@@ -1,23 +1,12 @@
-package moze_intel.projecte.handlers.NEI;
+package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.api.API;
-import codechicken.nei.api.IConfigureNEI;
-import moze_intel.projecte.PECore;
 
-public class NEIPEConfig implements IConfigureNEI {
+public class NEIInit
+{
 
-	@Override
-	public String getName() {
-		return "ProjectE-NEI";
-	}
-
-	@Override
-	public String getVersion() {
-		return PECore.VERSION;
-	}
-
-	@Override
-	public void loadConfig() {
+	public static void init()
+	{
 		API.registerRecipeHandler(new NEIWorldTransmuteHandler());
 		API.registerUsageHandler(new NEIWorldTransmuteHandler());
 		API.registerRecipeHandler(new NEIPhiloSmeltingHandler());
@@ -27,6 +16,4 @@ public class NEIPEConfig implements IConfigureNEI {
 		API.registerRecipeHandler(new NEIAlchBagHandler());
 		API.registerUsageHandler(new NEIAlchBagHandler());
 	}
-	
-	
 }
