@@ -109,7 +109,7 @@ public final class PlayerChecks
 	{
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(playerMP, playerMP.capabilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(playerMP, playerMP.stepHeight);
+		PlayerHelper.updateClientServerStepHeight(playerMP, shouldPlayerStep(playerMP) ? 1.0F : 0.5F);
 	}
 
 	private static boolean shouldPlayerFly(EntityPlayerMP player)
