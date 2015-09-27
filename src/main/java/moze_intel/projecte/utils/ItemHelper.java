@@ -436,7 +436,8 @@ public final class ItemHelper
 				return null;
 			}
 
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (inv.isItemValidForSlot(i, stack)
+				&& areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
 			{
 				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 
