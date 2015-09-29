@@ -126,7 +126,7 @@ public final class EMCHelper
 	}
 
 	public static boolean hasEmcValueForDestruction(ItemStack itemStack) {
-		return hasBaseEmcValueForDestruction(itemStack) && getEmcValueForDestructionWithDamageAndBonuses(itemStack) > 0 ;
+		return hasBaseEmcValueForDestruction(itemStack);
 	}
 
 	public static int getEmcValueForCreationOrZero(ItemStack itemStack) {

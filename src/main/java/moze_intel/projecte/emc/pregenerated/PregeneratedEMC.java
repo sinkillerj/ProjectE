@@ -85,17 +85,17 @@ public class PregeneratedEMC
 	public static void write(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws IOException
 	{
 		CreateDestroyValueBag bag = new CreateDestroyValueBag();
-		bag.create = serializeMap(mapForCreation);
-		bag.destroy = serializeMap(mapForDestruction);
+		bag.create = serializeMap(mapForCreation, true);
+		bag.destroy = serializeMap(mapForDestruction, true);
 		FileWriter writer = new FileWriter(file);
 		gson.toJson(bag, CreateDestroyValueBag.class, writer);
 		writer.close();
 	}
 
-	private static Map<String, Integer> serializeMap(Map<NormalizedSimpleStack, Integer> map) {
+	private static Map<String, Integer> serializeMap(Map<NormalizedSimpleStack, Integer> map, boolean keepZeros) {
 		Map<String, Integer> out = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: map.entrySet()) {
-			if (!EMCMapper.shouldBeFiltered(entry))
+			if (!EMCMapper.shouldBeFiltered(entry, keepZeros))
 			{
 				out.put(entry.getKey().json(), entry.getValue());
 			}

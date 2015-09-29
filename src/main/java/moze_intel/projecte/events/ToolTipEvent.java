@@ -202,7 +202,7 @@ public class ToolTipEvent
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
-					if (total < 0 || total <= totalDestructionValue || total > Integer.MAX_VALUE)
+					if (total > Integer.MAX_VALUE)
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
 					}

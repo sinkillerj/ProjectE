@@ -141,7 +141,7 @@ public final class EMCMapper
 
 		emcForCreation = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValuesForCreation.entrySet()) {
-			if (!shouldBeFiltered(entry))
+			if (!shouldBeFiltered(entry, true))
 			{
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
 				emcForCreation.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
@@ -151,7 +151,7 @@ public final class EMCMapper
 
 		emcForDestruction = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValuesForDestruction.entrySet()) {
-			if (!shouldBeFiltered(entry))
+			if (!shouldBeFiltered(entry, true))
 			{
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
 				emcForDestruction.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
@@ -164,9 +164,12 @@ public final class EMCMapper
 		FuelMapper.loadMap();
 	}
 
-	public static boolean shouldBeFiltered(Map.Entry<NormalizedSimpleStack, Integer> entry) {
+	public static boolean shouldBeFiltered(Map.Entry<NormalizedSimpleStack, Integer> entry, boolean keepZeros) {
 		NormalizedSimpleStack normStack = entry.getKey();
-		if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
+		if (normStack instanceof NormalizedSimpleStack.NSSItem && (keepZeros || entry.getValue() > 0)) {
+			if (entry.getValue().equals(Integer.MIN_VALUE)) {
+				entry.setValue(0);
+			}
 			NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;
 			if (normStackItem.damage != OreDictionary.WILDCARD_VALUE) {
 				return false;

@@ -148,10 +148,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		for (Map.Entry<T, V> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
 			values.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
 		}
-		//Remove all 'free' items from the output-values
+		//Remove all 'ZERO' items from the output-values
 		for (Iterator<T> iter = values.keySet().iterator(); iter.hasNext();) {
 			T something = iter.next();
-			if (arithmetic.isFree(values.get(something))) {
+			if (ZERO.equals(values.get(something))) {
 				iter.remove();
 			}
 		}
