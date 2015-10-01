@@ -18,6 +18,7 @@ import java.util.Map;
 public class PregeneratedEMC
 {
 	public static class CreateDestroyValueBag {
+		public int version;
 		public Map<String, Integer> create;
 		public Map<String, Integer> destroy;
 	}
@@ -53,6 +54,10 @@ public class PregeneratedEMC
 
 	public static boolean readMultiValueFile(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws FileNotFoundException {
 		CreateDestroyValueBag map = gson.fromJson(new FileReader(file), CreateDestroyValueBag.class);
+		if (map.version != 2) {
+			PELogger.logFatal("Can not read pregen-file with version=" + map.version);
+			return false;
+		}
 		if (map.create == null || map.destroy == null) return false;
 		deserializeMap(map.create, mapForCreation);
 		deserializeMap(map.destroy, mapForDestruction);
@@ -85,6 +90,7 @@ public class PregeneratedEMC
 	public static void write(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws IOException
 	{
 		CreateDestroyValueBag bag = new CreateDestroyValueBag();
+		bag.version = 2;
 		bag.create = serializeMap(mapForCreation, true);
 		bag.destroy = serializeMap(mapForDestruction, true);
 		FileWriter writer = new FileWriter(file);
