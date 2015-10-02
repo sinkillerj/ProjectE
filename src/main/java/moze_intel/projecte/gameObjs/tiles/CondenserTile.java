@@ -89,11 +89,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				requiredEmc = lockEmc;
 				this.isAcceptingEmc = true;
 			}
-
-			if (this.getStoredEmc() > requiredEmc)
-			{
-				handleMassCondense();
-			}
 		}
 		else
 		{
@@ -103,16 +98,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			displayEmc = 0;
 			requiredEmc = 0;
 			this.isAcceptingEmc = false;
-		}
-	}
-
-	private void handleMassCondense()
-	{
-		while(hasSpace() && this.getStoredEmc() > requiredEmc)
-		{
-			pushStack();
-
-			this.removeEMC(requiredEmc);
 		}
 	}
 	

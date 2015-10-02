@@ -24,7 +24,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	private List<ItemStack> knowledge = Lists.newArrayList();
 	private ItemStack[] inputLocks = new ItemStack[9];
 	private boolean hasFullKnowledge;
-	private boolean hasMigrated = false;
 	public static final String PROP_NAME = "ProjectETransmutation";
 
 	public static void register(EntityPlayer player)
@@ -160,7 +159,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 		NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
 		properties.setTag("knowledge", knowledgeWrite);
 		properties.setTag("inputlock", inputLockWrite);
-		properties.setBoolean("migrated", hasMigrated);
 		compound.setTag(PROP_NAME, properties);
 	}
 
@@ -168,21 +166,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	public void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
-		hasMigrated = properties.getBoolean("migrated");
-		if (!hasMigrated && !player.worldObj.isRemote) // hasMigrated is also false if tag was not present
-		{
-			if (Transmutation.hasLegacyData(player))
-			{
-				properties = Transmutation.migratePlayerData(player);
-				PELogger.logInfo("** MIGRATED TRANSMUTE DATA for player: " + player.getCommandSenderName() + " **");
-			}
-			else
-			{
-				PELogger.logInfo("** LEGACY TRANSMUTE DATA NOT FOUND. NOW USING NEW SAVING for player: " + player.getCommandSenderName() + " **");
-			}
-
-			hasMigrated = true;
-		}
 
 		transmutationEmc = properties.getDouble("transmutationEmc");
 		hasFullKnowledge = properties.getBoolean("tome");

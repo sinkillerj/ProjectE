@@ -33,7 +33,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
-import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.proxies.IProxy;
@@ -149,8 +148,6 @@ public class PECore
 		{
 			dir.mkdirs(); 
 		}
-		
-		IOHandler.init(new File(dir, "knowledge.dat"), new File(dir, "bagdata.dat"));
 	}
 
 	@Mod.EventHandler
