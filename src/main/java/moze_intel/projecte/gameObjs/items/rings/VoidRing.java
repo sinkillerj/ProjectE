@@ -1,18 +1,14 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.PlayerHelper;
-
-import java.util.List;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +18,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+
+import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
@@ -40,6 +38,11 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	{
 		super.onUpdate(stack, world, entity, slot, isHeld);
 		ObjHandler.blackHole.onUpdate(stack, world, entity, slot, isHeld);
+		if (!stack.getTagCompound().hasKey("teleportCooldown"))
+		{
+			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
+		}
+		stack.getTagCompound().setByte("teleportCooldown", ((byte) (stack.getTagCompound().getByte("teleportCooldown") - 1)));
 	}
 
 
@@ -73,14 +76,18 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		Coordinates c = PlayerHelper.getBlockLookingAt(player, 64);
-		if (c == null)
+		if (stack.getTagCompound().getByte("teleportCooldown") > 0 )
 		{
-			Vec3 vec  = ((Vec3) PlayerHelper.getLookVec(player, 32).getSecond());
-			c = new Coordinates(((int) vec.xCoord), ((int) vec.yCoord), ((int) vec.zCoord));
+			return;
 		}
 
-		EnderTeleportEvent event = new EnderTeleportEvent(player, c.x, c.y + 1, c.z, 5.0F);
+		Vec3 c = PlayerHelper.getBlockLookingAt(player, 64);
+		if (c == null)
+		{
+			c = PlayerHelper.getLookVec(player, 32).getRight();
+		}
+
+		EnderTeleportEvent event = new EnderTeleportEvent(player, c.xCoord, c.yCoord, c.zCoord, 0);
 		if (!MinecraftForge.EVENT_BUS.post(event))
 		{
 			if (player.isRiding())
@@ -91,6 +98,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			player.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
 			player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 			player.fallDistance = 0.0F;
+			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
 		}
 	}
 

@@ -78,9 +78,9 @@ public class CondenserContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) 
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return true;
+		return player.getDistanceSq(tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5) <= 64.0;
 	}
 	
 	@Override

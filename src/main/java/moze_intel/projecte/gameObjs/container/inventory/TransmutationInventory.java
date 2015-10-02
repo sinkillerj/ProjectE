@@ -1,14 +1,22 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PELogger;
+
+import com.google.common.collect.Queues;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class TransmutationInventory implements IInventory
 {
@@ -124,9 +133,15 @@ public class TransmutationInventory implements IInventory
 		}
 	}
 
+	public void updateOutputs() {
+		updateOutputs(false);
+	}
 	@SuppressWarnings("unchecked")
-	public void updateOutputs()
+	public void updateOutputs(boolean async)
 	{
+		if (!this.player.worldObj.isRemote) {
+			return;
+		}
 		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
 
 		for (int i : MATTER_INDEXES)
@@ -142,7 +157,7 @@ public class TransmutationInventory implements IInventory
 		ItemStack lockCopy = null;
 
 		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
-		
+		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inventory[LOCK_INDEX] != null)
 		{
 			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
@@ -178,24 +193,7 @@ public class TransmutationInventory implements IInventory
 					continue;
 				}
 
-				String displayName;
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (displayName == null)
-				{
-					iter.remove();
-					continue;
-				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-				{
+				if (!searchHelper.doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
@@ -223,24 +221,7 @@ public class TransmutationInventory implements IInventory
 					continue;
 				}
 
-				String displayName = "";
-
-				try
-				{
-					displayName = stack.getDisplayName();
-				}
-				catch (Exception e)
-				{
-					continue;
-				}
-
-				if (displayName == null)
-				{
-					iter.remove();
-					continue;
-				}
-				else if (filter.length() > 0 && !displayName.toLowerCase().contains(filter))
-				{
+				if (!searchHelper.doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
@@ -292,6 +273,23 @@ public class TransmutationInventory implements IInventory
  				}
 			}
 		}
+	}
+
+	public void writeIntoOutputSlot(int slot, ItemStack item)
+	{
+
+		if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
+		{
+			inventory[slot] = item;
+		}
+		else
+		{
+			inventory[slot] = null;
+		}
+	}
+
+	public List<ItemStack> getOutputSlots() {
+		return Arrays.asList(inventory).subList(10,26);
 	}
 	
 	@Override
@@ -384,7 +382,10 @@ public class TransmutationInventory implements IInventory
 		emc = Transmutation.getEmc(player);
 		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
 		System.arraycopy(inputLocks, 0, inventory, 0, 9);
-		updateOutputs();
+		if (this.player.worldObj.isRemote)
+		{
+			updateOutputs(true);
+		}
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package moze_intel.projecte.events;
 
+import com.google.common.math.LongMath;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -39,6 +41,11 @@ public class ToolTipEvent
 		{
 			event.toolTip.add(StatCollector.translateToLocal("pe.pedestal.tooltip1"));
 			event.toolTip.add(StatCollector.translateToLocal("pe.pedestal.tooltip2"));
+		}
+
+		if (currentItem == ObjHandler.manual)
+		{
+			event.toolTip.add(StatCollector.translateToLocal("pe.manual.tooltip1"));
 		}
 
 		if (ProjectEConfig.showPedestalTooltip
@@ -100,8 +107,13 @@ public class ToolTipEvent
 
 				if (current.stackSize > 1)
 				{
-					long total = value * current.stackSize;
-
+					long total;
+					try
+					{
+						total = LongMath.checkedMultiply(value, current.stackSize);
+					} catch (ArithmeticException e) {
+						total = Long.MAX_VALUE;
+					}
 					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
@@ -110,6 +122,7 @@ public class ToolTipEvent
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
 					}
+
 				}
 			}
 		}
@@ -198,13 +211,21 @@ public class ToolTipEvent
 							StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("EMC")));
 				}
 			}
-			
-			if (current.stackTagCompound.hasKey("StoredEMC"))
+			if (current.getItem() instanceof IItemEmc || current.stackTagCompound.hasKey("StoredEMC"))
 			{
-				event.toolTip.add(EnumChatFormatting.YELLOW + String.format(
-						StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + "%,d", (int) current.stackTagCompound.getDouble("StoredEMC")));
+				double value = 0;
+				if (current.stackTagCompound.hasKey("StoredEMC"))
+				{
+					value = current.stackTagCompound.getDouble("StoredEMC");
+				} else
+				{
+					value = ((IItemEmc) current.getItem()).getStoredEmc(current);
+				}
+
+				event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " " + EnumChatFormatting.RESET + Constants.EMC_FORMATTER.format(value));
 			}
-			else if (current.stackTagCompound.hasKey("StoredXP"))
+
+			if (current.stackTagCompound.hasKey("StoredXP"))
 			{
 				event.toolTip.add(String.format(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d", current.stackTagCompound.getInteger("StoredXP")));
 			}

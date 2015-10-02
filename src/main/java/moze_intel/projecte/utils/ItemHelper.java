@@ -378,7 +378,7 @@ public final class ItemHelper
 
 	public static boolean isOre(Block block, int meta)
 	{
-		if (block.equals(Blocks.lit_redstone_ore))
+		if (block == Blocks.lit_redstone_ore)
 		{
 			return true;
 		}
@@ -436,7 +436,8 @@ public final class ItemHelper
 				return null;
 			}
 
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (inv.isItemValidForSlot(i, stack)
+				&& areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
 			{
 				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 

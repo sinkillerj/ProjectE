@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Locale;
+
 public class GUITransmutation extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
@@ -47,18 +49,12 @@ public class GUITransmutation extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen(int par1, int par2, float par3)
-	{
-		super.drawScreen(par1, par2, par3);
-		this.textBoxFilter.drawTextBox();
-    }
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.textBoxFilter.drawTextBox();
 	}
 	
 	@Override
@@ -116,10 +112,9 @@ public class GUITransmutation extends GuiContainer
 
 			if (!inv.filter.equals(srch))
 			{
-				PacketHandler.sendToServer(new SearchUpdatePKT(srch, 0));
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs();
+				inv.updateOutputs(true);
 			}
 		}
 
@@ -141,10 +136,9 @@ public class GUITransmutation extends GuiContainer
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
-			PacketHandler.sendToServer(new SearchUpdatePKT("", 0));
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs();
+			inv.updateOutputs(true);
 			this.textBoxFilter.setText("");
 		}
 
@@ -162,7 +156,7 @@ public class GUITransmutation extends GuiContainer
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		String srch = this.textBoxFilter.getText().toLowerCase();
+		String srch = this.textBoxFilter.getText().toLowerCase(Locale.ROOT);
 
 		if (button.id == 1)
 		{
@@ -178,8 +172,7 @@ public class GUITransmutation extends GuiContainer
 				inv.searchpage++;
 			}
 		}
-		PacketHandler.sendToServer(new SearchUpdatePKT(srch, inv.searchpage));
 		inv.filter = srch;
-		inv.updateOutputs();
+		inv.updateOutputs(true);
 	}
 }

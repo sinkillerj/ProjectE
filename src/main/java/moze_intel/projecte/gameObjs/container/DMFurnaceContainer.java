@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -54,9 +54,9 @@ public class DMFurnaceContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) 
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return true;
+		return player.getDistanceSq(tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5) <= 64.0;
 	}
 	
 	@Override
@@ -128,7 +128,7 @@ public class DMFurnaceContainer extends Container
 		else
 		{
 			
-			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() == ObjHandler.kleinStars)
+			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{
@@ -150,7 +150,7 @@ public class DMFurnaceContainer extends Container
 		
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{

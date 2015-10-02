@@ -22,6 +22,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationProps;
@@ -111,9 +112,21 @@ public class ClientProxy implements IProxy
 	}
 
 	@Override
+	public void initializeManual()
+	{
+		ManualPageHandler.init();
+	}
+
+	@Override
 	public EntityPlayer getClientPlayer()
 	{
 		return FMLClientHandler.instance().getClientPlayerEntity();
+	}
+
+	@Override
+	public boolean isJumpPressed()
+	{
+		return FMLClientHandler.instance().getClient().gameSettings.keyBindJump.getIsKeyPressed();
 	}
 }
 

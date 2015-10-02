@@ -9,7 +9,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
-public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSyncPKT, IMessage>
+public class CondenserSyncPKT implements IMessage
 {
 	private int displayEmc;
 	private int requiredEmc;
@@ -26,25 +26,6 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-	
-	@Override
-	public IMessage onMessage(CondenserSyncPKT pkt, MessageContext ctx) 
-	{
-		TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
-		
-		if (tile == null)
-		{
-			PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
-		}
-		else
-		{
-			CondenserTile cond = (CondenserTile) tile;
-			cond.displayEmc = pkt.displayEmc;
-			cond.requiredEmc = pkt.requiredEmc;
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -65,5 +46,27 @@ public class CondenserSyncPKT implements IMessage, IMessageHandler<CondenserSync
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);
+	}
+
+	public static class Handler implements IMessageHandler<CondenserSyncPKT, IMessage>
+	{
+		@Override
+		public IMessage onMessage(CondenserSyncPKT pkt, MessageContext ctx)
+		{
+			TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
+
+			if (tile == null)
+			{
+				PELogger.logFatal("NULL tile entity reference in condenser update packet! Please report to dev!");
+			}
+			else
+			{
+				CondenserTile cond = (CondenserTile) tile;
+				cond.displayEmc = pkt.displayEmc;
+				cond.requiredEmc = pkt.requiredEmc;
+			}
+
+			return null;
+		}
 	}
 }

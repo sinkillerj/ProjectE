@@ -1,14 +1,12 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Coordinates;
 import moze_intel.projecte.utils.EnumArmorType;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -25,8 +23,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
@@ -42,7 +40,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static boolean isNightVisionEnabled(ItemStack helm)
     {
-        return !helm.hasTagCompound() || !helm.stackTagCompound.hasKey("NightVision") || helm.stackTagCompound.getBoolean("NightVision");
+        return helm.hasTagCompound() && helm.getTagCompound().hasKey("NightVision") && helm.getTagCompound().getBoolean("NightVision");
 
     }
 
@@ -148,12 +146,15 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         return true;
     }
 
-    public static void doZap(EntityPlayer player)
+    public void doZap(EntityPlayer player)
     {
-        Coordinates strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
-        if (strikePos != null)
+        if (ProjectEConfig.offensiveAbilities)
         {
-            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.x, strikePos.y, strikePos.z));
+            Vec3 strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
+            if (strikePos != null)
+			{
+				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.xCoord, strikePos.yCoord, strikePos.zCoord));
+			}
         }
     }
 }
