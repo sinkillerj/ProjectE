@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,23 +13,27 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.List;
+import java.util.Map;
 
 public class SyncEmcPKT implements IMessage
 {
 	private int packetNum;
 	private Object[] data;
+	private boolean isCreateEmc;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(int packetNum, List<Integer[]> arrayList)
+	public SyncEmcPKT(int packetNum, boolean isCreateEmc, List<Integer[]> arrayList)
 	{
 		this.packetNum = packetNum;
+		this.isCreateEmc = isCreateEmc;
 		data = arrayList.toArray();
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
+		isCreateEmc = buf.readBoolean();
 		packetNum = buf.readInt();
 		int size = buf.readInt();
 		data = new Object[size];
@@ -49,6 +54,7 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
+		buf.writeBoolean(isCreateEmc);
 		buf.writeInt(packetNum);
 		buf.writeInt(data.length);
 
@@ -70,10 +76,13 @@ public class SyncEmcPKT implements IMessage
 		{
 			if (pkt.packetNum == 0)
 			{
-				PELogger.logInfo("Receiving EMC data from server.");
-
-				EMCMapper.emc.clear();
-				EMCMapper.emc = Maps.newLinkedHashMap();
+				if (pkt.isCreateEmc) {
+					PELogger.logInfo("Receiving create-EMC data from server.");
+					EMCMapper.emcForCreation = Maps.newLinkedHashMap();;
+				} else {
+					PELogger.logInfo("Receiving destroy-EMC data from server.");
+					EMCMapper.emcForDestruction = Maps.newLinkedHashMap();;
+				}
 			}
 
 			for (Object obj : pkt.data)
@@ -84,13 +93,24 @@ public class SyncEmcPKT implements IMessage
 
 				if (stack.isValid())
 				{
-					EMCMapper.emc.put(stack, array[3]);
+					Map<SimpleStack, Integer> m;
+					if (pkt.isCreateEmc) {
+						m = EMCMapper.emcForCreation;
+					} else {
+						m = EMCMapper.emcForDestruction;
+					}
+					m.put(stack, array[3]);
 				}
 			}
 
 			if (pkt.packetNum == -1)
 			{
 				PELogger.logInfo("Received all packets!");
+				if (pkt.isCreateEmc) {
+					EMCMapper.emcForCreation = ImmutableMap.copyOf(EMCMapper.emcForCreation);
+				} else {
+					EMCMapper.emcForDestruction = ImmutableMap.copyOf(EMCMapper.emcForDestruction);
+				}
 
 				Transmutation.cacheFullKnowledge();
 				FuelMapper.loadMap();

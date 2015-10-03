@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc;
+package moze_intel.projecte.emc.arithmetics;
 
 public interface IValueArithmetic<T extends Comparable<T>> {
 	public boolean isZero(T value);

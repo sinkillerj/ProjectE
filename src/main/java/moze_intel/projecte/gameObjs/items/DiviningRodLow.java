@@ -96,7 +96,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 						}
 
 						ItemStack blockStack = drops.get(0);
-						int blockEmc = EMCHelper.getEmcValue(blockStack);
+						int blockEmc = EMCHelper.getEmcValueForCreationOrZero(blockStack);
 
 						if (blockEmc == 0)
 						{
@@ -111,7 +111,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 								{
-									int currentValue = EMCHelper.getEmcValue(entry.getValue());
+									int currentValue = EMCHelper.getEmcValueForCreationOrZero(entry.getValue());
 
 									if (currentValue != 0)
 									{

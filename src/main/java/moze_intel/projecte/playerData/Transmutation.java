@@ -32,7 +32,7 @@ public final class Transmutation
 
 	public static void cacheFullKnowledge()
 	{
-		for (SimpleStack stack : EMCMapper.emc.keySet())
+		for (SimpleStack stack : EMCMapper.emcForCreation.keySet())
 		{
 			if (!stack.isValid())
 			{
@@ -45,7 +45,7 @@ public final class Transmutation
 				s.stackSize = 1;
 
 				//Apparently items can still not have EMC if they are in the EMC map.
-				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
+				if (EMCHelper.hasEmcValueForCreation(s) && EMCHelper.getEmcValueForCreation(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{
 					CACHED_TOME_KNOWLEDGE.add(s);
 				}
@@ -119,7 +119,7 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
-		if (hasFullKnowledge(player)) return EMCHelper.doesItemHaveEmc(stack);
+		if (hasFullKnowledge(player)) return EMCHelper.hasEmcValueForCreation(stack);
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{

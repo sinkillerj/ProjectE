@@ -21,6 +21,6 @@ public class SlotRelayInput extends Slot
 			return false;
 		}
 		
-		return stack.getItem() instanceof IItemEmc || EMCHelper.doesItemHaveEmc(stack);
+		return stack.getItem() instanceof IItemEmc || EMCHelper.hasEmcValueForDestruction(stack);
 	}
 }

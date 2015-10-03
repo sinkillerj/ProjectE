@@ -1,18 +1,23 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.MappingCollector;
+import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T, V> {
+public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends MappingCollector<T, V, A> implements IValueGenerator<T, V>
+{
 	static boolean OVERWRITE_FIXED_VALUES = false;
 	protected V ZERO;
 
 	private static boolean logFoundExploits = true;
-	public SimpleGraphMapper(IValueArithmetic<V> arithmetic) {
+	public SimpleGraphMapper(A arithmetic) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
 	}
@@ -72,8 +77,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 								continue;
 							}
 							//Calculate how much the conversion-output costs with the new Value for entry.getKey
-							V conversionValue = arithmetic.div(valueForConversion(values, conversion), conversion.outnumber);
-							if (conversionValue.compareTo(ZERO) > 0 || arithmetic.isFree(conversionValue)) {
+							V conversionValue = conversion.arithmeticForConversion.div(valueForConversion(values, conversion), conversion.outnumber);
+							if (conversionValue.compareTo(ZERO) > 0 || conversion.arithmeticForConversion.isFree(conversionValue)) {
 								//We could calculate a valid value for the conversion
 								if (!hasSmallerOrEqual(values, conversion.output, conversionValue)) {
 									//And there is no smaller value for that conversion output yet
@@ -104,12 +109,12 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					//How much do the ingredients cost:
 					V conversionValue = valueForConversion(values, conversion);
 					//What would the output cost be, if that conversion would be used
-					V conversionValueSingle = arithmetic.div(conversionValue, conversion.outnumber);
+					V conversionValueSingle = conversion.arithmeticForConversion.div(conversionValue, conversion.outnumber);
 					//What is the actual emc value for the conversion output
 					V resultValueSingle = values.containsKey(entry.getKey()) ? values.get(entry.getKey()) : ZERO;
 
 					//Find the smallest EMC value for the conversion.output
-					if (conversionValueSingle.compareTo(ZERO) > 0 || arithmetic.isFree(conversionValueSingle)) {
+					if (conversionValueSingle.compareTo(ZERO) > 0 || conversion.arithmeticForConversion.isFree(conversionValueSingle)) {
 						if (minConversionValue == null || minConversionValue.compareTo(conversionValueSingle) > 0) {
 							minConversionValue = conversionValueSingle;
 						}
@@ -143,10 +148,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 		for (Map.Entry<T, V> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
 			values.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
 		}
-		//Remove all 'free' items from the output-values
+		//Remove all 'ZERO' items from the output-values
 		for (Iterator<T> iter = values.keySet().iterator(); iter.hasNext();) {
 			T something = iter.next();
-			if (arithmetic.isFree(values.get(something))) {
+			if (ZERO.equals(values.get(something))) {
 				iter.remove();
 			}
 		}
@@ -184,10 +189,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 					continue;
 				}
 				//value = value + amount * ingredientcost
-				V ingredientValue = arithmetic.mul(entry.getValue(),values.get(entry.getKey()));
+				V ingredientValue = conversion.arithmeticForConversion.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
-					if (!arithmetic.isFree(ingredientValue)) {
-						value = arithmetic.add(value, ingredientValue);
+					if (!conversion.arithmeticForConversion.isFree(ingredientValue)) {
+						value = conversion.arithmeticForConversion.add(value, ingredientValue);
 						if (ingredientValue.compareTo(ZERO) > 0 && entry.getValue() > 0) hasPositiveIngredientValues = true;
 						allIngredientsAreFree = false;
 					}
@@ -201,7 +206,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>> extends GraphMapper<T
 			}
 		}
 		//When all the ingredients for are 'free' or ingredients with negative amount made the Conversion have a value <= 0 this item should be free
-		if (allIngredientsAreFree || (hasPositiveIngredientValues && value.compareTo(ZERO) <= 0)) return arithmetic.getFree();
+		if (allIngredientsAreFree || (hasPositiveIngredientValues && value.compareTo(ZERO) <= 0)) return conversion.arithmeticForConversion.getFree();
 		return value;
 	}
 }

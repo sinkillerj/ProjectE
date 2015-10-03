@@ -1,7 +1,10 @@
 package moze_intel.projecte.emc.pregenerated;
 
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.PELogger;
 
+import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToInstanceMap;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -14,33 +17,95 @@ import java.util.Map;
 
 public class PregeneratedEMC
 {
-	static final Gson gson =  new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe()).enableComplexMapKeySerialization().setPrettyPrinting().create();
+	public static class CreateDestroyValueBag {
+		public int version;
+		public Map<String, Integer> create;
+		public Map<String, Integer> destroy;
+	}
+	static final Gson gson =  new GsonBuilder().setPrettyPrinting().create();
 
-	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> map)
+	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction)
 	{
+
 		try {
-			Map<NormalizedSimpleStack, Integer> m = read(f);
-			map.clear();
-			map.putAll(m);
+			if (readMultiValueFile(f, mapForCreation, mapForDestruction))
+			{
+				return true;
+			}
+			 else
+			{
+				PELogger.logFatal("Could not read %s as multi value file!", f);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Could not parse Multi Value Pregen File!", e);
+		}
+		PELogger.logFatal("Fallback to old (same value) file format", f);
+		mapForCreation.clear();
+		mapForDestruction.clear();
+		try {
+			Map<NormalizedSimpleStack, Integer> m = readSameValue(f);
+			mapForCreation.putAll(m);
+			mapForDestruction.putAll(m);
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> read(File file) throws FileNotFoundException
-	{
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
-		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(new FileReader(file), type);
-		map.remove(null);
-		return map;
+	public static boolean readMultiValueFile(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws FileNotFoundException {
+		CreateDestroyValueBag map = gson.fromJson(new FileReader(file), CreateDestroyValueBag.class);
+		if (map.version != 2) {
+			PELogger.logFatal("Can not read pregen-file with version=" + map.version);
+			return false;
+		}
+		if (map.create == null || map.destroy == null) return false;
+		deserializeMap(map.create, mapForCreation);
+		deserializeMap(map.destroy, mapForDestruction);
+		return true;
 	}
 
-	public static void write(File file, Map<NormalizedSimpleStack, Integer> map) throws IOException
+	private static void deserializeMap(Map<String, Integer> from, Map<NormalizedSimpleStack, Integer> to) {
+		for (Map.Entry<String, Integer> entry: from.entrySet())
+		{
+			try
+			{
+				NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.fromSerializedItem(entry.getKey());
+				to.put(normalizedSimpleStack, entry.getValue());
+			} catch (Exception e)
+			{
+				PELogger.logWarn("Could not create NormalizedSimpleStack from '%s' when reading pregen file!", entry.getKey());
+			}
+		}
+	}
+
+	public static Map<NormalizedSimpleStack, Integer> readSameValue(File file) throws FileNotFoundException
 	{
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
+		Type type = new TypeToken<Map<String, Integer>>() {}.getType();
+		Map<String, Integer> map = gson.fromJson(new FileReader(file), type);
+		Map<NormalizedSimpleStack, Integer> out = Maps.newHashMap();
+		deserializeMap(map, out);
+		return out;
+	}
+
+	public static void write(File file, Map<NormalizedSimpleStack, Integer> mapForCreation, Map<NormalizedSimpleStack, Integer> mapForDestruction) throws IOException
+	{
+		CreateDestroyValueBag bag = new CreateDestroyValueBag();
+		bag.version = 2;
+		bag.create = serializeMap(mapForCreation, true);
+		bag.destroy = serializeMap(mapForDestruction, true);
 		FileWriter writer = new FileWriter(file);
-		gson.toJson(map, type, writer);
+		gson.toJson(bag, CreateDestroyValueBag.class, writer);
 		writer.close();
+	}
+
+	private static Map<String, Integer> serializeMap(Map<NormalizedSimpleStack, Integer> map, boolean keepZeros) {
+		Map<String, Integer> out = Maps.newHashMap();
+		for (Map.Entry<NormalizedSimpleStack, Integer> entry: map.entrySet()) {
+			if (!EMCMapper.shouldBeFiltered(entry, keepZeros))
+			{
+				out.put(entry.getKey().json(), entry.getValue());
+			}
+		}
+		return out;
 	}
 }

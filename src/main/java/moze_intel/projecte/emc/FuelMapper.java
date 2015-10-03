@@ -39,12 +39,12 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
-		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
+		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_CREATE_EMC_ASCENDING);
 	}
 	
 	private static void addToMap(ItemStack stack)
 	{
-		if (EMCHelper.doesItemHaveEmc(stack))
+		if (EMCHelper.hasBaseEmcValueForDestruction(stack))
 		{
 			addToMap(new SimpleStack(stack));
 		}

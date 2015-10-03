@@ -17,7 +17,7 @@ public class SlotGhost extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && EMCHelper.doesItemHaveEmc(stack))
+		if (stack != null && EMCHelper.hasBaseEmcValueForDestruction(stack))
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
 		}
