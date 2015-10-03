@@ -11,6 +11,7 @@ import moze_intel.projecte.emc.generators.DestructionValueMultiplier;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IMultiValueGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
+import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
@@ -54,7 +55,8 @@ public final class EMCMapper
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
-				new SmeltingMapper()
+				new SmeltingMapper(),
+				new APICustomConversionMapper()
 		);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
