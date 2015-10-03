@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider
+public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider, IEmcAcceptor
 {
 	private ItemStack[] inventory;
 	private int[] accessibleSlots;
@@ -261,6 +262,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		}
 		else
 		{
+			//Only send EMC when we are not upgrading fuel or charging an item
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
 			this.sendRelayBonus();
@@ -573,5 +575,21 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);
 		return toRemove;
+	}
+
+	@Override
+	public double acceptEMC(ForgeDirection side, double toAccept)
+	{
+		if (hasFuel || hasChargeableItem) {
+			//Collector accepts EMC from providers if it has fuel/chargeable. If it does not have fuel/chargeable it sends it to providers
+			if (this.getStoredEmc() < getMaximumEmc())
+			{
+				double needed = getMaximumEmc() - this.getStoredEmc();
+				double accept = Math.min(needed, toAccept);
+				this.addEMC(accept);
+				return accept;
+			}
+		}
+		return 0;
 	}
 }
