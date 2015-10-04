@@ -104,7 +104,7 @@ public final class EMCHelper
 	public static boolean hasEmcValueForCreation(ItemStack itemStack) {
 		SimpleStack iStack = new SimpleStack(itemStack);
 		iStack.qnty = 1;
-		if (iStack.isValid()) return EMCMapper.emcForCreation.containsKey(iStack);
+		if (iStack.isValid()) return EMCMapper.emc.containsKey(iStack);
 		return false;
 	}
 
@@ -113,12 +113,12 @@ public final class EMCHelper
 		iStack.qnty = 1;
 		if (iStack.isValid())
 		{
-			if (EMCMapper.emcForDestruction.containsKey(iStack))
+			if (EMCMapper.emc.containsKey(iStack))
 			{
 				return true;
 			} else if(!itemStack.getHasSubtypes()){
 				iStack.damage = 0;
-				return EMCMapper.emcForDestruction.containsKey(iStack);
+				return EMCMapper.emc.containsKey(iStack);
 			}
 		}
 		return false;
@@ -137,9 +137,9 @@ public final class EMCHelper
 		iStack.qnty = 1;
 		if (iStack.isValid())
 		{
-			if (EMCMapper.emcForCreation.containsKey(iStack))
+			if (EMCMapper.emc.containsKey(iStack))
 			{
-				return EMCMapper.emcForCreation.get(iStack);
+				return EMCMapper.emc.get(iStack);
 			}
 		}
 		throw new NoCreationEmcValueException();
@@ -158,13 +158,13 @@ public final class EMCHelper
 		iStack.qnty = 1;
 		if (iStack.isValid())
 		{
-			if (EMCMapper.emcForDestruction.containsKey(iStack))
+			if (EMCMapper.emc.containsKey(iStack))
 			{
-				return EMCMapper.emcForDestruction.get(iStack);
+				return EMCMapper.emc.get(iStack);
 			} else if(!itemStack.getHasSubtypes()){
 				iStack.damage = 0;
-				if (EMCMapper.emcForDestruction.containsKey(iStack)) {
-					return EMCMapper.emcForDestruction.get(iStack);
+				if (EMCMapper.emc.containsKey(iStack)) {
+					return EMCMapper.emc.get(iStack);
 				}
 			}
 		}

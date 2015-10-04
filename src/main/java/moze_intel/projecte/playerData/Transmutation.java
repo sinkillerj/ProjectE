@@ -32,7 +32,8 @@ public final class Transmutation
 
 	public static void cacheFullKnowledge()
 	{
-		for (SimpleStack stack : EMCMapper.emcForCreation.keySet())
+		//TODO Only add 'learnable' items to the full cached knowledge
+		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
 			if (!stack.isValid())
 			{

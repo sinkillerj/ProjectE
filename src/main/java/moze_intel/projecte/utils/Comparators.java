@@ -77,8 +77,9 @@ public final class Comparators
 		@Override
 		public int compare(SimpleStack s1, SimpleStack s2)
 		{
-			int emc1 = EMCMapper.emcForCreation.containsKey(s1) ? EMCMapper.emcForCreation.get(s1) : 0;
-			int emc2 = EMCMapper.emcForCreation.containsKey(s2) ? EMCMapper.emcForCreation.get(s2) : 0;
+			//TODO Need to use the correct EMC value
+			int emc1 = EMCMapper.emc.containsKey(s1) ? EMCMapper.emc.get(s1) : 0;
+			int emc2 = EMCMapper.emc.containsKey(s2) ? EMCMapper.emc.get(s2) : 0;
 			
 			if (emc1 < emc2)
 			{

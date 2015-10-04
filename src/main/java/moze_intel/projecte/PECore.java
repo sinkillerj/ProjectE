@@ -140,7 +140,7 @@ public class PECore
 
 		EMCMapper.map();
 
-		PELogger.logInfo("Registered " + EMCMapper.emcForCreation.size() + " create-EMC values and " + EMCMapper.emcForDestruction.size()  + " destroy-EMC values . (took " + (System.currentTimeMillis() - start) + " ms)");
+		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 		
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
 		
