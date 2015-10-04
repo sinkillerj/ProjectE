@@ -104,9 +104,10 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showEMCTooltip)
 		{
-			if (EMCHelper.doesItemHaveEmc(current))
+			//TODO: Assume Creation and Destruction EMC is the same. Only use Destruction Value for now like it was before.
+			if (EMCHelper.hasEmcValueForDestruction(current))
 			{
-				int value = EMCHelper.getEmcValue(current);
+				int value = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(current);
 
 				event.toolTip.add(EnumChatFormatting.YELLOW +
 						StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
