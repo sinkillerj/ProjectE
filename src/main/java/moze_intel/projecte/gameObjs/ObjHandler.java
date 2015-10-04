@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs;
 
-import com.google.common.collect.Maps;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -20,7 +19,7 @@ import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeKleinStar;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
@@ -238,8 +237,6 @@ public class ObjHandler
 	public static Item windProjectile = new LightningProjectile();
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
-
-	public static final HashMap<ItemStack, ItemStack> MAP = Maps.newHashMap();
 
 	public static void register()
 	{
@@ -597,9 +594,10 @@ public class ObjHandler
 
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
-		{	//Unused shapeless recipe to get it to give us EMC pending Blubber's rewrite of some code
-			GameRegistry.addShapelessRecipe(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1), new ItemStack(kleinStars, 1, i - 1));
-			GameRegistry.addRecipe(new RecipeKleinStar(new ItemStack(kleinStars, 1, i), new ItemStack(kleinStars, 1, i - 1)));
+		{
+			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
+			ItemStack output = new ItemStack(kleinStars, 1, i);
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
 		}
 
 		//Other items
@@ -640,7 +638,8 @@ public class ObjHandler
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register("Klein Star Recipes", RecipeKleinStar.class, Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
+		RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
@@ -663,7 +662,6 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			MAP.put(input, output);
 			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}

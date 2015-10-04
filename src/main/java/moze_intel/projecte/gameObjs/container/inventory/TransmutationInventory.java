@@ -137,7 +137,6 @@ public class TransmutationInventory implements IInventory
 	@SuppressWarnings("unchecked")
 	public void updateOutputs(boolean async)
 	{
-		PELogger.logFatal("updateOutputs(" + async +") isRemote = " + this.player.worldObj.isRemote);
 		if (!this.player.worldObj.isRemote) {
 			return;
 		}

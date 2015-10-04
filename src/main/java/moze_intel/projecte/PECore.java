@@ -28,11 +28,11 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.impl.IMCHandler;
+import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
-import moze_intel.projecte.playerData.IOHandler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.proxies.IProxy;
@@ -113,6 +113,8 @@ public class PECore
 		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.readUserData();
 		proxy.initializeManual();
+		
+		Integration.init();
 	}
 	
 	@Mod.EventHandler
@@ -146,8 +148,6 @@ public class PECore
 		{
 			dir.mkdirs(); 
 		}
-		
-		IOHandler.init(new File(dir, "knowledge.dat"), new File(dir, "bagdata.dat"));
 	}
 
 	@Mod.EventHandler
