@@ -94,7 +94,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 		Iterator<ItemStack> iter = knowledge.iterator();
 		while (iter.hasNext())
 		{
-			if (!EMCHelper.doesItemHaveEmc(iter.next()))
+			if (!EMCHelper.hasEmcValueForCreation(iter.next()))
 			{
 				iter.remove();
 			}

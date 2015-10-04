@@ -169,6 +169,18 @@ public final class EMCHelper
 		return 0;
 	}
 
+	public static boolean hasEmcValueForCreation(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		if (iStack.isValid()) return EMCMapper.mapContains(iStack);
+		return false;
+	}
+
+	public static boolean hasEmcValueForDestruction(ItemStack itemStack) {
+		SimpleStack iStack = new SimpleStack(itemStack);
+		if (iStack.isValid()) return EMCMapper.mapContains(iStack) && getEmcValueForDestruction(itemStack) > 0 ;
+		return false;
+	}
+
 	public static int getEmcValueForCreation(ItemStack itemStack) {
 		return getBaseEMC(itemStack);
 	}

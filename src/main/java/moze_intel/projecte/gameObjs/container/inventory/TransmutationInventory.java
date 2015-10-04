@@ -120,8 +120,8 @@ public class TransmutationInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		int matterEmc = EMCHelper.hasEmcValueForCreation(inventory[MATTER_INDEXES[0]]) ? EMCHelper.getEmcValueForCreation(inventory[MATTER_INDEXES[0]]) : 0;
+		int fuelEmc = EMCHelper.hasEmcValueForCreation(inventory[FUEL_INDEXES[0]]) ? EMCHelper.getEmcValueForCreation(inventory[FUEL_INDEXES[0]]) : 0;
 		
 		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
@@ -276,7 +276,7 @@ public class TransmutationInventory implements IInventory
 	public void writeIntoOutputSlot(int slot, ItemStack item)
 	{
 
-		if (EMCHelper.doesItemHaveEmc(item) && Transmutation.hasKnowledgeForStack(item, player))
+		if (EMCHelper.hasEmcValueForCreation(item) && Transmutation.hasKnowledgeForStack(item, player))
 		{
 			inventory[slot] = item;
 		}

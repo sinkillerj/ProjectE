@@ -380,7 +380,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return EMCHelper.hasEmcValueForDestruction(stack);
 	}
 
 	@Override
