@@ -120,25 +120,6 @@ public final class Transmutation
 		return false;
 	}
 
-	public static boolean hasFullKnowledge(EntityPlayer player)
-	{
-		for (SimpleStack stack : EMCMapper.emc.keySet())
-		{
-			if (!stack.isValid())
-			{
-				continue;
-			}
-
-			if (!hasKnowledgeForStack(stack.toItemStack(), player))
-			{
-				return false;
-			}
-		}
-
-
-		return true;
-	}
-
 	public static void setFullKnowledge(EntityPlayer player)
 	{
 		TransmutationProps.getDataFor(player).getKnowledge().clear();

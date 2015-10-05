@@ -63,7 +63,7 @@ public class TransmutationInventory implements IInventory
 		{
 			learnFlag = 300;
 			
-			if (stack.getItem() == ObjHandler.tome && !Transmutation.hasFullKnowledge(player))
+			if (stack.getItem() == ObjHandler.tome)
 			{
 				Transmutation.setFullKnowledge(player);
 			}

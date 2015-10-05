@@ -50,12 +50,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 		this.inputLocks = inputLocks;
 	}
 
-	protected boolean hasFullKnowledge()
-	{
-		return Transmutation.hasFullKnowledge(player);
-	}
-
-
 	protected double getTransmutationEmc()
 	{
 		return transmutationEmc;
