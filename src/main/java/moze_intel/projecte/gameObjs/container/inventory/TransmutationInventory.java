@@ -59,11 +59,11 @@ public class TransmutationInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
+		if (!Transmutation.hasKnowledgeForStack(stack, player))
 		{
 			learnFlag = 300;
 			
-			if (stack.getItem() == ObjHandler.tome)
+			if (stack.getItem() == ObjHandler.tome && !Transmutation.hasFullKnowledge(player))
 			{
 				Transmutation.setFullKnowledge(player);
 			}
@@ -98,7 +98,7 @@ public class TransmutationInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (Transmutation.hasKnowledgeForStack(stack, player) && !Transmutation.hasFullKnowledge(player))
+		if (Transmutation.hasKnowledgeForStack(stack, player))
 		{
 			unlearnFlag = 300;
 

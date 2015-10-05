@@ -23,7 +23,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	private double transmutationEmc;
 	private List<ItemStack> knowledge = Lists.newArrayList();
 	private ItemStack[] inputLocks = new ItemStack[9];
-	private boolean hasFullKnowledge;
 	public static final String PROP_NAME = "ProjectETransmutation";
 
 	public static void register(EntityPlayer player)
@@ -53,13 +52,9 @@ public class TransmutationProps implements IExtendedEntityProperties
 
 	protected boolean hasFullKnowledge()
 	{
-		return hasFullKnowledge;
+		return Transmutation.hasFullKnowledge(player);
 	}
 
-	protected void setFullKnowledge(boolean fullKnowledge)
-	{
-		this.hasFullKnowledge = fullKnowledge;
-	}
 
 	protected double getTransmutationEmc()
 	{
@@ -105,7 +100,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	{
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setDouble("transmutationEmc", transmutationEmc);
-		compound.setBoolean("tome", hasFullKnowledge);
 
 		pruneStaleKnowledge();
 		NBTTagList knowledgeWrite = new NBTTagList();
@@ -124,7 +118,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	public void readFromPacket(NBTTagCompound compound)
 	{
 		transmutationEmc = compound.getDouble("transmutationEmc");
-		hasFullKnowledge = compound.getBoolean("tome");
 
 		NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
 		knowledge.clear();
@@ -146,7 +139,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 	{
 		NBTTagCompound properties = new NBTTagCompound();
 		properties.setDouble("transmutationEmc", transmutationEmc);
-		properties.setBoolean("tome", hasFullKnowledge);
 
 		pruneStaleKnowledge();
 		NBTTagList knowledgeWrite = new NBTTagList();
@@ -168,7 +160,6 @@ public class TransmutationProps implements IExtendedEntityProperties
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
 
 		transmutationEmc = properties.getDouble("transmutationEmc");
-		hasFullKnowledge = properties.getBoolean("tome");
 
 		NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++)
