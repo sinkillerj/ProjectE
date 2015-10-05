@@ -276,7 +276,7 @@ public class TransmutationInventory implements IInventory
 	public void writeIntoOutputSlot(int slot, ItemStack item)
 	{
 
-		if (EMCHelper.doesItemHaveEmc(item) && EMCHelper.getEmcValue(item) < this.emc && Transmutation.hasKnowledgeForStack(item, player))
+		if (EMCHelper.doesItemHaveEmc(item) && EMCHelper.getEmcValue(item) <= this.emc && Transmutation.hasKnowledgeForStack(item, player))
 		{
 			inventory[slot] = item;
 		}
