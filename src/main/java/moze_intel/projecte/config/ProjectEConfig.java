@@ -57,6 +57,8 @@ public final class ProjectEConfig
 	public static boolean pulsatingOverlay;
 	public static boolean unsafeKeyBinds;
 	public static boolean offensiveAbilities;
+	public static float katarDeathAura;
+	public static int projectileCooldown;
 
 	public static void init(File configFile)
 	{
@@ -76,6 +78,7 @@ public final class ProjectEConfig
 			useLootBalls = config.getBoolean("useLootBalls", "misc", true, "Make loot balls for drops. Disabling this may potentially cause bad performance when large amounts of loot are spawned!");
 			pulsatingOverlay = config.getBoolean("pulsatingOverlay", "misc", false, "The Philosopher's Stone overlay softly pulsates");
 			unsafeKeyBinds = config.getBoolean("unsafeKeyBinds", "misc", false, "False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered");
+			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 
@@ -104,6 +107,7 @@ public final class ProjectEConfig
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
 			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from ProjectE 1.4.7 and before will be used for weapons.");
 			offensiveAbilities = config.getBoolean("offensiveAbilities", "difficulty", true, "Set to false to disable Gem Armor offensive abilities (helmet zap and chestplate explosion)");
+			katarDeathAura = config.getFloat("katarDeathAura", "difficulty", 1000F, 0, Integer.MAX_VALUE, "Amount of damage Katar 'C' key deals");
 
 			config.getCategory("pedestalcooldown").setComment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.\n" +
 					"A cooldown of 0 will cause the actions to happen every tick. Use caution as a very low value could cause TPS issues.");

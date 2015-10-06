@@ -28,6 +28,16 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
+    public void registerCustomEMC(Object o, int value)
+    {
+        Preconditions.checkNotNull(o);
+        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
+        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
+        APICustomEMCMapper.instance.registerCustomEMC(o, value);
+        PELogger.logInfo("Mod %s registered emc value %d for Object %s", Loader.instance().activeModContainer().getModId(), value, o);
+    }
+
+    @Override
     public boolean hasValue(Block block)
     {
         Preconditions.checkNotNull(block);

@@ -118,15 +118,18 @@ public class RecipeShapelessHidden implements IRecipe
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			if(stack != null && stack.getItem() == ObjHandler.kleinStars)
+			if (stack != null && stack.getItem() == ObjHandler.kleinStars)
 			{
 				storedEMC += KleinStar.getEmc(stack);
 			}
 		}
 
-		if (storedEMC != 0 && output.getItem() == ObjHandler.kleinStars)
+		if (output.getItem() == ObjHandler.kleinStars)
 		{
-			output.setTagCompound(new NBTTagCompound());
+			if (!output.hasTagCompound())
+			{
+				output.setTagCompound(new NBTTagCompound());
+			}
 			KleinStar.setEmc(output, storedEMC);
 		}
 		

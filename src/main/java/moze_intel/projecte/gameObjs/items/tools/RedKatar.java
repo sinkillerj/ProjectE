@@ -3,10 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockLog;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -81,7 +78,11 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 				else if (blockHit instanceof BlockLog)
 				{
 					// Axe
-					deforestAOE(world, stack, player, 0);
+					clearOdAOE(world, stack, player, "logWood", 0);
+				}
+				else if (blockHit instanceof BlockLeaves) {
+					// Shear leaves
+					clearOdAOE(world, stack, player, "treeLeaves", 0);
 				}
 			}
 		}
@@ -97,7 +98,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, KATAR_DEATHATTACK, 0);
+		attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
 	}
 
 	@Override

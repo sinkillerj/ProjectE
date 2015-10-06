@@ -3,6 +3,8 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -26,17 +28,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -52,7 +50,6 @@ public abstract class PEToolBase extends ItemMode
 	public static final float REDSWORD_BASE_ATTACK = 16.0F;
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
-	public static final float KATAR_DEATHATTACK = 1000.0F;
 	protected String pePrimaryToolClass;
 	protected String peToolMaterial;
 	protected Set<Material> harvestMaterials;
@@ -109,9 +106,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Deforests in an AOE. Charge affects the AOE. Optional per-block EMC cost.
+	 * Clears the given OD name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void deforestAOE(World world, ItemStack stack, EntityPlayer player, int emcCost)
+	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost)
 	{
 		byte charge = getCharge(stack);
 		if (charge == 0 || world.isRemote)
@@ -153,17 +150,18 @@ public abstract class PEToolBase extends ItemMode
 				oreName = OreDictionary.getOreName(oreIds[0]);
 			}
 
-			if (oreName.equals("logWood") || oreName.equals("treeLeaves"))
+			if (odName.equals(oreName))
 			{
 				List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
 
-				if (!blockDrops.isEmpty() && consumeFuel(player, stack, emcCost, true))
+				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
+						&& consumeFuel(player, stack, emcCost, true))
 				{
-					if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
-							&& consumeFuel(player, stack, emcCost, true))
+					drops.addAll(blockDrops);
+					world.setBlockToAir(pos);
+					if (world.rand.nextInt(5) == 0)
 					{
-						drops.addAll(blockDrops);
-						world.setBlockToAir(pos);
+						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 					}
 				}
 			}

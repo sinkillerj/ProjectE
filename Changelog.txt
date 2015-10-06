@@ -1,3 +1,20 @@
+###Version 1.7.10-PE1.9.3
+* NOTICE: As of this build legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
+* NEW: Custom conversion API
+* NEW: More new config options
+* FIXED: A issue causing Klein Stars to receive the wrong charge value
+* FIXED: Scroll wheel desync in the transmutation GUI
+* FIXED: isUsableByPlayer issues on various PE tiles
+* FIXED: A issue causing condensers to finish instantly on world load
+* FIXED: Blast resistance on alchemical and other chests
+* FIXED: Block place log spam caused by a forgotten debug string
+* FIXED: Step height issues on dimension change
+* FIXED: A issue causing condensers to finish instantly on world load
+* FIXED: A Book of the Alchemist crash when using the Chinese language setting
+* CHANGE: Katar tree harvesting has been improved
+* CHANGE: Nova explosions now spawn loot on the player again
+* CHANGE: The philostone wrench feature has been removed. This may return as a separate item in a future addon
+
 ###Version 1.7.10-PE1.9.2
 * NEW: Giant Mushrooms added to the Axe list
 * NEW: Further MineTweaker integration

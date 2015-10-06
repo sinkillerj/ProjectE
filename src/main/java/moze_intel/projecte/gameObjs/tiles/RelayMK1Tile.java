@@ -353,7 +353,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1) 
 	{
-		return true;
+		return this.worldObj.getTileEntity(this.pos) != this ? false : var1.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override

@@ -106,9 +106,12 @@ public class KeyPressPKT implements IMessage
 						case FIRE_PROJECTILE:
 							if (stack != null && stack.getItem() instanceof IProjectileShooter)
 							{
-								if (((IProjectileShooter) stack.getItem()).shootProjectile(player, stack))
-								{
-									PlayerHelper.swingItem((player));
+								if (PlayerChecks.getCooldown(player) <= 0) {
+									if (((IProjectileShooter) stack.getItem()).shootProjectile(player, stack))
+									{
+										PlayerHelper.swingItem((player));
+									}
+									PlayerChecks.resetCooldown(player);
 								}
 							} else if (stack == null || ProjectEConfig.unsafeKeyBinds)
 							{
@@ -125,7 +128,6 @@ public class KeyPressPKT implements IMessage
 							}
 							break;
 					}
-
 				}
 			});
 			return null;

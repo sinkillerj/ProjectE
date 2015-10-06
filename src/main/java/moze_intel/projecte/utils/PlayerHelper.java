@@ -52,10 +52,10 @@ public final class PlayerHelper
 			world.restoringBlockSnapshots = true;
 			before.restore(true, false);
 			world.restoringBlockSnapshots = false;
-			PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
+			//PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
 			return false;
 		}
-		PELogger.logInfo("Checked place block passed!");
+		//PELogger.logInfo("Checked place block passed!");
 		return true;
 	}
 

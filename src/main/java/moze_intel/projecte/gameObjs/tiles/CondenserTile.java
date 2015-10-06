@@ -93,11 +93,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				requiredEmc = lockEmc;
 				this.isAcceptingEmc = true;
 			}
-
-			if (this.getStoredEmc() > requiredEmc)
-			{
-				handleMassCondense();
-			}
 		}
 		else
 		{
@@ -107,16 +102,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			displayEmc = 0;
 			requiredEmc = 0;
 			this.isAcceptingEmc = false;
-		}
-	}
-
-	private void handleMassCondense()
-	{
-		while(hasSpace() && this.getStoredEmc() > requiredEmc)
-		{
-			pushStack();
-
-			this.removeEMC(requiredEmc);
 		}
 	}
 	
@@ -376,7 +361,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1) 
 	{
-		return true;
+		return this.worldObj.getTileEntity(this.pos) != this ? false : var1.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	public void updateChest()

@@ -57,47 +57,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			return false;
 		}
 
-		IBlockState state = world.getBlockState(pos);
-
-		if (!world.isAirBlock(pos))
-		{
-			TileEntity tile = world.getTileEntity(pos);
-			
-			if (player.isSneaking())
-			{
-				if (tile instanceof TileEmc)
-				{
-					NBTTagCompound nbt = new NBTTagCompound();
-					nbt.setBoolean("ProjectEBlock", true);
-					tile.writeToNBT(nbt);
-					
-					ItemStack s;
-					if (state.getBlock() == ObjHandler.dmFurnaceOn)
-					{
-						s = new ItemStack(ObjHandler.dmFurnaceOff);
-					}
-					else if (state.getBlock() == ObjHandler.rmFurnaceOn)
-					{
-						s = new ItemStack(ObjHandler.rmFurnaceOff);
-					}
-					else if (state.getBlock() instanceof BlockDirection)
-					{
-						s = ItemHelper.stateToStack(state.withProperty(BlockDirection.FACING, EnumFacing.SOUTH), 1);
-					}
-					else
-					{
-						s = ItemHelper.stateToStack(state, 1);
-					}
-					
-					s.setTagCompound(nbt);
-					
-					world.removeTileEntity(pos);
-					world.setBlockToAir(pos);
-					WorldHelper.spawnEntityItem(world, s, pos.getX(), pos.getY(), pos.getZ());
-				}
-			}
-		}
-
 		IBlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
 
 		if (result != null)

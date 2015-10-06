@@ -8,6 +8,7 @@ import moze_intel.projecte.integration.NEI.NEIPhiloSmeltingHandler;
 import moze_intel.projecte.integration.NEI.NEIWorldTransmuteHandler;
 import net.minecraftforge.fml.common.Loader;
 import moze_intel.projecte.integration.NEI.NEIInit;
+import moze_intel.projecte.utils.PELogger;
 
 public class Integration
 {
@@ -43,6 +44,9 @@ public class Integration
 			try
 			{
 				NEIInit.init();
+			} catch (NoClassDefFoundError e)
+			{
+				PELogger.logWarn("NEI integration not loaded due to server side being detected");
 			} catch (Throwable e)
 			{
 				e.printStackTrace();

@@ -3,6 +3,7 @@ package moze_intel.projecte.emc;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.api.event.EMCRemapEvent;
+import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
@@ -49,7 +50,8 @@ public final class EMCMapper
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
-				new SmeltingMapper()
+				new SmeltingMapper(),
+				new APICustomConversionMapper()
 		);
 		IValueGenerator<NormalizedSimpleStack, Integer> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
 
