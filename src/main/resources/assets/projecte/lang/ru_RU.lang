@@ -280,9 +280,6 @@ pe.philstone.mode1=Куб
 pe.philstone.mode2=Панель
 pe.philstone.mode3=Линия
 pe.philstone.tooltip1=Нажмите %s, чтобы открыть сетку создания
-pe.philstone.tooltip2=Работает как ключ для блоков ProjectE
-pe.philstone.tooltip3=Нажатие ЛКМ изменяет ориентацию блока
-pe.philstone.tooltip4=Нажатие Shift-ПКМ поднимет блок
 
 pe.redpick.mode1=Стандартный
 pe.redpick.mode2=3x блока в высоту
