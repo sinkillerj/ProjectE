@@ -29,7 +29,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	private APICustomEMCMapper() {}
 
 	//Need a special Map for Items and Blocks because the ItemID-mapping might change, so we need to store modid:unlocalizedName instead of the NormalizedSimpleStack which only holds itemid and metadata
-	Map<String, Map<String, Integer>> customEMCforMod = new HashMap<String, Map<String, Integer>>();
+	Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = Maps.newHashMap();
 	Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
 
 	public void registerCustomEMC(ItemStack stack, int emcValue) {
@@ -37,14 +37,14 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (emcValue < 0) emcValue = 0;
 		ModContainer activeMod = Loader.instance().activeModContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<String, Integer> modMap;
+		Map<NormalizedSimpleStack, Integer> modMap;
 		if (customEMCforMod.containsKey(modId)) {
 			modMap = customEMCforMod.get(modId);
 		} else {
-			modMap = new HashMap<String, Integer>();
+			modMap = Maps.newHashMap();
 			customEMCforMod.put(modId, modMap);
 		}
-		modMap.put(serializeToString(stack), emcValue);
+		modMap.put(NormalizedSimpleStack.getFor(stack), emcValue);
 	}
 
 	public void registerCustomEMC(Object o, int emcValue) {
@@ -139,9 +139,9 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;
 			if (customEMCforMod.containsKey(modId))
 			{
-				for (Map.Entry<String, Integer> entry : customEMCforMod.get(modId).entrySet())
+				for (Map.Entry<NormalizedSimpleStack, Integer> entry : customEMCforMod.get(modId).entrySet())
 				{
-					NormalizedSimpleStack normStack = deserializeFromString(entry.getKey());
+					NormalizedSimpleStack normStack = entry.getKey();
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
 						mapper.setValueBefore(normStack, entry.getValue());
@@ -176,7 +176,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem)stack;
-			itemName = Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
+			itemName = item.itemName;
 		} else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}

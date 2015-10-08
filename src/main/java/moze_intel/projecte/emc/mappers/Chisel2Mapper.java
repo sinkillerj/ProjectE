@@ -62,7 +62,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		}*/
 		List<NormalizedSimpleStack> stacks = new ArrayList<NormalizedSimpleStack>();
 		for (ICarvingVariation v : group.getVariations()) {
-			stacks.add(NormalizedSimpleStack.getFor(Block.getIdFromBlock(v.getBlock()), v.getBlockMeta()));
+			stacks.add(NormalizedSimpleStack.getFor(v.getBlock(), v.getBlockMeta()));
 		}
 		if (group.getOreName() != null) {
 			for (ItemStack ore : OreDictionary.getOres(group.getOreName())) {
