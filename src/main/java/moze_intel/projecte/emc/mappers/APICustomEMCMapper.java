@@ -63,15 +63,6 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		modMap.put(stack, emcValue);
 	}
 
-	protected String serializeToString(ItemStack stack) {
-		String name = Item.itemRegistry.getNameForObject(stack.getItem());
-		return String.format("%d@%s", stack.getItemDamage(), name);
-	}
-	protected NormalizedSimpleStack deserializeFromString(String s) {
-		String[] splits = s.split("@", 2);
-		return NormalizedSimpleStack.getFor((Item) Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
-	}
-
 	@Override
 	public String getName() {
 		return "APICustomEMCMapper";
