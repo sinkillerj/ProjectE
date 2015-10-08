@@ -280,9 +280,6 @@ pe.philstone.mode1=Cubo
 pe.philstone.mode2=Painel
 pe.philstone.mode3=Linha
 pe.philstone.tooltip1=Pressione %s para abrir uma grade de crafting
-pe.philstone.tooltip2=Age como uma chave inglesa para blocos do ProjectE
-pe.philstone.tooltip3=Clique esquerdo muda a orientação do bloco
-pe.philstone.tooltip4=Shit clique direito vai pegar o bloco
 
 pe.redpick.mode1=Padrão
 pe.redpick.mode2=3x Tiro Alto

@@ -280,9 +280,6 @@ pe.philstone.mode1=Cubo
 pe.philstone.mode2=Pannello
 pe.philstone.mode3=Linea
 pe.philstone.tooltip1=Premi %s per aprire un tavolo da lavoro
-pe.philstone.tooltip2=Funziona come una wrench per i blocchi ProjectE 
-pe.philstone.tooltip3=Cliccando il tasto destro cambia l'orientazione del blocco
-pe.philstone.tooltip4=Shift + tasto destro farà prendere il blocco
 
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x Tallshot
