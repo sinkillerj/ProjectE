@@ -250,9 +250,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));
 	}
 	
 	@Override
