@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
@@ -18,7 +19,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory
+public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor
 {
 	private final float EMC_CONSUMPTION = 1.6f;
 	public ItemStack[] inventory = new ItemStack[27];
@@ -102,8 +103,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 					flag1 = true;
 				}
 			}
-			else furnaceCookTime = 0;
-			
+
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
@@ -659,7 +659,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1) 
 	{
-		return true;
+		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : var1.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -731,5 +731,18 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	public boolean canExtractItem(int slot, ItemStack stack, int side) 
 	{
 		return slot >= outputStorage[0];
+	}
+
+	@Override
+	public double acceptEMC(ForgeDirection side, double toAccept)
+	{
+		if (this.getStoredEmc() < EMC_CONSUMPTION)
+		{
+			double needed = EMC_CONSUMPTION - this.getStoredEmc();
+			double accept = Math.min(needed, toAccept);
+			this.addEMC(accept);
+			return accept;
+		}
+		return 0;
 	}
 }

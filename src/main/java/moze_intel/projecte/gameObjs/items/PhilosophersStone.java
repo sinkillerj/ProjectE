@@ -63,47 +63,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
 
-		if (mBlock.getBlock() != Blocks.air)
-		{
-			TileEntity tile = world.getTileEntity(blockX, blockY, blockZ);
-			
-			if (player.isSneaking())
-			{
-				if (tile instanceof TileEmc)
-				{
-					NBTTagCompound nbt = new NBTTagCompound();
-					nbt.setBoolean("ProjectEBlock", true);
-					tile.writeToNBT(nbt);
-					
-					if (mBlock.getBlock() == ObjHandler.dmFurnaceOn)
-					{
-						mBlock.setBlock(ObjHandler.dmFurnaceOff);
-					}
-					else if (mBlock.getBlock() == ObjHandler.rmFurnaceOn)
-					{
-						mBlock.setBlock(ObjHandler.rmFurnaceOff);
-					}
-					
-					ItemStack s = mBlock.toItemStack();
-					
-					if (s.getHasSubtypes())
-					{
-						s.setItemDamage(world.getBlockMetadata(blockX, blockY, blockZ));
-					}
-					else
-					{
-						s.setItemDamage(0);
-					}
-					
-					s.setTagCompound(nbt);
-					
-					world.removeTileEntity(blockX, blockY, blockZ);
-					world.setBlock(blockX, blockY, blockZ, Blocks.air, 0, 2);
-					WorldHelper.spawnEntityItem(world, s, blockX, blockY, blockZ);
-				}
-			}
-		}
-
 		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
 
 		if (result != null)
@@ -291,9 +250,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
 		list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip2"));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip3"));
-		list.add(StatCollector.translateToLocal("pe.philstone.tooltip4"));
 	}
 	
 	@Override

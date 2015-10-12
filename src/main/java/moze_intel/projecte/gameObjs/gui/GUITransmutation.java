@@ -49,18 +49,12 @@ public class GUITransmutation extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen(int par1, int par2, float par3)
-	{
-		super.drawScreen(par1, par2, par3);
-		this.textBoxFilter.drawTextBox();
-    }
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.textBoxFilter.drawTextBox();
 	}
 	
 	@Override

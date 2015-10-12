@@ -1,11 +1,14 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -17,22 +20,22 @@ import java.util.Map.Entry;
 
 // This is literally just ShapelessOreRecipe, unchanged. NEI doesn't auto-pick up shapeless recipes registered this way,
 // thus hiding those recipes from the Shapeless Recipes list.
-public class RecipesShapelessHidden implements IRecipe
+public class RecipeShapelessHidden implements IRecipe
 {
 	private ItemStack output = null;
 	private ArrayList<Object> input = new ArrayList<Object>();
 
-	public RecipesShapelessHidden(Block result, Object... recipe)
+	public RecipeShapelessHidden(Block result, Object... recipe)
 	{
 		this(new ItemStack(result), recipe);
 	}
 
-	public RecipesShapelessHidden(Item result, Object... recipe)
+	public RecipeShapelessHidden(Item result, Object... recipe)
 	{
 		this(new ItemStack(result), recipe);
 	}
 
-	public RecipesShapelessHidden(ItemStack result, Object... recipe)
+	public RecipeShapelessHidden(ItemStack result, Object... recipe)
 	{
 		output = result.copy();
 		for (Object in : recipe)
@@ -63,7 +66,7 @@ public class RecipesShapelessHidden implements IRecipe
 	}
 
 	@SuppressWarnings("unchecked")
-	RecipesShapelessHidden(ShapelessRecipes recipe, Map<ItemStack, String> replacements)
+	RecipeShapelessHidden(ShapelessRecipes recipe, Map<ItemStack, String> replacements)
 	{
 		output = recipe.getRecipeOutput();
 
@@ -111,13 +114,32 @@ public class RecipesShapelessHidden implements IRecipe
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean matches(InventoryCrafting var1, World world)
+	public boolean matches(InventoryCrafting inv, World world)
 	{
 		ArrayList<Object> required = new ArrayList<Object>(input);
 
-		for (int x = 0; x < var1.getSizeInventory(); x++)
+		double storedEMC = 0;
+		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			ItemStack slot = var1.getStackInSlot(x);
+			ItemStack stack = inv.getStackInSlot(i);
+			if (stack != null && stack.getItem() == ObjHandler.kleinStars)
+			{
+				storedEMC += KleinStar.getEmc(stack);
+			}
+		}
+
+		if (output.getItem() == ObjHandler.kleinStars)
+		{
+			if (!output.hasTagCompound())
+			{
+				output.setTagCompound(new NBTTagCompound());
+			}
+			KleinStar.setEmc(output, storedEMC);
+		}
+		
+		for (int x = 0; x < inv.getSizeInventory(); x++)
+		{
+			ItemStack slot = inv.getStackInSlot(x);
 
 			if (slot != null)
 			{

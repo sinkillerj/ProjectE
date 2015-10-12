@@ -143,7 +143,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1) 
 	{
-		return true;
+		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : var1.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
 	}
 	
 	@Override

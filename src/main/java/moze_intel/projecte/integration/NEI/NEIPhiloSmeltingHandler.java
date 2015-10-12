@@ -1,20 +1,20 @@
-package moze_intel.projecte.handlers.NEI;
+package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.init.Items;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
@@ -100,20 +100,12 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	{
 		if (outputId.equals(id) && getClass() == NEIPhiloSmeltingHandler.class)
 		{
-			for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+			for (IRecipe irecipe : allrecipes)
 			{
-				if (entry != null)
+				if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
-					{
-						ingList.add(entry.getKey());
-					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
+					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
 			}
 		} else
@@ -125,22 +117,14 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe irecipe : allrecipes)
 		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getValue(), result))
+			if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result))
 			{
-				if (entry != null && entry.getValue() != null)
+				if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
-					{
-						ingList.add(entry.getKey());
-					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
+					arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
 				}
 			}
 		}
@@ -150,22 +134,18 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (Map.Entry<ItemStack, ItemStack> entry : ObjHandler.MAP.entrySet())
+		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe irecipe : allrecipes)
 		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey(), ingredient))
+			if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput().getItem() != ObjHandler.kleinStars)
 			{
-				if (entry != null)
+				for (Object is : ((RecipeShapelessHidden) irecipe).getInput())
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
-
-					ingList.add(new ItemStack(ObjHandler.philosStone));
-					for (int i = 0; i < 7; i++)
+					if (NEIServerUtils.areStacksSameTypeCrafting((ItemStack) is, ingredient))
 					{
-						ingList.add(entry.getKey());
+						arecipes.add(new CachedPhiloSmelting(((RecipeShapelessHidden) irecipe).getInput(), irecipe.getRecipeOutput()));
+						break;
 					}
-					ingList.add(new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE));
-
-					arecipes.add(new CachedPhiloSmelting(ingList, entry.getValue()));
 				}
 			}
 		}

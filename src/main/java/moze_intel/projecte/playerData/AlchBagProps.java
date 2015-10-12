@@ -21,7 +21,6 @@ public class AlchBagProps implements IExtendedEntityProperties
 
 	private final EntityPlayer player;
 	private final Map<Integer, ItemStack[]> bagData = Maps.newHashMap();
-	private boolean hasMigrated = false;
 
 	public static void register(EntityPlayer player)
 	{
@@ -120,7 +119,6 @@ public class AlchBagProps implements IExtendedEntityProperties
 		}
 
 		properties.setTag("data", listOfInventories);
-		properties.setBoolean("migrated", hasMigrated);
 		compound.setTag(PROP_NAME, properties);
 	}
 
@@ -130,20 +128,6 @@ public class AlchBagProps implements IExtendedEntityProperties
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
 
 		NBTTagList listOfInventoies = properties.getTagList("data", Constants.NBT.TAG_COMPOUND);
-		hasMigrated = properties.getBoolean("migrated");
-		if (!hasMigrated && !player.worldObj.isRemote) // hasMigrated is also false if tag was not present
-		{
-			if (AlchemicalBags.hasLegacyData(player))
-			{
-				listOfInventoies = AlchemicalBags.migratePlayerData(player);
-				PELogger.logInfo("** MIGRATED BAG DATA for player: " + player.getCommandSenderName() + " **");
-			}
-			else
-			{
-				PELogger.logInfo("** LEGACY BAG DATA NOT FOUND. NOW USING NEW SAVING for player: " + player.getCommandSenderName() + " **");
-			}
-			hasMigrated = true;
-		}
 		for (int i = 0; i < listOfInventoies.tagCount(); i++)
 		{
 			NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);

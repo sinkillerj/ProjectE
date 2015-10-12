@@ -1,6 +1,10 @@
 package moze_intel.projecte.handlers;
 
 import com.google.common.collect.Sets;
+import gnu.trove.map.hash.TObjectIntHashMap;
+import gnu.trove.procedure.TIntProcedure;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
@@ -15,6 +19,16 @@ public final class PlayerChecks
 {
 	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
+	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
+	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
+
+	public static void resetCooldown(EntityPlayerMP player) {
+		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);
+	}
+
+	public static int getCooldown(EntityPlayerMP player) {
+		return projectileCooldowns.containsKey(player) ? projectileCooldowns.get(player) : -1;
+	}
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
 	{
@@ -36,19 +50,27 @@ public final class PlayerChecks
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public static void update(EntityPlayerMP player)
 	{
-		if (!shouldPlayerFly(player))
+		if (projectileCooldowns.containsKey(player) && projectileCooldowns.get(player) > 0) {
+			projectileCooldowns.adjustValue(player, -1);
+		}
+
+		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))
 		{
 			if (player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
+			
+			hadFlightItem.remove(player);
 		}
-		else
+		else if(shouldPlayerFly(player) && !hadFlightItem.contains(player))
 		{
 			if (!player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
+			
+			hadFlightItem.add(player);
 		}
 
 		if (!shouldPlayerResistFire(player))
@@ -87,11 +109,16 @@ public final class PlayerChecks
 	{
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(playerMP, playerMP.capabilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(playerMP, playerMP.stepHeight);
+		PlayerHelper.updateClientServerStepHeight(playerMP, shouldPlayerStep(playerMP) ? 1.0F : 0.5F);
 	}
 
 	private static boolean shouldPlayerFly(EntityPlayerMP player)
 	{
+		if (!hasSwrg(player))
+		{
+			disableSwrgFlightOverride(player);
+		}
+
 		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
 		{
 			return true;
@@ -233,6 +260,30 @@ public final class PlayerChecks
 		return false;
 	}
 
+	private static boolean hasSwrg(EntityPlayerMP player)
+	{
+		for (int i = 0; i <= 8; i++)
+		{
+			if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg)
+			{
+				return true;
+			}
+		}
+
+		IInventory baubles = PlayerHelper.getBaubles(player);
+		if (baubles != null)
+		{
+			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			{
+				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static void enableSwrgFlightOverride(EntityPlayerMP player)
 	{
 		swrgOverrides.add(player);
@@ -247,11 +298,15 @@ public final class PlayerChecks
 	{
 		swrgOverrides.clear();
 		gemArmorReadyChecks.clear();
+		hadFlightItem.clear();
+		projectileCooldowns.clear();
 	}
 
 	public static void removePlayerFromLists(EntityPlayerMP player)
 	{
 		swrgOverrides.remove(player);
 		gemArmorReadyChecks.remove(player);
+		hadFlightItem.remove(player);
+		projectileCooldowns.remove(player);
 	}
 }

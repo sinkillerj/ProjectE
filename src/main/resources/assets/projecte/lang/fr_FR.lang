@@ -280,9 +280,6 @@ pe.philstone.mode1=Cube
 pe.philstone.mode2=Plat
 pe.philstone.mode3=Ligne
 pe.philstone.tooltip1=Appuyez sur %s pour ouvrir une grille de craft
-pe.philstone.tooltip2=Agit comme une clé à molette pour les blocs de ProjectE
-pe.philstone.tooltip3=Clic gauche change l'orientation du bloc
-pe.philstone.tooltip4=Maj + clic droit prendra le bloc
 
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x TirHaut

@@ -15,13 +15,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Helper class for player-related methods.
@@ -50,10 +52,10 @@ public final class PlayerHelper
 			world.restoringBlockSnapshots = true;
 			before.restore(true, false);
 			world.restoringBlockSnapshots = false;
-			PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
+			//PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
 			return false;
 		}
-		PELogger.logInfo("Checked place block passed!");
+		//PELogger.logInfo("Checked place block passed!");
 		return true;
 	}
 
@@ -85,13 +87,14 @@ public final class PlayerHelper
 		}
 	}
 
-	public static Coordinates getBlockLookingAt(EntityPlayer player, double maxDistance)
+	public static Vec3 getBlockLookingAt(EntityPlayer player, double maxDistance)
 	{
-		Tuple vecs = getLookVec(player, maxDistance);
-		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(((Vec3) vecs.getFirst()), ((Vec3) vecs.getSecond()));
+		Pair<Vec3, Vec3> vecs = getLookVec(player, maxDistance);
+		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(vecs.getLeft(), vecs.getRight());
 		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 		{
-			return new Coordinates(mop.blockX, mop.blockY, mop.blockZ);
+			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
+			return Vec3.createVectorHelper(mop.blockX + dir.offsetX * 1.1, mop.blockY + dir.offsetY * 1.1, mop.blockZ + dir.offsetZ * 1.1);
 		}
 		return null;
 	}
@@ -99,14 +102,14 @@ public final class PlayerHelper
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Tuple getLookVec(EntityPlayer player, double maxDistance)
+	public static Pair<Vec3, Vec3> getLookVec(EntityPlayer player, double maxDistance)
 	{
 		// Thank you ForgeEssentials
 		Vec3 look = player.getLook(1.0F);
 		Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
 		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
 		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
-		return new Tuple(src, dest);
+		return ImmutablePair.of(src, dest);
 	}
 
 	public static boolean hasBreakPermission(EntityPlayerMP player, int x, int y, int z)
