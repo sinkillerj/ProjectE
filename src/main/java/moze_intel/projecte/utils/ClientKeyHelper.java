@@ -6,7 +6,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -23,7 +22,7 @@ public class ClientKeyHelper
         ImmutableBiMap.Builder<KeyBinding, PEKeybind> builder = ImmutableBiMap.builder();
         for (PEKeybind k : PEKeybind.values())
         {
-            KeyBinding mcK = new KeyBinding(StatCollector.translateToLocal(k.keyName), k.defaultKeyCode, PECore.MODID);
+            KeyBinding mcK = new KeyBinding(k.keyName, k.defaultKeyCode, PECore.MODID);
             builder.put(mcK, k);
             ClientRegistry.registerKeyBinding(mcK);
         }
