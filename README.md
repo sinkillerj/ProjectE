@@ -30,7 +30,7 @@ Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 #Current Team Members
 SinKillerJ - Head of Alchemical Studies - Current lead developer: https://twitter.com/sinkillerj
 
-MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer: https://twitter.com/Blubb3rbub
 
 Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
 
