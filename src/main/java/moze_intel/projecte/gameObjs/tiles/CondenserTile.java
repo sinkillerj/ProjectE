@@ -55,6 +55,10 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		}
 
 		displayEmc = (int) this.getStoredEmc();
+		if (displayEmc < 0 && this.getStoredEmc() > 0) {
+		    // overflow, display requiredEMC instead
+		    displayEmc = requiredEmc;
+		}
 
 		if (lock != null && requiredEmc != 0)
 		{
