@@ -33,6 +33,8 @@ import java.util.List;
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
 public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 {
+    private static boolean showAura;
+
     public GemHelmet()
     {
         super(EnumArmorType.HEAD);
@@ -42,6 +44,11 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
     {
         return helm.hasTagCompound() && helm.getTagCompound().hasKey("NightVision") && helm.getTagCompound().getBoolean("NightVision");
 
+    }
+
+    public static boolean isAuraNodesEnabled(ItemStack helm)
+    {
+        return helm.hasTagCompound() && helm.getTagCompound().hasKey("AuraNodes") && helm.getTagCompound().getBoolean("AuraNodes");
     }
 
     public static void toggleNightVision(ItemStack helm, EntityPlayer player)
@@ -70,6 +77,28 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
                 .appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
     }
 
+    public static void toggleAuraNodes(ItemStack helm, EntityPlayer player)
+    {
+        if (!helm.hasTagCompound())
+            helm.setTagCompound(new NBTTagCompound());
+
+        if (helm.stackTagCompound.hasKey("AuraNodes"))
+        {
+            helm.stackTagCompound.setBoolean("AuraNodes", !helm.stackTagCompound.getBoolean("AuraNodes"));
+            showAura = helm.stackTagCompound.getBoolean("AuraNodes");
+        }
+        else
+        {
+            helm.stackTagCompound.setBoolean("AuraNodes", false);
+            showAura = false;
+        }
+
+        EnumChatFormatting e = showAura ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        String s = showAura ? "pe.gem.enabled" : "pe.gem.disabled";
+        player.addChatMessage(new ChatComponentTranslation("pe.gem.aura_tooltip").appendText(" ")
+                .appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
@@ -84,6 +113,11 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         String s = isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
         tooltips.add(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
                 + e + StatCollector.translateToLocal(s));
+
+        EnumChatFormatting a = isAuraNodesEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        String s1 = isAuraNodesEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
+        tooltips.add(StatCollector.translateToLocal("pe.gem.aura_tooltip") + " "
+                + a + StatCollector.translateToLocal(s1));
     }
 
     @Override
@@ -136,14 +170,14 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
     @Optional.Method(modid = "Thaumcraft")
     public boolean showIngamePopups(ItemStack stack, EntityLivingBase player)
     {
-        return true;
+        return showAura;
     }
 
     @Override
     @Optional.Method(modid = "Thaumcraft")
     public boolean showNodes(ItemStack stack, EntityLivingBase player)
     {
-        return true;
+        return showAura;
     }
 
     public void doZap(EntityPlayer player)

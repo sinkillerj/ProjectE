@@ -12,7 +12,8 @@ public enum PEKeybind
 	CHARGE("pe.key.charge", Keyboard.KEY_V),
 	EXTRA_FUNCTION("pe.key.extra_function", Keyboard.KEY_C),
 	FIRE_PROJECTILE("pe.key.fire_projectile", Keyboard.KEY_R),
-	MODE("pe.key.mode", Keyboard.KEY_G);
+	MODE("pe.key.mode", Keyboard.KEY_G),
+	AURA("pe.key.aura", Keyboard.KEY_U);
 
 
 	public final String keyName;
