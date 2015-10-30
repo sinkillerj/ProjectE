@@ -12,17 +12,13 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-public final class Transmutation 
+public final class Transmutation
 {
 	private static final List<ItemStack> CACHED_TOME_KNOWLEDGE = Lists.newArrayList();
 
@@ -61,20 +57,14 @@ public final class Transmutation
 	public static List<ItemStack> getKnowledge(EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		if (data.hasFullKnowledge())
-		{
-			return CACHED_TOME_KNOWLEDGE;
-		}
-		else
-		{
-			return data.getKnowledge();
-		}
+		
+		return data.getKnowledge();
 	}
 
 	public static void addKnowledge(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		if (!data.hasFullKnowledge())
+		if (!hasKnowledgeForStack(stack, player))
 		{
 			data.getKnowledge().add(stack);
 			if (!player.worldObj.isRemote)
@@ -87,7 +77,7 @@ public final class Transmutation
 	public static void removeKnowledge(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		if (!data.hasFullKnowledge())
+		if (hasKnowledgeForStack(stack, player))
 		{
 			Iterator<ItemStack> iter = data.getKnowledge().iterator();
 
@@ -120,7 +110,6 @@ public final class Transmutation
 
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
-		if (hasFullKnowledge(player)) return EMCHelper.hasEmcValueForCreation(stack);
 		TransmutationProps data = TransmutationProps.getDataFor(player);
 		for (ItemStack s : data.getKnowledge())
 		{
@@ -132,14 +121,10 @@ public final class Transmutation
 		return false;
 	}
 
-	public static boolean hasFullKnowledge(EntityPlayer player)
-	{
-		return TransmutationProps.getDataFor(player).hasFullKnowledge();
-	}
-
 	public static void setFullKnowledge(EntityPlayer player)
 	{
-		TransmutationProps.getDataFor(player).setFullKnowledge(true);
+		TransmutationProps.getDataFor(player).getKnowledge().clear();
+		TransmutationProps.getDataFor(player).getKnowledge().addAll(CACHED_TOME_KNOWLEDGE);
 		if (!player.worldObj.isRemote)
 		{
 			MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
@@ -149,7 +134,6 @@ public final class Transmutation
 	public static void clearKnowledge(EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		data.setFullKnowledge(false);
 		data.getKnowledge().clear();
 		if (!player.worldObj.isRemote)
 		{

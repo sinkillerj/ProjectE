@@ -25,6 +25,8 @@ import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
 import com.google.common.collect.Maps;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -135,7 +137,14 @@ public final class EMCMapper
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
 			{
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
-				emc.put(new SimpleStack(normStackItem.id, 1, normStackItem.damage), entry.getValue());
+				Object obj = Item.itemRegistry.getObject(normStackItem.itemName);
+				if (obj != null)
+				{
+					int id = Item.itemRegistry.getIDForObject(obj);
+					emc.put(new SimpleStack(id, 1, normStackItem.damage), entry.getValue());
+				} else {
+					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
+				}
 			}
 		}
 

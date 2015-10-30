@@ -1,10 +1,17 @@
 ![](/src/main/resources/assets/projecte/logo.png?raw=true)
 
-Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions.
+Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions. Transmutation tables, collectors, condensers, flying rings, and all the other trinkets you love are here.
 
-This mod may be redistributed as part of a modpack, both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer", legal action will be taken against sites found violating this. Beware of download locations which are not listed on this page as they are often fake updates which could contain malware.
+Discover powerful alchemical tools, items, and devices. Break down unwanted items into EMC (Energy-Matter Covalence) and use that EMC to create new items.
 
-If you have a bug to report, open an issue. Please try the latest release build before reporting, be sure to also include any logs or steps to reproduce you may have, as well as your Forge version, and whether or not you are using a third party loader such as Cauldron. When submitting logs please use a service such as Pastebin, do not paste the log directly into the issue.
+
+#Can I include it in a modpack?
+This mod may be redistributed as part of a modpack, both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer", legal action will be taken against sites found violating this. It is requested that you credit the mod on any lists as ProjectE, there is no space in the name.
+
+#I found a bug
+Bugs can be reported at: https://github.com/sinkillerj/ProjectE/issues
+
+Please try the latest release build before reporting, be sure to also include any logs or steps to reproduce you may have, as well as your Forge version, and whether or not you are using a third party loader such as Cauldron. When submitting logs please use a service such as Pastebin, do not paste the log directly into the issue.
 
 #Downloads
 http://minecraft.curseforge.com/mc-mods/226410-projecte/files
@@ -23,7 +30,7 @@ Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 #Current Team Members
 SinKillerJ - Head of Alchemical Studies - Current lead developer: https://twitter.com/sinkillerj
 
-MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer: https://twitter.com/Blubb3rbub
 
 Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
 
