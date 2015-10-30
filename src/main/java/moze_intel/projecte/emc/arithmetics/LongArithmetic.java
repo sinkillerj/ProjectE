@@ -1,7 +1,5 @@
 package moze_intel.projecte.emc.arithmetics;
 
-import moze_intel.projecte.emc.IValueArithmetic;
-
 public class LongArithmetic implements IValueArithmetic<Long> {
 	@Override
 	public boolean isZero(Long value) {
