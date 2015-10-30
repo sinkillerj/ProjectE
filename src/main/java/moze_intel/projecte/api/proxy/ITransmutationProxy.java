@@ -47,7 +47,9 @@ public interface ITransmutationProxy
      * If called on the client side, playerUUID is ignored and the client player is used instead
      * @param playerUUID The Player to query
      * @return Whether the player has full/override knowledge from the Tome, false if player is not found
+     * @deprecated as of API version 8, use {@link #hasKnowledgeFor(UUID, ItemStack)}
      */
+    @Deprecated
     boolean hasFullKnowledge(UUID playerUUID);
 
     /**
