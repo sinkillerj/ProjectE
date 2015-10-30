@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;

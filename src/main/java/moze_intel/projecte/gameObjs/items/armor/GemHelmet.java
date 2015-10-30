@@ -26,12 +26,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import thaumcraft.api.IGoggles;
-import thaumcraft.api.nodes.IRevealer;
+import thaumcraft.api.items.IGoggles;
+import thaumcraft.api.items.IRevealer;
 
 import java.util.List;
 
-@Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft")})
+@Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 {
     public GemHelmet()
