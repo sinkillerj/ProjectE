@@ -6,6 +6,8 @@ import com.google.common.collect.Sets;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,42 +19,48 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class NormalizedSimpleStack {
-	public static Map<Integer, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
+	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
-	public static NormalizedSimpleStack getFor(int id, int damage) {
-		if (id < 0) return null;
-		NSSItem normStack = new NSSItem(id, damage);
+	public static NormalizedSimpleStack getFor(String itemName, int damage) {
+		NSSItem normStack = new NSSItem(itemName, damage);
 		Set<Integer> usedMetadata;
-		if (!idWithUsedMetaData.containsKey(normStack.id)) {
+		if (!idWithUsedMetaData.containsKey(normStack.itemName)) {
 			usedMetadata = Sets.newHashSet();
-			idWithUsedMetaData.put(normStack.id, usedMetadata);
+			idWithUsedMetaData.put(normStack.itemName, usedMetadata);
 		} else {
-			usedMetadata = idWithUsedMetaData.get(normStack.id);
+			usedMetadata = idWithUsedMetaData.get(normStack.itemName);
 		}
 		usedMetadata.add(normStack.damage);
 		return normStack;
 	}
 
 	public static NormalizedSimpleStack getFor(Block block) {
-		return getFor(new ItemStack(block));
+		return getFor(block, 0);
+	}
+
+	public static NormalizedSimpleStack getFor(Block block, int meta) {
+		return getFor(GameRegistry.findUniqueIdentifierFor(block), meta);
 	}
 
 	public static NormalizedSimpleStack getFor(Item item) {
-		return getFor(Item.itemRegistry.getIDForObject(item), 0);
+		return getFor(item, 0);
 	}
 
 	public static NormalizedSimpleStack getFor(Item item, int meta) {
-		return getFor(Item.itemRegistry.getIDForObject(item), meta);
+		return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
 	}
+
+	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
+	{
+		if (uniqueIdentifier == null) return null;
+		return getFor(uniqueIdentifier.modId + ":" + uniqueIdentifier.name, damage);
+	}
+
+
 
 	public static NormalizedSimpleStack getFor(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return null;
-		int id = Item.itemRegistry.getIDForObject(stack.getItem());
-		if (id < 0) {
-			PELogger.logWarn(String.format("Could not get id for stack %s with item %s (Class: %s)", stack, stack.getItem(), stack.getItem().getClass()));
-			return null;
-		}
-		return getFor(id, stack.getItemDamage());
+		return getFor(stack.getItem(), stack.getItemDamage());
 	}
 
 	public static NormalizedSimpleStack getFor(net.minecraftforge.fluids.Fluid fluid) {
@@ -61,7 +69,7 @@ public abstract class NormalizedSimpleStack {
 	}
 
 	public static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
-		for (Map.Entry<Integer, Set<Integer>> entry : idWithUsedMetaData.entrySet()) {
+		for (Map.Entry<String, Set<Integer>> entry : idWithUsedMetaData.entrySet()) {
 			entry.getValue().remove(OreDictionary.WILDCARD_VALUE);
 			entry.getValue().add(0);
 			NormalizedSimpleStack stackWildcard = new NSSItem(entry.getKey(), OreDictionary.WILDCARD_VALUE);
@@ -98,33 +106,20 @@ public abstract class NormalizedSimpleStack {
 		return nss;
 	}
 
-	public static class NSSItem extends NormalizedSimpleStack{
-		public int id;
-		public int damage;
-		private NSSItem(int id, int damage) {
-			this.id = id;
-			if (this.id == -1) {
-				throw new IllegalArgumentException("Invalid Item with getIDForObject() == -1");
+	public static class NSSItem extends NormalizedSimpleStack {
+		public final String itemName;
+		public final int damage;
+		private NSSItem(String itemName, int damage) {
+			this.itemName = itemName;
+			if (Item.itemRegistry.getObject(itemName) == null) {
+				throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
 			}
 			this.damage = damage;
 		}
 
-		public ItemStack toItemStack() {
-			Item item = Item.getItemById(id);
-
-			if (item != null) {
-				return new ItemStack(Item.getItemById(id), 1, damage);
-			}
-			return null;
-		}
-
-		public NormalizedSimpleStack copy() {
-			return new NSSItem(id, damage);
-		}
-
 		@Override
 		public int hashCode() {
-			return id;
+			return itemName.hashCode() ^ damage;
 		}
 
 		@Override
@@ -132,7 +127,7 @@ public abstract class NormalizedSimpleStack {
 			if (obj instanceof NSSItem) {
 				NSSItem other = (NSSItem) obj;
 
-				return this.id == other.id && this.damage == other.damage;
+				return this.itemName.equals(other.itemName) && this.damage == other.damage;
 			}
 
 			return false;
@@ -141,23 +136,18 @@ public abstract class NormalizedSimpleStack {
 		@Override
 		public String json()
 		{
-			Object obj = Item.itemRegistry.getObjectById(id);
-
-			if (obj != null) {
-				return String.format("%s|%s", Item.itemRegistry.getNameForObject(obj),  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
-			}
-			throw new IllegalArgumentException("Cannot get json Representation for  " + this.toString());
+			return String.format("%s|%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 		}
 
 		@Override
 		public String toString() {
-			Object obj = Item.itemRegistry.getObjectById(id);
+			Object obj = Item.itemRegistry.getObject(itemName);
 
 			if (obj != null) {
-				return String.format("%s(%s:%s)", Item.itemRegistry.getNameForObject(obj), id, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+				return String.format("%s(%s:%s)", itemName, Item.itemRegistry.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 			}
 
-			return "id:" + id + " damage:" + (damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+			return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 		}
 	}
 
@@ -282,13 +272,6 @@ public abstract class NormalizedSimpleStack {
 			}
 		}
 
-		Object itemObject = Item.itemRegistry.getObject(itemName);
-		if (itemObject != null)
-		{
-			int id = Item.itemRegistry.getIDForObject(itemObject);
-			return NormalizedSimpleStack.getFor(id, itemDamage);
-		}
-		PELogger.logWarn(String.format("Could not get Item-Object for Item with name: '%s'", itemName));
-		return null;
+		return NormalizedSimpleStack.getFor(itemName, itemDamage);
 	}
 }
