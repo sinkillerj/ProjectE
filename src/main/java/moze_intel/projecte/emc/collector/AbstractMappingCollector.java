@@ -1,15 +1,25 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.IValueArithmetic;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractMappingCollector<T, V extends Comparable<V>> implements IMappingCollector<T, V>
+public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A>
 {
+
+	A defaultArithmetic;
+	public AbstractMappingCollector(A defaultArithmetic) {
+		this.defaultArithmetic = defaultArithmetic;
+	}
+
+
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
 		addConversion(outnumber, output, listToMapOfCounts(ingredients));
+	}
+
+	public void addConversion(int outnumber, T output, Iterable<T> ingredients, A arithmeticForConversion) {
+		addConversion(outnumber, output, listToMapOfCounts(ingredients), arithmeticForConversion);
 	}
 
 	protected Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
@@ -33,5 +43,19 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>> imple
 
 	public abstract void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
 
-	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
+		this.addConversion(outnumber, output, ingredientsWithAmount, this.defaultArithmetic);
+	}
+
+	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion);
+
+	public A getArithmetic()
+	{
+		return this.defaultArithmetic;
+	}
+
+	@Override
+	public void finishCollection() {
+
+	}
 }

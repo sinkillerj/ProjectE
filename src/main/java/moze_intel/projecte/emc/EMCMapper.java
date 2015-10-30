@@ -1,8 +1,13 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.api.event.EMCRemapEvent;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.IntToFractionCollector;
+import moze_intel.projecte.emc.generators.FractionToIntGenerator;
+import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
@@ -15,7 +20,6 @@ import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
 import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
-import moze_intel.projecte.emc.valuetranslators.FractionToIntegerTranslator;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
@@ -55,13 +59,15 @@ public final class EMCMapper
 				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
-		IValueGenerator<NormalizedSimpleStack, Integer> graphMapper = new FractionToIntegerTranslator<NormalizedSimpleStack>(new SimpleGraphMapper<NormalizedSimpleStack, Fraction>(new HiddenFractionArithmetic()));
+		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
+		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector(mapper);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
 		if (config.getBoolean("dumpEverythingToFile", "general", false,"Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
-			graphMapper = new DumpToFileCollector(new File(PECore.CONFIG_DIR, "mappingdump.json"), graphMapper);
+			mappingCollector = new DumpToFileCollector(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
 		}
 
 		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
@@ -89,7 +95,7 @@ public final class EMCMapper
 					if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
 					{
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
-						emcMapper.addMappings(graphMapper, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+						emcMapper.addMappings(mappingCollector, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
 						PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e)
@@ -99,12 +105,16 @@ public final class EMCMapper
 				}
 			}
 			DumpToFileCollector.currentGroupName = "NSSHelper";
-			NormalizedSimpleStack.addMappings(graphMapper);
+			NormalizedSimpleStack.addMappings(mappingCollector);
+
+			PELogger.logInfo("Mapping Collection finished");
+			mappingCollector.finishCollection();
+
 			PELogger.logInfo("Starting to generate Values:");
 
 			config.save();
 
-			graphMapperValues = graphMapper.generateValues();
+			graphMapperValues = valueGenerator.generateValues();
 			PELogger.logInfo("Generated Values...");
 
 			filterEMCMap(graphMapperValues);

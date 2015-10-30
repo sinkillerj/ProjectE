@@ -1,7 +1,5 @@
 package moze_intel.projecte.emc.arithmetics;
 
-import moze_intel.projecte.emc.IValueArithmetic;
-
 public class IntArithmetic implements IValueArithmetic<Integer>{
 	@Override
 	public boolean isZero(Integer value) {
