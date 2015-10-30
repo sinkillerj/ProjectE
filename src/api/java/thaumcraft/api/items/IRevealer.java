@@ -1,4 +1,4 @@
-package thaumcraft.api.nodes;
+package thaumcraft.api.items;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
  * 
  * @author Azanor
  * 
- * Equipped head slot items that extend this class will make nodes visible in world.
+ * Equipped or held items that extend this class will make nodes or related objects visible in world.
  *
  */
 
