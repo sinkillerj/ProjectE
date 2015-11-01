@@ -530,13 +530,13 @@ public final class WorldHelper
 
 					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
+						numMined++;
 						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 						{
 							currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
 							world.setBlockToAir(x, y, z);
+							harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 						}
-						numMined++;
-						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
 				}
 	}
