@@ -175,7 +175,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		}
 	}
 
-	protected V valueForConversionUnsafe(Map<T, V> values, Conversion conversion) throws Exception
+	protected V valueForConversionUnsafe(Map<T, V> values, Conversion conversion)
 	{
 		V value = conversion.value;
 		boolean allIngredientsAreFree = true;

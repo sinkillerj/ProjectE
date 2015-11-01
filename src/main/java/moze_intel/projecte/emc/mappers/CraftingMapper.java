@@ -51,7 +51,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
 					if (craftingIngredientIterable != null) {
 						for (CraftingIngredients variation : craftingIngredientIterable) {
-							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
+							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
 								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
@@ -70,7 +70,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								for (ItemStack stack: multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
 									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
-										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<NormalizedSimpleStack>();
+										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 										if (stack.getItem().hasContainerItem(stack)) {
 											groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
 										}
@@ -169,7 +169,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			} else if (recipe instanceof ShapelessRecipes) {
 				recipeItems = ((ShapelessRecipes) recipe).recipeItems;
 			}
-			List<ItemStack> inputs = new LinkedList<ItemStack>();
+			List<ItemStack> inputs = new LinkedList<>();
 			for (Object o : recipeItems) {
 				if (o == null) continue;
 				if (o instanceof ItemStack) {
@@ -203,7 +203,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			List<IngredientMap<ItemStack>> inputs = new LinkedList<IngredientMap<ItemStack>>();
+			List<IngredientMap<ItemStack>> inputs = new LinkedList<>();
 			Iterable<Object> recipeItems = null;
 			if (recipe instanceof ShapedOreRecipe) {
 				recipeItems = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
@@ -217,7 +217,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 				if (recipeItem instanceof ItemStack) {
 					fixedInputs.add((ItemStack) recipeItem);
 				} else if (recipeItem instanceof Collection) {
-					List<ItemStack> recipeItemOptions = new LinkedList<ItemStack>();
+					List<ItemStack> recipeItemOptions = new LinkedList<>();
 					Collection recipeItemCollection = ((Collection) recipeItem);
 					if (recipeItemCollection.size() == 1) {
 						Object element = recipeItemCollection.iterator().next();
@@ -269,7 +269,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			} else if (recipe instanceof RecipeShapelessHidden) {
 				recipeItems = ((RecipeShapelessHidden) recipe).getInput();
 			}
-			List<ItemStack> inputs = new LinkedList<ItemStack>();
+			List<ItemStack> inputs = new LinkedList<>();
 			for (Object o : recipeItems) {
 				if (o == null) continue;
 				if (o instanceof ItemStack) {

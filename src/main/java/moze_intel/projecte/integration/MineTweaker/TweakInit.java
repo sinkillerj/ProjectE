@@ -20,7 +20,7 @@ public class TweakInit
 
 	private static List<String> generateLines()
 	{
-		List<String> defaultLines = new ArrayList<String>();
+		List<String> defaultLines = new ArrayList<>();
 
 		defaultLines.add("import mods.projecte.PhiloStone;");
 		defaultLines.add("import mods.projecte.KleinStar;");
