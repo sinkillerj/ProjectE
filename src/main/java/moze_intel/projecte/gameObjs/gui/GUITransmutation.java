@@ -117,7 +117,7 @@ public class GUITransmutation extends GuiContainer
 				inv.updateOutputs(true);
 			}
 
-			if (par2 == 1 || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() && !this.textBoxFilter.isFocused())
+			if (par2 == 1) //ESC Pressed
 			{
 				this.mc.thePlayer.closeScreen();
 			}
