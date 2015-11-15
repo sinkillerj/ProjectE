@@ -283,9 +283,6 @@ pe.philstone.mode1=Cube
 pe.philstone.mode2=Panel
 pe.philstone.mode3=Line
 pe.philstone.tooltip1=Press %s to open a crafting grid
-pe.philstone.tooltip2=Acts like a wrench for ProjectE blocks
-pe.philstone.tooltip3=Left clicking changes the block's orientation
-pe.philstone.tooltip4=Shift right clicking will pick up the block
 
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x Tallshot

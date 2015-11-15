@@ -280,9 +280,6 @@ pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel
 pe.philstone.mode3=Linie
 pe.philstone.tooltip1=Drücke %s, um Crafting-GUI zu öffnen.
-pe.philstone.tooltip2=Funktioniert wie ein Schraubenschlüssel für ProjectE-Blöcke.
-pe.philstone.tooltip3=Linksklick ändert die Ausrichtung des Blocks.
-pe.philstone.tooltip4=Shift + Rechtsklick hebt den Block auf.
 
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x Übereinander
