@@ -15,6 +15,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -103,7 +104,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		}
 		if (inventory[0] != null && ghost == null)
 		{
-			ghost = new EntityItem(worldObj, pos.getX() + 0.5, pos.getY() + 0.751, pos.getZ() + 0.5, inventory[0].copy());
+			ghost = new EntityItemUnmoving(worldObj, pos.getX() + 0.5, pos.getY() + 0.751, pos.getZ() + 0.5, inventory[0].copy());
 			ghost.setNoDespawn();
 			ghost.setInfinitePickupDelay();
 			ghost.motionX = 0;
@@ -383,5 +384,26 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			}
 		}
 		this.isActive = newState;
+	}
+
+	public static class EntityItemUnmoving extends EntityItem
+	{
+		private final double x, y, z;
+
+		public EntityItemUnmoving(World worldIn, double x, double y, double z, ItemStack stack)
+		{
+			super(worldIn, x, y, z, stack);
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+
+		@Override
+		public void onUpdate()
+		{
+			super.onUpdate();
+			motionX = 0; motionY = 0; motionZ = 0;
+			posX = x; posY = y; posZ = z;
+		}
 	}
 }

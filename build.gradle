@@ -10,12 +10,14 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
+    //dependencies {
+    //    classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+    //}
 }
 
-apply plugin: 'forge'
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.1"
+}
 
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

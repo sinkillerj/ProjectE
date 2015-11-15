@@ -62,6 +62,10 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		
 		for (EntityItem item : itemList)
 		{
+			if (item instanceof DMPedestalTile.EntityItemUnmoving)
+			{
+				continue;
+			}
 			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getEntityItem()))
 			{
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
