@@ -37,15 +37,14 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
-		Iterator<IRecipe> iter = CraftingManager.getInstance().getRecipeList().iterator();
-		while (iter.hasNext()) {
-			IRecipe recipe = iter.next();
+		for (IRecipe recipe : (Iterable<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
 			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getFor(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
-				if (!config.getBoolean("enable" + recipeMapper.getName(),"IRecipeImplementations", true, recipeMapper.getDescription())) continue;
+				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
+					continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
 					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
@@ -66,8 +65,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createFake(multiIngredient.toString());
-								ingredientMap.addIngredient(normalizedSimpleStack,1);
-								for (ItemStack stack: multiIngredient) {
+								ingredientMap.addIngredient(normalizedSimpleStack, 1);
+								for (ItemStack stack : multiIngredient) {
 									if (stack == null || stack.getItem() == null) continue;
 									if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
