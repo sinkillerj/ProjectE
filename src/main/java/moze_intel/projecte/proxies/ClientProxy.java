@@ -352,19 +352,11 @@ public class ClientProxy implements IProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.fireProjectile, mc.getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.windProjectile, mc.getRenderItem()));
 
-		try
-		{
-			Map<String, RenderPlayer> skinMap = ReflectionHelper.getSkinMap(mc.getRenderManager());
-			RenderPlayer render = skinMap.get("default");
-			Method addLayer = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(RendererLivingEntity.class, render, new String[] {"addLayer", "a", "func_177094_a"}, LayerRenderer.class);
-			addLayer.invoke(render, new LayerModelYue(render));
-			render = skinMap.get("slim");
-			addLayer.invoke(render, new LayerModelYue(render));
-		} catch (ReflectiveOperationException e)
-		{
-			e.printStackTrace();
-			PELogger.logWarn("Reflection failed: ModelYue not available");
-		}
+		Map<String, RenderPlayer> skinMap = mc.getRenderManager().getSkinMap();
+		RenderPlayer render = skinMap.get("default");
+		render.addLayer(new LayerModelYue(render));
+		render = skinMap.get("slim");
+		render.addLayer(new LayerModelYue(render));
 	}
 
 	@Override
