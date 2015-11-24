@@ -85,7 +85,7 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		Object obj = Item.itemRegistry.getObjectById(id);
+		Item obj = Item.itemRegistry.getObjectById(id);
 		
 		if (obj != null)
 		{

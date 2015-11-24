@@ -15,8 +15,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.realms.RealmsVertexFormat;
+import net.minecraft.realms.Tezzelator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -56,11 +59,11 @@ public class TransmutationRenderingEvent
 					mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 					Tessellator tess = Tessellator.getInstance();
 					WorldRenderer render = tess.getWorldRenderer();
-					render.startDrawingQuads();
-					render.addVertexWithUV(0, 0, 0, sprite.getMinU(), sprite.getMinV());
-					render.addVertexWithUV(0, 16, 0, sprite.getMinU(), sprite.getMaxV());
-					render.addVertexWithUV(16, 16, 0, sprite.getMaxU(), sprite.getMaxV());
-					render.addVertexWithUV(16, 0, 0, sprite.getMaxU(), sprite.getMinV());
+//					render.startDrawingQuads(); todo 1.8.8
+//					render.addVertexWithUV(0, 0, 0, sprite.getMinU(), sprite.getMinV());
+//					render.addVertexWithUV(0, 16, 0, sprite.getMinU(), sprite.getMaxV());
+//					render.addVertexWithUV(16, 16, 0, sprite.getMaxU(), sprite.getMaxV());
+//					render.addVertexWithUV(16, 0, 0, sprite.getMaxU(), sprite.getMinV());
 					tess.draw();
 				} else
 				{
@@ -127,58 +130,59 @@ public class TransmutationRenderingEvent
 
 		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer r = tessellator.getWorldRenderer();
+		Tezzelator tess = new Tezzelator();
 		
 		for (AxisAlignedBB b : renderList)
 		{
-			//Top
-			r.startDrawingQuads();
-			r.addVertex(b.minX, b.maxY, b.minZ);
-			r.addVertex(b.maxX, b.maxY, b.minZ);
-			r.addVertex(b.maxX, b.maxY, b.maxZ);
-			r.addVertex(b.minX, b.maxY, b.maxZ);
-			tessellator.draw();
-			
-			//Bottom 
-			r.startDrawingQuads();
-			r.addVertex(b.minX, b.minY, b.minZ);
-			r.addVertex(b.maxX, b.minY, b.minZ);
-			r.addVertex(b.maxX, b.minY, b.maxZ);
-			r.addVertex(b.minX, b.minY, b.maxZ);
-			tessellator.draw();
-			
-			//Front
-			r.startDrawingQuads();
-			r.addVertex(b.maxX, b.maxY, b.maxZ);
-			r.addVertex(b.minX, b.maxY, b.maxZ);
-			r.addVertex(b.minX, b.minY, b.maxZ);
-			r.addVertex(b.maxX, b.minY, b.maxZ);
-			tessellator.draw();
-			
-			//Back
-			r.startDrawingQuads();
-			r.addVertex(b.maxX, b.minY, b.minZ);
-			r.addVertex(b.minX, b.minY, b.minZ);
-			r.addVertex(b.minX, b.maxY, b.minZ);
-			r.addVertex(b.maxX, b.maxY, b.minZ);
-			tessellator.draw();
-			
-			//Left
-			r.startDrawingQuads();
-			r.addVertex(b.minX, b.maxY, b.maxZ);
-			r.addVertex(b.minX, b.maxY, b.minZ);
-			r.addVertex(b.minX, b.minY, b.minZ);
-			r.addVertex(b.minX, b.minY, b.maxZ);
-			tessellator.draw();
-			
-			//Right
-			r.startDrawingQuads();
-			r.addVertex(b.maxX, b.maxY, b.maxZ);
-			r.addVertex(b.maxX, b.maxY, b.minZ);
-			r.addVertex(b.maxX, b.minY, b.minZ);
-			r.addVertex(b.maxX, b.minY, b.maxZ);
-			tessellator.draw();
+			//Top todo 1.8.8
+			tess.begin(7, DefaultVertexFormats.field_181707_g);
+			tess.vertex(b.minX, b.maxY, b.minZ).endVertex();
+//			r.startDrawingQuads();
+//			r.addVertex(b.minX, b.maxY, b.minZ);
+//			r.addVertex(b.maxX, b.maxY, b.minZ);
+//			r.addVertex(b.maxX, b.maxY, b.maxZ);
+//			r.addVertex(b.minX, b.maxY, b.maxZ);
+//			tessellator.draw();
+//
+//			//Bottom
+//			r.startDrawingQuads();
+//			r.addVertex(b.minX, b.minY, b.minZ);
+//			r.addVertex(b.maxX, b.minY, b.minZ);
+//			r.addVertex(b.maxX, b.minY, b.maxZ);
+//			r.addVertex(b.minX, b.minY, b.maxZ);
+//			tessellator.draw();
+//
+//			//Front
+//			r.startDrawingQuads();
+//			r.addVertex(b.maxX, b.maxY, b.maxZ);
+//			r.addVertex(b.minX, b.maxY, b.maxZ);
+//			r.addVertex(b.minX, b.minY, b.maxZ);
+//			r.addVertex(b.maxX, b.minY, b.maxZ);
+//			tessellator.draw();
+//
+//			//Back
+//			r.startDrawingQuads();
+//			r.addVertex(b.maxX, b.minY, b.minZ);
+//			r.addVertex(b.minX, b.minY, b.minZ);
+//			r.addVertex(b.minX, b.maxY, b.minZ);
+//			r.addVertex(b.maxX, b.maxY, b.minZ);
+//			tessellator.draw();
+//
+//			//Left
+//			r.startDrawingQuads();
+//			r.addVertex(b.minX, b.maxY, b.maxZ);
+//			r.addVertex(b.minX, b.maxY, b.minZ);
+//			r.addVertex(b.minX, b.minY, b.minZ);
+//			r.addVertex(b.minX, b.minY, b.maxZ);
+//			tessellator.draw();
+//
+//			//Right
+//			r.startDrawingQuads();
+//			r.addVertex(b.maxX, b.maxY, b.maxZ);
+//			r.addVertex(b.maxX, b.maxY, b.minZ);
+//			r.addVertex(b.maxX, b.minY, b.minZ);
+//			r.addVertex(b.maxX, b.minY, b.maxZ);
+//			tessellator.draw();
 		}
 
 		GlStateManager.depthMask(true);

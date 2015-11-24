@@ -9,6 +9,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Arrays;
@@ -141,7 +142,7 @@ public abstract class NormalizedSimpleStack {
 		@Override
 		public String json()
 		{
-			Object obj = Item.itemRegistry.getObjectById(id);
+			Item obj = Item.itemRegistry.getObjectById(id);
 
 			if (obj != null) {
 				return String.format("%s|%s", Item.itemRegistry.getNameForObject(obj),  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
@@ -151,7 +152,7 @@ public abstract class NormalizedSimpleStack {
 
 		@Override
 		public String toString() {
-			Object obj = Item.itemRegistry.getObjectById(id);
+			Item obj = Item.itemRegistry.getObjectById(id);
 
 			if (obj != null) {
 				return String.format("%s(%s:%s)", Item.itemRegistry.getNameForObject(obj), id, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
@@ -282,7 +283,7 @@ public abstract class NormalizedSimpleStack {
 			}
 		}
 
-		Object itemObject = Item.itemRegistry.getObject(itemName);
+		Item itemObject = Item.itemRegistry.getObject(new ResourceLocation(itemName));
 		if (itemObject != null)
 		{
 			int id = Item.itemRegistry.getIDForObject(itemObject);

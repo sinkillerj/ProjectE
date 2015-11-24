@@ -82,7 +82,7 @@ public class NovaExplosion extends Explosion
 			}
 		}
 
-		this.func_180343_e().addAll(hashset);
+		this.getAffectedBlockPositions().addAll(hashset);
 		ReflectionHelper.setExplosionSize(this, initialSize);
 		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), ReflectionHelper.getExplosionSize(this));
 	}
@@ -110,7 +110,7 @@ public class NovaExplosion extends Explosion
 		BlockPos blockpos;
 		List<ItemStack> allDrops = Lists.newArrayList();
 
-		iterator = this.func_180343_e().iterator();
+		iterator = getAffectedBlockPositions().iterator();
 
 		while (iterator.hasNext())
         {

@@ -8,15 +8,15 @@ import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 
 import java.util.Map;
 
-public abstract class TileEmc extends TileEmcBase implements IUpdatePlayerListBox
+public abstract class TileEmc extends TileEmcBase implements ITickable
 {
 	public TileEmc()
 	{

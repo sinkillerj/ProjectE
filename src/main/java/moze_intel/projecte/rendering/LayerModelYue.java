@@ -33,7 +33,7 @@ public class LayerModelYue implements LayerRenderer {
 					|| PECore.DEV_ENVIRONMENT)
 			{
 				GlStateManager.pushMatrix();
-				render.getPlayerModel().bipedBody.postRender(0.0625F);
+				render.getMainModel().bipedBody.postRender(0.0625F);
 				if (player.isSneaking())
 				{
 					GlStateManager.rotate(-28.64789F, 1.0F, 0.0F, 0.0F);

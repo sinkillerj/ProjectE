@@ -11,14 +11,15 @@ public class ModelYue extends ModelBase
 {
 	public void renderAll()
 	{
-		WorldRenderer r = Tessellator.getInstance().getWorldRenderer();
-		r.startDrawingQuads();
-
-		r.addVertexWithUV(0, 0, 0, 0, 0);
-		r.addVertexWithUV(0, 0, 1, 0, 1);
-		r.addVertexWithUV(1, 0, 1, 1, 1);
-		r.addVertexWithUV(1, 0, 0, 1, 0);
-
-		Tessellator.getInstance().draw();
+//		todo 1.8.8
+//		WorldRenderer r = Tessellator.getInstance().getWorldRenderer();
+//		r.startDrawingQuads();
+//
+//		r.addVertexWithUV(0, 0, 0, 0, 0);
+//		r.addVertexWithUV(0, 0, 1, 0, 1);
+//		r.addVertexWithUV(1, 0, 1, 1, 1);
+//		r.addVertexWithUV(1, 0, 0, 1, 0);
+//
+//		Tessellator.getInstance().draw();
 	}
 }

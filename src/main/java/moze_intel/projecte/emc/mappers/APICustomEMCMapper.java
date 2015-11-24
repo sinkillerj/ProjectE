@@ -4,6 +4,7 @@ import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -64,12 +65,12 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	}
 
 	protected String serializeToString(ItemStack stack) {
-		String name = (String) Item.itemRegistry.getNameForObject(stack.getItem());
+		String name = Item.itemRegistry.getNameForObject(stack.getItem()).toString();
 		return String.format("%d@%s", stack.getItemDamage(), name);
 	}
 	protected NormalizedSimpleStack deserializeFromString(String s) {
 		String[] splits = s.split("@", 2);
-		return NormalizedSimpleStack.getFor((Item) Item.itemRegistry.getObject(splits[1]), Integer.parseInt(splits[0]));
+		return NormalizedSimpleStack.getFor(Item.itemRegistry.getObject(new ResourceLocation(splits[1])), Integer.parseInt(splits[0]));
 	}
 
 	@Override
@@ -176,7 +177,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem)stack;
-			itemName = (String) Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id));
+			itemName = Item.itemRegistry.getNameForObject(Item.itemRegistry.getObjectById(item.id)).toString();
 		} else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}

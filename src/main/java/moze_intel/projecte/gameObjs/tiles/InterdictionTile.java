@@ -1,14 +1,15 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ITickable;
 
-public class InterdictionTile extends TileEntity implements IUpdatePlayerListBox
+public class InterdictionTile extends TileEntity implements ITickable
 {
 	private AxisAlignedBB effectBounds = null;
-	
+
+	@Override
 	public void update()
 	{
 		int xCoord = pos.getX();

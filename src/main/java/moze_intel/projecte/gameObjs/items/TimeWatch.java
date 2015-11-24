@@ -19,14 +19,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
@@ -204,9 +198,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			}
 			for (int i = 0; i < bonusTicks; i++)
 			{
-				if (!tile.isInvalid() && tile instanceof IUpdatePlayerListBox)
+				if (!tile.isInvalid() && tile instanceof ITickable)
 				{
-					((IUpdatePlayerListBox) tile).update();
+					((ITickable) tile).update();
 				}
 			}
 		}

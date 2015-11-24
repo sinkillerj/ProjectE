@@ -20,10 +20,10 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem) stack;
-			Object itemObject = Item.itemRegistry.getObjectById(item.id);
+			Item itemObject = Item.itemRegistry.getObjectById(item.id);
 			if (itemObject != null)
 			{
-				ResourceLocation itemName = ((ResourceLocation) Item.itemRegistry.getNameForObject(itemObject));
+				ResourceLocation itemName = Item.itemRegistry.getNameForObject(itemObject);
 				if (itemName != null)
 				{
 					out.value(String.format("%s|%d", itemName.toString(), item.damage));

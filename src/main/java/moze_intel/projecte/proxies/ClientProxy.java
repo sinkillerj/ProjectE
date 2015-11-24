@@ -78,27 +78,27 @@ public class ClientProxy implements IProxy
 		// Blocks with special needs
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.novaCatalyst,
-				(new StateMap.Builder()).addPropertiesToIgnore(NovaCatalyst.EXPLODE).build()
+				(new StateMap.Builder()).ignore(NovaCatalyst.EXPLODE).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.novaCataclysm,
-				(new StateMap.Builder()).addPropertiesToIgnore(NovaCataclysm.EXPLODE).build()
+				(new StateMap.Builder()).ignore(NovaCataclysm.EXPLODE).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.alchChest,
-				(new StateMap.Builder()).addPropertiesToIgnore(AlchemicalChest.FACING).build()
+				(new StateMap.Builder()).ignore(AlchemicalChest.FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenser,
-				(new StateMap.Builder()).addPropertiesToIgnore(Condenser.FACING).build()
+				(new StateMap.Builder()).ignore(Condenser.FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenserMk2,
-				(new StateMap.Builder()).addPropertiesToIgnore(CondenserMK2.FACING).build()
+				(new StateMap.Builder()).ignore(CondenserMK2.FACING).build()
 		);
 
 		// Items that have different properties or textures per meta value.

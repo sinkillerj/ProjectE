@@ -12,6 +12,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Collections;
@@ -291,7 +292,7 @@ public final class ItemHelper
 	 */
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
-		Item item = (Item) Item.itemRegistry.getObject(internal);
+		Item item = Item.itemRegistry.getObject(new ResourceLocation(internal));
 
 		if (item == null)
 		{
