@@ -41,7 +41,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		if (map.containsKey(key)) {
 			list = map.get(key);
 		} else {
-			list = new LinkedList<V>();
+			list = new LinkedList<>();
 			map.put(key, list);
 		}
 		return list;

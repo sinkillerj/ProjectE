@@ -80,7 +80,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		final Map<String, Integer> priorityMap = new HashMap<String, Integer>();
+		final Map<String, Integer> priorityMap = new HashMap<>();
 		Set<String> modIdSet = Sets.newHashSet();
 		modIdSet.addAll(customEMCforMod.keySet());
 		modIdSet.addAll(customNonItemEMCforMod.keySet());
@@ -112,7 +112,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 			priorityMap.put(null, config.getInt("modlessCustomEMCPriority", "", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for custom EMC values for which the ModId could not be determined. 0 to disable. Values: " + valueCount));
 		}
 
-		List<String> modIds = new ArrayList<String>(modIdSet);
+		List<String> modIds = new ArrayList<>(modIdSet);
 		Collections.sort(modIds, new Comparator<String>()
 		{
 			@Override

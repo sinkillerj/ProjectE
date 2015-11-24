@@ -248,7 +248,7 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) throws Exception {
+	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) {
 		int pipeIndex = serializedItem.lastIndexOf('|');
 		if (pipeIndex < 0)
 		{

@@ -45,7 +45,7 @@ public class GraphMapperTest {
 
 	@org.junit.Test
 	public void testGetOrCreateList() throws Exception {
-		Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
+		Map<String, List<Integer>> map = new HashMap<>();
 		List<Integer> l1 = MappingCollector.getOrCreateList(map, "abc");
 		assertNotNull(l1);
 		assertTrue(map.containsKey("abc"));
@@ -414,7 +414,7 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new HashMap<>();
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
@@ -438,7 +438,7 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new HashMap<>();
 		map.put("container", -1);
 		map.put("filledContainer", 1);
 		map.put("somethingElse", 2);
@@ -533,7 +533,7 @@ public class GraphMapperTest {
 			mappingCollector.addConversion(3, "firecharge", Arrays.asList(coalType, "gunpowder", "blazepowder"));
 		}
 		mappingCollector.addConversion(1, "firecharge*", Arrays.asList("firecharge"));
-		Map<String, Integer> m = new HashMap<String, Integer>();
+		Map<String, Integer> m = new HashMap<>();
 		m.put("coal0", 9);
 		mappingCollector.addConversion(1, "coalblock", m);
 
@@ -612,7 +612,7 @@ public class GraphMapperTest {
 		mappingCollector.setValueBefore("a", 2);
 		mappingCollector.setValueBefore("b", 3);
 		mappingCollector.setValueBefore("notConsume1", 1);
-		HashMap<String, Integer> ingredients = new HashMap<String, Integer>();
+		HashMap<String, Integer> ingredients = new HashMap<>();
 		ingredients.put("a", 1);
 		ingredients.put("b", 1);
 		ingredients.put("notConsume1", 0);
@@ -656,7 +656,7 @@ public class GraphMapperTest {
 		mappingCollector.setValueBefore("bucket", 768);
 		mappingCollector.setValueBefore("waterBucket", 768);
 		mappingCollector.setValueBefore("waterBottle", 0);
-		Map<String, Integer> m = new HashMap<String, Integer>();
+		Map<String, Integer> m = new HashMap<>();
 		m.put("waterBucket", 1);
 		m.put("bucket", -1);
 		mappingCollector.addConversion(1, "waterGroup", m);

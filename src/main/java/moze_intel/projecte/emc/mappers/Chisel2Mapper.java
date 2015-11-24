@@ -60,7 +60,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		/*if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" + group.getName() + (group.getOreName() == null ? "" :  " and oreName=" + group.getOreName())) ) {
 			return;
 		}*/
-		List<NormalizedSimpleStack> stacks = new ArrayList<NormalizedSimpleStack>();
+		List<NormalizedSimpleStack> stacks = new ArrayList<>();
 		for (ICarvingVariation v : group.getVariations()) {
 			stacks.add(NormalizedSimpleStack.getFor(v.getBlock(), v.getBlockMeta()));
 		}

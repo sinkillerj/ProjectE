@@ -60,11 +60,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper class for anything that touches a World.
@@ -204,17 +200,16 @@ public final class WorldHelper
 
 	public static Map<ForgeDirection, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
-		Map<ForgeDirection, TileEntity> ret2 = Maps.asMap(ImmutableSet.copyOf(ForgeDirection.VALID_DIRECTIONS), new Function<ForgeDirection, TileEntity>()
-		{
-			@Nullable
-			@Override
-			public TileEntity apply(ForgeDirection input)
-			{
-				return world.getTileEntity(tile.xCoord + input.offsetX, tile.yCoord + input.offsetY, tile.zCoord + input.offsetZ);
-			}
-		});
+		Map<ForgeDirection, TileEntity> ret = new EnumMap<>(ForgeDirection.class);
 
-		return Maps.filterValues(ret2, Predicates.notNull());
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			TileEntity candidate = world.getTileEntity(tile.xCoord + dir.offsetX, tile.yCoord + dir.offsetY, tile.zCoord + dir.offsetZ);
+			if (candidate != null) {
+				ret.put(dir, candidate);
+			}
+		}
+
+		return ret;
 	}
 
 	public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack, int x, int y, int z)
@@ -535,13 +530,13 @@ public final class WorldHelper
 
 					if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 					{
+						numMined++;
 						if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
 						{
 							currentDrops.addAll(getBlockDrops(world, player, block, stack, x, y, z));
 							world.setBlockToAir(x, y, z);
+							harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 						}
-						numMined++;
-						harvestVein(world, player, stack, new Coordinates(x, y, z), target, currentDrops, numMined);
 					}
 				}
 	}

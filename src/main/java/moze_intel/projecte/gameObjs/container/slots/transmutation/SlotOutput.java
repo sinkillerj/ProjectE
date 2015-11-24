@@ -28,10 +28,7 @@ public class SlotOutput extends Slot
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
-	{
-		return;
-	}
+	public void putStack(ItemStack stack) {}
 	
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack)
