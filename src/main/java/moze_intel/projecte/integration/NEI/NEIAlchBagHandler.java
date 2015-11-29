@@ -1,3 +1,5 @@
+/*
+ todo 1.8.8 restore when NEI updates
 package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.NEIClientUtils;
@@ -127,7 +129,7 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
-	{		
+	{
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
@@ -197,4 +199,4 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 	{
 		this.transferRects.add(new RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
 	}
-}
+}*/

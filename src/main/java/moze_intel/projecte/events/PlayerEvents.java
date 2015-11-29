@@ -83,7 +83,7 @@ public class PlayerEvents
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
 			IChatComponent prior = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.high_alchemist"), EnumChatFormatting.BLUE);
-			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getCommandSenderName() + " "), EnumChatFormatting.GOLD);
+			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getName() + " "), EnumChatFormatting.GOLD);
 			IChatComponent latter = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.has_joined"), EnumChatFormatting.BLUE);
 			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}

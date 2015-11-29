@@ -68,7 +68,7 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		ItemStack stack = getStackInSlot(slot);
 		
@@ -94,7 +94,7 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return null;
 	}
@@ -107,7 +107,7 @@ public class EternalDensityInventory implements IInventory
 
 	@Override
 	public IChatComponent getDisplayName() {
-		return new ChatComponentTranslation(getCommandSenderName());
+		return new ChatComponentTranslation(getName());
 	}
 
 	@Override

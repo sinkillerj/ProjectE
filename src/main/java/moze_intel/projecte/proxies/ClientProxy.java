@@ -364,11 +364,10 @@ public class ClientProxy implements IProxy
 	{
 		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
-		FMLCommonHandler.instance().bus().register(new KeyPressEvent());
+		MinecraftForge.EVENT_BUS.register(new KeyPressEvent());
 
 		PlayerRender pr = new PlayerRender();
 		MinecraftForge.EVENT_BUS.register(pr);
-		FMLCommonHandler.instance().bus().register(pr);
 	}
 
 	@Override

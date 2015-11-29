@@ -1,3 +1,5 @@
+/*
+ todo 1.8.8 restore when NEI updates
 package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.api.API;
@@ -17,3 +19,4 @@ public class NEIInit
 		API.registerUsageHandler(new NEIAlchBagHandler());
 	}
 }
+*/

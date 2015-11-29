@@ -57,14 +57,13 @@ public class TransmutationRenderingEvent
 				{
 					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
 					mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-					Tessellator tess = Tessellator.getInstance();
-					WorldRenderer render = tess.getWorldRenderer();
-//					render.startDrawingQuads(); todo 1.8.8
-//					render.addVertexWithUV(0, 0, 0, sprite.getMinU(), sprite.getMinV());
-//					render.addVertexWithUV(0, 16, 0, sprite.getMinU(), sprite.getMaxV());
-//					render.addVertexWithUV(16, 16, 0, sprite.getMaxU(), sprite.getMaxV());
-//					render.addVertexWithUV(16, 0, 0, sprite.getMaxU(), sprite.getMinV());
-					tess.draw();
+					WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
+					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
+					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
+					wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
+					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
+					Tessellator.getInstance().draw();
 				} else
 				{
 					RenderHelper.enableStandardItemLighting();
@@ -130,59 +129,58 @@ public class TransmutationRenderingEvent
 
 		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
-		Tezzelator tess = new Tezzelator();
+		Tessellator tess = Tessellator.getInstance();
+		WorldRenderer wr = tess.getWorldRenderer();
 		
 		for (AxisAlignedBB b : renderList)
 		{
-			//Top todo 1.8.8
-			tess.begin(7, DefaultVertexFormats.field_181707_g);
-			tess.vertex(b.minX, b.maxY, b.minZ).endVertex();
-//			r.startDrawingQuads();
-//			r.addVertex(b.minX, b.maxY, b.minZ);
-//			r.addVertex(b.maxX, b.maxY, b.minZ);
-//			r.addVertex(b.maxX, b.maxY, b.maxZ);
-//			r.addVertex(b.minX, b.maxY, b.maxZ);
-//			tessellator.draw();
-//
-//			//Bottom
-//			r.startDrawingQuads();
-//			r.addVertex(b.minX, b.minY, b.minZ);
-//			r.addVertex(b.maxX, b.minY, b.minZ);
-//			r.addVertex(b.maxX, b.minY, b.maxZ);
-//			r.addVertex(b.minX, b.minY, b.maxZ);
-//			tessellator.draw();
-//
-//			//Front
-//			r.startDrawingQuads();
-//			r.addVertex(b.maxX, b.maxY, b.maxZ);
-//			r.addVertex(b.minX, b.maxY, b.maxZ);
-//			r.addVertex(b.minX, b.minY, b.maxZ);
-//			r.addVertex(b.maxX, b.minY, b.maxZ);
-//			tessellator.draw();
-//
-//			//Back
-//			r.startDrawingQuads();
-//			r.addVertex(b.maxX, b.minY, b.minZ);
-//			r.addVertex(b.minX, b.minY, b.minZ);
-//			r.addVertex(b.minX, b.maxY, b.minZ);
-//			r.addVertex(b.maxX, b.maxY, b.minZ);
-//			tessellator.draw();
-//
-//			//Left
-//			r.startDrawingQuads();
-//			r.addVertex(b.minX, b.maxY, b.maxZ);
-//			r.addVertex(b.minX, b.maxY, b.minZ);
-//			r.addVertex(b.minX, b.minY, b.minZ);
-//			r.addVertex(b.minX, b.minY, b.maxZ);
-//			tessellator.draw();
-//
-//			//Right
-//			r.startDrawingQuads();
-//			r.addVertex(b.maxX, b.maxY, b.maxZ);
-//			r.addVertex(b.maxX, b.maxY, b.minZ);
-//			r.addVertex(b.maxX, b.minY, b.minZ);
-//			r.addVertex(b.maxX, b.minY, b.maxZ);
-//			tessellator.draw();
+			//Top
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
+			tess.draw();
+
+			//Bottom
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.minX, b.minY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
+			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
+			tess.draw();
+
+			//Front
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
+			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
+			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
+			tess.draw();
+
+			//Back
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
+			wr.pos(b.minX, b.minY, b.minZ).endVertex();
+			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
+			tess.draw();
+
+			//Left
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
+			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
+			wr.pos(b.minX, b.minY, b.minZ).endVertex();
+			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
+			tess.draw();
+
+			//Right
+			wr.begin(7, DefaultVertexFormats.POSITION);
+			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
+			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
+			tess.draw();
 		}
 
 		GlStateManager.depthMask(true);

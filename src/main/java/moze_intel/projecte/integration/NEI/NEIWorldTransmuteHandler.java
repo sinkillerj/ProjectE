@@ -1,3 +1,5 @@
+/*
+ todo 1.8.8 restore when NEI updates
 package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.NEIServerUtils;
@@ -59,13 +61,13 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 		{
 			return new PositionedStack(getStack(input), 22, 23);
 		}
-		
+
 		@Override
 		public PositionedStack getResult()
 		{
 			return new PositionedStack(getStack(output), 128, 23);
 		}
-		
+
 	    @Override
 	    public PositionedStack getOtherStack(){
 	    	return new PositionedStack(new ItemStack(ObjHandler.philosStone), 60, 23);
@@ -93,7 +95,7 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 			}
 		}
 	}
-	
+
     @Override
     public void loadCraftingRecipes(String outputId, Object... results)
 	{
@@ -163,3 +165,4 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 
 
 }
+*/

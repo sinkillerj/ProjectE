@@ -1,13 +1,14 @@
 package moze_intel.projecte.integration;
 
-import codechicken.nei.api.API;
 // todo 1.8 restore when MT updates import moze_intel.projecte.integration.MineTweaker.TweakInit;
+// todo 1.8.8 restore when NEI updates
+/*import codechicken.nei.api.API;
 import moze_intel.projecte.integration.NEI.NEIAlchBagHandler;
 import moze_intel.projecte.integration.NEI.NEIKleinStarHandler;
 import moze_intel.projecte.integration.NEI.NEIPhiloSmeltingHandler;
 import moze_intel.projecte.integration.NEI.NEIWorldTransmuteHandler;
+import moze_intel.projecte.integration.NEI.NEIInit; */
 import net.minecraftforge.fml.common.Loader;
-import moze_intel.projecte.integration.NEI.NEIInit;
 import moze_intel.projecte.utils.PELogger;
 
 public class Integration
@@ -43,7 +44,7 @@ public class Integration
 
 			try
 			{
-				NEIInit.init();
+				// todo 1.8.8 restore when NEI updates NEIInit.init();
 			} catch (NoClassDefFoundError e)
 			{
 				PELogger.logWarn("NEI integration not loaded due to server side being detected");

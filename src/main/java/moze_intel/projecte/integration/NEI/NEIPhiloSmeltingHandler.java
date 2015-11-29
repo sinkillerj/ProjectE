@@ -1,3 +1,5 @@
+/*
+ todo 1.8.8 restore when NEI updates
 package moze_intel.projecte.integration.NEI;
 
 import codechicken.nei.NEIServerUtils;
@@ -162,4 +164,4 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	{
 		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
 	}
-}
+}*/

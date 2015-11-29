@@ -8,11 +8,11 @@ import java.util.Locale;
 public abstract class ItemSearchHelper
 {
 	public static ItemSearchHelper create(String searchString) {
-		if (Loader.isModLoaded("NotEnoughItems")) {
-			return new ItemSearchHelperNEI(searchString);
-		} else {
+		//if (Loader.isModLoaded("NotEnoughItems")) {
+			// todo 1.8.8 restore when NEI updates return new ItemSearchHelperNEI(searchString);
+		//} else {
 			return new DefaultSearch(searchString);
-		}
+		//}
 	}
 
 	public final String searchString;

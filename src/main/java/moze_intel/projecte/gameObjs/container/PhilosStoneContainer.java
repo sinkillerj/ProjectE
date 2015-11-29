@@ -57,7 +57,7 @@ public class PhilosStoneContainer extends Container
 		{
 			for (int i = 0; i < 9; ++i)
 			{
-				ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+				ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
 
 				if (itemstack != null)
 				{

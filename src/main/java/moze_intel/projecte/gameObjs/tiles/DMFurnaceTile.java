@@ -68,7 +68,7 @@ public class DMFurnaceTile extends RMFurnaceTile
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "pe.dmfurnace.shortname";
 	}

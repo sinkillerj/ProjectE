@@ -42,7 +42,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 		if (bagData.get(color) == null)
 		{
 			bagData.put(color, new ItemStack[104]);
-			PELogger.logInfo("Created new inventory array for color " + color + " and player " + player.getCommandSenderName());
+			PELogger.logInfo("Created new inventory array for color " + color + " and player " + player.getName());
 		}
 		ItemStack[] inv = bagData.get(color);
 		return Arrays.copyOf(inv, inv.length);

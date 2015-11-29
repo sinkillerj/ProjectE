@@ -10,7 +10,7 @@ public class CollectorMK3Tile extends CollectorMK1Tile
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "tile.pe_collector_MK3.name";
 	}

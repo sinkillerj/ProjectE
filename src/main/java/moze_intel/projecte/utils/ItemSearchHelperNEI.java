@@ -1,3 +1,4 @@
+/* todo 1.8.8 restore when NEI updates
 package moze_intel.projecte.utils;
 
 import codechicken.nei.ItemList;
@@ -41,3 +42,4 @@ public class ItemSearchHelperNEI extends ItemSearchHelper
 	}
 }
 
+*/

@@ -94,7 +94,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle")) {
+		if (world.getGameRules().getBoolean("doDaylightCycle")) {
 			if (timeControl == 1)
             {
                 if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)

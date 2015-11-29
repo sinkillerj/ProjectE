@@ -95,7 +95,7 @@ public final class PacketHandler
 			counter++;
 		}
 
-		PELogger.logInfo("Sent EMC data packets to: " + player.getCommandSenderName());
+		PELogger.logInfo("Sent EMC data packets to: " + player.getName());
 		PELogger.logDebug("Total packets: " + counter);
 	}
 

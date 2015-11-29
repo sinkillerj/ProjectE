@@ -610,7 +610,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		if (inventory[slot] != null)
 		{
@@ -631,7 +631,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "pe.rmfurnace.shortname";
 	}

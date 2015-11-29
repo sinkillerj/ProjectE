@@ -28,7 +28,7 @@ archivesBaseName = "ProjectE"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"
-    mappings = 'snapshot_20151122'
+    mappings = 'snapshot_20151128'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
@@ -63,9 +63,9 @@ dependencies {
 
     compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
 
-    compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
-    compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
-    compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
+    // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
+    // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
+    // compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
     // compile name: 'MineTweaker3', version: 'Dev-1.7.10-3.0.9C', ext: 'jar'
 }
 

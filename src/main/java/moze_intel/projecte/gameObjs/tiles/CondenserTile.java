@@ -310,7 +310,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		if (inventory[slot] != null)
 		{
@@ -335,7 +335,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "tile.pe_condenser.name";
 	}
@@ -349,7 +349,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getCommandSenderName());
+		return new ChatComponentTranslation(getName());
 	}
 
 	@Override

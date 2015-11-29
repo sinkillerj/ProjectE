@@ -90,10 +90,9 @@ public class PECore
 
 		PlayerEvents pe = new PlayerEvents();
 		MinecraftForge.EVENT_BUS.register(pe);
-		FMLCommonHandler.instance().bus().register(pe);
 
-		FMLCommonHandler.instance().bus().register(new TickEvents());
-		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+		MinecraftForge.EVENT_BUS.register(new TickEvents());
+		MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 
 		ObjHandler.register();
 		ObjHandler.addRecipes();

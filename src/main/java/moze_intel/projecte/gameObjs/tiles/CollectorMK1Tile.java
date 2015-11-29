@@ -452,7 +452,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		if (inventory[slot] != null)
 		{
@@ -473,7 +473,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "tile.pe_collector_MK1.name";
 	}

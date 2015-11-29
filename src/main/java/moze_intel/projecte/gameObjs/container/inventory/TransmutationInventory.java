@@ -328,7 +328,7 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		if (inventory[slot] != null)
 		{
@@ -354,7 +354,7 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "item.pe_transmutation_tablet.name";
 	}
@@ -368,7 +368,7 @@ public class TransmutationInventory implements IInventory
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getCommandSenderName());
+		return new ChatComponentTranslation(getName());
 	}
 
 	@Override

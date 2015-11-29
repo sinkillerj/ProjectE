@@ -306,7 +306,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		if (inventory[slot] != null)
 		{
@@ -327,7 +327,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "pe.relay.mk1";
 	}
@@ -341,7 +341,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getCommandSenderName());
+		return new ChatComponentTranslation(getName());
 	}
 
 	@Override
