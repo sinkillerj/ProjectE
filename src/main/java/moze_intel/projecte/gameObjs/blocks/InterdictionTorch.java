@@ -40,7 +40,7 @@ public class InterdictionTorch extends BlockTorch
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
-		EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
+		EnumFacing enumfacing = state.getValue(FACING);
 		double d0 = (double)pos.getX() + 0.5D;
 		double d1 = (double)pos.getY() + 0.7D;
 		double d2 = (double)pos.getZ() + 0.5D;

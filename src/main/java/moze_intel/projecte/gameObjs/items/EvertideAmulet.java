@@ -60,7 +60,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			IBlockState state = world.getBlockState(pos);
 			if (state.getBlock() == Blocks.cauldron)
 			{
-				int waterLevel = ((Integer) state.getValue(BlockCauldron.LEVEL));
+				int waterLevel = state.getValue(BlockCauldron.LEVEL);
 				if (waterLevel < 3)
 				{
 					((BlockCauldron) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);

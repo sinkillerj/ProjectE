@@ -22,7 +22,7 @@ public class NovaCatalyst extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			if (((Boolean)state.getValue(EXPLODE)))
+			if (state.getValue(EXPLODE))
 			{
 				EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
 				world.spawnEntityInWorld(catalystPrimed);

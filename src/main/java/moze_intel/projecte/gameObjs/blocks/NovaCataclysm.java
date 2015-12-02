@@ -22,7 +22,7 @@ public class NovaCataclysm extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			if (((Boolean)state.getValue(EXPLODE)))
+			if (state.getValue(EXPLODE))
 			{
 				EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
 				world.spawnEntityInWorld(cataclysmPrimed);

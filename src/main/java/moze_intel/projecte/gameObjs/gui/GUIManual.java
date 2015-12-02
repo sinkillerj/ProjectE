@@ -104,7 +104,7 @@ public class GUIManual extends GuiScreen
 
 		this.updateButtons();
 
-		for (GuiButton button : ((List<GuiButton>) this.buttonList))
+		for (GuiButton button : this.buttonList)
 		{
 			button.drawButton(this.mc, mouseX, mouseY);
 		}

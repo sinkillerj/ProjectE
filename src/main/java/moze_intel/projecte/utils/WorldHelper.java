@@ -337,16 +337,14 @@ public final class WorldHelper
 	/**
 	 * Wrapper around BlockPos.getAllInBox() with an AABB
 	 */
-	@SuppressWarnings("unchecked")
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
 	{
 		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
 	}
 
 	/**
-	 * No-warnings wrapper around BlockPos.getAllInBox
+	 * Wrapper around BlockPos.getAllInBox
 	 */
-	@SuppressWarnings("unchecked")
 	public static Iterable<BlockPos> getPositionsFromCorners(BlockPos corner1, BlockPos corner2)
 	{
 		return BlockPos.getAllInBox(corner1, corner2);
@@ -501,7 +499,7 @@ public final class WorldHelper
 					}
 					if (crop == Blocks.nether_wart)
 					{
-						int age = ((Integer) state.getValue(BlockNetherWart.AGE));
+						int age = state.getValue(BlockNetherWart.AGE);
 						if (age == 3)
 						{
 							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
