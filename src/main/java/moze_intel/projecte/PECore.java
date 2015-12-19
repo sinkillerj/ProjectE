@@ -2,6 +2,7 @@ package moze_intel.projecte;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -46,6 +47,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore
@@ -53,7 +55,7 @@ public class PECore
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
-
+	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[ProjectE]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
 

@@ -63,12 +63,10 @@ public class EntityHomingArrow extends EntityArrow
 			if (hasTarget() && (!getTarget().isEntityAlive() || inGround))
 			{
 				dataWatcher.updateObject(DW_TARGET_ID, NO_TARGET);
-				PELogger.logInfo("Removing target");
 			}
 
 			if (!hasTarget() && !inGround && newTargetCooldown <= 0)
 			{
-				PELogger.logInfo("Finding new target");
 				findNewTarget();
 			} else
 			{
@@ -78,31 +76,37 @@ public class EntityHomingArrow extends EntityArrow
 
 		if (ticksExisted > 3 && hasTarget() && !WorldHelper.isArrowInGround(this))
 		{
-			AxisAlignedBB box = this.boundingBox;
-			worldObj.spawnParticle("flame", box.maxX, box.maxY, box.maxZ, 0.0D, 0.0D, 0.0D);
-			setIsCritical(true);
+			this.worldObj.spawnParticle("flame", this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
+			this.worldObj.spawnParticle("flame", this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
 			Entity target = getTarget();
 
 
 			Vector3d arrowLoc = new Vector3d(posX, posY, posZ);
 			Vector3d targetLoc = new Vector3d(target.posX, target.boundingBox.minY + target.height, target.posZ);
+
+			// Get the vector that points straight from the arrow to the target
 			Vector3d lookVec = new Vector3d(targetLoc);
 			lookVec.sub(arrowLoc);
 
-			// double dotProduct = new Vector3d(arrowLoc).dot(targetLoc);
-			double theta = arrowLoc.angle(lookVec); //Math.acos(dotProduct / (arrowLoc.length() * targetLoc.length()));
+			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
+			double theta = wrap180Radian(arrowLoc.angle(lookVec));
+			theta = clampAbs(theta, 4 * Math.PI / 8);
 
+			// Find the cross product to determine the axis of rotation
 			Vector3d crossProduct = new Vector3d();
 			crossProduct.cross(arrowLoc, targetLoc);
 			crossProduct.normalize();
 
+			// Create the rotation using the axis and our angle
 			Matrix4d transform = new Matrix4d();
-			transform.set(new AxisAngle4d(crossProduct, theta * 0.65));
+			transform.set(new AxisAngle4d(crossProduct, theta));
 
+			// Adjust the vector
 			Vector3d adjustedLookVec = new Vector3d(lookVec);
 			transform.transform(lookVec, adjustedLookVec);
 
-			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.3F, 0);
+			// Tell mc to adjust our rotation accordingly
+			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.5F, 0);
 			super.onUpdate();
 
 //			old homing code (sucks)
@@ -138,7 +142,6 @@ public class EntityHomingArrow extends EntityArrow
 		if (!candidates.isEmpty())
 		{
 			dataWatcher.updateObject(DW_TARGET_ID, candidates.get(0).getEntityId());
-			PELogger.logInfo("Found new target");
 		}
 
 		newTargetCooldown = 5;
@@ -154,45 +157,37 @@ public class EntityHomingArrow extends EntityArrow
 		return getTarget() != null;
 	}
 
-	private void updateHeading(double velocityX, double velocityY, double velocityZ)
+	private double wrap180Radian(double radian)
 	{
-		float f3 = MathHelper.sqrt_double(velocityX * velocityX + velocityZ * velocityZ);
-		this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(velocityX, velocityZ) * 180.0D / Math.PI);
-		this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(velocityY, f3) * 180.0D / Math.PI);
+		radian %= 2 * Math.PI;
+
+		while (radian >= Math.PI)
+		{
+			radian -= 2 * Math.PI;
+		}
+
+		while (radian < -Math.PI)
+		{
+			radian += 2 * Math.PI;
+		}
+
+		return radian;
 	}
 
-	private double getPitch(Vector3d vec)
+	private double clampAbs(double param, double maxMagnitude)
 	{
-		return Math.atan2(vec.y, Math.sqrt(vec.x * vec.x + vec.z * vec.z));
-	}
+		if (Math.abs(param) > maxMagnitude)
+		{
+			System.out.println("CLAMPED");
+			if (param < 0)
+			{
+				param = -Math.abs(maxMagnitude);
+			} else
+			{
+				param = Math.abs(maxMagnitude);
+			}
+		}
 
-	private double getYaw(Vector3d vec)
-	{
-		return Math.atan2(vec.z, vec.x) - Math.PI / 2.0D;
-	}
-
-	private double toDegrees(double radian)
-	{
-		return radian * 180.0 / Math.PI;
-	}
-
-	private void setThrowableHeadingCopy(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_, float p_70186_8_)
-	{
-		float f2 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_3_ * p_70186_3_ + p_70186_5_ * p_70186_5_);
-		p_70186_1_ /= (double)f2;
-		p_70186_3_ /= (double)f2;
-		p_70186_5_ /= (double)f2;
-		p_70186_1_ += this.rand.nextGaussian() * (double)(this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * (double)p_70186_8_;
-		p_70186_3_ += this.rand.nextGaussian() * (double)(this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * (double)p_70186_8_;
-		p_70186_5_ += this.rand.nextGaussian() * (double)(this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * (double)p_70186_8_;
-		p_70186_1_ *= (double)p_70186_7_;
-		p_70186_3_ *= (double)p_70186_7_;
-		p_70186_5_ *= (double)p_70186_7_;
-//		this.motionX = p_70186_1_;
-//		this.motionY = p_70186_3_;
-//		this.motionZ = p_70186_5_;
-		float f3 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_5_ * p_70186_5_);
-		this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(p_70186_1_, p_70186_5_) * 180.0D / Math.PI);
-		this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(p_70186_3_, (double)f3) * 180.0D / Math.PI);
+		return param;
 	}
 }

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -92,11 +93,14 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.getMinecraft(((WorldServer) world)), 2.0F);
+						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((WorldServer) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
 						arrow.posZ = tile.centeredZ;
-						world.playSoundAtEntity(FakePlayerFactory.getMinecraft(((WorldServer) world)), "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
+						arrow.motionX = 0;
+						arrow.motionZ = 0;
+						arrow.motionY = 1;
+						world.playSoundAtEntity(arrow, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
 						world.spawnEntityInWorld(arrow);
 					}
 				}
