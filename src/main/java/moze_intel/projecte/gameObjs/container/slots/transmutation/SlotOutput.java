@@ -21,7 +21,7 @@ public class SlotOutput extends Slot
 	{
 		ItemStack stack = getStack().copy();
 		stack.stackSize = slot;
-		inv.removeEmc(EMCHelper.getEmcValue(stack));
+		inv.removeEmc(EMCHelper.getEmcValueForCreation(stack));
 		inv.checkForUpdates();
 		
 		return stack;

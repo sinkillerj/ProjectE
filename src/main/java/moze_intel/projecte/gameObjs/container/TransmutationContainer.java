@@ -92,7 +92,7 @@ public class TransmutationContainer extends Container
 		}
 		else if (slotIndex >= 10 && slotIndex <= 25)
 		{	
-			int emc = EMCHelper.getEmcValue(newStack);
+			int emc = EMCHelper.getEmcValueForCreation(newStack);
 			
 			int stackSize = 0;
 			
@@ -107,7 +107,8 @@ public class TransmutationContainer extends Container
 		}
 		else if (slotIndex >= 26)
 		{
-			int emc = EMCHelper.getEmcValue(stack);
+			if (!EMCHelper.hasEmcValueForDestruction(stack)) return null;
+			int emc = EMCHelper.getEmcValueForDestructionWithDamageAndBonuses(stack);
 			
 			if (emc == 0 && stack.getItem() != ObjHandler.tome)
 			{

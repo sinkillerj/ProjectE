@@ -28,6 +28,7 @@ public final class Transmutation
 
 	public static void cacheFullKnowledge()
 	{
+		//TODO Only add 'learnable' items to the full cached knowledge
 		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
 			if (!stack.isValid())
@@ -41,7 +42,7 @@ public final class Transmutation
 				s.stackSize = 1;
 
 				//Apparently items can still not have EMC if they are in the EMC map.
-				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
+				if (EMCHelper.hasEmcValueForCreation(s) && EMCHelper.getEmcValueForCreation(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
 				{
 					CACHED_TOME_KNOWLEDGE.add(s);
 				}

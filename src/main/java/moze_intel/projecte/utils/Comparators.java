@@ -12,13 +12,13 @@ import net.minecraft.util.StatCollector;
 
 public final class Comparators
 {
-	public static final Comparator<ItemStack> ITEMSTACK_EMC_DESCENDING = new Comparator<ItemStack>()
+	public static final Comparator<ItemStack> ITEMSTACK_CREATE_EMC_DESCENDING = new Comparator<ItemStack>()
 	{
 		@Override
 		public int compare(ItemStack s1, ItemStack s2) 
 		{
-			int emc1 = EMCHelper.getEmcValue(s1);
-			int emc2 = EMCHelper.getEmcValue(s2);
+			int emc1 = EMCHelper.getEmcValueForCreationOrZero(s1);
+			int emc2 = EMCHelper.getEmcValueForCreationOrZero(s2);
 			
 			if (emc1 < emc2)
 			{
@@ -72,13 +72,14 @@ public final class Comparators
 		}
 	};
 
-	public static final Comparator<SimpleStack> SIMPLESTACK_ASCENDING = new Comparator<SimpleStack>()
+	public static final Comparator<SimpleStack> SIMPLESTACK_CREATE_EMC_ASCENDING = new Comparator<SimpleStack>()
 	{
 		@Override
 		public int compare(SimpleStack s1, SimpleStack s2)
 		{
-			int emc1 = EMCMapper.getEmcValue(s1);
-			int emc2 = EMCMapper.getEmcValue(s2);
+			//TODO Need to use the correct EMC value
+			int emc1 = EMCMapper.emc.containsKey(s1) ? EMCMapper.emc.get(s1) : 0;
+			int emc2 = EMCMapper.emc.containsKey(s2) ? EMCMapper.emc.get(s2) : 0;
 			
 			if (emc1 < emc2)
 			{
