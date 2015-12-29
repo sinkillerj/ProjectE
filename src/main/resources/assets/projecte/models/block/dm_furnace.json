@@ -1,8 +1,0 @@
-{
-  "parent": "block/orientable",
-  "textures": {
-    "top": "projecte:blocks/dm",
-    "front": "projecte:blocks/matter_furnace/dm_off",
-    "side": "projecte:blocks/dm"
-  }
-}

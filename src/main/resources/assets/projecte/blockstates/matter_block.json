@@ -1,6 +1,11 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "transform": "forge:default-block"
+  },
   "variants": {
-    "tier=dark_matter": { "model": "projecte:dark_matter_block"},
-    "tier=red_matter": { "model": "projecte:red_matter_block"}
+    "tier=dark_matter": [{ "textures": { "all": "projecte:blocks/dm" } }],
+    "tier=red_matter": [{ "textures": { "all": "projecte:blocks/rm" } }]
   }
 }

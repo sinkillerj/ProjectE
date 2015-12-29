@@ -38,6 +38,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.lang.reflect.Method;
@@ -226,9 +227,9 @@ public class ClientProxy implements IProxy
 			ModelLoader.addVariantName(ObjHandler.fuels, "projecte:" + e.getName());
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation("projecte:" + e.getName(), "inventory"));
 
-			ModelLoader.addVariantName(Item.getItemFromBlock(ObjHandler.fuelBlock), "projecte:" + e.getName() + "_block");
-			int meta = ObjHandler.fuelBlock.getMetaFromState(ObjHandler.fuelBlock.getDefaultState().withProperty(FuelBlock.FUEL_PROP, e));
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.fuelBlock), meta, new ModelResourceLocation("projecte:" + e.getName() + "_block", "inventory"));
+			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.fuelBlock).toString();
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.fuelBlock), new ModelResourceLocation(name, "fueltype=" + e.getName()));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.fuelBlock), e.ordinal(), new ModelResourceLocation(name, "fueltype=" + e.getName()));
 		}
 	}
 
@@ -239,9 +240,9 @@ public class ClientProxy implements IProxy
 			ModelLoader.addVariantName(ObjHandler.matter, "projecte:" + m.getName());
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation("projecte:" + m.getName(), "inventory"));
 
-			ModelLoader.addVariantName(Item.getItemFromBlock(ObjHandler.matterBlock), "projecte:" + m.getName() + "_block");
-			int meta = ObjHandler.matterBlock.getMetaFromState(ObjHandler.matterBlock.getDefaultState().withProperty(MatterBlock.TIER_PROP, m));
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.matterBlock), meta, new ModelResourceLocation("projecte:" + m.getName() + "_block", "inventory"));
+			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.matterBlock).toString();
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.matterBlock), new ModelResourceLocation(name, "tier=" + m.getName()));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.matterBlock), m.ordinal(), new ModelResourceLocation(name, "tier=" + m.getName()));
 		}
 	}
 

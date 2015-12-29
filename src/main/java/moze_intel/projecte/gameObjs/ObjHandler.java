@@ -255,14 +255,16 @@ public class ObjHandler
 
 	public static void register()
 	{
-		// Blocks without ItemBlock
+		// Blocks without special ItemBlock
 		GameRegistry.registerBlock(confuseTorch, "interdiction_torch");
 		GameRegistry.registerBlock(condenserMk2, "condenser_mk2");
-		GameRegistry.registerBlock(rmFurnaceOn, "rm_furnace_lit");
-		GameRegistry.registerBlock(dmFurnaceOn, "dm_furnace_lit");
 		GameRegistry.registerBlock(dmPedestal, "dm_pedestal");
 		GameRegistry.registerBlock(novaCatalyst, "nova_catalyst");
 		GameRegistry.registerBlock(novaCataclysm, "nova_cataclysm");
+
+		// Blocks without any item form
+		GameRegistry.registerBlock(rmFurnaceOn, null, "rm_furnace_lit");
+		GameRegistry.registerBlock(dmFurnaceOn, null, "dm_furnace_lit");
 
 		// Blocks with ItemBlock
 		GameRegistry.registerBlock(alchChest, ItemAlchemyChestBlock.class, "alchemical_chest");

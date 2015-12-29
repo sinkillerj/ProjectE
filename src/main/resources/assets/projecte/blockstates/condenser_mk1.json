@@ -1,5 +1,12 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "projecte:blocks/condenser"
+    }
+  },
   "variants": {
-    "normal": { "model": "projecte:condenser_mk1" }
+    "normal": [{ "model": "projecte:dummy" }],
+    "inventory": [{ "model": "projecte:base_chest", "textures": { "chest": "projecte:blocks/condenser" }}]
   }
 }

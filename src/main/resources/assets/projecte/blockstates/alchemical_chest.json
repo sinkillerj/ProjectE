@@ -1,5 +1,12 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "projecte:blocks/alchemy_chest"
+    }
+  },
   "variants": {
-    "normal": { "model": "projecte:alchemical_chest" }
+    "normal": [{ "model": "projecte:dummy" }],
+    "inventory": [{ "model": "projecte:base_chest", "textures": { "chest": "projecte:blocks/alchemy_chest" }}]
   }
 }
