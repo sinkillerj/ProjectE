@@ -141,13 +141,13 @@ public final class EMCMapper
 				if (obj != null)
 				{
 					int id = Item.itemRegistry.getIDForObject(obj);
-					emc.put(new SimpleStack(id, 1, normStackItem.damage), entry.getValue());
+					emc.put(new SimpleStack(id, 1, normStackItem.damage, normStackItem.nbt), entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 				}
 			}
 		}
-
+		
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
@@ -183,7 +183,7 @@ public final class EMCMapper
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
-
+		
 		return emc.get(copy);
 	}
 

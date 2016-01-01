@@ -11,6 +11,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Arrays;
@@ -21,11 +22,11 @@ import java.util.Set;
 public abstract class NormalizedSimpleStack {
 	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
-	public static NormalizedSimpleStack getFor(String itemName, int damage) {
+	public static NormalizedSimpleStack getFor(String itemName, int damage, NBTTagCompound nbt) {
 		NSSItem normStack;
 		try
 		{
-			normStack = new NSSItem(itemName, damage);
+			normStack = new NSSItem(itemName, damage, nbt);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not create NSSItem: " + e.getMessage());
 			return null;
@@ -40,34 +41,38 @@ public abstract class NormalizedSimpleStack {
 		usedMetadata.add(normStack.damage);
 		return normStack;
 	}
+	
+	public static NormalizedSimpleStack getFor(String itemName, int damage){
+		return getFor(itemName, damage, null);
+	}
 
 	public static NormalizedSimpleStack getFor(Block block) {
 		return getFor(block, 0);
 	}
 
 	public static NormalizedSimpleStack getFor(Block block, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(block), meta);
+		return getFor(GameRegistry.findUniqueIdentifierFor(block), meta, null);
 	}
 
 	public static NormalizedSimpleStack getFor(Item item) {
-		return getFor(item, 0);
+		return getFor(item, 0, null);
 	}
 
-	public static NormalizedSimpleStack getFor(Item item, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
+	public static NormalizedSimpleStack getFor(Item item, int meta, NBTTagCompound stackTagCompound) {
+		return getFor(GameRegistry.findUniqueIdentifierFor(item), meta, stackTagCompound);
 	}
 
-	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
+	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage, NBTTagCompound nbt)
 	{
 		if (uniqueIdentifier == null) return null;
-		return getFor(uniqueIdentifier.modId + ":" + uniqueIdentifier.name, damage);
+		return getFor(uniqueIdentifier.modId + ":" + uniqueIdentifier.name, damage, nbt);
 	}
 
 
 
 	public static NormalizedSimpleStack getFor(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return null;
-		return getFor(stack.getItem(), stack.getItemDamage());
+		return getFor(stack.getItem(), stack.getItemDamage(), stack.stackTagCompound);
 	}
 
 	public static NormalizedSimpleStack getFor(net.minecraftforge.fluids.Fluid fluid) {
@@ -116,12 +121,18 @@ public abstract class NormalizedSimpleStack {
 	public static class NSSItem extends NormalizedSimpleStack {
 		public final String itemName;
 		public final int damage;
-		private NSSItem(String itemName, int damage) {
+		public final NBTTagCompound nbt;
+		private NSSItem(String itemName, int damage, NBTTagCompound nbt) {
 			this.itemName = itemName;
 			if (Item.itemRegistry.getObject(itemName) == null) {
 				throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
 			}
 			this.damage = damage;
+			this.nbt = nbt;
+		}
+		
+		private NSSItem(String itemName, int damage){
+			this(itemName, damage, null);
 		}
 
 		@Override
@@ -254,7 +265,7 @@ public abstract class NormalizedSimpleStack {
 			return "OD: " + od;
 		}
 	}
-
+	//TODO Add NBT support here
 	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) {
 		int pipeIndex = serializedItem.lastIndexOf('|');
 		if (pipeIndex < 0)

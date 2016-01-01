@@ -1,6 +1,9 @@
 package moze_intel.projecte.network.packets;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -10,56 +13,56 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.List;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 public class SyncEmcPKT implements IMessage
 {
 	private int packetNum;
-	private Object[] data;
+	private ArrayList<Entry<SimpleStack, Integer>> data;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(int packetNum, List<Integer[]> arrayList)
+	public SyncEmcPKT(int packetNum, ArrayList<Entry<SimpleStack, Integer>> arrayList)
 	{
 		this.packetNum = packetNum;
-		data = arrayList.toArray();
+		data = arrayList;
 	}
-
+	
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
 		packetNum = buf.readInt();
 		int size = buf.readInt();
-		data = new Object[size];
-
+		data = Lists.newArrayList();
 		for (int i = 0; i < size; i++)
 		{
-			Integer[] array = new Integer[4];
-
-			for (int j = 0; j < 4; j++)
-			{
-				array[j] = buf.readInt();
-			}
-
-			data[i] = array;
+			int id = buf.readInt();
+			int damage = buf.readInt();
+			int qnty = buf.readInt();
+			NBTTagCompound tag = ByteBufUtils.readTag(buf);
+			int emc = buf.readInt();
+			SimpleStack stack = new SimpleStack(id, qnty, damage, tag);
+			data.add(new AbstractMap.SimpleEntry<SimpleStack, Integer>(stack, emc));
 		}
 	}
-
+	
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeInt(packetNum);
-		buf.writeInt(data.length);
+		buf.writeInt(data.size());
 
-		for (Object obj : data)
+		for (Entry<SimpleStack, Integer> entry : data)
 		{
-			Integer[] array = (Integer[]) obj;
-
-			for (int i = 0; i < 4; i++)
-			{
-				buf.writeInt(array[i]);
-			}
+			buf.writeInt(entry.getKey().id);
+			buf.writeInt(entry.getKey().damage);
+			buf.writeInt(entry.getKey().qnty);
+			ByteBufUtils.writeTag(buf, entry.getKey().nbt);
+			buf.writeInt(entry.getValue());
 		}
 	}
 
@@ -76,15 +79,14 @@ public class SyncEmcPKT implements IMessage
 				EMCMapper.emc = Maps.newLinkedHashMap();
 			}
 
-			for (Object obj : pkt.data)
+			for (Entry<SimpleStack, Integer> entry: pkt.data)
 			{
-				Integer[] array = (Integer[]) obj;
 
-				SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+				SimpleStack stack = entry.getKey();
 
 				if (stack.isValid())
 				{
-					EMCMapper.emc.put(stack, array[3]);
+					EMCMapper.emc.put(stack, entry.getValue());
 				}
 			}
 

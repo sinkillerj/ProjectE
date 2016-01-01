@@ -2,6 +2,7 @@ package moze_intel.projecte.emc;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class SimpleStack
@@ -9,12 +10,14 @@ public class SimpleStack
 	public int id;
 	public int damage;
 	public int qnty;
+	public NBTTagCompound nbt;
 
-	public SimpleStack(int id, int qnty, int damage)
+	public SimpleStack(int id, int qnty, int damage, NBTTagCompound nbt)
 	{
 		this.id = id;
 		this.qnty = qnty;
 		this.damage = damage;
+		this.nbt = nbt;
 	}
 	
 	public SimpleStack(ItemStack stack)
@@ -28,6 +31,7 @@ public class SimpleStack
 			id = Item.itemRegistry.getIDForObject(stack.getItem());
 			damage = stack.getItemDamage();
 			qnty = stack.stackSize;
+			nbt = stack.stackTagCompound;
 		}
 	}
 
@@ -44,7 +48,9 @@ public class SimpleStack
 
 			if (item != null)
 			{
-				return new ItemStack(Item.getItemById(id), qnty, damage);
+				ItemStack stack = new ItemStack(Item.getItemById(id), qnty, damage);
+				stack.stackTagCompound = nbt;
+				return stack;
 			}
 		}
 
@@ -53,7 +59,7 @@ public class SimpleStack
 
 	public SimpleStack copy()
 	{
-		return new SimpleStack(id, qnty, damage);
+		return new SimpleStack(id, qnty, damage, nbt);
 	}
 
 	@Override
@@ -76,6 +82,9 @@ public class SimpleStack
 			}
 
 			//return this.id == other.id && this.damage == other.damage;
+			if(this.nbt != null && other.nbt != null){
+				return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage && this.nbt.equals(other.nbt);
+			}
 			return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
 		}
 		

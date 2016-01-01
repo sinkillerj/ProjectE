@@ -31,8 +31,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.FakePlayer;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public final class PacketHandler
 {
@@ -67,7 +69,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = Lists.newArrayList();
+		ArrayList<Entry<SimpleStack, Integer>> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
@@ -79,8 +81,7 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
-			list.add(data);
+			list.add(entry);
 
 			if (list.size() >= MAX_PKT_SIZE)
 			{
@@ -103,7 +104,7 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = Lists.newArrayList();
+		ArrayList<Entry<SimpleStack, Integer>> list = Lists.newArrayList();
 		int counter = 0;
 
 		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
@@ -115,7 +116,7 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			Entry<SimpleStack, Integer> data = new AbstractMap.SimpleEntry<SimpleStack, Integer>(stack, entry.getValue());
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)

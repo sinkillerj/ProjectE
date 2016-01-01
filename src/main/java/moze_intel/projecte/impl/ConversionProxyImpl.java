@@ -67,7 +67,7 @@ public class ConversionProxyImpl implements IConversionProxy
 			fakes.put(object, nss);
 			return nss;
 		} else {
-			throw new IllegalArgumentException("Can not turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. need ItemStack, FluidStack, String or 'Object'");
+			throw new IllegalArgumentException("Can not turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. Need ItemStack, FluidStack, String or 'Object'");
 		}
 	}
 

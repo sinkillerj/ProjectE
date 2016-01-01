@@ -55,7 +55,7 @@ public class EMCProxyImpl implements IEMCProxy
     public boolean hasValue(ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
-        return hasValue(stack.getItem());
+        return EMCHelper.doesItemHaveEmc(stack);
     }
 
     @Override
