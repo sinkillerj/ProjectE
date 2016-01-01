@@ -84,8 +84,11 @@ public class SimpleStack
 			//return this.id == other.id && this.damage == other.damage;
 			if(this.nbt != null && other.nbt != null){
 				return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage && this.nbt.equals(other.nbt);
+			} else if (this.nbt == null && other.nbt == null){ 
+				return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
+			} else {
+				return false;
 			}
-			return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
 		}
 		
 		return false;
