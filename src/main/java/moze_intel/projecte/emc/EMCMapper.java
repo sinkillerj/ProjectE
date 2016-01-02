@@ -132,7 +132,6 @@ public final class EMCMapper
 			}
 		}
 
-
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
 			{
@@ -147,7 +146,7 @@ public final class EMCMapper
 				}
 			}
 		}
-		
+
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();

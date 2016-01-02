@@ -159,8 +159,6 @@ public abstract class NormalizedSimpleStack {
 			if(this.nbt == null){
 				return String.format("%s|%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 			} else{
-				System.out.println("JSON " + String.format("%s|%s@%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt.toString()));
-
 				return String.format("%s|%s@%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt.toString());
 			}
 		}
