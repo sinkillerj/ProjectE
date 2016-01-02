@@ -139,7 +139,7 @@ public abstract class NormalizedSimpleStack {
 
 		@Override
 		public int hashCode() {
-			return itemName.hashCode() ^ damage;
+			return itemName.hashCode() ^ damage ^ (nbt == null ? 0 : nbt.hashCode());
 		}
 
 		@Override
@@ -168,10 +168,10 @@ public abstract class NormalizedSimpleStack {
 			Object obj = Item.itemRegistry.getObject(itemName);
 
 			if (obj != null) {
-				return String.format("%s(%s:%s)", itemName, Item.itemRegistry.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+				return String.format("%s(%s:%s)@%s", itemName, Item.itemRegistry.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt == null ? "{}" : nbt.toString());
 			}
 
-			return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+			return String.format("%s(???:%s)@%s", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt == null ? "{}" : nbt.toString());
 		}
 	}
 

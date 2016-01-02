@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
-Java class to hold data from a json file with custom converrsions and values.
+Java class to hold data from a json file with custom conversions and values.
 
 Format:
 
