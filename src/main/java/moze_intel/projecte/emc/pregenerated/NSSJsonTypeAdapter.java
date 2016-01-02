@@ -20,7 +20,11 @@ public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{
 			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem) stack;
-			out.value(String.format("%s|%d", item.itemName, item.damage));
+			if(item.nbt == null){
+				out.value(String.format("%s|%d", item.itemName, item.damage));
+			} else {
+				out.value(String.format("%s|%d@%s", item.itemName, item.damage, item.nbt.toString()));
+			}
 		}
 		else
 		{

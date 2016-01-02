@@ -11,6 +11,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -154,7 +156,13 @@ public abstract class NormalizedSimpleStack {
 		@Override
 		public String json()
 		{
-			return String.format("%s|%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+			if(this.nbt == null){
+				return String.format("%s|%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+			} else{
+				System.out.println("JSON " + String.format("%s|%s@%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt.toString()));
+
+				return String.format("%s|%s@%s", itemName,  damage == OreDictionary.WILDCARD_VALUE ? "*" : damage, nbt.toString());
+			}
 		}
 
 		@Override
@@ -268,12 +276,20 @@ public abstract class NormalizedSimpleStack {
 	//TODO Add NBT support here
 	public static NormalizedSimpleStack fromSerializedItem(String serializedItem) {
 		int pipeIndex = serializedItem.lastIndexOf('|');
+		int atIndex = serializedItem.lastIndexOf('@');
 		if (pipeIndex < 0)
 		{
 			throw new IllegalArgumentException(String.format("Cannot parse '%s' as itemstack. Missing | to separate metadata.", serializedItem));
 		}
 		String itemName = serializedItem.substring(0, pipeIndex);
-		String itemDamageString = serializedItem.substring(pipeIndex + 1);
+		String itemDamageString;
+		String itemNBTString = null;
+		if(atIndex < 0){
+			itemDamageString = serializedItem.substring(pipeIndex + 1);
+		} else{
+			itemDamageString = serializedItem.substring(pipeIndex + 1, atIndex);
+			itemNBTString = serializedItem.substring(atIndex + 1);
+		}
 		int itemDamage;
 		if (itemDamageString.equals("*"))
 		{
@@ -289,7 +305,16 @@ public abstract class NormalizedSimpleStack {
 				throw new IllegalArgumentException(String.format("Could not parse '%s' to metadata-integer", itemDamageString), e);
 			}
 		}
-
-		return NormalizedSimpleStack.getFor(itemName, itemDamage);
+		if(atIndex < 0){
+			return NormalizedSimpleStack.getFor(itemName, itemDamage);
+		} else {
+			try {
+				return NormalizedSimpleStack.getFor(itemName, itemDamage, (NBTTagCompound) JsonToNBT.func_150315_a(itemNBTString));
+			} catch (NBTException e) {
+				System.err.println("Couldn't read something. Chances are you messed something up when specifying NBT data. Here's an example of how it should look: \"Mekanism:EnergyCube|0@{tier:\\\"Advanced\\\"}\"");
+				e.printStackTrace();
+				return null;
+			}
+		}		
 	}
 }

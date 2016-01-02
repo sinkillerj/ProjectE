@@ -21,7 +21,7 @@ public interface IConversionProxy
 	 *
 	 * You can use the following things for the {@code output}-Parameter and the keys in the {@code ingredients} Map:
 	 * <ul>
-	 *     <li>{@link ItemStack} - The ItemId and Metadata will be used to identify this ItemStack (May contain a {@code Block} or {@code Item}). You can use {@link net.minecraftforge.oredict.OreDictionary#WILDCARD_VALUE} as metadata.</li>
+	 *     <li>{@link ItemStack} - The ItemId and Metadata, and NBT data will be used to identify this ItemStack (May contain a {@code Block} or {@code Item}). You can use {@link net.minecraftforge.oredict.OreDictionary#WILDCARD_VALUE} as metadata. If you don't want NBT data to be compared, set it to null.</li>
 	 *     <li>{@link Block} - Same as calling it with {@code new ItemStack(block)}. Uses the Id and metadata = 0</li>
 	 *     <li>{@link Item} - Same as calling it with {@code new ItemStack(item)}. Uses the Id and metadata = 0</li>
 	 *     <li>{@link FluidStack} - {@link FluidStack#getFluid()} and {@link Fluid#getName()} will be used to identify this Fluid.</li>
