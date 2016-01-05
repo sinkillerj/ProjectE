@@ -18,6 +18,7 @@ public final class NBTWhitelist
 	public static void init(){
 		IBlacklistProxy blacklistProxy = ProjectEAPI.getBlacklistProxy();
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.kleinStars, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.repairTalisman, 1));
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.philosStone, 1));
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.dmPick, 1));
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.dmAxe, 1));
@@ -41,6 +42,18 @@ public final class NBTWhitelist
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.dCatalyst, 1));
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.hyperLens, 1));
 		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.cataliticLens, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.blackHole, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.angelSmite, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.harvestGod, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.ignition, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.swrg, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.eternalDensity, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.voidRing, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.arcana, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.bodyStone, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.soulStone, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.lifeStone, 1));
+		blacklistProxy.whitelistNBT(new ItemStack(ObjHandler.mindStone, 1));
 	}
 
 	public static boolean register(ItemStack stack)
