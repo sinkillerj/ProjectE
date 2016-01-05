@@ -46,6 +46,9 @@ public class SlotOutput extends Slot
 	@Override
 	public boolean canTakeStack(EntityPlayer player)
 	{
+		if (getHasStack()) {
+			return EMCHelper.getEmcValue(getStack()) <= inv.emc;
+		}
 		return true;
 	}
 }
