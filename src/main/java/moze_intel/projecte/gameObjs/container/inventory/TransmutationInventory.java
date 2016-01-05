@@ -69,11 +69,6 @@ public class TransmutationInventory implements IInventory
 			}
 			else
 			{
-				if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
-				{
-					stack.stackTagCompound = null;
-				}
-
 				Transmutation.addKnowledge(stack, player);
 			}
 			
@@ -101,11 +96,6 @@ public class TransmutationInventory implements IInventory
 		if (Transmutation.hasKnowledgeForStack(stack, player))
 		{
 			unlearnFlag = 300;
-
-			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
-			{
-				stack.stackTagCompound = null;
-			}
 
 			Transmutation.removeKnowledge(stack, player);
 			
@@ -166,11 +156,6 @@ public class TransmutationInventory implements IInventory
 			}
 
 			lockCopy = ItemHelper.getNormalizedStack(inventory[LOCK_INDEX]);
-
-			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
-			{
-				lockCopy.setTagCompound(new NBTTagCompound());
-			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
 			int pagecounter = 0;

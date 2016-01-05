@@ -48,7 +48,32 @@ public final class ItemHelper
 
 	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
-		return (stack1.getItem() == stack2.getItem()) && (stack1.getItemDamage() == stack2.getItemDamage());
+		boolean sameItem = stack1.getItem() == stack2.getItem();
+		boolean sameMetadata;
+		if(sameItem){
+			if(!stack1.getHasSubtypes()){
+				sameMetadata = true;
+			} else {
+				sameMetadata = stack1.getItemDamage() == stack2.getItemDamage();
+			}
+		} else{
+			return false;
+		}
+		if(sameMetadata){
+			if(NBTWhitelist.shouldDupeWithoutNBT(stack1)){
+				return true;
+			} else{
+				if(stack1.stackTagCompound == null && stack2.stackTagCompound == null){
+					return true;
+				} else if(stack1.stackTagCompound != null && stack2.stackTagCompound != null){
+					return stack1.stackTagCompound.equals(stack2.stackTagCompound);
+				} else{
+					return false;
+				}
+			}
+		} else{
+			return false;
+		}
 	}
 
 	public static void compactItemList(List<ItemStack> list)
@@ -108,11 +133,11 @@ public final class ItemHelper
 			if (stack == null) {
 				continue;
 			}
-
-			if (stack.getItem().equals(toSearch.getItem())) {
-				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage()) {
-					return true;
-				}
+			
+			if(basicAreStacksEqual(toSearch, stack)){
+				return true;
+			} else{
+				continue;
 			}
 		}
 		return false;

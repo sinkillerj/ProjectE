@@ -79,6 +79,10 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			this.isAcceptingEmc = false;
 			return;
 		}
+		
+		if(lock.stackTagCompound != null && NBTWhitelist.shouldDupeWithoutNBT(lock)){
+			lock.stackTagCompound = null;
+		}
 
 		if (EMCHelper.doesItemHaveEmc(lock))
 		{
@@ -136,11 +140,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		{
 			ItemStack lockCopy = lock.copy();
 			
-			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
-			{
-				lockCopy.setTagCompound(new NBTTagCompound());
-			}
-			
 			inventory[slot] = lockCopy;
 		}
 		else
@@ -197,12 +196,12 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 			return false;
 		}
 
-		if (NBTWhitelist.shouldDupeWithNBT(lock))
+		if (NBTWhitelist.shouldDupeWithoutNBT(lock))
 		{
-			return ItemHelper.areItemStacksEqual(lock, stack);
+			return ItemHelper.areItemStacksEqualIgnoreNBT(lock, stack);
 		}
 
-		return ItemHelper.areItemStacksEqualIgnoreNBT(lock, stack);
+		return ItemHelper.areItemStacksEqual(lock, stack);
 	}
 	
 	public int getProgressScaled()

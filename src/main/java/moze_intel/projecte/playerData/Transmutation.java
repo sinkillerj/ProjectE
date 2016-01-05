@@ -8,6 +8,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -63,9 +64,14 @@ public final class Transmutation
 	public static void addKnowledge(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		if (!hasKnowledgeForStack(stack, player))
+		ItemStack copy = stack.copy();
+		if(copy.stackTagCompound != null && NBTWhitelist.shouldDupeWithoutNBT(copy)){
+			copy.stackTagCompound = null;
+		}
+		
+		if (!hasKnowledgeForStack(copy, player))
 		{
-			data.getKnowledge().add(stack);
+			data.getKnowledge().add(copy);
 			if (!player.worldObj.isRemote)
 			{
 				MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
@@ -76,13 +82,18 @@ public final class Transmutation
 	public static void removeKnowledge(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
-		if (hasKnowledgeForStack(stack, player))
+		ItemStack copy = stack.copy();
+		if(copy.stackTagCompound != null && NBTWhitelist.shouldDupeWithoutNBT(copy)){
+			copy.stackTagCompound = null;
+		}
+		
+		if (hasKnowledgeForStack(copy, player))
 		{
 			Iterator<ItemStack> iter = data.getKnowledge().iterator();
 
 			while (iter.hasNext())
 			{
-				if (ItemStack.areItemStacksEqual(stack, iter.next()))
+				if (ItemStack.areItemStacksEqual(copy, iter.next()))
 				{
 					iter.remove();
 					if (!player.worldObj.isRemote)
@@ -110,9 +121,13 @@ public final class Transmutation
 	public static boolean hasKnowledgeForStack(ItemStack stack, EntityPlayer player)
 	{
 		TransmutationProps data = TransmutationProps.getDataFor(player);
+		ItemStack copy = stack.copy();
+		if(copy.stackTagCompound != null && NBTWhitelist.shouldDupeWithoutNBT(copy)){
+			copy.stackTagCompound = null;
+		}
 		for (ItemStack s : data.getKnowledge())
-		{
-			if (ItemHelper.basicAreStacksEqual(s, stack))
+		{				
+			if (ItemHelper.basicAreStacksEqual(s, copy))
 			{
 				return true;
 			}

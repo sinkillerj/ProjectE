@@ -126,6 +126,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -237,6 +238,26 @@ public class ObjHandler
 	public static Item windProjectile = new LightningProjectile();
 	public static Item transmutationTablet = new TransmutationTablet();
 	public static Item manual = new PEManual();
+	
+	public static final NBTTagCompound baseKleinStarEMC = new NBTTagCompound();
+	
+	public static final ItemStack kleinStarEin = new ItemStack(kleinStars, 1, 0);
+	public static final ItemStack kleinStarZwei = new ItemStack(kleinStars, 1, 1);
+	public static final ItemStack kleinStarDrei = new ItemStack(kleinStars, 1, 2);
+	public static final ItemStack kleinStarVier = new ItemStack(kleinStars, 1, 3);
+	public static final ItemStack kleinStarSphere = new ItemStack(kleinStars, 1, 4);
+	public static final ItemStack kleinStarOmega = new ItemStack(kleinStars, 1, 5);
+	
+	static{
+		baseKleinStarEMC.setDouble("StoredEMC", 0.0d);
+		
+		kleinStarEin.stackTagCompound = baseKleinStarEMC;
+		kleinStarZwei.stackTagCompound = baseKleinStarEMC;
+		kleinStarDrei.stackTagCompound = baseKleinStarEMC;
+		kleinStarVier.stackTagCompound = baseKleinStarEMC;
+		kleinStarSphere.stackTagCompound = baseKleinStarEMC;
+		kleinStarOmega.stackTagCompound = baseKleinStarEMC;
+	}
 
 	public static void register()
 	{
@@ -401,7 +422,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(repairTalisman), "LMH", "SPS", "HML", 'P', Items.paper, 'S', Items.string, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2));
 
 		//Klein Star Ein
-		GameRegistry.addRecipe(new ItemStack(kleinStars, 1, 0), "MMM", "MDM", "MMM", 'M', new ItemStack(fuels, 1, 1), 'D', Items.diamond);
+		GameRegistry.addRecipe(kleinStarEin, "MMM", "MDM", "MMM", 'M', new ItemStack(fuels, 1, 1), 'D', Items.diamond);
 
 		//Matter
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 0), "AAA", "ADA", "AAA", 'D', Blocks.diamond_block, 'A', new ItemStack(fuels, 1, 2));
@@ -557,7 +578,7 @@ public class ObjHandler
 		//Tome
 		if (ProjectEConfig.craftableTome)
 		{
-			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
+			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', kleinStarOmega);
 		}
 
 		//Manual
@@ -593,13 +614,12 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 2), Items.diamond, Items.coal);
 
 		//Klein Stars
-		for (int i = 1; i < 6; i++)
-		{
-			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
-			ItemStack output = new ItemStack(kleinStars, 1, i);
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
-		}
-
+		GameRegistry.addRecipe(new RecipeShapelessHidden(kleinStarOmega, kleinStarSphere, kleinStarSphere, kleinStarSphere, kleinStarSphere));
+		GameRegistry.addRecipe(new RecipeShapelessHidden(kleinStarSphere, kleinStarVier, kleinStarVier, kleinStarVier, kleinStarVier));
+		GameRegistry.addRecipe(new RecipeShapelessHidden(kleinStarVier, kleinStarDrei, kleinStarDrei, kleinStarDrei, kleinStarDrei));
+		GameRegistry.addRecipe(new RecipeShapelessHidden(kleinStarDrei, kleinStarZwei, kleinStarZwei, kleinStarZwei, kleinStarZwei));
+		GameRegistry.addRecipe(new RecipeShapelessHidden(kleinStarZwei, kleinStarEin, kleinStarEin, kleinStarEin, kleinStarEin));
+		
 		//Other items
 		GameRegistry.addShapelessRecipe(new ItemStack(novaCatalyst, 2), Blocks.tnt, new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(novaCataclysm, 2), novaCatalyst, new ItemStack(fuels, 1, 2));
@@ -607,10 +627,10 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(zero, 1, OreDictionary.WILDCARD_VALUE), Items.water_bucket);
 		GameRegistry.addShapelessRecipe(new ItemStack(Items.lava_bucket), volcanite, Items.bucket, Items.redstone);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(gemHelmet), rmHelmet, new ItemStack(kleinStars, 1, 5), everTide, soulStone);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemChest), rmChest, new ItemStack(kleinStars, 1, 5), volcanite, bodyStone);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemLegs), rmLegs, new ItemStack(kleinStars, 1, 5), blackHole, timeWatch);
-		GameRegistry.addShapelessRecipe(new ItemStack(gemFeet), rmFeet, new ItemStack(kleinStars, 1, 5), swrg, swrg);
+		GameRegistry.addShapelessRecipe(new ItemStack(gemHelmet), rmHelmet, kleinStarOmega, everTide, soulStone);
+		GameRegistry.addShapelessRecipe(new ItemStack(gemChest), rmChest, kleinStarOmega, volcanite, bodyStone);
+		GameRegistry.addShapelessRecipe(new ItemStack(gemLegs), rmLegs, kleinStarOmega, blackHole, timeWatch);
+		GameRegistry.addShapelessRecipe(new ItemStack(gemFeet), rmFeet, kleinStarOmega, swrg, swrg);
 
 		GameRegistry.addShapelessRecipe(new ItemStack(matter, 4, 0), matterBlock);
 		GameRegistry.addShapelessRecipe(new ItemStack(matter, 4, 1), new ItemStack(matterBlock, 1, 1));

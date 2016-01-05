@@ -17,7 +17,7 @@ public class SimpleStack
 		this.id = id;
 		this.qnty = qnty;
 		this.damage = damage;
-		this.nbt = nbt;
+		this.nbt = (nbt == null ? null : (NBTTagCompound) nbt.copy());
 	}
 	
 	public SimpleStack(ItemStack stack)
@@ -25,13 +25,14 @@ public class SimpleStack
 		if (stack == null)
 		{
 			id = -1;
+			nbt = null;
 		}
 		else
 		{
 			id = Item.itemRegistry.getIDForObject(stack.getItem());
 			damage = stack.getItemDamage();
 			qnty = stack.stackSize;
-			nbt = stack.stackTagCompound;
+			nbt = (stack.stackTagCompound == null ? null : (NBTTagCompound) stack.stackTagCompound.copy());
 		}
 	}
 
@@ -101,9 +102,9 @@ public class SimpleStack
 		
 		if (obj != null)
 		{
-			return Item.itemRegistry.getNameForObject(obj) + " " + qnty + " " + damage;
+			return Item.itemRegistry.getNameForObject(obj) + " " + qnty + " " + damage + " " + nbt.toString();
 		}
 		
-		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
+		return "id:" + id + " damage:" + damage + " qnty:" + qnty + " nbt:" + nbt.toString();
 	}
 }

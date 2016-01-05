@@ -130,7 +130,7 @@ public abstract class NormalizedSimpleStack {
 				throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
 			}
 			this.damage = damage;
-			this.nbt = nbt;
+			this.nbt = (nbt == null ? null : (NBTTagCompound) nbt.copy());
 		}
 		
 		private NSSItem(String itemName, int damage){

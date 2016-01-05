@@ -21,11 +21,11 @@ import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -140,7 +140,11 @@ public final class EMCMapper
 				if (obj != null)
 				{
 					int id = Item.itemRegistry.getIDForObject(obj);
-					emc.put(new SimpleStack(id, 1, normStackItem.damage, normStackItem.nbt), entry.getValue());
+					SimpleStack toAdd = new SimpleStack(id, 1, normStackItem.damage, normStackItem.nbt);
+					if(toAdd.nbt != null && NBTWhitelist.shouldDupeWithoutNBT(toAdd)){
+						toAdd.nbt = null;
+					}
+					emc.put(toAdd, entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 				}
@@ -174,6 +178,10 @@ public final class EMCMapper
 	{
 		SimpleStack copy = key.copy();
 		copy.qnty = 1;
+		
+		if(copy.nbt != null && NBTWhitelist.shouldDupeWithoutNBT(copy)){
+			copy.nbt = null;
+		}
 
 		return emc.containsKey(copy);
 	}
@@ -182,6 +190,10 @@ public final class EMCMapper
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;
+		
+		if(copy.nbt != null && NBTWhitelist.shouldDupeWithoutNBT(copy)){
+			copy.nbt = null;
+		}
 		
 		return emc.get(copy);
 	}
