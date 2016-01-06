@@ -23,7 +23,14 @@ public abstract class NormalizedSimpleStack {
 	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
 	public static NormalizedSimpleStack getFor(String itemName, int damage) {
-		NSSItem normStack = new NSSItem(itemName, damage);
+		NSSItem normStack;
+		try
+		{
+			normStack = new NSSItem(itemName, damage);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not create NSSItem: " + e.getMessage());
+			return null;
+		}
 		Set<Integer> usedMetadata;
 		if (!idWithUsedMetaData.containsKey(normStack.itemName)) {
 			usedMetadata = Sets.newHashSet();
