@@ -55,14 +55,16 @@ public abstract class NormalizedSimpleStack {
 	}
 
 	public static NormalizedSimpleStack getFor(Item item, int meta) {
+		GameRegistry.UniqueIdentifier identifier;
 		try
 		{
-			return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
+			identifier = GameRegistry.findUniqueIdentifierFor(item);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
 			e.printStackTrace();
 			return null;
 		}
+		return getFor(identifier, meta);
 	}
 
 	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
