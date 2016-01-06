@@ -190,7 +190,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 				if (o == null) continue;
 				if (o instanceof ItemStack) {
 					ItemStack recipeItem = (ItemStack) o;
-					inputs.add(recipeItem);
+					inputs.add(recipeItem.copy());
 				} else {
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
@@ -238,7 +238,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					if (recipeItemCollection.size() == 1) {
 						Object element = recipeItemCollection.iterator().next();
 						if (element instanceof ItemStack) {
-							fixedInputs.add((ItemStack)element);
+							fixedInputs.add(((ItemStack) element).copy());
 						} else {
 							PELogger.logWarn("Can not map recipe " + recipe + " because found " + element.toString() + " instead of ItemStack");
 							return null;
@@ -247,7 +247,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					}
 					for (Object option : recipeItemCollection) {
 						if (option instanceof ItemStack) {
-							recipeItemOptions.add((ItemStack) option);
+							recipeItemOptions.add(((ItemStack) option).copy());
 						} else {
 							PELogger.logWarn("Can not map recipe " + recipe + " because found " + option.toString() + " instead of ItemStack");
 							return null;
