@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,14 @@ public abstract class NormalizedSimpleStack {
 	}
 
 	public static NormalizedSimpleStack getFor(Item item, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
+		try
+		{
+			return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
