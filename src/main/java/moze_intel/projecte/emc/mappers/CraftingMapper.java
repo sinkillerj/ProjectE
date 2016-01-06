@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -53,14 +54,30 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
-								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
-									if (stack.getItem().hasContainerItem(stack)) {
-										ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
-									}
+								if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+									//Don't check for doesContainerItemLeaveCraftingGrid for WILDCARD-ItemStacks
 									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
-								} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
-									//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+								} else {
+									//stack does not have a wildcard damage value
+									try
+									{
+										if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+										{
+											if (stack.getItem().hasContainerItem(stack))
+											{
+												ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
+											}
+											ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+										}
+										else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)"))
+										{
+											//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
+											ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+										}
+									} catch (Exception e) {
+										PELogger.logFatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: %s, Ingredient: %s", recipe.getClass().getName(), stack.toString());
+										e.printStackTrace();
+									}
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
