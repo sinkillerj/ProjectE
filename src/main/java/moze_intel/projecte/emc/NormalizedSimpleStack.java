@@ -46,15 +46,28 @@ public abstract class NormalizedSimpleStack {
 		return getFor(block, 0);
 	}
 
+	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Block block) {
+		GameRegistry.UniqueIdentifier identifier;
+		try
+		{
+			identifier = GameRegistry.findUniqueIdentifierFor(block);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", block != null ? block.getClass().getName() : "null");
+			e.printStackTrace();
+			return null;
+		}
+		return identifier;
+	}
+
 	public static NormalizedSimpleStack getFor(Block block, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(block), meta);
+		return getFor(getUniqueIdentifierOrNull(block), meta);
 	}
 
 	public static NormalizedSimpleStack getFor(Item item) {
 		return getFor(item, 0);
 	}
 
-	public static NormalizedSimpleStack getFor(Item item, int meta) {
+	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Item item) {
 		GameRegistry.UniqueIdentifier identifier;
 		try
 		{
@@ -64,7 +77,12 @@ public abstract class NormalizedSimpleStack {
 			e.printStackTrace();
 			return null;
 		}
-		return getFor(identifier, meta);
+		return identifier;
+	}
+
+	public static NormalizedSimpleStack getFor(Item item, int meta) {
+
+		return getFor(getUniqueIdentifierOrNull(item), meta);
 	}
 
 	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
