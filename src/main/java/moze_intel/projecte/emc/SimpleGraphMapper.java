@@ -168,6 +168,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	{
 		try {
 			return valueForConversionUnsafe(values, conversion);
+		} catch (ArithmeticException e) {
+			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
+			return ZERO;
 		} catch (Exception e) {
 			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
 			e.printStackTrace();
