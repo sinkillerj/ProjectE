@@ -38,7 +38,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
-		for (IRecipe recipe : (Iterable<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+		recipeloop: for (IRecipe recipe : (Iterable<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
@@ -77,6 +77,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 									} catch (Exception e) {
 										PELogger.logFatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: %s, Ingredient: %s", recipe.getClass().getName(), stack.toString());
 										e.printStackTrace();
+										continue recipeloop;
 									}
 								}
 							}
