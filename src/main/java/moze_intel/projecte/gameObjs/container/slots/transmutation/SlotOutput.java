@@ -17,11 +17,18 @@ public class SlotOutput extends Slot
 	}
 	
 	@Override
-	public ItemStack decrStackSize(int slot)
+	public ItemStack decrStackSize(int amount)
 	{
 		ItemStack stack = getStack().copy();
-		stack.stackSize = slot;
-		inv.removeEmc(EMCHelper.getEmcValue(stack));
+		stack.stackSize = amount;
+		int emcValue = amount * EMCHelper.getEmcValue(stack);
+		if (emcValue > inv.emc) {
+			//Requesting more emc than available
+			//Can not return `null` here or NPE in Container! Container expects stacksize=0-Itemstack for 'nothing'
+			stack.stackSize = 0;
+			return stack;
+		}
+		inv.removeEmc(emcValue);
 		inv.checkForUpdates();
 		
 		return stack;
@@ -39,6 +46,9 @@ public class SlotOutput extends Slot
 	@Override
 	public boolean canTakeStack(EntityPlayer player)
 	{
+		if (getHasStack()) {
+			return EMCHelper.getEmcValue(getStack()) <= inv.emc;
+		}
 		return true;
 	}
 }
