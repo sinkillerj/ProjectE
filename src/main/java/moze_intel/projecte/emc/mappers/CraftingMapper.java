@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -37,7 +38,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
-		for (IRecipe recipe : (Iterable<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+		recipeloop: for (IRecipe recipe : (Iterable<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
@@ -53,14 +54,31 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 							for (ItemStack stack : variation.fixedIngredients) {
 								if (stack == null || stack.getItem() == null) continue;
-								if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
-									if (stack.getItem().hasContainerItem(stack)) {
-										ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
-									}
+								if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+									//Don't check for doesContainerItemLeaveCraftingGrid for WILDCARD-ItemStacks
 									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
-								} else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)")) {
-									//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
-									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+								} else {
+									//stack does not have a wildcard damage value
+									try
+									{
+										if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+										{
+											if (stack.getItem().hasContainerItem(stack))
+											{
+												ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
+											}
+											ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+										}
+										else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)"))
+										{
+											//Container Item does not leave the crafting grid: we add an EMC dependency anyway.
+											ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
+										}
+									} catch (Exception e) {
+										PELogger.logFatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: %s, Ingredient: %s", recipe.getClass().getName(), stack.toString());
+										e.printStackTrace();
+										continue recipeloop;
+									}
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
@@ -173,7 +191,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 				if (o == null) continue;
 				if (o instanceof ItemStack) {
 					ItemStack recipeItem = (ItemStack) o;
-					inputs.add(recipeItem);
+					inputs.add(recipeItem.copy());
 				} else {
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
@@ -221,7 +239,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					if (recipeItemCollection.size() == 1) {
 						Object element = recipeItemCollection.iterator().next();
 						if (element instanceof ItemStack) {
-							fixedInputs.add((ItemStack)element);
+							fixedInputs.add(((ItemStack) element).copy());
 						} else {
 							PELogger.logWarn("Can not map recipe " + recipe + " because found " + element.toString() + " instead of ItemStack");
 							return null;
@@ -230,7 +248,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					}
 					for (Object option : recipeItemCollection) {
 						if (option instanceof ItemStack) {
-							recipeItemOptions.add((ItemStack) option);
+							recipeItemOptions.add(((ItemStack) option).copy());
 						} else {
 							PELogger.logWarn("Can not map recipe " + recipe + " because found " + option.toString() + " instead of ItemStack");
 							return null;
