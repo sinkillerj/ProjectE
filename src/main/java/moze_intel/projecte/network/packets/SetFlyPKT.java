@@ -34,17 +34,14 @@ public class SetFlyPKT implements IMessage
 		@Override
 		public IMessage onMessage(final SetFlyPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().thePlayer.capabilities.allowFlying = message.flag;
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+                Minecraft.getMinecraft().thePlayer.capabilities.allowFlying = message.flag;
 
-					if (!message.flag)
-					{
-						Minecraft.getMinecraft().thePlayer.capabilities.isFlying = false;
-					}
-				}
-			});
+                if (!message.flag)
+                {
+                    Minecraft.getMinecraft().thePlayer.capabilities.isFlying = false;
+                }
+            });
 
 			return null;
 		}

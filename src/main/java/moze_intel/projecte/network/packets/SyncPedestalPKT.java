@@ -47,19 +47,16 @@ public class SyncPedestalPKT implements IMessage
 		@Override
 		public IMessage onMessage(final SyncPedestalPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+                TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
 
-					if (te instanceof DMPedestalTile)
-					{
-						DMPedestalTile pedestal = ((DMPedestalTile) te);
-						pedestal.setActive(message.isActive);
-						pedestal.setInventorySlotContents(0, message.itemStack);
-					}
-				}
-			});
+                if (te instanceof DMPedestalTile)
+                {
+                    DMPedestalTile pedestal = ((DMPedestalTile) te);
+                    pedestal.setActive(message.isActive);
+                    pedestal.setInventorySlotContents(0, message.itemStack);
+                }
+            });
 
 			return null;
 		}

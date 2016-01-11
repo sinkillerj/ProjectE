@@ -313,24 +313,20 @@ public class ClientProxy implements IProxy
 		// Arcana needs its own mess because it uses NBT to store Active state instead of meta
 		ModelLoader.addVariantName(ObjHandler.arcana, "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
 				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on");
-		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack)
-			{
-				String modelName;
-				boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
+		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, stack -> {
+            String modelName;
+            boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
 
-				switch (stack.getItemDamage())
-				{
-					case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
-					case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
-					case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
-					case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
-					default: modelName = "";
-				}
-				return new ModelResourceLocation("projecte:" + modelName, "inventory");
-			}
-		});
+            switch (stack.getItemDamage())
+            {
+                case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
+                case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
+                case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
+                case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
+                default: modelName = "";
+            }
+            return new ModelResourceLocation("projecte:" + modelName, "inventory");
+        });
 	}
 
 	@Override

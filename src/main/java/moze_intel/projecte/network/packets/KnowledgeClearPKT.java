@@ -22,12 +22,7 @@ public class KnowledgeClearPKT implements IMessage
 		@Override
 		public IMessage onMessage(KnowledgeClearPKT pkt, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					PECore.proxy.clearClientKnowledge();
-				}
-			});
+			Minecraft.getMinecraft().addScheduledTask(() -> PECore.proxy.clearClientKnowledge());
 
 			return null;
 		}

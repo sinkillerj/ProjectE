@@ -36,14 +36,7 @@ public class ManualPageHandler
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager)
         {
-            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener()
-            {
-                @Override
-                public void onResourceManagerReload(IResourceManager p_110549_1_)
-                {
-                    ManualPageHandler.reset();
-                }
-            });
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(p_110549_1_ -> ManualPageHandler.reset());
         }
 
         reset();

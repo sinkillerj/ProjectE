@@ -34,12 +34,7 @@ public class StepHeightPKT implements IMessage
 		@Override
 		public IMessage onMessage(final StepHeightPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().thePlayer.stepHeight = message.value;
-				}
-			});
+			Minecraft.getMinecraft().addScheduledTask((Runnable) () -> Minecraft.getMinecraft().thePlayer.stepHeight = message.value);
 			return null;
 		}
 	}
