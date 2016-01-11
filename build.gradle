@@ -25,9 +25,6 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"
@@ -70,6 +67,11 @@ dependencies {
     // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
     // compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
     // compile name: 'MineTweaker3', version: 'Dev-1.7.10-3.0.9C', ext: 'jar'
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 processResources
