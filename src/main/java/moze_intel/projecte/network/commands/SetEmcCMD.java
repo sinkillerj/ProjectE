@@ -49,7 +49,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem == null)
 			{
-				sendError(sender, new ChatComponentTranslation("pe.command.set.notholding"));
+				sendError(sender, new ChatComponentTranslation("pe.command.set.usage"));
 				return;
 			}
 

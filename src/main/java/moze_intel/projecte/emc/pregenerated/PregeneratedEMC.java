@@ -28,10 +28,12 @@ public class PregeneratedEMC
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> read(File file) throws FileNotFoundException
+	public static Map<NormalizedSimpleStack, Integer> read(File file) throws IOException
 	{
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
-		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(new FileReader(file), type);
+		FileReader reader = new FileReader(file);
+		Map<NormalizedSimpleStack, Integer> map = gson.fromJson(reader, type);
+		reader.close();
 		map.remove(null);
 		return map;
 	}

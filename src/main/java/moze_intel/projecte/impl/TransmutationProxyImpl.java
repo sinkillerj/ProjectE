@@ -95,24 +95,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public boolean hasFullKnowledge(UUID playerUUID)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
-            return Transmutation.hasFullKnowledge(PECore.proxy.getClientPlayer());
-        } else
-        {
-            Preconditions.checkNotNull(playerUUID);
-            Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
-            EntityPlayer player = findOnlinePlayer(playerUUID);
-            if (player != null)
-            {
-                return Transmutation.hasFullKnowledge(player);
-            }
-            else
-            {
-                return TransmutationOffline.hasFullKnowledge(playerUUID);
-            }
-        }
+        return false;
     }
 
     @Override

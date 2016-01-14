@@ -77,13 +77,9 @@ public class RecipesCovalenceRepair implements IRecipe
 		}
 
 		int dustDamage = getDustType(tool);
-		
-		for (int i = 0; i < dust.length; i++)
-		{
-			ItemStack stack = dust[i];
 
-			if (stack != null && stack.getItemDamage() < dustDamage)
-			{
+		for (ItemStack stack : dust) {
+			if (stack != null && stack.getItemDamage() < dustDamage) {
 				return false;
 			}
 		}

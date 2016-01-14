@@ -65,15 +65,6 @@ public class TransmutationOffline
         return false;
     }
 
-    public static boolean hasFullKnowledge(UUID playerUUID)
-    {
-        if (!cachedFullKnowledge.containsKey(playerUUID))
-        {
-            cacheOfflineData(playerUUID);
-        }
-        return cachedFullKnowledge.get(playerUUID) == null ? false : cachedFullKnowledge.get(playerUUID);
-    }
-
     public static double getEmc(UUID playerUUID)
     {
         if (!cachedEmc.containsKey(playerUUID))

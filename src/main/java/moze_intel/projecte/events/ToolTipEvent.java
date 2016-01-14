@@ -18,6 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
@@ -93,6 +96,9 @@ public class ToolTipEvent
 			for (int id : OreDictionary.getOreIDs(current))
 			{
 				event.toolTip.add("OD: " + OreDictionary.getOreName(id));
+			}
+			if (currentBlock instanceof BlockFluidBase) {
+				event.toolTip.add("Fluid: " + ((BlockFluidBase) currentBlock).getFluid().getName());
 			}
 		}
 

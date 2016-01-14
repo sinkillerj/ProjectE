@@ -68,6 +68,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -213,17 +214,16 @@ public final class WorldHelper
 
 	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
-		Map<EnumFacing, TileEntity> ret2 = Maps.asMap(ImmutableSet.copyOf(EnumFacing.VALUES), new Function<EnumFacing, TileEntity>()
-		{
-			@Nullable
-			@Override
-			public TileEntity apply(EnumFacing input)
-			{
-				return world.getTileEntity(tile.getPos().offset(input));
-			}
-		});
+		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
 
-		return Maps.filterValues(ret2, Predicates.notNull());
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
+			if (candidate != null) {
+				ret.put(dir, candidate);
+			}
+		}
+
+		return ret;
 	}
 
 	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
@@ -529,16 +529,17 @@ public final class WorldHelper
 		for (BlockPos currentPos : getPositionsFromBox(b))
 		{
 			IBlockState currentState = world.getBlockState(currentPos);
+			Block block = currentState.getBlock();
 
-			if (currentState == target || (target.getBlock() == Blocks.lit_redstone_ore && currentState.getBlock() == Blocks.redstone_ore))
+			if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
 			{
+				numMined++;
 				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 				{
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
 					world.setBlockToAir(pos);
+					harvestVein(world, player, stack, pos, target, currentDrops, numMined);
 				}
-				numMined++;
-				harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 			}
 		}
 	}

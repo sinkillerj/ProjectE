@@ -39,7 +39,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		this.setUnlocalizedName("repair_talisman");
 		this.setMaxStackSize(1);
 	}
-	
+
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
@@ -67,7 +67,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	{
 		IInventory inv = player.inventory;
 
-		for (int i = 0; i < 40; i++)
+		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 
@@ -99,17 +99,15 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Optional.Method(modid = "chisel")
 	public boolean chiselCheck(ItemStack is)
 	{
-
 		return is.getItem() instanceof IChiselItem;
 	}
 
 	@Optional.Method(modid = "Baubles")
 	public void baubleRepair(EntityPlayer player)
 	{
-
 		IInventory bInv = BaublesApi.getBaubles(player);
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < bInv.getSizeInventory(); i++)
 		{
 			ItemStack bInvStack = bInv.getStackInSlot(i);
 			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
@@ -203,6 +201,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return;
 		}
 
+		if (!stack.hasTagCompound())
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+
 		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
 
 		byte coolDown = stack.getTagCompound().getByte("Cooldown");
@@ -250,6 +253,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (player.worldObj.isRemote)
 		{
 			return false;
+		}
+
+		if (!stack.hasTagCompound())
+		{
+			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		byte coolDown = stack.getTagCompound().getByte("Cooldown");

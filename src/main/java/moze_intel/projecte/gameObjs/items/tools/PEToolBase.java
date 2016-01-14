@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
@@ -111,7 +112,7 @@ public abstract class PEToolBase extends ItemMode
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost)
 	{
 		byte charge = getCharge(stack);
-		if (charge == 0 || world.isRemote)
+		if (charge == 0 || world.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -261,26 +262,28 @@ public abstract class PEToolBase extends ItemMode
 		BlockPos hitPos = mop.getBlockPos();
 		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
-		switch (mode)
-		{
-			case 1: // 3x Tallshot
-				box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
-			case 2: // 3x Wideshot
-				switch (direction.getAxis())
-				{
-					case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
-					case Y:
-						switch (player.getHorizontalFacing().getAxis())
-						{
-							case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
-							case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
-						}
-						break;
-					case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
-				}
-				break;
-			case 3: // 3x Longshot
-				box = new AxisAlignedBB(hitPos, hitPos.offset(direction.getOpposite(), 2)); break;
+		if (!ProjectEConfig.disableAllRadiusMining) {
+			switch (mode) {
+				case 1: // 3x Tallshot
+					box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
+				case 2: // 3x Wideshot
+					switch (direction.getAxis())
+					{
+						case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
+						case Y:
+							switch (player.getHorizontalFacing().getAxis())
+							{
+								case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
+								case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
+							}
+							break;
+						case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
+					}
+					break;
+				case 3: // 3x Longshot
+					box = new AxisAlignedBB(hitPos, hitPos.offset(direction.getOpposite(), 2)); break;
+			}
+
 		}
 
 		List<ItemStack> drops = Lists.newArrayList();
@@ -308,7 +311,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost)
 	{
-		if (world.isRemote || this.getCharge(stack) == 0)
+		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -511,7 +514,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
 	{
-		if (player.worldObj.isRemote)
+		if (player.worldObj.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -546,7 +549,7 @@ public abstract class PEToolBase extends ItemMode
 	 * Mines all ore veins in a Box around the player.
 	 */
 	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player) {
-		if (player.worldObj.isRemote)
+		if (player.worldObj.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}

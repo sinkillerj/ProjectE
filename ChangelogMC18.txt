@@ -1,3 +1,17 @@
+###Version 1.8-PE1.1.2
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* FIXED: setEMC command on held items
+* FIXED: Fake items being pulled from the pedestal
+
+###Version 1.8-PE1.1.1
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* FIXED: Thaumcraft API updated to resolve a crash
+
+###Version 1.8-PE1.1.0
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* NEW: Feature and bugfix complete with 1.7.10-PE1.9.3h. See main changelog for details
+* FIXED: PE chest inventory icons implemented
+
 ###Version 1.8-PE1.0.1B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
 * NEW: Feature and bugfix complete with 1.7.10-PE1.7.3. See main changelog for details

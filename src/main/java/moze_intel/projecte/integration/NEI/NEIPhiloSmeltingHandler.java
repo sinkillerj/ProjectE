@@ -40,7 +40,7 @@ public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 	{
 		public CachedPhiloSmelting()
 		{
-			ingredients = new ArrayList<PositionedStack>();
+			ingredients = new ArrayList<>();
 		}
 
 		public CachedPhiloSmelting(ItemStack output)

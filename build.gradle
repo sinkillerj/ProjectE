@@ -21,6 +21,9 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectE"
@@ -50,7 +53,7 @@ repositories {
     }
     maven {
         name 'Chisel'
-        url "http://coloredlightscore.us.to/maven/chisel-2-dev/"
+        url "http://maven.tterrag.com/"
     }
     ivy {
         name "MineTweaker3"
@@ -61,7 +64,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    compile "com.cricketcraft.chisel:Chisel2:2.3.10.100:api"
+    compile "com.cricketcraft.chisel:Chisel2:2.5.0.2:api"
 
     // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
     // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"

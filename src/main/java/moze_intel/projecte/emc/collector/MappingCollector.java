@@ -1,9 +1,9 @@
-package moze_intel.projecte.emc;
+package moze_intel.projecte.emc.collector;
 
 
 import com.google.common.collect.Maps;
 
-import moze_intel.projecte.emc.collector.AbstractMappingCollector;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;
@@ -11,11 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMappingCollector<T,V> implements IValueGenerator<T, V> {
+public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A>  {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
-	protected IValueArithmetic<V> arithmetic;
-	public GraphMapper(IValueArithmetic<V> arithmetic) {
+	protected A arithmetic;
+	public MappingCollector(A arithmetic) {
+		super(arithmetic);
 		this.arithmetic = arithmetic;
 	}
 
@@ -35,12 +36,12 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
 	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
-	protected static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
+	public static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
 		List<V> list;
 		if (map.containsKey(key)) {
 			list = map.get(key);
 		} else {
-			list = new LinkedList<V>();
+			list = new LinkedList<>();
 			map.put(key, list);
 		}
 		return list;
@@ -73,7 +74,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		}
 	}
 
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
+	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
@@ -84,6 +85,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
 		conversion.value = arithmetic.getZero();
+		conversion.arithmeticForConversion = arithmeticForConversion;
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
@@ -119,6 +121,7 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
+		conversion.arithmeticForConversion = this.arithmetic;
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
 			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
@@ -134,11 +137,12 @@ public abstract class GraphMapper<T, V extends Comparable<V>> extends AbstractMa
 	abstract public Map<T, V> generateValues();
 
 	protected class Conversion {
-		T output;
+		public T output;
 
-		int outnumber = 1;
-		V value = arithmetic.getZero();
-		Map<T, Integer> ingredientsWithAmount;
+		public int outnumber = 1;
+		public V value = arithmetic.getZero();
+		public Map<T, Integer> ingredientsWithAmount;
+		public A arithmeticForConversion;
 
 		protected Conversion(T output) {
 			this.output = output;

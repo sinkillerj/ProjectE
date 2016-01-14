@@ -107,21 +107,13 @@ public final class ItemHelper
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
-		Iterator<ItemStack> iter = list.iterator();
-
-		while (iter.hasNext())
-		{
-			ItemStack stack = iter.next();
-
-			if (stack == null)
-			{
+		for (ItemStack stack : list) {
+			if (stack == null) {
 				continue;
 			}
 
-			if (stack.getItem().equals(toSearch.getItem()))
-			{
-				if( !stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
-				{
+			if (stack.getItem().equals(toSearch.getItem())) {
+				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage()) {
 					return true;
 				}
 			}

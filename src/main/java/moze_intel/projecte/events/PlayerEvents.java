@@ -24,6 +24,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -67,7 +68,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onConstruct(EntityEvent.EntityConstructing evt)
 	{
-		if (evt.entity instanceof EntityPlayer)
+		if (evt.entity instanceof EntityPlayer && !(evt.entity instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.entity.getUniqueID());
 			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
