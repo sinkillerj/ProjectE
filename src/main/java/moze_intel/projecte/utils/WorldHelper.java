@@ -437,18 +437,18 @@ public final class WorldHelper
 			else if (crop instanceof IGrowable)
 			{
 				IGrowable growable = ((IGrowable) crop);
-				if (harvest && !growable.canGrow(world, pos, state, false))
+				if (harvest && !growable.canGrow(world, currentPos, state, false))
 				{
-					if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+					if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 					{
-						world.destroyBlock(pos, true);
+						world.destroyBlock(currentPos, true);
 					}
 				}
 				else if (world.rand.nextInt(chance) == 0)
 				{
 					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 					{
-						growable.grow(world, world.rand, pos, state);
+						growable.grow(world, world.rand, currentPos, state);
 					}
 				}
 			}
@@ -460,7 +460,7 @@ public final class WorldHelper
 				{
 					for (int i = 0; i < (harvest ? 8 : 4); i++)
 					{
-						crop.updateTick(world, pos, state, world.rand);
+						crop.updateTick(world, currentPos, state, world.rand);
 					}
 				}
 
@@ -470,7 +470,7 @@ public final class WorldHelper
 					{
 						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 						{
-							world.destroyBlock(pos, true);
+							world.destroyBlock(currentPos, true);
 						}
 					}
 					if (crop == Blocks.reeds || crop == Blocks.cactus)
@@ -479,7 +479,7 @@ public final class WorldHelper
 
 						for (int i = 1; i < 3; i++)
 						{
-							if (world.getBlockState(pos.up(i)) != crop)
+							if (world.getBlockState(currentPos.up(i)).getBlock() != crop)
 							{
 								shouldHarvest = false;
 								break;
@@ -490,9 +490,12 @@ public final class WorldHelper
 						{
 							for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 							{
-								if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
 								{
-									world.destroyBlock(pos, true);
+									world.destroyBlock(currentPos.up(i), true);
+								} else if (player == null)
+								{
+									world.destroyBlock(currentPos.up(i), true);
 								}
 							}
 						}
@@ -502,9 +505,9 @@ public final class WorldHelper
 						int age = state.getValue(BlockNetherWart.AGE);
 						if (age == 3)
 						{
-							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 							{
-								world.destroyBlock(pos, true);
+								world.destroyBlock(currentPos, true);
 							}
 						}
 					}

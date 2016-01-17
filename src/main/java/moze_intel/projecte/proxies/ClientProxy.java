@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.Transmutation;
@@ -205,7 +206,6 @@ public class ClientProxy implements IProxy
 
 	private void registerCovalenceDust()
 	{
-		ModelLoader.addVariantName(ObjHandler.covalence, "projecte:covalence_low", "projecte:covalence_medium", "projecte:covalence_high");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 0, new ModelResourceLocation("projecte:covalence_low", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 1, new ModelResourceLocation("projecte:covalence_medium", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 2, new ModelResourceLocation("projecte:covalence_high", "inventory"));
@@ -215,7 +215,6 @@ public class ClientProxy implements IProxy
 	{
 		for (EnumDyeColor e : EnumDyeColor.values())
 		{
-			ModelLoader.addVariantName(ObjHandler.alchBag, "projecte:bags/alchbag_" + e.getName());
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.alchBag, e.getMetadata(), new ModelResourceLocation("projecte:bags/alchbag_" + e.getName(), "inventory"));
 		}
 	}
@@ -336,6 +335,7 @@ public class ClientProxy implements IProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new CondenserRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new CondenserMK2Renderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(DMPedestalTile.class, new PedestalRenderer());
 
 		//Entities
 		Minecraft mc = FMLClientHandler.instance().getClient();

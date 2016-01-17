@@ -21,13 +21,22 @@ public final class PlayerChecks
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
 	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
+	private static final TObjectIntHashMap<EntityPlayerMP> gemChestCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
 
-	public static void resetCooldown(EntityPlayerMP player) {
+	public static void resetProjectileCooldown(EntityPlayerMP player) {
 		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);
 	}
 
-	public static int getCooldown(EntityPlayerMP player) {
+	public static int getProjectileCooldown(EntityPlayerMP player) {
 		return projectileCooldowns.containsKey(player) ? projectileCooldowns.get(player) : -1;
+	}
+
+	public static void resetGemCooldown(EntityPlayerMP player) {
+		gemChestCooldowns.put(player, ProjectEConfig.gemChestCooldown);
+	}
+
+	public static int getGemCooldown(EntityPlayerMP player) {
+		return gemChestCooldowns.containsKey(player) ? gemChestCooldowns.get(player) : -1;
 	}
 
 	public static void setGemState(EntityPlayerMP player, boolean state)
@@ -52,6 +61,10 @@ public final class PlayerChecks
 	{
 		if (projectileCooldowns.containsKey(player) && projectileCooldowns.get(player) > 0) {
 			projectileCooldowns.adjustValue(player, -1);
+		}
+
+		if (gemChestCooldowns.containsKey(player) && gemChestCooldowns.get(player) > 0) {
+			gemChestCooldowns.adjustValue(player, -1);
 		}
 
 		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))

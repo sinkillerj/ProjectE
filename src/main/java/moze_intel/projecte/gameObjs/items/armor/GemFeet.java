@@ -85,8 +85,15 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
                 }
                 if (!player.capabilities.isFlying)
                 {
-                    player.motionX *= 1.1;
-                    player.motionZ *= 1.1;
+                    if (player.moveForward < 0)
+                    {
+                        player.motionX *= 0.9;
+                        player.motionZ *= 0.9;
+                    } else if (player.moveForward > 0 && player.motionX * player.motionX + player.motionY * player.motionY + player.motionZ * player.motionZ < 3)
+                    {
+                        player.motionX *= 1.1;
+                        player.motionZ *= 1.1;
+                    }
                 }
             }
         }

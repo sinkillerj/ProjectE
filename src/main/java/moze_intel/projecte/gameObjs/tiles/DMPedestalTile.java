@@ -28,13 +28,6 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
 	public double centeredX, centeredY, centeredZ;
-	private EntityItem ghost;
-
-
-	public DMPedestalTile()
-	{
-		super();
-	}
 
 	@Override
 	public void update()
@@ -60,11 +53,6 @@ public class DMPedestalTile extends TileEmc implements IInventory
 					centeredX + 4.5, centeredY + 4.5, centeredZ + 4.5);
 		}
 
-		if (worldObj.isRemote)
-		{
-			checkGhostItem();
-		}
-
 		if (getActive())
 		{
 			if (getItemStack() != null)
@@ -88,39 +76,6 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			{
 				setActive(false);
 			}
-		}
-	}
-
-	public void checkGhostItem()
-	{
-		if (!worldObj.isRemote)
-		{
-			return;
-		}
-		if (inventory[0] == null && ghost != null)
-		{
-			ghost.setDead();
-			ghost = null;
-		}
-		if (inventory[0] != null && ghost == null)
-		{
-			ghost = new EntityItemUnmoving(worldObj, pos.getX() + 0.5, pos.getY() + 0.751, pos.getZ() + 0.5, inventory[0].copy());
-			ghost.setNoDespawn();
-			ghost.setInfinitePickupDelay();
-			ghost.motionX = 0;
-			ghost.motionY = 0;
-			ghost.motionZ = 0;
-			worldObj.spawnEntityInWorld(ghost);
-		}
-	}
-
-	@Override
-	public void invalidate()
-	{
-		if (ghost != null && worldObj.isRemote)
-		{
-			ghost.setDead();
-			ghost = null;
 		}
 	}
 
@@ -321,7 +276,7 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
 	{
-		return true;
+		return p_94041_2_ != null && p_94041_2_.getItem() instanceof IPedestalItem;
 	}
 
 	@Override
@@ -384,26 +339,5 @@ public class DMPedestalTile extends TileEmc implements IInventory
 			}
 		}
 		this.isActive = newState;
-	}
-
-	public static class EntityItemUnmoving extends EntityItem
-	{
-		private final double x, y, z;
-
-		public EntityItemUnmoving(World worldIn, double x, double y, double z, ItemStack stack)
-		{
-			super(worldIn, x, y, z, stack);
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-
-		@Override
-		public void onUpdate()
-		{
-			super.onUpdate();
-			motionX = 0; motionY = 0; motionZ = 0;
-			posX = x; posY = y; posZ = z;
-		}
 	}
 }

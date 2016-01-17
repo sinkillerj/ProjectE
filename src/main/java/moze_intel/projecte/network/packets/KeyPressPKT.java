@@ -90,26 +90,30 @@ public class KeyPressPKT implements IMessage
                         }
                         break;
                     case EXTRA_FUNCTION:
-                        if (stack != null && stack.getItem() instanceof IExtraFunction)
-                        {
-                            ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
-                        } else if (stack == null || ProjectEConfig.unsafeKeyBinds)
-                        {
-                            if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
-                            {
-                                ((GemChest) ObjHandler.gemChest).doExplode(player);
-                            }
-                        }
+						if (stack != null && stack.getItem() instanceof IExtraFunction)
+						{
+							((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
+						} else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+						{
+							if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
+							{
+								if (PlayerChecks.getGemCooldown(player) <= 0)
+								{
+									((GemChest) ObjHandler.gemChest).doExplode(player);
+									PlayerChecks.resetGemCooldown(player);
+								}
+							}
+						}
                         break;
                     case FIRE_PROJECTILE:
                         if (stack != null && stack.getItem() instanceof IProjectileShooter)
                         {
-                            if (PlayerChecks.getCooldown(player) <= 0) {
+                            if (PlayerChecks.getProjectileCooldown(player) <= 0) {
                                 if (((IProjectileShooter) stack.getItem()).shootProjectile(player, stack))
                                 {
                                     PlayerHelper.swingItem((player));
                                 }
-                                PlayerChecks.resetCooldown(player);
+                                PlayerChecks.resetProjectileCooldown(player);
                             }
                         } else if (stack == null || ProjectEConfig.unsafeKeyBinds)
                         {
