@@ -60,6 +60,7 @@ public final class ProjectEConfig
 	public static float katarDeathAura;
 	public static int projectileCooldown;
 	public static boolean disableAllRadiusMining;
+	public static int gemChestCooldown;
 
 	public static void init(File configFile)
 	{
@@ -80,6 +81,7 @@ public final class ProjectEConfig
 			pulsatingOverlay = config.getBoolean("pulsatingOverlay", "misc", false, "The Philosopher's Stone overlay softly pulsates");
 			unsafeKeyBinds = config.getBoolean("unsafeKeyBinds", "misc", false, "False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered");
 			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");
+			gemChestCooldown = config.getInt("gemChestCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for Gem Chestplate explosion");
 
 			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
 

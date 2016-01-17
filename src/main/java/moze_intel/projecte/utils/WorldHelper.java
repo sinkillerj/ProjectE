@@ -481,12 +481,12 @@ public final class WorldHelper
 								{
 									for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
 									{
-										if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z))
+										if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y + i, z))
 										{
-											world.func_147480_a(x, y, z, true);
+											world.func_147480_a(x, y + i, z, true);
 										} else if (player == null)
 										{
-											world.func_147480_a(x, y, z, true);
+											world.func_147480_a(x, y + i, z, true);
 										}
 									}
 								}
