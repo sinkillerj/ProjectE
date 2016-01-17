@@ -38,10 +38,13 @@ public class SyncBagDataPKT implements IMessage
 		@Override
 		public IMessage onMessage(final SyncBagDataPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-                PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
-                PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
-            });
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					PECore.proxy.getClientBagProps().readFromPacket(message.nbt);
+					PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
+				}
+			});
 
 			return null;
 		}

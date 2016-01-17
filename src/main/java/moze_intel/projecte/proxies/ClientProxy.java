@@ -223,7 +223,6 @@ public class ClientProxy implements IProxy
 	{
 		for (FuelBlock.EnumFuelType e : FuelBlock.EnumFuelType.values())
 		{
-			ModelLoader.addVariantName(ObjHandler.fuels, "projecte:" + e.getName());
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation("projecte:" + e.getName(), "inventory"));
 
 			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.fuelBlock).toString();
@@ -236,7 +235,6 @@ public class ClientProxy implements IProxy
 	{
 		for (MatterBlock.EnumMatterType m : MatterBlock.EnumMatterType.values())
 		{
-			ModelLoader.addVariantName(ObjHandler.matter, "projecte:" + m.getName());
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation("projecte:" + m.getName(), "inventory"));
 
 			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.matterBlock).toString();
@@ -249,83 +247,73 @@ public class ClientProxy implements IProxy
 	{
 		for (KleinStar.EnumKleinTier e : KleinStar.EnumKleinTier.values())
 		{
-			ModelLoader.addVariantName(ObjHandler.kleinStars, "projecte:stars/klein_star_" + e.name);
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.kleinStars, e.ordinal(), new ModelResourceLocation("projecte:stars/klein_star_" + e.name, "inventory"));
 		}
 	}
 
 	private void registerPowerStones()
 	{
-		ModelLoader.addVariantName(ObjHandler.bodyStone, "projecte:body_stone_off", "projecte:body_stone_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation("projecte:body_stone_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation("projecte:body_stone_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.soulStone, "projecte:soul_stone_off", "projecte:soul_stone_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 0, new ModelResourceLocation("projecte:soul_stone_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 1, new ModelResourceLocation("projecte:soul_stone_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.mindStone, "projecte:mind_stone_off", "projecte:mind_stone_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 0, new ModelResourceLocation("projecte:mind_stone_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 1, new ModelResourceLocation("projecte:mind_stone_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.lifeStone, "projecte:life_stone_off", "projecte:life_stone_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 0, new ModelResourceLocation("projecte:life_stone_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation("projecte:life_stone_on", "inventory"));
 	}
 
 	private void registerPowerItems()
 	{
-		ModelLoader.addVariantName(ObjHandler.blackHole, "projecte:bhb_off", "projecte:bhb_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation("projecte:bhb_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation("projecte:bhb_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.harvestGod, "projecte:harvgod_off", "projecte:harvgod_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 0, new ModelResourceLocation("projecte:harvgod_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 1, new ModelResourceLocation("projecte:harvgod_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.eternalDensity, "projecte:goed_off", "projecte:goed_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 0, new ModelResourceLocation("projecte:goed_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 1, new ModelResourceLocation("projecte:goed_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.timeWatch, "projecte:timewatch_off", "projecte:timewatch_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 0, new ModelResourceLocation("projecte:timewatch_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 1, new ModelResourceLocation("projecte:timewatch_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.ignition, "projecte:ignition_off", "projecte:ignition_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 0, new ModelResourceLocation("projecte:ignition_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 1, new ModelResourceLocation("projecte:ignition_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.zero, "projecte:zero_off", "projecte:zero_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 0, new ModelResourceLocation("projecte:zero_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 1, new ModelResourceLocation("projecte:zero_on", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.swrg, "projecte:swrg_off", "projecte:swrg_fly", "projecte:swrg_repel", "projecte:swrg_both");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 0, new ModelResourceLocation("projecte:swrg_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation("projecte:swrg_fly", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation("projecte:swrg_repel", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation("projecte:swrg_both", "inventory"));
 
-		ModelLoader.addVariantName(ObjHandler.voidRing, "projecte:voidring_off", "projecte:voidring_on");
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 0, new ModelResourceLocation("projecte:voidring_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation("projecte:voidring_on", "inventory"));
 
 		// Arcana needs its own mess because it uses NBT to store Active state instead of meta
 		ModelLoader.addVariantName(ObjHandler.arcana, "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
 				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on");
-		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, stack -> {
-            String modelName;
-            boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
+		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack) {
+				String modelName;
+				boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
 
-            switch (stack.getItemDamage())
-            {
-                case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
-                case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
-                case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
-                case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
-                default: modelName = "";
-            }
-            return new ModelResourceLocation("projecte:" + modelName, "inventory");
-        });
+				switch (stack.getItemDamage())
+				{
+					case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
+					case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
+					case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
+					case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
+					default: modelName = "";
+				}
+				return new ModelResourceLocation("projecte:" + modelName, "inventory");
+			}
+		});
 	}
 
 	@Override

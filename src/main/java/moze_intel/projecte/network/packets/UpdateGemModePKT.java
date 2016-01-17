@@ -35,14 +35,17 @@ public class UpdateGemModePKT implements IMessage
 		@Override
 		public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx)
 		{
-			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(() -> {
-                ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
+			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
 
-                if (stack != null && stack.getItem() == ObjHandler.eternalDensity)
-                {
-                    stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
-                }
-            });
+					if (stack != null && stack.getItem() == ObjHandler.eternalDensity)
+					{
+						stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
+					}
+				}
+			});
 
 			return null;
 		}

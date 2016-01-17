@@ -21,7 +21,12 @@ public class SwingItemPKT implements IMessage
 		@Override
 		public IMessage onMessage(SwingItemPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().thePlayer.swingItem());
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					Minecraft.getMinecraft().thePlayer.swingItem();
+				}
+			});
 
 			return null;
 		}
