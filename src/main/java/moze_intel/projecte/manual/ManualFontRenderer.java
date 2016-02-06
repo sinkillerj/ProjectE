@@ -37,7 +37,7 @@ public class ManualFontRenderer extends FontRenderer
         {
             String s1 = str.substring(0, j);
             char c0 = str.charAt(j);
-            boolean flag = c0 == 10; // Changed here: Remove check for space (ascii 32)
+            boolean flag = c0 == 10||c0==32;
             String s2 = getFormatFromString(s1) + str.substring(j + (flag ? 1 : 0));
             return s1 + "\n" + this.wrapFormStringToWidth(s2, width);
         }
