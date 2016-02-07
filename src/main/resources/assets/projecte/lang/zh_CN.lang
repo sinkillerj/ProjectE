@@ -18,7 +18,7 @@ item.pe_matter_red.name=红物质
 item.pe_ring_iron_band.name=铁指环
 item.pe_black_hole.name=黑洞指环
 item.pe_harvest_god.name=丰收女神戒指
-item.pe_archangel_smite.name=大天使的惩戒[WIP]
+item.pe_archangel_smite.name=大天使的惩戒 [WIP]
 item.pe_ignition.name=烈焰指环
 item.pe_body_stone.name=身之宝石
 item.pe_soul_stone.name=灵魂之石
@@ -79,17 +79,17 @@ tile.pe_alchemy_chest.name=炼金术箱子
 tile.pe_interdiction_torch.name=禁止火把
 tile.pe_transmutation_stone.name=转化桌
 tile.pe_condenser.name=能量凝聚器
-tile.pe_condenser_mk2.name=能量凝聚器MK2
+tile.pe_condenser_mk2.name=能量凝聚器 MK2
 tile.pe_rm_furnace.name=红物质熔炉
 tile.pe_dm_furnace.name=暗物质熔炉
 tile.pe_rm_block.name=红物质方块
 tile.pe_dm_block.name=暗物质方块
-tile.pe_collector_MK1.name=能源收集器MK1
-tile.pe_collector_MK2.name=能源收集器MK2
-tile.pe_collector_MK3.name=能源收集器MK3
-tile.pe_relay_MK1.name=反物质继电器MK1
-tile.pe_relay_MK2.name=反物质继电器MK2
-tile.pe_relay_MK3.name=反物质继电器MK3
+tile.pe_collector_MK1.name=能源收集器 MK1
+tile.pe_collector_MK2.name=能源收集器 MK2
+tile.pe_collector_MK3.name=能源收集器 MK3
+tile.pe_relay_MK1.name=反物质继电器 MK1
+tile.pe_relay_MK2.name=反物质继电器 MK2
+tile.pe_relay_MK3.name=反物质继电器 MK3
 tile.pe_nova_catalyst.name=爆破新星
 tile.pe_nova_cataclysm.name=灾难新星
 tile.pe_fuel_block_0.name=炼金煤炭块
@@ -136,7 +136,7 @@ achievement.klein.desc=储存EMC以备不时之需
 achievement.klein_big=大容量能量电池
 achievement.klein_big.desc=它能容得下整个宇宙
 
-pe.arcana.mode=模式:
+pe.arcana.mode=模式: 
 pe.arcana.mode.0=零度
 pe.arcana.mode.1=烈焰
 pe.arcana.mode.2=丰收
@@ -152,44 +152,44 @@ pe.bhb.pedestal2=可存入邻接的容器中
 pe.body.pedestal1=恢复玩家的饥饿度
 pe.body.pedestal2=每%s恢复半格饥饿值
 
-pe.command.main.usage=/projecte<changelog,clearKnowledge,setEMC,reloadEMC,removeEMC,resetEMC>
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
 
 pe.command.changelog.uptodate=当前使用的ProjectE为最新版本.
-pe.command.clearknowledge.error=无法清空玩家%s的转化知识.
-pe.command.clearknowledge.notify=你的转化知识已被%s全部清空!
-pe.command.clearknowledge.playernotfound=未找到名为"%s"的玩家.
-pe.command.clearknowledge.success=成功清空玩家%s的转化知识.
-pe.command.clearknowledge.usage=/projecteclearKnowledge[username](参数无法指向自己)
+pe.command.clearknowledge.error=无法清空玩家 %s 的转化知识.
+pe.command.clearknowledge.notify=你的转化知识已被 %s 全部清空!
+pe.command.clearknowledge.playernotfound=未找到名为" %s "的玩家.
+pe.command.clearknowledge.success=成功清空玩家 %s 的转化知识.
+pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (参数无法指向自己)
 
 pe.command.reload.started=正在更新注册的EMC值...
 pe.command.reload.success=更新完成!更新数据已发送至客户端.
-pe.command.reload.notice=当完成所有变更时，请重启或使用"/projectereloadEMC"指令.
+pe.command.reload.notice=当完成所有变更时，请重启或使用 "/projecte reloadEMC" 指令.
 
-pe.command.remove.invaliditem=错误:未找到物品"%s".
-pe.command.remove.invalidmeta=错误:meta数据"%s"是无效的.
-pe.command.remove.success=成功移除%s的EMC值.
-pe.command.remove.usage=/projecteremoveEMC<unlocalized|oredictname>[meta](参数无法指向手持物件)
+pe.command.remove.invaliditem=错误: 未找到物品" %s ".
+pe.command.remove.invalidmeta=错误: meta数据" %s "是无效的.
+pe.command.remove.success=成功移除 %s 的EMC值.
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (参数无法指向手持物件)
 
-pe.command.reset.invalidmeta=错误:meta数据"%s"是无效的.
-pe.command.reset.nochange=错误:"%s:%s"的EMC值未作任何修改.
-pe.command.reset.success=成功修改%s的EMC值.
-pe.command.reset.usage=/projecteresetEMC<unlocalized|oredictname>[meta](参数无法指向手持物件)
+pe.command.reset.invalidmeta=错误: meta数据" %s "是无效的.
+pe.command.reset.nochange=错误: " %s:%s "的EMC值未作任何修改.
+pe.command.reset.success=成功修改 %s 的EMC值.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (参数无法指向手持物件)
 
-pe.command.set.invalidemc=错误:"%s"是一个无效的EMC值.
-pe.command.set.invaliditem=错误:未找到物品"%s".
-pe.command.set.invalidmeta=错误:meta数据"%s"是无效的.
-pe.command.set.success=已将%s的EMC值设定为%s.
-pe.command.set.usage=/projectesetEMC[unlocalized|oredictname][meta][EMCvalue]或/projectesetEMC[EMCvalue](参数指向手持物件)
+pe.command.set.invalidemc=错误: " %s "是一个无效的EMC值.
+pe.command.set.invaliditem=错误: 未找到物品" %s ".
+pe.command.set.invalidmeta=错误: meta数据" %s "是无效的.
+pe.command.set.success=已将 %s 的EMC值设定为 %s.
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value] 或 /projecte setEMC [EMC value] (参数指向手持物件)
 
 pe.darkpick.mode1=普通模式
-pe.darkpick.mode2=3x竖直模式
-pe.darkpick.mode3=3x横向模式
-pe.darkpick.mode4=3x直线模式
+pe.darkpick.mode2=3x 竖直模式
+pe.darkpick.mode3=3x 横向模式
+pe.darkpick.mode4=3x 直线模式
 
-pe.divining.avgemc=平均EMC值:%s(共%s个方块)
-pe.divining.maxemc=最高EMC:%s
-pe.divining.secondmax=第二高EMC:%s
-pe.divining.thirdmax=第三高EMC:%s
+pe.divining.avgemc=平均EMC值: %s (共%s个方块)
+pe.divining.maxemc=最高EMC: %s
+pe.divining.secondmax=第二高EMC: %s
+pe.divining.thirdmax=第三高EMC: %s
 
 pe.dmfurnace.shortname=暗物质熔炉
 pe.rmfurnace.shortname=红物质熔炉
@@ -228,9 +228,9 @@ pe.gem.stepassist_tooltip=自动跳跃:
 pe.gem.stepassist.prompt=按[%s]键切换自动跳跃
 
 pe.gemdensity.blacklist=黑名单
-pe.gemdensity.mode_switch=转换目标设定为:%s
+pe.gemdensity.mode_switch=转换目标设定为: %s
 pe.gemdensity.tooltip1=不停地转换物品
-pe.gemdensity.tooltip2=转换目标:%s
+pe.gemdensity.tooltip2=转换目标: %s
 pe.gemdensity.tooltip3=按[%s]键改变转换目标
 pe.gemdensity.tooltip4=右键设置黑名单或白名单
 pe.gemdensity.tooltip5=Shift右键开始或停止转换
@@ -244,7 +244,7 @@ pe.ignition.pedestal1=燃烧附近的怪物
 pe.ignition.pedestal2=每%s激活一次
 
 pe.item.mode=模式
-pe.item.mode_switch=切换为%s模式
+pe.item.mode_switch=切换为 %s 模式
 
 pe.katar.mode1=虐杀敌对生物
 pe.katar.mode2=虐杀一切生物
@@ -266,9 +266,9 @@ pe.misc.storedxp_tooltip=存储经验:
 pe.misc.wrenched_block=扳动方块!
 
 pe.morningstar.mode1=普通模式
-pe.morningstar.mode2=3x竖直模式
-pe.morningstar.mode3=3x横向模式
-pe.morningstar.mode4=3x直线模式
+pe.morningstar.mode2=3x 竖直模式
+pe.morningstar.mode3=3x 横向模式
+pe.morningstar.mode4=3x 直线模式
 
 pe.pedestal.item_disabled=暗物质台座的功能已被禁止!
 pe.pedestal.on_pedestal=台座功能:
@@ -282,16 +282,16 @@ pe.philstone.mode3=直线
 pe.philstone.tooltip1=按[%s]键打开合成界面
 
 pe.redpick.mode1=普通模式
-pe.redpick.mode2=3x竖直模式
-pe.redpick.mode3=3x横向模式
-pe.redpick.mode4=3x直线模式
+pe.redpick.mode2=3x 竖直模式
+pe.redpick.mode3=3x 横向模式
+pe.redpick.mode4=3x 直线模式
 
 pe.redsword.mode1=虐杀敌对生物
 pe.redsword.mode2=虐杀一切生物
 
-pe.relay.mk1=反物质继电器MKI
-pe.relay.mk2=反物质继电器MKII
-pe.relay.mk3=反物质继电器MKIII
+pe.relay.mk1=反物质继电器 MKI
+pe.relay.mk2=反物质继电器 MKII
+pe.relay.mk3=反物质继电器 MKIII
 
 pe.repairtalisman.pedestal1=修复附近玩家携带的工具
 pe.repairtalisman.pedestal2=每%s修复1点耐久
@@ -307,8 +307,8 @@ pe.swrg.pedestal2=每%s激活一次
 
 pe.timewatch.disabled=该物品已被管理员禁止!
 pe.timewatch.ff=加速时间流逝
-pe.timewatch.mode=怀表模式:%s
-pe.timewatch.mode_switch=怀表模式:%s
+pe.timewatch.mode=怀表模式: %s
+pe.timewatch.mode_switch=怀表模式: %s
 pe.timewatch.off=关闭
 pe.timewatch.rw=加速时间倒流
 pe.timewatch.tooltip1=随心所欲的操控时间
@@ -339,7 +339,7 @@ pe.transmutation.unlearned6=n
 pe.transmutation.unlearned7=e
 pe.transmutation.unlearned8=d
 
-pe.update.available=ProjectE有可更新的版本!版本号:%s
+pe.update.available=ProjectE有可更新的版本! 版本号: %s
 pe.update.changelog=使用指令/projecte changelog查看更新日志.
 pe.update.getit=下载地址:
 
@@ -356,11 +356,11 @@ pe.zero.pedestal3=每%s激活一次
 
 pe.debug.metainvalid.name=metadata参数设置无效
 
-#ItemPagesbodies
-pe.manual.pe_alchemical_bag=像诸位这样身体力行,专注于研究的炼金师没有多余的时间去不断的放置炼金箱子来进行物品存储.在炼金箱子上撒一些高等共价粉尘并用布料包裹起来,你就能够将箱子收缩到布袋一般大小.它有着完整箱子的储物容量.奇妙的是,这些布袋似乎被绑定到了一种虚幻的网络当中,同种颜色的布袋会装有相同的物品,无论这个袋子是你的还是你的邻居的.这个布袋似乎会像箱子一样激活一些魔法物品.
-pe.manual.pe_collector_MK1=你在思考是否有一种方法能够让你驾驭这世间最为普遍而常见的能量-光.在经过几个星期的制作以及多次进入恐怖的地下世界获取萤石粉之后,你得到了一个奇妙的装置.它似乎在有强光照射时会每秒生成4EMC,而当亮度减弱时会生成0.25EMC每秒.它并不需要自然光-你发现南瓜灯和太阳光一样好用.可能是因为在制作过程中你放入了一个熔炉,你发现EMC会注入到物品栏中的特殊物品,并以此填补它们与高等材料的差距并将它们转换成为更高等级的材料.它会容纳10000EMC左右.下界极度的高温似乎抵消了它对于光能的需求,尽管收集器会在那里满负荷运行,多数神志清醒的炼金师都不会选择在下界待太久...当卡莱恩能量之星被放置到机器中时,该装置似乎同样能够将EMC注入其中.转化顺序参考:木炭,红石,煤炭,火药,萤石粉,炼金煤炭,红石块,烈焰粉,煤炭块,萤石,莫比乌斯燃料,炼金煤炭块,永恒燃料,莫比乌斯燃料块,永恒燃料块
+# ItemPages bodies
+pe.manual.pe_alchemical_bag=像诸位这样身体力行, 专注于研究的炼金师没有多余的时间去不断的放置炼金箱子来进行物品存储. 在炼金箱子上撒一些高等共价粉尘并用布料包裹起来, 你就能够将箱子收缩到布袋一般大小. 它有着完整箱子的储物容量. 奇妙的是, 这些布袋似乎被绑定到了一种虚幻的网络当中, 同种颜色的布袋会装有相同的物品, 无论这个袋子是你的还是你的邻居的. 这个布袋似乎会像箱子一样激活一些魔法物品.
+pe.manual.pe_collector_MK1=你在思考是否有一种方法能够让你驾驭这世间最为普遍而常见的能量 - 光. 在经过几个星期的制作以及多次进入恐怖的地下世界获取萤石粉之后, 你得到了一个奇妙的装置. 它似乎在有强光照射时会每秒生成4 EMC, 而当亮度减弱时会生成0.25 EMC每秒. 它并不需要自然光 - 你发现南瓜灯和太阳光一样好用. 可能是因为在制作过程中你放入了一个熔炉, 你发现EMC会注入到物品栏中的特殊物品, 并以此填补它们与高等材料的差距并将它们转换成为更高等级的材料. 它会容纳10000 EMC左右. 下界极度的高温似乎抵消了它对于光能的需求, 尽管收集器会在那里满负荷运行, 多数神志清醒的炼金师都不会选择在下界待太久...当卡莱恩能量之星被放置到机器中时, 该装置似乎同样能够将EMC注入其中. 转化顺序参考: 木炭, 红石, 煤炭, 火药, 萤石粉, 炼金煤炭, 红石块, 烈焰粉, 煤炭块, 萤石, 莫比乌斯燃料, 炼金煤炭块, 永恒燃料, 莫比乌斯燃料块, 永恒燃料块
 pe.manual.pe_collector_MK3=BLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdf
-
-#TextPagesheadersandbodies
-pe.manual.introduction=恭喜你开始了新的旅程,我的朋友!可能你已经厌倦了日复一日的在自己的世界里做着重复而又枯燥的事情,或许你仅仅渴望更强大的力量去...呃...做一些事情,又或者你只是喜欢用魔法来解决问题的奇妙与高效.无论是哪种情况,炼金术都能够满足你的需求.炼金艺术在远古时期就已经广为人知.它最开始是由一名叫做x3n0ph0b3的人开创的,并被多次的完善.在x3n0ph0b3退休之后,一名新的学徒,Pahimar,开始继续发展并传播这门艺术.这之后的故事就变得越发复杂起来.这个国家里的人们四处叫嚷,对炼金师的研究成果感到耻辱,把他们称作"懒惰的作弊者",发出一些类似"EE2OP!!!!!!"之类的话语.炼金术被人们认为过于强大("OP").结果,Pahimar放弃了他的研究并开始了一个全新的,偏向于另一种炼金术的研究道路,而其他炼金术师要么躲了起来要么完全放弃了炼金术的研究...尽管世界上大多数人认为真正的炼金术,x3n0ph0b3自己所留下的研究精髓,已经遗失在历史长河之中,我们却期望事实有所不同.MozeIntel,一位流浪者,偶然获得了一些年代久远的知识碎片并尝试着将它们进行复原.最终,因为一些未知的原因(他称之为"IRL"的奇怪原因),Moze不得不选择退休.而另一位学徒,SinkillerJ,决定继续领导开发,一步步不断向前进发.沿寻着线索,他最终找到了年迈的x3n0ph0b3的居所!带着他的祝福,他开始了全新的探索,一个全新的里程碑,一段远古遗留的知识.如今我们已经看到了曙光.世人的目光再次汇聚到我们的身上.这一次炼金术将会以何种方式被世人容纳呢?...在我们的艰苦努力下,我们的团队:SinkillerJBlubberblubWilliewillusMoze_Intel将传授于你,传承者,我们对炼金术的丰富知识以及他们能够带来的魔法力量.朋友,我们欢迎你来到,ProjectE的世界.-williewillus,HonoredMasterofLore
+ 
+# TextPages headers and bodies
+pe.manual.introduction=恭喜你开始了新的旅程, 我的朋友! 可能你已经厌倦了日复一日的在自己的世界里做着重复而又枯燥的事情, 或许你仅仅渴望更强大的力量去...呃...做一些事情, 又或者你只是喜欢用魔法来解决问题的奇妙与高效. 无论是哪种情况, 炼金术都能够满足你的需求. 炼金艺术在远古时期就已经广为人知. 它最开始是由一名叫做x3n0ph0b3的人开创的, 并被多次的完善. 在x3n0ph0b3退休之后, 一名新的学徒, Pahimar, 开始继续发展并传播这门艺术. 这之后的故事就变得越发复杂起来. 这个国家里的人们四处叫嚷, 对炼金师的研究成果感到耻辱, 把他们称作"懒惰的作弊者", 发出一些类似"EE2 OP!!!!!!"之类的话语. 炼金术被人们认为过于强大("OP"). 结果, Pahimar放弃了他的研究并开始了一个全新的, 偏向于另一种炼金术的研究道路, 而其他炼金术师要么躲了起来要么完全放弃了炼金术的研究...尽管世界上大多数人认为真正的炼金术, x3n0ph0b3自己所留下的研究精髓, 已经遗失在历史长河之中, 我们却期望事实有所不同. MozeIntel, 一位流浪者, 偶然获得了一些年代久远的知识碎片并尝试着将它们进行复原. 最终, 因为一些未知的原因(他称之为"IRL"的奇怪原因), Moze不得不选择退休. 而另一位学徒, SinkillerJ, 决定继续领导开发, 一步步不断向前进发. 沿寻着线索, 他最终找到了年迈的x3n0ph0b3的居所! 带着他的祝福, 他开始了全新的探索, 一个全新的里程碑, 一段远古遗留的知识. 如今我们已经看到了曙光. 世人的目光再次汇聚到我们的身上. 这一次炼金术将会以何种方式被世人容纳呢? ... 在我们的艰苦努力下, 我们的团队:     SinkillerJ  Blubberblub     Williewillus    Moze_Intel 将传授于你, 传承者, 我们对炼金术的丰富知识以及他们能够带来的魔法力量. 朋友, 我们欢迎你来到, ProjectE的世界. - williewillus, Honored Master of Lore
 pe.manual.introduction.header=介绍
