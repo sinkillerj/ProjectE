@@ -38,13 +38,13 @@ public class PedestalRenderer extends TileEntitySpecialRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glPushMatrix();
 			bindTexture(Constants.PEDESTAL_MODELTEX_LOCATION);
-			GL11.glTranslated(x + 0.5, y + 1.5, z + 0.5); // Feel free to improve this, anyone.
-			GL11.glRotated(180.0F, 0, 0, 0);
+			GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 			model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
 			GL11.glPopMatrix();
 
 			GL11.glPushMatrix();
-			GL11.glTranslated(x + 0.5, y + 1.0, z + 0.5); // Feel free to improve this, anyone.
+			GL11.glTranslatef((float)x + 0.5F, (float)y + 1.0F, (float)z + 0.5F);
 			if (pedestal.getItemStack() != null)
 			{
 				EntityItem hover = new EntityItem(pedestal.getWorldObj());

@@ -16,7 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class Collector extends BlockDirection
 {
@@ -127,5 +129,10 @@ public class Collector extends BlockDirection
 	public int getComparatorInputOverride(World world, int x, int y, int z, int meta)
 	{
 		return ComparatorHelper.getForCollector(world, x, y, z);
+	}
+
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return true;
 	}
 }

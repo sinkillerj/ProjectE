@@ -426,7 +426,7 @@ public final class CustomEMCParser
 		return null;
 	}
 
-	private static void writeDefaultFile() throws IOException
+	private static void writeDefaultFile()
 	{
 		PrintWriter writer = null;
 

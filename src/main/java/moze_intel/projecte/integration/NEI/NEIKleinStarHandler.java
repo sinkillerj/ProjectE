@@ -36,7 +36,7 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler
 	{
 		public CachedKleinStarRecipe()
 		{
-			ingredients = new ArrayList<PositionedStack>();
+			ingredients = new ArrayList<>();
 		}
 
 		public CachedKleinStarRecipe(ItemStack output)

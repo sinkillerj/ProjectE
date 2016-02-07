@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc.collector;
 
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+
 import java.util.Map;
 
 /**
@@ -30,11 +32,11 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Set a fixed {@code value} for {@code something} before the calculation happens.<br/>
-	 * {@code value} has to be >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable) Free}, which indicates that {@code something} can be used in
+	 * {@code value} has to be >= 0 or {@link IValueArithmetic#isFree(Comparable) Free}, which indicates that {@code something} can be used in
 	 * Conversions, but does not add anything to the value of the Conversion-result.<br/>
 	 * ALL {@code setValueAfter} WILL BE CLEARED!
 	 * @param something The thing that should get the Value.
-	 * @param value The value. >= 0 or {@link moze_intel.projecte.emc.IValueArithmetic#isFree(Comparable)}{@code == true}
+	 * @param value The value. >= 0 or {@link IValueArithmetic#isFree(Comparable)}{@code == true}
 	 */
 	public void setValueBefore(T something, V value);
 
@@ -51,4 +53,5 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
 
+	public void finishCollection();
 }
