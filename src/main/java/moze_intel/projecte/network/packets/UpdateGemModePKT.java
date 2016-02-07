@@ -37,7 +37,7 @@ public class UpdateGemModePKT implements IMessage
 		{
 			ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
 
-			if (stack != null && stack.getItem() == ObjHandler.eternalDensity)
+			if (stack != null && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
 			{
 				stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
 			}
