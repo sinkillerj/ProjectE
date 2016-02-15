@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
@@ -127,7 +128,7 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if (block.isAir(world, pos))
+			if (block.isAir(world, pos) || Item.getItemFromBlock(block) == null)
 			{
 				continue;
 			}
