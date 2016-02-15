@@ -39,7 +39,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
 			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
 			"com.sci.torcherino.tile.TileTorcherino",
-			"com.sci.torcherino.tile.TileCompressedTorcherino"
+			"com.sci.torcherino.tile.TileCompressedTorcherino",
+			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
 	
 	public TimeWatch() 
