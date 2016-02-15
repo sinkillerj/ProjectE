@@ -15,11 +15,11 @@ buildscript {
     }
 }
 
+apply plugin: 'net.minecraftforge.gradle.forge'
+
 //plugins {
 //    id "net.minecraftforge.gradle.forge" version "2.0.1"
 //}
-
-apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -73,8 +73,8 @@ dependencies {
 }
 
 compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 }
 
 processResources
