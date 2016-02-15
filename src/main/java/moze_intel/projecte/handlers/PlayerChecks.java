@@ -227,12 +227,6 @@ public final class PlayerChecks
 	
 	private static boolean shouldPlayerStep(EntityPlayerMP player)
 	{
-		if (player.capabilities.isCreativeMode)
-		{
-			return true;
-		}
-
-
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
 			if (stack != null
