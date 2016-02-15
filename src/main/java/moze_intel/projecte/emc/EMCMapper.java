@@ -50,7 +50,7 @@ public final class EMCMapper
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
 				new LazyMapper(),
-				new Chisel2Mapper(),
+				// todo fix new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
