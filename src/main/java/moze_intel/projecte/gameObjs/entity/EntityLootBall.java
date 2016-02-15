@@ -23,7 +23,7 @@ import java.util.List;
 
 public class EntityLootBall extends Entity
 {
-	private final int lifespan = 6000;
+	private static final int LIFESPAN = 6000;
 	private List<ItemStack> items;
 	private int age;
 
@@ -31,7 +31,6 @@ public class EntityLootBall extends Entity
 	{
 		super(world);
 		this.setSize(0.25F, 0.25F);
-		// TODO: Exists in 1.8? this.yOffset = this.height / 2.0F;
 	}
 	
 	public EntityLootBall(World world, ItemStack[] drops, double x, double y, double z)
@@ -45,7 +44,6 @@ public class EntityLootBall extends Entity
 		items = drops;
 		
 		this.setSize(0.25F, 0.25F);
-		// TODO: Exists in 1.8? this.yOffset = this.height / 2.0F;
 		this.setPosition(x, y, z);
 		this.motionX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
 		this.motionY = 0.20000000298023224D;
@@ -57,7 +55,7 @@ public class EntityLootBall extends Entity
 	{
 		return items;
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -102,7 +100,7 @@ public class EntityLootBall extends Entity
 
 		if (!this.worldObj.isRemote)
 		{
-			if (age > lifespan || items.isEmpty())
+			if (age > LIFESPAN || items.isEmpty())
 			{
 				this.setDead();
 			}
