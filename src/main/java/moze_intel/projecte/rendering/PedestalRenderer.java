@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 
@@ -25,7 +26,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
                 float angle = (te.getWorld().getWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
                 GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
                 Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-                Minecraft.getMinecraft().getRenderItem().func_181564_a(te.getItemStack(), ItemCameraTransforms.TransformType.GROUND);
+                Minecraft.getMinecraft().getRenderItem().renderItem(te.getItemStack(), ItemCameraTransforms.TransformType.GROUND);
                 GlStateManager.popMatrix();
             }
         }

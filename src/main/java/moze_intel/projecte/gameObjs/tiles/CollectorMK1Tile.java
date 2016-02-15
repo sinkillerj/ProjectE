@@ -303,7 +303,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	
 	public int getKleinStarChargeScaled(int i)
 	{
-		if (inventory[0] == null || displayItemCharge <= 0)
+		if (inventory[0] == null || displayItemCharge <= 0 || !(inventory[0].getItem() instanceof IItemEmc))
 		{
 			return 0;
 		}
