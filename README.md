@@ -38,7 +38,7 @@ SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 Williewillus - Lord of Lore and Refactors - Lead Assistant Developer & 1.8 Dev:
 
 * Twitter: https://twitter.com/williewillus
-* Patreon: https://www.patreon.com/user?u=677570
+* Patreon: https://www.patreon.com/williewillus
 
 MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant Developer: 
 
