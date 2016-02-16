@@ -247,7 +247,7 @@ public final class EMCHelper
 			{
 				Enchantment ench = Enchantment.getEnchantmentById(entry.getKey());
 
-				if (ench.getWeight() == 0)
+				if (ench == null || ench.getWeight() == 0)
 				{
 					continue;
 				}
