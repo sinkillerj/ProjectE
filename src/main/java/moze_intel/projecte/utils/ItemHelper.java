@@ -279,9 +279,6 @@ public final class ItemHelper
 		return null;
 	}
 
-	/**
-	 *	@throws NullPointerException
-	 */
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
 		Item item = Item.itemRegistry.getObject(new ResourceLocation(internal));

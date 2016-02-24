@@ -41,6 +41,9 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.melon), 16);
 		addMapping(new ItemStack(Items.clay_ball), 16);
 		addMapping(new ItemStack(Blocks.waterlily), 16);
+		addMapping(new ItemStack(Blocks.stone, 1, 1), 16);
+		addMapping(new ItemStack(Blocks.stone, 1, 3), 16);
+		addMapping(new ItemStack(Blocks.stone, 1, 5), 16);
 
 		for (int i = 0; i <= 8; i++) {
 			addMapping(new ItemStack(Blocks.red_flower, 1, i), 16);
@@ -71,6 +74,8 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.apple), 128);
 		//Cocoa beans
 		addMapping(new ItemStack(Items.dye, 1, 3), 128);
+		addMapping(new ItemStack(Blocks.sponge), 128);
+		addMapping(new ItemStack(Blocks.sponge, 1, 1), 128);
 		addMapping(new ItemStack(Blocks.pumpkin), 144);
 		addMapping(new ItemStack(Items.bone), 144);
 
@@ -97,7 +102,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.slime_ball), 32);
 		addMapping(new ItemStack(Items.egg), 32);
 		addMapping(new ItemStack(Items.feather), 48);
-		addMapping(new ItemStack(Items.leather), 64);
+		addMapping(new ItemStack(Items.rabbit_hide), 16);
 		addMapping(new ItemStack(Items.spider_eye), 128);
 		addMapping(new ItemStack(Items.gunpowder), 192);
 		addMapping(new ItemStack(Items.ender_pearl), 1024);
@@ -107,6 +112,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.porkchop), 64);
 		addMapping(new ItemStack(Items.beef), 64);
 		addMapping(new ItemStack(Items.chicken), 64);
+		addMapping(new ItemStack(Items.rabbit), 64);
 
 		for (int i = 0; i < 4; i++) {
 			addMapping(new ItemStack(Items.fish, 1, i), 64);
@@ -123,6 +129,8 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping(new ItemStack(Items.redstone), 64);
 		addMapping(new ItemStack(Items.glowstone_dust), 384);
 		addMapping(new ItemStack(Items.quartz), 256);
+		addMapping(new ItemStack(Items.prismarine_shard), 256);
+		addMapping(new ItemStack(Items.prismarine_crystals), 512);
 		//Lapis Lazuli
 		addMapping(new ItemStack(Items.dye, 1, 4), 864);
 
