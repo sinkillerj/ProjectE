@@ -67,7 +67,7 @@ public class TransmutationRenderingEvent
 				} else
 				{
 					RenderHelper.enableStandardItemLighting();
-					mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToStack(transmutationResult, 1), 0, 0);
+					mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0);
 					RenderHelper.disableStandardItemLighting();
 				}
 			}

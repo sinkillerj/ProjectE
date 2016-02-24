@@ -39,58 +39,101 @@ public final class WorldTransmutations
 			register(Blocks.pumpkin.getDefaultState().withProperty(BlockPumpkin.FACING, e), Blocks.melon_block.getDefaultState(), null);
 		}
 
-		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
-				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE),
-				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
-		);
-
-		register(Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK),
-				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.SPRUCE),
-				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
-		);
-
-		for (int i = 1; i < 3; i++)
+		for (IBlockState s : Blocks.log.getBlockState().getValidStates())
 		{
-			register(Blocks.log.getStateFromMeta(i),
-					Blocks.log.getStateFromMeta(i + 1),
-					Blocks.log.getStateFromMeta(i - 1)
-			);
-
-			register(Blocks.leaves.getStateFromMeta(i),
-					Blocks.leaves.getStateFromMeta(i + 1),
-					Blocks.leaves.getStateFromMeta(i - 1)
-			);
+			if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.OAK)
+			{
+				// Oak must loop backward to dark oak
+				register(s, s.cycleProperty(BlockOldLog.VARIANT), 
+						Blocks.log2.getDefaultState()
+								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
+								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)));
+			} else if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.JUNGLE)
+			{
+				// Jungle must loop forward to acacia
+				register(s, 
+						Blocks.log2.getDefaultState()
+								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
+								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)),
+						cyclePropertyBackwards(s, BlockOldLog.VARIANT));
+			} else
+			{
+				register(s, s.cycleProperty(BlockOldLog.VARIANT), cyclePropertyBackwards(s, BlockOldLog.VARIANT));
+			}
 		}
 
-		register(Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE),
-				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA),
-				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.BIRCH)
-		);
+		for (IBlockState s : Blocks.leaves.getBlockState().getValidStates())
+		{
+			if (s.getValue(BlockOldLeaf.VARIANT) == BlockPlanks.EnumType.OAK)
+			{
+				// Oak must loop backward to dark oak
+				register(s, s.cycleProperty(BlockOldLeaf.VARIANT),
+						Blocks.leaves2.getDefaultState()
+								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
+								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockOldLeaf.CHECK_DECAY))
+								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)));
+			} else if (s.getValue(BlockOldLeaf.VARIANT) == BlockPlanks.EnumType.JUNGLE)
+			{
+				// Jungle must loop forward to acacia
+				register(s,
+						Blocks.leaves2.getDefaultState()
+								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
+								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
+								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)),
+						cyclePropertyBackwards(s, BlockOldLeaf.VARIANT));
+			} else
+			{
+				register(s, s.cycleProperty(BlockOldLeaf.VARIANT), cyclePropertyBackwards(s, BlockOldLeaf.VARIANT));
+			}
+		}
 
-		register(Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE),
-				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA),
-				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)
-		);
+		for (IBlockState s : Blocks.log2.getBlockState().getValidStates())
+		{
+			if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.ACACIA)
+			{
+				// Acacia must loop backward to jungle
+				register(s, s.cycleProperty(BlockNewLog.VARIANT),
+						Blocks.log.getDefaultState()
+								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE)
+								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)));
+			} else if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.DARK_OAK)
+			{
+				// Dark oak must loop forward to oak
+				register(s,
+						Blocks.log.getDefaultState()
+								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK)
+								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)),
+						cyclePropertyBackwards(s, BlockNewLog.VARIANT));
+			} else
+			{
+				register(s, s.cycleProperty(BlockNewLog.VARIANT), cyclePropertyBackwards(s, BlockNewLog.VARIANT));
+			}
+		}
 
-		register(Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA),
-				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK),
-				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE)
-		);
-
-		register(Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA),
-				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK),
-				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
-		);
-
-		register(Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK),
-				Blocks.log.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK),
-				Blocks.log2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
-		);
-
-		register(Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK),
-				Blocks.leaves.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK),
-				Blocks.leaves2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
-		);
+		for (IBlockState s : Blocks.leaves2.getBlockState().getValidStates())
+		{
+			if (s.getValue(BlockNewLeaf.VARIANT) == BlockPlanks.EnumType.ACACIA)
+			{
+				// Acacia must loop backward to jungle
+				register(s, s.cycleProperty(BlockNewLeaf.VARIANT),
+						Blocks.leaves.getDefaultState()
+								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
+								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
+								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)));
+			} else if (s.getValue(BlockNewLeaf.VARIANT) == BlockPlanks.EnumType.DARK_OAK)
+			{
+				// Dark oak must loop forward to oak
+				register(s,
+						Blocks.leaves.getDefaultState()
+								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)
+								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
+								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)),
+						cyclePropertyBackwards(s, BlockNewLeaf.VARIANT));
+			} else
+			{
+				register(s, s.cycleProperty(BlockNewLeaf.VARIANT), cyclePropertyBackwards(s, BlockNewLeaf.VARIANT));
+			}
+		}
 
 		for (BlockPlanks.EnumType e : BlockPlanks.EnumType.values())
 		{
