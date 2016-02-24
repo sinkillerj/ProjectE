@@ -39,17 +39,12 @@ public final class NBTWhitelistParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-				return;
 			}
 		}
 		else
 		{
-			BufferedReader reader = null;
-
-			try
+			try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG)))
 			{
-				reader = new BufferedReader(new FileReader(CONFIG));
-
 				String line = reader.readLine();
 
 				if (line == null || !line.equals(VERSION))
@@ -62,10 +57,6 @@ public final class NBTWhitelistParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-			}
-			finally
-			{
-				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
@@ -80,12 +71,8 @@ public final class NBTWhitelistParser
 			return;
 		}
 
-		LineNumberReader reader = null;
-
-		try
+		try (LineNumberReader reader = new LineNumberReader(new FileReader(CONFIG)))
 		{
-			reader = new LineNumberReader(new FileReader(CONFIG));
-
 			String line;
 
 			while ((line = reader.readLine()) != null)
@@ -116,20 +103,12 @@ public final class NBTWhitelistParser
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			FileHelper.closeStream(reader);
-		}
 	}
 
 	private static void writeDefaultFile()
 	{
-		PrintWriter writer = null;
-
-		try
+		try (PrintWriter writer = new PrintWriter(CONFIG))
 		{
-			writer = new PrintWriter(CONFIG);
-
 			writer.println(VERSION);
 			writer.println("#Custom NBT whitelist file");
 			writer.println("#This file is used for items that should keep NBT data when condensed/transmuted.");
@@ -142,10 +121,6 @@ public final class NBTWhitelistParser
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(writer);
 		}
 	}
 }

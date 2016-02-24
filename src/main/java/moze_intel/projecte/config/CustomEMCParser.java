@@ -45,17 +45,12 @@ public final class CustomEMCParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-				return;
 			}
 		}
 		else
 		{
-			BufferedReader reader = null;
-
-			try
+			try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG)))
 			{
-				reader = new BufferedReader(new FileReader(CONFIG));
-
 				String line = reader.readLine();
 
 				if (line == null || !line.equals(VERSION))
@@ -68,10 +63,6 @@ public final class CustomEMCParser
 			{
 				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
-			}
-			finally
-			{
-				FileHelper.closeStream(reader);
 			}
 
 			loaded = true;
@@ -89,12 +80,9 @@ public final class CustomEMCParser
 		}
 
 		Entry entry;
-		LineNumberReader reader = null;
 		userValues.clear();
-		try
+		try (LineNumberReader reader = new LineNumberReader(new FileReader(CONFIG)))
 		{
-			reader = new LineNumberReader(new FileReader(CONFIG));
-
 			while ((entry = getNextEntry(reader)) != null)
 			{
 				if (entry.name.contains(":"))
@@ -145,10 +133,6 @@ public final class CustomEMCParser
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(reader);
 		}
 	}
 

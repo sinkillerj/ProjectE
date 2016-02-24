@@ -7,6 +7,7 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -47,11 +48,11 @@ public abstract class NormalizedSimpleStack {
 		return getFor(block, 0);
 	}
 
-	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Block block) {
-		GameRegistry.UniqueIdentifier identifier;
+	private static ResourceLocation getUniqueIdentifierOrNull(Block block) {
+		ResourceLocation identifier;
 		try
 		{
-			identifier = GameRegistry.findUniqueIdentifierFor(block);
+			identifier = GameData.getBlockRegistry().getNameForObject(block);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", block != null ? block.getClass().getName() : "null");
 			e.printStackTrace();
@@ -68,11 +69,11 @@ public abstract class NormalizedSimpleStack {
 		return getFor(item, 0);
 	}
 
-	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Item item) {
-		GameRegistry.UniqueIdentifier identifier;
+	private static ResourceLocation getUniqueIdentifierOrNull(Item item) {
+		ResourceLocation identifier;
 		try
 		{
-			identifier = GameRegistry.findUniqueIdentifierFor(item);
+			identifier = GameData.getItemRegistry().getNameForObject(item);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
 			e.printStackTrace();
@@ -86,10 +87,10 @@ public abstract class NormalizedSimpleStack {
 		return getFor(getUniqueIdentifierOrNull(item), meta);
 	}
 
-	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
+	private static NormalizedSimpleStack getFor(ResourceLocation uniqueIdentifier, int damage)
 	{
 		if (uniqueIdentifier == null) return null;
-		return getFor(uniqueIdentifier.modId + ":" + uniqueIdentifier.name, damage);
+		return getFor(uniqueIdentifier.toString(), damage);
 	}
 
 
