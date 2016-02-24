@@ -132,7 +132,7 @@ public final class PlayerChecks
 			disableSwrgFlightOverride(player);
 		}
 
-		if (player.capabilities.isCreativeMode || swrgOverrides.contains(player))
+		if (player.capabilities.isCreativeMode || player.isSpectator() || swrgOverrides.contains(player))
 		{
 			return true;
 		}
