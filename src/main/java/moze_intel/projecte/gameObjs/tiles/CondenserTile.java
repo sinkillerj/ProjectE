@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.Arrays;
 
-public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory, IEmcAcceptor
+public class CondenserTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor
 {
 	protected ItemStack[] inventory;
 	private ItemStack lock;
