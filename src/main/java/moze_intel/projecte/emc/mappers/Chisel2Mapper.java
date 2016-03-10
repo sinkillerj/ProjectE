@@ -1,18 +1,17 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.cricketcraft.chisel.api.carving.CarvingUtils;
-import com.cricketcraft.chisel.api.carving.ICarvingGroup;
-import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
-import com.cricketcraft.chisel.api.carving.ICarvingVariation;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
+import team.chisel.api.carving.CarvingUtils;
+import team.chisel.api.carving.ICarvingGroup;
+import team.chisel.api.carving.ICarvingRegistry;
+import team.chisel.api.carving.ICarvingVariation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +30,12 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	@Override
 	public String getDescription() {
-		return "Add mappings for Blocks that are created with the Chisel2-Chisel.";
+		return "Add mappings for Blocks that are created with Chisel.";
 	}
 
 	@Override
 	public boolean isAvailable() {
-		return false;// todo Loader.isModLoaded("chisel");
+		return Loader.isModLoaded("chisel");
 	}
 
 	@Override
@@ -57,12 +56,13 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 
 	protected void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, ICarvingGroup group) {
 		//XXX: Generates way too much Configs
-		/*if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" + group.getName() + (group.getOreName() == null ? "" :  " and oreName=" + group.getOreName())) ) {
+if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" + group.getName() + (group.getOreName() == null ? "" :  " and oreName=" + group.getOreName())) ) {
 			return;
-		}*/
+		}
+
 		List<NormalizedSimpleStack> stacks = new ArrayList<>();
 		for (ICarvingVariation v : group.getVariations()) {
-			stacks.add(NormalizedSimpleStack.getFor(v.getBlock(), v.getBlockMeta()));
+			stacks.add(NormalizedSimpleStack.getFor(v.getBlock(), v.getBlock().getMetaFromState(v.getBlockState())));
 		}
 		if (group.getOreName() != null) {
 			for (ItemStack ore : OreDictionary.getOres(group.getOreName())) {

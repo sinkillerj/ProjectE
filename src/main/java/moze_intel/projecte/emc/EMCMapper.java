@@ -50,7 +50,7 @@ public final class EMCMapper
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
 				new LazyMapper(),
-				// todo fix new Chisel2Mapper(),
+				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
@@ -59,15 +59,15 @@ public final class EMCMapper
 				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
-		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
-		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
-		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector(mapper);
+		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(((IValueArithmetic<Fraction>) new HiddenFractionArithmetic()));
+		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator<>(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector<>(mapper);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
 
 		if (config.getBoolean("dumpEverythingToFile", "general", false,"Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
-			mappingCollector = new DumpToFileCollector(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
+			mappingCollector = new DumpToFileCollector<>(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
 		}
 
 		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
