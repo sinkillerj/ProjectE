@@ -20,7 +20,9 @@ http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 The ProjectE mod now uses EE2 textures. If you prefer the classic ProjectE textures by Magic Banana they can be found here: http://minecraft.curseforge.com/texture-packs/227513-projecte-classic-textures
 
 #Support Development
-[![](/patreon.png?raw=true)](https://www.patreon.com/sinkillerj)
+![](/patreon.png?raw=true)
+
+We accept donations via Patreon, visit the team members section to learn more.
 
 #Join the Conversation
 IRC Client: \#ProjectE on irc.esper.net
@@ -28,13 +30,24 @@ IRC Client: \#ProjectE on irc.esper.net
 Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
 
 #Current Team Members
-SinKillerJ - Head of Alchemical Studies - Current lead developer: https://twitter.com/sinkillerj
+SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 
-MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant developer: https://twitter.com/Blubb3rbub
+* Twitter: https://twitter.com/sinkillerj
+* Patreon: https://www.patreon.com/sinkillerj
 
-Williewillus - Lord of Lore and Refactors - Assistant developer: https://twitter.com/williewillus
+Williewillus - Lord of Lore and Refactors - Lead Assistant Developer & 1.8 Dev:
 
-Lilylicious - Lady of Little Big Things - Assistant developer: https://twitter.com/Lilyliciously
+* Twitter: https://twitter.com/williewillus
+* Patreon: https://www.patreon.com/williewillus
+
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant Developer: 
+
+* Twitter: https://twitter.com/Blubb3rbub
+
+Lilylicious - Lady of Little Big Things - Assistant Developer:
+
+* Twitter: https://twitter.com/Lilyliciously
+* Patreon: https://www.patreon.com/lilylicious
 
 #Former Team Members
 MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
