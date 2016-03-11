@@ -12,7 +12,7 @@ import net.minecraft.util.IChatComponent;
 
 import java.util.Arrays;
 
-public class AlchChestTile extends TileEmcDirection implements IInventory
+public class AlchChestTile extends TileEmc implements IInventory
 {
 	private ItemStack[] inventory = new ItemStack[104];
 	public float lidAngle;

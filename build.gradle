@@ -64,6 +64,8 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
+    compile "team.chisel:Chisel:MC1.8.9-0.0.2.11:api"
+
     // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
     // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
     // compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
