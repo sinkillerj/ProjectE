@@ -194,7 +194,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 			if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21)
 			{
-				suckXP(orb, tile.getItemStack());
+				suckXP(orb, tile.getInventory().getStackInSlot(0));
 			}
 		}
 

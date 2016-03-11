@@ -23,6 +23,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class Pedestal extends Block {
 
@@ -37,9 +38,9 @@ public class Pedestal extends Block {
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-        if (tile.getItemStack() != null)
+        if (tile.getInventory().getStackInSlot(0) != null)
         {
-            WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), pos);
+            WorldHelper.spawnEntityItem(world, tile.getInventory().getStackInSlot(0).copy(), pos);
         }
         tile.invalidate();
         super.breakBlock(world, pos, state);
@@ -56,7 +57,7 @@ public class Pedestal extends Block {
             }
             else
             {
-                if (tile.getItemStack() != null && tile.getItemStack().getItem() instanceof IPedestalItem)
+                if (tile.getInventory().getStackInSlot(0) != null && tile.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
                 {
                     tile.setActive(!tile.getActive());
                 }

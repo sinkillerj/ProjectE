@@ -13,17 +13,23 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Arrays;
 import java.util.Random;
 
-public class DMPedestalTile extends TileEmc implements IInventory
+public class DMPedestalTile extends TileEmc
 {
 	private boolean isActive = false;
-	private ItemStack[] inventory = new ItemStack[1];
+	private ItemStackHandler inventory = new ItemHandler();
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
@@ -55,9 +61,9 @@ public class DMPedestalTile extends TileEmc implements IInventory
 
 		if (getActive())
 		{
-			if (getItemStack() != null)
+			if (inventory.getStackInSlot(0) != null)
 			{
-				Item item = getItemStack().getItem();
+				Item item = inventory.getStackInSlot(0).getItem();
 				if (item instanceof IPedestalItem)
 				{
 					((IPedestalItem) item).updateInPedestal(worldObj, getPos());
@@ -124,11 +130,6 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		activityCooldown--;
 	}
 
-	public ItemStack getItemStack()
-	{
-		return getStackInSlot(0);
-	}
-
 	public AxisAlignedBB getEffectBounds()
 	{
 		if (effectBounds == null)
@@ -143,18 +144,8 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT(tag);
-
-		inventory = new ItemStack[getSizeInventory()];
-		NBTTagList tagList = tag.getTagList("Items", 10);
-		for (int i = 0; i < tagList.tagCount(); ++i)
-		{
-			NBTTagCompound compound = tagList.getCompoundTagAt(i);
-			byte slot = compound.getByte("Slot");
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(compound);
-			}
-		}
+		inventory = new ItemStackHandler(1);
+		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
 		activityCooldown = tag.getInteger("activityCooldown");
 	}
@@ -163,141 +154,9 @@ public class DMPedestalTile extends TileEmc implements IInventory
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT(tag);
-
-		NBTTagList tagList = new NBTTagList();
-
-		for (int i = 0; i < this.inventory.length; ++i)
-		{
-			if (this.inventory[i] != null)
-			{
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setByte("Slot", (byte)i);
-				this.inventory[i].writeToNBT(compound);
-				tagList.appendTag(compound);
-			}
-		}
-
-		tag.setTag("Items", tagList);
+		tag.merge(inventory.serializeNBT());
 		tag.setBoolean("isActive", getActive());
 		tag.setInteger("activityCooldown", activityCooldown);
-	}
-
-	@Override
-	public int getSizeInventory()
-	{
-		return inventory.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int amt)
-	{
-		ItemStack result = inventory[slot];
-		if (inventory[slot] != null)
-		{
-			if (amt > inventory[slot].stackSize)
-			{
-				setInventorySlotContents(slot, null);
-			}
-			else
-			{
-				result = inventory[slot].splitStack(amt);
-				if (inventory[slot].stackSize <= 0)
-				{
-					setInventorySlotContents(slot, null);
-				}
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int slot)
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack itemStack)
-	{
-		inventory[slot] = itemStack;
-
-		if (itemStack != null && itemStack.stackSize > this.getInventoryStackLimit())
-		{
-			itemStack.stackSize = this.getInventoryStackLimit();
-		}
-		this.markDirty();
-	}
-
-	@Override
-	public String getName()
-	{
-		return "pe.pedestal.shortname";
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public IChatComponent getDisplayName()
-	{
-		return new ChatComponentTranslation(getName());
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1)
-	{
-		return this.worldObj.getTileEntity(this.pos) != this ? false : var1.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) { }
-
-	@Override
-	public void closeInventory(EntityPlayer player)
-	{
-		this.markDirty();
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
-	{
-		return p_94041_2_ != null && p_94041_2_.getItem() instanceof IPedestalItem;
-	}
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-		Arrays.fill(inventory, null);
 	}
 
 	@Override
@@ -340,4 +199,48 @@ public class DMPedestalTile extends TileEmc implements IInventory
 		}
 		this.isActive = newState;
 	}
+
+	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+				? (T) inventory
+				: super.getCapability(cap, side);
+	}
+
+	public IItemHandlerModifiable getInventory() {
+		return inventory;
+	}
+
+	private class ItemHandler extends ItemStackHandler
+	{
+		public ItemHandler()
+		{
+			super(1);
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (stack != null
+					&& stack.getItem() != null
+					&& stack.getItem() instanceof IPedestalItem)
+				return super.insertItem(slot, stack, simulate);
+			else return stack;
+		}
+
+		@Override
+		public void onContentsChanged(int slot)
+		{
+			DMPedestalTile.this.markDirty();
+		}
+	}
+
 }

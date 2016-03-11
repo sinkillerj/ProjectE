@@ -17,7 +17,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
     {
         if (!te.isInvalid())
         {
-            if (te.getItemStack() != null)
+            if (te.getInventory().getStackInSlot(0) != null)
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x + 0.5, y + 1, z + 0.5);
@@ -26,7 +26,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
                 float angle = (te.getWorld().getWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
                 GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
                 Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-                Minecraft.getMinecraft().getRenderItem().renderItem(te.getItemStack(), ItemCameraTransforms.TransformType.GROUND);
+                Minecraft.getMinecraft().getRenderItem().renderItem(te.getInventory().getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND);
                 GlStateManager.popMatrix();
             }
         }

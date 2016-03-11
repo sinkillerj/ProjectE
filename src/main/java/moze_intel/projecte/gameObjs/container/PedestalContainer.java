@@ -6,6 +6,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class PedestalContainer extends Container
 {
@@ -15,7 +16,7 @@ public class PedestalContainer extends Container
 		this.tile = tile;
 
 		//Pedestal Inventory
-		this.addSlotToContainer(new Slot(tile, 0, 80, 20));
+		this.addSlotToContainer(new SlotItemHandler(tile.getInventory(), 0, 80, 20));
 
 		int slotIndex = -1;
 		//Player Hotbar

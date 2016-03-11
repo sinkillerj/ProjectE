@@ -23,7 +23,7 @@ public class SyncPedestalPKT implements IMessage
 	{
 		pos = tile.getPos();
 		isActive = tile.getActive();
-		itemStack = tile.getItemStack();
+		itemStack = tile.getInventory().getStackInSlot(0);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class SyncPedestalPKT implements IMessage
 					{
 						DMPedestalTile pedestal = ((DMPedestalTile) te);
 						pedestal.setActive(message.isActive);
-						pedestal.setInventorySlotContents(0, message.itemStack);
+						pedestal.getInventory().setStackInSlot(0, message.itemStack);
 					}
 				}
 			});
