@@ -19,6 +19,11 @@ public class SimpleStack
 	
 	public SimpleStack(ItemStack stack)
 	{
+		this(stack, true);
+	}
+
+	public SimpleStack(ItemStack stack, boolean shouldInitDamage)
+	{
 		if (stack == null)
 		{
 			id = -1;
@@ -26,10 +31,15 @@ public class SimpleStack
 		else
 		{
 			id = Item.itemRegistry.getIDForObject(stack.getItem());
-			damage = stack.getItemDamage();
+			if (shouldInitDamage)
+			{
+				damage = stack.getItem().getDamage(stack);
+			}
+
 			qnty = stack.stackSize;
 		}
 	}
+
 
 	public boolean isValid()
 	{
