@@ -12,10 +12,16 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  */
 public class PlayerKnowledgeChangeEvent extends Event
 {
-	public final UUID playerUUID;
+	private final UUID playerUUID;
 
     public PlayerKnowledgeChangeEvent(EntityPlayer entityPlayer)
     {
     	playerUUID = entityPlayer.getUniqueID();
     }
+
+    public UUID getPlayerUUID()
+    {
+        return playerUUID;
+    }
+
 }

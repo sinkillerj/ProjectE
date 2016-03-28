@@ -1,9 +1,13 @@
 package moze_intel.projecte.api;
 
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.FMLLog;
 
 public final class ProjectEAPI
@@ -14,6 +18,18 @@ public final class ProjectEAPI
 	private static IConversionProxy recipeProxy;
 
 	private ProjectEAPI() {}
+
+	/**
+	 * The capability object for IAlchBagProvider
+	 */
+	@CapabilityInject(IAlchBagProvider.class)
+	public static Capability<IAlchBagProvider> ALCH_BAG_CAPABILITY = null;
+
+	/**
+	 * The capability object for IKnowledgeProvider
+	 */
+	@CapabilityInject(IKnowledgeProvider.class)
+	public static Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
 
 	/**
 	 * Retrieves the proxy for EMC-based API queries.

@@ -1,5 +1,8 @@
 package moze_intel.projecte.proxies;
 
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -13,9 +16,6 @@ import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.manual.ManualPageHandler;
-import moze_intel.projecte.playerData.AlchBagProps;
-import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.rendering.*;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.block.Block;
@@ -47,19 +47,19 @@ public class ClientProxy implements IProxy
 	@Override
 	public void clearClientKnowledge()
 	{
-		Transmutation.clearKnowledge(FMLClientHandler.instance().getClientPlayerEntity());
+		FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).clearKnowledge();
 	}
 
 	@Override
-	public TransmutationProps getClientTransmutationProps()
+	public IKnowledgeProvider getClientTransmutationProps()
 	{
-		return TransmutationProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+		return FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
 	}
 
 	@Override
-	public AlchBagProps getClientBagProps()
+	public IAlchBagProvider getClientBagProps()
 	{
-		return AlchBagProps.getDataFor(FMLClientHandler.instance().getClientPlayerEntity());
+		return FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null);
 	}
 
 	@Override

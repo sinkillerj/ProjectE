@@ -41,7 +41,7 @@ public class KnowledgeSyncPKT implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					PECore.proxy.getClientTransmutationProps().readFromPacket(message.nbt);
+					PECore.proxy.getClientTransmutationProps().deserializeNBT(message.nbt);
 					PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 				}
 			});

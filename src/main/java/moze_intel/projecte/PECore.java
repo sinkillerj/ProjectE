@@ -12,7 +12,9 @@ import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
+import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -86,12 +88,13 @@ public class PECore
 		NBTWhitelistParser.init();
 
 		PacketHandler.register();
+
+		AlchBagImpl.init();
+		KnowledgeImpl.init();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		PlayerEvents pe = new PlayerEvents();
-		MinecraftForge.EVENT_BUS.register(pe);
-
+		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 		MinecraftForge.EVENT_BUS.register(new TickEvents());
 		MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 
