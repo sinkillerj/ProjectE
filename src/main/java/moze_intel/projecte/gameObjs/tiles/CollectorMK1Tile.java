@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.Arrays;
@@ -110,7 +110,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		if (numUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayItemCharge, this),
-					new TargetPoint(this.worldObj.provider.getDimensionId(), getPos().getX(), getPos().getY(), getPos().getZ(), 8));
+					new TargetPoint(this.worldObj.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 8));
 		}
 	}
 	
@@ -485,7 +485,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		return null;
 	}
 

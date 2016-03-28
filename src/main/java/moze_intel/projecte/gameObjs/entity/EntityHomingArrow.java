@@ -4,7 +4,9 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
@@ -28,7 +30,8 @@ public class EntityHomingArrow extends EntityArrow
 
 	public EntityHomingArrow(World world, EntityLivingBase par2, float par3) 
 	{
-		super(world, par2, par3);
+		super(world, par2);
+		setDamage(par3);
 		init(world);
 	}
 
@@ -86,6 +89,11 @@ public class EntityHomingArrow extends EntityArrow
 			
 			this.setThrowableHeading(d5, d6, d7, 2.0F, 0.0F);
 		}
+	}
+
+	@Override
+	protected ItemStack getArrowStack() {
+		return new ItemStack(Items.arrow);
 	}
 
 	private double distanceTo(EntityLiving entity)

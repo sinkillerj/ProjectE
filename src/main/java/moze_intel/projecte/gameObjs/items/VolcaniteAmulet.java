@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -17,6 +18,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -37,7 +42,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
@@ -52,22 +57,22 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 					if (consumeFuel(player, stack, 32.0F, true))
 					{
 						FluidHelper.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000);
-						return true;
+						return EnumActionResult.SUCCESS;
 					}
 				}
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				BlockPos blockPosHit = mop.getBlockPos();
 				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
@@ -75,14 +80,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)) && consumeFuel(player, stack, 32, true))
 					{
 						placeLava(world, player, blockPosHit.offset(mop.sideHit));
-						world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 						PlayerHelper.swingItem(player);
 					}
 				}
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	private void placeLava(World world, EntityPlayer player, BlockPos pos)
@@ -128,7 +133,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
-		player.worldObj.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+		player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
 		return true;
 	}
@@ -137,10 +142,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add(String.format(StatCollector.translateToLocal("pe.volcanite.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip2"));
-		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip3"));
-		list.add(StatCollector.translateToLocal("pe.volcanite.tooltip4"));
+		list.add(String.format(I18n.translateToLocal("pe.volcanite.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(I18n.translateToLocal("pe.volcanite.tooltip2"));
+		list.add(I18n.translateToLocal("pe.volcanite.tooltip3"));
+		list.add(I18n.translateToLocal("pe.volcanite.tooltip4"));
 	}
 	
 	@Override
@@ -239,8 +244,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.volcanite.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(StatCollector.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.volcanite.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(I18n.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
 	}

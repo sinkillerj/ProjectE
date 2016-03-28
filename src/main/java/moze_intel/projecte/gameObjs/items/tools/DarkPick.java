@@ -13,10 +13,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 public class DarkPick extends PEToolBase
@@ -24,8 +28,8 @@ public class DarkPick extends PEToolBase
 	public DarkPick()
 	{
 		super("dm_pick", (byte)2, new String[] {
-				StatCollector.translateToLocal("pe.darkpick.mode1"), StatCollector.translateToLocal("pe.darkpick.mode2"),
-				StatCollector.translateToLocal("pe.darkpick.mode3"), StatCollector.translateToLocal("pe.darkpick.mode4")});
+				I18n.translateToLocal("pe.darkpick.mode1"), I18n.translateToLocal("pe.darkpick.mode2"),
+				I18n.translateToLocal("pe.darkpick.mode3"), I18n.translateToLocal("pe.darkpick.mode4")});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "pickaxe";
@@ -41,11 +45,11 @@ public class DarkPick extends PEToolBase
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
 		if (ProjectEConfig.pickaxeAoeVeinMining)
@@ -54,8 +58,8 @@ public class DarkPick extends PEToolBase
 		}
 		else
 		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
 				{
@@ -64,18 +68,18 @@ public class DarkPick extends PEToolBase
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, pos, eLiving);
+		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.matterBlock && state.getValue(MatterBlock.TIER_PROP) == MatterBlock.EnumMatterType.DARK_MATTER) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
@@ -83,7 +87,7 @@ public class DarkPick extends PEToolBase
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, state);
+		return super.getStrVsBlock(stack, state);
 	}
 	
 	@Override
@@ -98,10 +102,11 @@ public class DarkPick extends PEToolBase
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
+		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
 		return multimap;
 	}
 }

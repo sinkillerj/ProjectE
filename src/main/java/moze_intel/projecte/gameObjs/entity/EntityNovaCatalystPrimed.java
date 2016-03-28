@@ -11,13 +11,13 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 	public EntityNovaCatalystPrimed(World world) 
 	{
 		super(world);
-		this.fuse = 20;
+		setFuse(20);
 	}
 	
 	public EntityNovaCatalystPrimed(World world, double x, double y, double z, EntityLivingBase placer)
 	{
 		super(world, x, y, z, placer);
-		this.fuse = 20;
+		setFuse(20);
 	}
 
 	// Need exact override to do our own explosion
@@ -40,7 +40,8 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 			this.motionY *= -0.5D;
 		}
 
-		if (this.fuse-- <= 0)
+		setFuse(getFuse() - 1);
+		if (this.getFuse() <= 0)
 		{
 			this.setDead();
 

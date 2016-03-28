@@ -4,6 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -21,6 +22,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
@@ -28,7 +35,6 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,14 +56,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
 			if (!ProjectEConfig.enableTimeWatch)
 			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.disabled"));
-				return stack;
+				player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.disabled"));
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 
 			if (!stack.hasTagCompound())
@@ -69,10 +75,10 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new ChatComponentTranslation("pe.timewatch.mode_switch", new ChatComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
+			player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -283,25 +289,25 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	
 	public void playChargeSound(EntityPlayer player)
 	{
-		player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 1.25F);
+		//todo 1.9 player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 1.25F);
 	}
 	
 	public void playUnChargeSound(EntityPlayer player)
 	{
-		player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 0.85F);
+		//todo 1.9 player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 0.85F);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
-		list.add(StatCollector.translateToLocal("pe.timewatch.tooltip1"));
-		list.add(StatCollector.translateToLocal("pe.timewatch.tooltip2"));
+		list.add(I18n.translateToLocal("pe.timewatch.tooltip1"));
+		list.add(I18n.translateToLocal("pe.timewatch.tooltip2"));
 
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.timewatch.mode"),
-					StatCollector.translateToLocal(getTimeName(stack))));
+			list.add(String.format(I18n.translateToLocal("pe.timewatch.mode"),
+					I18n.translateToLocal(getTimeName(stack))));
 		}
 	}
 
@@ -367,13 +373,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.timePedBonus > 0) {
-			list.add(EnumChatFormatting.BLUE +
-				String.format(StatCollector.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
+			list.add(TextFormatting.BLUE +
+				String.format(I18n.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
 		}
 		if (ProjectEConfig.timePedMobSlowness < 1.0F)
 		{
-			list.add(EnumChatFormatting.BLUE +
-					String.format(StatCollector.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
+			list.add(TextFormatting.BLUE +
+					String.format(I18n.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
 		}
 		return list;
 	}

@@ -14,11 +14,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 
 import java.util.Collections;
@@ -53,16 +56,16 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
+		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
 		{
 			PlayerHelper.swingItem(player);
 			List<Integer> emcValues = Lists.newArrayList();
@@ -78,7 +81,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 
-				if (block.isAir(world, pos))
+				if (world.isAirBlock(pos))
 				{
 					continue;
 				}
@@ -135,7 +138,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 			if (numBlocks == 0)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 			
 			int[] maxValues = new int[3];
@@ -154,20 +157,20 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 				maxValues[i] = emcValues.get(i);
 			}
 
-			player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
 			if (this instanceof DiviningRodMedium)
 			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.maxemc", maxValues[0]));
+				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
 			}
 			if (this instanceof DiviningRodHigh)
 			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.secondmax", maxValues[1]));
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
+				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 
 	}
 
@@ -203,6 +206,6 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 			stack.getTagCompound().setByte("Mode", ((byte) (getMode(stack) + 1)));
 		}
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 	}
 }

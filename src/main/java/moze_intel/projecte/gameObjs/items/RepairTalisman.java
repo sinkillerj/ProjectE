@@ -18,12 +18,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
@@ -80,7 +81,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				if (chiselCheck(invStack)) continue;
 			}
 
-			if (invStack.equals(player.getCurrentEquippedItem()) && player.isSwingInProgress)
+			if (invStack.equals(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)) && player.isSwingInProgress)
 			{
 				//Don't repair item that is currently used by the player.
 				continue;
@@ -185,9 +186,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.repairPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.repairtalisman.pedestal1"));
-			list.add(EnumChatFormatting.BLUE +
-					String.format(StatCollector.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.repairtalisman.pedestal1"));
+			list.add(TextFormatting.BLUE +
+					String.format(I18n.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
 	}

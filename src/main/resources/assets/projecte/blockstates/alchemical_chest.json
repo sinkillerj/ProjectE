@@ -3,7 +3,8 @@
   "defaults": {
     "textures": {
       "particle": "projecte:blocks/alchemy_chest"
-    }
+    },
+    "transform": "forge:default-block"
   },
   "variants": {
     "normal": [{ "model": "projecte:dummy" }],

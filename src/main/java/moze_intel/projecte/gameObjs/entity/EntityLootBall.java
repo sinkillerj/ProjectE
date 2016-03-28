@@ -9,12 +9,14 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -71,12 +73,12 @@ public class EntityLootBall extends Entity
 
 		if (flag || this.ticksExisted % 25 == 0)
 		{
-			if (this.worldObj.getBlockState(new BlockPos(this)).getBlock().getMaterial() == Material.lava)
+			if (this.worldObj.getBlockState(new BlockPos(this)).getMaterial() == Material.lava)
 			{
 				this.motionY = 0.20000000298023224D;
 				this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
 				this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-				this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+				this.playSound(SoundEvents.entity_generic_burn, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
 			}
 		}
 
@@ -185,7 +187,7 @@ public class EntityLootBall extends Entity
 				
 				if (playSound)
 				{
-					this.worldObj.playSoundAtEntity(player, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}
 			
 				if (list.size() > 0)
@@ -281,7 +283,7 @@ public class EntityLootBall extends Entity
 			
 			if (playSound)
 			{
-				this.worldObj.playSoundAtEntity(player, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+				this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			}
 		
 			if (list.size() > 0)

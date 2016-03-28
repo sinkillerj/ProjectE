@@ -11,6 +11,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -40,7 +41,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		if (state.getBlock() == Blocks.web)
 		{
@@ -48,34 +49,15 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		}
 		else
 		{
-			Material material = state.getBlock().getMaterial();
+			Material material = state.getMaterial();
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
 		}
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return EnumAction.BLOCK;
-	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
-	{
-		return 72000;
-	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-	{
-		par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
-		return par1ItemStack;
-	}
-
-	@Override
-	public boolean canHarvestBlock(Block p_150897_1_, ItemStack stack)
-	{
-		return p_150897_1_ == Blocks.web;
+		return state.getBlock() == Blocks.web;
 	}
 
 	@Override
@@ -85,18 +67,18 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{
-			return super.getAttributeModifiers(stack);
+			return super.getAttributeModifiers(slot, stack);
 		}
 
 		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 }

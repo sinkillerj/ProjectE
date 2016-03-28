@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public abstract class PEProjectile extends EntityThrowable
@@ -28,7 +28,7 @@ public abstract class PEProjectile extends EntityThrowable
 
 
     @Override
-    protected final void onImpact(MovingObjectPosition mop)
+    protected final void onImpact(RayTraceResult mop)
     {
         if (getThrower() instanceof EntityPlayerMP)
         {
@@ -43,7 +43,7 @@ public abstract class PEProjectile extends EntityThrowable
         return 0;
     }
 
-    protected abstract void apply(MovingObjectPosition mop);
+    protected abstract void apply(RayTraceResult mop);
 
     protected final boolean tryConsumeEmc(ItemPE consumeFrom, double amount)
     {

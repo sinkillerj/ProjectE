@@ -168,7 +168,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @SuppressWarnings("unchecked")
     private EntityPlayer findOnlinePlayer(UUID playerUUID)
     {
-        for (EntityPlayer player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+        for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList())
         {
             if (player.getUniqueID().equals(playerUUID))
             {

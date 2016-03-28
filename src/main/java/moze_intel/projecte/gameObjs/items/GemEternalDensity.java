@@ -27,9 +27,12 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
@@ -131,7 +134,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -158,11 +161,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+				player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 			}
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	private String getTargetName(ItemStack stack)
@@ -326,22 +329,22 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			stack.getTagCompound().setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
+		player.addChatComponentMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip1"));
+		list.add(I18n.translateToLocal("pe.gemdensity.tooltip1"));
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), StatCollector.translateToLocal(getTargetName(stack))));
+			list.add(String.format(I18n.translateToLocal("pe.gemdensity.tooltip2"), I18n.translateToLocal(getTargetName(stack))));
 		}
-		list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
+		list.add(String.format(I18n.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		list.add(I18n.translateToLocal("pe.gemdensity.tooltip4"));
+		list.add(I18n.translateToLocal("pe.gemdensity.tooltip5"));
 	}
 	
 	@Override

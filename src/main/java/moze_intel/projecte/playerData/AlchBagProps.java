@@ -9,13 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
 import java.util.Map;
 
-public class AlchBagProps implements IExtendedEntityProperties
+public class AlchBagProps
 {
 	public static final String PROP_NAME = "ProjectEAlchBag";
 
@@ -24,12 +23,14 @@ public class AlchBagProps implements IExtendedEntityProperties
 
 	public static void register(EntityPlayer player)
 	{
-		player.registerExtendedProperties(PROP_NAME, new AlchBagProps(player));
+		//player.registerExtendedProperties(PROP_NAME, new AlchBagProps(player));
 	}
 
 	public static AlchBagProps getDataFor(EntityPlayer player)
 	{
-		return ((AlchBagProps) player.getExtendedProperties(PROP_NAME));
+		// todo 1.9
+		return new AlchBagProps(player);
+		//return ((AlchBagProps) player.getExtendedProperties(PROP_NAME));
 	}
 
 	public AlchBagProps(EntityPlayer player)
@@ -100,7 +101,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 		}
 	}
 
-	@Override
+	//@Override
 	public void saveNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = new NBTTagCompound();
@@ -122,7 +123,7 @@ public class AlchBagProps implements IExtendedEntityProperties
 		compound.setTag(PROP_NAME, properties);
 	}
 
-	@Override
+	//@Override
 	public void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
@@ -135,6 +136,4 @@ public class AlchBagProps implements IExtendedEntityProperties
 		}
 	}
 
-	@Override
-	public void init(Entity entity, World world) {}
 }

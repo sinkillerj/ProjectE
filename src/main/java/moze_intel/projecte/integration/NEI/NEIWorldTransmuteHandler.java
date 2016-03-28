@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 {
 
-	private static String name = StatCollector.translateToLocal("pe.nei.worldtransmute");
+	private static String name = I18n.translateToLocal("pe.nei.worldtransmute");
 	private static String id = "worldTransmutation";
 
 	@Override
@@ -148,7 +148,7 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 	@Override
 	public void drawForeground(int recipe)
 	{
-		String sneak = StatCollector.translateToLocal("key.sneak");
+		String sneak = I18n.translateToLocal("key.sneak");
 
 		CachedTransmutationRecipe r = (CachedTransmutationRecipe) arecipes.get(recipe);
 

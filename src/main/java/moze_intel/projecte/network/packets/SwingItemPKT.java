@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -8,23 +9,36 @@ import net.minecraft.client.Minecraft;
 
 public class SwingItemPKT implements IMessage
 {
-	public SwingItemPKT() {}
+	private EnumHand hand;
+
+	public SwingItemPKT() { this(EnumHand.MAIN_HAND); }
+
+	public SwingItemPKT(EnumHand hand)
+	{
+		this.hand = hand;
+	}
 
 	@Override
-	public void fromBytes(ByteBuf buf){}
+	public void fromBytes(ByteBuf buf)
+	{
+		hand = EnumHand.values()[buf.readInt()];
+	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {}
+	public void toBytes(ByteBuf buf)
+	{
+		buf.writeInt(hand.ordinal());
+	}
 
 	public static class Handler implements IMessageHandler<SwingItemPKT, IMessage>
 	{
 		@Override
-		public IMessage onMessage(SwingItemPKT message, MessageContext ctx)
+		public IMessage onMessage(final SwingItemPKT message, MessageContext ctx)
 		{
 			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					Minecraft.getMinecraft().thePlayer.swingItem();
+					Minecraft.getMinecraft().thePlayer.swingArm(message.hand);
 				}
 			});
 

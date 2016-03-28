@@ -5,9 +5,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 			return;
 		}
 		changeMode(stack);
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	{
 		if (stack.hasTagCompound() && this.numModes > 0)
 		{
-			list.add(StatCollector.translateToLocal("pe.item.mode") + ": " + EnumChatFormatting.AQUA + getModeDescription(stack));
+			list.add(I18n.translateToLocal("pe.item.mode") + ": " + TextFormatting.AQUA + getModeDescription(stack));
 		}
 	}
 }

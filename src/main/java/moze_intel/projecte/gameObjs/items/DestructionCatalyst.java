@@ -1,19 +1,25 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
@@ -34,13 +40,13 @@ public class DestructionCatalyst extends ItemCharge
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		if (world.isRemote) return stack;
+		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
+		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
 		{
 			int numRows = calculateDepthFromCharge(stack);
 			boolean hasAction = false;
@@ -52,10 +58,11 @@ public class DestructionCatalyst extends ItemCharge
 
 			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 			{
-				Block block = world.getBlockState(pos).getBlock();
-				float hardness = block.getBlockHardness(world, pos);
+				IBlockState state = world.getBlockState(pos);
+				Block block = state.getBlock();
+				float hardness = state.getBlockHardness(world, pos);
 
-				if (block.isAir(world, pos) || hardness >= 50.0F || hardness == -1.0F)
+				if (world.isAirBlock(pos) || hardness >= 50.0F || hardness == -1.0F)
 				{
 					continue;
 				}
@@ -82,7 +89,7 @@ public class DestructionCatalyst extends ItemCharge
 
 					if (world.rand.nextInt(8) == 0)
 					{
-						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 					}
 				}
 
@@ -97,7 +104,7 @@ public class DestructionCatalyst extends ItemCharge
 
 				if (world.rand.nextInt(8) == 0)
 				{
-					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 				}
 			}
 
@@ -105,11 +112,11 @@ public class DestructionCatalyst extends ItemCharge
 			if (hasAction)
 			{
 				WorldHelper.createLootDrop(drops, world, mop.getBlockPos());
-				world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 			
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	protected int calculateDepthFromCharge(ItemStack stack)

@@ -6,8 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityFireProjectile extends PEProjectile
@@ -28,9 +28,9 @@ public class EntityFireProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
-		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		if(!worldObj.isRemote && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos();
 			Block block = worldObj.getBlockState(pos).getBlock();

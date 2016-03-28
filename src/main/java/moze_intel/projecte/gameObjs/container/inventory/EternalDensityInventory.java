@@ -7,8 +7,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Arrays;
@@ -16,10 +17,11 @@ import java.util.Arrays;
 public class EternalDensityInventory implements IInventory
 {
 	private ItemStack inventory[];
-	private EntityPlayer player;
 	private boolean isInWhitelist;
-	
-	public EternalDensityInventory(ItemStack stack, EntityPlayer player) 
+	private final EntityPlayer player;
+	public final EnumHand triggeringHand;
+
+	public EternalDensityInventory(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		inventory = new ItemStack[9];
 		
@@ -31,6 +33,7 @@ public class EternalDensityInventory implements IInventory
 		readFromNBT(stack.getTagCompound());
 		
 		this.player = player;
+		this.triggeringHand = hand;
 	}
 	
 
@@ -106,8 +109,8 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentTranslation(getName());
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override
@@ -127,9 +130,9 @@ public class EternalDensityInventory implements IInventory
 			}
 		}
 		
-		if (player.getHeldItem() != null)
+		if (player.getHeldItem(triggeringHand) != null)
 		{
-			writeToNBT(player.getHeldItem().getTagCompound());
+			writeToNBT(player.getHeldItem(triggeringHand).getTagCompound());
 		}
 	}
 

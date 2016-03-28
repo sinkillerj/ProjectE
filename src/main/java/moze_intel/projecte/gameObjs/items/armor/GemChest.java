@@ -3,15 +3,15 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.EnumArmorType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,14 +22,14 @@ public class GemChest extends GemArmorBase implements IFireProtector
 {
     public GemChest()
     {
-        super(EnumArmorType.CHEST);
+        super(EntityEquipmentSlot.CHEST);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
     {
-        tooltips.add(StatCollector.translateToLocal("pe.gem.chest.lorename"));
+        tooltips.add(I18n.translateToLocal("pe.gem.chest.lorename"));
     }
 
     @Override
@@ -77,6 +77,6 @@ public class GemChest extends GemArmorBase implements IFireProtector
     @Override
     public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
     {
-        return player.getCurrentArmor(2) == stack;
+        return player.getItemStackFromSlot(EntityEquipmentSlot.CHEST) == stack;
     }
 }

@@ -10,14 +10,16 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.Arrays;
@@ -68,7 +70,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 		if (numPlayersUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this),
-				new TargetPoint(this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 8));
+				new TargetPoint(this.worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 8));
 		}
 	}
 
@@ -347,9 +349,9 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getName());
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override
@@ -377,9 +379,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 		
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			adjustedXCoord = pos.getX() + 0.5D;
-			adjustedZCoord = pos.getZ() + 0.5D;
-			worldObj.playSoundEffect(adjustedXCoord, pos.getY() + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -404,7 +404,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 			{
 				adjustedXCoord = pos.getX() + 0.5D;
 				adjustedZCoord = pos.getZ() + 0.5D;
-				worldObj.playSoundEffect(adjustedXCoord, pos.getY() + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				worldObj.playSound(null, pos, SoundEvents.block_chest_close, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)

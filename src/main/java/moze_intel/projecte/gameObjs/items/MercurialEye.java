@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -15,11 +16,15 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -37,28 +42,28 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	final private double WALL_MODE = Math.sin(Math.toRadians(45));
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-			if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+			if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 
 			ItemStack[] inventory = getInventory(stack);
 
 			if (inventory[0] == null || inventory[1] == null)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 
 			IBlockState newState = ItemHelper.stackToState(inventory[1]);
 			if (newState == null || newState.getBlock() == Blocks.air)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
@@ -68,7 +73,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			byte mode = this.getMode(stack);
 
 			int facing = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
-			Vec3 look = player.getLookVec();
+			Vec3d look = player.getLookVec();
 
 			int dX = 0, dY = 0, dZ = 0;
 
@@ -187,11 +192,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 				}
 
-				player.worldObj.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
+				player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	private void addKleinEMC(ItemStack eye, int amount)
@@ -254,7 +259,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public void doExtraFunction(ItemStack stack, EntityPlayer player) 
 	{
-		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+		//todo 1.9 hands
+		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, 0, -1, -1);
 	}
 	
 	@Override

@@ -21,10 +21,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -38,14 +41,14 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
 			changeMode(player, stack);
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
@@ -156,8 +159,8 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	public List<String> getPedestalDescription()
 	{
 		return Lists.newArrayList(
-				EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal1"),
-				EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.bhb.pedestal2")
+				TextFormatting.BLUE + I18n.translateToLocal("pe.bhb.pedestal1"),
+				TextFormatting.BLUE + I18n.translateToLocal("pe.bhb.pedestal2")
 		);
 	}
 

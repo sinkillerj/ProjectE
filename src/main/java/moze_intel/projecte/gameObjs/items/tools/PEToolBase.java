@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
@@ -26,11 +27,16 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
@@ -65,9 +71,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return harvestMaterials.contains(block.getMaterial());
+		return harvestMaterials.contains(state.getMaterial());
 	}
 
 	@Override
@@ -88,18 +94,18 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state.getBlock(), stack))
+			if (canHarvestBlock(state, stack))
 			{
 				return 14.0f + (12.0f * this.getCharge(stack));
 			}
 		}
 		else if ("rm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state.getBlock(), stack))
+			if (canHarvestBlock(state, stack))
 			{
 				return 16.0f + (14.0f * this.getCharge(stack));
 			}
@@ -128,7 +134,7 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if (block.isAir(world, pos) || Item.getItemFromBlock(block) == null)
+			if (block.isAir(state, world, pos) || Item.getItemFromBlock(block) == null)
 			{
 				continue;
 			}
@@ -163,7 +169,7 @@ public abstract class PEToolBase extends ItemMode
 					world.setBlockToAir(pos);
 					if (world.rand.nextInt(5) == 0)
 					{
-						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 					}
 				}
 			}
@@ -184,14 +190,16 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos newPos : WorldHelper.getPositionsFromCorners(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
 		{
-			Block block = world.getBlockState(newPos).getBlock();
-			Block blockAbove = world.getBlockState(newPos.up()).getBlock();
+			IBlockState state = world.getBlockState(newPos);
+			IBlockState stateAbove = world.getBlockState(newPos.up());
+			Block block = state.getBlock();
+			Block blockAbove = stateAbove.getBlock();
 
-			if (!blockAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
+			if (!stateAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
 			{
 				if (!hasSoundPlayed)
 				{
-					world.playSoundEffect((double)((float)newPos.getX() + 0.5F), (double)((float)newPos.getY() + 0.5F), (double)((float)newPos.getZ() + 0.5F), Blocks.farmland.stepSound.getStepSound(), (Blocks.farmland.stepSound.getVolume() + 1.0F) / 2.0F, Blocks.farmland.stepSound.getFrequency() * 0.8F);
+					world.playSound(null, newPos, Blocks.farmland.getSoundType().getStepSound(), SoundCategory.BLOCKS, (Blocks.farmland.getSoundType().getVolume() + 1.0F) / 2.0F, Blocks.farmland.getSoundType().getPitch() * 0.8F);
 					hasSoundPlayed = true;
 				}
 
@@ -211,8 +219,8 @@ public abstract class PEToolBase extends ItemMode
 					{
 						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), newPos, Blocks.farmland.getDefaultState());
 
-						if ((blockAbove.getMaterial() == Material.plants || blockAbove.getMaterial() == Material.vine)
-								&& !(blockAbove instanceof ITileEntityProvider) // Just in case, you never know
+						if ((stateAbove.getMaterial() == Material.plants || stateAbove.getMaterial() == Material.vine)
+								&& !(blockAbove.hasTileEntity(stateAbove)) // Just in case, you never know
 								)
 						{
 							if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), newPos)) {
@@ -230,7 +238,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 		if (hasAction)
 		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 
@@ -252,9 +260,9 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 		{
 			return;
 		}
@@ -295,9 +303,9 @@ public abstract class PEToolBase extends ItemMode
 			Block b = state.getBlock();
 
 			if (b != Blocks.air
-					&& b.getBlockHardness(world, digPos) != -1
+					&& state.getBlockHardness(world, digPos) != -1
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos)
-					&& (canHarvestBlock(block, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
+					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
 			{
 				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
 				world.setBlockToAir(digPos);
@@ -317,9 +325,9 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 		{
 			return;
 		}
@@ -334,8 +342,8 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.air && b.getBlockHardness(world, pos) != -1
-					&& canHarvestBlock(b, stack)
+			if (b != Blocks.air && state.getBlockHardness(world, pos) != -1
+					&& canHarvestBlock(state, stack)
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
 					&& consumeFuel(player, stack, emcCost, true)
 					)
@@ -350,7 +358,7 @@ public abstract class PEToolBase extends ItemMode
 
 		if (!drops.isEmpty())
 		{
-			world.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 
@@ -406,7 +414,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 			}
 		}
-		player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 1.0F);
+		player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		PlayerHelper.swingItem(player);
 	}
 
@@ -428,7 +436,7 @@ public abstract class PEToolBase extends ItemMode
 
 			if (target.isShearable(stack, player.worldObj, pos) && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
-				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
 				Random rand = new Random();
 
 				for(ItemStack drop : drops)
@@ -443,7 +451,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 
 				stack.damageItem(1, player);
-				player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
+				player.addStat(StatList.getBlockStats(block), 1);
 			}
 		}
 	}
@@ -477,7 +485,7 @@ public abstract class PEToolBase extends ItemMode
 						&& consumeFuel(player, stack, emcCost, true)
 						)
 				{
-					List<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+					List<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
 
 					if (!entDrops.isEmpty())
 					{
@@ -492,7 +500,9 @@ public abstract class PEToolBase extends ItemMode
 				if (Math.random() < 0.01)
 				{
 					Entity e = EntityList.createEntityByName(EntityList.getEntityString(ent), world);
-					e.copyDataFromOld(ent);
+					NBTTagCompound tag = new NBTTagCompound();
+					e.writeToNBT(tag);
+					e.readFromNBT(tag);
 					if (e instanceof EntitySheep)
 					{
 						((EntitySheep) e).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
@@ -513,7 +523,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
 	 */
-	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
+	protected void tryVeinMine(ItemStack stack, EntityPlayer player, RayTraceResult mop)
 	{
 		if (player.worldObj.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
@@ -522,7 +532,7 @@ public abstract class PEToolBase extends ItemMode
 
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
 		IBlockState target = player.worldObj.getBlockState(mop.getBlockPos());
-		if (target.getBlock().getBlockHardness(player.worldObj, mop.getBlockPos()) <= -1 || !(canHarvestBlock(target.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(player.worldObj, mop.getBlockPos(), stack)))
+		if (target.getBlockHardness(player.worldObj, mop.getBlockPos()) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(player.worldObj, mop.getBlockPos(), stack)))
 		{
 			return;
 		}
@@ -541,7 +551,7 @@ public abstract class PEToolBase extends ItemMode
 		WorldHelper.createLootDrop(drops, player.worldObj, mop.getBlockPos());
 		if (!drops.isEmpty())
 		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.pedestruct", 1.0F, 1.0F);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 
@@ -562,7 +572,7 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
 			IBlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlock().getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state.getBlock(), stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
+			if (ItemHelper.isOre(state) && state.getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
 				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
 			}

@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.Random;
 
@@ -64,11 +64,11 @@ public final class MathUtils
 		double result = tickToSec(ticks);
 		if (result == 0.0D)
 		{
-			return result + " " + StatCollector.translateToLocal("pe.misc.seconds") + " (" + StatCollector.translateToLocal("pe.misc.every_tick") + ")";
+			return result + " " + I18n.translateToLocal("pe.misc.seconds") + " (" + I18n.translateToLocal("pe.misc.every_tick") + ")";
 		}
 		else
 		{
-			return result + " " + StatCollector.translateToLocal("pe.misc.seconds");
+			return result + " " + I18n.translateToLocal("pe.misc.seconds");
 		}
 	}
 

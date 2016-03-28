@@ -1,11 +1,16 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public class HyperkineticLens extends ItemCharge implements IProjectileShooter
@@ -17,16 +22,16 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		if (world.isRemote) return stack;
+		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		
 		if (shootProjectile(player, stack))
 		{
 			PlayerHelper.swingItem(player);
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
@@ -40,7 +45,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 			return false;
 		}
 
-		world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
+		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		world.spawnEntityInWorld(new EntityLensProjectile(world, player, this.getCharge(stack)));
 		return true;
 	}

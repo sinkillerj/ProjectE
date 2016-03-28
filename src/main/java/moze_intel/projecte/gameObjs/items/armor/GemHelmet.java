@@ -4,7 +4,8 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.EnumArmorType;
+import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -17,11 +18,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +36,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 {
     public GemHelmet()
     {
-        super(EnumArmorType.HEAD);
+        super(EntityEquipmentSlot.HEAD);
     }
 
     public static boolean isNightVisionEnabled(ItemStack helm)
@@ -64,26 +64,26 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             value = false;
         }
 
-        EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new ChatComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
-                .appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
+        player.addChatMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
+                .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
     {
-        tooltips.add(StatCollector.translateToLocal("pe.gem.helm.lorename"));
+        tooltips.add(I18n.translateToLocal("pe.gem.helm.lorename"));
 
         tooltips.add(String.format(
-                StatCollector.translateToLocal("pe.gem.nightvision.prompt"), ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
+                I18n.translateToLocal("pe.gem.nightvision.prompt"), ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
         ));
 
-        EnumChatFormatting e = isNightVisionEnabled(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        TextFormatting e = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;
         String s = isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(StatCollector.translateToLocal("pe.gem.nightvision_tooltip") + " "
-                + e + StatCollector.translateToLocal(s));
+        tooltips.add(I18n.translateToLocal("pe.gem.nightvision_tooltip") + " "
+                + e + I18n.translateToLocal(s));
     }
 
     @Override
@@ -118,11 +118,11 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
             if (isNightVisionEnabled(stack))
             {
-                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 220, 0));
+                player.addPotionEffect(new PotionEffect(MobEffects.nightVision, 220, 0));
             }
             else
             {
-                player.removePotionEffect(Potion.nightVision.id);
+                player.removePotionEffect(MobEffects.nightVision);
             }
 
             if (player.isInWater())
@@ -153,7 +153,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)
 			{
-				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ()));
+				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
 			}
         }
     }

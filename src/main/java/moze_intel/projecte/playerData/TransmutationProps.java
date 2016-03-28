@@ -10,13 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class TransmutationProps implements IExtendedEntityProperties
+public class TransmutationProps
 {
 	private final EntityPlayer player;
 
@@ -27,12 +26,13 @@ public class TransmutationProps implements IExtendedEntityProperties
 
 	public static void register(EntityPlayer player)
 	{
-		player.registerExtendedProperties(PROP_NAME, new TransmutationProps(player));
+		//player.registerExtendedProperties(PROP_NAME, new TransmutationProps(player));
 	}
 
 	public static TransmutationProps getDataFor(EntityPlayer player)
 	{
-		return ((TransmutationProps) player.getExtendedProperties(PROP_NAME));
+		return new TransmutationProps(player);
+		// todo 1.9
 	}
 
 	public TransmutationProps(EntityPlayer player)
@@ -128,7 +128,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
 	}
 
-	@Override
+	//@Override
 	public void saveNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = new NBTTagCompound();
@@ -148,7 +148,7 @@ public class TransmutationProps implements IExtendedEntityProperties
 		compound.setTag(PROP_NAME, properties);
 	}
 
-	@Override
+	//@Override
 	public void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
@@ -169,6 +169,4 @@ public class TransmutationProps implements IExtendedEntityProperties
 		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
 	}
 
-	@Override
-	public void init(Entity entity, World world) {}
 }

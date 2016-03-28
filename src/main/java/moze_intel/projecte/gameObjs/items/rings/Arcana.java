@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -19,11 +20,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -132,17 +138,17 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		{
 			if(!stack.getTagCompound().getBoolean("Active"))
 			{
-				list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
+				list.add(TextFormatting.RED + I18n.translateToLocal("pe.arcana.inactive"));
 			}
 			else
 			{
-				list.add(StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
+				list.add(I18n.translateToLocal("pe.arcana.mode") + TextFormatting.AQUA + I18n.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
 			}
 		}
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -151,7 +157,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			compound.setBoolean("Active", !compound.getBoolean("Active"));
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -191,7 +197,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						break;
 					}
 				}
-				world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
 	}
@@ -208,12 +214,12 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
 				world.spawnEntityInWorld(snowball);
-				world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F);
+				snowball.playSound(SoundEvents.entity_snowball_throw, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);
 				world.spawnEntityInWorld(fire);
-				world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
+				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player);

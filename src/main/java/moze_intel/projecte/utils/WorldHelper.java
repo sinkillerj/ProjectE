@@ -1,11 +1,7 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -14,7 +10,6 @@ import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -46,19 +41,21 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.HorseArmorType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
@@ -66,7 +63,6 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.EnumMap;
 import java.util.List;
@@ -188,7 +184,7 @@ public final class WorldHelper
 					world.setBlockState(pos, Blocks.ice.getDefaultState());
 				}
 			}
-			else if (b.isSideSolid(world, pos, EnumFacing.UP))
+			else if (b.isSideSolid(world.getBlockState(pos), world, pos, EnumFacing.UP))
 			{
 				Block b2 = world.getBlockState(pos.up()).getBlock();
 
@@ -228,12 +224,12 @@ public final class WorldHelper
 
 	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
 	{
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.silkTouch, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
 		{
 			return Lists.newArrayList(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)));
 		}
 
-		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
 	}
 
 	/**
@@ -291,16 +287,16 @@ public final class WorldHelper
 				if (world.rand.nextInt(2) == 0)
 				{
 					((EntitySkeleton) ent).setSkeletonType(1);
-					ent.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
+					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.stone_sword));
 				}
 				else
 				{
-					ent.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.bow));
 				}
 			}
 			else if (ent instanceof EntityPigZombie)
 			{
-				ent.setCurrentItemOrArmor(0, new ItemStack(Items.golden_sword));
+				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.golden_sword));
 			}
 			else if (ent instanceof EntitySheep)
 			{
@@ -316,8 +312,8 @@ public final class WorldHelper
 			}
 			else if (ent instanceof EntityHorse)
 			{
-				((EntityHorse) ent).setHorseType(MathUtils.randomIntInRange(0, 2));
-				if (((EntityHorse) ent).getHorseType() == 0)
+				((EntityHorse) ent).setType(HorseArmorType.getArmorType(MathUtils.randomIntInRange(0, 2)));
+				if (((EntityHorse) ent).getType() == HorseArmorType.HORSE)
 				{
 					((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
 				}
@@ -587,11 +583,11 @@ public final class WorldHelper
 						{
 							continue;
 						}
-						Vec3 p = new Vec3(x, y, z);
-						Vec3 t = new Vec3(ent.posX, ent.posY, ent.posZ);
+						Vec3d p = new Vec3d(x, y, z);
+						Vec3d t = new Vec3d(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
 
-						Vec3 r = new Vec3(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
+						Vec3d r = new Vec3d(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
 
 						ent.motionX += r.xCoord / 1.5D / distance;
 						ent.motionY += r.yCoord / 1.5D / distance;

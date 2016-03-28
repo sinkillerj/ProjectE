@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.CollectionHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +52,7 @@ public abstract class AbstractPage
 
     public static AbstractPage createItemPage(ItemStack stack, PageCategory category)
     {
-        String body = StatCollector.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5));
+        String body = I18n.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5));
         List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new ItemPage(stack.copy(), category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)
@@ -64,7 +64,7 @@ public abstract class AbstractPage
 
     public static AbstractPage createTextPages(String identifier, PageCategory category)
     {
-        String body = StatCollector.translateToLocal("pe.manual." + identifier);
+        String body = I18n.translateToLocal("pe.manual." + identifier);
         List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new TextPage(identifier, category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)

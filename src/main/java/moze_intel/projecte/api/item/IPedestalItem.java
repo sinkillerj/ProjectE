@@ -1,8 +1,8 @@
 package moze_intel.projecte.api.item;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface IPedestalItem {
 
-	String TOOLTIPDISABLED = EnumChatFormatting.RED + StatCollector.translateToLocal("pe.pedestal.item_disabled");
+	String TOOLTIPDISABLED = TextFormatting.RED + I18n.translateToLocal("pe.pedestal.item_disabled");
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside

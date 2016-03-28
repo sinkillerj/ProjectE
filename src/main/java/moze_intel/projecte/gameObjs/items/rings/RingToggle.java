@@ -1,11 +1,13 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public abstract class RingToggle extends ItemPE implements IModeChanger
@@ -47,12 +49,12 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	{
 		if (stack.getItemDamage() == 0)
 		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			stack.setItemDamage(1);
 		}
 		else
 		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.peuncharge", 1.0F, 1.0F);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			stack.setItemDamage(0);
 		}
 	}

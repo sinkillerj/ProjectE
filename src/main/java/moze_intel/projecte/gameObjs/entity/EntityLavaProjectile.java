@@ -9,9 +9,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
@@ -57,7 +59,7 @@ public class EntityLavaProjectile extends PEProjectile
                         if (PlayerHelper.hasBreakPermission(player, pos))
                         {
                             this.worldObj.setBlockToAir(pos);
-                            this.worldObj.playSoundEffect(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                            this.worldObj.playSound(null, pos, SoundEvents.entity_blaze_burn, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                         }
                     }
                 }
@@ -73,7 +75,7 @@ public class EntityLavaProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
 		if (this.worldObj.isRemote)
 		{

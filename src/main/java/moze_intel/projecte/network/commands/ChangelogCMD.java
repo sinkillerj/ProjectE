@@ -2,8 +2,9 @@ package moze_intel.projecte.network.commands;
 
 import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.List;
 
@@ -24,17 +25,17 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new ChatComponentTranslation("pe.command.changelog.uptodate"));
+			sender.addChatMessage(new TextComponentTranslation("pe.command.changelog.uptodate"));
 		}
 		else
 		{
 			for (String s: ChangelogCMD.changelog)
 			{
-				sender.addChatMessage(new ChatComponentText(s));
+				sender.addChatMessage(new TextComponentString(s));
 			}
 		}
 	}
@@ -46,7 +47,7 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
 	{
 		return true;
 	}

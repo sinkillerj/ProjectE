@@ -112,10 +112,10 @@ public class RecipesCovalenceRepair implements IRecipe
 			ItemArmor armor = ((ItemArmor) toRepair);
 			switch(armor.armorType)
 			{
-				case 0: return dustCounter == 5;
-				case 1: return dustCounter == 8;
-				case 2: return dustCounter == 7;
-				case 3: return dustCounter == 4;
+				case HEAD: return dustCounter == 5;
+				case CHEST: return dustCounter == 8;
+				case LEGS: return dustCounter == 7;
+				case FEET: return dustCounter == 4;
 				default: return false;
 			}
 		}

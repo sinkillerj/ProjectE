@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -17,9 +18,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.Optional;
@@ -40,7 +46,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
@@ -53,7 +59,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				if (FluidHelper.canFillTank(tank, FluidRegistry.WATER, sideHit))
 				{
 					FluidHelper.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
-					return true;
 				}
 			}
 
@@ -68,16 +73,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			}
 		}
 
-		return false;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				BlockPos blockPosHit = mop.getBlockPos();
 
@@ -85,7 +90,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				{
 					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)))
 					{
-						world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						placeWater(world, player, blockPosHit.offset(mop.sideHit));
 						PlayerHelper.swingItem(player);
 					}
@@ -93,16 +98,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	private void placeWater(World world, EntityPlayer player, BlockPos pos)
 	{
-		Material material = world.getBlockState(pos).getBlock().getMaterial();
+		Material material = world.getBlockState(pos).getMaterial();
 
 		if (world.provider.doesWaterVaporize())
 		{
-			world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+			world.playSound(null, pos, SoundEvents.block_fire_extinguish, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
 			for (int l = 0; l < 8; ++l)
 			{
@@ -171,7 +176,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		if (!world.provider.doesWaterVaporize())
 		{
-			world.playSoundAtEntity(player, "projecte:item.pewatermagic", 1.0F, 1.0F);
+			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			world.spawnEntityInWorld(new EntityWaterProjectile(world, player));
 			return true;
 		}
@@ -210,11 +215,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add(String.format(StatCollector.translateToLocal("pe.evertide.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(String.format(I18n.translateToLocal("pe.evertide.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
-		list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
-		list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
-		list.add(StatCollector.translateToLocal("pe.evertide.tooltip4"));
+		list.add(I18n.translateToLocal("pe.evertide.tooltip2"));
+		list.add(I18n.translateToLocal("pe.evertide.tooltip3"));
+		list.add(I18n.translateToLocal("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -282,9 +287,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.evertidePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.evertide.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(
+					I18n.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
 	}

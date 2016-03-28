@@ -12,18 +12,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.realms.RealmsVertexFormat;
-import net.minecraft.realms.Tezzelator;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -49,7 +48,7 @@ public class TransmutationRenderingEvent
 	@SubscribeEvent
 	public void preDrawHud(RenderGameOverlayEvent.Pre event)
 	{
-		if (event.type == ElementType.CROSSHAIRS)
+		if (event.getType() == ElementType.CROSSHAIRS)
 		{
 			if (transmutationResult != null)
 			{
@@ -57,7 +56,7 @@ public class TransmutationRenderingEvent
 				{
 					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
 					mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-					WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+					VertexBuffer wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
 					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
 					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
@@ -79,7 +78,10 @@ public class TransmutationRenderingEvent
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		World world = player.worldObj;
-		ItemStack stack = player.getHeldItem();
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+
+		if (stack == null)
+			stack = player.getHeldItem(EnumHand.OFF_HAND);
 		
 		if (stack == null || stack.getItem() != ObjHandler.philosStone || !stack.hasTagCompound())
 		{
@@ -87,13 +89,13 @@ public class TransmutationRenderingEvent
 			return;
 		}
 		
-		playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.partialTicks;
-		playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.partialTicks;
-		playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.partialTicks;
+		playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.getPartialTicks();
+		playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
+		playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
 		
-		MovingObjectPosition mop = event.target;
+		RayTraceResult mop = event.getTarget();
 		
-		if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
+		if (mop != null && mop.typeOfHit == Type.BLOCK)
 		{
 			IBlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
@@ -130,7 +132,7 @@ public class TransmutationRenderingEvent
 		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tess = Tessellator.getInstance();
-		WorldRenderer wr = tess.getWorldRenderer();
+		VertexBuffer wr = tess.getBuffer();
 		
 		for (AxisAlignedBB b : renderList)
 		{

@@ -1,6 +1,6 @@
 package moze_intel.projecte.manual;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,7 +20,7 @@ public class TextPage extends AbstractPage
     @Override
     public String getHeaderText()
     {
-        return StatCollector.translateToLocal("pe.manual." + header + ".header");
+        return I18n.translateToLocal("pe.manual." + header + ".header");
     }
 
     @Override

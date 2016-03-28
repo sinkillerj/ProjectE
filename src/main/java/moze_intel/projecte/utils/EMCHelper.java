@@ -239,20 +239,19 @@ public final class EMCHelper
 	{
 		int result = 0;
 
-		Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
 		if (!enchants.isEmpty())
 		{
-			for (Map.Entry<Integer, Integer> entry : enchants.entrySet())
+			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet())
 			{
-				Enchantment ench = Enchantment.getEnchantmentById(entry.getKey());
-
-				if (ench == null || ench.getWeight() == 0)
+				Enchantment ench = entry.getKey();
+				if (ench == null || ench.getWeight().getWeight() == 0)
 				{
 					continue;
 				}
 
-				result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
+				result += Constants.ENCH_EMC_BONUS / ench.getWeight().getWeight() * entry.getValue();
 			}
 		}
 

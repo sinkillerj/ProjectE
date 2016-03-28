@@ -1,66 +1,42 @@
 {
     "item.pewindmagic":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/pewindmagic"
-        ]
+        "sounds": [ "projecte:item/pewindmagic" ],
+        "subtitle": "pe.subtitle.pewindmagic"
     },
     "item.pewatermagic":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/pewatermagic"
-        ]
+        "sounds": [ "projecte:item/pewatermagic" ],
+        "subtitle": "pe.subtitle.pewatermagic"
     },
     "item.pepower":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/pepower"
-        ]
+        "sounds": [ "projecte:item/pepower" ],
+        "subtitle": "pe.subtitle.pepower"
     },
     "item.peheal":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/peheal"
-        ]
+        "sounds": [ "projecte:item/peheal" ],
+        "subtitle": "pe.subtitle.peheal"
     },
     "item.pedestruct":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/pedestruct"
-        ]
+        "sounds": [ "projecte:item/pedestruct" ],
+        "subtitle": "pe.subtitle.pedestruct"
     },
     "item.pecharge":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/pecharge"
-        ]
+        "sounds": [ "projecte:item/pecharge" ],
+        "subtitle": "pe.subtitle.pecharge"
     },
     "item.peuncharge":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/peuncharge"
-        ]
+        "sounds": [ "projecte:item/peuncharge" ],
+        "subtitle": "pe.subtitle.peuncharge"
     },
     "item.petransmute":
     {
-        "category": "master",
-        "sounds":
-        [
-            "item/petransmute"
-        ]
+        "sounds": [ "projecte:item/petransmute" ],
+        "subtitle": "pe.subtitle.petransmute"
     }
 }

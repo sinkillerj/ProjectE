@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -25,10 +26,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,19 +46,19 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public PhilosophersStone()
 	{
 		super("philosophers_stone", (byte)4, new String[] {
-				StatCollector.translateToLocal("pe.philstone.mode1"),
-				StatCollector.translateToLocal("pe.philstone.mode2"),
-				StatCollector.translateToLocal("pe.philstone.mode3")});
+				I18n.translateToLocal("pe.philstone.mode1"),
+				I18n.translateToLocal("pe.philstone.mode2"),
+				I18n.translateToLocal("pe.philstone.mode3")});
 		this.setContainerItem(this);
 		this.setNoRepair();
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float px, float py, float pz)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float px, float py, float pz)
 	{
 		if (world.isRemote)
 		{
-			return false;
+			return EnumActionResult.SUCCESS;
 		}
 
 		IBlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
@@ -69,16 +73,16 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
 				if (world.rand.nextInt(8) == 0)
 				{
-					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY() + 1, pos.getZ()), new TargetPoint(world.provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY() + 1, pos.getZ()), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 				}
 			}
 
-			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 
 			PlayerHelper.swingItem(player);
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
@@ -96,7 +100,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
 	{
 		World world = player.worldObj;
-		world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
+		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		world.spawnEntityInWorld(new EntityMobRandomizer(world, player));
 		return true;
 	}
@@ -114,7 +118,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
 	{
-		list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+		list.add(String.format(I18n.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
 	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, EntityPlayer player, EnumFacing sideHit, int mode, int charge)

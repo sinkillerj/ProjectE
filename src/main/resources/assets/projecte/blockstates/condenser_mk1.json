@@ -3,7 +3,8 @@
   "defaults": {
     "textures": {
       "particle": "projecte:blocks/condenser"
-    }
+    },
+    "transform": "forge:default-block"
   },
   "variants": {
     "normal": [{ "model": "projecte:dummy" }],

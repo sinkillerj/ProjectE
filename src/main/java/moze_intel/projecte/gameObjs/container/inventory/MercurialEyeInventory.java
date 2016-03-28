@@ -5,8 +5,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class MercurialEyeInventory implements IInventory
@@ -14,8 +15,9 @@ public class MercurialEyeInventory implements IInventory
 	private final ItemStack invItem;
 	private ItemStack kleinStar;
 	private ItemStack target;
+	public final EnumHand hand;
 	
-	public MercurialEyeInventory(ItemStack stack)
+	public MercurialEyeInventory(ItemStack stack, EnumHand hand)
 	{
 		invItem = stack;
 		
@@ -25,6 +27,8 @@ public class MercurialEyeInventory implements IInventory
 		}
 		
 		readFromNBT(invItem.getTagCompound());
+
+		this.hand = hand;
 	}
 
 	@Override
@@ -115,9 +119,9 @@ public class MercurialEyeInventory implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getName());
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override

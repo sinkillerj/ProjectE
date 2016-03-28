@@ -2,11 +2,8 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
 
-import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
@@ -14,22 +11,19 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
 
-import com.google.common.collect.Queues;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class TransmutationInventory implements IInventory
 {
@@ -44,9 +38,11 @@ public class TransmutationInventory implements IInventory
 	public String filter = "";
 	public int searchpage = 0;
 	public List<ItemStack> knowledge = Lists.newArrayList();
+	public final EnumHand hand;
 	
-	public TransmutationInventory(EntityPlayer player)
+	public TransmutationInventory(EntityPlayer player, EnumHand hand)
 	{
+		this.hand = hand;
 		this.player = player;
 	}
 	
@@ -366,9 +362,9 @@ public class TransmutationInventory implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getName());
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override

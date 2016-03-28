@@ -2,11 +2,15 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
@@ -32,11 +36,12 @@ public class DarkShears extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase ent)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase ent)
 	{
-		if (block.getMaterial() != Material.leaves && block != Blocks.web && block != Blocks.tallgrass && block != Blocks.vine && block != Blocks.tripwire && !(block instanceof IShearable))
+		Block block = state.getBlock();
+		if (state.getMaterial() != Material.leaves && block != Blocks.web && block != Blocks.tallgrass && block != Blocks.vine && block != Blocks.tripwire && !(block instanceof IShearable))
 		{
-			return super.onBlockDestroyed(stack, world, block, pos, ent);
+			return super.onBlockDestroyed(stack, world, state, pos, ent);
 		}
 		else
 		{
@@ -45,16 +50,16 @@ public class DarkShears extends PEToolBase
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack) 
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return super.canHarvestBlock(block, stack) || block == Blocks.redstone_wire || block == Blocks.tripwire;
+		return super.canHarvestBlock(state, stack) || state.getBlock() == Blocks.redstone_wire || state.getBlock() == Blocks.tripwire;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		shearEntityAOE(stack, player, 0);
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override

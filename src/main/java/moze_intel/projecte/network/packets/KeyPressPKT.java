@@ -16,7 +16,8 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -53,7 +54,7 @@ public class KeyPressPKT implements IMessage
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    ItemStack stack = player.getHeldItem();
+                    ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND); //todo 1.9
 
                     switch (message.key)
                     {
@@ -87,7 +88,7 @@ public class KeyPressPKT implements IMessage
                                 if (GemArmorBase.hasAnyPiece(player))
                                 {
                                     PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
-                                    player.addChatMessage(new ChatComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
+                                    player.addChatMessage(new TextComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
                                 }
                             }
                             break;

@@ -15,7 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -72,7 +72,7 @@ public class GUIManual extends GuiScreen
 		this.buttonList.add(new PageTurnButton(0, Math.round((k + 256 - 40) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), true));
 		this.buttonList.add(new PageTurnButton(1, Math.round((k + 20) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), false));
 
-		String text = StatCollector.translateToLocal("pe.manual.index_button");
+		String text = I18n.translateToLocal("pe.manual.index_button");
 		int stringWidth = mc.fontRendererObj.getStringWidth(text);
 		this.buttonList.add(new TocButton(2, (this.width / 2) - (stringWidth / 2), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f), stringWidth, 15, text));
 

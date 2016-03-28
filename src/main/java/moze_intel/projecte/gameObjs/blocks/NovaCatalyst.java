@@ -5,7 +5,8 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.BlockPos;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
@@ -26,7 +27,7 @@ public class NovaCatalyst extends BlockTNT
 			{
 				EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
 				world.spawnEntityInWorld(catalystPrimed);
-				world.playSoundAtEntity(catalystPrimed, "game.tnt.primed", 1.0F, 1.0F);
+				catalystPrimed.playSound(SoundEvents.entity_tnt_primed, 1, 1);
 			}
 		}
 	}
@@ -37,7 +38,7 @@ public class NovaCatalyst extends BlockTNT
 		if (!world.isRemote)
 		{
 			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
-			catalystPrimed.fuse = world.rand.nextInt(catalystPrimed.fuse / 4) + catalystPrimed.fuse / 8;
+			catalystPrimed.setFuse(world.rand.nextInt(catalystPrimed.getFuse() / 4) + catalystPrimed.getFuse() / 8);
 			world.spawnEntityInWorld(catalystPrimed);
 		}
 	}

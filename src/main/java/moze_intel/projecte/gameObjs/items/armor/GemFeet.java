@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.EnumArmorType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import moze_intel.projecte.utils.PEKeybind;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -14,20 +14,24 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.UUID;
 
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister
 {
+
+    private static final UUID MODIFIER = UUID.randomUUID();
+
     public GemFeet()
     {
-        super(EnumArmorType.FEET);
+        super(EntityEquipmentSlot.FEET);
     }
 
     public static boolean isStepAssistEnabled(ItemStack boots)
@@ -56,10 +60,10 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
             value = false;
         }
 
-        EnumChatFormatting e = value ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new ChatComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
-                .appendSibling(ChatHelper.modifyColor(new ChatComponentTranslation(s), e)));
+        player.addChatMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
+                .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
     }
 
     @Override
@@ -103,14 +107,14 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
     {
-        tooltips.add(StatCollector.translateToLocal("pe.gem.feet.lorename"));
+        tooltips.add(I18n.translateToLocal("pe.gem.feet.lorename"));
         tooltips.add(String.format(
-                StatCollector.translateToLocal("pe.gem.stepassist.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+                I18n.translateToLocal("pe.gem.stepassist.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-        EnumChatFormatting e = canStep(stack) ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
+        TextFormatting e = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
         String s = canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(StatCollector.translateToLocal("pe.gem.stepassist_tooltip") + " "
-                + e + StatCollector.translateToLocal(s));
+        tooltips.add(I18n.translateToLocal("pe.gem.stepassist_tooltip") + " "
+                + e + I18n.translateToLocal(s));
     }
 
     private boolean canStep(ItemStack stack)
@@ -119,23 +123,24 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     }
 
     @Override
-    public Multimap getAttributeModifiers(ItemStack stack)
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
     {
-        Multimap multimap = super.getAttributeModifiers(stack);
-        multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Armor modifier", 1.0, 2));
+        if (slot != EntityEquipmentSlot.FEET) return super.getAttributeModifiers(slot, stack);
+        Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
         return multimap;
     }
 
     @Override
     public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
     {
-        return player.getCurrentArmor(0) == stack;
+        return player.getItemStackFromSlot(EntityEquipmentSlot.FEET) == stack;
     }
 
     @Override
     public boolean canAssistStep(ItemStack stack, EntityPlayerMP player)
     {
-        return player.getCurrentArmor(0) == stack
+        return player.getItemStackFromSlot(EntityEquipmentSlot.FEET) == stack
                 && canStep(stack);
     }
 }

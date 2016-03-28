@@ -19,9 +19,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -130,7 +133,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -154,7 +157,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			
 			changeMode(stack, newMode);
 		}
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	/**
@@ -234,7 +237,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
-					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ));
+					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ, false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
 			}
@@ -251,9 +254,9 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.swrgPedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.swrg.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.swrg.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(
+					I18n.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
 		}
 		return list;
 	}

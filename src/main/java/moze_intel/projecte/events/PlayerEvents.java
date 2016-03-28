@@ -15,19 +15,22 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
@@ -37,7 +40,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void cloneEvent(PlayerEvent.Clone evt)
 	{
-		if (!evt.wasDeath)
+		if (!evt.isWasDeath())
 		{
 			return; // Vanilla handles it for us.
 		}
@@ -45,11 +48,11 @@ public class PlayerEvents
 		NBTTagCompound bag = new NBTTagCompound();
 		NBTTagCompound transmute = new NBTTagCompound();
 
-		AlchBagProps.getDataFor(evt.original).saveNBTData(bag); // Cache old
-		TransmutationProps.getDataFor(evt.original).saveNBTData(transmute);
+		AlchBagProps.getDataFor(evt.getOriginal()).saveNBTData(bag); // Cache old
+		TransmutationProps.getDataFor(evt.getOriginal()).saveNBTData(transmute);
 
-		AlchBagProps.getDataFor(evt.entityPlayer).loadNBTData(bag); // Reapply on new
-		TransmutationProps.getDataFor(evt.entityPlayer).loadNBTData(transmute);
+		AlchBagProps.getDataFor(evt.getEntityPlayer()).loadNBTData(bag); // Reapply on new
+		TransmutationProps.getDataFor(evt.getEntityPlayer()).loadNBTData(transmute);
 
 		PELogger.logDebug("Reapplied bag and knowledge on player respawning");
 	}
@@ -57,9 +60,9 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{
-		if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayerMP)
+		if (!event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityPlayerMP)
 		{
-			EntityPlayerMP player = ((EntityPlayerMP) event.entity);
+			EntityPlayerMP player = ((EntityPlayerMP) event.getEntity());
 			Transmutation.sync(player);
 			AlchemicalBags.syncFull(player);
 		}
@@ -68,13 +71,13 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onConstruct(EntityEvent.EntityConstructing evt)
 	{
-		if (evt.entity instanceof EntityPlayer && !(evt.entity instanceof FakePlayer))
+		if (evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
 		{
-			TransmutationOffline.clear(evt.entity.getUniqueID());
+			TransmutationOffline.clear(evt.getEntity().getUniqueID());
 			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
 
-			TransmutationProps.register(((EntityPlayer) evt.entity));
-			AlchBagProps.register(((EntityPlayer) evt.entity));
+			TransmutationProps.register(((EntityPlayer) evt.getEntity()));
+			AlchBagProps.register(((EntityPlayer) evt.getEntity()));
 		}
 	}
 
@@ -83,10 +86,10 @@ public class PlayerEvents
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			IChatComponent prior = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.high_alchemist"), EnumChatFormatting.BLUE);
-			IChatComponent playername = ChatHelper.modifyColor(new ChatComponentText(" " + evt.player.getName() + " "), EnumChatFormatting.GOLD);
-			IChatComponent latter = ChatHelper.modifyColor(new ChatComponentTranslation("pe.server.has_joined"), EnumChatFormatting.BLUE);
-			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
+			ITextComponent prior = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.high_alchemist"), TextFormatting.BLUE);
+			ITextComponent playername = ChatHelper.modifyColor(new TextComponentString(" " + evt.player.getName() + " "), TextFormatting.GOLD);
+			ITextComponent latter = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.has_joined"), TextFormatting.BLUE);
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}
 	}
 
@@ -99,7 +102,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void pickupItem(EntityItemPickupEvent event)
 	{
-		EntityPlayer player = event.entityPlayer;
+		EntityPlayer player = event.getEntityPlayer();
 		World world = player.worldObj;
 		
 		if (world.isRemote)
@@ -112,19 +115,19 @@ public class PlayerEvents
 			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
 			
 			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) || ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1))
-					&& ItemHelper.hasSpace(inv, event.item.getEntityItem()))
+					&& ItemHelper.hasSpace(inv, event.getItem().getEntityItem()))
 			{
-				ItemStack remain = ItemHelper.pushStackInInv(inv, event.item.getEntityItem());
+				ItemStack remain = ItemHelper.pushStackInInv(inv, event.getItem().getEntityItem());
 				
 				if (remain == null)
 				{
-					event.item.setPickupDelay(10);
-					event.item.setDead();
-					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					event.getItem().setPickupDelay(10);
+					event.getItem().setDead();
+					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}
 				else 
 				{
-					event.item.setEntityItemStack(remain);
+					event.getItem().setEntityItemStack(remain);
 				}
 				
 				event.setCanceled(true);
@@ -141,19 +144,19 @@ public class PlayerEvents
 			
 			ItemStack[] inv = AlchemicalBags.get(player, (byte) bag.getItemDamage());
 			
-			if (ItemHelper.hasSpace(inv, event.item.getEntityItem()))
+			if (ItemHelper.hasSpace(inv, event.getItem().getEntityItem()))
 			{
-				ItemStack remain = ItemHelper.pushStackInInv(inv, event.item.getEntityItem());
+				ItemStack remain = ItemHelper.pushStackInInv(inv, event.getItem().getEntityItem());
 				
 				if (remain == null)
 				{
-					event.item.setPickupDelay(10);
-					event.item.setDead();
-					world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					event.getItem().setPickupDelay(10);
+					event.getItem().setDead();
+					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 				}
 				else 
 				{
-					event.item.setEntityItemStack(remain);
+					event.getItem().setEntityItemStack(remain);
 				}
 				
 				AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);

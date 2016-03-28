@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
 public class GUIDMFurnace extends GuiContainer
@@ -47,7 +47,7 @@ public class GUIDMFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.dmfurnace.shortname"), 57, 5, 4210752);
-		this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 57, ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(I18n.translateToLocal("pe.dmfurnace.shortname"), 57, 5, 4210752);
+		this.fontRendererObj.drawString(I18n.translateToLocal("container.inventory"), 57, ySize - 96 + 2, 4210752);
 	}
 }

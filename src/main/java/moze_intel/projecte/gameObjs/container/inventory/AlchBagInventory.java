@@ -4,8 +4,9 @@ import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 
@@ -13,13 +14,13 @@ public class AlchBagInventory implements IInventory
 {
 	private final ItemStack invItem;
 	private ItemStack[] inventory;
-	private EntityPlayer player;
+	public final EnumHand hand;
 	
-	public AlchBagInventory(EntityPlayer player, ItemStack stack)
+	public AlchBagInventory(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		invItem = stack;
-		this.player = player;
 		inventory = AlchemicalBags.get(player, (byte) stack.getItemDamage());
+		this.hand = hand;
 	}
 
 	@Override
@@ -94,8 +95,8 @@ public class AlchBagInventory implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentTranslation(getName());
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override

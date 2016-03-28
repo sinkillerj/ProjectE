@@ -7,9 +7,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
@@ -63,7 +64,7 @@ public class EntityWaterProjectile extends PEProjectile
                         continue;
                     }
 
-                    this.worldObj.playSoundAtEntity(this, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                    playSound(SoundEvents.entity_generic_burn, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                 }
 			}
 
@@ -82,14 +83,14 @@ public class EntityWaterProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
 		if (this.worldObj.isRemote)
 		{
 			return;
 		}
 
-		if (mop.typeOfHit == MovingObjectType.BLOCK)
+		if (mop.typeOfHit == Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 			if (worldObj.isAirBlock(pos))
@@ -97,7 +98,7 @@ public class EntityWaterProjectile extends PEProjectile
 				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.flowing_water.getDefaultState());
 			}
 		}
-		else if (mop.typeOfHit == MovingObjectType.ENTITY)
+		else if (mop.typeOfHit == Type.ENTITY)
 		{
 			Entity ent = mop.entityHit;
 

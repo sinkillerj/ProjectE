@@ -5,7 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class Tome extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
 	{
-		list.add(StatCollector.translateToLocal("pe.tome.tooltip1"));
+		list.add(I18n.translateToLocal("pe.tome.tooltip1"));
 	}
 }
 

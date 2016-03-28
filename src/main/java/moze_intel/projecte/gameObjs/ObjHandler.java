@@ -130,7 +130,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EnumArmorType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -199,15 +199,15 @@ public class ObjHandler
 	public static Item rmKatar = new RedKatar();
 	public static Item rmStar = new RedStar();
 
-	public static Item dmHelmet = new DMArmor(EnumArmorType.HEAD);
-	public static Item dmChest = new DMArmor(EnumArmorType.CHEST);
-	public static Item dmLegs = new DMArmor(EnumArmorType.LEGS);
-	public static Item dmFeet = new DMArmor(EnumArmorType.FEET);
+	public static Item dmHelmet = new DMArmor(EntityEquipmentSlot.HEAD);
+	public static Item dmChest = new DMArmor(EntityEquipmentSlot.CHEST);
+	public static Item dmLegs = new DMArmor(EntityEquipmentSlot.LEGS);
+	public static Item dmFeet = new DMArmor(EntityEquipmentSlot.FEET);
 
-	public static Item rmHelmet = new RMArmor(EnumArmorType.HEAD);
-	public static Item rmChest = new RMArmor(EnumArmorType.CHEST);
-	public static Item rmLegs = new RMArmor(EnumArmorType.LEGS);
-	public static Item rmFeet = new RMArmor(EnumArmorType.FEET);
+	public static Item rmHelmet = new RMArmor(EntityEquipmentSlot.HEAD);
+	public static Item rmChest = new RMArmor(EntityEquipmentSlot.CHEST);
+	public static Item rmLegs = new RMArmor(EntityEquipmentSlot.LEGS);
+	public static Item rmFeet = new RMArmor(EntityEquipmentSlot.FEET);
 
 	public static Item gemHelmet = new GemHelmet();
 	public static Item gemChest = new GemChest();

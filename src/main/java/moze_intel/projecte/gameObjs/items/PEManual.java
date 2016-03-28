@@ -3,6 +3,9 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -15,12 +18,12 @@ public class PEManual extends ItemPE
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
     {
         if (world.isRemote)
         {
             FMLCommonHandler.instance().showGuiScreen(new GUIManual());
         }
-        return stack;
+        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
 }

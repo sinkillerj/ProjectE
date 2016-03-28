@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 public final class Comparators
 {
@@ -109,7 +109,7 @@ public final class Comparators
 	public static final Comparator<AbstractPage> PAGE_HEADER = new Comparator<AbstractPage>() {
         @Override
         public int compare(AbstractPage o1, AbstractPage o2) {
-            return StatCollector.translateToLocal(o1.getHeaderText()).compareToIgnoreCase(StatCollector.translateToLocal(o2.getHeaderText()));
+            return I18n.translateToLocal(o1.getHeaderText()).compareToIgnoreCase(I18n.translateToLocal(o2.getHeaderText()));
         }
     };
 }

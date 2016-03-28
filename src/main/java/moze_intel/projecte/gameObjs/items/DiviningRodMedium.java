@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.items;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -29,7 +29,7 @@ public class DiviningRodMedium extends DiviningRodLow
 	{
 		if (stack.hasTagCompound())
 		{
-			list.add(StatCollector.translateToLocal("pe.item.mode") + ": " + EnumChatFormatting.AQUA + modes[getMode(stack)]);
+			list.add(I18n.translateToLocal("pe.item.mode") + ": " + TextFormatting.AQUA + modes[getMode(stack)]);
 		}
 	}
 }

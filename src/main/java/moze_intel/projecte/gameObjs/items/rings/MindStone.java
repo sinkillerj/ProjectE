@@ -8,10 +8,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -56,7 +58,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 	
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float par8, float par9, float par10)
 	{
 		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
 		{
@@ -65,11 +67,10 @@ public class MindStone extends RingToggle implements IPedestalItem
 			if (toAdd > 0)
 			{
 				addXP(player, toAdd);
-				return true;
 			}
 		}
 		
-		return false;
+		return EnumActionResult.SUCCESS;
 	}
 	
 	private void removeXP(EntityPlayer player, int amount)
@@ -226,6 +227,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.mind.pedestal1"));
+		return Lists.newArrayList(I18n.translateToLocal("pe.mind.pedestal1"));
 	}
 }

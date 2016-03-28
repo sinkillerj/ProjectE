@@ -11,7 +11,7 @@ import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class NEIPhiloSmeltingHandler extends ShapedRecipeHandler
 {
-	private static String name = StatCollector.translateToLocal("pe.nei.philo");
+	private static String name = I18n.translateToLocal("pe.nei.philo");
 
 	private static String id = "philoSmelting";
 

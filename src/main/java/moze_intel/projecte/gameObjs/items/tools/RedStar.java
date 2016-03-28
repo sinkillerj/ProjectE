@@ -16,11 +16,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 public class RedStar extends PEToolBase
@@ -28,8 +32,8 @@ public class RedStar extends PEToolBase
 	public RedStar() 
 	{
 		super("rm_morning_star", (byte) 4, new String[]{
-				StatCollector.translateToLocal("pe.morningstar.mode1"), StatCollector.translateToLocal("pe.morningstar.mode2"),
-				StatCollector.translateToLocal("pe.morningstar.mode3"), StatCollector.translateToLocal("pe.morningstar.mode4"),
+				I18n.translateToLocal("pe.morningstar.mode1"), I18n.translateToLocal("pe.morningstar.mode2"),
+				I18n.translateToLocal("pe.morningstar.mode3"), I18n.translateToLocal("pe.morningstar.mode4"),
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
@@ -64,14 +68,14 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, pos, eLiving);
+		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -80,13 +84,13 @@ public class RedStar extends PEToolBase
 				mineOreVeinsInAOE(stack, player);
 			}
 
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 
 			if (mop == null)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
-			else if (mop.typeOfHit == MovingObjectType.BLOCK)
+			else if (mop.typeOfHit == Type.BLOCK)
 			{
 				IBlockState state = world.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
@@ -120,11 +124,11 @@ public class RedStar extends PEToolBase
 			}
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
 		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
@@ -132,22 +136,22 @@ public class RedStar extends PEToolBase
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, state) + 48.0F;
+		return super.getStrVsBlock(stack, state) + 48.0F;
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{
-			return super.getAttributeModifiers(stack);
+			return super.getAttributeModifiers(slot, stack);
 		}
 
 		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = STAR_BASE_ATTACK + charge;
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 }

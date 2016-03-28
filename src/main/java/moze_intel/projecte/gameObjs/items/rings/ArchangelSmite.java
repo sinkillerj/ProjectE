@@ -10,9 +10,12 @@ import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -29,7 +32,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		EntityHomingArrow arrow = new EntityHomingArrow(world, player, 2.0F);
 
@@ -38,7 +41,7 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 			world.spawnEntityInWorld(arrow);
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -74,9 +77,9 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.archangel.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(
+					I18n.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
 		}
 		return list;
 	}

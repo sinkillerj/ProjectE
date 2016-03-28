@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -91,7 +92,7 @@ public class CondenserContainer extends Container
 	}
 
 	@Override
-	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot == 0 && tile.getStackInSlot(slot) != null)
 		{
@@ -105,6 +106,6 @@ public class CondenserContainer extends Container
 			return null;
 		}
 
-		return super.slotClick(slot, button, flag, player);
+		return super.func_184996_a(slot, button, flag, player);
 	}
 }

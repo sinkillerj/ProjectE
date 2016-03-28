@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -20,6 +21,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -82,12 +87,12 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			RayTraceResult mop = getMovingObjectPositionFromPlayer(world, player, false);
+			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockTNT
 						&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.getBlockPos()))
@@ -97,9 +102,9 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 					world.setBlockToAir(mop.getBlockPos());
 				}
 			}
-			world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
+			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -168,9 +173,9 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.ignitePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.ignition.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.ignition.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(
+					I18n.translateToLocal("pe.ignition.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
 		}
 		return list;
 	}

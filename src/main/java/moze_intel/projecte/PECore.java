@@ -25,6 +25,7 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
@@ -94,6 +95,7 @@ public class PECore
 		MinecraftForge.EVENT_BUS.register(new TickEvents());
 		MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 
+		SoundHandler.init();
 		ObjHandler.register();
 		ObjHandler.addRecipes();
 

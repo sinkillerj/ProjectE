@@ -18,17 +18,13 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationProps;
 import moze_intel.projecte.rendering.*;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.ReflectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -38,11 +34,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class ClientProxy implements IProxy
@@ -194,14 +188,14 @@ public class ClientProxy implements IProxy
 
 	private void registerBlock(Block b)
 	{
-		String name = GameRegistry.findUniqueIdentifierFor(b).name;
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation("projecte:" + name, "inventory"));
+		String name = GameData.getBlockRegistry().getNameForObject(b).toString();
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation(name, "inventory"));
 	}
 
 	private void registerItem(Item i)
 	{
-		String name = GameRegistry.findUniqueIdentifierFor(i).name;
-		ModelLoader.setCustomModelResourceLocation(i, 0, new ModelResourceLocation("projecte:" + name, "inventory"));
+		String name = GameData.getItemRegistry().getNameForObject(i).toString();
+		ModelLoader.setCustomModelResourceLocation(i, 0, new ModelResourceLocation(name, "inventory"));
 	}
 
 	private void registerCovalenceDust()
@@ -295,8 +289,11 @@ public class ClientProxy implements IProxy
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation("projecte:voidring_on", "inventory"));
 
 		// Arcana needs its own mess because it uses NBT to store Active state instead of meta
-		ModelLoader.addVariantName(ObjHandler.arcana, "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
-				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on");
+		String[] names = { "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
+				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on" };
+		for (String name : names)
+			ModelLoader.registerItemVariants(ObjHandler.arcana, new ModelResourceLocation(name, "inventory"));
+
 		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) {

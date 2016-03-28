@@ -6,8 +6,12 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class DarkShovel extends PEToolBase
@@ -32,15 +36,15 @@ public class DarkShovel extends PEToolBase
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK
 				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.gravel)
 		{
 			tryVeinMine(stack, player, mop);
@@ -49,14 +53,15 @@ public class DarkShovel extends PEToolBase
 		{
 			digAOE(stack, world, player, false, 0);
 		}
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
+		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
 		return multimap;
 	}
 }

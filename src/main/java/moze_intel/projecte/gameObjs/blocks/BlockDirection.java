@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +14,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -28,15 +29,9 @@ public abstract class BlockDirection extends Block
 	}
 
 	@Override
-	public int getRenderType()
+	public BlockStateContainer createBlockState()
 	{
-		return 3;
-	}
-
-	@Override
-	public BlockState createBlockState()
-	{
-		return new BlockState(this, FACING);
+		return new BlockStateContainer(this, FACING);
 	}
 
 	@Override
@@ -89,7 +84,7 @@ public abstract class BlockDirection extends Block
 			return;
 		}
 		
-		ItemStack stack = player.getHeldItem();
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		
 		if (stack != null && stack.getItem() == ObjHandler.philosStone)
 		{

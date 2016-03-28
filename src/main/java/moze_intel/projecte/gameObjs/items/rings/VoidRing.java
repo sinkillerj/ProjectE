@@ -10,19 +10,15 @@ import moze_intel.projecte.api.item.IPedestalItem;
 
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-
-import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
@@ -75,11 +71,11 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		{
 			if (player.isRiding())
 			{
-				player.mountEntity(null);
+				player.dismountRidingEntity();
 			}
 
-			player.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-			player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_endermen_teleport, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
 		}

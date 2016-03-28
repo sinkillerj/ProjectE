@@ -13,15 +13,16 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -89,9 +90,9 @@ public final class PlayerHelper
 
 	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
 	{
-		Pair<Vec3, Vec3> vecs = getLookVec(player, maxDistance);
-		MovingObjectPosition mop = player.worldObj.rayTraceBlocks(vecs.getLeft(), vecs.getRight());
-		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
+		RayTraceResult mop = player.worldObj.rayTraceBlocks(vecs.getLeft(), vecs.getRight());
+		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
 			return mop.getBlockPos();
 
@@ -105,26 +106,26 @@ public final class PlayerHelper
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Pair<Vec3, Vec3> getLookVec(EntityPlayer player, double maxDistance)
+	public static Pair<Vec3d, Vec3d> getLookVec(EntityPlayer player, double maxDistance)
 	{
 		// Thank you ForgeEssentials
-		Vec3 look = player.getLook(1.0F);
-		Vec3 playerPos = new Vec3(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
-		Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
-		Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+		Vec3d look = player.getLook(1.0F);
+		Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+		Vec3d src = playerPos.addVector(0, player.getEyeHeight(), 0);
+		Vec3d dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 
 	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
 	{
 		return hasEditPermission(player, pos)
-				&& !(ForgeHooks.onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, pos) == -1);
+				&& !(ForgeHooks.onBlockBreakEvent(player.worldObj, player.interactionManager.getGameType(), player, pos) == -1);
 	}
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
 	{
 		return player.canPlayerEdit(pos, EnumFacing.NORTH, null) // todo 1.8 shim value, does this still work?
-				&& !MinecraftServer.getServer().isBlockProtected(player.worldObj, pos, player);
+				&& !FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player);
 	}
 
 

@@ -5,10 +5,13 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -23,6 +26,17 @@ public final class ReflectionHelper
 	private static final String[] playerCapaWalkSpeedNames = new String[] {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] explosionSizeNames = new String[] {"explosionSize", "i", "field_77280_f"};
 	private static final String[] skinMapNames = new String[] {"skinMap", "l", "field_178636_l"};
+	private static final String[] registerSoundNames = { "registerSound", "a", "func_187502_a" };
+
+	protected static void registerSound(String name)
+	{
+		Method m = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(SoundEvent.class, null, registerSoundNames, String.class);
+		try {
+			m.invoke(null, name);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	protected static boolean getArrowInGround(EntityArrow instance)
 	{
@@ -32,12 +46,6 @@ public final class ReflectionHelper
 	protected static float getExplosionSize(Explosion instance)
 	{
 		return net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue(Explosion.class, instance, explosionSizeNames);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static Map<String, RenderPlayer> getSkinMap(RenderManager instance)
-	{
-		return net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue(RenderManager.class, instance, skinMapNames);
 	}
 
 	protected static void setEntityFireImmunity(Entity instance, boolean value)

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,9 +36,9 @@ public class NovaCatalystRenderer extends Render
 		GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 		float f2;
 
-		if ((float)entity.fuse - partialTicks + 1.0F < 10.0F)
+		if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
 		{
-			f2 = 1.0F - ((float)entity.fuse - partialTicks + 1.0F) / 10.0F;
+			f2 = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
 			f2 = MathHelper.clamp_float(f2, 0.0F, 1.0F);
 			f2 *= f2;
 			f2 *= f2;
@@ -46,13 +46,13 @@ public class NovaCatalystRenderer extends Render
 			GlStateManager.scale(f3, f3, f3);
 		}
 
-		f2 = (1.0F - ((float)entity.fuse - partialTicks + 1.0F) / 100.0F) * 0.8F;
+		f2 = (1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
 		this.bindEntityTexture(entity);
 		GlStateManager.translate(-0.5F, -0.5F, 0.5F);
 		blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCatalyst.getDefaultState(), entity.getBrightness(partialTicks));
 		GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
-		if (entity.fuse / 5 % 2 == 0)
+		if (entity.getFuse() / 5 % 2 == 0)
 		{
 			GlStateManager.disableTexture2D();
 			GlStateManager.disableLighting();

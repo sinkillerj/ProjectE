@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -38,7 +38,7 @@ public class InterdictionTorch extends BlockTorch
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand)
 	{
 		EnumFacing enumfacing = state.getValue(FACING);
 		double d0 = (double)pos.getX() + 0.5D;

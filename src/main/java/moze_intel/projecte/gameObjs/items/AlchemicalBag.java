@@ -13,8 +13,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,14 +47,14 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
@@ -113,10 +115,10 @@ public class AlchemicalBag extends ItemPE
 
 		if (stack.getItemDamage() > 15)
 		{
-			return name + " (" + StatCollector.translateToLocal("pe.debug.metainvalid.name") + ")";
+			return name + " (" + I18n.translateToLocal("pe.debug.metainvalid.name") + ")";
 		}
 
-		String color = " (" + StatCollector.translateToLocal(unlocalizedColors[i]) + ")";
+		String color = " (" + I18n.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
 	

@@ -10,11 +10,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 public class RedKatar extends PEToolBase implements IExtraFunction
@@ -22,7 +26,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	public RedKatar() 
 	{
 		super("rm_katar", (byte)4, new String[] {
-				StatCollector.translateToLocal("pe.katar.mode1"), StatCollector.translateToLocal("pe.katar.mode2"),
+				I18n.translateToLocal("pe.katar.mode1"), I18n.translateToLocal("pe.katar.mode2"),
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
@@ -56,17 +60,16 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 		if (mop != null)
 		{
-			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			if (mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				IBlockState state = world.getBlockState(mop.getBlockPos());
 				Block blockHit = state.getBlock();
@@ -92,7 +95,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			shearEntityAOE(stack, player, 0);
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -114,18 +117,18 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{
-			return super.getAttributeModifiers(stack);
+			return super.getAttributeModifiers(slot, stack);
 		}
 
 		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		return multimap;
 	}
 

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -13,9 +14,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -56,14 +58,14 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 
 				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
 				{
-					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 					player.heal(2.0F);
 					removeEmc(stack, 64);
 				}
 
 				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
 				{
-					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 					player.getFoodStats().addStats(2, 10);
 					removeEmc(stack, 64);
 				}
@@ -141,12 +143,12 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 				{
 					if (player.getHealth() < player.getMaxHealth())
 					{
-						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.heal(1.0F); // 1/2 heart
 					}
 					if (player.getFoodStats().needFood())
 					{
-						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
@@ -166,9 +168,9 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.lifePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.life.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.life.pedestal1"));
+			list.add(TextFormatting.BLUE + String.format(
+					I18n.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
 		}
 		return list;
 	}

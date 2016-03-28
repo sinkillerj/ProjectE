@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * Helper class for chat messages and formatting
@@ -10,10 +10,10 @@ import net.minecraft.util.IChatComponent;
 public final class ChatHelper
 {
 	/**
-	 * Alters color of a IChatComponent and returns it.
+	 * Alters color of a ITextComponent and returns it.
 	 * Returning the param allows for a chat message to be constructed and colored in one line.
 	 */
-	public static IChatComponent modifyColor(IChatComponent chat, EnumChatFormatting format)
+	public static ITextComponent modifyColor(ITextComponent chat, TextFormatting format)
 	{
 		if (format.isColor())
 		{

@@ -1,6 +1,7 @@
 package moze_intel.projecte.events;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -12,9 +13,9 @@ public class PlayerRender
 	@SubscribeEvent
 	public void onFOVUpdateEvent(FOVUpdateEvent evt)
 	{
-		if (evt.entity.getCurrentArmor(0) != null && evt.entity.getCurrentArmor(0).getItem() == ObjHandler.gemFeet)
+		if (evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET) != null && evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem() == ObjHandler.gemFeet)
 		{
-			evt.newfov = evt.fov - 0.4F;
+			evt.setNewfov(evt.getFov() - 0.4F);
 		}
 	}
 }

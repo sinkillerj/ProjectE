@@ -6,10 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
@@ -62,7 +64,7 @@ public class NovaExplosion extends Explosion
 							BlockPos blockpos = new BlockPos(d4, d6, d8);
 							IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
 
-							if (iblockstate.getBlock().getMaterial() != Material.air)
+							if (iblockstate.getMaterial() != Material.air)
 							{
 								float f2 = this.getExplosivePlacedBy() != null ? this.getExplosivePlacedBy().getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, null, this);
 								f -= (f2 + 0.3F) * 0.3F;
@@ -95,7 +97,7 @@ public class NovaExplosion extends Explosion
 		double y = getPosition().yCoord;
 		double z = getPosition().zCoord;
 
-		this.worldObj.playSoundEffect(x, y, z, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+		this.worldObj.playSound(null, x, y, z, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
 		if (cachedExplosionSize >= 2.0F)
 		{
@@ -115,7 +117,8 @@ public class NovaExplosion extends Explosion
 		while (iterator.hasNext())
         {
             blockpos = iterator.next();
-            Block block = this.worldObj.getBlockState(blockpos).getBlock();
+			IBlockState state = worldObj.getBlockState(blockpos);
+            Block block = state.getBlock();
 
             if (spawnParticles)
             {
@@ -125,7 +128,7 @@ public class NovaExplosion extends Explosion
                 double d3 = d0 - x;
                 double d4 = d1 - y;
                 double d5 = d2 - z;
-                double d6 = (double)MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
+                double d6 = (double) MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
                 d3 /= d6;
                 d4 /= d6;
                 d5 /= d6;
@@ -138,7 +141,7 @@ public class NovaExplosion extends Explosion
                 this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
             }
 
-            if (block.getMaterial() != Material.air)
+            if (state.getMaterial() != Material.air)
             {
                 List<ItemStack> drops = block.getDrops(worldObj, blockpos, this.worldObj.getBlockState(blockpos), 0);
                 if (drops.size() > 0)

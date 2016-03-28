@@ -3,12 +3,14 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 
@@ -134,9 +136,9 @@ public class AlchChestTile extends TileEmc implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
-		return new ChatComponentTranslation(getName());
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override
@@ -170,9 +172,7 @@ public class AlchChestTile extends TileEmc implements IInventory
 		
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			adjustedXCoord = getPos().getX() + 0.5D;
-			adjustedZCoord = getPos().getZ() + 0.5D;
-			worldObj.playSoundEffect(adjustedXCoord, getPos().getY() + 0.5D, adjustedZCoord, "random.chestopen", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -195,9 +195,7 @@ public class AlchChestTile extends TileEmc implements IInventory
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				adjustedXCoord = getPos().getX() + 0.5D;
-				adjustedZCoord = getPos().getZ() + 0.5D;
-				worldObj.playSoundEffect(adjustedXCoord, getPos().getY() + 0.5D, adjustedZCoord, "random.chestclosed", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				worldObj.playSound(null, pos, SoundEvents.block_chest_close, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)

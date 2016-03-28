@@ -1,7 +1,7 @@
 package moze_intel.projecte.manual;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,7 +26,7 @@ public class ItemPage extends AbstractPage
     @Override
     public String getHeaderText()
     {
-        return StatCollector.translateToLocal(stack.getUnlocalizedName() + ".name");
+        return I18n.translateToLocal(stack.getUnlocalizedName() + ".name");
     }
 
     @Override
