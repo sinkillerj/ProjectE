@@ -273,7 +273,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -289,12 +289,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	
 	public void playChargeSound(EntityPlayer player)
 	{
-		//todo 1.9 player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 1.25F);
+
 	}
 	
 	public void playUnChargeSound(EntityPlayer player)
 	{
-		//todo 1.9 player.worldObj.playSoundAtEntity(player, "projecte:clock", 0.8F, 0.85F);
+
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -60,7 +61,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	}
 	
 	@Override
-	public void changeCharge(EntityPlayer player, ItemStack stack)
+	public void changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		byte currentCharge = getCharge(stack);
 

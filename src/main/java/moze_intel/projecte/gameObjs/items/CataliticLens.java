@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -18,7 +19,7 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		int requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];

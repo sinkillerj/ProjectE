@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.item.IModeChanger;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +41,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	}
 	
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (numModes == 0)
 		{

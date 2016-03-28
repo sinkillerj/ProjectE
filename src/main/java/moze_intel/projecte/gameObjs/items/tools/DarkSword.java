@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class DarkSword extends PEToolBase implements IExtraFunction
@@ -61,7 +62,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	public void doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
 	}

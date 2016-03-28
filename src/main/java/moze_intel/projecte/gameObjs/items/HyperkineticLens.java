@@ -26,7 +26,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 	{
 		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		
-		if (shootProjectile(player, stack))
+		if (shootProjectile(player, stack, hand))
 		{
 			PlayerHelper.swingItem(player);
 		}
@@ -35,7 +35,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		int requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];

@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -21,6 +22,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class KeyPressPKT implements IMessage
 {
@@ -54,7 +56,6 @@ public class KeyPressPKT implements IMessage
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND); //todo 1.9
 
                     switch (message.key)
                     {
@@ -79,11 +80,13 @@ public class KeyPressPKT implements IMessage
                             }
                             break;
                         case CHARGE:
-                            if (stack != null && stack.getItem() instanceof IItemCharge)
+                            Pair<EnumHand, ItemStack> charge = getMainOrOff(player, IItemCharge.class);
+
+                            if (charge != null)
                             {
-                                ((IItemCharge) stack.getItem()).changeCharge(player, stack);
+                                ((IItemCharge) charge.getRight().getItem()).changeCharge(player, charge.getRight(), charge.getLeft());
                             }
-                            else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+                            else if (ProjectEConfig.unsafeKeyBinds)
                             {
                                 if (GemArmorBase.hasAnyPiece(player))
                                 {
@@ -93,10 +96,12 @@ public class KeyPressPKT implements IMessage
                             }
                             break;
                         case EXTRA_FUNCTION:
-                            if (stack != null && stack.getItem() instanceof IExtraFunction)
+                            Pair<EnumHand, ItemStack> extra = getMainOrOff(player, IExtraFunction.class);
+
+                            if (extra != null)
                             {
-                                ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
-                            } else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+                                ((IExtraFunction) extra.getRight().getItem()).doExtraFunction(extra.getRight(), player, extra.getLeft());
+                            } else if (ProjectEConfig.unsafeKeyBinds)
                             {
                                 if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
                                 {
@@ -109,16 +114,18 @@ public class KeyPressPKT implements IMessage
                             }
                             break;
                         case FIRE_PROJECTILE:
-                            if (stack != null && stack.getItem() instanceof IProjectileShooter)
+                            Pair<EnumHand, ItemStack> projectile = getMainOrOff(player, IProjectileShooter.class);
+
+                            if (projectile != null)
                             {
                                 if (PlayerChecks.getProjectileCooldown(player) <= 0) {
-                                    if (((IProjectileShooter) stack.getItem()).shootProjectile(player, stack))
+                                    if (((IProjectileShooter) projectile.getRight().getItem()).shootProjectile(player, projectile.getRight(), projectile.getLeft()))
                                     {
                                         PlayerHelper.swingItem((player));
                                     }
                                     PlayerChecks.resetProjectileCooldown(player);
                                 }
-                            } else if (stack == null || ProjectEConfig.unsafeKeyBinds)
+                            } else if (ProjectEConfig.unsafeKeyBinds)
                             {
                                 if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[3] != null && player.inventory.armorInventory[3].getItem() == ObjHandler.gemHelmet)
                                 {
@@ -127,9 +134,10 @@ public class KeyPressPKT implements IMessage
                             }
                             break;
                         case MODE:
-                            if (stack != null && stack.getItem() instanceof IModeChanger)
+                            Pair<EnumHand, ItemStack> modeChange = getMainOrOff(player, IModeChanger.class);
+                            if (modeChange != null)
                             {
-                                ((IModeChanger) stack.getItem()).changeMode(player, stack);
+                                ((IModeChanger) modeChange.getRight().getItem()).changeMode(player, modeChange.getRight(), modeChange.getLeft());
                             }
                             break;
                     }
@@ -137,5 +145,18 @@ public class KeyPressPKT implements IMessage
             });
 			return null;
 		}
+
+        private Pair<EnumHand, ItemStack> getMainOrOff(EntityPlayer player, Class<?> clazz)
+        {
+            for (EnumHand e : EnumHand.values())
+            {
+                ItemStack stack = player.getHeldItem(e);
+                if (stack != null && clazz.isAssignableFrom(stack.getItem().getClass()))
+                {
+                    return Pair.of(e, stack);
+                }
+            }
+            return null;
+        }
 	}
 }

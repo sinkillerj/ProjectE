@@ -316,7 +316,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		byte oldMode = getMode(stack);
 

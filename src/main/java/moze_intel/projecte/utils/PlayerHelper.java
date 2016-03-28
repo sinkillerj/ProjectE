@@ -95,10 +95,6 @@ public final class PlayerHelper
 		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
 			return mop.getBlockPos();
-
-//	todo 1.8 merging 1.7 Sept 10 2015 - why is this different? ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-//			return Vec3.createVectorHelper(mop.blockX + dir.offsetX * 1.1, mop.blockY + dir.offsetY * 1.1, mop.blockZ + dir.offsetZ * 1.1);
-//>>>>>>> 48eb5df9ac694f94c09c8be019f926a7412b3361
 		}
 		return null;
 	}
