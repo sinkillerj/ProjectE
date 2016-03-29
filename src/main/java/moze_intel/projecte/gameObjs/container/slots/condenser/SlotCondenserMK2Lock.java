@@ -6,14 +6,15 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotCondenserMK2Lock extends Slot
+public class SlotCondenserMK2Lock extends SlotItemHandler
 {
-	private CondenserMK2Container container;
+	private final CondenserMK2Container container;
 
 	public SlotCondenserMK2Lock(CondenserMK2Container container, int slotIndex, int xPos, int yPos)
 	{
-		super(container.tile, slotIndex, xPos, yPos);
+		super(container.tile.getLock(), slotIndex, xPos, yPos);
 		this.container = container;
 	}
 

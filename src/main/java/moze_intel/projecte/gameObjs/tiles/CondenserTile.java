@@ -9,27 +9,26 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.Arrays;
-
-public class CondenserTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor
+public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
-	protected ItemStack[] inventory;
-	private ItemStack lock;
-	protected boolean loadChecks;
-	protected boolean isAcceptingEmc;
+	protected final ItemStackHandler inputInventory = createInput();
+	protected final ItemStackHandler outputInventory = createOutput();
+	private final ItemStackHandler lock = new StackHandler(1, false, false);
+	private boolean loadChecks;
+	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
 	public int displayEmc;
 	public float lidAngle;
@@ -39,8 +38,55 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 
 	public CondenserTile()
 	{
-		inventory = new ItemStack[92];
 		loadChecks = false;
+	}
+
+	public IItemHandlerModifiable getLock()
+	{
+		return lock;
+	}
+
+	protected ItemStackHandler createInput()
+	{
+		return new StackHandler(91, true, true)
+		{
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate)
+			{
+				if (isStackEqualToLock(getStackInSlot(slot)))
+					return super.extractItem(slot, amount, simulate);
+				else return null;
+			}
+
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			{
+				if (!isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack))
+					return super.insertItem(slot, stack, simulate);
+				else return stack;
+			}
+		};
+	}
+
+	protected ItemStackHandler createOutput()
+	{
+		return inputInventory;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	{
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
+		}
+		return super.getCapability(cap, side);
 	}
 
 	@Override
@@ -62,7 +108,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 
 		displayEmc = (int) this.getStoredEmc();
 
-		if (lock != null && requiredEmc != 0)
+		if (lock.getStackInSlot(0) != null && requiredEmc != 0)
 		{
 			condense();
 		}
@@ -76,9 +122,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 
 	public void checkLockAndUpdate()
 	{
-		lock = inventory[0];
-
-		if (lock == null)
+		if (lock.getStackInSlot(0) == null)
 		{
 			displayEmc = 0;
 			requiredEmc = 0;
@@ -86,9 +130,9 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 			return;
 		}
 
-		if (EMCHelper.doesItemHaveEmc(lock))
+		if (EMCHelper.doesItemHaveEmc(lock.getStackInSlot(0)))
 		{
-			int lockEmc = EMCHelper.getEmcValue(lock);
+			int lockEmc = EMCHelper.getEmcValue(lock.getStackInSlot(0));
 
 			if (requiredEmc != lockEmc)
 			{
@@ -98,8 +142,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 		}
 		else
 		{
-			lock = null;
-			inventory[0] = null;
+			lock.setStackInSlot(0, null);
 
 			displayEmc = 0;
 			requiredEmc = 0;
@@ -109,16 +152,16 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 	
 	protected void condense()
 	{
-		for (int i = 1; i < 92; i++)
+		for (int i = 0; i < inputInventory.getSlots(); i++)
 		{
-			ItemStack stack = getStackInSlot(i);
+			ItemStack stack = inputInventory.getStackInSlot(i);
 			
 			if (stack == null || isStackEqualToLock(stack)) 
 			{
 				continue;
 			}
-			
-			decrStackSize(i, 1);
+
+			inputInventory.extractItem(i, 1, false);
 			this.addEMC(EMCHelper.getEmcValue(stack));
 			break;
 		}
@@ -132,55 +175,21 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 	
 	protected void pushStack()
 	{
-		int slot = getSlotForStack();
-		
-		if (slot == 0) 
-		{
-			return;
-		}
-		if (inventory[slot] == null)
-		{
-			ItemStack lockCopy = lock.copy();
-			
-			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
-			{
-				lockCopy.setTagCompound(new NBTTagCompound());
-			}
-			
-			inventory[slot] = lockCopy;
-		}
-		else
-		{
-			inventory[slot].stackSize += 1;
-		}
-		this.markDirty();
-	}
-	
-	protected int getSlotForStack()
-	{
-		for (int i = 1; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
+		ItemStack lockCopy = lock.getStackInSlot(0).copy();
 
-			if (stack == null) 
-			{
-				return i;
-			}
-			
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return i;
-			}
+		if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+		{
+			lockCopy.setTagCompound(new NBTTagCompound());
 		}
 
-		return 0;
+		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
 	}
 	
 	protected boolean hasSpace()
 	{
-		for (int i = 1; i < inventory.length; i++)
+		for (int i = 0; i < outputInventory.getSlots(); i++)
 		{
-			ItemStack stack = inventory[i];
+			ItemStack stack = outputInventory.getStackInSlot(i);
 			
 			if (stack == null) 
 			{
@@ -198,17 +207,17 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 	
 	protected boolean isStackEqualToLock(ItemStack stack)
 	{
-		if (lock == null) 
+		if (lock.getStackInSlot(0) == null)
 		{
 			return false;
 		}
 
-		if (NBTWhitelist.shouldDupeWithNBT(lock))
+		if (NBTWhitelist.shouldDupeWithNBT(lock.getStackInSlot(0)))
 		{
-			return ItemHelper.areItemStacksEqual(lock, stack);
+			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
 		}
 
-		return ItemHelper.areItemStacksEqualIgnoreNBT(lock, stack);
+		return ItemHelper.areItemStacksEqualIgnoreNBT(lock.getStackInSlot(0), stack);
 	}
 	
 	public int getProgressScaled()
@@ -243,130 +252,19 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		NBTTagList list = nbt.getTagList("Items", 10);
-
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			inventory[subNBT.getByte("Slot")] = ItemStack.loadItemStackFromNBT(subNBT);
-		}
+		inputInventory.deserializeNBT(nbt.getCompoundTag("Input"));
+		lock.deserializeNBT(nbt.getCompoundTag("LockSlot"));
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		NBTTagList list = new NBTTagList();
-
-		for (int i = 0; i < inventory.length; i++)
-		{
-			if (inventory[i] == null) 
-			{
-				continue;
-			}
-			
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			inventory[i].writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-		
-		nbt.setTag("Items", list);
+		nbt.setTag("Input", inputInventory.serializeNBT());
+		nbt.setTag("LockSlot", lock.serializeNBT());
 	}
 
-	@Override
-	public int getSizeInventory() 
-	{
-		return inventory.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int qnt) 
-	{
-		ItemStack stack = inventory[slot];
-
-		if (stack != null)
-		{
-			if (stack.stackSize <= qnt)
-			{
-				inventory[slot] = null;
-			}
-			else
-			{
-				stack = stack.splitStack(qnt);
-
-				if (stack.stackSize == 0)
-				{
-					inventory[slot] = null;
-				}
-			}
-		}
-		
-		return stack;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int slot)
-	{
-		if (inventory[slot] != null)
-		{
-			ItemStack stack = inventory[slot];
-			inventory[slot] = null;
-			return stack;
-		}
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) 
-	{
-		inventory[slot] = stack;
-		
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-		{
-			stack.stackSize = this.getInventoryStackLimit();
-		}
-		
-		this.markDirty();
-	}
-
-	@Override
-	public String getName()
-	{
-		return "tile.pe_condenser.name";
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return new TextComponentTranslation(getName());
-	}
-
-	@Override
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) 
-	{
-		return this.worldObj.getTileEntity(this.pos) != this ? false : var1.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
-	}
-
-	public void updateChest()
+	private void updateChest()
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
@@ -375,8 +273,7 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 
 		prevLidAngle = lidAngle;
 		float angleIncrement = 0.1F;
-		double adjustedXCoord, adjustedZCoord;
-		
+
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
 			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
@@ -402,8 +299,6 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				adjustedXCoord = pos.getX() + 0.5D;
-				adjustedZCoord = pos.getZ() + 0.5D;
 				worldObj.playSound(null, pos, SoundEvents.block_chest_close, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
@@ -423,87 +318,6 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 			return true;
 		}
 		else return super.receiveClientEvent(number, arg);
-	}
-	
-	@Override
-	public void openInventory(EntityPlayer player)
-	{
-		++numPlayersUsing;
-		worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
-	}
-	
-	@Override
-	public void closeInventory(EntityPlayer player)
-	{
-		--numPlayersUsing;
-		worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
-	{
-		if (slot == 0) 
-		{
-			return false;
-		}
-		
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
-	}
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-		Arrays.fill(inventory, null);
-	}
-
-	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
-		int[] slots = new int[inventory.length - 1];
-		
-		for (int i = 1; i < inventory.length; i++)
-		{
-			slots[i - 1] = i;
-		}
-		
-		return slots;
-	}
-
-	@Override
-	public boolean canInsertItem(int slot, ItemStack item, EnumFacing side)
-	{
-		if (slot == 0) 
-		{
-			return false;
-		}
-
-		return isItemValidForSlot(slot, item);
-	}
-
-	@Override
-	public boolean canExtractItem(int slot, ItemStack item, EnumFacing side)
-	{
-		if (slot == 0) 
-		{
-			return false;
-		}
-
-		return isStackEqualToLock(item);
 	}
 
 	@Override

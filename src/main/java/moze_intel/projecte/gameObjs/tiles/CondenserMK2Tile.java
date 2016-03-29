@@ -2,19 +2,59 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private static final int LOCK_SLOT = 0;
-	private static final int INPUT_SLOTS_LOWER = 1;
-	private static final int INPUT_SLOTS_UPPER = 42;
-	private static final int OUTPUT_SLOTS_LOWER = 43;
-	private static final int OUTPUT_SLOTS_UPPER = 84;
-
-	public CondenserMK2Tile()
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing side)
 	{
-		this.inventory = new ItemStack[85];
-		this.loadChecks = false;
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			if (side == null || side.getAxis().isHorizontal())
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
+			} else
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(outputInventory);
+			}
+		}
+
+		return super.getCapability(cap, side);
+	}
+
+	@Override
+	protected ItemStackHandler createInput()
+	{
+		return new StackHandler(42, true, false)
+		{
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			{
+				if (!isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack))
+					return super.insertItem(slot, stack, simulate);
+				else return stack;
+			}
+		};
+	}
+
+	@Override
+	protected ItemStackHandler createOutput()
+	{
+		return new StackHandler(42, false, true)
+		{
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate)
+			{
+				if (isStackEqualToLock(getStackInSlot(slot)))
+					return super.extractItem(slot, amount, simulate);
+				else return null;
+			}
+		};
 	}
 
 	@Override
@@ -28,9 +68,9 @@ public class CondenserMK2Tile extends CondenserTile
 
 		if (this.hasSpace())
 		{
-			for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
+			for (int i = 0; i < inputInventory.getSlots(); i++)
 			{
-				ItemStack stack = inventory[i];
+				ItemStack stack = inputInventory.getStackInSlot(i);
 
 				if (stack == null)
 				{
@@ -38,68 +78,23 @@ public class CondenserMK2Tile extends CondenserTile
 				}
 
 				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-				inventory[i] = null;
+				inputInventory.setStackInSlot(i, null);
 				break;
 			}
 		}
 	}
 
 	@Override
-	protected boolean hasSpace()
+	public void readFromNBT(NBTTagCompound nbt)
 	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
-
-			if (stack == null)
-			{
-				return true;
-			}
-
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return true;
-			}
-		}
-
-		return false;
+		super.readFromNBT(nbt);
+		outputInventory.deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 
 	@Override
-	protected int getSlotForStack()
+	public void writeToNBT(NBTTagCompound nbt)
 	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
-
-			if (stack == null)
-			{
-				return i;
-			}
-
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return i;
-			}
-		}
-
-		return 0;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack)
-	{
-		if (slot == LOCK_SLOT || slot >= OUTPUT_SLOTS_LOWER)
-		{
-			return false;
-		}
-
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
-	}
-
-	@Override
-	public String getName()
-	{
-		return "tile.pe_condenser_mk2.name";
+		super.writeToNBT(nbt);
+		nbt.setTag("Output", outputInventory.serializeNBT());
 	}
 }

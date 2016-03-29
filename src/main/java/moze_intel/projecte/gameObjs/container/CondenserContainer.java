@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserInput;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
@@ -10,6 +11,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class CondenserContainer extends Container
 {	
@@ -18,7 +20,7 @@ public class CondenserContainer extends Container
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
 		tile = condenser;
-		tile.openInventory(invPlayer.player);
+		tile.numPlayersUsing++;
 		
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
@@ -26,7 +28,8 @@ public class CondenserContainer extends Container
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++) 
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new SlotCondenserInput(tile, 1 + j + i * 13, 12 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new ValidatedSlot(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null),
+								1 + j + i * 13, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -41,11 +44,6 @@ public class CondenserContainer extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
-		if (slotIndex == 0)
-		{
-			return null;
-		}
-
 		Slot slot = this.getSlot(slotIndex);
 		
 		if (slot == null || !slot.getHasStack())
@@ -88,24 +86,22 @@ public class CondenserContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory(player);
+		tile.numPlayersUsing--;
 	}
 
 	@Override
 	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot == 0 && tile.getStackInSlot(slot) != null)
+		if (slot == 0 && tile.getLock().getStackInSlot(0) != null)
 		{
 			if (!player.worldObj.isRemote)
 			{
-				tile.setInventorySlotContents(slot, null);
+				tile.getLock().setStackInSlot(0, null);
 				tile.checkLockAndUpdate();
 				this.detectAndSendChanges();
 			}
 
 			return null;
-		}
-
-		return super.func_184996_a(slot, button, flag, player);
+		} else return super.func_184996_a(slot, button, flag, player);
 	}
 }

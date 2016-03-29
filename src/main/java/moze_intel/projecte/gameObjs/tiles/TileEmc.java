@@ -9,12 +9,14 @@ import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Map;
 
@@ -84,5 +86,41 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 			}
 			nbtTagCompound.removeTag("Direction");
 		}
+	}
+
+	protected class StackHandler extends ItemStackHandler
+	{
+		private final boolean allowInsert;
+		private final boolean allowExtract;
+
+		protected StackHandler(int size, boolean allowInsert, boolean allowExtract)
+		{
+			super(size);
+			this.allowInsert = allowInsert;
+			this.allowExtract = allowExtract;
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (allowInsert)
+				return super.insertItem(slot, stack, simulate);
+			else return stack;
+		}
+
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			if (allowExtract)
+				return super.extractItem(slot, amount, simulate);
+			else return null;
+		}
+
+		@Override
+		public void onContentsChanged(int slot)
+		{
+			TileEmc.this.markDirty();
+		}
+
 	}
 }

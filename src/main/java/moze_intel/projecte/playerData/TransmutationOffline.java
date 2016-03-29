@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+// todo 1.9 update this whole class
 public class TransmutationOffline
 {
     private static Map<UUID, List<ItemStack>> cachedKnowledge = Maps.newHashMap();
@@ -82,7 +82,7 @@ public class TransmutationOffline
             File player = new File(playerData, playerUUID.toString() + ".dat");
             if (player.exists() && player.isFile()) {
                 try {
-                    NBTTagCompound props = CompressedStreamTools.readCompressed(new FileInputStream(player)).getCompoundTag(TransmutationProps.PROP_NAME);
+                    NBTTagCompound props = CompressedStreamTools.readCompressed(new FileInputStream(player)).getCompoundTag("ProjectETransmutation");
                     cachedEmc.put(playerUUID, props.getDouble("transmutationEmc"));
                     cachedFullKnowledge.put(playerUUID, props.getBoolean("tome"));
 

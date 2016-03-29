@@ -7,6 +7,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchChestContainer extends Container
@@ -16,12 +19,13 @@ public class AlchChestContainer extends Container
 	public AlchChestContainer(InventoryPlayer invPlayer, AlchChestTile tile)
 	{
 		this.tile = tile;
-		tile.openInventory(invPlayer.player);
-		
+		tile.numPlayersUsing++;
+
+		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		//Chest Inventory
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new Slot(tile, j + i * 13, 12 + j * 18, 5 + i * 18));
+				this.addSlotToContainer(new SlotItemHandler(inv, j + i * 13, 12 + j * 18, 5 + i * 18));
 		
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -80,6 +84,6 @@ public class AlchChestContainer extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory(player);
+		tile.numPlayersUsing--;
 	}
 }

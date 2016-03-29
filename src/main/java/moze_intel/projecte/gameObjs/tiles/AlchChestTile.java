@@ -11,151 +11,31 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Arrays;
 
-public class AlchChestTile extends TileEmc implements IInventory
+public class AlchChestTile extends TileEmc
 {
-	private ItemStack[] inventory = new ItemStack[104];
+	private final ItemStackHandler inventory = new StackHandler(104, true, true);
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
 
-	public AlchChestTile()
-	{
-		super();
-	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[104];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			byte slot = subNBT.getByte("Slot");
-			
-			if (slot >= 0 && slot < 104)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
-			}
-		}	
+		inventory.deserializeNBT(nbt);
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < 104; i++)
-		{
-			if (inventory[i] == null) 
-			{
-				continue;
-			}
-			
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			inventory[i].writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-		
-		nbt.setTag("Items", list);
-	}
-
-	@Override
-	public int getSizeInventory() 
-	{
-		return 104;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int qnt) 
-	{
-		ItemStack stack = inventory[slot];
-		if (stack != null)
-		{
-			if (stack.stackSize <= qnt)
-			{
-				inventory[slot] = null;
-			}
-			else
-			{
-				stack = stack.splitStack(qnt);
-				if (stack.stackSize == 0)
-					inventory[slot] = null;
-			}
-		}
-		return stack;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int slot)
-	{
-		if (inventory[slot] != null)
-		{
-			ItemStack stack = inventory[slot];
-			inventory[slot] = null;
-			return stack;
-		}
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) 
-	{
-		inventory[slot] = stack;
-		
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-		{
-			stack.stackSize = this.getInventoryStackLimit();
-		}
-		
-		this.markDirty();
-	}
-
-	@Override
-	public String getName()
-	{
-		return "tile.pe_alchemy_chest.name";
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return new TextComponentTranslation(getName());
-	}
-
-	@Override
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	public ItemStack[] getBackingInventoryArray()
-	{
-		return inventory;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) 
-	{
-		return this.worldObj.getTileEntity(this.pos) != this ? false : var1.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+		nbt.merge(inventory.serializeNBT());
 	}
 	
 	@Override
@@ -168,8 +48,7 @@ public class AlchChestTile extends TileEmc implements IInventory
 
 		prevLidAngle = lidAngle;
 		float angleIncrement = 0.1F;
-		double adjustedXCoord, adjustedZCoord;
-		
+
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
 			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
@@ -215,8 +94,10 @@ public class AlchChestTile extends TileEmc implements IInventory
 			}
 		}
 
-		for (ItemStack stack : inventory)
+
+		for (int i = 0; i < inventory.getSlots(); i++)
 		{
+			ItemStack stack = inventory.getStackInSlot(i);
 			if (stack != null && stack.getItem() instanceof IAlchChestItem)
 			{
 				((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, pos, stack);
@@ -234,45 +115,5 @@ public class AlchChestTile extends TileEmc implements IInventory
 		}
 		else return super.receiveClientEvent(number, arg);
 	}
-	
-	@Override
-	public void openInventory(EntityPlayer player)
-	{
-		++numPlayersUsing;
-		worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
-	}
-	
-	@Override
-	public void closeInventory(EntityPlayer player)
-	{
-		--numPlayersUsing;
-		worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
-	}
 
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
-	{
-		return true;
-	}
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-		Arrays.fill(inventory, null);
-	}
 }
