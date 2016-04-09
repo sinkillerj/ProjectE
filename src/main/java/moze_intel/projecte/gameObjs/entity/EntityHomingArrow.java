@@ -88,13 +88,15 @@ public class EntityHomingArrow extends EntityArrow
 			Vector3d lookVec = new Vector3d(targetLoc);
 			lookVec.sub(arrowLoc);
 
+			Vector3d arrowMotion = new Vector3d(this.motionX, this.motionY, this.motionZ);
+
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
-			double theta = wrap180Radian(arrowLoc.angle(lookVec));
-			theta = clampAbs(theta, 4 * Math.PI / 8);
+			double theta = wrap180Radian(arrowMotion.angle(lookVec));
+			theta = clampAbs(theta, Math.PI / 10);
 
 			// Find the cross product to determine the axis of rotation
 			Vector3d crossProduct = new Vector3d();
-			crossProduct.cross(arrowLoc, targetLoc);
+			crossProduct.cross(arrowMotion, lookVec);
 			crossProduct.normalize();
 
 			// Create the rotation using the axis and our angle
@@ -102,8 +104,8 @@ public class EntityHomingArrow extends EntityArrow
 			transform.set(new AxisAngle4d(crossProduct, theta));
 
 			// Adjust the vector
-			Vector3d adjustedLookVec = new Vector3d(lookVec);
-			transform.transform(lookVec, adjustedLookVec);
+			Vector3d adjustedLookVec = new Vector3d(arrowMotion);
+			transform.transform(arrowMotion, adjustedLookVec);
 
 			// Tell mc to adjust our rotation accordingly
 			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.5F, 0);
