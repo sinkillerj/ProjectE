@@ -58,7 +58,7 @@ public class EntityHomingArrow extends EntityArrow
 	{
 		onEntityUpdate();
 		boolean inGround = WorldHelper.isArrowInGround(this);
-		if (!worldObj.isRemote)
+		if (!worldObj.isRemote && this.ticksExisted > 3)
 		{
 			if (hasTarget() && (!getTarget().isEntityAlive() || inGround))
 			{
