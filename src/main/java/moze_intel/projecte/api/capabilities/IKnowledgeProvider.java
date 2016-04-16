@@ -1,5 +1,6 @@
 package moze_intel.projecte.api.capabilities;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +43,7 @@ public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
     /**
      * @return An immutable copy of the knowledge list
      */
-    public List<ItemStack> getKnowledge();
+    public ImmutableList<ItemStack> getKnowledge();
 
     /**
      * @return A copy of the player's input and lock slots

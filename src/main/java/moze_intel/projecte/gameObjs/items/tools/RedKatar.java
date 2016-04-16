@@ -99,9 +99,10 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
+		return true;
 	}
 
 	@Override

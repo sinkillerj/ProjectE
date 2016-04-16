@@ -7,18 +7,26 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public class CondenserMK2Tile extends CondenserTile
 {
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(inputInventory, outputInventory);
+
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			if (side == null || side.getAxis().isHorizontal())
+			if (side == null)
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
+			}
+			else if (side.getAxis().isHorizontal())
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
-			} else
+			}
+			else
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(outputInventory);
 			}
@@ -45,16 +53,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected ItemStackHandler createOutput()
 	{
-		return new StackHandler(42, false, true)
-		{
-			@Override
-			public ItemStack extractItem(int slot, int amount, boolean simulate)
-			{
-				if (isStackEqualToLock(getStackInSlot(slot)))
-					return super.extractItem(slot, amount, simulate);
-				else return null;
-			}
-		};
+		return new StackHandler(42, false, true);
 	}
 
 	@Override

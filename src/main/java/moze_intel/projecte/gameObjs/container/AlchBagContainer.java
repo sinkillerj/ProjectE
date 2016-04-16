@@ -76,14 +76,14 @@ public class AlchBagContainer extends Container
 	}
 	
 	@Override
-	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem(inventory.hand))
 		{
 			return null;
 		}
 		
-		return super.func_184996_a(slot, button, flag, player);
+		return super.slotClick(slot, button, flag, player);
 	}
 	
 	@Override

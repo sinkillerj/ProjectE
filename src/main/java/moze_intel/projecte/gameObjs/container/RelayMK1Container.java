@@ -1,13 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK1Container extends Container 
 {
@@ -16,18 +19,21 @@ public class RelayMK1Container extends Container
 	public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay)
 	{
 		this.tile = relay;
-		tile.openInventory(invPlayer.player);
-		
+
+		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+
 		//Klein Star charge slot
-		this.addSlotToContainer(new SlotRelayInput(tile, 0, 67, 43));
-		
+		this.addSlotToContainer(new ValidatedSlot(input, 0, 67, 43, SlotPredicates.RELAY_INV));
+
+		int counter = 1;
 		//Main Relay inventory
 		for (int i = 0; i <= 1; i++) 
 			for (int j = 0; j <= 2; j++) 
-				this.addSlotToContainer(new SlotRelayInput(tile, i * 3 + j + 1, 27 + i * 18, 17 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(input, counter++, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
 		
 		//Burning slot
-		this.addSlotToContainer(new SlotRelayKlein(tile, 7, 127, 43));
+		this.addSlotToContainer(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
 		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
@@ -43,7 +49,6 @@ public class RelayMK1Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory(player);
 	}
 	
 	@Override

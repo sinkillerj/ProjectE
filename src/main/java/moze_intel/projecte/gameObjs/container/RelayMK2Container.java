@@ -1,13 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK2Container extends Container
 {
@@ -16,18 +19,21 @@ public class RelayMK2Container extends Container
 	public RelayMK2Container(InventoryPlayer invPlayer, RelayMK2Tile relay)
 	{
 		this.tile = relay;
-		tile.openInventory(invPlayer.player);
-		
+
+		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+
 		//Burn slot
-		this.addSlotToContainer(new SlotRelayInput(tile, 0, 84, 44));
-		
+		this.addSlotToContainer(new ValidatedSlot(input, 0, 84, 44, SlotPredicates.RELAY_INV));
+
+		int counter = 1;
 		//Inventory buffer
 		for (int i = 0; i <= 2; i++) 
 			for (int j = 0; j <= 3; j++)
-				this.addSlotToContainer(new SlotRelayInput(tile, i * 4 + j + 1, 26 + i * 18, 18 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(input, counter++, 26 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 		
 		//Klein star slot
-		this.addSlotToContainer(new SlotRelayKlein(tile, 13, 144, 44));
+		this.addSlotToContainer(new ValidatedSlot(output, 0, 144, 44, SlotPredicates.IITEMEMC));
 		
 		//Main player inventory
 		for (int i = 0; i < 3; i++) 
@@ -43,7 +49,6 @@ public class RelayMK2Container extends Container
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed(player);
-		tile.closeInventory(player);
 	}
 	
 	@Override

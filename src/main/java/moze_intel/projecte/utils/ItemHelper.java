@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Collections;
@@ -388,12 +390,12 @@ public final class ItemHelper
 		return stacks;
 	}
 
-	public static void pushLootBallInInv(IInventory inv, EntityLootBall ball)
+	public static void pushLootBallInInv(IItemHandler inv, EntityLootBall ball)
 	{
 		List<ItemStack> results = Lists.newArrayList();
 		for (ItemStack s : ball.getItemList())
 		{
-			ItemStack result = pushStackInInv(inv, s);
+			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, s, false);
 			if (result != null)
 			{
 				results.add(result);

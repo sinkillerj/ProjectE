@@ -8,9 +8,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -23,6 +26,22 @@ public class AlchChestTile extends TileEmc
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
+
+	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	{
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+		}
+		return super.getCapability(cap, side);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -93,7 +112,6 @@ public class AlchChestTile extends TileEmc
 				return;
 			}
 		}
-
 
 		for (int i = 0; i < inventory.getSlots(); i++)
 		{

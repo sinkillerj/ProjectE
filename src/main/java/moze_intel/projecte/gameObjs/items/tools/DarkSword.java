@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,10 +11,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.world.World;
 
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
@@ -62,9 +59,10 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
+		return true;
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	}
 	
 	@Override
-	public void changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		byte currentCharge = getCharge(stack);
 
@@ -71,12 +71,16 @@ public class ItemCharge extends ItemPE implements IItemCharge
 			{
 				player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 				stack.getTagCompound().setByte("Charge", (byte) (currentCharge - 1));
+				return true;
 			}
 		}
 		else if (currentCharge < numCharges)
 		{
 			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 			stack.getTagCompound().setByte("Charge", (byte) (currentCharge + 1));
+			return true;
 		}
+
+		return false;
 	}
 }

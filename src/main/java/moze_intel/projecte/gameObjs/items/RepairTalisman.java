@@ -28,6 +28,8 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 
@@ -218,9 +220,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			boolean hasAction = false;
 
-			for (int i = 0; i < tile.getSizeInventory(); i++)
+			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			for (int i = 0; i < inv.getSlots(); i++)
 			{
-				ItemStack invStack = tile.getStackInSlot(i);
+				ItemStack invStack = inv.getStackInSlot(i);
 
 				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
@@ -230,7 +233,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
 				{
 					invStack.setItemDamage(invStack.getItemDamage() - 1);
-					tile.setInventorySlotContents(i, invStack);
 
 					if (!hasAction)
 					{
@@ -248,7 +250,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
 	{
 		if (player.worldObj.isRemote)
 		{
@@ -270,9 +272,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			boolean hasAction = false;
 
-			for (int i = 0; i < inv.length; i++)
+			for (int i = 0; i < inv.getSlots(); i++)
 			{
-				ItemStack invStack = inv[i];
+				ItemStack invStack = inv.getStackInSlot(i);
 
 				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{

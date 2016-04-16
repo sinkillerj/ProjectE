@@ -257,9 +257,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+		return true;
 	}
 	
 	@Override

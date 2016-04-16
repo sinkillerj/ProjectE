@@ -38,6 +38,11 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
@@ -61,13 +66,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			return;
 		}
 		
-		condense(stack, ((EntityPlayer) entity).inventory.mainInventory);
+		condense(stack, new PlayerMainInvWrapper(((EntityPlayer) entity).inventory));
 	}
 
 	/**
 	 * @return Whether the inventory was changed
 	 */
-	public static boolean condense(ItemStack gem, ItemStack[] inv)
+	private static boolean condense(ItemStack gem, IItemHandlerModifiable inv)
 	{
 		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
@@ -80,9 +85,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		ItemStack target = getTarget(gem);
 		
-		for (int i = 0; i < inv.length; i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
-			ItemStack s = inv[i];
+			ItemStack s = inv.getStackInSlot(i);
 			
 			if (s == null || !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
 			{
@@ -100,7 +105,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				
 				if (s.stackSize <= 0)
 				{
-					inv[i] = null;
+					inv.setStackInSlot(i, null);
 				}
 				
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
@@ -118,7 +123,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		while (getEmc(gem) >= value)
 		{
-			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
+			ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, ItemStack.copyItemStack(target), false);
 
 			if (remain != null)
 			{
@@ -316,7 +321,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		byte oldMode = getMode(stack);
 
@@ -330,6 +335,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 
 		player.addChatComponentMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
+		return true;
 	}
 	
 	@Override
@@ -389,14 +395,14 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
 			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-			condense(stack, tile.getBackingInventoryArray());
+			condense(stack, ((IItemHandlerModifiable) tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)));
 			tile.markDirty();
 		}
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
 	{
-		return !player.worldObj.isRemote && condense(stack, inv);
+		return !player.worldObj.isRemote && condense(stack, ((IItemHandlerModifiable) inv));
 	}
 }

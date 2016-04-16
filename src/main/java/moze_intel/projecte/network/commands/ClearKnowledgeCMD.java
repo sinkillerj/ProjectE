@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.commands;
 
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
 import moze_intel.projecte.playerData.Transmutation;
@@ -32,7 +33,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 		{
 			if (sender instanceof EntityPlayerMP)
 			{
-				Transmutation.clearKnowledge(((EntityPlayerMP) sender));
+				((EntityPlayerMP) sender).getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).clearKnowledge();
 				PacketHandler.sendTo(new KnowledgeClearPKT(), (EntityPlayerMP) sender);
 				sendSuccess(sender, new TextComponentTranslation("pe.command.clearknowledge.success", sender.getName()));
 			}
@@ -43,13 +44,11 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 		}
 		else
 		{
-			for (Object obj : sender.getEntityWorld().playerEntities)
+			for (EntityPlayer player : sender.getEntityWorld().playerEntities)
 			{
-				EntityPlayer player = (EntityPlayer) obj;
-				
 				if (player.getName().equalsIgnoreCase(params[0]))
 				{
-					Transmutation.clearKnowledge(player);
+					((EntityPlayerMP) sender).getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).clearKnowledge();
 					PacketHandler.sendTo(new KnowledgeClearPKT(), (EntityPlayerMP) player);
 					sendSuccess(sender, new TextComponentTranslation("pe.command.clearknowledge.success", player.getName()));
 					

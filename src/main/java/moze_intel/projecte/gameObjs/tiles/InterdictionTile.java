@@ -7,19 +7,9 @@ import net.minecraft.util.ITickable;
 
 public class InterdictionTile extends TileEntity implements ITickable
 {
-	private AxisAlignedBB effectBounds = null;
-
 	@Override
 	public void update()
 	{
-		int xCoord = pos.getX();
-		int yCoord = pos.getY();
-		int zCoord = pos.getZ();
-
-		if (effectBounds == null)
-		{
-			effectBounds = new AxisAlignedBB(xCoord - 8, yCoord - 8, zCoord - 8, xCoord + 8, yCoord + 8, zCoord + 8);
-		}
-		WorldHelper.repelEntitiesInAABBFromPoint(worldObj, effectBounds, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, false);
+		WorldHelper.repelEntitiesInAABBFromPoint(worldObj, new AxisAlignedBB(pos.add(-8, -8, -8), pos.add(8, 8, 8)), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, false);
 	}
 }

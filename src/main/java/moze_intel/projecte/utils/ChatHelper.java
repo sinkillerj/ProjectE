@@ -17,7 +17,7 @@ public final class ChatHelper
 	{
 		if (format.isColor())
 		{
-			chat.getChatStyle().setColor(format);
+			chat.getStyle().setColor(format);
 		}
 		return chat;
 	}

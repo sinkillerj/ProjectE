@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
@@ -12,6 +13,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class DMFurnaceContainer extends Container
 {
@@ -23,25 +27,31 @@ public class DMFurnaceContainer extends Container
 	public DMFurnaceContainer(InventoryPlayer invPlayer, DMFurnaceTile tile)	
 	{
 		this.tile = tile;
-		
+
+		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+
 		//Fuel Slot
-		this.addSlotToContainer(new Slot(tile, 0, 49, 53));
+		this.addSlotToContainer(new SlotItemHandler(fuel, 0, 49, 53));
 		
 		//Input(0)
-		this.addSlotToContainer(new Slot(tile, 1, 49, 17));
-		
+		this.addSlotToContainer(new SlotItemHandler(input, 0, 49, 17));
+
+		int counter = 1;
 		//Input Storage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 2, 13 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotItemHandler(input, counter++, 13 + i * 18, 8 + j * 18));
 		
 		//Output
-		this.addSlotToContainer(new Slot(tile, 10, 109, 35));
-		
+		this.addSlotToContainer(new SlotItemHandler(output, output.getSlots() - 1, 109, 35));
+
+		counter = output.getSlots() - 2;
 		//OutputStorage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 11, 131 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotItemHandler(output, counter--, 131 + i * 18, 8 + j * 18));
 		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)

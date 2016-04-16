@@ -10,8 +10,12 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class RMFurnaceContainer extends Container
 {
@@ -23,25 +27,31 @@ public class RMFurnaceContainer extends Container
 	public RMFurnaceContainer(InventoryPlayer invPlayer, RMFurnaceTile tile)
 	{
 		this.tile = tile;
-		
+
+		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+
 		//Fuel
-		this.addSlotToContainer(new Slot(tile, 0, 65, 53));
+		this.addSlotToContainer(new SlotItemHandler(fuel, 0, 65, 53));
 		
 		//Input(0)
-		this.addSlotToContainer(new Slot(tile, 1, 65, 17));
-		
+		this.addSlotToContainer(new SlotItemHandler(input, 0, 65, 17));
+
+		int counter = 1;
 		//Input storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 2, 11 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotItemHandler(input, counter++, 11 + i * 18, 8 + j * 18));
 		
 		//Output(0)
-		this.addSlotToContainer(new Slot(tile, 14, 125, 35));
-		
+		this.addSlotToContainer(new SlotItemHandler(output, output.getSlots() - 1, 125, 35));
+
+		counter = output.getSlots() - 2;
 		//Output Storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new Slot(tile, i * 4 + j + 15, 147 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new SlotItemHandler(output, counter--, 147 + i * 18, 8 + j * 18));
 		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
@@ -73,18 +83,16 @@ public class RMFurnaceContainer extends Container
 	{
 		super.detectAndSendChanges();
 
-		for (int i = 0; i < this.crafters.size(); ++i)
+		for (ICrafting crafter : this.crafters)
 		{
-			ICrafting icrafting = (ICrafting)this.crafters.get(i);
-
 			if (lastCookTime != tile.furnaceCookTime)
-				icrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+				crafter.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
 
 			if (lastBurnTime != tile.furnaceBurnTime)
-				icrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+				crafter.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
 
 			if (lastItemBurnTime != tile.currentItemBurnTime)
-				icrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+				crafter.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
 		}
 
 		lastCookTime = tile.furnaceCookTime;

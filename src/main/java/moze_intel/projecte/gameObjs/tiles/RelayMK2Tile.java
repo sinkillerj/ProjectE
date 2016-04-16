@@ -8,10 +8,4 @@ public class RelayMK2Tile extends RelayMK1Tile
 	{
 		super(12, Constants.RELAY_MK2_MAX, Constants.RELAY_MK2_OUTPUT);
 	}
-
-	@Override
-	public String getName()
-	{
-		return "pe.relay.mk2";
-	}
 }

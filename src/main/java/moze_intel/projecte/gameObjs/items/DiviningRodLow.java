@@ -191,11 +191,11 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (modes.length == 1)
 		{
-			return;
+			return false;
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
@@ -207,5 +207,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 		}
 
 		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+
+		return true;
 	}
 }

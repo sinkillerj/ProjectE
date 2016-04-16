@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialKlein;
 import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -19,10 +18,10 @@ public class MercurialEyeContainer extends Container
 		inventory = mercEyeInv;
 		
 		//Klein Star
-		this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 50, 26));
+		//this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 50, 26));
 		
 		//Target
-		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
+		// todo 1.9 this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -41,14 +40,14 @@ public class MercurialEyeContainer extends Container
 	}
 	
 	@Override
-	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem(inventory.hand))
 		{
 			return null;
 		}
 		
-		return super.func_184996_a(slot, button, flag, player);
+		return super.slotClick(slot, button, flag, player);
 	}
 
 	@Override

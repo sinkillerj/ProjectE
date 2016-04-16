@@ -21,9 +21,9 @@ public class ThreadCheckUpdate extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogMC18.txt";
-	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
-	private final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
+	private static final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogMC18.txt";
+	private static final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private static final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
 	private boolean isServerSide;
 	
 	public ThreadCheckUpdate(boolean isServer) 
@@ -93,7 +93,7 @@ public class ThreadCheckUpdate extends Thread
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("pe.update.getit")));
 
 					ITextComponent link = new TextComponentString(curseURL);
-					link.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+					link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(link);
 
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("pe.update.changelog")));

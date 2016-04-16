@@ -38,7 +38,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		return state.getBlock() != newState.getBlock();
 	}
 	
-	public boolean hasMaxedEmc()
+	protected boolean hasMaxedEmc()
 	{
 		return getStoredEmc() >= getMaximumEmc();
 	}
@@ -49,7 +49,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	 *
 	 * @param emc The maximum combined emc to send to others
 	 */
-	public void sendToAllAcceptors(double emc)
+	protected void sendToAllAcceptors(double emc)
 	{
 		if (!(this instanceof IEmcProvider))
 		{
@@ -88,7 +88,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		}
 	}
 
-	protected class StackHandler extends ItemStackHandler
+	class StackHandler extends ItemStackHandler
 	{
 		private final boolean allowInsert;
 		private final boolean allowExtract;

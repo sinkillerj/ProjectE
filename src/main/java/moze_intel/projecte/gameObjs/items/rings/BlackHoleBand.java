@@ -30,6 +30,9 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
@@ -45,7 +48,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (!world.isRemote)
 		{
-			changeMode(player, stack);
+			changeMode(player, stack, hand);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -181,7 +184,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemStack result = ItemHelper.pushStackInInv(tile, e.getEntityItem());
+					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getEntityItem(), false);
 					if (result != null)
 					{
 						e.setEntityItemStack(result);
@@ -198,14 +201,14 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemHelper.pushLootBallInInv(tile, e);
+					ItemHelper.pushLootBallInInv(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e);
 				}
 			}
 		}
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
 	{
 		if (stack.getItemDamage() == 1)
 		{

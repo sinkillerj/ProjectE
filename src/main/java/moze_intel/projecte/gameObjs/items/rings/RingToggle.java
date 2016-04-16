@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -45,7 +46,7 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -57,5 +58,6 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			stack.setItemDamage(0);
 		}
+		return true;
 	}
 }

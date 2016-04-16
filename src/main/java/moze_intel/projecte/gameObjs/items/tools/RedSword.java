@@ -4,6 +4,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.translation.I18n;
 
 public class RedSword extends DarkSword
@@ -28,8 +29,9 @@ public class RedSword extends DarkSword
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0);
+		return true;
 	}
 }

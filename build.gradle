@@ -31,7 +31,7 @@ archivesBaseName = "ProjectE"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "eclipse"
-    mappings = 'snapshot_20160318'
+    mappings = 'snapshot_20160402'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"

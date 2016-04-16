@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -57,106 +58,102 @@ public class KeyPressPKT implements IMessage
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-                    switch (message.key)
+                    if (message.key == PEKeybind.ARMOR_TOGGLE)
                     {
-                        case ARMOR_TOGGLE:
-                            if (player.isSneaking())
-                            {
-                                ItemStack helm = player.inventory.armorItemInSlot(3);
+                        if (player.isSneaking())
+                        {
+                            ItemStack helm = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 
-                                if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
-                                {
-                                    GemHelmet.toggleNightVision(helm, player);
-                                }
-                            }
-                            else
+                            if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
                             {
-                                ItemStack boots = player.inventory.armorItemInSlot(0);
+                                GemHelmet.toggleNightVision(helm, player);
+                            }
+                        }
+                        else
+                        {
+                            ItemStack boots = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-                                if (boots != null && boots.getItem() == ObjHandler.gemFeet)
-                                {
-                                    ((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
-                                }
+                            if (boots != null && boots.getItem() == ObjHandler.gemFeet)
+                            {
+                                ((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
                             }
-                            break;
-                        case CHARGE:
-                            Pair<EnumHand, ItemStack> charge = getMainOrOff(player, IItemCharge.class);
+                        }
+                        return;
+                    }
 
-                            if (charge != null)
+                    for (EnumHand hand : EnumHand.values())
+                    {
+                        ItemStack stack = player.getHeldItem(hand);
+                        if (stack != null)
+                        {
+                            switch (message.key)
                             {
-                                ((IItemCharge) charge.getRight().getItem()).changeCharge(player, charge.getRight(), charge.getLeft());
-                            }
-                            else if (ProjectEConfig.unsafeKeyBinds)
-                            {
-                                if (GemArmorBase.hasAnyPiece(player))
-                                {
-                                    PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
-                                    player.addChatMessage(new TextComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
-                                }
-                            }
-                            break;
-                        case EXTRA_FUNCTION:
-                            Pair<EnumHand, ItemStack> extra = getMainOrOff(player, IExtraFunction.class);
-
-                            if (extra != null)
-                            {
-                                ((IExtraFunction) extra.getRight().getItem()).doExtraFunction(extra.getRight(), player, extra.getLeft());
-                            } else if (ProjectEConfig.unsafeKeyBinds)
-                            {
-                                if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
-                                {
-                                    if (PlayerChecks.getGemCooldown(player) <= 0)
+                                case CHARGE:
+                                    if (stack.getItem() instanceof IItemCharge
+                                            && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
                                     {
-                                        ((GemChest) ObjHandler.gemChest).doExplode(player);
-                                        PlayerChecks.resetGemCooldown(player);
+                                        return;
+                                    } else if (ProjectEConfig.unsafeKeyBinds)
+                                    {
+                                        if (GemArmorBase.hasAnyPiece(player))
+                                        {
+                                            PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
+                                            player.addChatMessage(new TextComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
+                                            return;
+                                        }
                                     }
-                                }
-                            }
-                            break;
-                        case FIRE_PROJECTILE:
-                            Pair<EnumHand, ItemStack> projectile = getMainOrOff(player, IProjectileShooter.class);
-
-                            if (projectile != null)
-                            {
-                                if (PlayerChecks.getProjectileCooldown(player) <= 0) {
-                                    if (((IProjectileShooter) projectile.getRight().getItem()).shootProjectile(player, projectile.getRight(), projectile.getLeft()))
+                                    break;
+                                case EXTRA_FUNCTION:
+                                    if (stack.getItem() instanceof IExtraFunction
+                                            && ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player, hand))
+                                    {
+                                        return;
+                                    } else if (ProjectEConfig.unsafeKeyBinds)
+                                    {
+                                        if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
+                                        {
+                                            if (PlayerChecks.getGemCooldown(player) <= 0)
+                                            {
+                                                ((GemChest) ObjHandler.gemChest).doExplode(player);
+                                                PlayerChecks.resetGemCooldown(player);
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case FIRE_PROJECTILE:
+                                    if (stack.getItem() instanceof IProjectileShooter
+                                            && PlayerChecks.getProjectileCooldown(player) <= 0
+                                            && ((IProjectileShooter) stack.getItem()).shootProjectile(player, stack, hand))
                                     {
                                         PlayerHelper.swingItem((player));
+                                        PlayerChecks.resetProjectileCooldown(player);
+                                        return;
+                                    } else if (ProjectEConfig.unsafeKeyBinds)
+                                    {
+                                        if (PlayerChecks.getGemState(player)
+                                                && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null
+                                                && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemHelmet)
+                                        {
+                                            ((GemHelmet) ObjHandler.gemHelmet).doZap(player);
+                                            return;
+                                        }
                                     }
-                                    PlayerChecks.resetProjectileCooldown(player);
-                                }
-                            } else if (ProjectEConfig.unsafeKeyBinds)
-                            {
-                                if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[3] != null && player.inventory.armorInventory[3].getItem() == ObjHandler.gemHelmet)
-                                {
-                                    ((GemHelmet) ObjHandler.gemHelmet).doZap(player);
-                                }
+                                    break;
+                                case MODE:
+                                    if (stack.getItem() instanceof IModeChanger
+                                            && ((IModeChanger) stack.getItem()).changeMode(player, stack, hand))
+                                    {
+                                        return;
+                                    }
+                                    break;
                             }
-                            break;
-                        case MODE:
-                            Pair<EnumHand, ItemStack> modeChange = getMainOrOff(player, IModeChanger.class);
-                            if (modeChange != null)
-                            {
-                                ((IModeChanger) modeChange.getRight().getItem()).changeMode(player, modeChange.getRight(), modeChange.getLeft());
-                            }
-                            break;
+                        }
                     }
+
                 }
             });
 			return null;
 		}
-
-        private Pair<EnumHand, ItemStack> getMainOrOff(EntityPlayer player, Class<?> clazz)
-        {
-            for (EnumHand e : EnumHand.values())
-            {
-                ItemStack stack = player.getHeldItem(e);
-                if (stack != null && clazz.isAssignableFrom(stack.getItem().getClass()))
-                {
-                    return Pair.of(e, stack);
-                }
-            }
-            return null;
-        }
 	}
 }

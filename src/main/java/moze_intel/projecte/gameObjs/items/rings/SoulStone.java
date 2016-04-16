@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
@@ -66,7 +67,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	}
 	
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -83,6 +84,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		{
 			stack.setItemDamage(0);
 		}
+		return true;
 	}
 	
 	@Override

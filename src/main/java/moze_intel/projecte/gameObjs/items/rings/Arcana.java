@@ -13,7 +13,6 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,9 +53,10 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		stack.setItemDamage((stack.getItemDamage() + 1) % 4);
+		return true;
 	}
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)
@@ -161,11 +161,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player) // GIANT FIRE ROW OF DEATH
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand) // GIANT FIRE ROW OF DEATH
 	{
 		World world = player.worldObj;
 		
-		if(world.isRemote) return;
+		if(world.isRemote) return true;
 		
 		switch(stack.getItemDamage())
 		{
@@ -200,10 +200,12 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
+
+		return true;
 	}
 
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		
@@ -218,11 +220,13 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);
+				fire.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntityInWorld(fire);
 				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player);
+				lightning.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntityInWorld(lightning);
 				// world.playSoundAtEntity(player, "projecte:item.pewindmagic", 1.0F, 1.0F);
 				break;

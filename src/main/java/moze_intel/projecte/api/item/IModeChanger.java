@@ -20,7 +20,8 @@ public interface IModeChanger
 	 * Called serverside when the player presses change mode
 	 * @param player The player pressing the change mode key
 	 * @param stack The stack whose mode we are changing
-	 * @param hand The hand this stack was in
+	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
+	 * @return Whether the operation succeeded
 	 */
-	void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand);
+	boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand);
 }

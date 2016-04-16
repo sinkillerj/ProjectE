@@ -157,7 +157,7 @@ public class TransmutationContainer extends Container
 	}
 
 	@Override
-	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (player.worldObj.isRemote && isNeiScrollWheel()) return null;
 		if (player.worldObj.isRemote && 10 <= slot && slot <= 25) {
@@ -172,7 +172,7 @@ public class TransmutationContainer extends Container
 			}
 		}
 
-		return super.func_184996_a(slot, button, flag, player);
+		return super.slotClick(slot, button, flag, player);
 	}
 	
 	@Override

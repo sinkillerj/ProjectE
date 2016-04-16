@@ -66,9 +66,8 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
-		
 		if (stack.getItemDamage() == 0)
 		{
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
@@ -84,6 +83,8 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		{
 			stack.setItemDamage(0);
 		}
+
+		return true;
 	}
 
 	@Override
@@ -181,13 +182,14 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack)
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		
 		if(world.isRemote) return false;
 		
 		EntityFireProjectile fire = new EntityFireProjectile(world, player);
+		fire.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.spawnEntityInWorld(fire);
 		
 		return true;

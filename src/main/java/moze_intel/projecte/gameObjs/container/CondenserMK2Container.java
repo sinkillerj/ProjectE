@@ -35,12 +35,12 @@ public class CondenserMK2Container extends Container
 		//Inputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, 1 + j + i * 6, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
+				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 
 		//Outputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(output, 43 + j + i * 6, 138 + j * 18, 26 + i * 18, Predicates.<ItemStack>alwaysFalse()));
+				this.addSlotToContainer(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, Predicates.<ItemStack>alwaysFalse()));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -109,7 +109,7 @@ public class CondenserMK2Container extends Container
 	}
 
 	@Override
-	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot == 0 && tile.getLock().getStackInSlot(0) != null)
 		{
@@ -121,6 +121,6 @@ public class CondenserMK2Container extends Container
 			}
 
 			return null;
-		} else return super.func_184996_a(slot, button, flag, player);
+		} else return super.slotClick(slot, button, flag, player);
 	}
 }

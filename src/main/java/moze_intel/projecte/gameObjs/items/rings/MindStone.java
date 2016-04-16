@@ -44,7 +44,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		{
 			if (!canStore(stack))
 			{
-				this.changeMode(player, stack);
+				this.changeMode(player, stack, EnumHand.MAIN_HAND); // todo 1.9
 				return;
 			}
 			

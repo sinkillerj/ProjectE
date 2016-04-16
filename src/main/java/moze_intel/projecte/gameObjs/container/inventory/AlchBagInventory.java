@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -19,7 +18,7 @@ public class AlchBagInventory implements IInventory
 	public AlchBagInventory(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		invItem = stack;
-		inventory = AlchemicalBags.get(player, (byte) stack.getItemDamage());
+		inventory = null;// todo 1.9 AlchemicalBags.get(player, (byte) stack.getItemDamage());
 		this.hand = hand;
 	}
 
@@ -131,8 +130,8 @@ public class AlchBagInventory implements IInventory
 	{
 		if (!player.worldObj.isRemote)
 		{
-			AlchemicalBags.set(player, (byte) invItem.getItemDamage(), inventory);
-			AlchemicalBags.syncPartial(player, invItem.getItemDamage());
+			// todo 1.9 AlchemicalBags.set(player, (byte) invItem.getItemDamage(), inventory);
+			// AlchemicalBags.syncPartial(player, invItem.getItemDamage());
 		}
 	}
 	

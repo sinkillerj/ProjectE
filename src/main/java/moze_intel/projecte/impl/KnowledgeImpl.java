@@ -93,7 +93,7 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public List<ItemStack> getKnowledge() {
+        public ImmutableList<ItemStack> getKnowledge() {
             return ImmutableList.copyOf(knowledge);
         }
 

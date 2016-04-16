@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import com.google.common.collect.Lists;
 
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -12,7 +13,9 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,13 +61,13 @@ public class TransmutationInventory implements IInventory
 			stack.setItemDamage(0);
 		}
 		
-		if (!Transmutation.hasKnowledgeForStack(stack, player))
+		if (!player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(stack))
 		{
 			learnFlag = 300;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
-				Transmutation.setFullKnowledge(player);
+				// todo 1.9 Transmutation.setFullKnowledge(player);
 			}
 			else
 			{
@@ -73,12 +76,12 @@ public class TransmutationInventory implements IInventory
 					stack.setTagCompound(null);
 				}
 
-				Transmutation.addKnowledge(stack, player);
+				player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).addKnowledge(stack);
 			}
 			
 			if (!player.worldObj.isRemote)
 			{
-				Transmutation.sync(player);
+				player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
 			}
 		}
 		
@@ -96,8 +99,8 @@ public class TransmutationInventory implements IInventory
 		{
 			stack.setItemDamage(0);
 		}
-		
-		if (Transmutation.hasKnowledgeForStack(stack, player))
+
+		if (player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(stack))
 		{
 			unlearnFlag = 300;
 
@@ -106,11 +109,11 @@ public class TransmutationInventory implements IInventory
 				stack.setTagCompound(null);
 			}
 
-			Transmutation.removeKnowledge(stack, player);
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).removeKnowledge(stack);
 			
 			if (!player.worldObj.isRemote)
 			{
-				Transmutation.sync(player);
+				player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
 			}
 		}
 		
@@ -139,7 +142,8 @@ public class TransmutationInventory implements IInventory
 		if (!this.player.worldObj.isRemote) {
 			return;
 		}
-		knowledge = Lists.newArrayList(Transmutation.getKnowledge(player));
+
+		knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getKnowledge();
 
 		for (int i : MATTER_INDEXES)
 		{
@@ -275,7 +279,7 @@ public class TransmutationInventory implements IInventory
 	public void writeIntoOutputSlot(int slot, ItemStack item)
 	{
 
-		if (EMCHelper.doesItemHaveEmc(item) && EMCHelper.getEmcValue(item) <= this.emc && Transmutation.hasKnowledgeForStack(item, player))
+		if (EMCHelper.doesItemHaveEmc(item) && EMCHelper.getEmcValue(item) <= this.emc && player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(item))
 		{
 			inventory[slot] = item;
 		}
@@ -382,8 +386,8 @@ public class TransmutationInventory implements IInventory
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		emc = Transmutation.getEmc(player);
-		ItemStack[] inputLocks = Transmutation.getInputsAndLock(player);
+		emc = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
+		ItemStack[] inputLocks = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getInputAndLocks();
 		System.arraycopy(inputLocks, 0, inventory, 0, 9);
 		if (this.player.worldObj.isRemote)
 		{
@@ -396,9 +400,9 @@ public class TransmutationInventory implements IInventory
 	{
 		if (!player.worldObj.isRemote)
 		{
-			Transmutation.setEmc(player, emc);
-			Transmutation.setInputsAndLocks(Arrays.copyOfRange(inventory, 0, 9), player);
-			Transmutation.sync(player);
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).setEmc(emc);
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).setInputAndLocks(Arrays.copyOfRange(inventory, 0, 9));
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
 		}
 	}
 

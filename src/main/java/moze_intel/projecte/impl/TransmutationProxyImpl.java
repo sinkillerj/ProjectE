@@ -2,13 +2,16 @@ package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -50,7 +53,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
-            return Transmutation.hasKnowledgeForStack(stack, PECore.proxy.getClientPlayer());
+            return PECore.proxy.getClientTransmutationProps().hasKnowledge(stack);
         }
         else
         {
@@ -59,7 +62,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
             {
-                return Transmutation.hasKnowledgeForStack(stack, player);
+                return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(stack);
             }
             else
             {
@@ -74,7 +77,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
-            return Transmutation.getKnowledge(PECore.proxy.getClientPlayer());
+            return PECore.proxy.getClientTransmutationProps().getKnowledge();
         }
         else
         {
@@ -83,7 +86,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
             {
-                return Transmutation.getKnowledge(player);
+                return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getKnowledge();
             }
             else
             {
@@ -108,8 +111,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
-            Transmutation.addKnowledge(stack, player);
-            Transmutation.sync(player);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).addKnowledge(stack);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
         }
     }
 
@@ -123,8 +126,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
-            Transmutation.removeKnowledge(stack, player);
-            Transmutation.sync(player);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).removeKnowledge(stack);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
         }
     }
 
@@ -137,8 +140,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null)
         {
-            Transmutation.setEmc(player, emc);
-            Transmutation.sync(player);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).setEmc(emc);
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(((EntityPlayerMP) player));
         }
     }
 
@@ -148,7 +151,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
-            return Transmutation.getEmc(PECore.proxy.getClientPlayer());
+            return PECore.proxy.getClientTransmutationProps().getEmc();
         } else
         {
             Preconditions.checkNotNull(playerUUID);
@@ -156,7 +159,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
             {
-                return Transmutation.getEmc(player);
+                return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
             }
             else
             {

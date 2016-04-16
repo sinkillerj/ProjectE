@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.EnumFacing;
@@ -226,7 +227,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -243,6 +244,8 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			stack.setItemDamage(0);
 		}
+
+		return true;
 	}
 
 	@Override

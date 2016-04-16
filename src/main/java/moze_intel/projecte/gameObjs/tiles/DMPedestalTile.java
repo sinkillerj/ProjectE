@@ -22,7 +22,7 @@ import java.util.Random;
 public class DMPedestalTile extends TileEmc
 {
 	private boolean isActive = false;
-	private ItemStackHandler inventory = new ItemHandler();
+	private ItemStackHandler inventory = new StackHandler(1, true, true);
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
@@ -203,37 +203,15 @@ public class DMPedestalTile extends TileEmc
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(Capability<T> cap, EnumFacing side)
 	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-				? (T) inventory
-				: super.getCapability(cap, side);
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+		}
+		return super.getCapability(cap, side);
 	}
 
 	public IItemHandlerModifiable getInventory() {
 		return inventory;
-	}
-
-	private class ItemHandler extends ItemStackHandler
-	{
-		public ItemHandler()
-		{
-			super(1);
-		}
-
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (stack != null
-					&& stack.getItem() != null
-					&& stack.getItem() instanceof IPedestalItem)
-				return super.insertItem(slot, stack, simulate);
-			else return stack;
-		}
-
-		@Override
-		public void onContentsChanged(int slot)
-		{
-			DMPedestalTile.this.markDirty();
-		}
 	}
 
 }

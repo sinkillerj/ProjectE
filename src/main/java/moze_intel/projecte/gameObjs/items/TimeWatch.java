@@ -4,7 +4,6 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -75,7 +74,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
+			player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedComponentText()));
 		}
 
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -273,29 +272,19 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
 			stack.setItemDamage(1);
-			playChargeSound(player);
 		}
 		else 
 		{
 			stack.setItemDamage(0);
-			playUnChargeSound(player);
 		}
+		return true;
 	}
-	
-	public void playChargeSound(EntityPlayer player)
-	{
 
-	}
-	
-	public void playUnChargeSound(EntityPlayer player)
-	{
-
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -74,9 +74,10 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack) 
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
+		return true;
 	}
 	
 	@Override

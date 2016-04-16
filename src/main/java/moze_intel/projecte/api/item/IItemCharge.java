@@ -20,7 +20,8 @@ public interface IItemCharge
 	 * Called serverside when the player presses the charge keybinding; reading sneaking state is up to you
 	 * @param player The player
 	 * @param stack The item being charged
-	 * @param hand The hand this stack was in
+	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
+	 * @return Whether the operation succeeded
 	 */
-	void changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand);
+	boolean changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand);
 }

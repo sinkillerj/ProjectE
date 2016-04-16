@@ -131,10 +131,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-		player.worldObj.spawnEntityInWorld(new EntityLavaProjectile(player.worldObj, player));
+		EntityLavaProjectile ent = new EntityLavaProjectile(player.worldObj, player);
+		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		player.worldObj.spawnEntityInWorld(ent);
 		return true;
 	}
 

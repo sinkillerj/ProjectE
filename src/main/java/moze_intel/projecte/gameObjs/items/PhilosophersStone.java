@@ -5,27 +5,20 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -101,17 +94,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		World world = player.worldObj;
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-		world.spawnEntityInWorld(new EntityMobRandomizer(world, player));
+		EntityMobRandomizer ent = new EntityMobRandomizer(world, player);
+		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		world.spawnEntityInWorld(ent);
 		return true;
 	}
 	
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		if (!player.worldObj.isRemote)
 		{
 			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
+
+		return true;
 	}
 	
 	@Override

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -204,7 +203,7 @@ public class EntityLootBall extends Entity
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
+			/* todo 1.9 ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 			
 			if (bag != null)
 			{
@@ -293,7 +292,7 @@ public class EntityLootBall extends Entity
 			else
 			{
 				this.setDead();
-			}
+			}*/
 		}
 	}
 	

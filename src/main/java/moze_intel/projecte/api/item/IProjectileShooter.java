@@ -13,7 +13,7 @@ public interface IProjectileShooter
 	 * Called serverside when the player presses the Fire Projectile Button
 	 * @param player The player pressing the key
 	 * @param stack The stack we are using to shoot
-	 * @param hand The hand this stack was in
+	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
 	 * @return If the projectile was actually fired
 	 */
 	boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand);

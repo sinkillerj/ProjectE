@@ -41,14 +41,15 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	}
 	
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		if (numModes == 0)
 		{
-			return;
+			return false;
 		}
 		changeMode(stack);
 		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		return true;
 	}
 	
 	@Override

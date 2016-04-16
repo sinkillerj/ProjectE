@@ -12,6 +12,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class CondenserContainer extends Container
 {	
@@ -24,12 +25,14 @@ public class CondenserContainer extends Container
 		
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
-		
+
+		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		int counter = handler.getSlots() - 1;
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++) 
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new ValidatedSlot(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null),
-								1 + j + i * 13, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
+				this.addSlotToContainer(new ValidatedSlot(handler, counter--, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -90,7 +93,7 @@ public class CondenserContainer extends Container
 	}
 
 	@Override
-	public ItemStack func_184996_a(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot == 0 && tile.getLock().getStackInSlot(0) != null)
 		{
@@ -102,6 +105,6 @@ public class CondenserContainer extends Container
 			}
 
 			return null;
-		} else return super.func_184996_a(slot, button, flag, player);
+		} else return super.slotClick(slot, button, flag, player);
 	}
 }

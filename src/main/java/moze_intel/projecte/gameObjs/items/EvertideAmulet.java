@@ -170,14 +170,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
+	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 
 		if (!world.provider.doesWaterVaporize())
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			world.spawnEntityInWorld(new EntityWaterProjectile(world, player));
+			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
+			ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+			world.spawnEntityInWorld(ent);
 			return true;
 		}
 

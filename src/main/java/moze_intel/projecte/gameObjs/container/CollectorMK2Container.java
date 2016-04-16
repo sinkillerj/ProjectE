@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +14,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class CollectorMK2Container extends Container
 {
@@ -21,21 +26,24 @@ public class CollectorMK2Container extends Container
 	public CollectorMK2Container(InventoryPlayer invPlayer, CollectorMK2Tile collector)
 	{
 		this.tile = collector;
-		tile.openInventory(invPlayer.player);
+
+		IItemHandler aux = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		
 		//Klein Star Slot
-		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 140, 58));
-				
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK2Tile.KLEIN_SLOT, 140, 58, SlotPredicates.COLLECTOR_INV));
+
+		int counter = main.getSlots() - 1;
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotCollectorInv(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 				
 		//Upgrade Result
-		this.addSlotToContainer(new Slot(tile, 13, 140, 13));
+		this.addSlotToContainer(new SlotItemHandler(aux, CollectorMK2Tile.UPGRADE_SLOT, 140, 13));
 				
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorLock(tile, 14, 169, 36));
+		this.addSlotToContainer(new SlotCollectorLock(aux, CollectorMK2Tile.LOCK_SLOT, 169, 36));
 			
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -74,13 +82,6 @@ public class CollectorMK2Container extends Container
 	public void updateProgressBar(int par1, int par2)
 	{
 		tile.displaySunLevel = par2;
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed(player);
-		tile.closeInventory(player);
 	}
 	
 	@Override

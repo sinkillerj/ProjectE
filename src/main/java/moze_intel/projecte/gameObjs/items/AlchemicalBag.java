@@ -4,7 +4,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.playerData.AlchemicalBags;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -60,13 +59,13 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (!(entity instanceof EntityPlayer))
+		if (true || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = AlchemicalBags.get(player, (byte) stack.getItemDamage());
+		ItemStack[] inv = null;// todo 1.9 AlchemicalBags.get(player, (byte) stack.getItemDamage());
 
 		if (player.openContainer instanceof AlchBagContainer)
 		{
@@ -95,8 +94,8 @@ public class AlchemicalBag extends ItemPE
 
 			if (!player.worldObj.isRemote && hasChanged)
 			{
-				AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
-				AlchemicalBags.syncPartial(player, stack.getItemDamage());
+				//AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
+				//AlchemicalBags.syncPartial(player, stack.getItemDamage());
 			}
 		}
 	}
@@ -151,10 +150,10 @@ public class AlchemicalBag extends ItemPE
 
 			if (stack.getItem() == ObjHandler.alchBag)
 			{
-				ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
+				/*ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
 				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
 						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-				return stack;
+				return stack;*/
 			}
 		}
 

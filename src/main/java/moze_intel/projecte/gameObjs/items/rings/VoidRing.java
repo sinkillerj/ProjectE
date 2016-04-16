@@ -14,11 +14,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.items.IItemHandler;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
@@ -53,11 +55,11 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
 	{
 		if (stack.getTagCompound().getByte("teleportCooldown") > 0 )
 		{
-			return;
+			return false;
 		}
 
 		BlockPos c = PlayerHelper.getBlockLookingAt(player, 64);
@@ -78,11 +80,14 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_endermen_teleport, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
 	{
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
