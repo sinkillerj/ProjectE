@@ -365,24 +365,13 @@ public final class ItemHelper
 		return false;
 	}
 
-	public static boolean invContainsItem(ItemStack inv[], ItemStack toSearch)
+	public static boolean invContainsItem(IItemHandler inv, ItemStack toSearch)
 	{
-		for (ItemStack stack : inv)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
+			ItemStack stack = inv.getStackInSlot(i);
+
 			if (stack != null && basicAreStacksEqual(stack, toSearch))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public static boolean invContainsItem(ItemStack inv[], Item toSearch)
-	{
-		for (ItemStack stack : inv)
-		{
-			if (stack != null && stack.getItem() == toSearch)
 			{
 				return true;
 			}

@@ -21,7 +21,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class AlchBagImpl
+public final class AlchBagImpl
 {
 
     public static void init()
@@ -85,7 +85,6 @@ public class AlchBagImpl
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
-            // todo 1.9 want this for partial? inventories.clear();
             for (EnumDyeColor e : EnumDyeColor.values())
             {
                 if (nbt.hasKey(e.getName()))
@@ -136,5 +135,6 @@ public class AlchBagImpl
         }
     }
 
+    private AlchBagImpl() {}
 
 }

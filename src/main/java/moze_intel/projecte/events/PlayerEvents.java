@@ -118,55 +118,29 @@ public class PlayerEvents
 		{
 			return;
 		}
-		
-		if (player.openContainer instanceof AlchBagContainer)
+
+		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
+
+		if (bag == null)
 		{
-			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
-			
-			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)) || ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1))
-					&& ItemHelper.hasSpace(inv, event.getItem().getEntityItem()))
-			{
-				ItemStack remain = ItemHelper.pushStackInInv(inv, event.getItem().getEntityItem());
-				
-				if (remain == null)
-				{
-					event.getItem().setPickupDelay(10);
-					event.getItem().setDead();
-					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				}
-				else 
-				{
-					event.getItem().setEntityItemStack(remain);
-				}
-				
-				event.setCanceled(true);
-			}
+			return;
+		}
+
+		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+				.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
+		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getEntityItem(), false);
+
+		if (remainder == null)
+		{
+			event.getItem().setPickupDelay(10);
+			event.getItem().setDead();
+			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		}
 		else
 		{
-			ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
-			
-			if (bag == null)
-			{
-				return;
-			}
-
-			IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-					.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
-			ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getEntityItem(), false);
-
-			if (remainder == null)
-			{
-				event.getItem().setPickupDelay(10);
-				event.getItem().setDead();
-				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-			}
-			else
-			{
-				event.getItem().setEntityItemStack(remainder);
-			}
-
-			event.setCanceled(true);
+			event.getItem().setEntityItemStack(remainder);
 		}
+
+		event.setCanceled(true);
 	}
 }

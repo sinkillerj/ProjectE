@@ -1,15 +1,19 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -19,6 +23,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 
@@ -50,7 +55,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -59,44 +64,32 @@ public class AlchemicalBag extends ItemPE
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (true || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		ItemStack[] inv = null;// todo 1.9 AlchemicalBags.get(player, (byte) stack.getItemDamage());
+		IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+				.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
 
-		if (player.openContainer instanceof AlchBagContainer)
+		boolean hasChanged = false;
+
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
-			ItemStack[] openContainerInv = ((AlchBagContainer) player.openContainer).inventory.getInventory();
-			for (int i = 0; i < openContainerInv.length; i++) // Do not use foreach - to avoid desync
+			ItemStack current = inv.getStackInSlot(i);
+			if (current != null && current.getItem() instanceof  IAlchBagItem)
 			{
-				ItemStack current = openContainerInv[i];
-				if (current != null && current.getItem() instanceof IAlchBagItem)
-				{
-					// todo 1.9 ((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
-				}
+				hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current) || hasChanged;
 			}
-			// Do not AlchemicalBags.set/syncPartial here - vanilla handles it because it's the open container
 		}
-		else
-		{
-			boolean hasChanged = false;
-			for (int i = 0; i < inv.length; i++) // Do not use foreach - to avoid desync
-			{
-				ItemStack current = inv[i];
-				if (current != null && current.getItem() instanceof IAlchBagItem)
-				{
-					// todo 1.9 hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
-				}
-			}
 
-			if (!player.worldObj.isRemote && hasChanged)
-			{
-				//AlchemicalBags.set(player, ((byte) stack.getItemDamage()), inv);
-				//AlchemicalBags.syncPartial(player, stack.getItemDamage());
-			}
+		if (!player.worldObj.isRemote
+				&& !(player.openContainer instanceof AlchBagContainer) // Don't sync when gui is open because container system does it for us
+				&& hasChanged)
+		{
+			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+					.sync(EnumDyeColor.byMetadata(stack.getItemDamage()), ((EntityPlayerMP) player));
 		}
 	}
 	
@@ -133,7 +126,7 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	public void getSubItems(Item item, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i < 16; ++i)
 			list.add(new ItemStack(item, 1, i));
@@ -150,10 +143,11 @@ public class AlchemicalBag extends ItemPE
 
 			if (stack.getItem() == ObjHandler.alchBag)
 			{
-				/*ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
+				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+						.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
 				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
 						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-				return stack;*/
+				return stack;
 			}
 		}
 

@@ -75,8 +75,8 @@ public class GuiHandler implements IGuiHandler
 	{
 		TileEntity tile = !ITEM_IDS.contains(ID) ? world.getTileEntity(new BlockPos(x, y, z)) : null;
 
-		// if not a TE, x will hold which hand it came from. 0 for main, 1 for off.
-		EnumHand hand = ITEM_IDS.contains(ID) ? EnumHand.values()[x] : null;
+		// if not a TE, x will hold which hand it came from. 1 for off, 0 otherwise
+		EnumHand hand = ITEM_IDS.contains(ID) ? (x == 1 ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND) : null;
 		
 		switch (ID)
 		{
@@ -144,8 +144,8 @@ public class GuiHandler implements IGuiHandler
 	{
 		TileEntity tile = !ITEM_IDS.contains(ID) ? world.getTileEntity(new BlockPos(x, y, z)) : null;
 
-		// if not a TE, x will hold which hand it came from. 0 for main, 1 for off.
-		EnumHand hand = ITEM_IDS.contains(ID) ? EnumHand.values()[x] : null;
+		// if not a TE, x will hold which hand it came from. 1 for off, 0 otherwise
+		EnumHand hand = ITEM_IDS.contains(ID) ? (x == 1 ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND) : null;
 
 		switch (ID)
 		{

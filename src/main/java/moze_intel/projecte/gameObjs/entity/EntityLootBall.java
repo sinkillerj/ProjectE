@@ -1,22 +1,30 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -139,160 +147,86 @@ public class EntityLootBall extends Entity
 		
 		boolean playSound = false;
 		List<ItemStack> list = Lists.newArrayList();
-		
-		if (player.openContainer instanceof AlchBagContainer)
+
+		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
+
+		if (bag != null)
 		{
-			IInventory inv = ((AlchBagContainer) player.openContainer).inventory;
-			
-			if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1)))
+			IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+					.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
+
+			for (ItemStack stack : items)
 			{
-				for (ItemStack stack : items)
+				ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, stack, false);
+
+				if (remain == null)
 				{
-					ItemStack remain = ItemHelper.pushStackInInv(inv, stack);
-					
-					if (remain == null)
-					{
-						if (!playSound)
-						{
-							playSound = true;
-						}
-							
-						continue;
-					}
-					else
-					{
-						remain = ItemHelper.pushStackInInv(player.inventory, remain);
-						
-						if (remain == null)
-						{
-							if (!playSound)
-							{
-								playSound = true;
-							}
-								
-							continue;
-						}
-						else
-						{
-							list.add(remain);
-						}
-						
-						if (!playSound && !ItemHelper.areItemStacksEqual(stack, remain))
-						{
-							playSound = true;
-						}
-					}
-				}
-				
-				if (playSound)
-				{
-					this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				}
-			
-				if (list.size() > 0)
-				{
-					items = list;
+					playSound = true;
 				}
 				else
 				{
-					this.setDead();
-				}
-				
-				return;
-			}
-		}
-		else
-		{
-			/* todo 1.9 ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
-			
-			if (bag != null)
-			{
-				ItemStack[] inv = AlchemicalBags.get(player, (byte) bag.getItemDamage());
-				
-				for (ItemStack stack : items)
-				{
-					ItemStack remain = ItemHelper.pushStackInInv(inv, stack);
-					
+					remain = ItemHandlerHelper.insertItemStacked(
+							player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), remain, false);
+
 					if (remain == null)
 					{
-						if (!playSound)
-						{
-							playSound = true;
-						}
-							
+						playSound = true;
 						continue;
 					}
 					else
 					{
-						remain = ItemHelper.pushStackInInv(player.inventory, remain);
-						
-						if (remain == null)
-						{
-							if (!playSound)
-							{
-								playSound = true;
-							}
-								
-							continue;
-						}
-						else
-						{
-							list.add(remain);
-						}
-						
-						if (!playSound && !ItemHelper.areItemStacksEqual(stack, remain))
-						{
-							playSound = true;
-						}
+						list.add(remain);
 					}
-				}
-				
-				if (playSound)
-				{
-					AlchemicalBags.set(player, (byte) bag.getItemDamage(), inv);
-					AlchemicalBags.syncPartial(player, bag.getItemDamage());
-				}
-			}
-			else
-			{
-				for (ItemStack stack : items)
-				{
-					ItemStack remaining = ItemHelper.pushStackInInv(player.inventory, stack);
-				
-					if (remaining == null) 
-					{
-						if (!playSound)
-						{
-							playSound = true;
-						}
-					
-						continue;
-					}
-					else
-					{
-						list.add(remaining);
-					}
-				
-					if (!playSound && !ItemHelper.areItemStacksEqual(stack, remaining))
+
+					if (!ItemHelper.areItemStacksEqual(stack, remain))
 					{
 						playSound = true;
 					}
 				}
 			}
-			
+
 			if (playSound)
 			{
-				this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+				player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+						.sync(EnumDyeColor.byMetadata(bag.getItemDamage()), ((EntityPlayerMP) player));
 			}
-		
-			if (list.size() > 0)
+		}
+		else
+		{
+			for (ItemStack stack : items)
 			{
-				items = list;
+				ItemStack remaining = ItemHandlerHelper.insertItemStacked(
+						player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), stack, false);
+
+				if (remaining == null)
+				{
+					playSound = true;
+					continue;
+				}
+				else
+				{
+					list.add(remaining);
+				}
+
+				if (!ItemHelper.areItemStacksEqual(stack, remaining))
+				{
+					playSound = true;
+				}
 			}
-			else
-			{
-				this.setDead();
-			}*/
+		}
+
+		if (playSound)
+		{
+			this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+		}
+
+		if (list.size() > 0)
+		{
+			items = list;
+		}
+		else
+		{
+			this.setDead();
 		}
 	}
 	
