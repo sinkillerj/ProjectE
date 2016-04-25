@@ -2,12 +2,11 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
@@ -155,7 +154,15 @@ public class DMPedestalTile extends TileEmc
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketHandler.getMCPacket(new SyncPedestalPKT(this));
+		NBTTagCompound cmp = new NBTTagCompound();
+		writeToNBT(cmp);
+		return new SPacketUpdateTileEntity(pos, -1, cmp);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet)
+	{
+		readFromNBT(packet.getNbtCompound());
 	}
 
 	public boolean getActive()

@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
-import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
@@ -18,7 +17,6 @@ import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT;
-import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -48,14 +46,12 @@ public final class PacketHandler
 		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, 5, Side.CLIENT);
 		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, 6, Side.CLIENT);
 		HANDLER.registerMessage(CondenserSyncPKT.Handler.class, CondenserSyncPKT.class, 8, Side.CLIENT);
-		HANDLER.registerMessage(CollectorSyncPKT.Handler.class, CollectorSyncPKT.class, 9, Side.CLIENT);
 		HANDLER.registerMessage(RelaySyncPKT.Handler.class, RelaySyncPKT.class, 10, Side.CLIENT);
 		HANDLER.registerMessage(CheckUpdatePKT.Handler.class, CheckUpdatePKT.class, 11, Side.CLIENT);
 		HANDLER.registerMessage(SyncBagDataPKT.Handler.class, SyncBagDataPKT.class, 12, Side.CLIENT);
 		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, 13, Side.SERVER);
 		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, 14, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, 16, Side.SERVER);
-		HANDLER.registerMessage(SyncPedestalPKT.Handler.class, SyncPedestalPKT.class, 17, Side.CLIENT);
 	}
 
 	public static Packet getMCPacket(IMessage message)
