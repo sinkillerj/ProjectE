@@ -26,13 +26,13 @@ public class CondenserContainer extends Container
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
 
-		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler handler = tile.getInput();
 
-		int counter = handler.getSlots() - 1;
+		int counter = 0;
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++) 
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new ValidatedSlot(handler, counter--, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
+				this.addSlotToContainer(new ValidatedSlot(handler, counter++, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)

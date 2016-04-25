@@ -28,8 +28,8 @@ public class CondenserMK2Container extends Container
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserMK2Lock(this, 0, 12, 6));
 
-		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.EAST);
-		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler input = tile.getInput();
+		IItemHandler output = tile.getOutput();
 
 		//Condenser Inventory
 		//Inputs

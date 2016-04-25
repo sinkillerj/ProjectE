@@ -10,15 +10,17 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -28,7 +30,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
-	private final ItemStackHandler inputInventory = new StackHandler(getInvSize(), true, false) {
+	private final ItemStackHandler inputInventory = new StackHandler(getInvSize()) {
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -37,8 +39,8 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			else return stack;
 		}
 	};
-	private final ItemStackHandler outputInventory = new StackHandler(getInvSize(), false, true);
-	private final ItemStackHandler fuelInv = new StackHandler(1, true, false) {
+	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
+	private final ItemStackHandler fuelInv = new StackHandler(1) {
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -47,9 +49,12 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			else return null;
 		}
 	};
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(inputInventory, fuelInv, outputInventory);
+	private final IItemHandlerModifiable public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_fuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_output = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_fuel, public_output);
 	protected final int ticksBeforeSmelt;
-	protected final int efficiencyBonus;
+	private final int efficiencyBonus;
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
@@ -71,9 +76,24 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		return 13;
 	}
 
-	private ItemStack getFuel()
+	public IItemHandler getFuel()
+	{
+		return fuelInv;
+	}
+	
+	private ItemStack getFuelItem()
 	{
 		return fuelInv.getStackInSlot(0);
+	}
+
+	public IItemHandler getInput()
+	{
+		return inputInventory;
+	}
+
+	public IItemHandler getOutput()
+	{
+		return outputInventory;
 	}
 
 	@Override
@@ -93,13 +113,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			}
 			else if (side == EnumFacing.UP)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 			} else if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(outputInventory);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
 			} else if (side.getAxis().isHorizontal())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(fuelInv);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_fuel);
 			}
 		}
 
@@ -120,14 +140,14 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		if (!this.worldObj.isRemote)
 		{
 			pullFromInventories();
-			pushSmeltStack();
+			ItemHelper.compactInventory(inputInventory);
 
-			if (canSmelt() && getFuel() != null && getFuel().getItem() instanceof IItemEmc)
+			if (canSmelt() && getFuelItem() != null && getFuelItem().getItem() instanceof IItemEmc)
 			{
-				IItemEmc itemEmc = ((IItemEmc) getFuel().getItem());
-				if (itemEmc.getStoredEmc(getFuel()) >= EMC_CONSUMPTION)
+				IItemEmc itemEmc = ((IItemEmc) getFuelItem().getItem());
+				if (itemEmc.getStoredEmc(getFuelItem()) >= EMC_CONSUMPTION)
 				{
-					itemEmc.extractEmc(getFuel(), EMC_CONSUMPTION);
+					itemEmc.extractEmc(getFuelItem(), EMC_CONSUMPTION);
 					this.addEMC(EMC_CONSUMPTION);
 				}
 			}
@@ -140,19 +160,19 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			
 			if (furnaceBurnTime == 0 && canSmelt())
 			{
-				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(getFuel());
+				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(getFuelItem());
 			
 				if (furnaceBurnTime > 0)
 				{
 					flag1 = true;
 					
-					if (getFuel() != null)
+					if (getFuelItem() != null)
 					{
-						--getFuel().stackSize;
+						--getFuelItem().stackSize;
 						
-						if (getFuel().stackSize == 0)
+						if (getFuelItem().stackSize == 0)
 						{
-							fuelInv.setStackInSlot(0, getFuel().getItem().getContainerItem(getFuel()));
+							fuelInv.setStackInSlot(0, getFuelItem().getItem().getContainerItem(getFuelItem()));
 						}
 					}
 				}
@@ -180,16 +200,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, getPos());
 				}
 			}
-		}
-		
-		if (flag1) 
-		{
-			markDirty();
-		}
-		
-		if (!this.worldObj.isRemote)
-		{
-			pushOutput();
+
+			if (flag1)
+			{
+				markDirty();
+			}
+
+			ItemHelper.compactInventory(outputInventory);
 			pushToInventories();
 		}
 	}
@@ -198,20 +215,12 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	{
 		return furnaceBurnTime > 0;
 	}
-	
-	private void pushSmeltStack()
-	{
-		// todo compact input
-	}
-	
-	private void pushOutput()
-	{
-		// todo compact output
-	}
-	
+
 	private void pullFromInventories()
 	{
 		TileEntity tile = this.worldObj.getTileEntity(pos.up());
+		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
+			return;
 		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 		if (handler == null && tile instanceof ISidedInventory)
 			handler = new SidedInvWrapper(((ISidedInventory) tile), EnumFacing.DOWN);
@@ -250,21 +259,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	{
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
-		ItemStack currentSmelted = outputInventory.getStackInSlot(outputInventory.getSlots() - 1);
 
 		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
 		{
 			smeltResult.stackSize *= 2;
 		}
-		
-		if (currentSmelted == null) 
-		{
-			outputInventory.setStackInSlot(outputInventory.getSlots() - 1, smeltResult);
-		}
-		else
-		{
-			currentSmelted.stackSize += smeltResult.stackSize;
-		}
+
+		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
 		
 		toSmelt.stackSize--;
 		if (toSmelt.stackSize == 0)
@@ -330,7 +331,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		inputInventory.deserializeNBT(nbt.getCompoundTag("Input"));
 		outputInventory.deserializeNBT(nbt.getCompoundTag("Output"));
 		fuelInv.deserializeNBT(nbt.getCompoundTag("Fuel"));
-		currentItemBurnTime = getItemBurnTime(getFuel());
+		currentItemBurnTime = getItemBurnTime(getFuelItem());
 	}
 	
 	@Override

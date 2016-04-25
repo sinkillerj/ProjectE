@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -18,6 +19,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class BlockDirection extends Block
 {
@@ -66,10 +69,18 @@ public abstract class BlockDirection extends Block
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		
-		if (tile instanceof IInventory)
+
+		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		for (int i = 1; i < inv.getSlots(); i++)
 		{
-			InventoryHelper.dropInventoryItems(world, pos, ((IInventory) tile));
+			ItemStack stack = inv.getStackInSlot(i);
+
+			if (stack == null)
+			{
+				continue;
+			}
+
+			WorldHelper.spawnEntityItem(world, stack, pos);
 		}
 
 		world.notifyNeighborsOfStateChange(pos, state.getBlock());

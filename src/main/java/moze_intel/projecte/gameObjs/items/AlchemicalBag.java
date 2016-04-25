@@ -75,7 +75,7 @@ public class AlchemicalBag extends ItemPE
 				ItemStack current = openContainerInv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
 				{
-					((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
+					// todo 1.9 ((IAlchBagItem) current.getItem()).updateInAlchBag(openContainerInv, player, current);
 				}
 			}
 			// Do not AlchemicalBags.set/syncPartial here - vanilla handles it because it's the open container
@@ -88,7 +88,7 @@ public class AlchemicalBag extends ItemPE
 				ItemStack current = inv[i];
 				if (current != null && current.getItem() instanceof IAlchBagItem)
 				{
-					hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
+					// todo 1.9 hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current);
 				}
 			}
 

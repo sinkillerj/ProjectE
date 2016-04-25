@@ -16,7 +16,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
 
@@ -55,32 +57,6 @@ public class Condenser extends AlchemicalChest
 		}
 		
 		return true;
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
-	{
-		IInventory tile = (IInventory) world.getTileEntity(pos);
-
-		if (tile == null)
-		{
-			return;
-		}
-
-		for (int i = 1; i < tile.getSizeInventory(); i++)
-		{
-			ItemStack stack = tile.getStackInSlot(i);
-
-			if (stack == null)
-			{
-				continue;
-			}
-
-			WorldHelper.spawnEntityItem(world, stack, pos);
-		}
-
-		world.notifyNeighborsOfStateChange(pos, state.getBlock());
-		world.removeTileEntity(pos);
 	}
 
 	@Override

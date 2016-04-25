@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.container;
 
-import net.minecraft.util.EnumFacing;
+import com.google.common.base.Predicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
@@ -13,7 +15,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -28,31 +29,37 @@ public class DMFurnaceContainer extends Container
 	{
 		this.tile = tile;
 
-		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
-		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler fuel = tile.getFuel();
+		IItemHandler input = tile.getInput();
+		IItemHandler output = tile.getOutput();
 
 		//Fuel Slot
 		this.addSlotToContainer(new SlotItemHandler(fuel, 0, 49, 53));
-		
-		//Input(0)
-		this.addSlotToContainer(new SlotItemHandler(input, 0, 49, 17));
 
-		int counter = 1;
+		int counter = 0;
+
+		//Input(0)
+		this.addSlotToContainer(new SlotItemHandler(input, counter++, 49, 17));
+
 		//Input Storage
 		for (int i = 0; i < 2; i++)
-			for (int j = 0; j < 4; j++)
+			for (int j = 0; j < 4; j++) {
+				PELogger.logInfo(Integer.toString(counter));
 				this.addSlotToContainer(new SlotItemHandler(input, counter++, 13 + i * 18, 8 + j * 18));
-		
-		//Output
-		this.addSlotToContainer(new SlotItemHandler(output, output.getSlots() - 1, 109, 35));
+			}
 
-		counter = output.getSlots() - 2;
+		counter = output.getSlots() - 1;
+
+		//Output
+		this.addSlotToContainer(new ValidatedSlot(output, counter--, 109, 35, Predicates.<ItemStack>alwaysFalse()));
+
 		//OutputStorage
 		for (int i = 0; i < 2; i++)
-			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotItemHandler(output, counter--, 131 + i * 18, 8 + j * 18));
-		
+			for (int j = 0; j < 4; j++) {
+				PELogger.logInfo(Integer.toString(counter));
+				this.addSlotToContainer(new ValidatedSlot(output, counter--, 131 + i * 18, 8 + j * 18, Predicates.<ItemStack>alwaysFalse()));
+			}
+
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)

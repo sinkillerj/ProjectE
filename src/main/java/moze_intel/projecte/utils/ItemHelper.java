@@ -14,9 +14,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +56,24 @@ public final class ItemHelper
 	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		return (stack1.getItem() == stack2.getItem()) && (stack1.getItemDamage() == stack2.getItemDamage());
+	}
+
+	public static void compactInventory(IItemHandlerModifiable inventory)
+	{
+		List<ItemStack> temp = new ArrayList<>();
+		for (int i = 0; i < inventory.getSlots(); i++)
+		{
+			if (inventory.getStackInSlot(i) != null)
+			{
+				temp.add(inventory.getStackInSlot(i));
+				inventory.setStackInSlot(i, null);
+			}
+		}
+
+		for (ItemStack s : temp)
+		{
+			ItemHandlerHelper.insertItemStacked(inventory, s, false);
+		}
 	}
 
 	public static void compactItemList(List<ItemStack> list)

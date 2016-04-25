@@ -24,9 +24,9 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
-	protected final ItemStackHandler inputInventory = createInput();
-	protected final ItemStackHandler outputInventory = createOutput();
-	private final ItemStackHandler lock = new StackHandler(1, false, false);
+	private final ItemStackHandler inputInventory = createInput();
+	private final ItemStackHandler outputInventory = createOutput();
+	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean loadChecks;
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
@@ -41,31 +41,24 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		loadChecks = false;
 	}
 
-	public IItemHandlerModifiable getLock()
+	public ItemStackHandler getLock()
 	{
 		return lock;
 	}
 
+	public ItemStackHandler getInput()
+	{
+		return inputInventory;
+	}
+
+	public ItemStackHandler getOutput()
+	{
+		return outputInventory;
+	}
+
 	protected ItemStackHandler createInput()
 	{
-		return new StackHandler(91, true, true)
-		{
-			@Override
-			public ItemStack extractItem(int slot, int amount, boolean simulate)
-			{
-				if (isStackEqualToLock(getStackInSlot(slot)))
-					return super.extractItem(slot, amount, simulate);
-				else return null;
-			}
-
-			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-			{
-				if (!isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack))
-					return super.insertItem(slot, stack, simulate);
-				else return stack;
-			}
-		};
+		return new StackHandler(91);
 	}
 
 	protected ItemStackHandler createOutput()

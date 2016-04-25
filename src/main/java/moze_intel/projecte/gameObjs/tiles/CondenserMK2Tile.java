@@ -6,12 +6,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(inputInventory, outputInventory);
+	private final IItemHandlerModifiable public_input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_output = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_output);
 
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing side)
@@ -22,13 +26,13 @@ public class CondenserMK2Tile extends CondenserTile
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
 			}
-			else if (side.getAxis().isHorizontal())
+			else if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
 			}
 			else
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(outputInventory);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 			}
 		}
 
@@ -38,7 +42,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected ItemStackHandler createInput()
 	{
-		return new StackHandler(42, true, false)
+		return new StackHandler(42)
 		{
 			@Override
 			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
@@ -53,7 +57,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected ItemStackHandler createOutput()
 	{
-		return new StackHandler(42, false, true);
+		return new StackHandler(42);
 	}
 
 	@Override
@@ -67,9 +71,9 @@ public class CondenserMK2Tile extends CondenserTile
 
 		if (this.hasSpace())
 		{
-			for (int i = 0; i < inputInventory.getSlots(); i++)
+			for (int i = 0; i < getInput().getSlots(); i++)
 			{
-				ItemStack stack = inputInventory.getStackInSlot(i);
+				ItemStack stack = getInput().getStackInSlot(i);
 
 				if (stack == null)
 				{
@@ -77,7 +81,7 @@ public class CondenserMK2Tile extends CondenserTile
 				}
 
 				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-				inputInventory.setStackInSlot(i, null);
+				getInput().setStackInSlot(i, null);
 				break;
 			}
 		}
@@ -87,13 +91,13 @@ public class CondenserMK2Tile extends CondenserTile
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		outputInventory.deserializeNBT(nbt.getCompoundTag("Output"));
+		getOutput().deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setTag("Output", outputInventory.serializeNBT());
+		nbt.setTag("Output", getOutput().serializeNBT());
 	}
 }

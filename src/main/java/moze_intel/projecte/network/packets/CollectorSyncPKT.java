@@ -57,9 +57,9 @@ public class CollectorSyncPKT implements IMessage
 					}
 					else
 					{
-						CollectorMK1Tile collector = (CollectorMK1Tile) tile;
+						/*CollectorMK1Tile collector = (CollectorMK1Tile) tile;
 						collector.displayEmc = pkt.displayEmc;
-						collector.displayItemCharge = pkt.displayKleinCharge;
+						collector.displayItemCharge = pkt.displayKleinCharge;*/
 					}
 				}
 			});

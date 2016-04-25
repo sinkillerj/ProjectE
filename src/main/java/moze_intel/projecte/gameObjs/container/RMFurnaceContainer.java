@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.container;
 
+import com.google.common.base.Predicates;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -29,29 +31,31 @@ public class RMFurnaceContainer extends Container
 		this.tile = tile;
 
 		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
-		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler input = tile.getInput();
+		IItemHandler output = tile.getOutput();
 
 		//Fuel
 		this.addSlotToContainer(new SlotItemHandler(fuel, 0, 65, 53));
-		
-		//Input(0)
-		this.addSlotToContainer(new SlotItemHandler(input, 0, 65, 17));
 
-		int counter = 1;
+		int counter = 0;
+
+		//Input(0)
+		this.addSlotToContainer(new SlotItemHandler(input, counter++, 65, 17));
+
 		//Input storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
 				this.addSlotToContainer(new SlotItemHandler(input, counter++, 11 + i * 18, 8 + j * 18));
-		
-		//Output(0)
-		this.addSlotToContainer(new SlotItemHandler(output, output.getSlots() - 1, 125, 35));
 
-		counter = output.getSlots() - 2;
+		counter = output.getSlots() - 1;
+
+		//Output(0)
+		this.addSlotToContainer(new ValidatedSlot(output, counter--, 125, 35, Predicates.<ItemStack>alwaysFalse()));
+
 		//Output Storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotItemHandler(output, counter--, 147 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(output, counter--, 147 + i * 18, 8 + j * 18, Predicates.<ItemStack>alwaysFalse()));
 		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)

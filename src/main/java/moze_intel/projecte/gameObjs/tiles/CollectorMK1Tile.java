@@ -22,6 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -32,7 +33,7 @@ import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private ItemStackHandler input = new StackHandler(getInvSize(), true, true) {
+	private ItemStackHandler input = new StackHandler(getInvSize()) {
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -41,7 +42,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			else return stack;
 		}
 	};
-	private ItemStackHandler auxSlots = new StackHandler(3, false, true) {
+	private ItemStackHandler auxSlots = new StackHandler(3);
+	private IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
 		{
@@ -58,9 +60,6 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private double storedFuelEmc;
-	public int displayEmc;
-	public int displaySunLevel;
-	public double displayItemCharge;
 
 	public CollectorMK1Tile()
 	{
@@ -72,6 +71,11 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		super(maxEmc);
 		this.emcGen = emcGen;
+	}
+
+	public IItemHandler getAux()
+	{
+		return auxSlots;
 	}
 
 	@Override
@@ -86,7 +90,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			if (side != null && side.getAxis().isVertical())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(auxSlots);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_auxSlots);
 			} else
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(input);
@@ -126,16 +130,6 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		sortInventory();
 		checkFuelOrKlein();
 		updateEmc();
-		
-		displayEmc = (int) this.getStoredEmc();
-		displaySunLevel = getSunLevel();
-		displayItemCharge = getItemCharge();
-		
-//		if (numUsing > 0) todo 1.9 is this even needed?
-//		{
-//			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayItemCharge, this),
-//					new TargetPoint(this.worldObj.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 8));
-//		}
 	}
 	
 	private void sortInventory()
@@ -262,24 +256,26 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	}
 
-	private double getItemCharge()
+	public double getItemCharge()
 	{
 		if (getKlein() != null && getKlein().getItem() instanceof IItemEmc)
 		{
 			return ((IItemEmc) getKlein().getItem()).getStoredEmc(getKlein());
 		}
-		
+
 		return -1;
 	}
-	
-	public int getKleinStarChargeScaled(int i)
+
+	public double getItemChargeProportion()
 	{
-		if (getKlein() == null || displayItemCharge <= 0 || !(getKlein().getItem() instanceof IItemEmc))
+		double charge = getItemCharge();
+
+		if (getKlein() == null || charge <= 0 || !(getKlein().getItem() instanceof IItemEmc))
 		{
-			return 0;
+			return -1;
 		}
-		
-		return ((int) Math.round(displayItemCharge * i / ((IItemEmc) getKlein().getItem()).getMaximumEmc(getKlein())));
+
+		return charge / ((IItemEmc) getKlein().getItem()).getMaximumEmc(getKlein());
 	}
 	
 	public int getSunLevel()
@@ -290,34 +286,20 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 		return worldObj.getLight(getPos().up()) + 1;
 	}
-	
-	public int getEmcScaled(int i)
-	{
-		if (displayEmc == 0) 
-		{
-			return 0;
-		}
-		return ((int) Math.round(displayEmc * i / this.getMaximumEmc()));
-	}
-	
-	public int getSunLevelScaled(int i)
-	{
-		return displaySunLevel * i / 16;
-	}
-	
-	public int getFuelProgressScaled(int i)
+
+	public double getFuelProgress()
 	{
 		if (getKlein() == null || !FuelMapper.isStackFuel(getKlein()))
 		{
 			return 0;
 		}
-		
+
 		int reqEmc;
-		
+
 		if (getLock() != null)
 		{
 			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getKlein());
-			
+
 			if (reqEmc < 0)
 			{
 				return 0;
@@ -336,13 +318,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			}
 
 		}
-		
-		if (displayEmc >= reqEmc)
+
+		if (getStoredEmc() >= reqEmc)
 		{
-			return i;
+			return 1;
 		}
-		
-		return displayEmc * i / reqEmc;
+
+		return getStoredEmc() / reqEmc;
 	}
 	
 	@Override

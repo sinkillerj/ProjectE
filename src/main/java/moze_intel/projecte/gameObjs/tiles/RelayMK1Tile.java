@@ -21,6 +21,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
-	private final ItemStackHandler output = new StackHandler(1, false, true)
+	private final ItemStackHandler output = new StackHandler(1)
 	{
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
@@ -46,6 +47,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			return super.extractItem(slot, amount, simulate);
 		}
 	};
+	private final IItemHandler public_input;
+	private final IItemHandler public_output = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT);
 	private final int chargeRate;
 	public int displayEmc;
 	public double displayChargingEmc;
@@ -60,7 +63,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		input = new StackHandler(sizeInv, true, false) {
+		input = new StackHandler(sizeInv) {
 			@Override
 			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 			{
@@ -69,6 +72,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 				else return stack;
 			}
 		};
+		public_input = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 
 	@Override
@@ -84,8 +88,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		{
 			if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(output);
-			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(input);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
+			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 		}
 		return super.getCapability(cap, side);
 	}

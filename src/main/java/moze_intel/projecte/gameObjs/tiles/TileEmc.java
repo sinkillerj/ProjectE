@@ -90,30 +90,9 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 	class StackHandler extends ItemStackHandler
 	{
-		private final boolean allowInsert;
-		private final boolean allowExtract;
-
-		protected StackHandler(int size, boolean allowInsert, boolean allowExtract)
+		protected StackHandler(int size)
 		{
 			super(size);
-			this.allowInsert = allowInsert;
-			this.allowExtract = allowExtract;
-		}
-
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (allowInsert)
-				return super.insertItem(slot, stack, simulate);
-			else return stack;
-		}
-
-		@Override
-		public ItemStack extractItem(int slot, int amount, boolean simulate)
-		{
-			if (allowExtract)
-				return super.extractItem(slot, amount, simulate);
-			else return null;
 		}
 
 		@Override
@@ -121,6 +100,5 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		{
 			TileEmc.this.markDirty();
 		}
-
 	}
 }

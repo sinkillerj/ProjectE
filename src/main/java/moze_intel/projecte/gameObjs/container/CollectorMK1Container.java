@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import net.minecraft.util.EnumFacing;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
@@ -19,15 +19,22 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK1Container extends Container
 {
-	private final CollectorMK1Tile tile;
-	private int sunLevel;
-
+	final CollectorMK1Tile tile;
+	public int sunLevel = 0;
+	public int emc = 0;
+	public double kleinChargeProgress = 0;
+	public double fuelProgress = 0;
+	public int kleinEmc = 0;
 
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
 	{
 		this.tile = collector;
+		initSlots(invPlayer);
+	}
 
-		IItemHandler aux = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+	void initSlots(InventoryPlayer invPlayer)
+	{
+		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		//Klein Star Slot
@@ -38,28 +45,32 @@ public class CollectorMK1Container extends Container
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 3; j++)
 				this.addSlotToContainer(new ValidatedSlot(main, counter--, 20 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
-		
+
 		//Upgrade Result
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.COLLECTOR_INV));
-		
+
 		//Upgrade Target
 		this.addSlotToContainer(new SlotCollectorLock(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36));
-		
+
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-		
+
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 	}
-	
+
 	@Override
 	public void onCraftGuiOpened(ICrafting par1ICrafting)
 	{
 		super.onCraftGuiOpened(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
+		par1ICrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
+		par1ICrafting.sendProgressBarUpdate(this, 1, (int) tile.getStoredEmc());
+		par1ICrafting.sendProgressBarUpdate(this, 2, (int) (tile.getItemChargeProportion() * 8000));
+		par1ICrafting.sendProgressBarUpdate(this, 3, (int) (tile.getFuelProgress() * 8000));
+		par1ICrafting.sendProgressBarUpdate(this, 4, (int) (tile.getItemCharge() * 8000));
 	}
 	
 	@Override
@@ -73,15 +84,64 @@ public class CollectorMK1Container extends Container
 			{
 				icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
 			}
+
+			sunLevel = tile.getSunLevel();
 		}
-		
-		sunLevel = tile.getSunLevel();
+
+		if (emc != ((int) tile.getStoredEmc()))
+		{
+			for (ICrafting icrafting : this.crafters)
+			{
+				icrafting.sendProgressBarUpdate(this, 1, ((int) tile.getStoredEmc()));
+			}
+
+			emc = ((int) tile.getStoredEmc());
+		}
+
+		if (kleinChargeProgress != tile.getItemChargeProportion())
+		{
+			for (ICrafting icrafting : this.crafters)
+			{
+				icrafting.sendProgressBarUpdate(this, 2, (int) (tile.getItemChargeProportion() * 8000));
+			}
+
+			kleinChargeProgress = tile.getItemChargeProportion();
+		}
+
+		if (fuelProgress != tile.getFuelProgress())
+		{
+			for (ICrafting icrafting : this.crafters)
+			{
+				icrafting.sendProgressBarUpdate(this, 3, (int) (tile.getFuelProgress() * 8000));
+			}
+
+			fuelProgress = tile.getFuelProgress();
+		}
+
+		if (kleinEmc != ((int) tile.getItemCharge()))
+		{
+			for (ICrafting icrafting : this.crafters)
+			{
+				icrafting.sendProgressBarUpdate(this, 4, (int) (tile.getItemCharge()));
+			}
+
+			kleinEmc = ((int) tile.getItemCharge());
+		}
+
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
+	public void updateProgressBar(int id, int data)
 	{
-		tile.displaySunLevel = par2;
+		switch (id)
+		{
+			case 0: sunLevel = data; break;
+			case 1: emc = data; break;
+			case 2: kleinChargeProgress = data / 8000.0; break;
+			case 3: fuelProgress = data / 8000.0; break;
+			case 4: kleinEmc = data; break;
+		}
 	}
 	
 	@Override

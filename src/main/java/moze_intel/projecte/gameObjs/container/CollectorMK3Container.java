@@ -17,16 +17,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class CollectorMK3Container extends Container
+public class CollectorMK3Container extends CollectorMK1Container
 {
-	private CollectorMK3Tile tile;
-	private int sunLevel;
-	
 	public CollectorMK3Container(InventoryPlayer invPlayer, CollectorMK3Tile collector)
 	{
-		this.tile = collector;
+		super(invPlayer, collector);
+	}
 
-		IItemHandler aux = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+	@Override
+	void initSlots(InventoryPlayer invPlayer)
+	{
+		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		//Klein Star Slot
@@ -37,48 +38,21 @@ public class CollectorMK3Container extends Container
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
 				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
-					
+
 		//Upgrade Result
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
-						
+
 		//Upgrade Target
 		this.addSlotToContainer(new SlotCollectorLock(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36));
-					
+
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 30 + j * 18, 84 + i * 18));
-						
+
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 30 + i * 18, 142));
-	}
-	
-	@Override
-	public void onCraftGuiOpened(ICrafting par1ICrafting)
-	{
-		super.onCraftGuiOpened(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
-	}
-	
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
-
-		for (ICrafting icrafting : this.crafters)
-		{
-			if (sunLevel != tile.getSunLevel())
-				icrafting.sendProgressBarUpdate(this, 1, tile.getSunLevel());
-		}
-		
-		sunLevel = tile.getSunLevel();
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
-	{
-		tile.displaySunLevel = par2;
 	}
 	
 	@Override
@@ -124,11 +98,5 @@ public class CollectorMK3Container extends Container
 		
 		slot.onPickupFromSlot(player, stack);
 		return newStack;
-	}
-
-	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
-		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

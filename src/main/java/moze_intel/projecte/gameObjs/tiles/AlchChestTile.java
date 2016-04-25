@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 public class AlchChestTile extends TileEmc
 {
-	private final ItemStackHandler inventory = new StackHandler(104, true, true);
+	private final ItemStackHandler inventory = new StackHandler(104);
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;

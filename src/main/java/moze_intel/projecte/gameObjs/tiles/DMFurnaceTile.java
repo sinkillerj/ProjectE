@@ -10,7 +10,7 @@ public class DMFurnaceTile extends RMFurnaceTile
 	@Override
 	protected int getInvSize()
 	{
-		return 8;
+		return 9;
 	}
 
 	@Override
