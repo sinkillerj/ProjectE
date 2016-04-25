@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class Collector extends BlockDirection
 {
@@ -88,5 +90,13 @@ public class Collector extends BlockDirection
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
 		return true;
+	}
+
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		TileEntity ent = world.getTileEntity(pos);
+		WorldHelper.dropInventory(ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), world, pos);
+		super.breakBlock(world, pos, state);
 	}
 }

@@ -4,31 +4,22 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
@@ -52,7 +43,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			else return null;
 		}
 	};
-	public static final int KLEIN_SLOT = 0;
+	public static final int UPGRADING_SLOT = 0;
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
@@ -114,24 +105,24 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return auxSlots.getStackInSlot(LOCK_SLOT);
 	}
 
-	protected ItemStack getKlein()
+	private ItemStack getUpgrading()
 	{
-		return auxSlots.getStackInSlot(KLEIN_SLOT);
+		return auxSlots.getStackInSlot(UPGRADING_SLOT);
 	}
 
 	@Override
 	public void update()
 	{
-		if (worldObj.isRemote) 
-		{
+		if (worldObj.isRemote)
 			return;
-		}
 		
 		sortInventory();
 		checkFuelOrKlein();
 		updateEmc();
 	}
-	
+
+	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
+
 	private void sortInventory()
 	{
 		if (getUpgraded() != null)
@@ -142,16 +133,16 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, getUpgraded().copy(), false));
 			}
 		}
-		 
-		// todo compact input handler here
+
+		ItemHelper.compactInventory(toSort);
 	}
 	
 	private void checkFuelOrKlein()
 	{
-		if (getKlein() != null && getKlein().getItem() instanceof IItemEmc)
+		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
 		{
-			IItemEmc itemEmc = ((IItemEmc) getKlein().getItem());
-			if(itemEmc.getStoredEmc(getKlein()) != itemEmc.getMaximumEmc(getKlein()))
+			IItemEmc itemEmc = ((IItemEmc) getUpgrading().getItem());
+			if(itemEmc.getStoredEmc(getUpgrading()) != itemEmc.getMaximumEmc(getUpgrading()))
 			{
 				hasChargeableItem = true;
 				hasFuel = false;
@@ -161,7 +152,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				hasChargeableItem = false;
 			}
 		}
-		else if (getKlein() != null)
+		else if (getUpgrading() != null)
 		{
 			hasFuel = true;
 			hasChargeableItem = false;
@@ -187,27 +178,27 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
-			double starEmc = ItemPE.getEmc(getKlein());
-			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(getKlein());
+			double starEmc = ItemPE.getEmc(getUpgrading());
+			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(getUpgrading());
 			
 			if ((starEmc + toSend) > maxStarEmc)
 			{
 				toSend = maxStarEmc - starEmc;
 			}
 			
-			ItemPE.addEmcToStack(getKlein(), toSend);
+			ItemPE.addEmcToStack(getUpgrading(), toSend);
 			this.removeEMC(toSend);
 		}
 		else if (hasFuel)
 		{
-			if (FuelMapper.getFuelUpgrade(getKlein()) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
 			{
-				auxSlots.setStackInSlot(KLEIN_SLOT, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 			}
 
-			ItemStack result = getLock() == null ? FuelMapper.getFuelUpgrade(getKlein()) : getLock().copy();
+			ItemStack result = getLock() == null ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
 			
-			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getKlein());
+			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
@@ -217,17 +208,17 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				{
 					this.removeEMC(upgradeCost);
 					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
-					getKlein().stackSize--;
-					if (getKlein().stackSize == 0)
-						auxSlots.setStackInSlot(KLEIN_SLOT, null);
+					getUpgrading().stackSize--;
+					if (getUpgrading().stackSize == 0)
+						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				}
 				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
 				{
 					this.removeEMC(upgradeCost);
 					getUpgraded().stackSize++;
-					getKlein().stackSize--;
-					if (getKlein().stackSize == 0)
-						auxSlots.setStackInSlot(KLEIN_SLOT, null);
+					getUpgrading().stackSize--;
+					if (getUpgrading().stackSize == 0)
+						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				}
 			}
 		}
@@ -248,19 +239,19 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		if (getLock() != null)
 		{
-			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getKlein());
+			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 		}
 		else
 		{
-			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getKlein())) - EMCHelper.getEmcValue(getKlein());
+			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 		}
 	}
 
 	public double getItemCharge()
 	{
-		if (getKlein() != null && getKlein().getItem() instanceof IItemEmc)
+		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getKlein().getItem()).getStoredEmc(getKlein());
+			return ((IItemEmc) getUpgrading().getItem()).getStoredEmc(getUpgrading());
 		}
 
 		return -1;
@@ -270,12 +261,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		double charge = getItemCharge();
 
-		if (getKlein() == null || charge <= 0 || !(getKlein().getItem() instanceof IItemEmc))
+		if (getUpgrading() == null || charge <= 0 || !(getUpgrading().getItem() instanceof IItemEmc))
 		{
 			return -1;
 		}
 
-		return charge / ((IItemEmc) getKlein().getItem()).getMaximumEmc(getKlein());
+		return charge / ((IItemEmc) getUpgrading().getItem()).getMaximumEmc(getUpgrading());
 	}
 	
 	public int getSunLevel()
@@ -289,7 +280,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	public double getFuelProgress()
 	{
-		if (getKlein() == null || !FuelMapper.isStackFuel(getKlein()))
+		if (getUpgrading() == null || !FuelMapper.isStackFuel(getUpgrading()))
 		{
 			return 0;
 		}
@@ -298,7 +289,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 		if (getLock() != null)
 		{
-			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getKlein());
+			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 
 			if (reqEmc < 0)
 			{
@@ -307,14 +298,14 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 		else
 		{
-			if (FuelMapper.getFuelUpgrade(getKlein()) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
 			{
-				auxSlots.setStackInSlot(KLEIN_SLOT, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				return 0;
 			}
 			else
 			{
-				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getKlein())) - EMCHelper.getEmcValue(getKlein());
+				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 			}
 
 		}

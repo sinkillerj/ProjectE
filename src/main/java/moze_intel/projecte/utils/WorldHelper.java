@@ -62,6 +62,7 @@ import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.items.IItemHandler;
 
 import java.lang.reflect.Constructor;
 import java.util.EnumMap;
@@ -153,6 +154,24 @@ public final class WorldHelper
 		{
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
+		}
+	}
+
+	public static void dropInventory(IItemHandler inv, World world, BlockPos pos)
+	{
+		if (inv == null)
+			return;
+
+		for (int i = 1; i < inv.getSlots(); i++)
+		{
+			ItemStack stack = inv.getStackInSlot(i);
+
+			if (stack == null)
+			{
+				continue;
+			}
+
+			spawnEntityItem(world, stack, pos);
 		}
 	}
 

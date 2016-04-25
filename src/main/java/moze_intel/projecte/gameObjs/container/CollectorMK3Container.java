@@ -2,16 +2,11 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +26,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		//Klein Star Slot
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.KLEIN_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
 
 		int counter = main.getSlots() - 1;
 		//Fuel Upgrade Slot

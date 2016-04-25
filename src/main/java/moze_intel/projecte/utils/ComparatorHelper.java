@@ -1,12 +1,8 @@
 package moze_intel.projecte.utils;
 
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +25,7 @@ public final class ComparatorHelper
 	public static int getForCollector(World world, BlockPos pos)
 	{
 		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
-		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.KLEIN_SLOT);
+		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (charging != null)
 		{
 			if (charging.getItem() instanceof IItemEmc)

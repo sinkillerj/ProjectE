@@ -71,17 +71,7 @@ public abstract class BlockDirection extends Block
 		TileEntity tile = world.getTileEntity(pos);
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		for (int i = 1; i < inv.getSlots(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
-
-			if (stack == null)
-			{
-				continue;
-			}
-
-			WorldHelper.spawnEntityItem(world, stack, pos);
-		}
+		WorldHelper.dropInventory(inv, world, pos);
 
 		world.notifyNeighborsOfStateChange(pos, state.getBlock());
 		super.breakBlock(world, pos, state);
