@@ -29,13 +29,16 @@ public final class AlchBagImpl
         CapabilityManager.INSTANCE.register(IAlchBagProvider.class, new Capability.IStorage<IAlchBagProvider>()
         {
             @Override
-            public NBTBase writeNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side)
+            public NBTTagCompound writeNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side)
             {
-                return null;
+                return instance.serializeNBT();
             }
 
             @Override
-            public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side, NBTBase nbt) {}
+            public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side, NBTBase nbt) {
+                if (nbt instanceof NBTTagCompound)
+                    instance.deserializeNBT(((NBTTagCompound) nbt));
+            }
         }, DefaultImpl.class);
     }
 
