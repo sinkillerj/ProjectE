@@ -115,7 +115,10 @@ public class CondenserTile extends TileEmc implements IInventory, ISidedInventor
 			{
 				continue;
 			}
-			
+			if (stack.stackSize <= 0) {
+				inventory[i] = null;
+				continue;
+			}
 			decrStackSize(i, 1);
 			this.addEMC(EMCHelper.getEmcValue(stack));
 			break;
