@@ -1,12 +1,14 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class MatterFurnace extends BlockDirection
+public class MatterFurnace extends Block
 {
 	private boolean isActive;
 	private boolean isHighTier;
@@ -96,22 +98,22 @@ public class MatterFurnace extends BlockDirection
 		{
 			if (isHighTier)
 			{
-				world.setBlockState(pos, ObjHandler.rmFurnaceOn.getDefaultState().withProperty(FACING, state.getValue(FACING)), 3);
+				world.setBlockState(pos, ObjHandler.rmFurnaceOn.getDefaultState().withProperty(PEStateProps.FACING, state.getValue(PEStateProps.FACING)), 3);
 			}
 			else
 			{
-				world.setBlockState(pos, ObjHandler.dmFurnaceOn.getDefaultState().withProperty(FACING, state.getValue(FACING)), 3);
+				world.setBlockState(pos, ObjHandler.dmFurnaceOn.getDefaultState().withProperty(PEStateProps.FACING, state.getValue(PEStateProps.FACING)), 3);
 			}
 		}
 		else
 		{
 			if (isHighTier)
 			{
-				world.setBlockState(pos, ObjHandler.rmFurnaceOff.getDefaultState().withProperty(FACING, state.getValue(FACING)), 3);
+				world.setBlockState(pos, ObjHandler.rmFurnaceOff.getDefaultState().withProperty(PEStateProps.FACING, state.getValue(PEStateProps.FACING)), 3);
 			}
 			else
 			{
-				world.setBlockState(pos, ObjHandler.dmFurnaceOff.getDefaultState().withProperty(FACING, state.getValue(FACING)), 3);
+				world.setBlockState(pos, ObjHandler.dmFurnaceOff.getDefaultState().withProperty(PEStateProps.FACING, state.getValue(PEStateProps.FACING)), 3);
 			}
 		}
 
@@ -127,8 +129,8 @@ public class MatterFurnace extends BlockDirection
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
 	{
-		setFacingMeta(world, pos, ((EntityPlayer) entLiving));
-		
+		world.setBlockState(pos, state.withProperty(PEStateProps.FACING, entLiving.getHorizontalFacing().getOpposite()));
+
 		TileEntity tile = world.getTileEntity(pos);
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
@@ -149,7 +151,7 @@ public class MatterFurnace extends BlockDirection
 	{
 		if (isActive)
 		{
-			EnumFacing facing = ((EnumFacing) state.getValue(FACING));
+			EnumFacing facing = ((EnumFacing) state.getValue(PEStateProps.FACING));
 			float f = (float) pos.getX() + 0.5F;
 			float f1 = (float) pos.getY() + 0.0F + rand.nextFloat() * 6.0F / 16.0F;
 			float f2 = (float) pos.getZ() + 0.5F;

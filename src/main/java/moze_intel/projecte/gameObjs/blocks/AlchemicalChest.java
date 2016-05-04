@@ -1,10 +1,12 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +23,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class AlchemicalChest extends BlockDirection
+public class AlchemicalChest extends Block
 {
 
 	private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
@@ -31,7 +33,7 @@ public class AlchemicalChest extends BlockDirection
 		super(Material.rock);
 		this.setUnlocalizedName("pe_alchemy_chest");
 		this.setHardness(10.0f);
-		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+		this.setDefaultState(blockState.getBaseState().withProperty(PEStateProps.FACING, EnumFacing.NORTH));
 		this.setResistance(6000000.0F);
 	}
 

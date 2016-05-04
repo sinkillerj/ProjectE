@@ -288,7 +288,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
 	{
 		list.add(I18n.translateToLocal("pe.timewatch.tooltip1"));
 		list.add(I18n.translateToLocal("pe.timewatch.tooltip2"));

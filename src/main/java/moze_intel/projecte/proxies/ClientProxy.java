@@ -3,6 +3,9 @@ package moze_intel.projecte.proxies;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumFuelType;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.events.KeyPressEvent;
 import moze_intel.projecte.events.PlayerRender;
 import moze_intel.projecte.events.ToolTipEvent;
@@ -34,8 +37,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.Map;
 
@@ -84,17 +86,17 @@ public class ClientProxy implements IProxy
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.alchChest,
-				(new StateMap.Builder()).ignore(AlchemicalChest.FACING).build()
+				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenser,
-				(new StateMap.Builder()).ignore(Condenser.FACING).build()
+				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenserMk2,
-				(new StateMap.Builder()).ignore(CondenserMK2.FACING).build()
+				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
 		);
 
 		// Items that have different properties or textures per meta value.
@@ -188,13 +190,13 @@ public class ClientProxy implements IProxy
 
 	private void registerBlock(Block b)
 	{
-		String name = GameData.getBlockRegistry().getNameForObject(b).toString();
+		String name = ForgeRegistries.BLOCKS.getKey(b).toString();
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation(name, "inventory"));
 	}
 
 	private void registerItem(Item i)
 	{
-		String name = GameData.getItemRegistry().getNameForObject(i).toString();
+		String name = ForgeRegistries.ITEMS.getKey(i).toString();
 		ModelLoader.setCustomModelResourceLocation(i, 0, new ModelResourceLocation(name, "inventory"));
 	}
 
@@ -215,11 +217,11 @@ public class ClientProxy implements IProxy
 
 	private void registerFuels()
 	{
-		for (FuelBlock.EnumFuelType e : FuelBlock.EnumFuelType.values())
+		for (EnumFuelType e : EnumFuelType.values())
 		{
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation("projecte:" + e.getName(), "inventory"));
 
-			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.fuelBlock).toString();
+			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.fuelBlock).toString();
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.fuelBlock), new ModelResourceLocation(name, "fueltype=" + e.getName()));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.fuelBlock), e.ordinal(), new ModelResourceLocation(name, "fueltype=" + e.getName()));
 		}
@@ -227,11 +229,11 @@ public class ClientProxy implements IProxy
 
 	private void registerMatter()
 	{
-		for (MatterBlock.EnumMatterType m : MatterBlock.EnumMatterType.values())
+		for (EnumMatterType m : EnumMatterType.values())
 		{
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation("projecte:" + m.getName(), "inventory"));
 
-			String name = GameData.getBlockRegistry().getNameForObject(ObjHandler.matterBlock).toString();
+			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.matterBlock).toString();
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.matterBlock), new ModelResourceLocation(name, "tier=" + m.getName()));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.matterBlock), m.ordinal(), new ModelResourceLocation(name, "tier=" + m.getName()));
 		}

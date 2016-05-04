@@ -1,8 +1,8 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelChest;
@@ -33,7 +33,7 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer
 		if (condenser.getWorld() != null && !condenser.isInvalid())
 		{
 			IBlockState state = condenser.getWorld().getBlockState(condenser.getPos());
-			direction = state.getBlock() == ObjHandler.condenserMk2 ? (EnumFacing) state.getValue(BlockDirection.FACING) : null;
+			direction = state.getBlock() == ObjHandler.condenserMk2 ? state.getValue(PEStateProps.FACING) : null;
 		}
 
 		this.bindTexture(texture);

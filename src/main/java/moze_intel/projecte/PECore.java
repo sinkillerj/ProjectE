@@ -31,6 +31,7 @@ import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -46,6 +47,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -197,7 +199,7 @@ public class PECore
 				String subName = mapping.name.split(":")[1];
 				if (mapping.type == GameRegistry.Type.ITEM)
 				{
-					Item remappedItem = GameRegistry.findItem(PECore.MODID, "item.pe_" + subName.substring(5)); // strip "item." off of subName
+					Item remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, "item.pe_" + subName.substring(5))); // strip "item." off of subName
 					if (remappedItem != null)
 					{
 						// legacy remap (adding pe_ prefix)
@@ -207,7 +209,7 @@ public class PECore
 					{
 						// Space strip remap - ItemBlocks
 						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-						remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
+						remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, newSubName));
 
 						if (remappedItem != null)
 						{
@@ -224,7 +226,7 @@ public class PECore
 				{
 					// Space strip remap - Blocks
 					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-					Block remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
+					Block remappedBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(PECore.MODID, newSubName));
 
 					if (remappedBlock != null)
 					{

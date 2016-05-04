@@ -1,8 +1,8 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelChest;
@@ -33,7 +33,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer
 		if (chestTile.getWorld() != null && !chestTile.isInvalid())
 		{
 			IBlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
-			direction = state.getBlock() == ObjHandler.alchChest ? (EnumFacing) state.getValue(BlockDirection.FACING) : null;
+			direction = state.getBlock() == ObjHandler.alchChest ? state.getValue(PEStateProps.FACING) : null;
 		}
 		
 		this.bindTexture(texture);

@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
@@ -82,7 +84,7 @@ public class DarkPick extends PEToolBase
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if ((block == ObjHandler.matterBlock && state.getValue(MatterBlock.TIER_PROP) == MatterBlock.EnumMatterType.DARK_MATTER) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}

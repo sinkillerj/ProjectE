@@ -34,8 +34,8 @@ public class GraphMapperTest {
 	public void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
-		valueGenerator = new FractionToIntGenerator(mapper);
-		mappingCollector = new IntToFractionCollector(mapper);
+		valueGenerator = new FractionToIntGenerator<>(mapper);
+		mappingCollector = new IntToFractionCollector<>(mapper);
 	}
 
 	@Rule

@@ -5,11 +5,9 @@ import com.google.common.collect.Maps;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.api.tile.TileEmcBase;
-import moze_intel.projecte.gameObjs.blocks.BlockDirection;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -70,21 +68,6 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
 			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
 			this.addEMC(remain);
-		}
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound)
-	{
-		super.readFromNBT(nbtTagCompound);
-
-		if (nbtTagCompound.hasKey("Direction"))
-		{
-			if (worldObj != null)
-			{
-				worldObj.setBlockState(pos, this.getBlockType().getDefaultState().withProperty(BlockDirection.FACING, EnumFacing.getFront(nbtTagCompound.getByte("Direction"))));
-			}
-			nbtTagCompound.removeTag("Direction");
 		}
 	}
 
