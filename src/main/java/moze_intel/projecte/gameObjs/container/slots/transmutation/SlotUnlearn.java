@@ -24,12 +24,10 @@ public class SlotUnlearn extends Slot
 	@Override
 	public void putStack(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack != null)
 		{
-			return;
+			inv.handleUnlearn(stack.copy());
 		}
-
-		inv.handleUnlearn(stack.copy());
 
 		super.putStack(stack);
 	}
