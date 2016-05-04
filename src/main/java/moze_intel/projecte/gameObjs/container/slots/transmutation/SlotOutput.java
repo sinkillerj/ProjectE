@@ -5,10 +5,11 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotOutput extends Slot
+public class SlotOutput extends SlotItemHandler
 {
-	private TransmutationInventory inv;
+	private final TransmutationInventory inv;
 	
 	public SlotOutput(TransmutationInventory inv, int par2, int par3, int par4)
 	{
@@ -22,7 +23,7 @@ public class SlotOutput extends Slot
 		ItemStack stack = getStack().copy();
 		stack.stackSize = amount;
 		int emcValue = amount * EMCHelper.getEmcValue(stack);
-		if (emcValue > inv.emc) {
+		if (emcValue > inv.provider.getEmc()) {
 			//Requesting more emc than available
 			//Can not return `null` here or NPE in Container! Container expects stacksize=0-Itemstack for 'nothing'
 			stack.stackSize = 0;
@@ -44,11 +45,7 @@ public class SlotOutput extends Slot
 	}
 	
 	@Override
-	public boolean canTakeStack(EntityPlayer player)
-	{
-		if (getHasStack()) {
-			return EMCHelper.getEmcValue(getStack()) <= inv.emc;
-		}
-		return true;
+	public boolean canTakeStack(EntityPlayer player) {
+		return !getHasStack() || EMCHelper.getEmcValue(getStack()) <= inv.provider.getEmc();
 	}
 }

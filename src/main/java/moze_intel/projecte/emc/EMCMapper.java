@@ -42,7 +42,7 @@ import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
+	public static final Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
 	public static Map<NormalizedSimpleStack, Integer> graphMapperValues;
 
 	public static void map()

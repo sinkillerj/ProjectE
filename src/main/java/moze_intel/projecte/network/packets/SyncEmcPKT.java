@@ -74,7 +74,6 @@ public class SyncEmcPKT implements IMessage
 				PELogger.logInfo("Receiving EMC data from server.");
 
 				EMCMapper.emc.clear();
-				EMCMapper.emc = Maps.newLinkedHashMap();
 			}
 
 			for (Object obj : pkt.data)

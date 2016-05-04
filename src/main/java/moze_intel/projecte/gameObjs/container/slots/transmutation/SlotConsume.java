@@ -5,10 +5,11 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotConsume extends Slot
+public class SlotConsume extends SlotItemHandler
 {
-	private TransmutationInventory inv;
+	private final TransmutationInventory inv;
 	
 	public SlotConsume(TransmutationInventory inv, int par2, int par3, int par4)
 	{

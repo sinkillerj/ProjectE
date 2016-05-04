@@ -1,8 +1,8 @@
 package moze_intel.projecte.impl;
 
-import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
@@ -18,7 +18,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,17 +49,41 @@ public final class KnowledgeImpl {
     {
 
         private final List<ItemStack> knowledge = new ArrayList<>();
-        private ItemStack[] inputLocks = new ItemStack[9];
+        private IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
         private double emc = 0;
+        private boolean fullKnowledge = false;
+
+        @Override
+        public boolean hasFullKnowledge()
+        {
+            return fullKnowledge;
+        }
+
+        @Override
+        public void setFullKnowledge(boolean fullKnowledge)
+        {
+            this.fullKnowledge = fullKnowledge;
+        }
 
         @Override
         public void clearKnowledge()
         {
             knowledge.clear();
+            fullKnowledge = false;
         }
 
         @Override
-        public boolean hasKnowledge(ItemStack stack) {
+        public boolean hasKnowledge(@Nullable ItemStack stack) {
+            if (stack == null)
+            {
+                return false;
+            }
+
+            if (fullKnowledge)
+            {
+                return true;
+            }
+
             for (ItemStack s : knowledge)
             {
                 if (ItemHelper.basicAreStacksEqual(s, stack))
@@ -66,18 +95,34 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public boolean addKnowledge(ItemStack stack) {
+        public boolean addKnowledge(@Nonnull ItemStack stack) {
+            boolean ret = false;
+
+            if (stack.getItem() == ObjHandler.tome)
+            {
+                fullKnowledge = true;
+                ret = true;
+            }
+
             if (!hasKnowledge(stack))
             {
                 knowledge.add(stack);
-                return true;
+                ret = true;
             }
 
-            return false;
+            return ret;
         }
 
         @Override
-        public boolean removeKnowledge(ItemStack stack) {
+        public boolean removeKnowledge(@Nonnull ItemStack stack) {
+            boolean ret = false;
+
+            if (stack.getItem() == ObjHandler.tome)
+            {
+                fullKnowledge = false;
+                ret = true;
+            }
+
             Iterator<ItemStack> iter = knowledge.iterator();
 
             while (iter.hasNext())
@@ -85,26 +130,21 @@ public final class KnowledgeImpl {
                 if (ItemStack.areItemStacksEqual(stack, iter.next()))
                 {
                     iter.remove();
-                    return true;
+                    ret = true;
                 }
             }
 
-            return false;
+            return ret;
         }
 
         @Override
-        public ImmutableList<ItemStack> getKnowledge() {
-            return ImmutableList.copyOf(knowledge);
+        public @Nonnull List<ItemStack> getKnowledge() {
+            return new ArrayList<>(knowledge);
         }
 
         @Override
-        public ItemStack[] getInputAndLocks() {
+        public @Nonnull IItemHandlerModifiable getInputAndLocks() {
             return inputLocks;
-        }
-
-        @Override
-        public void setInputAndLocks(ItemStack[] stacks) {
-            System.arraycopy(stacks, 0, inputLocks, 0, 9);
         }
 
         @Override
@@ -118,7 +158,7 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public void sync(EntityPlayerMP player)
+        public void sync(@Nonnull EntityPlayerMP player)
         {
             PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
         }
@@ -136,9 +176,9 @@ public final class KnowledgeImpl {
                 knowledgeWrite.appendTag(tag);
             }
 
-            NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
             properties.setTag("knowledge", knowledgeWrite);
-            properties.setTag("inputlock", inputLockWrite);
+            properties.setTag("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
+            properties.setBoolean("fullknowledge", fullKnowledge);
             return properties;
         }
 
@@ -155,9 +195,16 @@ public final class KnowledgeImpl {
                     knowledge.add(item);
                 }
             }
+
             pruneDuplicateKnowledge();
-            NBTTagList list2 = properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND);
-            inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
+
+            for (int i = 0; i < inputLocks.getSlots(); i++)
+            {
+                inputLocks.setStackInSlot(i, null);
+            }
+
+            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTag("inputlock"));
+            fullKnowledge = properties.getBoolean("fullknowledge");
         }
 
         private void pruneDuplicateKnowledge()

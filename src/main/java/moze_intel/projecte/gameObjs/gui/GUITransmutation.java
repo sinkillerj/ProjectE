@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import net.minecraft.client.Minecraft;
@@ -18,11 +19,8 @@ import java.util.Locale;
 public class GUITransmutation extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
-	TransmutationInventory inv;
+	private TransmutationInventory inv;
 	private GuiTextField textBoxFilter;
-
-	int xLocation;
-	int yLocation;
 
 	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory)
 	{
@@ -37,14 +35,14 @@ public class GUITransmutation extends GuiContainer
 	{
 		super.initGui();
 
-		this.xLocation = (this.width - this.xSize) / 2;
-		this.yLocation = (this.height - this.ySize) / 2;
+		int xLocation = (this.width - this.xSize) / 2;
+		int yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, this.xLocation + 88, this.yLocation + 8, 45, 10);
+		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, xLocation + 88, yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(inv.filter);
 
-		this.buttonList.add(new GuiButton(1, this.xLocation + 125, this.yLocation + 100, 14, 14, "<"));
-		this.buttonList.add(new GuiButton(2, this.xLocation + 193, this.yLocation + 100, 14, 14, ">"));
+		this.buttonList.add(new GuiButton(1, xLocation + 125, yLocation + 100, 14, 14, "<"));
+		this.buttonList.add(new GuiButton(2, xLocation + 193, yLocation + 100, 14, 14, ">"));
 	}
 
 	@Override
@@ -60,7 +58,8 @@ public class GUITransmutation extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRendererObj.drawString(I18n.translateToLocal("pe.transmutation.transmute"), 6, 8, 4210752);
-		String emc = String.format(I18n.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) inv.emc);
+		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
+		String emc = String.format(I18n.translateToLocal("pe.emc.emc_tooltip_prefix") + " %,d", (int) emcAmount);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
@@ -113,7 +112,7 @@ public class GUITransmutation extends GuiContainer
 			{
 				inv.filter = srch;
 				inv.searchpage = 0;
-				inv.updateOutputs(true);
+				inv.updateClientTargets();
 			}
 		}
 
@@ -137,7 +136,7 @@ public class GUITransmutation extends GuiContainer
 		{
 			inv.filter = "";
 			inv.searchpage = 0;
-			inv.updateOutputs(true);
+			inv.updateClientTargets();
 			this.textBoxFilter.setText("");
 		}
 
@@ -172,6 +171,6 @@ public class GUITransmutation extends GuiContainer
 			}
 		}
 		inv.filter = srch;
-		inv.updateOutputs(true);
+		inv.updateClientTargets();
 	}
 }
