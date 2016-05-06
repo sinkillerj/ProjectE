@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class Relay extends Block
+public class Relay extends BlockDirection
 {
 	private int tier;
 	

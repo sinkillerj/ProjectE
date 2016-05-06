@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class AlchemicalChest extends Block
+public class AlchemicalChest extends BlockDirection
 {
 
 	private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);

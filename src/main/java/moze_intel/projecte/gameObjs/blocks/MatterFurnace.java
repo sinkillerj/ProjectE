@@ -26,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class MatterFurnace extends Block
+public class MatterFurnace extends BlockDirection
 {
 	private boolean isActive;
 	private boolean isHighTier;

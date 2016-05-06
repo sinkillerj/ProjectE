@@ -20,7 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class Collector extends Block
+public class Collector extends BlockDirection
 {
 	private int tier;
 	
