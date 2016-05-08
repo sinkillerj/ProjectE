@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,14 @@ public abstract class NormalizedSimpleStack {
 	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
 	public static NormalizedSimpleStack getFor(String itemName, int damage) {
-		NSSItem normStack = new NSSItem(itemName, damage);
+		NSSItem normStack;
+		try
+		{
+			normStack = new NSSItem(itemName, damage);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not create NSSItem: " + e.getMessage());
+			return null;
+		}
 		Set<Integer> usedMetadata;
 		if (!idWithUsedMetaData.containsKey(normStack.itemName)) {
 			usedMetadata = Sets.newHashSet();
@@ -38,16 +46,43 @@ public abstract class NormalizedSimpleStack {
 		return getFor(block, 0);
 	}
 
+	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Block block) {
+		GameRegistry.UniqueIdentifier identifier;
+		try
+		{
+			identifier = GameRegistry.findUniqueIdentifierFor(block);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", block != null ? block.getClass().getName() : "null");
+			e.printStackTrace();
+			return null;
+		}
+		return identifier;
+	}
+
 	public static NormalizedSimpleStack getFor(Block block, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(block), meta);
+		return getFor(getUniqueIdentifierOrNull(block), meta);
 	}
 
 	public static NormalizedSimpleStack getFor(Item item) {
 		return getFor(item, 0);
 	}
 
+	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Item item) {
+		GameRegistry.UniqueIdentifier identifier;
+		try
+		{
+			identifier = GameRegistry.findUniqueIdentifierFor(item);
+		} catch (Exception e) {
+			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
+			e.printStackTrace();
+			return null;
+		}
+		return identifier;
+	}
+
 	public static NormalizedSimpleStack getFor(Item item, int meta) {
-		return getFor(GameRegistry.findUniqueIdentifierFor(item), meta);
+
+		return getFor(getUniqueIdentifierOrNull(item), meta);
 	}
 
 	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)

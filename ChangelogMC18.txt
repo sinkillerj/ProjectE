@@ -1,3 +1,22 @@
+###Version 1.8.9-PE1.1.4
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* FIXED: Compatibility issue with Chisel. Chisel mapping support has been temporarily removed
+* FIXED: Compatibility issue with Thaumcraft
+* FIXED: Pedestal TESR issue
+* FIXED: Crash related to enchantments
+* FIXED: Null itemstack error with some PE tools
+* FIXED: Crash when changing collector inventory
+
+###Version 1.8.9-PE1.1.3
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* NEW: Feature and bugfix complete with 1.7.10-PE1.9.5. See main changelog for details
+* CHANGE: JSON files have been optimized
+
+###Version 1.8-PE1.1.2
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
+* FIXED: setEMC command on held items
+* FIXED: Fake items being pulled from the pedestal
+
 ###Version 1.8-PE1.1.1
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.8
 * FIXED: Thaumcraft API updated to resolve a crash
