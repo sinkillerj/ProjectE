@@ -51,14 +51,15 @@ public class MatterBlock extends Block
 		
 		if (stack != null)
 		{
-			if (meta == 1)
-			{
-				return stack.getItem() == ObjHandler.rmPick;
-			}
-			else
-			{
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick;
-			}
+                        if (meta == 1)
+                        {
+                                return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar;
+                        }
+                        else
+                        {
+                                return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar;
+                        }
+
 		}
 		
 		return false;
