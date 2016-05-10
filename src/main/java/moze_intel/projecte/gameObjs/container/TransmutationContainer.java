@@ -105,7 +105,7 @@ public class TransmutationContainer extends Container
 			
 			transmutationInventory.updateOutputs();
 		}
-		else if (slotIndex >= 26)
+		else if (slotIndex >= 27)
 		{
 			int emc = EMCHelper.getEmcValue(stack);
 			
