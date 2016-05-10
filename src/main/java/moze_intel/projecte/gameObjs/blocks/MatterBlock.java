@@ -53,11 +53,11 @@ public class MatterBlock extends Block
 		{
 			if (meta == 1)
 			{
-				return stack.getItem() == ObjHandler.rmPick;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar;
 			}
 			else
 			{
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar;
 			}
 		}
 		
