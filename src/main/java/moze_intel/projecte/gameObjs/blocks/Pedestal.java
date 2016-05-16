@@ -75,7 +75,7 @@ public class Pedestal extends Block
                 }
 
                 ((WorldServer) world)
-                        .getPlayerChunkMap().getEntry(pos.getX() << 4, pos.getZ() << 4)
+                        .getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4)
                         .sendPacket(tile.getDescriptionPacket());
             }
         }
