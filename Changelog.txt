@@ -7,7 +7,7 @@
 * FIXED: A issue causing the Void Ring blacklist to reset
 * FIXED: Auto stepping when it shouldnt happen
 * FIXED: Morning Star can now break matter blocks
-* CHANGE: Minor change to Watch of Flowing Time tick distributon
+* CHANGE: Minor change to Watch of Flowing Time tick distribution
 
 ###Version 1.7.10-PE1.9.5
 * NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
