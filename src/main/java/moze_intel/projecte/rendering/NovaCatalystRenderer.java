@@ -17,21 +17,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class NovaCatalystRenderer extends Render
+public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
 {
 	public NovaCatalystRenderer(RenderManager manager)
 	{
 		super(manager);
 		this.shadowSize = 0.5F;
 	}
-	
-	@Override
-	public void doRender(@Nonnull Entity entity, double x, double y, double z, float f1, float f2)
-	{
-		this.doRender((EntityNovaCatalystPrimed) entity, x, y, z, f1, f2);
-	}
 
-	public void doRender(EntityNovaCatalystPrimed entity, double x, double y, double z, float entityYaw, float partialTicks)
+	@Override
+	public void doRender(@Nonnull EntityNovaCatalystPrimed entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
@@ -76,15 +71,10 @@ public class NovaCatalystRenderer extends Render
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 
-	protected ResourceLocation getEntityTexture(EntityNovaCatalystPrimed entity) 
-	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
-	}
-	
 	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull Entity entity)
+	protected ResourceLocation getEntityTexture(@Nonnull EntityNovaCatalystPrimed entity)
 	{
-		return this.getEntityTexture((EntityNovaCatalystPrimed) entity);
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

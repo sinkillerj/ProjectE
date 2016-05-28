@@ -3,6 +3,7 @@ package moze_intel.projecte.rendering;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelChest;
@@ -17,20 +18,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class CondenserMK2Renderer extends TileEntitySpecialRenderer
+public class CondenserMK2Renderer extends TileEntitySpecialRenderer<CondenserMK2Tile>
 {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser_mk2.png");
 	private final ModelChest model = new ModelChest();
 
 	@Override
-	public void renderTileEntityAt(@Nonnull TileEntity tile, double x, double y, double z, float par8, int par9)
+	public void renderTileEntityAt(@Nonnull CondenserMK2Tile condenser, double x, double y, double z, float par8, int par9)
 	{
-		if (!(tile instanceof CondenserTile))
-		{
-			return;
-		}
-
-		CondenserTile condenser = (CondenserTile) tile;
 		EnumFacing direction = null;
 		if (condenser.getWorld() != null && !condenser.isInvalid())
 		{

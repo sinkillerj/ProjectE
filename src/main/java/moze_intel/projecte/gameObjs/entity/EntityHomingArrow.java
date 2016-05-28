@@ -4,7 +4,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class EntityHomingArrow extends EntityArrow
+public class EntityHomingArrow extends EntityTippedArrow
 {
 	private static final DataParameter<Integer> DW_TARGET_ID = EntityDataManager.createKey(EntityHomingArrow.class, DataSerializers.VARINT);
 	private static final int NO_TARGET = -1;

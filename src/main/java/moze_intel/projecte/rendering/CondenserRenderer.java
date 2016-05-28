@@ -17,20 +17,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class CondenserRenderer extends TileEntitySpecialRenderer
+public class CondenserRenderer extends TileEntitySpecialRenderer<CondenserTile>
 {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser.png");
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(@Nonnull TileEntity tile, double x, double y, double z, float par8, int par9)
+	public void renderTileEntityAt(@Nonnull CondenserTile condenser, double x, double y, double z, float par8, int par9)
 	{
-		if (!(tile instanceof CondenserTile)) 
-		{
-			return;
-		}
-		
-		CondenserTile condenser = (CondenserTile) tile;
 		EnumFacing direction = null;
 		if (condenser.getWorld() != null && !condenser.isInvalid())
 		{

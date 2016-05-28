@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
 import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLootBall;
@@ -41,8 +42,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.renderer.entity.RenderTippedArrow;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -51,6 +56,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -148,6 +154,7 @@ public class ClientProxy implements IProxy
 		registerItem(ObjHandler.dRod2);
 		registerItem(ObjHandler.dRod3);
 		registerItem(ObjHandler.angelSmite);
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.angelSmite, 1, new ModelResourceLocation(ObjHandler.angelSmite.getRegistryName(), "inventory"));
 		registerItem(ObjHandler.mercEye);
 
 		registerItem(ObjHandler.dmPick);
@@ -332,8 +339,9 @@ public class ClientProxy implements IProxy
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void registerRenderers() 
+	public void registerRenderers()
 	{
 		// Tile Entity
 		ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());
@@ -343,21 +351,51 @@ public class ClientProxy implements IProxy
 
 		//Entities
 		Minecraft mc = FMLClientHandler.instance().getClient();
-		RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.waterOrb, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lavaOrb, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.mobRandomizer, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lensExplosive, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLootBall.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.lootBall, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new NovaCatalystRenderer(mc.getRenderManager()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new NovaCataclysmRenderer(mc.getRenderManager()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.fireProjectile, mc.getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, new RenderSnowball(mc.getRenderManager(), ObjHandler.windProjectile, mc.getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, createRenderFactoryForSnowball(ObjHandler.waterOrb));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, createRenderFactoryForSnowball(ObjHandler.lavaOrb));
+		RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, createRenderFactoryForSnowball(ObjHandler.mobRandomizer));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, createRenderFactoryForSnowball(ObjHandler.lensExplosive));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLootBall.class, createRenderFactoryForSnowball(ObjHandler.lootBall));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, createRenderFactoryForSnowball(ObjHandler.fireProjectile));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, createRenderFactoryForSnowball(ObjHandler.windProjectile));
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new IRenderFactory<EntityNovaCatalystPrimed>() {
+			@Override
+			public Render<? super EntityNovaCatalystPrimed> createRenderFor(RenderManager manager) {
+				return new NovaCatalystRenderer(manager);
+			}
+		});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new IRenderFactory<EntityNovaCataclysmPrimed>() {
+			@Override
+			public Render<? super EntityNovaCataclysmPrimed> createRenderFor(RenderManager manager) {
+				return new NovaCataclysmRenderer(manager);
+			}
+		});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, new IRenderFactory<EntityHomingArrow>() {
+			@Override
+			public Render<? super EntityHomingArrow> createRenderFor(RenderManager manager) {
+				return new RenderTippedArrow(manager);
+			}
+		});
 
 		Map<String, RenderPlayer> skinMap = mc.getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
 		render.addLayer(new LayerModelYue(render));
 		render = skinMap.get("slim");
 		render.addLayer(new LayerModelYue(render));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
+	{
+		return new IRenderFactory() {
+			@Override
+			public Render createRenderFor(RenderManager manager) {
+				return new RenderSnowball(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
+			}
+		};
 	}
 
 	@Override
