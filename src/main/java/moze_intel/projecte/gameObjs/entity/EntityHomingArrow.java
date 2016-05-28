@@ -5,12 +5,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
@@ -115,6 +118,12 @@ public class EntityHomingArrow extends EntityArrow
 		{
 			super.onUpdate();
 		}
+	}
+
+	@Nonnull
+	@Override
+	protected ItemStack getArrowStack() {
+		return new ItemStack(Items.ARROW);
 	}
 
 	private void findNewTarget()

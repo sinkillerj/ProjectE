@@ -68,6 +68,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 
 		if (!(shooter instanceof EntityPlayer) || consumeFuel(((EntityPlayer) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true))
 		{
+			arrow.setAim(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, 1.0F);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
 			world.spawnEntityInWorld(arrow);
 		}
