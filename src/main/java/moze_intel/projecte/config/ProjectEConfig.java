@@ -115,7 +115,7 @@ public final class ProjectEConfig
 			config.getCategory("pedestalcooldown").setComment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.\n" +
 					"A cooldown of 0 will cause the actions to happen every tick. Use caution as a very low value could cause TPS issues.");
 
-			archangelPedCooldown = config.getInt("archangelPedCooldown", "pedestalcooldown", 100, -1, Integer.MAX_VALUE, "Delay between Archangel Smite shooting arrows while in the pedestal.");
+			archangelPedCooldown = config.getInt("archangelPedCooldown", "pedestalcooldown", 40, -1, Integer.MAX_VALUE, "Delay between Archangel Smite shooting arrows while in the pedestal.");
 
 			bodyPedCooldown = config.getInt("bodyPedCooldown", "pedestalcooldown", 10, -1, Integer.MAX_VALUE, "Delay between Body Stone healing 0.5 shanks while in the pedestal.");
 
