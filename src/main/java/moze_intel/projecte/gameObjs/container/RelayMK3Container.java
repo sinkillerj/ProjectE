@@ -16,28 +16,25 @@ import javax.annotation.Nonnull;
 
 public class RelayMK3Container extends RelayMK1Container
 {
-	private RelayMK3Tile tile;
-	
 	public RelayMK3Container(InventoryPlayer invPlayer, RelayMK3Tile relay)
 	{
 		super(invPlayer, relay);
-		this.tile = relay;
 	}
 
 	@Override
 	void initSlots(InventoryPlayer invPlayer)
 	{
-		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler input = tile.getInput();
+		IItemHandler output = tile.getOutput();
 
 		//Burn slot
 		this.addSlotToContainer(new ValidatedSlot(input, 0, 104, 58, SlotPredicates.RELAY_INV));
 
-		int counter = 1;
+		int counter = input.getSlots() - 1;
 		//Inventory Buffer
 		for (int i = 0; i <= 3; i++)
 			for (int j = 0; j <= 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter++, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
+				this.addSlotToContainer(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Klein star charge
 		this.addSlotToContainer(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));

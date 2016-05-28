@@ -3,12 +3,16 @@ package moze_intel.projecte.gameObjs.container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
+import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -16,7 +20,10 @@ import javax.annotation.Nonnull;
 
 public class RelayMK1Container extends Container 
 {
-	private RelayMK1Tile tile;
+	final RelayMK1Tile tile;
+	public double kleinChargeProgress = 0;
+	public double inputBurnProgress = 0;
+	public int emc = 0;
 	
 	public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay)
 	{
@@ -26,17 +33,17 @@ public class RelayMK1Container extends Container
 
 	void initSlots(InventoryPlayer invPlayer)
 	{
-		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler input = tile.getInput();
+		IItemHandler output = tile.getOutput();
 
 		//Klein Star charge slot
 		this.addSlotToContainer(new ValidatedSlot(input, 0, 67, 43, SlotPredicates.RELAY_INV));
 
-		int counter = 1;
+		int counter = input.getSlots() - 1;
 		//Main Relay inventory
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 2; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter++, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
+				this.addSlotToContainer(new ValidatedSlot(input, counter--, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Burning slot
 		this.addSlotToContainer(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
@@ -50,7 +57,65 @@ public class RelayMK1Container extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 153));
 	}
-	
+
+	@Override
+	public void addListener(IContainerListener listener)
+	{
+		super.addListener(listener);
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, (int) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) (tile.getItemChargeProportion() * 8000));
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getInputBurnProportion() * 8000));
+	}
+
+	@Override
+	public void detectAndSendChanges()
+	{
+		super.detectAndSendChanges();
+
+		if (emc != ((int) tile.getStoredEmc()))
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 0, ((int) tile.getStoredEmc()));
+			}
+
+			emc = ((int) tile.getStoredEmc());
+		}
+
+		if (kleinChargeProgress != tile.getItemChargeProportion())
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 1, (int) (tile.getItemChargeProportion() * 8000));
+			}
+
+			kleinChargeProgress = tile.getItemChargeProportion();
+		}
+
+		if (inputBurnProgress != tile.getInputBurnProportion())
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getInputBurnProportion() * 8000));
+			}
+
+			inputBurnProgress = tile.getInputBurnProportion();
+		}
+
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int id, int data)
+	{
+		switch (id)
+		{
+			case 0: emc = data; break;
+			case 1: kleinChargeProgress = data / 8000.0; break;
+			case 2: inputBurnProgress = data / 8000.0; break;
+		}
+	}
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{

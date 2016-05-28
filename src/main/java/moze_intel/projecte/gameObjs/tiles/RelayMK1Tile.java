@@ -5,6 +5,7 @@ import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -40,16 +41,13 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	private final IItemHandler public_input;
 	private final IItemHandler public_output = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT);
 	private final int chargeRate;
-	public int displayEmc;
-	public double displayChargingEmc;
-	public double displayRawEmc;
 
 	public RelayMK1Tile()
 	{
-		this(6, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
+		this(7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
 	}
 	
-	public RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
+	RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
@@ -94,7 +92,17 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		return input.getStackInSlot(0);
 	}
-	
+
+	public IItemHandler getInput()
+	{
+		return input;
+	}
+
+	public IItemHandler getOutput()
+	{
+		return output;
+	}
+
 	@Override
 	public void update()
 	{	
@@ -104,7 +112,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		}
 
 		sendEmc();
-		sortInventory();
+		ItemHelper.compactInventory(input);
 		
 		ItemStack stack = getBurn();
 		
@@ -146,16 +154,6 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		{
 			chargeItem(chargeable);
 		}
-		
-		displayEmc = (int) this.getStoredEmc();
-		displayChargingEmc = getChargingEMC();
-		displayRawEmc = getRawEmc();
-		
-//		if (numUsing > 0) todo 1.9
-//		{
-//			PacketHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayChargingEmc, displayRawEmc, this),
-//					new TargetPoint(this.worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 8));
-//		}
 	}
 	
 	private void sendEmc()
@@ -170,11 +168,6 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		{
 			this.sendToAllAcceptors(chargeRate);
 		}
-	}
-	
-	private void sortInventory()
-	{
-		// todo compact input
 	}
 	
 	private void chargeItem(ItemStack chargeable)
@@ -196,62 +189,30 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			this.removeEMC(toSend);
 		}
 	}
-	
-	public int getEmcScaled(int i)
-	{
-		return (int) Math.round(displayEmc * i / this.getMaximumEmc());
-	}
-	
-	private double getChargingEMC()
+
+	public double getItemChargeProportion()
 	{
 		if (getCharging() != null && getCharging().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging());
+			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
 		}
-		
+
 		return 0;
 	}
-	
-	public int getChargingEMCScaled(int i)
-	{
-		if (getCharging() != null && getCharging().getItem() instanceof IItemEmc)
-		{
-			return ((int) Math.round(displayChargingEmc * i / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging())));
-		}
-		
-		return 0;
-	}
-	
-	private double getRawEmc()
+
+	public double getInputBurnProportion()
 	{
 		if (getBurn() == null)
 		{
 			return 0;
 		}
-		
+
 		if (getBurn().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn());
+			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
 		}
-		
-		return EMCHelper.getEmcValue(getBurn()) * getBurn().stackSize;
-	}
-	
-	public int getRawEmcScaled(int i)
-	{
-		if (getBurn() == null)
-		{
-			return 0;
-		}
-		
-		if (getBurn().getItem() instanceof IItemEmc)
-		{
-			return (int) Math.round(displayRawEmc * i / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn()));
-		}
-		
-		int emc = EMCHelper.getEmcValue(getBurn());
-		
-		return MathHelper.floor_double(displayRawEmc * i / (emc * getBurn().getMaxStackSize()));
+
+		return getBurn().stackSize / (double) getBurn().getMaxStackSize();
 	}
 	
 	@Override
