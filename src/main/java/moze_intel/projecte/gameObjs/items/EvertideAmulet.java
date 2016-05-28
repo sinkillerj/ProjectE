@@ -9,10 +9,16 @@ import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.*;
+import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,13 +27,21 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -218,13 +232,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
-		list.add(String.format(I18n.translateToLocal("pe.evertide.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(I18n.format("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
-		list.add(I18n.translateToLocal("pe.evertide.tooltip2"));
-		list.add(I18n.translateToLocal("pe.evertide.tooltip3"));
-		list.add(I18n.translateToLocal("pe.evertide.tooltip4"));
+		list.add(I18n.format("pe.evertide.tooltip2"));
+		list.add(I18n.format("pe.evertide.tooltip3"));
+		list.add(I18n.format("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -286,15 +300,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.evertidePedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.evertide.pedestal1"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.evertide.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.evertide.pedestal1"));
+			list.add(TextFormatting.BLUE +
+					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
 		}
 		return list;
 	}

@@ -1,12 +1,11 @@
 package moze_intel.projecte.impl;
 
-import moze_intel.projecte.api.proxy.IConversionProxy;
-import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import moze_intel.projecte.api.proxy.IConversionProxy;
+import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -2,19 +2,15 @@ package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +48,7 @@ public abstract class NormalizedSimpleStack {
 		ResourceLocation identifier;
 		try
 		{
-			identifier = GameData.getBlockRegistry().getNameForObject(block);
+			identifier = ForgeRegistries.BLOCKS.getKey(block);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", block != null ? block.getClass().getName() : "null");
 			e.printStackTrace();
@@ -73,7 +69,7 @@ public abstract class NormalizedSimpleStack {
 		ResourceLocation identifier;
 		try
 		{
-			identifier = GameData.getItemRegistry().getNameForObject(item);
+			identifier = ForgeRegistries.ITEMS.getKey(item);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
 			e.printStackTrace();

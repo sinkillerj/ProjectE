@@ -20,7 +20,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -359,6 +362,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

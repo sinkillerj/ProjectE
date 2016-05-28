@@ -8,8 +8,9 @@ import moze_intel.projecte.integration.NEI.NEIKleinStarHandler;
 import moze_intel.projecte.integration.NEI.NEIPhiloSmeltingHandler;
 import moze_intel.projecte.integration.NEI.NEIWorldTransmuteHandler;
 import moze_intel.projecte.integration.NEI.NEIInit; */
-import net.minecraftforge.fml.common.Loader;
+
 import moze_intel.projecte.utils.PELogger;
+import net.minecraftforge.fml.common.Loader;
 
 public class Integration
 {

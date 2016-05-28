@@ -1,10 +1,9 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.ItemHelper;
-
 import com.google.common.collect.ImmutableMap;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

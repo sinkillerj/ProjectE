@@ -1,6 +1,5 @@
 package moze_intel.projecte.impl;
 
-import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.network.PacketHandler;

@@ -9,18 +9,20 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -266,16 +268,17 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.harvestPedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.harvestgod.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.harvestgod.pedestal2"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.harvestgod.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal2"));
+			list.add(TextFormatting.BLUE +
+					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
 		}
 		return list;
 	}

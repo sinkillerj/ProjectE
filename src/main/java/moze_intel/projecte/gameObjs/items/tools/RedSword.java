@@ -5,15 +5,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.translation.I18n;
 
 public class RedSword extends DarkSword
 {
 	public RedSword() 
 	{
 		super("rm_sword", (byte)3, new String[]{
-				I18n.translateToLocal("pe.redsword.mode1"),
-				I18n.translateToLocal("pe.redsword.mode2")
+				"pe.redsword.mode1",
+				"pe.redsword.mode2"
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";

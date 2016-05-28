@@ -9,6 +9,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,17 +19,16 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 {
-	private int healCooldown;
-
 	public SoulStone()
 	{
 		super("soul_stone");
@@ -151,15 +151,16 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.soulPedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.soul.pedestal1"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.soul.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.soul.pedestal1"));
+			list.add(TextFormatting.BLUE +
+					I18n.format("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
 		}
 		return list;
 	}

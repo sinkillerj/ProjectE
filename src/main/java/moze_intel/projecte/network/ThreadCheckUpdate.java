@@ -5,10 +5,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -89,14 +89,14 @@ public class ThreadCheckUpdate extends Thread
 				}
 				else
 				{
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(String.format(I18n.translateToLocal("pe.update.available"), latestVersion)));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("pe.update.getit")));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.available", latestVersion)));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.getit")));
 
 					ITextComponent link = new TextComponentString(curseURL);
 					link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(link);
 
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("pe.update.changelog")));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.changelog")));
 				}
 			}
 			else

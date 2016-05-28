@@ -1,9 +1,9 @@
 package moze_intel.projecte.api.event;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.UUID;
 
 /**
  * This event is fired after a players transmutation knowledge is changed

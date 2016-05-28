@@ -3,7 +3,6 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

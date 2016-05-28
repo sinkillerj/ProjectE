@@ -1,10 +1,8 @@
 package moze_intel.projecte.api.proxy;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 

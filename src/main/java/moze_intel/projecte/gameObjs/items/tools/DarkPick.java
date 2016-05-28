@@ -5,7 +5,6 @@ import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
@@ -22,7 +21,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -32,8 +30,8 @@ public class DarkPick extends PEToolBase
 	public DarkPick()
 	{
 		super("dm_pick", (byte)2, new String[] {
-				I18n.translateToLocal("pe.darkpick.mode1"), I18n.translateToLocal("pe.darkpick.mode2"),
-				I18n.translateToLocal("pe.darkpick.mode3"), I18n.translateToLocal("pe.darkpick.mode4")});
+				"pe.darkpick.mode1", "pe.darkpick.mode2",
+				"pe.darkpick.mode3", "pe.darkpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "pickaxe";

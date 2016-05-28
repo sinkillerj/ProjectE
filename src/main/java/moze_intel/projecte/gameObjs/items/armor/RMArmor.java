@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;

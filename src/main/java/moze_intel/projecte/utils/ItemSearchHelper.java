@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
 
 import java.util.Locale;
 

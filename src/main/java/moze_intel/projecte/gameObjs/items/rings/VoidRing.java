@@ -1,15 +1,12 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IPedestalItem;
-
-import java.util.List;
-
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -20,7 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
+
+import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
@@ -48,6 +49,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

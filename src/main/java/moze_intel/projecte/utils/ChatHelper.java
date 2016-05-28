@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * Helper class for chat messages and formatting

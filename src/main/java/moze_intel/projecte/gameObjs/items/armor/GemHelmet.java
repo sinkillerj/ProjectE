@@ -4,24 +4,23 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -72,18 +71,18 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
     {
-        tooltips.add(I18n.translateToLocal("pe.gem.helm.lorename"));
+        tooltips.add(I18n.format("pe.gem.helm.lorename"));
 
-        tooltips.add(String.format(
-                I18n.translateToLocal("pe.gem.nightvision.prompt"), ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
+        tooltips.add(
+                I18n.format("pe.gem.nightvision.prompt", ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
         ));
 
         TextFormatting e = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;
         String s = isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(I18n.translateToLocal("pe.gem.nightvision_tooltip") + " "
-                + e + I18n.translateToLocal(s));
+        tooltips.add(I18n.format("pe.gem.nightvision_tooltip") + " "
+                + e + I18n.format(s));
     }
 
     @Override

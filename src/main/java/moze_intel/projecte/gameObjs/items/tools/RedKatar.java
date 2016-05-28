@@ -3,7 +3,11 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,7 +22,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -28,7 +31,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	public RedKatar() 
 	{
 		super("rm_katar", (byte)4, new String[] {
-				I18n.translateToLocal("pe.katar.mode1"), I18n.translateToLocal("pe.katar.mode2"),
+				"pe.katar.mode1", "pe.katar.mode2",
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";

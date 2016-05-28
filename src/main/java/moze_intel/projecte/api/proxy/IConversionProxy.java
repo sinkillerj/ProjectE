@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.proxy;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 
 import java.util.Map;
 

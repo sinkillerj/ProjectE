@@ -9,7 +9,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 public class RedPick extends DarkPick
@@ -17,8 +16,8 @@ public class RedPick extends DarkPick
 	public RedPick()
 	{
 		super("rm_pick", (byte)3, new String[] {
-				I18n.translateToLocal("pe.redpick.mode1"), I18n.translateToLocal("pe.redpick.mode2"),
-				I18n.translateToLocal("pe.redpick.mode3"), I18n.translateToLocal("pe.redpick.mode4")});
+				"pe.redpick.mode1", "pe.redpick.mode2",
+				"pe.redpick.mode3", "pe.redpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "pickaxe";

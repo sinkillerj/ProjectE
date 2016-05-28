@@ -1,21 +1,21 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.item.IModeChanger;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger
 {
-	private byte numModes;
-	private String[] modes;
+	private final byte numModes;
+	private final String[] modes;
 	
 	public ItemMode(String unlocalName, byte numCharge, String[] modeDescrp)
 	{
@@ -29,7 +29,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		return stack.getTagCompound().getByte("Mode");
 	}
 	
-	public String getModeDescription(ItemStack stack)
+	public String getUnlocalizedMode(ItemStack stack)
 	{
 		return modes[stack.getTagCompound().getByte("Mode")];
 	}
@@ -48,17 +48,19 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 			return false;
 		}
 		changeMode(stack);
-		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+
+		TextComponentTranslation modeName = new TextComponentTranslation(modes[getMode(stack)]);
+		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
 		return true;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
 		if (stack.hasTagCompound() && this.numModes > 0)
 		{
-			list.add(I18n.translateToLocal("pe.item.mode") + ": " + TextFormatting.AQUA + getModeDescription(stack));
+			list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + I18n.format(getUnlocalizedMode(stack)));
 		}
 	}
 }

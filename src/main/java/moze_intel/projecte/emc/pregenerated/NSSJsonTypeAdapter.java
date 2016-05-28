@@ -1,13 +1,9 @@
 package moze_intel.projecte.emc.pregenerated;
 
-import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.PELogger;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 

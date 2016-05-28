@@ -2,15 +2,10 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
-import java.util.Arrays;
 
 public class AlchBagInventory implements IItemHandlerModifiable
 {

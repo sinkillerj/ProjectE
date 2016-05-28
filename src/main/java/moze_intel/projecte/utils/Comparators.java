@@ -3,12 +3,11 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.manual.AbstractPage;
-
-import java.util.Comparator;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
+
+import java.util.Comparator;
 
 public final class Comparators
 {

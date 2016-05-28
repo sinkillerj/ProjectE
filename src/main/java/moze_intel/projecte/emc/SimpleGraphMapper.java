@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
-
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;

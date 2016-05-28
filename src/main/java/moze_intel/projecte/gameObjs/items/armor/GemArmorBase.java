@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.Locale;
 
 public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {

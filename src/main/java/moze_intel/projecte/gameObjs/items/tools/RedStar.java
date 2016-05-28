@@ -5,10 +5,10 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGravel;
-import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -24,7 +24,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -34,8 +33,8 @@ public class RedStar extends PEToolBase
 	public RedStar() 
 	{
 		super("rm_morning_star", (byte) 4, new String[]{
-				I18n.translateToLocal("pe.morningstar.mode1"), I18n.translateToLocal("pe.morningstar.mode2"),
-				I18n.translateToLocal("pe.morningstar.mode3"), I18n.translateToLocal("pe.morningstar.mode4"),
+				"pe.morningstar.mode1", "pe.morningstar.mode2",
+				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";

@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.translation.I18n;

@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-
 import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Map;

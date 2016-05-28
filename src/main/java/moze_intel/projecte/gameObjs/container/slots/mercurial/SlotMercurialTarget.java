@@ -2,12 +2,6 @@ package moze_intel.projecte.gameObjs.container.slots.mercurial;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class SlotMercurialTarget extends ValidatedSlot
