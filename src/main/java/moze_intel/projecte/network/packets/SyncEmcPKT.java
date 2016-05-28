@@ -6,6 +6,8 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -28,8 +30,8 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		packetNum = buf.readInt();
-		int size = buf.readInt();
+		packetNum = ByteBufUtils.readVarInt(buf, 5);
+		int size = buf.readShort();
 		data = new Object[size];
 
 		for (int i = 0; i < size; i++)
@@ -38,7 +40,7 @@ public class SyncEmcPKT implements IMessage
 
 			for (int j = 0; j < 4; j++)
 			{
-				array[j] = buf.readInt();
+				array[j] = ByteBufUtils.readVarInt(buf, 5);
 			}
 
 			data[i] = array;
@@ -48,8 +50,8 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeInt(packetNum);
-		buf.writeInt(data.length);
+		ByteBufUtils.writeVarInt(buf, packetNum, 5);
+		buf.writeShort(data.length);
 
 		for (Object obj : data)
 		{
@@ -57,7 +59,7 @@ public class SyncEmcPKT implements IMessage
 
 			for (int i = 0; i < 4; i++)
 			{
-				buf.writeInt(array[i]);
+				ByteBufUtils.writeVarInt(buf, array[i], 5);
 			}
 		}
 	}
@@ -67,32 +69,37 @@ public class SyncEmcPKT implements IMessage
 		@Override
 		public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx)
 		{
-			if (pkt.packetNum == 0)
-			{
-				PELogger.logInfo("Receiving EMC data from server.");
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					if (pkt.packetNum == 0)
+					{
+						PELogger.logInfo("Receiving EMC data from server.");
 
-				EMCMapper.emc.clear();
-			}
+						EMCMapper.emc.clear();
+					}
 
-			for (Object obj : pkt.data)
-			{
-				Integer[] array = (Integer[]) obj;
+					for (Object obj : pkt.data)
+					{
+						Integer[] array = (Integer[]) obj;
 
-				SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+						SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
 
-				if (stack.isValid())
-				{
-					EMCMapper.emc.put(stack, array[3]);
+						if (stack.isValid())
+						{
+							EMCMapper.emc.put(stack, array[3]);
+						}
+					}
+
+					if (pkt.packetNum == -1)
+					{
+						PELogger.logInfo("Received all packets!");
+
+						Transmutation.cacheFullKnowledge();
+						FuelMapper.loadMap();
+					}
 				}
-			}
-
-			if (pkt.packetNum == -1)
-			{
-				PELogger.logInfo("Received all packets!");
-
-				Transmutation.cacheFullKnowledge();
-				FuelMapper.loadMap();
-			}
+			});
 
 			return null;
 		}
