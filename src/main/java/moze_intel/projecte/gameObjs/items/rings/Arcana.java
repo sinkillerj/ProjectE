@@ -20,11 +20,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
@@ -33,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -45,6 +48,19 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
+		addPropertyOverride(new ResourceLocation("projecte", "on"), new IItemPropertyGetter() {
+			@Override
+			public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+				return stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0;
+			}
+		});
+	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
+	{
+		return getMode(oldStack) != getMode(newStack)
+				|| (oldStack.hasTagCompound() && newStack.hasTagCompound()) && (oldStack.getTagCompound().getBoolean("Active") != newStack.getTagCompound().getBoolean("Active"));
 	}
 
 	@Override

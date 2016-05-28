@@ -219,8 +219,13 @@ public class ClientProxy implements IProxy
 
 	private void registerItem(Item i)
 	{
+		registerItem(i, 0);
+	}
+
+	private void registerItem(Item i, int meta)
+	{
 		String name = ForgeRegistries.ITEMS.getKey(i).toString();
-		ModelLoader.setCustomModelResourceLocation(i, 0, new ModelResourceLocation(name, "inventory"));
+		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(name, "inventory"));
 	}
 
 	private void registerCovalenceDust()
@@ -313,30 +318,10 @@ public class ClientProxy implements IProxy
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 0, new ModelResourceLocation("projecte:voidring_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation("projecte:voidring_on", "inventory"));
 
-		// Arcana needs its own mess because it uses NBT to store Active state instead of meta
-		String[] names = { "projecte:arcana_zero_off", "projecte:arcana_zero_on", "projecte:arcana_ignition_off", "projecte:arcana_ignition_on",
-				"projecte:arcana_harv_off", "projecte:arcana_harv_on", "projecte:arcana_swrg_off", "projecte:arcana_swrg_on" };
-		for (String name : names)
-			ModelLoader.registerItemVariants(ObjHandler.arcana, new ModelResourceLocation(name, "inventory"));
-
-		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
-			@Nonnull
-			@Override
-			public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
-				String modelName;
-				boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
-
-				switch (stack.getItemDamage())
-				{
-					case 0: modelName = active ? "arcana_zero_on" : "arcana_zero_off"; break;
-					case 1: modelName = active ? "arcana_ignition_on" : "arcana_ignition_off"; break;
-					case 2: modelName = active ? "arcana_harv_on" : "arcana_harv_off"; break;
-					case 3: modelName = active ? "arcana_swrg_on" : "arcana_swrg_off"; break;
-					default: modelName = "";
-				}
-				return new ModelResourceLocation("projecte:" + modelName, "inventory");
-			}
-		});
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 0, new ModelResourceLocation("projecte:arcana_zero_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 1, new ModelResourceLocation("projecte:arcana_ignition_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 2, new ModelResourceLocation("projecte:arcana_harv_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 3, new ModelResourceLocation("projecte:arcana_swrg_off", "inventory"));
 	}
 
 	@SuppressWarnings("unchecked")
