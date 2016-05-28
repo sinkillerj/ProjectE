@@ -57,11 +57,11 @@ public class MatterBlock extends Block
 		{
 			if (type == EnumMatterType.RED_MATTER)
 			{
-				return stack.getItem() == ObjHandler.rmPick;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar;
 			}
 			else
 			{
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar;
 			}
 		}
 		

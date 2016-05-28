@@ -87,11 +87,11 @@ public class TransmutationContainer extends Container
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 		
-		if (slotIndex <= 7)
+		if (slotIndex <= 7) //Input Slots
 		{
 			return null;
 		}
-		else if (slotIndex >= 10 && slotIndex <= 25)
+		else if (slotIndex >= 10 && slotIndex <= 25) // Output Slots
 		{	
 			int emc = EMCHelper.getEmcValue(newStack);
 			
@@ -106,7 +106,7 @@ public class TransmutationContainer extends Container
 			
 			transmutationInventory.updateClientTargets();
 		}
-		else if (slotIndex >= 26)
+		else if (slotIndex >= 26) //Unlearn Slot and Player Inventory
 		{
 			int emc = EMCHelper.getEmcValue(stack);
 			

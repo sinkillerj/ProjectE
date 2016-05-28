@@ -18,12 +18,18 @@ public class SlotUnlearn extends SlotItemHandler
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && EMCHelper.doesItemHaveEmc(stack))
+		return !this.getHasStack() && EMCHelper.doesItemHaveEmc(stack);
+	}
+	
+	@Override
+	public void putStack(ItemStack stack)
+	{
+		if (stack != null)
 		{
-			inv.handleUnlearn(stack);
+			inv.handleUnlearn(stack.copy());
 		}
 
-		return false;
+		super.putStack(stack);
 	}
 	
 	@Override
