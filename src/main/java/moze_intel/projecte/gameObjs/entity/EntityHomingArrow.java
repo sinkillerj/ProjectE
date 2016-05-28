@@ -57,6 +57,9 @@ public class EntityHomingArrow extends EntityArrow
 	public void onUpdate()
 	{
 		onEntityUpdate();
+
+		this.canBePickedUp = 0;
+
 		boolean inGround = WorldHelper.isArrowInGround(this);
 		if (!worldObj.isRemote && this.ticksExisted > 3)
 		{
@@ -92,7 +95,7 @@ public class EntityHomingArrow extends EntityArrow
 
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
 			double theta = wrap180Radian(arrowMotion.angle(lookVec));
-			theta = clampAbs(theta, Math.PI / 10);
+			theta = clampAbs(theta, Math.PI / 2); // Dividing by higher numbers kills accuracy
 
 			// Find the cross product to determine the axis of rotation
 			Vector3d crossProduct = new Vector3d();
@@ -108,7 +111,7 @@ public class EntityHomingArrow extends EntityArrow
 			transform.transform(arrowMotion, adjustedLookVec);
 
 			// Tell mc to adjust our rotation accordingly
-			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.5F, 0);
+			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
 			super.onUpdate();
 
 //			old homing code (sucks)
