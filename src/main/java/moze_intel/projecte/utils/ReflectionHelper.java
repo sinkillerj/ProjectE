@@ -20,18 +20,6 @@ public final class ReflectionHelper
 	private static final String[] entityFireImmuneNames = new String[] {"isImmuneToFire", "ae", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = new String[] {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] explosionSizeNames = new String[] {"explosionSize", "i", "field_77280_f"};
-	private static final String[] skinMapNames = new String[] {"skinMap", "l", "field_178636_l"};
-	private static final String[] registerSoundNames = { "registerSound", "a", "func_187502_a" };
-
-	protected static void registerSound(String name)
-	{
-		Method m = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(SoundEvent.class, null, registerSoundNames, String.class);
-		try {
-			m.invoke(null, name);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	protected static boolean getArrowInGround(EntityArrow instance)
 	{
