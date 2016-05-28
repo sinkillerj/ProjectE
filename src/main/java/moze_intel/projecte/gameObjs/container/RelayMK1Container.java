@@ -21,7 +21,11 @@ public class RelayMK1Container extends Container
 	public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay)
 	{
 		this.tile = relay;
+		initSlots(invPlayer);
+	}
 
+	void initSlots(InventoryPlayer invPlayer)
+	{
 		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 
@@ -30,27 +34,21 @@ public class RelayMK1Container extends Container
 
 		int counter = 1;
 		//Main Relay inventory
-		for (int i = 0; i <= 1; i++) 
-			for (int j = 0; j <= 2; j++) 
+		for (int i = 0; i <= 1; i++)
+			for (int j = 0; j <= 2; j++)
 				this.addSlotToContainer(new ValidatedSlot(input, counter++, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
-		
+
 		//Burning slot
 		this.addSlotToContainer(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
-		
+
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++) 
+			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 95 + i * 18));
-		
+
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 153));
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed(player);
 	}
 	
 	@Override

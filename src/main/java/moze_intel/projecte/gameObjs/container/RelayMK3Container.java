@@ -14,14 +14,19 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class RelayMK3Container extends Container
+public class RelayMK3Container extends RelayMK1Container
 {
 	private RelayMK3Tile tile;
 	
 	public RelayMK3Container(InventoryPlayer invPlayer, RelayMK3Tile relay)
 	{
+		super(invPlayer, relay);
 		this.tile = relay;
+	}
 
+	@Override
+	void initSlots(InventoryPlayer invPlayer)
+	{
 		IItemHandler input = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 
@@ -30,27 +35,21 @@ public class RelayMK3Container extends Container
 
 		int counter = 1;
 		//Inventory Buffer
-		for (int i = 0; i <= 3; i++) 
+		for (int i = 0; i <= 3; i++)
 			for (int j = 0; j <= 4; j++)
 				this.addSlotToContainer(new ValidatedSlot(input, counter++, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Klein star charge
 		this.addSlotToContainer(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));
-			
+
 		//Main player inventory
-		for (int i = 0; i < 3; i++) 
-			for (int j = 0; j < 9; j++) 
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 26 + j * 18, 113 + i * 18));
 
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 26 + i * 18, 171));
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed(player);
 	}
 	
 	@Override
@@ -87,11 +86,5 @@ public class RelayMK3Container extends Container
 
 		slot.onPickupFromSlot(player, newStack);
 		return newStack;
-	}
-
-	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
-	{
-		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }
