@@ -388,6 +388,18 @@ pe.manual.pe_collector_MK1=Collectors are some of the most controversial alchemi
 
 pe.manual.pe_condenser=Transmutation Tables are great for turning one thing into another, however the process is manual and not fit for automation. Condensers are the solution to this problem, simply set a item as the target and anything dumped into it will be transmuted into the target. The target can also be created from EMC provided by a attached device such as a Relay or Collector.
 
+pe.manual.pe_condenser_mk2=The Energy Condenser MK2 has all the features of the MK1, but splits the inventory to have a separate input and output.
+
+pe.manual.pe_interdiction_torch=The Interdiction Torch is more than just a stylish alternative to coal and twigs, any mob that approaches it will be pushed away, as a wise man once said... NONE SHALL PASS! 
+
+pe.manual.pe_fuel_block_0=Like other solid fuels Mobius Fuel can be compressed into block form. Use it as a efficient fuel, or a poor mans Red Matter for decor.
+
+pe.manual.pe_nova_cataclysm=All the fun of the Nova Catalyst, but with double the boom!
+
+pe.manual.pe_nova_catalyst=The Nova Catalyst is a powerful alchemical explosive, it causes quite the boom with the added benefit of preserving the nearby blocks for pickup.
+
+pe.manual.pe_transmutation_stone=The Transmutation Table allows the alchemist to study the makeup of materials, and break down others to create more of them. Dirt goes in, Diamonds come out!
+
 # TextPages headers and bodies
 pe.manual.introduction=By opening this book you have taken the first steps on your journey to become a High Alchemist. Perhaps you are weary of performing the same grindy tasks over and over, or you simply desire more power for... purposes, or you'd like the utility and art of magic at your disposal. Regardless, alchemy is sure to fit your needs. Before you can begin however it is important to understand the past...    The art of alchemy has been known since ancient times. It was discovered by a man known as x3n0ph0b3, and refined through multiple iterations. After x3n0ph0b3's retirement, a new apprentice, Pahimar, took up development of the art, but many alchemists were displeased by his new methods, a war broke out between the two sides with strange audible chants akin to "lazy cheaters" and "EE2 OP!!!!!!" filling the air. x3n0's followers thought all was lost until a wander by the name of MozeIntel led them underground, he had studied and reproduced x3n0's work, thus the old art lived on. Eventually, for reasons unknown (reasons he strangely described as "IRL"), Moze retired, leaving his work to an eager apprentice, SinkillerJ. Sin went on to not only bring peace to the two sides allowing them to coexist, but to also form a council of alchemists dedicated to the preservation of the old art:    Williewillus - Lord of Refactors    Blubberbub - Alchemical Value Archivist    Lilylicious - Lady of Little Big Things    We, the council of alchemists, now impart upon you our most extensive knowledge of the alchemical arts, and welcome you, young alchemist, to the world of ProjectE.
 pe.manual.introduction.header=Introduction
