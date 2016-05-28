@@ -182,7 +182,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 	{
 		if (Math.abs(param) > maxMagnitude)
 		{
-			System.out.println("CLAMPED");
+			//System.out.println("CLAMPED");
 			if (param < 0)
 			{
 				param = -Math.abs(maxMagnitude);
