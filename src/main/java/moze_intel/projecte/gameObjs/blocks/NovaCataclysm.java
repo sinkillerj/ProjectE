@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class NovaCataclysm extends BlockTNT
 {
 	public NovaCataclysm()
@@ -19,7 +21,7 @@ public class NovaCataclysm extends BlockTNT
 	}
 	
 	@Override
-	public void explode(World world, BlockPos pos, IBlockState state, EntityLivingBase entity)
+	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityLivingBase entity)
 	{
 		if (!world.isRemote)
 		{
@@ -27,13 +29,13 @@ public class NovaCataclysm extends BlockTNT
 			{
 				EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
 				world.spawnEntityInWorld(cataclysmPrimed);
-				cataclysmPrimed.playSound(SoundEvents.entity_tnt_primed, 1, 1);
+				cataclysmPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 			}
 		}
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion)
+	public void onBlockDestroyedByExplosion(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if (!world.isRemote)
 		{

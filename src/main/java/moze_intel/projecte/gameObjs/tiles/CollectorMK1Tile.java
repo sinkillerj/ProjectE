@@ -20,6 +20,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
@@ -70,13 +71,14 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side != null && side.getAxis().isVertical())
@@ -327,13 +329,15 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setDouble("FuelEMC", storedFuelEmc);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
+		return nbt;
 	}
 
 	private void sendRelayBonus()

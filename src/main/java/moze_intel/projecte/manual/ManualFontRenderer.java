@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,8 +21,9 @@ public class ManualFontRenderer extends FontRenderer
         super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
     }
 
+    @Nonnull
     @Override
-    public List listFormattedStringToWidth(String string, int width)
+    public List listFormattedStringToWidth(@Nonnull String string, int width)
     {
         return Arrays.asList(this.wrapFormStringToWidth(string, width).split("\n"));
     }

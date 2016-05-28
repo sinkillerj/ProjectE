@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MatterBlock extends Block
@@ -25,7 +26,7 @@ public class MatterBlock extends Block
 	
 	public MatterBlock() 
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.DARK_MATTER));
 		this.setUnlocalizedName("pe_matter_block");
@@ -47,7 +48,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
+	public boolean canHarvestBlock(IBlockAccess world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
 	{
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		EnumMatterType type = world.getBlockState(pos).getValue(PEStateProps.TIER_PROP);
@@ -79,12 +80,14 @@ public class MatterBlock extends Block
 		return state.getValue(PEStateProps.TIER_PROP).ordinal();
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
 		return getDefaultState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.values()[meta]);
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
@@ -93,7 +96,7 @@ public class MatterBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item matterBlock, CreativeTabs cTab, List list)
+	public void getSubBlocks(@Nonnull Item matterBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{

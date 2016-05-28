@@ -25,7 +25,7 @@ public class SimpleStack
 		}
 		else
 		{
-			id = Item.itemRegistry.getIDForObject(stack.getItem());
+			id = Item.REGISTRY.getIDForObject(stack.getItem());
 			damage = stack.getItemDamage();
 			qnty = stack.stackSize;
 		}
@@ -85,11 +85,11 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		Item obj = Item.itemRegistry.getObjectById(id);
+		Item obj = Item.REGISTRY.getObjectById(id);
 		
 		if (obj != null)
 		{
-			return Item.itemRegistry.getNameForObject(obj) + " " + qnty + " " + damage;
+			return Item.REGISTRY.getNameForObject(obj) + " " + qnty + " " + damage;
 		}
 		
 		return "id:" + id + " damage:" + damage + " qnty:" + qnty;

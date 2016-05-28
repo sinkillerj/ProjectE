@@ -42,6 +42,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.HorseArmorType;
+import net.minecraft.entity.passive.HorseType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -179,7 +180,7 @@ public final class WorldHelper
 	{
 		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
 		{
-			if (world.getBlockState(pos).getBlock() == Blocks.fire && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
 				world.setBlockToAir(pos);
 			}
@@ -192,30 +193,30 @@ public final class WorldHelper
 		{
 			Block b = world.getBlockState(pos).getBlock();
 
-			if ((b == Blocks.water || b == Blocks.flowing_water) && (!random || world.rand.nextInt(128) == 0))
+			if ((b == Blocks.WATER || b == Blocks.FLOWING_WATER) && (!random || world.rand.nextInt(128) == 0))
 			{
 				if (player != null)
 				{
-					PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos, Blocks.ice.getDefaultState());
+					PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos, Blocks.ICE.getDefaultState());
 				}
 				else
 				{
-					world.setBlockState(pos, Blocks.ice.getDefaultState());
+					world.setBlockState(pos, Blocks.ICE.getDefaultState());
 				}
 			}
 			else if (b.isSideSolid(world.getBlockState(pos), world, pos, EnumFacing.UP))
 			{
 				Block b2 = world.getBlockState(pos.up()).getBlock();
 
-				if (b2 == Blocks.air && (!random || world.rand.nextInt(128) == 0))
+				if (b2 == Blocks.AIR && (!random || world.rand.nextInt(128) == 0))
 				{
 					if (player != null)
 					{
-						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos.up(), Blocks.snow_layer.getDefaultState());
+						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos.up(), Blocks.SNOW_LAYER.getDefaultState());
 					}
 					else
 					{
-						world.setBlockState(pos.up(), Blocks.snow_layer.getDefaultState());
+						world.setBlockState(pos.up(), Blocks.SNOW_LAYER.getDefaultState());
 					}
 				}
 			}
@@ -243,12 +244,12 @@ public final class WorldHelper
 
 	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
 	{
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.silkTouch, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
 		{
 			return Lists.newArrayList(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)));
 		}
 
-		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
+		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 	}
 
 	/**
@@ -306,16 +307,16 @@ public final class WorldHelper
 				if (world.rand.nextInt(2) == 0)
 				{
 					((EntitySkeleton) ent).setSkeletonType(1);
-					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.stone_sword));
+					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
 				}
 				else
 				{
-					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.bow));
+					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 				}
 			}
 			else if (ent instanceof EntityPigZombie)
 			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.golden_sword));
+				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
 			}
 			else if (ent instanceof EntitySheep)
 			{
@@ -331,8 +332,8 @@ public final class WorldHelper
 			}
 			else if (ent instanceof EntityHorse)
 			{
-				((EntityHorse) ent).setType(HorseArmorType.getArmorType(MathUtils.randomIntInRange(0, 2)));
-				if (((EntityHorse) ent).getType() == HorseArmorType.HORSE)
+				((EntityHorse) ent).setType(HorseType.values()[MathUtils.randomIntInRange(0, 2)]);
+				if (((EntityHorse) ent).getType() == HorseType.HORSE)
 				{
 					((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
 				}
@@ -488,7 +489,7 @@ public final class WorldHelper
 							world.destroyBlock(currentPos, true);
 						}
 					}
-					if (crop == Blocks.reeds || crop == Blocks.cactus)
+					if (crop == Blocks.REEDS || crop == Blocks.CACTUS)
 					{
 						boolean shouldHarvest = true;
 
@@ -503,7 +504,7 @@ public final class WorldHelper
 
 						if (shouldHarvest)
 						{
-							for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++)
+							for (int i = crop == Blocks.REEDS ? 1 : 0; i < 3; i++)
 							{
 								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
 								{
@@ -515,7 +516,7 @@ public final class WorldHelper
 							}
 						}
 					}
-					if (crop == Blocks.nether_wart)
+					if (crop == Blocks.NETHER_WART)
 					{
 						int age = state.getValue(BlockNetherWart.AGE);
 						if (age == 3)
@@ -549,7 +550,7 @@ public final class WorldHelper
 			IBlockState currentState = world.getBlockState(currentPos);
 			Block block = currentState.getBlock();
 
-			if (block == target || (target == Blocks.lit_redstone_ore && block == Blocks.redstone_ore))
+			if (block == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
 			{
 				numMined++;
 				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
@@ -568,8 +569,8 @@ public final class WorldHelper
 		{
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
-				world.setBlockState(pos, Blocks.fire.getDefaultState());
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
+				world.setBlockState(pos, Blocks.FIRE.getDefaultState());
 			}
 		}
 	}

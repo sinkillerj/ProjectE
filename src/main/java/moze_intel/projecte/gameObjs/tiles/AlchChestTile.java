@@ -17,6 +17,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class AlchChestTile extends TileEmc
@@ -28,13 +29,14 @@ public class AlchChestTile extends TileEmc
 	private int ticksSinceSync;
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -50,11 +52,13 @@ public class AlchChestTile extends TileEmc
 		inventory.deserializeNBT(nbt);
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.merge(inventory.serializeNBT());
+		return nbt;
 	}
 	
 	@Override
@@ -70,7 +74,7 @@ public class AlchChestTile extends TileEmc
 
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -93,7 +97,7 @@ public class AlchChestTile extends TileEmc
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				worldObj.playSound(null, pos, SoundEvents.block_chest_close, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)

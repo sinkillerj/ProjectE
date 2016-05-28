@@ -10,6 +10,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class EntityHomingArrow extends EntityArrow
@@ -91,9 +92,10 @@ public class EntityHomingArrow extends EntityArrow
 		}
 	}
 
+	@Nonnull
 	@Override
 	protected ItemStack getArrowStack() {
-		return new ItemStack(Items.arrow);
+		return new ItemStack(Items.ARROW);
 	}
 
 	private double distanceTo(EntityLiving entity)

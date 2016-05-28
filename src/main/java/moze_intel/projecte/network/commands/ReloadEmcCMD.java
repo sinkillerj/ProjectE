@@ -8,22 +8,26 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
 
+import javax.annotation.Nonnull;
+
 public class ReloadEmcCMD extends ProjectEBaseCMD
 {
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_reloadEMC";
 	}
 	
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender)
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "/projecte reloadEMC";
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
 		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.started"));
 

@@ -88,7 +88,7 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler
 				}
 
 				// If no containers are registered
-				return new ItemStack(Blocks.barrier).setStackDisplayName(f.getLocalizedName(new FluidStack(f, 1000)));
+				return new ItemStack(Blocks.BARRIER).setStackDisplayName(f.getLocalizedName(new FluidStack(f, 1000)));
 			} else
 			{
 				return ItemHelper.stateToDroppedStack(state, 1);

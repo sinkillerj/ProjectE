@@ -28,6 +28,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
+
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
 	public MercurialEye()
@@ -41,12 +43,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	final private double WALL_MODE = Math.sin(Math.toRadians(45));
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = this.rayTrace(world, player, false);
 
 			if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 			{
@@ -61,7 +64,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 
 			IBlockState newState = ItemHelper.stackToState(inventory[1]);
-			if (newState == null || newState.getBlock() == Blocks.air)
+			if (newState == null || newState.getBlock() == Blocks.AIR)
 			{
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
@@ -143,7 +146,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					IBlockState oldState = world.getBlockState(currentPos);
 					Block oldBlock = oldState.getBlock();
 
-					if (mode == NORMAL_MODE && oldBlock == Blocks.air)
+					if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
 					{
 						if (kleinEmc < reqEmc)
 							break;
@@ -155,7 +158,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						if (oldState == newState || oldBlock == Blocks.air || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
+						if (oldState == newState || oldBlock == Blocks.AIR || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
 						{
 							continue;
 						}

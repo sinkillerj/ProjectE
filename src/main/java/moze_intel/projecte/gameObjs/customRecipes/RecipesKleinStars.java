@@ -9,12 +9,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
+
 public class RecipesKleinStars implements IRecipe
 {
 	private ItemStack output;
 	
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		double storedEMC = 0;
 		int starDamage = -1;
@@ -74,7 +76,7 @@ public class RecipesKleinStars implements IRecipe
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) 
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting p_77572_1_)
 	{
 		return output.copy();
 	}
@@ -91,8 +93,9 @@ public class RecipesKleinStars implements IRecipe
 		return output;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

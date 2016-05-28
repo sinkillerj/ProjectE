@@ -17,13 +17,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class Relay extends BlockDirection
 {
 	private int tier;
 	
 	public Relay(int tier) 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setUnlocalizedName("pe_relay_MK" + Integer.toString(tier));
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(10.0f);
@@ -61,8 +63,9 @@ public class Relay extends BlockDirection
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		switch (tier)
 		{

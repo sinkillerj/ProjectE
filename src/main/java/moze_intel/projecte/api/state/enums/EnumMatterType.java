@@ -2,6 +2,8 @@ package moze_intel.projecte.api.state.enums;
 
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum EnumMatterType implements IStringSerializable
 {
     DARK_MATTER("dark_matter"),
@@ -14,6 +16,7 @@ public enum EnumMatterType implements IStringSerializable
         this.name = name;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class EternalDensityInventory implements IInventory
@@ -96,6 +97,7 @@ public class EternalDensityInventory implements IInventory
 		markDirty();
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -108,6 +110,7 @@ public class EternalDensityInventory implements IInventory
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TextComponentTranslation(getName());
@@ -137,19 +140,19 @@ public class EternalDensityInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) 
+	public boolean isUseableByPlayer(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
+	public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack)
 	{
 		return true;
 	}

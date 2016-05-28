@@ -5,7 +5,6 @@ import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,6 +19,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DarkHammer extends PEToolBase
 {
 	public DarkHammer() 
@@ -28,9 +29,9 @@ public class DarkHammer extends PEToolBase
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "hammer";
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 
 		this.secondaryClasses.add("pickaxe");
 		this.secondaryClasses.add("chisel");
@@ -50,8 +51,9 @@ public class DarkHammer extends PEToolBase
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		digAOE(stack, world, player, true, 0);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -71,8 +73,9 @@ public class DarkHammer extends PEToolBase
 		return super.getStrVsBlock(stack, state);
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{

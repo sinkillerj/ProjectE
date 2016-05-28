@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -24,14 +25,16 @@ public class ProjectECMD extends ProjectEBaseCMD
 	ResetEmcCMD resetemccmd = new ResetEmcCMD();
 	ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
 
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.main.usage";
 	}
@@ -42,6 +45,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
 	{
@@ -54,7 +58,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
 		if (params.length < 1)
 		{

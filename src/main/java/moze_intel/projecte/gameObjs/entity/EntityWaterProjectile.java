@@ -51,20 +51,20 @@ public class EntityWaterProjectile extends PEProjectile
                 {
                     Block block = this.worldObj.getBlockState(pos).getBlock();
 
-                    if (block == Blocks.lava)
+                    if (block == Blocks.LAVA)
                     {
-                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.obsidian.getDefaultState());
+                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.OBSIDIAN.getDefaultState());
                     }
-                    else if (block == Blocks.flowing_lava)
+                    else if (block == Blocks.FLOWING_LAVA)
                     {
-                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.cobblestone.getDefaultState());
+                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.COBBLESTONE.getDefaultState());
                     }
                     else
                     {
                         continue;
                     }
 
-                    playSound(SoundEvents.entity_generic_burn, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                    playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                 }
 			}
 
@@ -95,7 +95,7 @@ public class EntityWaterProjectile extends PEProjectile
 			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 			if (worldObj.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.flowing_water.getDefaultState());
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.FLOWING_WATER.getDefaultState());
 			}
 		}
 		else if (mop.typeOfHit == Type.ENTITY)

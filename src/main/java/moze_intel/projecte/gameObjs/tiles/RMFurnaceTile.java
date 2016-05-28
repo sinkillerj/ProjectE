@@ -27,6 +27,8 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+import javax.annotation.Nonnull;
+
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
@@ -97,13 +99,14 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -334,15 +337,17 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		currentItemBurnTime = getItemBurnTime(getFuelItem());
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setShort("BurnTime", (short) furnaceBurnTime);
 		nbt.setShort("CookTime", (short) furnaceCookTime);
 		nbt.setTag("Input", inputInventory.serializeNBT());
 		nbt.setTag("Output", outputInventory.serializeNBT());
 		nbt.setTag("Fuel", fuelInv.serializeNBT());
+		return nbt;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -45,6 +46,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		this.setContainerItem(this);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
@@ -63,7 +65,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			}
 
 			IBlockState state = world.getBlockState(pos);
-			if (state.getBlock() == Blocks.cauldron)
+			if (state.getBlock() == Blocks.CAULDRON)
 			{
 				int waterLevel = state.getValue(BlockCauldron.LEVEL);
 				if (waterLevel < 3)
@@ -76,12 +78,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return EnumActionResult.SUCCESS;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = this.rayTrace(world, player, false);
 			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				BlockPos blockPosHit = mop.getBlockPos();
@@ -107,7 +110,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 		if (world.provider.doesWaterVaporize())
 		{
-			world.playSound(null, pos, SoundEvents.block_fire_extinguish, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
 			for (int l = 0; l < 8; ++l)
 			{
@@ -120,8 +123,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				world.destroyBlock(pos, true);
 			}
-			world.setBlockState(pos, Blocks.flowing_water.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.flowing_water.getDefaultState());
+			world.setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState());
 		}
 
 	}
@@ -141,7 +144,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((world.getBlockState(pos.down()).getBlock() == Blocks.water || world.getBlockState(pos.down()).getBlock() == Blocks.flowing_water) && world.isAirBlock(pos))
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.WATER || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{

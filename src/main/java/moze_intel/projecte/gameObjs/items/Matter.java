@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class Matter extends ItemPE 
@@ -22,6 +23,7 @@ public class Matter extends ItemPE
 		this.setMaxDamage(0);
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
@@ -47,7 +49,7 @@ public class Matter extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 2; i++)
 		{

@@ -9,6 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DarkHoe extends PEToolBase
 {
 	public DarkHoe() 
@@ -25,6 +27,7 @@ public class DarkHoe extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float par8, float par9, float par10)
 	{

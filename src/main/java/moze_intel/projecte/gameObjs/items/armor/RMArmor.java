@@ -15,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.items.IGoggles;
 import thaumcraft.api.items.IRevealer;
 
+import javax.annotation.Nonnull;
+
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
@@ -61,6 +63,7 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)

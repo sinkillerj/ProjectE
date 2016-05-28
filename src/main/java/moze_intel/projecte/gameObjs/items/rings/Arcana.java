@@ -32,6 +32,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -147,8 +148,9 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -179,7 +181,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
@@ -191,7 +193,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.fire.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
@@ -216,7 +218,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
 				world.spawnEntityInWorld(snowball);
-				snowball.playSound(SoundEvents.entity_snowball_throw, 1.0F, 1.0F);
+				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);

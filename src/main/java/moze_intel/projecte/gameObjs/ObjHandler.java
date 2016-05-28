@@ -17,19 +17,6 @@ import moze_intel.projecte.gameObjs.items.tools.*;
 import moze_intel.projecte.gameObjs.tiles.*;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
-import moze_intel.projecte.gameObjs.blocks.Collector;
-import moze_intel.projecte.gameObjs.blocks.Condenser;
-import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
-import moze_intel.projecte.gameObjs.blocks.FuelBlock;
-import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
-import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
-import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
-import moze_intel.projecte.gameObjs.blocks.Pedestal;
-import moze_intel.projecte.gameObjs.blocks.Relay;
-import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
@@ -71,15 +58,6 @@ import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.gameObjs.items.armor.GemLegs;
 import moze_intel.projecte.gameObjs.items.armor.RMArmor;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemAlchemyChestBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCollectorBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCondenserBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemDMFurnaceBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemFuelBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemMatterBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRMFurnaceBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRelayBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemTransmutationBlock;
 import moze_intel.projecte.gameObjs.items.itemEntities.FireProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
 import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
@@ -396,54 +374,54 @@ public class ObjHandler
 
 	public static void addRecipes()
 	{
-		ItemStack diamondReplacement = new ItemStack(Items.diamond);
-		ItemStack diamondBlockReplacement = new ItemStack(Blocks.diamond_block);
+		ItemStack diamondReplacement = new ItemStack(Items.DIAMOND);
+		ItemStack diamondBlockReplacement = new ItemStack(Blocks.DIAMOND_BLOCK);
 
 		if (ProjectEConfig.altCraftingMat)
 		{
-			diamondReplacement = new ItemStack(Items.nether_star);
-			diamondBlockReplacement = new ItemStack(Items.nether_star);
+			diamondReplacement = new ItemStack(Items.NETHER_STAR);
+			diamondBlockReplacement = new ItemStack(Items.NETHER_STAR);
 		}
 
 		//Shaped Recipes
 		//Philos Stone
-		GameRegistry.addRecipe(new ItemStack(philosStone), "RGR", "GDG", "RGR", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', diamondReplacement);
+		GameRegistry.addRecipe(new ItemStack(philosStone), "RGR", "GDG", "RGR", 'R', Items.REDSTONE, 'G', Items.GLOWSTONE_DUST, 'D', diamondReplacement);
 
-		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.redstone, 'G', Items.glowstone_dust, 'D', diamondReplacement);
+		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.REDSTONE, 'G', Items.GLOWSTONE_DUST, 'D', diamondReplacement);
 
 		//Interdiction torch
 		if (ProjectEConfig.enableITorch)
 		{
-			GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.redstone_torch, 'G', Items.glowstone_dust, 'D', Items.diamond, 'P', philosStone);
+			GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.REDSTONE_TORCH, 'G', Items.GLOWSTONE_DUST, 'D', Items.DIAMOND, 'P', philosStone);
 		}
 
 		//Repair Talisman
-		GameRegistry.addRecipe(new ItemStack(repairTalisman), "LMH", "SPS", "HML", 'P', Items.paper, 'S', Items.string, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2));
+		GameRegistry.addRecipe(new ItemStack(repairTalisman), "LMH", "SPS", "HML", 'P', Items.PAPER, 'S', Items.STRING, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2));
 
 		//Klein Star Ein
-		GameRegistry.addRecipe(new ItemStack(kleinStars, 1, 0), "MMM", "MDM", "MMM", 'M', new ItemStack(fuels, 1, 1), 'D', Items.diamond);
+		GameRegistry.addRecipe(new ItemStack(kleinStars, 1, 0), "MMM", "MDM", "MMM", 'M', new ItemStack(fuels, 1, 1), 'D', Items.DIAMOND);
 
 		//Matter
-		GameRegistry.addRecipe(new ItemStack(matter, 1, 0), "AAA", "ADA", "AAA", 'D', Blocks.diamond_block, 'A', new ItemStack(fuels, 1, 2));
+		GameRegistry.addRecipe(new ItemStack(matter, 1, 0), "AAA", "ADA", "AAA", 'D', Blocks.DIAMOND_BLOCK, 'A', new ItemStack(fuels, 1, 2));
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 1), "AAA", "DDD", "AAA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 1), "ADA", "ADA", "ADA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
 
 		//Alchemical Chest
 		if (ProjectEConfig.enableAlcChest)
 		{
-			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'S', Blocks.stone, 'I', Items.iron_ingot, 'C', Blocks.chest);
+			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'S', Blocks.STONE, 'I', Items.IRON_INGOT, 'C', Blocks.CHEST);
 		}
 
 		//Alchemical Bags
 		for (int i = 0; i < 16; i++)
 		{
-			GameRegistry.addRecipe(new ItemStack(alchBag, 1, i), "CCC", "WAW", "WWW", 'C', new ItemStack(covalence, 1, 2), 'A', alchChest, 'W', new ItemStack(Blocks.wool, 1, i));
+			GameRegistry.addRecipe(new ItemStack(alchBag, 1, i), "CCC", "WAW", "WWW", 'C', new ItemStack(covalence, 1, 2), 'A', alchChest, 'W', new ItemStack(Blocks.WOOL, 1, i));
 		}
 
 		//Condenser
 		if (ProjectEConfig.enableCondenser)
 		{
-			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.diamond, 'O', new ItemStack(Blocks.obsidian), 'C', new ItemStack(alchChest));
+			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.DIAMOND, 'O', new ItemStack(Blocks.OBSIDIAN), 'C', new ItemStack(alchChest));
 		}
 
 		//Condenser MK2
@@ -455,7 +433,7 @@ public class ObjHandler
 		//Transmutation Table
 		if (ProjectEConfig.enableTransTable)
 		{
-			GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.stone, 'O', Blocks.obsidian, 'P', philosStone);
+			GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.STONE, 'O', Blocks.OBSIDIAN, 'P', philosStone);
 		}
 
 		//Matter Blocks
@@ -465,7 +443,7 @@ public class ObjHandler
 		//Matter Furnaces
 		if (ProjectEConfig.enableDarkFurnace)
 		{
-			GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.furnace);
+			GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.FURNACE);
 		}
 		if (ProjectEConfig.enableRedFurnace)
 		{
@@ -481,39 +459,39 @@ public class ObjHandler
 		//Collectors
 		if (ProjectEConfig.enableCollector)
 		{
-			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.glowstone, 'F', Blocks.furnace, 'D', diamondBlockReplacement, 'T', Blocks.glass);
+			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.GLOWSTONE, 'F', Blocks.FURNACE, 'D', diamondBlockReplacement, 'T', Blocks.GLASS);
 		}
 		if (ProjectEConfig.enableCollector2)
 		{
-			GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', energyCollector, 'D', matter);
+			GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', energyCollector, 'D', matter);
 		}
 		if (ProjectEConfig.enableCollector3)
 		{
-			GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.glowstone, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
+			GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
 		}
 
 		//AM Relays
 		if (ProjectEConfig.enableRelay)
 		{
-			GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.glass, 'D', Blocks.diamond_block, 'O', Blocks.obsidian);
+			GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.GLASS, 'D', Blocks.DIAMOND_BLOCK, 'O', Blocks.OBSIDIAN);
 		}
 		if (ProjectEConfig.enableRelay2)
 		{
-			GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.obsidian);
+			GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.OBSIDIAN);
 		}
 		if (ProjectEConfig.enableRelay3)
 		{
-			GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.obsidian);
+			GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.OBSIDIAN);
 		}
 
 		//DM Tools
-		GameRegistry.addRecipe(new ItemStack(dmPick), "MMM", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmAxe), "MMX", "MDX", "XDX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmShovel), "XMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmSword), "XMX", "XMX", "XDX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmHoe), "MMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmShears), "XM", "DX", 'D', Items.diamond, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(dmHammer), "MDM", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmPick), "MMM", "XDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmAxe), "MMX", "MDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmShovel), "XMX", "XDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmSword), "XMX", "XMX", "XDX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmHoe), "MMX", "XDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmShears), "XM", "DX", 'D', Items.DIAMOND, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(dmHammer), "MDM", "XDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
 
 		//RM Tools
 		GameRegistry.addRecipe(new ItemStack(rmPick), "RRR", "XPX", "XMX", 'R', new ItemStack(matter, 1, 1), 'P', dmPick, 'M', matter);
@@ -538,34 +516,34 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(rmFeet), "MDM", "MXM", 'M', new ItemStack(matter, 1, 1), 'D', dmFeet);
 
 		//Rings
-		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.iron_ingot, 'L', Items.lava_bucket);
-		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.iron_ingot, 'L', volcanite);
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), "SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', Blocks.red_flower, 'F', Blocks.red_flower, 'D', matter));
-		GameRegistry.addRecipe(new ItemStack(swrg), "DFD", "FIF", "DFD", 'I', ironBand, 'F', Items.feather, 'D', matter);
-		GameRegistry.addRecipe(new ItemStack(ignition), "FMF", "DID", "FMF", 'I', ironBand, 'F', new ItemStack(Items.flint_and_steel, 1, OreDictionary.WILDCARD_VALUE), 'D', matter, 'M', new ItemStack(fuels, 1, 1));
-		GameRegistry.addRecipe(new ItemStack(bodyStone), "SSS", "RLR", "SSS", 'R', new ItemStack(matter, 1, 1), 'S', Items.sugar, 'L', new ItemStack(Items.dye, 1, 4));
-		GameRegistry.addRecipe(new ItemStack(soulStone), "GGG", "RLR", "GGG", 'R', new ItemStack(matter, 1, 1), 'G', Items.glowstone_dust, 'L', new ItemStack(Items.dye, 1, 4));
-		GameRegistry.addRecipe(new ItemStack(mindStone), "BBB", "RLR", "BBB", 'R', new ItemStack(matter, 1, 1), 'B', Items.book, 'L', new ItemStack(Items.dye, 1, 4));
-		GameRegistry.addRecipe(new ItemStack(blackHole), "SSS", "DID", "SSS", 'I', ironBand, 'S', Items.string, 'D', matter);
-		GameRegistry.addRecipe(new ItemStack(everTide), "WWW", "DDD", "WWW", 'W', Items.water_bucket, 'D', matter);
-		GameRegistry.addRecipe(new ItemStack(volcanite), "LLL", "DDD", "LLL", 'L', Items.lava_bucket, 'D', matter);
-		GameRegistry.addRecipe(new ItemStack(eternalDensity), "DOD", "MDM", "DOD", 'D', Items.diamond, 'O', Blocks.obsidian, 'M', matter);
-		GameRegistry.addRecipe(new ItemStack(zero), "SBS", "MIM", "SBS", 'S', Blocks.snow, 'B', Items.snowball, 'M', matter, 'I', ironBand);
+		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.IRON_INGOT, 'L', Items.LAVA_BUCKET);
+		GameRegistry.addRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', Items.IRON_INGOT, 'L', volcanite);
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), "SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', Blocks.RED_FLOWER, 'F', Blocks.RED_FLOWER, 'D', matter));
+		GameRegistry.addRecipe(new ItemStack(swrg), "DFD", "FIF", "DFD", 'I', ironBand, 'F', Items.FEATHER, 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(ignition), "FMF", "DID", "FMF", 'I', ironBand, 'F', new ItemStack(Items.FLINT_AND_STEEL, 1, OreDictionary.WILDCARD_VALUE), 'D', matter, 'M', new ItemStack(fuels, 1, 1));
+		GameRegistry.addRecipe(new ItemStack(bodyStone), "SSS", "RLR", "SSS", 'R', new ItemStack(matter, 1, 1), 'S', Items.SUGAR, 'L', new ItemStack(Items.DYE, 1, 4));
+		GameRegistry.addRecipe(new ItemStack(soulStone), "GGG", "RLR", "GGG", 'R', new ItemStack(matter, 1, 1), 'G', Items.GLOWSTONE_DUST, 'L', new ItemStack(Items.DYE, 1, 4));
+		GameRegistry.addRecipe(new ItemStack(mindStone), "BBB", "RLR", "BBB", 'R', new ItemStack(matter, 1, 1), 'B', Items.BOOK, 'L', new ItemStack(Items.DYE, 1, 4));
+		GameRegistry.addRecipe(new ItemStack(blackHole), "SSS", "DID", "SSS", 'I', ironBand, 'S', Items.STRING, 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(everTide), "WWW", "DDD", "WWW", 'W', Items.WATER_BUCKET, 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(volcanite), "LLL", "DDD", "LLL", 'L', Items.LAVA_BUCKET, 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(eternalDensity), "DOD", "MDM", "DOD", 'D', Items.DIAMOND, 'O', Blocks.OBSIDIAN, 'M', matter);
+		GameRegistry.addRecipe(new ItemStack(zero), "SBS", "MIM", "SBS", 'S', Blocks.SNOW, 'B', Items.SNOWBALL, 'M', matter, 'I', ironBand);
 		GameRegistry.addShapelessRecipe(new ItemStack(voidRing), blackHole, eternalDensity, new ItemStack(matter, 1, 1), new ItemStack(matter, 1, 1));
 		GameRegistry.addRecipe(new ItemStack(arcana), "ZIH", "SMM", "MMM", 'Z', zero, 'I', ignition, 'H', harvestGod, 'S', swrg, 'M', new ItemStack(matter, 1, 1));
 
 		//Watch of flowing time
-		GameRegistry.addRecipe(new ItemStack(timeWatch), "DOD", "GCG", "DOD", 'D', matter, 'O', Blocks.obsidian, 'G', Blocks.glowstone, 'C', Items.clock);
-		GameRegistry.addRecipe(new ItemStack(timeWatch), "DGD", "OCO", "DGD", 'D', matter, 'O', Blocks.obsidian, 'G', Blocks.glowstone, 'C', Items.clock);
+		GameRegistry.addRecipe(new ItemStack(timeWatch), "DOD", "GCG", "DOD", 'D', matter, 'O', Blocks.OBSIDIAN, 'G', Blocks.GLOWSTONE, 'C', Items.CLOCK);
+		GameRegistry.addRecipe(new ItemStack(timeWatch), "DGD", "OCO", "DGD", 'D', matter, 'O', Blocks.OBSIDIAN, 'G', Blocks.GLOWSTONE, 'C', Items.CLOCK);
 
 		//Divining rods
-		GameRegistry.addRecipe(new ItemStack(dRod1), "DDD", "DSD", "DDD", 'D', covalence, 'S', Items.stick);
+		GameRegistry.addRecipe(new ItemStack(dRod1), "DDD", "DSD", "DDD", 'D', covalence, 'S', Items.STICK);
 		GameRegistry.addRecipe(new ItemStack(dRod2), "DDD", "DSD", "DDD", 'D', new ItemStack(covalence, 1, 1), 'S', dRod1);
 		GameRegistry.addRecipe(new ItemStack(dRod3), "DDD", "DSD", "DDD", 'D', new ItemStack(covalence, 1, 2), 'S', dRod2);
 
 		//Explosive items
-		GameRegistry.addRecipe(new ItemStack(dCatalyst), "NMN", "MFM", "NMN", 'N', novaCatalyst, 'M', new ItemStack(fuels, 1, 1), 'F', new ItemStack(Items.flint_and_steel, 1, OreDictionary.WILDCARD_VALUE));
-		GameRegistry.addRecipe(new ItemStack(hyperLens), "DDD", "MNM", "DDD", 'N', novaCatalyst, 'M', matter, 'D', Items.diamond);
+		GameRegistry.addRecipe(new ItemStack(dCatalyst), "NMN", "MFM", "NMN", 'N', novaCatalyst, 'M', new ItemStack(fuels, 1, 1), 'F', new ItemStack(Items.FLINT_AND_STEEL, 1, OreDictionary.WILDCARD_VALUE));
+		GameRegistry.addRecipe(new ItemStack(hyperLens), "DDD", "MNM", "DDD", 'N', novaCatalyst, 'M', matter, 'D', Items.DIAMOND);
 		GameRegistry.addRecipe(new ItemStack(cataliticLens), "MMM", "HMD", "MMM", 'M', matter, 'H', hyperLens, 'D', dCatalyst);
 		GameRegistry.addRecipe(new ItemStack(cataliticLens), "MMM", "DMH", "MMM", 'M', matter, 'H', hyperLens, 'D', dCatalyst);
 
@@ -577,40 +555,40 @@ public class ObjHandler
 		//Tome
 		if (ProjectEConfig.craftableTome)
 		{
-			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.book, 'K', new ItemStack(kleinStars, 1, 5));
+			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.BOOK, 'K', new ItemStack(kleinStars, 1, 5));
 		}
 
 		//Manual
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 0));
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 1));
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.book, new ItemStack(covalence, 1, 2));
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 0));
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 1));
+		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 2));
 
 		//TransmutationTablet
-		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.stone, 'T', transmuteStone);
+		GameRegistry.addRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', Blocks.STONE, 'T', transmuteStone);
 
 		//Mercurial Eye
-		GameRegistry.addRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', Blocks.obsidian, 'B', Blocks.brick_block, 'R', new ItemStack(matter, 1, 1), 'D', Items.diamond);
+		GameRegistry.addRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', Blocks.OBSIDIAN, 'B', Blocks.BRICK_BLOCK, 'R', new ItemStack(matter, 1, 1), 'D', Items.DIAMOND);
 
 		//Shapeless Recipes
 		//Philos Stone exchanges
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.ender_pearl), philosStone, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.iron_ingot, 8), philosStone, Items.gold_ingot);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_ingot), philosStone, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot, Items.iron_ingot);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.diamond), philosStone, Items.gold_ingot, Items.gold_ingot, Items.gold_ingot, Items.gold_ingot);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_ingot, 4), philosStone, Items.diamond);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.emerald), philosStone, Items.diamond, Items.diamond);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.diamond, 2), philosStone, Items.emerald);
-		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 0), philosStone, Items.coal, Items.coal, Items.coal, Items.coal);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.coal, 4), philosStone, new ItemStack(fuels, 1, 0));
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.ENDER_PEARL), philosStone, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.IRON_INGOT, 8), philosStone, Items.GOLD_INGOT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.GOLD_INGOT), philosStone, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.DIAMOND), philosStone, Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.GOLD_INGOT, 4), philosStone, Items.DIAMOND);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.EMERALD), philosStone, Items.DIAMOND, Items.DIAMOND);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.DIAMOND, 2), philosStone, Items.EMERALD);
+		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 0), philosStone, Items.COAL, Items.COAL, Items.COAL, Items.COAL);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.COAL, 4), philosStone, new ItemStack(fuels, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 1), philosStone, new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0), new ItemStack(fuels, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 4, 0), philosStone, new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 1, 2), philosStone, new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1), new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 4, 1), philosStone, new ItemStack(fuels, 1, 2));
 
 		//Covalence dust
-		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 0), Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, Blocks.cobblestone, new ItemStack(Items.coal, 1, 1));
-		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 1), Items.iron_ingot, Items.redstone);
-		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 2), Items.diamond, Items.coal);
+		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 0), Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, Blocks.COBBLESTONE, new ItemStack(Items.COAL, 1, 1));
+		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 1), Items.IRON_INGOT, Items.REDSTONE);
+		GameRegistry.addShapelessRecipe(new ItemStack(covalence, 40, 2), Items.DIAMOND, Items.COAL);
 
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
@@ -621,11 +599,11 @@ public class ObjHandler
 		}
 
 		//Other items
-		GameRegistry.addShapelessRecipe(new ItemStack(novaCatalyst, 2), Blocks.tnt, new ItemStack(fuels, 1, 1));
+		GameRegistry.addShapelessRecipe(new ItemStack(novaCatalyst, 2), Blocks.TNT, new ItemStack(fuels, 1, 1));
 		GameRegistry.addShapelessRecipe(new ItemStack(novaCataclysm, 2), novaCatalyst, new ItemStack(fuels, 1, 2));
 		GameRegistry.addShapelessRecipe(new ItemStack(lifeStone), bodyStone, soulStone);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(zero, 1, OreDictionary.WILDCARD_VALUE), Items.water_bucket);
-		GameRegistry.addShapelessRecipe(new ItemStack(Items.lava_bucket), volcanite, Items.bucket, Items.redstone);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(zero, 1, OreDictionary.WILDCARD_VALUE), Items.WATER_BUCKET);
+		GameRegistry.addShapelessRecipe(new ItemStack(Items.LAVA_BUCKET), volcanite, Items.BUCKET, Items.REDSTONE);
 
 		GameRegistry.addShapelessRecipe(new ItemStack(gemHelmet), rmHelmet, new ItemStack(kleinStars, 1, 5), everTide, soulStone);
 		GameRegistry.addShapelessRecipe(new ItemStack(gemChest), rmChest, new ItemStack(kleinStars, 1, 5), volcanite, bodyStone);
@@ -640,20 +618,20 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
 
 		// need a recipe for each arcana mode, there's probably a better way to do this
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 0), Items.water_bucket);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 1), Items.water_bucket);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 2), Items.water_bucket);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ice), new ItemStack(arcana, 1, 3), Items.water_bucket);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 0), Items.WATER_BUCKET);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 1), Items.WATER_BUCKET);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 2), Items.WATER_BUCKET);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 3), Items.WATER_BUCKET);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 0), Blocks.dirt);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 1), Blocks.dirt);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 2), Blocks.dirt);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.grass), new ItemStack(arcana, 1, 3), Blocks.dirt);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 0), Blocks.DIRT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 1), Blocks.DIRT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 2), Blocks.DIRT);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 3), Blocks.DIRT);
 
 		//Custom Recipe managment
 		for(int i = 1; i <= 15; i++){
-			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.dye, 1, i)));
-			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.dye, 1, 15)));
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.DYE, 1, i)));
+			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.DYE, 1, 15)));
 		}
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
 		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
@@ -699,7 +677,7 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.stackSize *= 7;
 
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}
 		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");

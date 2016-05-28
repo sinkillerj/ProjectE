@@ -10,6 +10,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TransmutationTablet extends ItemPE
 {
 	public TransmutationTablet()
@@ -18,8 +20,9 @@ public class TransmutationTablet extends ItemPE
 		this.setMaxStackSize(1);
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{

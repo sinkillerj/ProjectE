@@ -19,6 +19,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class TransmutationContainer extends Container
 {
 	public final TransmutationInventory transmutationInventory;
@@ -68,7 +70,7 @@ public class TransmutationContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) 
+	public boolean canInteractWith(@Nonnull EntityPlayer var1)
 	{
 		return true;
 	}

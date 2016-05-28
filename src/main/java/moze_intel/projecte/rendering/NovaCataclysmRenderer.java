@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class NovaCataclysmRenderer extends Render
 {
@@ -24,7 +26,7 @@ public class NovaCataclysmRenderer extends Render
 	}
 	
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f1, float f2)
+	public void doRender(@Nonnull Entity entity, double x, double y, double z, float f1, float f2)
 	{
 		this.doRender((EntityNovaCataclysmPrimed) entity, x, y, z, f1, f2);
 	}
@@ -76,11 +78,12 @@ public class NovaCataclysmRenderer extends Render
 
 	protected ResourceLocation getEntityTexture(EntityNovaCataclysmPrimed entity) 
 	{
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 	
+	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture(@Nonnull Entity entity)
 	{
 		return this.getEntityTexture((EntityNovaCataclysmPrimed) entity);
 	}

@@ -8,12 +8,14 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
+
 public class RecipesAlchemyBags implements IRecipe
 {
 	private ItemStack output;
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		ItemStack bag = null;
 		ItemStack dye = null;
@@ -39,7 +41,7 @@ public class RecipesAlchemyBags implements IRecipe
 				bag = input;
 				foundBag = true;
 			}
-			if (input.getItem() == Items.dye)
+			if (input.getItem() == Items.DYE)
 			{
 				if (foundDye)
 				{
@@ -84,7 +86,7 @@ public class RecipesAlchemyBags implements IRecipe
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) 
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
 	{
 		return output.copy();
 	}
@@ -101,8 +103,9 @@ public class RecipesAlchemyBags implements IRecipe
 		return output;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

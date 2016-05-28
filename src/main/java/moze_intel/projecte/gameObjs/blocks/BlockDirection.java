@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public abstract class BlockDirection extends Block
 {
 
@@ -27,6 +29,7 @@ public abstract class BlockDirection extends Block
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 
+	@Nonnull
 	@Override
 	public BlockStateContainer createBlockState()
 	{
@@ -39,12 +42,14 @@ public abstract class BlockDirection extends Block
 		return state.getValue(PEStateProps.FACING).getHorizontalIndex();
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
 		return this.getDefaultState().withProperty(PEStateProps.FACING, EnumFacing.getHorizontal(meta));
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
@@ -52,7 +57,7 @@ public abstract class BlockDirection extends Block
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 

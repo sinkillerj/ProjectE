@@ -55,7 +55,7 @@ public class TransmutationRenderingEvent
 				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
 				{
 					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
-					mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+					mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 					VertexBuffer wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
 					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();

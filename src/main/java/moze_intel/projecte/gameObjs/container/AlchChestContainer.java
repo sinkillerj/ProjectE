@@ -11,6 +11,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchChestContainer extends Container
 {
@@ -38,7 +40,7 @@ public class AlchChestContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) 
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}

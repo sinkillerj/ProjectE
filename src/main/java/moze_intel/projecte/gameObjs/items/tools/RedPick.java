@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.AchievementHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -23,9 +22,9 @@ public class RedPick extends DarkPick
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "pickaxe";
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 	}
 	
 	@Override

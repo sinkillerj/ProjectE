@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class FuelBlock extends Block 
@@ -20,7 +21,7 @@ public class FuelBlock extends Block
 
 	public FuelBlock() 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setUnlocalizedName("pe_fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
@@ -39,12 +40,14 @@ public class FuelBlock extends Block
 		return state.getValue(PEStateProps.FUEL_PROP).ordinal();
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
 		return this.getDefaultState().withProperty(PEStateProps.FUEL_PROP, EnumFuelType.values()[meta]);
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
@@ -53,7 +56,7 @@ public class FuelBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item fuelBlock, CreativeTabs cTab, List list)
+	public void getSubBlocks(@Nonnull Item fuelBlock, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 3; i++)
 		{

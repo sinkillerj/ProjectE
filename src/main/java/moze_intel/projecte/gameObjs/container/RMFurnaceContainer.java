@@ -7,7 +7,7 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -18,6 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class RMFurnaceContainer extends Container
 {
@@ -68,18 +70,18 @@ public class RMFurnaceContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	
 	@Override
-	public void onCraftGuiOpened(ICrafting par1ICrafting)
+	public void addListener(IContainerListener par1IContainerListener)
 	{
-		super.onCraftGuiOpened(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
-		par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
-		par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+		super.addListener(par1IContainerListener);
+		par1IContainerListener.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+		par1IContainerListener.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+		par1IContainerListener.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
 	}
 	
 	@Override
@@ -87,7 +89,7 @@ public class RMFurnaceContainer extends Container
 	{
 		super.detectAndSendChanges();
 
-		for (ICrafting crafter : this.crafters)
+		for (IContainerListener crafter : this.listeners)
 		{
 			if (lastCookTime != tile.furnaceCookTime)
 				crafter.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);

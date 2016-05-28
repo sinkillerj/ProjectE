@@ -2,6 +2,8 @@ package moze_intel.projecte.api.state.enums;
 
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum EnumFuelType implements IStringSerializable
 {
     ALCHEMICAL_COAL("alchemical_coal"),
@@ -15,6 +17,7 @@ public enum EnumFuelType implements IStringSerializable
         this.name = name;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

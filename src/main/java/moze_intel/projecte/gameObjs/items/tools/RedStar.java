@@ -27,6 +27,8 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class RedStar extends PEToolBase
 {
 	public RedStar() 
@@ -39,19 +41,19 @@ public class RedStar extends PEToolBase
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "morning_star";
 
-		this.harvestMaterials.add(Material.grass);
-		this.harvestMaterials.add(Material.ground);
-		this.harvestMaterials.add(Material.sand);
-		this.harvestMaterials.add(Material.snow);
-		this.harvestMaterials.add(Material.clay);
+		this.harvestMaterials.add(Material.GRASS);
+		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.SAND);
+		this.harvestMaterials.add(Material.SNOW);
+		this.harvestMaterials.add(Material.CLAY);
 		
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.VINE);
 
 		this.secondaryClasses.add("pickaxe");
 		this.secondaryClasses.add("chisel");
@@ -74,8 +76,9 @@ public class RedStar extends PEToolBase
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -84,7 +87,7 @@ public class RedStar extends PEToolBase
 				mineOreVeinsInAOE(stack, player);
 			}
 
-			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+			RayTraceResult mop = this.rayTrace(world, player, true);
 
 			if (mop == null)
 			{
@@ -139,8 +142,9 @@ public class RedStar extends PEToolBase
 		return super.getStrVsBlock(stack, state) + 48.0F;
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{

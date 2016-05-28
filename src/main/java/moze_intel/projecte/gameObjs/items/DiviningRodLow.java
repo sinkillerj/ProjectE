@@ -24,6 +24,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,15 +56,16 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 		}
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 
 		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
 		{

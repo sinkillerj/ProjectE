@@ -17,6 +17,8 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,6 +29,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import javax.annotation.Nonnull;
+
 public class Pedestal extends Block
 {
 
@@ -34,19 +38,20 @@ public class Pedestal extends Block
 
     public Pedestal()
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
         this.setUnlocalizedName("pe_dmPedestal");
     }
 
+    @Nonnull
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
     {
         return AABB;
     }
 
-    public void breakBlock(World world, BlockPos pos, IBlockState state)
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
     {
         DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
         if (tile.getInventory().getStackInSlot(0) != null)
@@ -74,9 +79,15 @@ public class Pedestal extends Block
                     tile.setActive(!tile.getActive());
                 }
 
-                ((WorldServer) world)
-                        .getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4)
-                        .sendPacket(tile.getDescriptionPacket());
+                PlayerChunkMapEntry chunk = ((WorldServer) world)
+                        .getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
+                SPacketUpdateTileEntity packet = tile.getUpdatePacket();
+
+                if (chunk != null && packet != null)
+                {
+                    chunk.sendPacket(tile.getUpdatePacket());
+                }
+
             }
         }
         return true;
@@ -109,7 +120,7 @@ public class Pedestal extends Block
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+    public int getLightValue(@Nonnull IBlockState state, IBlockAccess world, @Nonnull BlockPos pos)
     {
         return 12;
     }
@@ -120,8 +131,9 @@ public class Pedestal extends Block
         return true;
     }
 
+    @Nonnull
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new DMPedestalTile();
     }
 }

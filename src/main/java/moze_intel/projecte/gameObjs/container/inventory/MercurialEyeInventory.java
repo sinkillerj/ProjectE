@@ -10,6 +10,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
+
 public class MercurialEyeInventory implements IInventory
 {
 	private final ItemStack invItem;
@@ -106,6 +108,7 @@ public class MercurialEyeInventory implements IInventory
 		markDirty();
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -118,6 +121,7 @@ public class MercurialEyeInventory implements IInventory
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName()
 	{
@@ -146,19 +150,19 @@ public class MercurialEyeInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) 
+	public boolean isUseableByPlayer(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
+	public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack)
 	{
 		return true;
 	}

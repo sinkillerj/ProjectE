@@ -8,6 +8,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
+
 public abstract class ItemPE extends Item
 {
 	public ItemPE()
@@ -15,14 +17,15 @@ public abstract class ItemPE extends Item
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 
+	@Nonnull
 	@Override
-	public Item setUnlocalizedName(String message)
+	public Item setUnlocalizedName(@Nonnull String message)
 	{
 		return super.setUnlocalizedName("pe_" + message);
 	}
 
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChange)
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
 	{
 		return !ItemHelper.basicAreStacksEqual(oldStack, newStack);
 	}

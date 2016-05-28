@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -41,6 +42,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		this.setContainerItem(this);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
@@ -66,12 +68,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		return EnumActionResult.PASS;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = this.rayTrace(world, player, false);
 			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				BlockPos blockPosHit = mop.getBlockPos();
@@ -92,7 +95,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	private void placeLava(World world, EntityPlayer player, BlockPos pos)
 	{
-		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.flowing_lava.getDefaultState());
+		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_LAVA.getDefaultState());
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.lava || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && player.worldObj.isAirBlock(pos))
+		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.worldObj.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -173,7 +176,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.lava || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.flowing_lava) && player.worldObj.isAirBlock(pos))
+		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.worldObj.isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{

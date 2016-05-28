@@ -35,17 +35,17 @@ public class EntityFireProjectile extends PEProjectile
 			BlockPos pos = mop.getBlockPos();
 			Block block = worldObj.getBlockState(pos).getBlock();
 			
-			if(block == Blocks.obsidian)
+			if(block == Blocks.OBSIDIAN)
 			{
-				worldObj.setBlockState(pos, Blocks.flowing_lava.getDefaultState());
+				worldObj.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
 			}
-			else if(block == Blocks.sand)
+			else if(block == Blocks.SAND)
 			{
 				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
 				{
-					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.sand)
+					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.SAND)
 					{
-						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.glass.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.GLASS.getDefaultState());
 					}
 				}
 			}
@@ -55,7 +55,7 @@ public class EntityFireProjectile extends PEProjectile
 				{
 					if(worldObj.isAirBlock(currentPos))
 					{
-						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), currentPos, Blocks.fire.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), currentPos, Blocks.FIRE.getDefaultState());
 					}
 				}
 			}

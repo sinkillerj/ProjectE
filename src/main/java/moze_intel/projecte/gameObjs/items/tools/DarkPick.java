@@ -25,6 +25,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DarkPick extends PEToolBase
 {
 	public DarkPick()
@@ -35,9 +37,9 @@ public class DarkPick extends PEToolBase
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "pickaxe";
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 	}
 
 	// Only for RedPick
@@ -46,8 +48,9 @@ public class DarkPick extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
@@ -60,7 +63,7 @@ public class DarkPick extends PEToolBase
 		}
 		else
 		{
-			RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = this.rayTrace(world, player, false);
 			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
@@ -103,8 +106,9 @@ public class DarkPick extends PEToolBase
 		}
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

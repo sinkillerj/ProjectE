@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class PhilosStoneContainer extends Container
 {
 	private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
@@ -61,14 +63,14 @@ public class PhilosStoneContainer extends Container
 
 				if (itemstack != null)
 				{
-					player.dropPlayerItemWithRandomChoice(itemstack, false);
+					player.dropItem(itemstack, false);
 				}
 			}
 		}
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}

@@ -43,10 +43,10 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		}
 	}
 	static {
-		addMelting(Blocks.obsidian, "obisidan.molten", 288);
-		addMelting(Blocks.glass, "glass.molten", 1000);
-		addMelting(Blocks.glass_pane, "glass.molten", 250);
-		addMelting(Items.ender_pearl, "ender", 250);
+		addMelting(Blocks.OBSIDIAN, "obisidan.molten", 288);
+		addMelting(Blocks.GLASS, "glass.molten", 1000);
+		addMelting(Blocks.GLASS_PANE, "glass.molten", 250);
+		addMelting(Items.ENDER_PEARL, "ender", 250);
 
 		addMelting("ingotIron", "iron.molten", 144);
 		addMelting("ingotGold", "gold.molten", 144);
@@ -84,12 +84,12 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
+		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16);
-		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.milk_bucket), Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
+		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.MILK_BUCKET), Arrays.asList(NormalizedSimpleStack.getFor(Items.BUCKET), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {

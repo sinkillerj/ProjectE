@@ -7,6 +7,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class AlchemicalFuel extends ItemPE
@@ -20,6 +21,7 @@ public class AlchemicalFuel extends ItemPE
 		this.setMaxDamage(0);
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
@@ -32,7 +34,7 @@ public class AlchemicalFuel extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 3; ++i)
 			list.add(new ItemStack(item, 1, i));

@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class TransmutationStone extends Block
@@ -27,12 +28,13 @@ public class TransmutationStone extends Block
 
 	public TransmutationStone() 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("pe_transmutation_stone");
 		this.setHardness(10.0f);
 	}
 
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
 		return AABB;

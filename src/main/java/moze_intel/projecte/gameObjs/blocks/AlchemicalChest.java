@@ -21,6 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class AlchemicalChest extends BlockDirection
@@ -30,13 +31,14 @@ public class AlchemicalChest extends BlockDirection
 
 	public AlchemicalChest() 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setUnlocalizedName("pe_alchemy_chest");
 		this.setHardness(10.0f);
 		this.setDefaultState(blockState.getBaseState().withProperty(PEStateProps.FACING, EnumFacing.NORTH));
 		this.setResistance(6000000.0F);
 	}
 
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -61,6 +63,7 @@ public class AlchemicalChest extends BlockDirection
 		return false;
 	}
 	
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
@@ -84,8 +87,9 @@ public class AlchemicalChest extends BlockDirection
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World var1, IBlockState state)
+	public TileEntity createTileEntity(@Nonnull World var1, @Nonnull IBlockState state)
 	{
 		return new AlchChestTile();
 	}

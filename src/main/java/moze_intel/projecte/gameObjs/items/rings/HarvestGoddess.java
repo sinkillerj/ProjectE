@@ -73,7 +73,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		if (player.isSneaking())
 		{
-			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.dye, 15, 4);
+			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.DYE, 15, 4);
 
 			if (obj == null) 
 			{

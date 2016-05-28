@@ -44,6 +44,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
+import javax.annotation.Nonnull;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
 {
@@ -138,8 +140,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return hasChanged;
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -197,11 +200,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		switch (stack.getTagCompound().getByte("Target"))
 		{
 			case 0:
-				return new ItemStack(Items.iron_ingot);
+				return new ItemStack(Items.IRON_INGOT);
 			case 1:
-				return new ItemStack(Items.gold_ingot);
+				return new ItemStack(Items.GOLD_INGOT);
 			case 2:
-				return new ItemStack(Items.diamond);
+				return new ItemStack(Items.DIAMOND);
 			case 3:
 				return new ItemStack(ObjHandler.matter, 1, 0);
 			case 4:

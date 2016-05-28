@@ -10,8 +10,8 @@ public class RedAxe extends DarkAxe
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "axe";
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.VINE);
 	}
 }

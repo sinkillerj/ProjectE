@@ -10,16 +10,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
+
 public class SetEmcCMD extends ProjectEBaseCMD
 {
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_setEMC";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.set.usage";
 	}
@@ -31,7 +35,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
 		if (params.length < 1)
 		{
@@ -57,7 +61,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 
-			name = Item.itemRegistry.getNameForObject(heldItem.getItem()).toString();
+			name = Item.REGISTRY.getNameForObject(heldItem.getItem()).toString();
 			meta = heldItem.getItemDamage();
 			emc = MathUtils.parseInteger(params[0]);
 

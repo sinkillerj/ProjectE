@@ -44,7 +44,7 @@ public class GemChest extends GemArmorBase implements IFireProtector
 
             Block b = world.getBlockState(pos.down()).getBlock();
 
-            if ((b == Blocks.lava || b == Blocks.flowing_lava) && world.isAirBlock(pos))
+            if ((b == Blocks.LAVA || b == Blocks.FLOWING_LAVA) && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {

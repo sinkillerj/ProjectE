@@ -9,6 +9,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class MercurialEyeContainer extends Container
 {
 	private MercurialEyeInventory inventory;
@@ -34,7 +36,7 @@ public class MercurialEyeContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1)
+	public boolean canInteractWith(@Nonnull EntityPlayer var1)
 	{
 		return true;
 	}

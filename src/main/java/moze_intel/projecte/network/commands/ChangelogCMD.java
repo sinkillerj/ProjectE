@@ -6,26 +6,29 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
 	public static final List<String> changelog = Lists.newArrayList();
 	
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_changelog";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "/projecte changelog";
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{

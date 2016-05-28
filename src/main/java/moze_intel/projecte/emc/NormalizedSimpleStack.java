@@ -148,7 +148,7 @@ public abstract class NormalizedSimpleStack {
 		public final int damage;
 		private NSSItem(String itemName, int damage) {
 			this.itemName = itemName;
-			if (Item.itemRegistry.getObject(new ResourceLocation(itemName)) == null) {
+			if (Item.REGISTRY.getObject(new ResourceLocation(itemName)) == null) {
 				throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
 			}
 			this.damage = damage;
@@ -178,10 +178,10 @@ public abstract class NormalizedSimpleStack {
 
 		@Override
 		public String toString() {
-			Item obj = Item.itemRegistry.getObject(new ResourceLocation(itemName));
+			Item obj = Item.REGISTRY.getObject(new ResourceLocation(itemName));
 
 			if (obj != null) {
-				return String.format("%s(%s:%s)", itemName, Item.itemRegistry.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+				return String.format("%s(%s:%s)", itemName, Item.REGISTRY.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 			}
 
 			return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);

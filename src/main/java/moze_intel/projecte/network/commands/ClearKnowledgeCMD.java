@@ -12,22 +12,26 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
+
 public class ClearKnowledgeCMD extends ProjectEBaseCMD
 {
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_clearKnowledge";
 	}
 	
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender)
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.clearknowledge.usage";
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
 		if (params.length == 0)
 		{

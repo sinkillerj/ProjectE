@@ -14,6 +14,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DarkShovel extends PEToolBase
 {
 	public DarkShovel() 
@@ -22,11 +24,11 @@ public class DarkShovel extends PEToolBase
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "shovel";
-		this.harvestMaterials.add(Material.grass);
-		this.harvestMaterials.add(Material.ground);
-		this.harvestMaterials.add(Material.sand);
-		this.harvestMaterials.add(Material.snow);
-		this.harvestMaterials.add(Material.clay);
+		this.harvestMaterials.add(Material.GRASS);
+		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.SAND);
+		this.harvestMaterials.add(Material.SNOW);
+		this.harvestMaterials.add(Material.CLAY);
 	}
 
 	// Only for RedShovel
@@ -35,17 +37,18 @@ public class DarkShovel extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK
-				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.gravel)
+				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.GRAVEL)
 		{
 			tryVeinMine(stack, player, mop);
 		}
@@ -56,8 +59,9 @@ public class DarkShovel extends PEToolBase
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

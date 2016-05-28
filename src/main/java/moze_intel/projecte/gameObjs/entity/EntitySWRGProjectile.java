@@ -30,7 +30,7 @@ public class EntitySWRGProjectile extends PEProjectile
 			BlockPos pos = mop.getBlockPos();
 			Block up = worldObj.getBlockState(pos.up()).getBlock();
 			
-			if(worldObj.isAirBlock(pos) || up == Blocks.snow_layer)
+			if(worldObj.isAirBlock(pos) || up == Blocks.SNOW_LAYER)
 			{
 				if(tryConsumeEmc(((ItemPE) ObjHandler.arcana), 768))
 				{

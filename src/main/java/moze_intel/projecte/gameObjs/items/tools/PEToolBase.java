@@ -47,6 +47,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -71,7 +72,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
 		return harvestMaterials.contains(state.getMaterial());
 	}
@@ -84,7 +85,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass)
+	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass)
 	{
 		if (this.pePrimaryToolClass.equals(toolClass) || this.secondaryClasses.contains(toolClass))
 		{
@@ -145,7 +146,7 @@ public abstract class PEToolBase extends ItemMode
 			String oreName;
 			if (oreIds.length == 0)
 			{
-				if (block == Blocks.brown_mushroom_block || block == Blocks.red_mushroom_block)
+				if (block == Blocks.BROWN_MUSHROOM_BLOCK || block == Blocks.RED_MUSHROOM_BLOCK)
 				{
 					oreName = "logWood";
 				}
@@ -195,11 +196,11 @@ public abstract class PEToolBase extends ItemMode
 			Block block = state.getBlock();
 			Block blockAbove = stateAbove.getBlock();
 
-			if (!stateAbove.isOpaqueCube() && (block == Blocks.grass || block == Blocks.dirt))
+			if (!stateAbove.isOpaqueCube() && (block == Blocks.GRASS || block == Blocks.DIRT))
 			{
 				if (!hasSoundPlayed)
 				{
-					world.playSound(null, newPos, Blocks.farmland.getSoundType().getStepSound(), SoundCategory.BLOCKS, (Blocks.farmland.getSoundType().getVolume() + 1.0F) / 2.0F, Blocks.farmland.getSoundType().getPitch() * 0.8F);
+					world.playSound(null, newPos, Blocks.FARMLAND.getSoundType().getStepSound(), SoundCategory.BLOCKS, (Blocks.FARMLAND.getSoundType().getVolume() + 1.0F) / 2.0F, Blocks.FARMLAND.getSoundType().getPitch() * 0.8F);
 					hasSoundPlayed = true;
 				}
 
@@ -217,9 +218,9 @@ public abstract class PEToolBase extends ItemMode
 					// The initial block we target is always free
 					if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || consumeFuel(player, stack, emcCost, true))
 					{
-						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), newPos, Blocks.farmland.getDefaultState());
+						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), newPos, Blocks.FARMLAND.getDefaultState());
 
-						if ((stateAbove.getMaterial() == Material.plants || stateAbove.getMaterial() == Material.vine)
+						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.VINE)
 								&& !(blockAbove.hasTileEntity(stateAbove)) // Just in case, you never know
 								)
 						{
@@ -260,7 +261,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 
 		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 		{
@@ -302,7 +303,7 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(digPos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.air
+			if (b != Blocks.AIR
 					&& state.getBlockHardness(world, digPos) != -1
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos)
 					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
@@ -325,7 +326,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 
 		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
 		{
@@ -342,7 +343,7 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.air && state.getBlockHardness(world, pos) != -1
+			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1
 					&& canHarvestBlock(state, stack)
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
 					&& consumeFuel(player, stack, emcCost, true)
@@ -436,7 +437,7 @@ public abstract class PEToolBase extends ItemMode
 
 			if (target.isShearable(stack, player.worldObj, pos) && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
-				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
+				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 				Random rand = new Random();
 
 				for(ItemStack drop : drops)
@@ -485,7 +486,7 @@ public abstract class PEToolBase extends ItemMode
 						&& consumeFuel(player, stack, emcCost, true)
 						)
 				{
-					List<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, stack));
+					List<ItemStack> entDrops = target.onSheared(stack, ent.worldObj, new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 
 					if (!entDrops.isEmpty())
 					{

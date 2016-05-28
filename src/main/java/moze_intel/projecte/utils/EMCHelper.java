@@ -246,12 +246,12 @@ public final class EMCHelper
 			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet())
 			{
 				Enchantment ench = entry.getKey();
-				if (ench == null || ench.getWeight().getWeight() == 0)
+				if (ench == null || ench.getRarity().getWeight() == 0)
 				{
 					continue;
 				}
 
-				result += Constants.ENCH_EMC_BONUS / ench.getWeight().getWeight() * entry.getValue();
+				result += Constants.ENCH_EMC_BONUS / ench.getRarity().getWeight() * entry.getValue();
 			}
 		}
 

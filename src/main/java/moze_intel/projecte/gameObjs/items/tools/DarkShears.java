@@ -14,6 +14,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
+import javax.annotation.Nonnull;
+
 public class DarkShears extends PEToolBase
 {
 	public DarkShears()
@@ -22,11 +24,11 @@ public class DarkShears extends PEToolBase
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "shears";
-		this.harvestMaterials.add(Material.web);
-		this.harvestMaterials.add(Material.cloth);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.leaves);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WEB);
+		this.harvestMaterials.add(Material.CLOTH);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.LEAVES);
+		this.harvestMaterials.add(Material.VINE);
 	}
 
 	// Only for RedShears
@@ -39,7 +41,7 @@ public class DarkShears extends PEToolBase
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase ent)
 	{
 		Block block = state.getBlock();
-		if (state.getMaterial() != Material.leaves && block != Blocks.web && block != Blocks.tallgrass && block != Blocks.vine && block != Blocks.tripwire && !(block instanceof IShearable))
+		if (state.getMaterial() != Material.LEAVES && block != Blocks.WEB && block != Blocks.TALLGRASS && block != Blocks.VINE && block != Blocks.TRIPWIRE && !(block instanceof IShearable))
 		{
 			return super.onBlockDestroyed(stack, world, state, pos, ent);
 		}
@@ -50,13 +52,14 @@ public class DarkShears extends PEToolBase
 	}
 	
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
-		return super.canHarvestBlock(state, stack) || state.getBlock() == Blocks.redstone_wire || state.getBlock() == Blocks.tripwire;
+		return super.canHarvestBlock(state, stack) || state.getBlock() == Blocks.REDSTONE_WIRE || state.getBlock() == Blocks.TRIPWIRE;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		shearEntityAOE(stack, player, 0);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);

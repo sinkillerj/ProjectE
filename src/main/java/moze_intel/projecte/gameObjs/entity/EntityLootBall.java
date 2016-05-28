@@ -26,6 +26,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,12 +81,12 @@ public class EntityLootBall extends Entity
 
 		if (flag || this.ticksExisted % 25 == 0)
 		{
-			if (this.worldObj.getBlockState(new BlockPos(this)).getMaterial() == Material.lava)
+			if (this.worldObj.getBlockState(new BlockPos(this)).getMaterial() == Material.LAVA)
 			{
 				this.motionY = 0.20000000298023224D;
 				this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
 				this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-				this.playSound(SoundEvents.entity_generic_burn, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+				this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
 			}
 		}
 
@@ -217,7 +218,7 @@ public class EntityLootBall extends Entity
 
 		if (playSound)
 		{
-			this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_item_pickup, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		}
 
 		if (list.size() > 0)
@@ -233,11 +234,11 @@ public class EntityLootBall extends Entity
 	@Override
 	public boolean handleWaterMovement()
 	{
-		return this.worldObj.handleMaterialAcceleration(this.getEntityBoundingBox(), Material.water, this);
+		return this.worldObj.handleMaterialAcceleration(this.getEntityBoundingBox(), Material.WATER, this);
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbt) 
+	protected void readEntityFromNBT(@Nonnull NBTTagCompound nbt)
 	{
 		age = nbt.getShort("Age");
 		items = Lists.newArrayList();
@@ -251,7 +252,7 @@ public class EntityLootBall extends Entity
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbt) 
+	protected void writeEntityToNBT(@Nonnull NBTTagCompound nbt)
 	{
 		nbt.setShort("Age", (short)this.age);
 		

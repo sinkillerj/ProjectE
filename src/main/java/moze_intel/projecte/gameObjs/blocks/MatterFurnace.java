@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class MatterFurnace extends BlockDirection
@@ -34,7 +35,7 @@ public class MatterFurnace extends BlockDirection
 
 	public MatterFurnace(boolean active, boolean isRM) 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setCreativeTab(ObjHandler.cTab);
 		isActive = active;
 		isHighTier = isRM;
@@ -78,7 +79,7 @@ public class MatterFurnace extends BlockDirection
 	}
 	
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		// isUpdating is true if this breakBlock is being called as a result of updateFurnaceBlockState
 		// It prevents items from dropping out of the furnace when switching on/off state
@@ -189,8 +190,9 @@ public class MatterFurnace extends BlockDirection
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		return isHighTier ? new RMFurnaceTile() : new DMFurnaceTile();
 	}

@@ -28,6 +28,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -87,12 +88,13 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			RayTraceResult mop = getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult mop = rayTrace(world, player, false);
 			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
 				if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockTNT

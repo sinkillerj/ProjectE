@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class KleinStar extends ItemPE implements IItemEmc
@@ -50,8 +51,9 @@ public class KleinStar extends ItemPE implements IItemEmc
 	}
 
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
 		{
@@ -88,6 +90,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 		}
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
@@ -100,7 +103,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List list)
 	{
 		for (int i = 0; i < 6; ++i)
 		{

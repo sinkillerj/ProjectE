@@ -10,6 +10,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class LayerModelYue implements LayerRenderer {
 	private static final ModelYue yuemodel = new ModelYue();
 	private final RenderPlayer render;
@@ -23,7 +25,7 @@ public class LayerModelYue implements LayerRenderer {
 	}
 
 	@Override
-	public void doRenderLayer(EntityLivingBase ent, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
+	public void doRenderLayer(@Nonnull EntityLivingBase ent, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
 		if (ent instanceof EntityPlayer)
 		{

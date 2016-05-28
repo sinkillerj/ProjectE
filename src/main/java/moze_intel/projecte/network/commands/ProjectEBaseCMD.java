@@ -8,19 +8,23 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.ITextComponent;
 
+import javax.annotation.Nonnull;
+
 public abstract class ProjectEBaseCMD extends CommandBase
 {
+	@Nonnull
 	@Override
 	public abstract String getCommandName();
 	
 	@Override
 	public abstract int getRequiredPermissionLevel();
 
+	@Nonnull
 	@Override
-	public abstract String getCommandUsage(ICommandSender sender);
+	public abstract String getCommandUsage(@Nonnull ICommandSender sender);
 
 	@Override
-	public abstract void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException;
+	public abstract void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException;
 	
 	protected void sendSuccess(ICommandSender sender, ITextComponent message)
 	{

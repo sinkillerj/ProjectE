@@ -12,6 +12,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DarkAxe extends PEToolBase
 {
 	public DarkAxe()
@@ -20,9 +22,9 @@ public class DarkAxe extends PEToolBase
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.pePrimaryToolClass = "axe";
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.VINE);
 	}
 
 	// Only for RedAxe
@@ -31,16 +33,18 @@ public class DarkAxe extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		clearOdAOE(world, stack, player, "logWood", 0);
 		clearOdAOE(world, stack, player, "treeLeaves", 0);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

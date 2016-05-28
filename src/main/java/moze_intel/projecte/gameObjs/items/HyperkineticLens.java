@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 {
 	public HyperkineticLens() 
@@ -21,8 +23,9 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		this.setNoRepair();
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		

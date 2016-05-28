@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class AlchemicalBag extends ItemPE
@@ -50,8 +51,9 @@ public class AlchemicalBag extends ItemPE
 		this.setMaxDamage(0);
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -99,8 +101,9 @@ public class AlchemicalBag extends ItemPE
 		return 1; 
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(@Nonnull ItemStack stack)
 	{
 		String name = super.getItemStackDisplayName(stack);
 		int i = stack.getItemDamage();
@@ -126,7 +129,7 @@ public class AlchemicalBag extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i < 16; ++i)
 			list.add(new ItemStack(item, 1, i));

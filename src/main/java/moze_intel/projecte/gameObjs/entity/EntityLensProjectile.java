@@ -52,7 +52,7 @@ public class EntityLensProjectile extends PEProjectile
 
 		if (this.isInWater())
 		{
-			this.playSound(SoundEvents.entity_generic_burn, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
 			PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), posX, posY, posZ, 32));
 			this.setDead();
 		}

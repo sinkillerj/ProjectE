@@ -20,13 +20,15 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class Collector extends BlockDirection
 {
 	private int tier;
 	
 	public Collector(int tier) 
 	{
-		super(Material.glass);
+		super(Material.GLASS);
 		this.setUnlocalizedName("pe_collector_MK" + tier);
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(0.3f);
@@ -62,8 +64,9 @@ public class Collector extends BlockDirection
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		switch (tier) {
 			case 3:
 				return new CollectorMK3Tile();
@@ -89,12 +92,12 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
 		return true;
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		TileEntity ent = world.getTileEntity(pos);
 		WorldHelper.dropInventory(ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), world, pos);

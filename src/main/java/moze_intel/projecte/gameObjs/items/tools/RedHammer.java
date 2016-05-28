@@ -10,9 +10,9 @@ public class RedHammer extends DarkHammer
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "hammer";
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 
 		this.secondaryClasses.add("pickaxe");
 		this.secondaryClasses.add("chisel");

@@ -21,6 +21,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class RedKatar extends PEToolBase implements IExtraFunction
 {
 	public RedKatar() 
@@ -31,12 +33,12 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.pePrimaryToolClass = "katar";
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.web);
-		this.harvestMaterials.add(Material.cloth);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.leaves);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.WEB);
+		this.harvestMaterials.add(Material.CLOTH);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.LEAVES);
+		this.harvestMaterials.add(Material.VINE);
 
 		this.secondaryClasses.add("sword");
 		this.secondaryClasses.add("axe");
@@ -59,14 +61,15 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		return false;
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
-		RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 		if (mop != null)
 		{
 			if (mop.typeOfHit == RayTraceResult.Type.BLOCK)
@@ -105,6 +108,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
@@ -117,8 +121,9 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		return 72000;
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{

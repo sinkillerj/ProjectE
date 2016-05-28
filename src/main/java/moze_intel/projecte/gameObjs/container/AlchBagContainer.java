@@ -10,6 +10,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchBagContainer extends Container
 {
@@ -35,7 +37,7 @@ public class AlchBagContainer extends Container
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer player) 
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}

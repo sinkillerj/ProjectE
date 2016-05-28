@@ -11,14 +11,17 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import javax.annotation.Nonnull;
+
 public class CondenserMK2Tile extends CondenserTile
 {
 	private final IItemHandlerModifiable public_input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable public_output = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
 	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_output);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -94,10 +97,12 @@ public class CondenserMK2Tile extends CondenserTile
 		getOutput().deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Output", getOutput().serializeNBT());
+		return nbt;
 	}
 }

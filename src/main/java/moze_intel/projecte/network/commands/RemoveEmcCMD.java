@@ -10,16 +10,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
+
 public class RemoveEmcCMD extends ProjectEBaseCMD
 {
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_removeEMC";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.remove.usage";
 	}
@@ -31,7 +35,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
 		String name;
 		int meta = 0;
@@ -50,7 +54,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 
-			name = Item.itemRegistry.getNameForObject(heldItem.getItem()).toString();
+			name = Item.REGISTRY.getNameForObject(heldItem.getItem()).toString();
 			meta = heldItem.getItemDamage();
 		}
 		else

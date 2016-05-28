@@ -54,12 +54,12 @@ public class EntityLavaProjectile extends PEProjectile
                 {
                     Block block = this.worldObj.getBlockState(pos).getBlock();
 
-                    if (block == Blocks.water || block == Blocks.flowing_water)
+                    if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
                     {
                         if (PlayerHelper.hasBreakPermission(player, pos))
                         {
                             this.worldObj.setBlockToAir(pos);
-                            this.worldObj.playSound(null, pos, SoundEvents.entity_blaze_burn, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                            this.worldObj.playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                         }
                     }
                 }
@@ -87,7 +87,7 @@ public class EntityLavaProjectile extends PEProjectile
 			switch (mop.typeOfHit)
 			{
 				case BLOCK:
-					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.flowing_lava.getDefaultState());
+					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.FLOWING_LAVA.getDefaultState());
 					break;
 				case ENTITY:
 					Entity ent = mop.entityHit;

@@ -23,17 +23,17 @@ public final class FuelMapper
 			FUEL_MAP.clear();
 		}
 		
-		addToMap(new ItemStack(Items.coal, 1, 1));
-		addToMap(new ItemStack(Items.redstone));
-		addToMap(new ItemStack(Blocks.redstone_block));
-		addToMap(new ItemStack(Items.coal));
-		addToMap(new ItemStack(Blocks.coal_block));
-		addToMap(new ItemStack(Items.gunpowder));
-		addToMap(new ItemStack(Items.glowstone_dust));
+		addToMap(new ItemStack(Items.COAL, 1, 1));
+		addToMap(new ItemStack(Items.REDSTONE));
+		addToMap(new ItemStack(Blocks.REDSTONE_BLOCK));
+		addToMap(new ItemStack(Items.COAL));
+		addToMap(new ItemStack(Blocks.COAL_BLOCK));
+		addToMap(new ItemStack(Items.GUNPOWDER));
+		addToMap(new ItemStack(Items.GLOWSTONE_DUST));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 0));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 0));
-		addToMap(new ItemStack(Items.blaze_powder));
-		addToMap(new ItemStack(Blocks.glowstone));
+		addToMap(new ItemStack(Items.BLAZE_POWDER));
+		addToMap(new ItemStack(Blocks.GLOWSTONE));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 1));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));

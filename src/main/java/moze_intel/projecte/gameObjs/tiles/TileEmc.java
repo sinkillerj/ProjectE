@@ -16,6 +16,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public abstract class TileEmc extends TileEmcBase implements ITickable
@@ -31,7 +32,13 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	}
 
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState state, IBlockState newState)
+	public final NBTTagCompound getUpdateTag()
+	{
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState state, @Nonnull IBlockState newState)
 	{
 		return state.getBlock() != newState.getBlock();
 	}

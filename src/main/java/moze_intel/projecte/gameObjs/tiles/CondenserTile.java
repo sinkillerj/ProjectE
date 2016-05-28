@@ -22,6 +22,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+
 public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	private final ItemStackHandler inputInventory = createInput();
@@ -67,13 +69,14 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -249,12 +252,14 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		lock.deserializeNBT(nbt.getCompoundTag("LockSlot"));
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Input", inputInventory.serializeNBT());
 		nbt.setTag("LockSlot", lock.serializeNBT());
+		return nbt;
 	}
 
 	private void updateChest()
@@ -269,7 +274,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			worldObj.playSound(null, pos, SoundEvents.block_chest_open, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -292,7 +297,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				worldObj.playSound(null, pos, SoundEvents.block_chest_close, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)

@@ -88,7 +88,7 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showUnlocalizedNames)
 		{
-			event.getToolTip().add("UN: " + Item.itemRegistry.getNameForObject(current.getItem()));
+			event.getToolTip().add("REGISTRY: " + Item.REGISTRY.getNameForObject(current.getItem()));
 		}
 		
 		if (ProjectEConfig.showODNames)

@@ -97,7 +97,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             BlockPos pos = new BlockPos(x, y, z);
             Block b = world.getBlockState(pos.down()).getBlock();
 
-            if ((b == Blocks.water || b == Blocks.flowing_water) && world.isAirBlock(pos))
+            if ((b == Blocks.WATER || b == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {
@@ -118,11 +118,11 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
             if (isNightVisionEnabled(stack))
             {
-                player.addPotionEffect(new PotionEffect(MobEffects.nightVision, 220, 0));
+                player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 220, 0));
             }
             else
             {
-                player.removePotionEffect(MobEffects.nightVision);
+                player.removePotionEffect(MobEffects.NIGHT_VISION);
             }
 
             if (player.isInWater())

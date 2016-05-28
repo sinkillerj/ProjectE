@@ -303,7 +303,7 @@ public final class ItemHelper
 
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
-		Item item = Item.itemRegistry.getObject(new ResourceLocation(internal));
+		Item item = Item.REGISTRY.getObject(new ResourceLocation(internal));
 
 		if (item == null)
 		{
@@ -381,7 +381,7 @@ public final class ItemHelper
 
 	public static boolean isOre(IBlockState state)
 	{
-		if (state.getBlock() == Blocks.lit_redstone_ore)
+		if (state.getBlock() == Blocks.LIT_REDSTONE_ORE)
 		{
 			return true;
 		}

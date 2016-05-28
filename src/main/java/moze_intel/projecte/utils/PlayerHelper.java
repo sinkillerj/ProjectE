@@ -46,7 +46,7 @@ public final class PlayerHelper
 		World world = player.worldObj;
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.air.getDefaultState(), player); // Todo verify can use air here
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player); // Todo verify can use air here
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{

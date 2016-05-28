@@ -21,38 +21,38 @@ public final class WorldTransmutations
 
 	static
 	{
-		registerDefault(Blocks.stone, Blocks.cobblestone, Blocks.grass);
-		registerDefault(Blocks.cobblestone, Blocks.stone, Blocks.grass);
-		registerDefault(Blocks.grass, Blocks.sand, Blocks.cobblestone);
-		registerDefault(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
-		registerDefault(Blocks.sand, Blocks.grass, Blocks.cobblestone);
-		registerDefault(Blocks.gravel, Blocks.sandstone, null);
-		registerDefault(Blocks.sandstone, Blocks.gravel, null);
-		registerDefault(Blocks.water, Blocks.ice, null);
-		registerDefault(Blocks.ice, Blocks.water, null);
-		registerDefault(Blocks.lava, Blocks.obsidian, null);
-		registerDefault(Blocks.obsidian, Blocks.lava, null);
-		register(Blocks.melon_block.getDefaultState(), Blocks.pumpkin.getDefaultState().withProperty(BlockPumpkin.FACING, EnumFacing.SOUTH), null);
+		registerDefault(Blocks.STONE, Blocks.COBBLESTONE, Blocks.GRASS);
+		registerDefault(Blocks.COBBLESTONE, Blocks.STONE, Blocks.GRASS);
+		registerDefault(Blocks.GRASS, Blocks.SAND, Blocks.COBBLESTONE);
+		registerDefault(Blocks.DIRT, Blocks.SAND, Blocks.COBBLESTONE);
+		registerDefault(Blocks.SAND, Blocks.GRASS, Blocks.COBBLESTONE);
+		registerDefault(Blocks.GRAVEL, Blocks.SANDSTONE, null);
+		registerDefault(Blocks.SANDSTONE, Blocks.GRAVEL, null);
+		registerDefault(Blocks.WATER, Blocks.ICE, null);
+		registerDefault(Blocks.ICE, Blocks.WATER, null);
+		registerDefault(Blocks.LAVA, Blocks.OBSIDIAN, null);
+		registerDefault(Blocks.OBSIDIAN, Blocks.LAVA, null);
+		register(Blocks.MELON_BLOCK.getDefaultState(), Blocks.PUMPKIN.getDefaultState().withProperty(BlockPumpkin.FACING, EnumFacing.SOUTH), null);
 
 		for (EnumFacing e : EnumFacing.HORIZONTALS)
 		{
-			register(Blocks.pumpkin.getDefaultState().withProperty(BlockPumpkin.FACING, e), Blocks.melon_block.getDefaultState(), null);
+			register(Blocks.PUMPKIN.getDefaultState().withProperty(BlockPumpkin.FACING, e), Blocks.MELON_BLOCK.getDefaultState(), null);
 		}
 
-		for (IBlockState s : Blocks.log.getBlockState().getValidStates())
+		for (IBlockState s : Blocks.LOG.getBlockState().getValidStates())
 		{
 			if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.OAK)
 			{
 				// Oak must loop backward to dark oak
 				register(s, s.cycleProperty(BlockOldLog.VARIANT), 
-						Blocks.log2.getDefaultState()
+						Blocks.LOG2.getDefaultState()
 								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
 								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)));
 			} else if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.JUNGLE)
 			{
 				// Jungle must loop forward to acacia
 				register(s, 
-						Blocks.log2.getDefaultState()
+						Blocks.LOG2.getDefaultState()
 								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
 								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)),
 						cyclePropertyBackwards(s, BlockOldLog.VARIANT));
@@ -62,13 +62,13 @@ public final class WorldTransmutations
 			}
 		}
 
-		for (IBlockState s : Blocks.leaves.getBlockState().getValidStates())
+		for (IBlockState s : Blocks.LEAVES.getBlockState().getValidStates())
 		{
 			if (s.getValue(BlockOldLeaf.VARIANT) == BlockPlanks.EnumType.OAK)
 			{
 				// Oak must loop backward to dark oak
 				register(s, s.cycleProperty(BlockOldLeaf.VARIANT),
-						Blocks.leaves2.getDefaultState()
+						Blocks.LEAVES2.getDefaultState()
 								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
 								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockOldLeaf.CHECK_DECAY))
 								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)));
@@ -76,7 +76,7 @@ public final class WorldTransmutations
 			{
 				// Jungle must loop forward to acacia
 				register(s,
-						Blocks.leaves2.getDefaultState()
+						Blocks.LEAVES2.getDefaultState()
 								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
 								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
 								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)),
@@ -87,20 +87,20 @@ public final class WorldTransmutations
 			}
 		}
 
-		for (IBlockState s : Blocks.log2.getBlockState().getValidStates())
+		for (IBlockState s : Blocks.LOG2.getBlockState().getValidStates())
 		{
 			if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.ACACIA)
 			{
 				// Acacia must loop backward to jungle
 				register(s, s.cycleProperty(BlockNewLog.VARIANT),
-						Blocks.log.getDefaultState()
+						Blocks.LOG.getDefaultState()
 								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE)
 								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)));
 			} else if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.DARK_OAK)
 			{
 				// Dark oak must loop forward to oak
 				register(s,
-						Blocks.log.getDefaultState()
+						Blocks.LOG.getDefaultState()
 								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK)
 								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)),
 						cyclePropertyBackwards(s, BlockNewLog.VARIANT));
@@ -110,13 +110,13 @@ public final class WorldTransmutations
 			}
 		}
 
-		for (IBlockState s : Blocks.leaves2.getBlockState().getValidStates())
+		for (IBlockState s : Blocks.LEAVES2.getBlockState().getValidStates())
 		{
 			if (s.getValue(BlockNewLeaf.VARIANT) == BlockPlanks.EnumType.ACACIA)
 			{
 				// Acacia must loop backward to jungle
 				register(s, s.cycleProperty(BlockNewLeaf.VARIANT),
-						Blocks.leaves.getDefaultState()
+						Blocks.LEAVES.getDefaultState()
 								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
 								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
 								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)));
@@ -124,7 +124,7 @@ public final class WorldTransmutations
 			{
 				// Dark oak must loop forward to oak
 				register(s,
-						Blocks.leaves.getDefaultState()
+						Blocks.LEAVES.getDefaultState()
 								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)
 								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
 								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)),
@@ -137,13 +137,13 @@ public final class WorldTransmutations
 
 		for (BlockPlanks.EnumType e : BlockPlanks.EnumType.values())
 		{
-			IBlockState state = Blocks.sapling.getDefaultState().withProperty(BlockSapling.TYPE, e);
+			IBlockState state = Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, e);
 			register(state, state.cycleProperty(BlockSapling.TYPE), cyclePropertyBackwards(state, BlockSapling.TYPE));
 		}
 
 		for (EnumDyeColor e : EnumDyeColor.values())
 		{
-			IBlockState state = Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, e);
+			IBlockState state = Blocks.WOOL.getDefaultState().withProperty(BlockColored.COLOR, e);
 			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
 		}
 	}

@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
@@ -286,7 +287,7 @@ public class GUIManual extends GuiScreen
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int par2, int par3)
+		public void drawButton(@Nonnull Minecraft mc, int par2, int par3)
 		{
 			if (visible)
 			{
@@ -309,7 +310,7 @@ public class GUIManual extends GuiScreen
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY)
+		public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY)
 		{
 			if (this.visible)
 			{

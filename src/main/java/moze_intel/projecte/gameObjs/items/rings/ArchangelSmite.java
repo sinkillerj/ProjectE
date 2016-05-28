@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ArchangelSmite extends ItemPE implements IPedestalItem
@@ -31,8 +32,9 @@ public class ArchangelSmite extends ItemPE implements IPedestalItem
 		this.setNoRepair();
 	}
 	
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		EntityHomingArrow arrow = new EntityHomingArrow(world, player, 2.0F);
 

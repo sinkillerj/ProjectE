@@ -16,6 +16,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class DMPedestalTile extends TileEmc
@@ -142,17 +143,19 @@ public class DMPedestalTile extends TileEmc
 		activityCooldown = tag.getInteger("activityCooldown");
 	}
 
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
-		super.writeToNBT(tag);
+		tag = super.writeToNBT(tag);
 		tag.merge(inventory.serializeNBT());
 		tag.setBoolean("isActive", getActive());
 		tag.setInteger("activityCooldown", activityCooldown);
+		return tag;
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		NBTTagCompound cmp = new NBTTagCompound();
 		writeToNBT(cmp);
@@ -201,14 +204,15 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

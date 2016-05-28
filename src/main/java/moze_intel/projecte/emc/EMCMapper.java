@@ -137,10 +137,10 @@ public final class EMCMapper
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
 			{
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
-				Item obj = Item.itemRegistry.getObject(new ResourceLocation(normStackItem.itemName));
+				Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
 				if (obj != null)
 				{
-					int id = Item.itemRegistry.getIDForObject(obj);
+					int id = Item.REGISTRY.getIDForObject(obj);
 					emc.put(new SimpleStack(id, 1, normStackItem.damage), entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);

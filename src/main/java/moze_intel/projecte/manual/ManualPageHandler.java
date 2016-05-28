@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class ManualPageHandler
         {
             ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener() {
                 @Override
-                public void onResourceManagerReload(IResourceManager resourceManager) {
+                public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
                     ManualPageHandler.reset();
                 }
             });

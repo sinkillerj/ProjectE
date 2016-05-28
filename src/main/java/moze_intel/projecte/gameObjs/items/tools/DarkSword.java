@@ -14,6 +14,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nonnull;
+
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
 	public DarkSword() 
@@ -41,21 +43,21 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
-		if (state.getBlock() == Blocks.web)
+		if (state.getBlock() == Blocks.WEB)
 		{
 			return 15.0F;
 		}
 		else
 		{
 			Material material = state.getMaterial();
-			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
+			return material != Material.PLANTS && material != Material.VINE && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
 		}
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
-		return state.getBlock() == Blocks.web;
+		return state.getBlock() == Blocks.WEB;
 	}
 
 	@Override
@@ -65,8 +67,9 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
 		{

@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class CondenserRenderer extends TileEntitySpecialRenderer
 {
@@ -21,7 +23,7 @@ public class CondenserRenderer extends TileEntitySpecialRenderer
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float par8, int par9)
+	public void renderTileEntityAt(@Nonnull TileEntity tile, double x, double y, double z, float par8, int par9)
 	{
 		if (!(tile instanceof CondenserTile)) 
 		{

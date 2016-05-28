@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public abstract class PEProjectile extends EntityThrowable
 {
     public PEProjectile(World world)
@@ -28,7 +30,7 @@ public abstract class PEProjectile extends EntityThrowable
 
 
     @Override
-    protected final void onImpact(RayTraceResult mop)
+    protected final void onImpact(@Nonnull RayTraceResult mop)
     {
         if (getThrower() instanceof EntityPlayerMP)
         {

@@ -39,6 +39,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public class ClientProxy implements IProxy
@@ -297,8 +298,9 @@ public class ClientProxy implements IProxy
 			ModelLoader.registerItemVariants(ObjHandler.arcana, new ModelResourceLocation(name, "inventory"));
 
 		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, new ItemMeshDefinition() {
+			@Nonnull
 			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
+			public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
 				String modelName;
 				boolean active = stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active");
 

@@ -79,12 +79,12 @@
 //		IRecipe recipe;
 //
 //
-//		//GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+//		//GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
 //		public AddRecipeAction(IItemStack output, IItemStack input)
 //		{
 //			this.output = MineTweakerMC.getItemStack(output);
 //			this.input = MineTweakerMC.getItemStack(input);
-//			this.fuel = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
+//			this.fuel = new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE);
 //			this.recipe = new RecipeShapelessHidden(this.output, new ItemStack(ObjHandler.philosStone), this.input, this.input, this.input, this.input, this.input, this.input, this.input, this.fuel);
 //		}
 //

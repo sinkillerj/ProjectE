@@ -77,7 +77,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			}
 
 			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.entity_endermen_teleport, SoundCategory.PLAYERS, 1, 1);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
 			return true;

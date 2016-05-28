@@ -10,13 +10,15 @@ import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class DMFurnaceContainer extends Container
 {
@@ -71,18 +73,18 @@ public class DMFurnaceContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	
 	@Override
-	public void onCraftGuiOpened(ICrafting par1ICrafting)
+	public void addListener(IContainerListener par1IContainerListener)
 	{
-		super.onCraftGuiOpened(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
-		par1ICrafting.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
-		par1ICrafting.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+		super.addListener(par1IContainerListener);
+		par1IContainerListener.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+		par1IContainerListener.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+		par1IContainerListener.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
 	}
 	
 	@Override
@@ -90,9 +92,9 @@ public class DMFurnaceContainer extends Container
 	{
 		super.detectAndSendChanges();
 
-		for (int i = 0; i < this.crafters.size(); ++i)
+		for (int i = 0; i < this.listeners.size(); ++i)
 		{
-			ICrafting icrafting = (ICrafting)this.crafters.get(i);
+			IContainerListener icrafting = (IContainerListener)this.listeners.get(i);
 
 			if (lastCookTime != tile.furnaceCookTime)
 				icrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);

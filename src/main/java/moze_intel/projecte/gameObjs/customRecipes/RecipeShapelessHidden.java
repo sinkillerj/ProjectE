@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -103,14 +104,14 @@ public class RecipeShapelessHidden implements IRecipe
 	 * Returns an Item that is the result of this recipe
 	 */
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1){ return output.copy(); }
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1){ return output.copy(); }
 
 	/**
 	 * Used to check if a recipe matches current crafting inventory
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		ArrayList<Object> required = new ArrayList<Object>(input);
 
@@ -189,8 +190,9 @@ public class RecipeShapelessHidden implements IRecipe
 		return this.input;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv) //getRecipeLeftovers
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}}

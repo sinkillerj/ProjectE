@@ -24,6 +24,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
@@ -76,13 +77,14 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> cap, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> cap, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -271,12 +273,14 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		output.deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("Output", output.serializeNBT());
+		return nbt;
 	}
 
 	@Override

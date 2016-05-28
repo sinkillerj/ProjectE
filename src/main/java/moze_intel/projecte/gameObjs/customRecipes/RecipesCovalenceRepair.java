@@ -19,12 +19,14 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
+
 public class RecipesCovalenceRepair implements IRecipe
 {
 	private ItemStack output;
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		ItemStack[] dust = new ItemStack[8];
 		ItemStack tool = null;
@@ -193,7 +195,7 @@ public class RecipesCovalenceRepair implements IRecipe
 	}
 	
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1) 
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
 	{
 		return output.copy();
 	}
@@ -210,8 +212,9 @@ public class RecipesCovalenceRepair implements IRecipe
 		return output;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

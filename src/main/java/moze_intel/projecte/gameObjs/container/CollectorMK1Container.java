@@ -10,11 +10,13 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class CollectorMK1Container extends Container
 {
@@ -62,14 +64,14 @@ public class CollectorMK1Container extends Container
 	}
 
 	@Override
-	public void onCraftGuiOpened(ICrafting par1ICrafting)
+	public void addListener(IContainerListener par1IContainerListener)
 	{
-		super.onCraftGuiOpened(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
-		par1ICrafting.sendProgressBarUpdate(this, 1, (int) tile.getStoredEmc());
-		par1ICrafting.sendProgressBarUpdate(this, 2, (int) (tile.getItemChargeProportion() * 8000));
-		par1ICrafting.sendProgressBarUpdate(this, 3, (int) (tile.getFuelProgress() * 8000));
-		par1ICrafting.sendProgressBarUpdate(this, 4, (int) (tile.getItemCharge() * 8000));
+		super.addListener(par1IContainerListener);
+		par1IContainerListener.sendProgressBarUpdate(this, 0, tile.getSunLevel());
+		par1IContainerListener.sendProgressBarUpdate(this, 1, (int) tile.getStoredEmc());
+		par1IContainerListener.sendProgressBarUpdate(this, 2, (int) (tile.getItemChargeProportion() * 8000));
+		par1IContainerListener.sendProgressBarUpdate(this, 3, (int) (tile.getFuelProgress() * 8000));
+		par1IContainerListener.sendProgressBarUpdate(this, 4, (int) (tile.getItemCharge() * 8000));
 	}
 	
 	@Override
@@ -79,7 +81,7 @@ public class CollectorMK1Container extends Container
 
 		if (sunLevel != tile.getSunLevel())
 		{
-			for (ICrafting icrafting : this.crafters)
+			for (IContainerListener icrafting : this.listeners)
 			{
 				icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
 			}
@@ -89,7 +91,7 @@ public class CollectorMK1Container extends Container
 
 		if (emc != ((int) tile.getStoredEmc()))
 		{
-			for (ICrafting icrafting : this.crafters)
+			for (IContainerListener icrafting : this.listeners)
 			{
 				icrafting.sendProgressBarUpdate(this, 1, ((int) tile.getStoredEmc()));
 			}
@@ -99,7 +101,7 @@ public class CollectorMK1Container extends Container
 
 		if (kleinChargeProgress != tile.getItemChargeProportion())
 		{
-			for (ICrafting icrafting : this.crafters)
+			for (IContainerListener icrafting : this.listeners)
 			{
 				icrafting.sendProgressBarUpdate(this, 2, (int) (tile.getItemChargeProportion() * 8000));
 			}
@@ -109,7 +111,7 @@ public class CollectorMK1Container extends Container
 
 		if (fuelProgress != tile.getFuelProgress())
 		{
-			for (ICrafting icrafting : this.crafters)
+			for (IContainerListener icrafting : this.listeners)
 			{
 				icrafting.sendProgressBarUpdate(this, 3, (int) (tile.getFuelProgress() * 8000));
 			}
@@ -119,7 +121,7 @@ public class CollectorMK1Container extends Container
 
 		if (kleinEmc != ((int) tile.getItemCharge()))
 		{
-			for (ICrafting icrafting : this.crafters)
+			for (IContainerListener icrafting : this.listeners)
 			{
 				icrafting.sendProgressBarUpdate(this, 4, (int) (tile.getItemCharge()));
 			}
@@ -189,7 +191,7 @@ public class CollectorMK1Container extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
