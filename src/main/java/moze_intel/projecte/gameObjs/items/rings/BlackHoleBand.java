@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -32,9 +33,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
@@ -141,22 +144,29 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	private void suckDumpItem(EntityItem item, DMPedestalTile tile)
 	{
-		List<TileEntity> list = WorldHelper.getAdjacentTileEntities(tile.getWorld(), tile);
-		for (TileEntity tileEntity : list)
+		Map<EnumFacing, TileEntity> map = WorldHelper.getAdjacentTileEntitiesMapped(tile.getWorld(), tile);
+		for (Map.Entry<EnumFacing, TileEntity> e : map.entrySet())
 		{
-			if (tileEntity instanceof IInventory)
+			IItemHandler inv = null;
+
+			if (e.getValue().hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey()))
 			{
-				IInventory inv = ((IInventory) tileEntity);
-				ItemStack result = ItemHelper.pushStackInInv(inv, item.getEntityItem());
-				if (result != null)
-				{
-					item.setEntityItemStack(result);
-				}
-				else
-				{
-					item.setDead();
-					break;
-				}
+				inv = e.getValue().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey());
+			} else if (e.getValue() instanceof IInventory)
+			{
+				inv = new InvWrapper((IInventory) e.getValue());
+			}
+
+			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getEntityItem(), false);
+
+			if (result == null)
+			{
+				item.setDead();
+				return;
+			}
+			else
+			{
+				item.setEntityItemStack(result);
 			}
 		}
 	}

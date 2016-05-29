@@ -23,6 +23,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -69,9 +70,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	public void repairAllItems(EntityPlayer player)
 	{
-		IInventory inv = player.inventory;
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 
-		for (int i = 0; i < inv.getSizeInventory(); i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 

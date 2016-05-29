@@ -12,6 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,12 +36,12 @@ public final class EMCHelper
 			return minFuel;
 		}
 
-		IInventory inv = player.inventory;
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 
-		for (int i = 0; i < inv.getSizeInventory(); i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
@@ -88,7 +91,7 @@ public final class EMCHelper
 		{
 			for (Map.Entry<Integer, Integer> entry : map.entrySet())
 			{
-				inv.decrStackSize(entry.getKey(), entry.getValue());
+				inv.extractItem(entry.getKey(), entry.getValue(), false);
 			}
 
 			player.inventoryContainer.detectAndSendChanges();

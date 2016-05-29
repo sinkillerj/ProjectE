@@ -327,20 +327,6 @@ public final class ItemHelper
 		};
 	}
 
-	public static boolean invContainsItem(IInventory inv, ItemStack toSearch)
-	{
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
-
-			if (stack != null && basicAreStacksEqual(stack, toSearch))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static boolean invContainsItem(IItemHandler inv, ItemStack toSearch)
 	{
 		for (int i = 0; i < inv.getSlots(); i++)
@@ -387,88 +373,6 @@ public final class ItemHelper
 			}
 		}
 		ball.setItemList(results);
-	}
-
-	/**
-	 *	Returns an itemstack if the stack passed could not entirely fit in the inventory, otherwise returns null.
-	 */
-	public static ItemStack pushStackInInv(IInventory inv, ItemStack stack)
-	{
-		int limit;
-
-		if (inv instanceof InventoryPlayer)
-		{
-			limit = 36;
-		}
-		else
-		{
-			limit = inv.getSizeInventory();
-		}
-
-		for (int i = 0; i < limit; i++)
-		{
-			ItemStack invStack = inv.getStackInSlot(i);
-
-			if (invStack == null)
-			{
-				inv.setInventorySlotContents(i, stack);
-				return null;
-			}
-
-			if (inv.isItemValidForSlot(i, stack)
-				&& areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
-			{
-				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
-
-				if (remaining >= stack.stackSize)
-				{
-					invStack.stackSize += stack.stackSize;
-					inv.setInventorySlotContents(i, invStack);
-					return null;
-				}
-
-				invStack.stackSize += remaining;
-				inv.setInventorySlotContents(i, invStack);
-				stack.stackSize -= remaining;
-			}
-		}
-
-		return stack.copy();
-	}
-
-	/**
-	 *	Returns an itemstack if the stack passed could not entirely fit in the inventory, otherwise returns null.
-	 */
-	public static ItemStack pushStackInInv(ItemStack[] inv, ItemStack stack)
-	{
-		for (int i = 0; i < inv.length; i++)
-		{
-			ItemStack invStack = inv[i];
-
-			if (invStack == null)
-			{
-				inv[i] = stack;
-				return null;
-			}
-
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
-			{
-				int remaining = invStack.getMaxStackSize() - invStack.stackSize;
-
-				if (remaining >= stack.stackSize)
-				{
-					invStack.stackSize += stack.stackSize;
-					inv[i] = invStack;
-					return null;
-				}
-
-				invStack.stackSize += remaining;
-				inv[i] = invStack;
-				stack.stackSize -= remaining;
-			}
-		}
-
-		return stack.copy();
 	}
 
 	public static IBlockState stackToState(ItemStack stack)

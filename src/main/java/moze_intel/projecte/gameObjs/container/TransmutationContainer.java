@@ -17,6 +17,10 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -96,11 +100,13 @@ public class TransmutationContainer extends Container
 			int emc = EMCHelper.getEmcValue(newStack);
 			
 			int stackSize = 0;
-			
+
+			IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+
 			while (transmutationInventory.provider.getEmc() >= emc && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory.mainInventory, newStack))
 			{
 				transmutationInventory.removeEmc(emc);
-				ItemHelper.pushStackInInv(player.inventory, ItemHelper.getNormalizedStack(newStack));
+				ItemHandlerHelper.insertItemStacked(inv, ItemHelper.getNormalizedStack(stack), false);
 				stackSize++;
 			}
 			
