@@ -364,8 +364,12 @@ public class ClientProxy implements IProxy
 				return new RenderTippedArrow(manager);
 			}
 		});
+	}
 
-		Map<String, RenderPlayer> skinMap = mc.getRenderManager().getSkinMap();
+	@Override
+	public void registerLayerRenderers()
+	{
+		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
 		render.addLayer(new LayerModelYue(render));
 		render = skinMap.get("slim");

@@ -107,12 +107,14 @@ public class PECore
 
 		proxy.registerClientOnlyEvents();
 		proxy.registerModels();
+		proxy.registerRenderers();
 
 	}
 	
 	@EventHandler
-	public void load(FMLInitializationEvent event) {
-		proxy.registerRenderers();
+	public void load(FMLInitializationEvent event)
+	{
+		proxy.registerLayerRenderers();
 		proxy.registerKeyBinds();
 		AchievementHandler.init();
 	}

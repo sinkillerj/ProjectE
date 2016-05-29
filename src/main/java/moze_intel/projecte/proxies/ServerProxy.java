@@ -8,6 +8,7 @@ public class ServerProxy implements IProxy
 {
 	public void registerKeyBinds() {} 
 	public void registerRenderers() {}
+	public void registerLayerRenderers() {}
 	public void registerClientOnlyEvents() {}
 	public void registerModels() {}
 	public void initializeManual() {}
