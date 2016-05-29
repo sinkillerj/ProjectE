@@ -31,6 +31,7 @@ minecraft {
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
+    useDepAts = true
 }
 
 repositories {
@@ -38,11 +39,6 @@ repositories {
 		name "MinecraftForge Maven"
 		url "http://files.minecraftforge.net/maven/"
 	}
-
-    maven { //Waila Repo
-        name "Mobius Repo"
-        url "http://mobiusstrip.eu/maven"
-    }
     maven { //NEI Repo
         name 'CB Repo'
         url "http://chickenbones.net/maven/"
@@ -51,16 +47,24 @@ repositories {
         name 'Chisel'
         url "http://maven.tterrag.com/"
     }
-    ivy {
-        name "MineTweaker3"
-        artifactPattern "http://minetweaker3.powerofbytes.com/download/[module]-([classifier]-)[revision].[ext]"
+
+    maven {
+        name 'JEI'
+        url "http://dvs1.progwml6.com/files/maven"
     }
+
+//    ivy {
+//        name "MineTweaker3"
+//        artifactPattern "http://minetweaker3.powerofbytes.com/download/[module]-([classifier]-)[revision].[ext]"
+//    }
 }
  
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
     compile "team.chisel:Chisel:MC1.8.9-0.0.2.11:api"
+
+    deobfCompile "mezz.jei:jei_1.9.4:3.4.0.202"
 
     // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
     // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"

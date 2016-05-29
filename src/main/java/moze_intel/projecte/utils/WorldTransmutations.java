@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -21,11 +22,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public final class WorldTransmutations
 {
-	private static final Map<IBlockState, Pair<IBlockState, IBlockState>> MAP = Maps.newHashMap();
+	private static final List<Entry> ENTRIES = Lists.newArrayList();
 
 	static
 	{
@@ -173,27 +175,42 @@ public final class WorldTransmutations
 
 	public static IBlockState getWorldTransmutation(IBlockState current, boolean isSneaking)
 	{
-		if (MAP.containsKey(current))
+		for (Entry e : ENTRIES)
 		{
-			Pair<IBlockState, IBlockState> result = MAP.get(current);
-			return isSneaking ? (result.getRight() == null ? result.getLeft() : result.getRight()) : result.getLeft();
+			if (e.input == current)
+			{
+				Pair<IBlockState, IBlockState> result = e.outputs;
+				return isSneaking ? (result.getRight() == null ? result.getLeft() : result.getRight()) : result.getLeft();
+			}
 		}
 
 		return null;
 	}
 
-	public static Map<IBlockState, Pair<IBlockState, IBlockState>> getWorldTransmutations()
+	public static List<Entry> getWorldTransmutations()
 	{
-		return Collections.unmodifiableMap(MAP);
+		return Collections.unmodifiableList(ENTRIES);
 	}
 
 	public static void register(IBlockState from, IBlockState result, IBlockState altResult)
 	{
-		MAP.put(from, ImmutablePair.of(result, altResult));
+		ENTRIES.add(new Entry(from, ImmutablePair.of(result, altResult)));
 	}
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		MAP.put(from.getDefaultState(), ImmutablePair.of(result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
+		register(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
+	}
+
+	public static class Entry
+	{
+		public final IBlockState input;
+		public final Pair<IBlockState, IBlockState> outputs;
+
+		public Entry(IBlockState from, Pair<IBlockState, IBlockState> results)
+		{
+			this.input = from;
+			this.outputs = results;
+		}
 	}
 }
