@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableSet;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -85,11 +86,13 @@ public class GuiHandler implements IGuiHandler
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI:
-				return new AlchBagContainer(player.inventory, new AlchBagInventory(player, player.getHeldItem(hand), hand));
+				return new AlchBagContainer(player.inventory, new AlchBagInventory(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null), player.getHeldItem(hand)));
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);
 				break;
+			case Constants.TRANSMUTE_STONE_GUI:
+				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, null));
 			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new RMFurnaceContainer(player.inventory, (RMFurnaceTile) tile);
@@ -127,7 +130,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PHILOS_STONE_GUI:
 				return new PhilosStoneContainer(player.inventory);
 			case Constants.TRANSMUTATION_GUI:
-				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, hand));
+				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player, hand));
 			case Constants.CONDENSER_MK2_GUI:
@@ -154,11 +157,13 @@ public class GuiHandler implements IGuiHandler
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI:
-				return new GUIAlchChest(player.inventory, new AlchBagInventory(player, player.getHeldItem(hand), hand));
+				return new GUIAlchChest(player.inventory, new AlchBagInventory(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null), player.getHeldItem(hand)));
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new GUICondenser(player.inventory, (CondenserTile) tile);
 				break;
+			case Constants.TRANSMUTE_STONE_GUI:
+				return new GUITransmutation(player.inventory, new TransmutationInventory(player, null));
 			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new GUIRMFurnace(player.inventory, (RMFurnaceTile) tile);
@@ -196,7 +201,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PHILOS_STONE_GUI:
 				return new GUIPhilosStone(player.inventory);
 			case Constants.TRANSMUTATION_GUI:
-				return new GUITransmutation(player.inventory, new TransmutationInventory(player, hand));
+				return new GUITransmutation(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player, hand));
 			case Constants.CONDENSER_MK2_GUI:

@@ -143,7 +143,7 @@ public class TransmutationContainer extends Container
 		if (slot >= 0 && getSlot(slot) != null)
 		{
 			if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
-				&& getSlot(slot).getStack() == player.getHeldItem(transmutationInventory.hand))
+				&& getSlot(slot).getStack() == transmutationInventory.invItem)
 			{
 				return null;
 			}

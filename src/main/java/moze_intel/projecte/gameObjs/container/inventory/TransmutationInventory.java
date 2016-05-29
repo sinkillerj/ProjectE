@@ -27,10 +27,10 @@ public class TransmutationInventory extends CombinedInvWrapper
 {
 	public final EntityPlayer player;
 	public final IKnowledgeProvider provider;
-	public final EnumHand hand;
 	private final IItemHandlerModifiable inputLocks;
 	private final IItemHandlerModifiable learning;
 	public final IItemHandlerModifiable outputs;
+	public final ItemStack invItem;
 
 	private static final int LOCK_INDEX = 8;
 	private static final int FUEL_START = 12;
@@ -40,18 +40,18 @@ public class TransmutationInventory extends CombinedInvWrapper
 	public int searchpage = 0;
 	public final List<ItemStack> knowledge = Lists.newArrayList();
 	
-	public TransmutationInventory(EntityPlayer player, EnumHand hand)
+	public TransmutationInventory(EntityPlayer player, ItemStack invItem)
 	{
 		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
 
-		this.hand = hand;
 		this.player = player;
 		this.provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
 
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];
 		this.outputs = itemHandler[2];
+		this.invItem = invItem;
 
 		if (player.worldObj.isRemote)
 		{

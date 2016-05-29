@@ -81,7 +81,7 @@ public class AlchBagContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem(inventory.hand))
+		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return null;
 		}

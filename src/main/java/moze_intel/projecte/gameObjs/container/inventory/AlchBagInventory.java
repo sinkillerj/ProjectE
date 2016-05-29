@@ -1,24 +1,19 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import moze_intel.projecte.api.ProjectEAPI;
-import net.minecraft.entity.player.EntityPlayer;
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class AlchBagInventory implements IItemHandlerModifiable
 {
-	private final ItemStack invItem;
+	public final ItemStack invItem;
 	private final IItemHandlerModifiable compose;
-	public final EnumHand hand;
-	
-	public AlchBagInventory(EntityPlayer player, ItemStack stack, EnumHand hand)
+
+	public AlchBagInventory(IAlchBagProvider provider, ItemStack stack)
 	{
-		invItem = stack;
-		compose = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-				.getBag(EnumDyeColor.byMetadata(stack.getMetadata()));
-		this.hand = hand;
+		this.invItem = stack;
+		this.compose = (IItemHandlerModifiable) provider.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
 	}
 
 	@Override

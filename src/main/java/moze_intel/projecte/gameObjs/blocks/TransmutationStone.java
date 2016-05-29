@@ -51,7 +51,7 @@ public class TransmutationStone extends Block
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+			player.openGui(PECore.instance, Constants.TRANSMUTE_STONE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}

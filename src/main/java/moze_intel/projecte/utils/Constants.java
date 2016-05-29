@@ -40,7 +40,6 @@ public final class Constants
 	
 	public static final int ALCH_CHEST_GUI = 0;
 	public static final int ALCH_BAG_GUI = 1;
-	@Deprecated
 	public static final int TRANSMUTE_STONE_GUI = 2;
 	public static final int CONDENSER_GUI = 3;
 	public static final int RM_FURNACE_GUI = 4;
