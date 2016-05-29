@@ -122,7 +122,7 @@ public final class NBTWhitelistParser
 		}
 	}
 
-	private static void writeDefaultFile() throws IOException
+	private static void writeDefaultFile()
 	{
 		PrintWriter writer = null;
 

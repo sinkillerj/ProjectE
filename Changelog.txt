@@ -1,3 +1,43 @@
+###Version 1.7.10-PE1.10.0
+* NOTICE: While unrelated Sin has a game on Steam Greenlight. Yes votes appreciated: http://steamcommunity.com/sharedfiles/filedetails/?id=596224516
+* NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
+* NEW: The Archangels Smite has been removed from WIP status and is now craftable
+* NEW: More Book of the Alchemist entries have been added. Item is still WIP
+* FIXED: A dupe bug with the Condenser
+* FIXED: A issue causing the Void Ring blacklist to reset
+* FIXED: Auto stepping when it shouldnt happen
+* FIXED: Morning Star can now break matter blocks
+* CHANGE: Minor change to Watch of Flowing Time tick distribution
+
+###Version 1.7.10-PE1.9.5
+* NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
+* NEW: Cooldown config for gem chest explosions
+* FIXED: Harvest Goddess Band breaking bottom reed
+* FIXED: Possible fix for a transmutation GUI exploit
+* FIXED: A mod conflict caused by our usage of getContainerItem
+* FIXED: IllegalArgmentException when trying to create an illegal NSSItem
+* FIXED: A exception handling issue in the mapping system
+* FIXED: Chinese language file
+* CHANGE: Further improvements to gem armor gliding
+
+###Version 1.7.10-PE1.9.4
+* NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
+* NEW: Per conversion arithmetic for fluids
+* NEW: Config option to disable area mining
+* FIXED: A issue causing the pedestal to render upside down in some situations
+* FIXED: Objects such as torches and levers can now be placed on collectors
+* FIXED: A Repair Talisman crash
+* FIXED: Missing localized text for the setEMC command
+* FIXED: Keybind localization
+* FIXED: A issue causing servers with protection to lock up during vein mining
+* FIXED: Pregenerated EMC file is now properly closed
+* FIXED: A API issue regarding NormalizedSimpleStack
+* CHANGE: Items learned using the Tome can now be unlearned
+* CHANGE: Java 7 or higher is now required
+
+###Version 1.7.10-PE1.9.3h
+* FIXED: This is a minor hotfix for PE1.9.3 which removes the wrench string from the Philosopher's Stone as that feature was removed
+
 ###Version 1.7.10-PE1.9.3
 * NOTICE: As of this build legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
 * NEW: Custom conversion API

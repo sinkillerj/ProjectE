@@ -46,7 +46,7 @@ public class KleinStar
 				return;
 			}
 
-			List<ItemStack> isInputs = new ArrayList<ItemStack>();
+			List<ItemStack> isInputs = new ArrayList<>();
 			for (IItemStack[] input : inputs)
 			{
 				for (IItemStack stack : input)

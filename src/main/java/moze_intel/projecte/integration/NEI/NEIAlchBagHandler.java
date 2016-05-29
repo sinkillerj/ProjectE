@@ -36,7 +36,7 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 	{
 		public CachedAlchBagRecipe()
 		{
-			ingredients = new ArrayList<PositionedStack>();
+			ingredients = new ArrayList<>();
 		}
 
 		public CachedAlchBagRecipe(ItemStack output)
@@ -103,7 +103,7 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 			{
 				if (irecipe instanceof RecipeAlchemyBag)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
+					List<ItemStack> ingList = new ArrayList<>();
 
 					if (irecipe.getRecipeOutput().getItemDamage() == 0)
 					{
@@ -135,7 +135,7 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 			{
 				if (irecipe instanceof RecipeAlchemyBag)
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
+					List<ItemStack> ingList = new ArrayList<>();
 
 					if (irecipe.getRecipeOutput().getItemDamage() == 0)
 					{
@@ -166,7 +166,7 @@ public class NEIAlchBagHandler extends ShapedRecipeHandler
 				if (NEIServerUtils.areStacksSameTypeCrafting(((RecipeAlchemyBag) irecipe).getRecipeInputDye(), ingredient)
 						|| NEIServerUtils.areStacksSameTypeCrafting(((RecipeAlchemyBag) irecipe).getRecipeInputBag(), ingredient))
 				{
-					List<ItemStack> ingList = new ArrayList<ItemStack>();
+					List<ItemStack> ingList = new ArrayList<>();
 
 					if (irecipe.getRecipeOutput().getItemDamage() == 0)
 					{

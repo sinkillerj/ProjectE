@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
@@ -122,7 +123,7 @@ public abstract class PEToolBase extends ItemMode
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost)
 	{
 		byte charge = getCharge(stack);
-		if (charge == 0 || world.isRemote)
+		if (charge == 0 || world.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -272,7 +273,9 @@ public abstract class PEToolBase extends ItemMode
 
 		ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
 
-		if (mode == 1) // 3x Tallshot
+		if (ProjectEConfig.disableAllRadiusMining) {
+			box = AxisAlignedBB.getBoundingBox(x, y, z, x, y, z);
+		} else if (mode == 1) // 3x Tallshot
 		{
 			box = AxisAlignedBB.getBoundingBox(x, y - 1, z, x, y + 1, z);
 		}
@@ -354,7 +357,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost)
 	{
-		if (world.isRemote || this.getCharge(stack) == 0)
+		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -553,7 +556,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, MovingObjectPosition mop)
 	{
-		if (player.worldObj.isRemote)
+		if (player.worldObj.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -594,7 +597,7 @@ public abstract class PEToolBase extends ItemMode
 	 * Mines all ore veins in a Box around the player.
 	 */
 	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player) {
-		if (player.worldObj.isRemote)
+		if (player.worldObj.isRemote || ProjectEConfig.disableAllRadiusMining)
 		{
 			return;
 		}

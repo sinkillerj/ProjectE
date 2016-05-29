@@ -197,18 +197,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		{
 			return;
 		}
-		Iterator<TileEntity> iter = WorldHelper.getTileEntitiesWithinAABB(world, bBox).iterator();
-		while (iter.hasNext())
+		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
+		for (int i = 0; i < bonusTicks; i++)
 		{
-			TileEntity tile = iter.next();
-			if (internalBlacklist.contains(tile.getClass().getName()))
+			for (TileEntity tile : list)
 			{
-				iter.remove(); // Don't speed up other time speeders because of exploits and infinite recursion
-				continue;
-			}
-			for (int i = 0; i < bonusTicks; i++)
-			{
-				if (!tile.isInvalid())
+				if (!tile.isInvalid() && !internalBlacklist.contains(tile.getClass().getName()))
 				{
 					tile.updateEntity();
 				}

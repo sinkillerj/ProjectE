@@ -28,7 +28,7 @@ public class ConversionProxyImpl implements IConversionProxy
 	@Override
 	public void addConversion(int amount, Object output, Map<Object, Integer> ingredients) {
 		NormalizedSimpleStack nssOut = objectToNSS(output);
-		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<NormalizedSimpleStack>();
+		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 		for (Map.Entry<Object, Integer> entry: ingredients.entrySet()) {
 			NormalizedSimpleStack nss = objectToNSS(entry.getKey());
 			ingredientMap.addIngredient(nss, entry.getValue());
