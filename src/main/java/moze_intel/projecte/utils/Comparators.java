@@ -3,9 +3,9 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.manual.AbstractPage;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 
 import java.util.Comparator;
 
@@ -108,7 +108,7 @@ public final class Comparators
 	public static final Comparator<AbstractPage> PAGE_HEADER = new Comparator<AbstractPage>() {
         @Override
         public int compare(AbstractPage o1, AbstractPage o2) {
-            return I18n.translateToLocal(o1.getHeaderText()).compareToIgnoreCase(I18n.translateToLocal(o2.getHeaderText()));
+            return I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText()));
         }
     };
 }

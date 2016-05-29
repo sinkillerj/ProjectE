@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,7 +25,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -259,9 +259,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.swrgPedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.swrg.pedestal1"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.swrg.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
 		}
 		return list;
 	}

@@ -15,6 +15,7 @@ import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +31,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -154,12 +154,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
-		list.add(String.format(I18n.translateToLocal("pe.volcanite.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(I18n.translateToLocal("pe.volcanite.tooltip2"));
-		list.add(I18n.translateToLocal("pe.volcanite.tooltip3"));
-		list.add(I18n.translateToLocal("pe.volcanite.tooltip4"));
+		list.add(I18n.format("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(I18n.format("pe.volcanite.tooltip2"));
+		list.add(I18n.format("pe.volcanite.tooltip3"));
+		list.add(I18n.format("pe.volcanite.tooltip4"));
 	}
 	
 	@Override
@@ -259,8 +259,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.volcanitePedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.volcanite.pedestal1"));
-			list.add(TextFormatting.BLUE + String.format(I18n.translateToLocal("pe.volcanite.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
 		}
 		return list;
 	}

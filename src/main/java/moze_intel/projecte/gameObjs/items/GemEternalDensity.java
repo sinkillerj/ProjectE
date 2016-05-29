@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +29,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
@@ -341,17 +341,17 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
-		list.add(I18n.translateToLocal("pe.gemdensity.tooltip1"));
+		list.add(I18n.format("pe.gemdensity.tooltip1"));
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(I18n.translateToLocal("pe.gemdensity.tooltip2"), I18n.translateToLocal(getTargetName(stack))));
+			list.add(I18n.format("pe.gemdensity.tooltip2", I18n.format(getTargetName(stack))));
 		}
-		list.add(String.format(I18n.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		list.add(I18n.translateToLocal("pe.gemdensity.tooltip4"));
-		list.add(I18n.translateToLocal("pe.gemdensity.tooltip5"));
+		list.add(I18n.format("pe.gemdensity.tooltip3", ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		list.add(I18n.format("pe.gemdensity.tooltip4"));
+		list.add(I18n.format("pe.gemdensity.tooltip5"));
 	}
 	
 	@Override

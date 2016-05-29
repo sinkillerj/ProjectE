@@ -101,7 +101,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	{
 		boolean result = false;
 
-		for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-15, 0, -15), pos.add(15, 0, 15)))
+		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15)))
 		{
 			IBlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
@@ -135,7 +135,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			return false;
 		}
 
-		for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
+		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
 		{
 			IBlockState state = world.getBlockState(currentPos);
 

@@ -5,13 +5,13 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,9 +27,9 @@ public class GemChest extends GemArmorBase implements IFireProtector
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
     {
-        tooltips.add(I18n.translateToLocal("pe.gem.chest.lorename"));
+        tooltips.add(I18n.format("pe.gem.chest.lorename"));
     }
 
     @Override

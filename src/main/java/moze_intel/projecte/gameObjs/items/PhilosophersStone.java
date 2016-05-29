@@ -13,7 +13,6 @@ import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -129,20 +128,20 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		switch (mode)
 		{
 			case 0: // Cube
-				iterable = WorldHelper.getPositionsFromCorners(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
+				iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
 				break;
 			case 1: // Panel
 				if (sideHit == EnumFacing.UP || sideHit == EnumFacing.DOWN)
 				{
-					iterable = WorldHelper.getPositionsFromCorners(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
+					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
 				}
 				else if (sideHit == EnumFacing.EAST || sideHit == EnumFacing.WEST)
 				{
-					iterable = WorldHelper.getPositionsFromCorners(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
+					iterable = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
 				}
 				else if (sideHit == EnumFacing.SOUTH || sideHit == EnumFacing.NORTH)
 				{
-					iterable = WorldHelper.getPositionsFromCorners(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
+					iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
 				}
 				break;
 			case 2: // Line
@@ -150,11 +149,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 				if (playerFacing.getAxis() == EnumFacing.Axis.Z)
 				{
-					iterable = WorldHelper.getPositionsFromCorners(pos.add(0, 0, -charge), pos.add(0, 0, charge));
+					iterable = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
 				}
 				else if (playerFacing.getAxis() == EnumFacing.Axis.X)
 				{
-					iterable = WorldHelper.getPositionsFromCorners(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
+					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
 				}
 				break;
 		}

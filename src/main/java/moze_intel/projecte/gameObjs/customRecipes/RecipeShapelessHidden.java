@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class RecipeShapelessHidden implements IRecipe
 {
 	protected ItemStack output = null;
-	protected ArrayList<Object> input = new ArrayList<Object>();
+	protected ArrayList<Object> input = new ArrayList<>();
 
 	public RecipeShapelessHidden(Block result, Object... recipe)
 	{
@@ -76,7 +76,7 @@ public class RecipeShapelessHidden implements IRecipe
 	{
 		output = recipe.getRecipeOutput();
 
-		for(ItemStack ingred : ((List<ItemStack>)recipe.recipeItems))
+		for(ItemStack ingred : recipe.recipeItems)
 		{
 			Object finalObj = ingred;
 			for(Entry<ItemStack, String> replace : replacements.entrySet())
@@ -113,7 +113,7 @@ public class RecipeShapelessHidden implements IRecipe
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
-		ArrayList<Object> required = new ArrayList<Object>(input);
+		ArrayList<Object> required = new ArrayList<>(input);
 
 		double storedEMC = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++)
@@ -141,29 +141,22 @@ public class RecipeShapelessHidden implements IRecipe
 			if (slot != null)
 			{
 				boolean inRecipe = false;
-				Iterator<Object> req = required.iterator();
 
-				while (req.hasNext())
-				{
+				for (Object aRequired : required) {
 					boolean match = false;
 
-					Object next = req.next();
+					Object next = aRequired;
 
-					if (next instanceof ItemStack)
-					{
-						match = OreDictionary.itemMatches((ItemStack)next, slot, false);
-					}
-					else if (next instanceof List)
-					{
-						Iterator<ItemStack> itr = ((List<ItemStack>)next).iterator();
-						while (itr.hasNext() && !match)
-						{
+					if (next instanceof ItemStack) {
+						match = OreDictionary.itemMatches((ItemStack) next, slot, false);
+					} else if (next instanceof List) {
+						Iterator<ItemStack> itr = ((List<ItemStack>) next).iterator();
+						while (itr.hasNext() && !match) {
 							match = OreDictionary.itemMatches(itr.next(), slot, false);
 						}
 					}
 
-					if (match)
-					{
+					if (match) {
 						inRecipe = true;
 						required.remove(next);
 						break;

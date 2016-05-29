@@ -34,7 +34,8 @@ public class CovalenceDust extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List list)
+	@Override
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i < 3; ++i)
 			list.add(new ItemStack(item, 1, i));

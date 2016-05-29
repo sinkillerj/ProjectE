@@ -23,12 +23,12 @@ public class ManualFontRenderer extends FontRenderer
 
     @Nonnull
     @Override
-    public List listFormattedStringToWidth(@Nonnull String string, int width)
+    public List<String> listFormattedStringToWidth(@Nonnull String string, int width)
     {
         return Arrays.asList(this.wrapFormStringToWidth(string, width).split("\n"));
     }
 
-    String wrapFormStringToWidth(String str, int width)
+    private String wrapFormStringToWidth(String str, int width)
     {
         int j = this.sizeStringToWidth(str, width);
 

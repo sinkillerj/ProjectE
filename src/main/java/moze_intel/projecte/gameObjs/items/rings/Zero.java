@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +23,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -152,10 +152,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.zeroPedCooldown != -1) {
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.zero.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.zero.pedestal2"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.zero.pedestal3"), MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal2"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
 		}
 		return list;
 	}

@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
@@ -191,9 +191,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.repairPedCooldown != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.repairtalisman.pedestal1"));
-			list.add(TextFormatting.BLUE +
-					String.format(I18n.translateToLocal("pe.repairtalisman.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
 		}
 		return list;
 	}

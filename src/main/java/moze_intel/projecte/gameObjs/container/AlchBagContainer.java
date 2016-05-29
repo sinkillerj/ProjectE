@@ -67,7 +67,7 @@ public class AlchBagContainer extends Container
 		}
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{

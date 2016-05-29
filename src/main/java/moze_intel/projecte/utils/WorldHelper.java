@@ -77,7 +77,7 @@ import java.util.Set;
 public final class WorldHelper
 {
 	@SuppressWarnings("unchecked")
-	public static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.<Class<? extends EntityLiving>>of(
+	private static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
@@ -85,16 +85,16 @@ public final class WorldHelper
 	);
 
 	@SuppressWarnings("unchecked")
-	public static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.<Class<? extends EntityLiving>>of(
+	private static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.<Class<? extends EntityLiving>>of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
 			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class
 	);
 
-	public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
+	private static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
-	public static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+	private static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{
@@ -176,7 +176,7 @@ public final class WorldHelper
 
 	public static void extinguishNearby(World world, EntityPlayer player)
 	{
-		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
+		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
 		{
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
@@ -356,14 +356,6 @@ public final class WorldHelper
 		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
 	}
 
-	/**
-	 * Wrapper around BlockPos.getAllInBox
-	 */
-	public static Iterable<BlockPos> getPositionsFromCorners(BlockPos corner1, BlockPos corner2)
-	{
-		return BlockPos.getAllInBox(corner1, corner2);
-	}
-
 	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
 	{
 		Class<? extends EntityLiving> entClass = toRandomize.getClass();
@@ -433,7 +425,7 @@ public final class WorldHelper
 	{
 		int chance = harvest ? 16 : 32;
 
-		for (BlockPos currentPos : getPositionsFromCorners(pos.add(-5, -3, -5), pos.add(5, 3, 5)))
+		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-5, -3, -5), pos.add(5, 3, 5)))
 		{
 			IBlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
@@ -563,7 +555,7 @@ public final class WorldHelper
 	
 	public static void igniteNearby(World world, EntityPlayer player)
 	{
-		for (BlockPos pos : getPositionsFromCorners(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
+		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
 		{
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{

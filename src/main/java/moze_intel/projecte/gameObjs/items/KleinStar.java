@@ -103,7 +103,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i < 6; ++i)
 		{

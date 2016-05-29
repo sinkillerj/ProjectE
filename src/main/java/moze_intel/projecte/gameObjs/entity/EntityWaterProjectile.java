@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +46,7 @@ public class EntityWaterProjectile extends PEProjectile
 			if (getThrower() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
 
-				for (BlockPos pos : WorldHelper.getPositionsFromCorners(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+				for (BlockPos pos : BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
                 {
                     Block block = this.worldObj.getBlockState(pos).getBlock();
 

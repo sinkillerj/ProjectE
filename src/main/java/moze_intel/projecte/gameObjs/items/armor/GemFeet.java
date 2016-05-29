@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -106,16 +106,15 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
     {
-        tooltips.add(I18n.translateToLocal("pe.gem.feet.lorename"));
-        tooltips.add(String.format(
-                I18n.translateToLocal("pe.gem.stepassist.prompt"), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+        tooltips.add(I18n.format("pe.gem.feet.lorename"));
+        tooltips.add(I18n.format("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
         TextFormatting e = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
         String s = canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(I18n.translateToLocal("pe.gem.stepassist_tooltip") + " "
-                + e + I18n.translateToLocal(s));
+        tooltips.add(I18n.format("pe.gem.stepassist_tooltip") + " "
+                + e + I18n.format(s));
     }
 
     private boolean canStep(ItemStack stack)

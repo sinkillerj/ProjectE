@@ -92,10 +92,7 @@ public class DMFurnaceContainer extends Container
 	{
 		super.detectAndSendChanges();
 
-		for (int i = 0; i < this.listeners.size(); ++i)
-		{
-			IContainerListener icrafting = (IContainerListener)this.listeners.get(i);
-
+		for (IContainerListener icrafting : this.listeners) {
 			if (lastCookTime != tile.furnaceCookTime)
 				icrafting.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
 

@@ -8,14 +8,11 @@ import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.List;
 import java.util.UUID;
 
 public class TransmutationProxyImpl implements ITransmutationProxy

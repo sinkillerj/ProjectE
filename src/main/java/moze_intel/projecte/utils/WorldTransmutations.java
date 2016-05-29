@@ -192,7 +192,7 @@ public final class WorldTransmutations
 		MAP.put(from, ImmutablePair.of(result, altResult));
 	}
 
-	public static void registerDefault(Block from, Block result, Block altResult)
+	private static void registerDefault(Block from, Block result, Block altResult)
 	{
 		MAP.put(from.getDefaultState(), ImmutablePair.of(result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}

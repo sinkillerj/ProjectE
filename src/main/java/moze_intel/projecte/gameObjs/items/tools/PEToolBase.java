@@ -131,7 +131,7 @@ public abstract class PEToolBase extends ItemMode
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
 
-		for (BlockPos pos : WorldHelper.getPositionsFromCorners(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
+		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
 		{
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
@@ -190,7 +190,7 @@ public abstract class PEToolBase extends ItemMode
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
-		for (BlockPos newPos : WorldHelper.getPositionsFromCorners(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
+		for (BlockPos newPos : BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
 		{
 			IBlockState state = world.getBlockState(newPos);
 			IBlockState stateAbove = world.getBlockState(newPos.up());

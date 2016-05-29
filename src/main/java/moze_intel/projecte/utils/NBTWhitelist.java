@@ -35,12 +35,6 @@ public final class NBTWhitelist
 	public static boolean shouldDupeWithNBT(ItemStack stack)
 	{
 		SimpleStack s = new SimpleStack(stack);
-
-		if (!s.isValid())
-		{
-			return false;
-		}
-
-		return LIST.contains(s);
+		return s.isValid() && LIST.contains(s);
 	}
 }

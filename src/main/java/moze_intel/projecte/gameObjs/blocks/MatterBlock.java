@@ -96,7 +96,7 @@ public class MatterBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(@Nonnull Item matterBlock, CreativeTabs cTab, List list)
+	public void getSubBlocks(@Nonnull Item matterBlock, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{

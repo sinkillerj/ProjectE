@@ -1,6 +1,8 @@
 package moze_intel.projecte.utils;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -57,18 +59,18 @@ public final class MathUtils
 
 	/**
 	 * Converts ticks to seconds, and adds the string unit on. If result is 0, then "every tick" is appended
-	 * Take care when calling this serverside, the units will be in the Locale of the server.
 	 */
+	@SideOnly(Side.CLIENT)
 	public static String tickToSecFormatted(int ticks)
 	{
 		double result = tickToSec(ticks);
 		if (result == 0.0D)
 		{
-			return result + " " + I18n.translateToLocal("pe.misc.seconds") + " (" + I18n.translateToLocal("pe.misc.every_tick") + ")";
+			return result + " " + I18n.format("pe.misc.seconds") + " (" + I18n.format("pe.misc.every_tick") + ")";
 		}
 		else
 		{
-			return result + " " + I18n.translateToLocal("pe.misc.seconds");
+			return result + " " + I18n.format("pe.misc.seconds");
 		}
 	}
 

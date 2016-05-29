@@ -13,6 +13,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,9 +31,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -148,18 +150,19 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean b)
 	{
 		if(stack.hasTagCompound())
 		{
 			if(!stack.getTagCompound().getBoolean("Active"))
 			{
-				list.add(TextFormatting.RED + I18n.translateToLocal("pe.arcana.inactive"));
+				list.add(TextFormatting.RED + I18n.format("pe.arcana.inactive"));
 			}
 			else
 			{
-				list.add(I18n.translateToLocal("pe.arcana.mode") + TextFormatting.AQUA + I18n.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
+				list.add(I18n.format("pe.arcana.mode") + TextFormatting.AQUA + I18n.format("pe.arcana.mode." + stack.getItemDamage()));
 			}
 		}
 	}
@@ -193,7 +196,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 					case SOUTH: // fall through
 					case NORTH:
 					{
-						for (BlockPos pos : WorldHelper.getPositionsFromCorners(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3)))
+						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3)))
 						{
 							if (world.isAirBlock(pos))
 							{
@@ -205,7 +208,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 					case WEST: // fall through
 					case EAST:
 					{
-						for (BlockPos pos : WorldHelper.getPositionsFromCorners(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30)))
+						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30)))
 						{
 							if (world.isAirBlock(pos))
 							{

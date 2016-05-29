@@ -151,7 +151,7 @@ public class MatterFurnace extends BlockDirection
 	{
 		if (isActive)
 		{
-			EnumFacing facing = ((EnumFacing) state.getValue(PEStateProps.FACING));
+			EnumFacing facing = state.getValue(PEStateProps.FACING);
 			float f = (float) pos.getX() + 0.5F;
 			float f1 = (float) pos.getY() + 0.0F + rand.nextFloat() * 6.0F / 16.0F;
 			float f2 = (float) pos.getZ() + 0.5F;

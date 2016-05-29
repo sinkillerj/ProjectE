@@ -100,12 +100,7 @@ public final class EMCHelper
 
 	public static boolean doesBlockHaveEmc(Block block)
 	{
-		if (block == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(block));
+		return block != null && doesItemHaveEmc(new ItemStack(block));
 	}
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
@@ -132,12 +127,7 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(Item item)
 	{
-		if (item == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(item));
+		return item != null && doesItemHaveEmc(new ItemStack(item));
 	}
 
 	public static int getEmcValue(Block Block)

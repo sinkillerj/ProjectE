@@ -4,15 +4,11 @@ import com.google.common.base.Throwables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.Explosion;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Helper class for anything that is accessed using reflection. Should only be accessed from other utils.

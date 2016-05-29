@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
@@ -295,13 +295,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
 	{
-		list.add(I18n.translateToLocal("pe.timewatch.tooltip1"));
-		list.add(I18n.translateToLocal("pe.timewatch.tooltip2"));
+		list.add(I18n.format("pe.timewatch.tooltip1"));
+		list.add(I18n.format("pe.timewatch.tooltip2"));
 
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(I18n.translateToLocal("pe.timewatch.mode"),
-					I18n.translateToLocal(getTimeName(stack))));
+			list.add(I18n.format("pe.timewatch.mode",
+					I18n.format(getTimeName(stack))));
 		}
 	}
 
@@ -368,13 +368,11 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.timePedBonus > 0) {
-			list.add(TextFormatting.BLUE +
-				String.format(I18n.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.timePedBonus));
 		}
 		if (ProjectEConfig.timePedMobSlowness < 1.0F)
 		{
-			list.add(TextFormatting.BLUE +
-					String.format(I18n.translateToLocal("pe.timewatch.pedestal2"), ProjectEConfig.timePedMobSlowness));
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.timePedMobSlowness));
 		}
 		return list;
 	}

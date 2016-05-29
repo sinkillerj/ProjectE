@@ -6,10 +6,10 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,7 +23,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -112,9 +111,8 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.archangelPedCooldown != -1) {
-			list.add(TextFormatting.BLUE + I18n.translateToLocal("pe.archangel.pedestal1"));
-			list.add(TextFormatting.BLUE + String.format(
-					I18n.translateToLocal("pe.archangel.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
 		}
 		return list;
 	}

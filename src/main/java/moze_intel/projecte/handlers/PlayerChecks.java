@@ -19,8 +19,8 @@ public final class PlayerChecks
 	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
 	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
-	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
-	private static final TObjectIntHashMap<EntityPlayerMP> gemChestCooldowns = new TObjectIntHashMap<EntityPlayerMP>();
+	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<>();
+	private static final TObjectIntHashMap<EntityPlayerMP> gemChestCooldowns = new TObjectIntHashMap<>();
 
 	public static void resetProjectileCooldown(EntityPlayerMP player) {
 		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);

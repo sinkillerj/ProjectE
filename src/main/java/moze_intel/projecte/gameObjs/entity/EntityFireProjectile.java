@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,7 +40,7 @@ public class EntityFireProjectile extends PEProjectile
 			}
 			else if(block == Blocks.SAND)
 			{
-				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
+				for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
 				{
 					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.SAND)
 					{
@@ -51,7 +50,7 @@ public class EntityFireProjectile extends PEProjectile
 			}
 			else
 			{
-				for (BlockPos currentPos : WorldHelper.getPositionsFromCorners(pos.add(-1, -1, -1), mop.getBlockPos().add(1, 1, 1)))
+				for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-1, -1, -1), mop.getBlockPos().add(1, 1, 1)))
 				{
 					if(worldObj.isAirBlock(currentPos))
 					{

@@ -262,44 +262,6 @@ public final class ItemHelper
 		return OreDictionary.getOreName(oreIds[0]);
 	}
 
-	public static ItemStack getStackFromInv(IInventory inv, ItemStack stack)
-	{
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack s = inv.getStackInSlot(i);
-
-			if (s == null)
-			{
-				continue;
-			}
-
-			if (basicAreStacksEqual(stack, s))
-			{
-				return s;
-			}
-		}
-
-		return null;
-	}
-
-	public static ItemStack getStackFromInv(ItemStack[] inv, ItemStack stack)
-	{
-		for (ItemStack s : inv)
-		{
-			if (s == null)
-			{
-				continue;
-			}
-
-			if (basicAreStacksEqual(stack, s))
-			{
-				return s;
-			}
-		}
-
-		return null;
-	}
-
 	public static ItemStack getStackFromString(String internal, int metaData)
 	{
 		Item item = Item.REGISTRY.getObject(new ResourceLocation(internal));
@@ -310,26 +272,6 @@ public final class ItemHelper
 		}
 
 		return new ItemStack(item, 1, metaData);
-	}
-
-	public static boolean hasSpace(IInventory inv, ItemStack stack)
-	{
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack invStack = inv.getStackInSlot(i);
-
-			if (invStack == null)
-			{
-				return true;
-			}
-
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public static boolean hasSpace(ItemStack[] inv, ItemStack stack)
