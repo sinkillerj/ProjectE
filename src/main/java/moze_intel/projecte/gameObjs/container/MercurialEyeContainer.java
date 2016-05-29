@@ -1,6 +1,9 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -17,12 +20,12 @@ public class MercurialEyeContainer extends Container
 	public MercurialEyeContainer(InventoryPlayer invPlayer, MercurialEyeInventory mercEyeInv)
 	{
 		inventory = mercEyeInv;
-		
+
 		//Klein Star
-		//this.addSlotToContainer(new SlotMercurialKlein(inventory, 0, 50, 26));
-		
+		this.addSlotToContainer(new ValidatedSlot(mercEyeInv, 0, 50, 26, SlotPredicates.IITEMEMC));
+
 		//Target
-		// todo 1.9 this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
+		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -43,7 +46,7 @@ public class MercurialEyeContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem(inventory.hand))
+		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return null;
 		}

@@ -119,7 +119,7 @@ public final class PlayerHelper
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
 	{
-		if (!FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player))
+		if (FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player))
 		{
 			return false;
 		}

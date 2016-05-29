@@ -126,7 +126,7 @@ public class GuiHandler implements IGuiHandler
 					return new RelayMK3Container(player.inventory, (RelayMK3Tile) tile);
 				break;
 			case Constants.MERCURIAL_GUI:
-				return new MercurialEyeContainer(player.inventory, new MercurialEyeInventory(player.getHeldItem(hand), hand));
+				return new MercurialEyeContainer(player.inventory, new MercurialEyeInventory(player.getHeldItem(hand)));
 			case Constants.PHILOS_STONE_GUI:
 				return new PhilosStoneContainer(player.inventory);
 			case Constants.TRANSMUTATION_GUI:
@@ -197,7 +197,7 @@ public class GuiHandler implements IGuiHandler
 					return new GUIRelayMK3(player.inventory, (RelayMK3Tile) tile);
 				break;
 			case Constants.MERCURIAL_GUI:
-				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem(hand), hand));
+				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem(hand)));
 			case Constants.PHILOS_STONE_GUI:
 				return new GUIPhilosStone(player.inventory);
 			case Constants.TRANSMUTATION_GUI:

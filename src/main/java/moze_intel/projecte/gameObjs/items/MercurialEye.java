@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -26,7 +28,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
@@ -45,37 +53,74 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound prevCapNBT)
+	{
+		return new ICapabilitySerializable<NBTTagCompound>() {
+			private final IItemHandler inv = new ItemStackHandler(2);
+
+			@Override
+			public NBTTagCompound serializeNBT()
+			{
+				NBTTagCompound ret = new NBTTagCompound();
+				ret.setTag("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null));
+				return ret;
+			}
+
+			@Override
+			public void deserializeNBT(NBTTagCompound nbt)
+			{
+				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getTag("Items"));
+			}
+
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			{
+				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+			}
+
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				{
+					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
+				} else
+				{
+					return null;
+				}
+			}
+		};
+	}
+
+	@Nonnull
+	@Override
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
-			RayTraceResult mop = this.rayTrace(world, player, false);
+			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-			if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+			if (inventory.getStackInSlot(0) == null || inventory.getStackInSlot(1) == null)
 			{
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
+				return EnumActionResult.FAIL;
 			}
 
-			ItemStack[] inventory = getInventory(stack);
-
-			if (inventory[0] == null || inventory[1] == null)
+			if (!(inventory.getStackInSlot(0).getItem() instanceof IItemEmc))
 			{
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
+				return EnumActionResult.FAIL;
 			}
 
-			IBlockState newState = ItemHelper.stackToState(inventory[1]);
+			IBlockState newState = ItemHelper.stackToState(inventory.getStackInSlot(1));
 			if (newState == null || newState.getBlock() == Blocks.AIR)
 			{
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
+				return EnumActionResult.FAIL;
 			}
 
-			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
+			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
+			int reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
 			byte charge = getCharge(stack);
 			byte mode = this.getMode(stack);
 
-			int facing = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
 			Vec3d look = player.getLookVec();
 
 			int dX = 0, dY = 0, dZ = 0;
@@ -83,11 +128,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
 			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
 
-			boolean lookingAlongZ = facing == 0 || facing == 2;
+			boolean lookingAlongZ = facing.getAxis() == EnumFacing.Axis.Z;
 
-			BlockPos pos = mop.getBlockPos();
 			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
-			switch (mop.sideHit) {
+			switch (facing) {
 				case UP:
 					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
@@ -139,124 +183,88 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			if (NORMAL_MODE == mode)
 				box = box.offset(dX, dY, dZ);
 
-			if (box != null)
-			{
-				for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
-				{
-					IBlockState oldState = world.getBlockState(currentPos);
-					Block oldBlock = oldState.getBlock();
+			for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
+            {
+                IBlockState oldState = world.getBlockState(currentPos);
+                Block oldBlock = oldState.getBlock();
 
-					if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
-					{
-						if (kleinEmc < reqEmc)
-							break;
-						if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
-						{
-							removeKleinEMC(stack, reqEmc);
-							kleinEmc -= reqEmc;
-						}
-					}
-					else if (mode == TRANSMUTATION_MODE)
-					{
-						if (oldState == newState || oldBlock == Blocks.AIR || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
-						{
-							continue;
-						}
+                if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
+                {
+                    if (kleinEmc < reqEmc)
+                        break;
+                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                    {
+                        removeKleinEMC(stack, reqEmc);
+                        kleinEmc -= reqEmc;
+                    }
+                }
+                else if (mode == TRANSMUTATION_MODE)
+                {
+                    if (oldState == newState || oldBlock == Blocks.AIR || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
+                    {
+                        continue;
+                    }
 
-						int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
+                    int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
 
-						if (emc > reqEmc)
-						{
-							if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
-							{
-								int difference = emc - reqEmc;
-								kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-								addKleinEMC(stack, difference);
-							}
-						}
-						else if (emc < reqEmc)
-						{
-							int difference = reqEmc - emc;
+                    if (emc > reqEmc)
+                    {
+                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                        {
+                            int difference = emc - reqEmc;
+                            kleinEmc += MathHelper.clamp_double(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
+                            addKleinEMC(stack, difference);
+                        }
+                    }
+                    else if (emc < reqEmc)
+                    {
+                        int difference = reqEmc - emc;
 
-							if (kleinEmc >= difference)
-							{
-								if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
-								{
-									kleinEmc -= difference;
-									removeKleinEMC(stack, difference);
-								}
-							}
-						}
-						else
-						{
-							PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
-						}
-					}
+                        if (kleinEmc >= difference)
+                        {
+                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                            {
+                                kleinEmc -= difference;
+                                removeKleinEMC(stack, difference);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
+                    }
+                }
 
-				}
+            }
 
-				player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
-			}
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 		}
 
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return EnumActionResult.SUCCESS;
 	}
 
 	private void addKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
+		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		for (int i = 0; i < list.tagCount(); i++)
+		ItemStack stack = handler.getStackInSlot(0);
+
+		if (stack != null && stack.getItem() instanceof IItemEmc)
 		{
-			NBTTagCompound nbt = list.getCompoundTagAt(i);
-
-			if (nbt.getByte("Slot") == 0)
-			{
-				ItemStack kleinStar = ItemStack.loadItemStackFromNBT(nbt);
-
-				NBTTagCompound tag = nbt.getCompoundTag("tag");
-
-				double newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
-
-				tag.setDouble("StoredEMC", newEmc);
-				break;
-			}
+			((IItemEmc) stack.getItem()).addEmc(stack, amount);
 		}
 	}
 
 	private void removeKleinEMC(ItemStack eye, int amount)
 	{
-		NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
+		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		for (int i = 0; i < list.tagCount(); i++)
+		ItemStack stack = handler.getStackInSlot(0);
+
+		if (stack != null && stack.getItem() instanceof IItemEmc)
 		{
-			NBTTagCompound nbt = list.getCompoundTagAt(i);
-
-			if (nbt.getByte("Slot") == 0)
-			{
-				NBTTagCompound tag = nbt.getCompoundTag("tag");
-				tag.setDouble("StoredEMC", tag.getDouble("StoredEMC") - amount);
-				break;
-			}
+			((IItemEmc) stack.getItem()).extractEmc(stack, amount);
 		}
-	}
-
-	private ItemStack[] getInventory(ItemStack eye)
-	{
-		ItemStack[] result = new ItemStack[2];
-
-		if (eye.hasTagCompound())
-		{
-			NBTTagList list = eye.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
-
-			for (int i = 0; i < list.tagCount(); i++)
-			{
-				NBTTagCompound nbt = list.getCompoundTagAt(i);
-				result[nbt.getByte("Slot")] = ItemStack.loadItemStackFromNBT(nbt);
-			}
-		}
-
-		return result;
 	}
 
 	@Override
@@ -265,10 +273,5 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		return true;
 	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack stack) 
-	{
-		return 1; 
-	}
+
 }
