@@ -15,7 +15,6 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -123,6 +122,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.IFuelHandler;
@@ -133,6 +133,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Map.Entry;
 
@@ -625,23 +626,37 @@ public class ObjHandler
 		GameRegistry.addShapelessRecipe(new ItemStack(fuels, 9, 2), new ItemStack(fuelBlock, 1, 2));
 
 		// need a recipe for each arcana mode, there's probably a better way to do this
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 0), Items.WATER_BUCKET);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 1), Items.WATER_BUCKET);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 2), Items.WATER_BUCKET);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, 3), Items.WATER_BUCKET);
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.ICE), new ItemStack(arcana, 1, OreDictionary.WILDCARD_VALUE), Items.WATER_BUCKET);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 0), Blocks.DIRT);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 1), Blocks.DIRT);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 2), Blocks.DIRT);
-		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, 3), Blocks.DIRT);
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, OreDictionary.WILDCARD_VALUE), "dirt"));
 
-		//Custom Recipe managment
-		for(int i = 1; i <= 15; i++){
-			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 15-i), new ItemStack(alchBag, 1, 0), new ItemStack(Items.DYE, 1, i)));
-			GameRegistry.addRecipe(new RecipeAlchemyBag(new ItemStack(alchBag, 1, 0), new ItemStack(alchBag, 1, i), new ItemStack(Items.DYE, 1, 15)));
+		// Taken from OreDictionary class
+		String[] dyes =
+		{
+			"Black",
+			"Red",
+			"Green",
+			"Brown",
+			"Blue",
+			"Purple",
+			"Cyan",
+			"LightGray",
+			"Gray",
+			"Pink",
+			"Lime",
+			"Yellow",
+			"LightBlue",
+			"Magenta",
+			"Orange",
+			"White"
+		};
+
+		for (int i = 0; i < 15; i++)
+		{
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(alchBag, 1, i), new ItemStack(alchBag, 1, OreDictionary.WILDCARD_VALUE), "dye" + dyes[15 - i]));
 		}
+
 		GameRegistry.addRecipe(new RecipesCovalenceRepair());
-		RecipeSorter.register("Alchemical Bags Recipes", RecipeAlchemyBag.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
 		RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");

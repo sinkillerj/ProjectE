@@ -45,7 +45,7 @@ public final class PlayerHelper
 		World world = player.worldObj;
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player); // Todo verify can use air here
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{
@@ -119,8 +119,20 @@ public final class PlayerHelper
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
 	{
-		return player.canPlayerEdit(pos, EnumFacing.NORTH, null) // todo 1.8 shim value, does this still work?
-				&& !FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player);
+		if (!FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player))
+		{
+			return false;
+		}
+
+		for (EnumFacing e : EnumFacing.VALUES)
+		{
+			if (!player.canPlayerEdit(pos, e, null))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 

@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +23,7 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -56,6 +58,15 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 				return stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0;
 			}
 		});
+		setHasSubtypes(true);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	{
+		for (int i = 0; i < 4; ++i)
+			list.add(new ItemStack(item, 1, i));
 	}
 
 	@Override
