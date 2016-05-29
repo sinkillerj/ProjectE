@@ -6,15 +6,17 @@ import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
-import moze_intel.projecte.playerData.TransmutationOffline;
+import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -29,6 +31,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -77,7 +80,8 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void onConstruct(EntityEvent.EntityConstructing evt)
 	{
-		if (evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER // No world to check yet
+			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.getEntity().getUniqueID());
 			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
@@ -134,6 +138,8 @@ public class PlayerEvents
 		{
 			event.getItem().setEntityItemStack(remainder);
 		}
+
+		((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId()));
 
 		event.setCanceled(true);
 	}

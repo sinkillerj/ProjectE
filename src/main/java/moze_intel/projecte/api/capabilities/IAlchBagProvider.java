@@ -3,6 +3,8 @@ package moze_intel.projecte.api.capabilities;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 
@@ -10,6 +12,7 @@ import net.minecraftforge.items.IItemHandler;
  * This interface defines the contract for some object that exposes sixteen colored inventories,
  * for the purpose of usage as Alchemical Bags.
  * This is exposed through the Capability system.
+ * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, EnumFacing)}.
  */
 public interface IAlchBagProvider extends INBTSerializable<NBTTagCompound>
 {

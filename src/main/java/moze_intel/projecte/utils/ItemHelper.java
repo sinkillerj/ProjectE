@@ -350,6 +350,41 @@ public final class ItemHelper
 		return false;
 	}
 
+	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy)
+	{
+		final List<ItemStack> list = new ArrayList<>(toCopy.getSlots());
+		for (int i = 0; i < toCopy.getSlots(); i++)
+		{
+			list.add(toCopy.getStackInSlot(i));
+		}
+
+		return new IItemHandlerModifiable()
+		{
+			@Override
+			public void setStackInSlot(int slot, ItemStack stack) {}
+
+			@Override
+			public int getSlots() {
+				return list.size();
+			}
+
+			@Override
+			public ItemStack getStackInSlot(int slot) {
+				return list.get(slot);
+			}
+
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+				return stack;
+			}
+
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate) {
+				return null;
+			}
+		};
+	}
+
 	public static boolean invContainsItem(IInventory inv, ItemStack toSearch)
 	{
 		for (int i = 0; i < inv.getSizeInventory(); i++)

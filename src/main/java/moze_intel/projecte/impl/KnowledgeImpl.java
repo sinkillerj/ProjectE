@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public final class KnowledgeImpl {
 
@@ -34,15 +35,22 @@ public final class KnowledgeImpl {
     {
         CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
             @Override
-            public NBTBase writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side) {
-                return null;
+            public NBTTagCompound writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side) {
+                return instance.serializeNBT();
             }
 
             @Override
             public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side, NBTBase nbt) {
-
+                if (nbt instanceof NBTTagCompound) {
+                    instance.deserializeNBT((NBTTagCompound) nbt);
+                }
             }
-        }, DefaultImpl.class);
+        }, new Callable<IKnowledgeProvider>() {
+            @Override
+            public IKnowledgeProvider call() throws Exception {
+                return new DefaultImpl();
+            }
+        });
     }
 
     private static class DefaultImpl implements IKnowledgeProvider
@@ -164,7 +172,8 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public NBTTagCompound serializeNBT() {
+        public NBTTagCompound serializeNBT()
+        {
             NBTTagCompound properties = new NBTTagCompound();
             properties.setDouble("transmutationEmc", emc);
 
@@ -183,7 +192,8 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public void deserializeNBT(NBTTagCompound properties) {
+        public void deserializeNBT(NBTTagCompound properties)
+        {
             emc = properties.getDouble("transmutationEmc");
 
             NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
