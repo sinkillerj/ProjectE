@@ -5,6 +5,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
+import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,6 +26,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -104,31 +106,31 @@ public final class KnowledgeImpl {
 
         @Override
         public boolean addKnowledge(@Nonnull ItemStack stack) {
-            boolean ret = false;
+            boolean added = false;
 
             if (stack.getItem() == ObjHandler.tome)
             {
                 fullKnowledge = true;
-                ret = true;
+                added = true;
             }
 
             if (!hasKnowledge(stack))
             {
                 knowledge.add(stack);
-                ret = true;
+                added = true;
             }
 
-            return ret;
+            return added;
         }
 
         @Override
         public boolean removeKnowledge(@Nonnull ItemStack stack) {
-            boolean ret = false;
+            boolean removed = false;
 
             if (stack.getItem() == ObjHandler.tome)
             {
                 fullKnowledge = false;
-                ret = true;
+                removed = true;
             }
 
             Iterator<ItemStack> iter = knowledge.iterator();
@@ -138,16 +140,16 @@ public final class KnowledgeImpl {
                 if (ItemStack.areItemStacksEqual(stack, iter.next()))
                 {
                     iter.remove();
-                    ret = true;
+                    removed = true;
                 }
             }
 
-            return ret;
+            return removed;
         }
 
         @Override
         public @Nonnull List<ItemStack> getKnowledge() {
-            return new ArrayList<>(knowledge);
+            return fullKnowledge ? Transmutation.getCachedTomeKnowledge() : Collections.unmodifiableList(knowledge);
         }
 
         @Override

@@ -53,7 +53,7 @@ public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
     boolean removeKnowledge(@Nonnull ItemStack stack);
 
     /**
-     * @return A mutable copy of the knowledge list. Changes to this List do not change the actual knowledge
+     * @return An unmodifiable but live view of the knowledge list.
      */
     @Nonnull List<ItemStack> getKnowledge();
 
