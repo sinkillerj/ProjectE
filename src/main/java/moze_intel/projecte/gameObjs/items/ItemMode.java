@@ -10,6 +10,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger
@@ -24,7 +25,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		this.modes = modeDescrp;
 	}
 	
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return stack.getTagCompound().getByte("Mode");
 	}
@@ -41,7 +42,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	}
 	
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (numModes == 0)
 		{

@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -67,7 +68,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	}
 	
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -124,7 +125,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.soulPedCooldown != -1)
 		{
@@ -151,6 +152,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

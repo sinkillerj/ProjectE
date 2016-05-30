@@ -359,7 +359,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public double acceptEMC(EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
 		if (this.getStoredEmc() < EMC_CONSUMPTION)
 		{

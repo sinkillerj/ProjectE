@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 /**
  * This interface specifies items that perform a specific function every tick when inside an Alchemical Chest
  *
@@ -19,5 +21,5 @@ public interface IAlchChestItem
      * @param world The World
      * @param stack The ItemStack being ticked
      */
-    void updateInAlchChest(World world, BlockPos pos, ItemStack stack);
+    void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
 }

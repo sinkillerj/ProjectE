@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -164,7 +165,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
 		{
@@ -185,6 +186,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
@@ -199,7 +201,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void updateInAlchChest(World world, BlockPos pos, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
 		if (world.isRemote)
 		{
@@ -253,7 +255,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		if (player.worldObj.isRemote)
 		{

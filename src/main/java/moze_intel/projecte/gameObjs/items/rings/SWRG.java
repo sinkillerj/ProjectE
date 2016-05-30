@@ -231,7 +231,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
@@ -252,6 +252,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

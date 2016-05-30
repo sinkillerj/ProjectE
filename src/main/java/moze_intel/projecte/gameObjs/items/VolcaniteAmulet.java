@@ -143,7 +143,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player.worldObj, player);
@@ -231,7 +231,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
 		{
@@ -252,6 +252,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

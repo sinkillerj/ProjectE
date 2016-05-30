@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nonnull;
+
 public class RedSword extends DarkSword
 {
 	public RedSword() 
@@ -28,7 +30,7 @@ public class RedSword extends DarkSword
 	}
 
 	@Override
-	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
 		attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0);
 		return true;

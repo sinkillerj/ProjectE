@@ -187,13 +187,13 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return stack.getTagCompound().getByte("Mode");
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (modes.length == 1)
 		{

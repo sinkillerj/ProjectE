@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -22,12 +23,12 @@ public interface IPedestalItem {
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside
 	 */
-    void updateInPedestal(World world, BlockPos pos);
+    void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
 	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
 	@SideOnly(Side.CLIENT)
-	List<String> getPedestalDescription();
+	@Nonnull List<String> getPedestalDescription();
 }

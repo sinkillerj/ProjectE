@@ -73,7 +73,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -153,7 +153,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
 		{
@@ -176,6 +176,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
@@ -191,7 +192,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		

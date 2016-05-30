@@ -74,7 +74,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
 		{
@@ -105,6 +105,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

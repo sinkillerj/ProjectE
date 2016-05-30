@@ -302,7 +302,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		if (stack.hasTagCompound())
 		{
@@ -313,7 +313,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		byte oldMode = getMode(stack);
 
@@ -382,7 +382,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(World world, BlockPos pos, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
 		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
@@ -393,7 +393,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		return !player.worldObj.isRemote && condense(stack, inv);
 	}

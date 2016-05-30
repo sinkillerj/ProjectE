@@ -10,6 +10,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemCharge extends ItemPE implements IItemCharge
 {
 	final byte numCharges;
@@ -55,13 +57,13 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	}
 	
 	@Override
-	public byte getCharge(ItemStack stack)
+	public byte getCharge(@Nonnull ItemStack stack)
 	{
 		return stack.getTagCompound().getByte("Charge");
 	}
 	
 	@Override
-	public boolean changeCharge(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeCharge(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		byte currentCharge = getCharge(stack);
 

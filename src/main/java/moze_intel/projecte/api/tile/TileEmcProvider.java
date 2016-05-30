@@ -2,6 +2,8 @@ package moze_intel.projecte.api.tile;
 
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
+
 /**
  * Reference implementation for IEMCProvider
  *
@@ -10,7 +12,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEmcProvider extends TileEmcBase implements IEmcProvider
 {
 	@Override
-	public double provideEMC(EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);

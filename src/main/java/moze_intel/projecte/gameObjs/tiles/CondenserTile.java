@@ -317,7 +317,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public double acceptEMC(EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
 		if (isAcceptingEmc)
 		{

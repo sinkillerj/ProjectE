@@ -11,6 +11,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class CataliticLens extends DestructionCatalyst implements IProjectileShooter
 {
 	public CataliticLens() 
@@ -20,7 +22,7 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		return ((IProjectileShooter) ObjHandler.hyperLens).shootProjectile(player, stack, hand);
 	}

@@ -11,6 +11,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public abstract class RingToggle extends ItemPE implements IModeChanger
 {
 	private final String name;
@@ -40,13 +42,13 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return (byte) stack.getItemDamage();
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{

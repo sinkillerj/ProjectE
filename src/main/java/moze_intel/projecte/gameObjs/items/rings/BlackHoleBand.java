@@ -125,7 +125,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 		if (tile != null)
@@ -171,6 +171,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
@@ -182,7 +183,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(World world, BlockPos pos, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
 		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
 		if (stack.getItemDamage() == 1)
@@ -222,7 +223,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		if (stack.getItemDamage() == 1)
 		{

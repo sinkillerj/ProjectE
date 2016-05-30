@@ -363,7 +363,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	}
 
 	@Override
-	public double provideEMC(EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);

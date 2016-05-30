@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.ClassUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class ConversionProxyImpl implements IConversionProxy
 	final Map<Object, NormalizedSimpleStack> fakes = Maps.newHashMap();
 
 	@Override
-	public void addConversion(int amount, Object output, Map<Object, Integer> ingredients) {
+	public void addConversion(int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients) {
 		NormalizedSimpleStack nssOut = objectToNSS(output);
 		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 		for (Map.Entry<Object, Integer> entry: ingredients.entrySet()) {

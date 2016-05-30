@@ -72,13 +72,13 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return (byte) stack.getItemDamage();
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
 		return true;
@@ -121,7 +121,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
@@ -146,6 +146,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

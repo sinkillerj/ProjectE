@@ -233,7 +233,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 
 	@Override
-	public double acceptEMC(EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
 		if (worldObj.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
@@ -248,7 +248,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 
 	@Override
-	public double provideEMC(EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;

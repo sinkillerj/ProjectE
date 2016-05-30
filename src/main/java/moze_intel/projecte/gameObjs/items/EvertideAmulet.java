@@ -187,7 +187,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 
@@ -278,7 +278,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
 		{
@@ -300,6 +300,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

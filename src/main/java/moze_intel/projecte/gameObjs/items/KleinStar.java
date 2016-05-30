@@ -130,7 +130,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	// -- IItemEmc -- //
 
 	@Override
-	public double addEmc(ItemStack stack, double toAdd)
+	public double addEmc(@Nonnull ItemStack stack, double toAdd)
 	{
 		double add = Math.min(getMaximumEmc(stack) - getStoredEmc(stack), toAdd);
 		ItemPE.addEmcToStack(stack, add);
@@ -138,7 +138,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	}
 
 	@Override
-	public double extractEmc(ItemStack stack, double toRemove)
+	public double extractEmc(@Nonnull ItemStack stack, double toRemove)
 	{
 		double sub = Math.min(getStoredEmc(stack), toRemove);
 		ItemPE.removeEmc(stack, sub);
@@ -146,13 +146,13 @@ public class KleinStar extends ItemPE implements IItemEmc
 	}
 
 	@Override
-	public double getStoredEmc(ItemStack stack)
+	public double getStoredEmc(@Nonnull ItemStack stack)
 	{
 		return ItemPE.getEmc(stack);
 	}
 
 	@Override
-	public double getMaximumEmc(ItemStack stack)
+	public double getMaximumEmc(@Nonnull ItemStack stack)
 	{
 		return EMCHelper.getKleinStarMaxEmc(stack);
 	}

@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
@@ -44,11 +45,12 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
@@ -57,7 +59,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
 		if (stack.getTagCompound().getByte("teleportCooldown") > 0 )
 		{
@@ -89,14 +91,14 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 	}
 
 	@Override
-	public void updateInAlchChest(World world, BlockPos pos, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
 		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
 		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(world, pos, stack);

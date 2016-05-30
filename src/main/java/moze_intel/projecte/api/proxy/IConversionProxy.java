@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public interface IConversionProxy
@@ -61,5 +62,5 @@ public interface IConversionProxy
 	 * @param output
 	 * @param ingredients
 	 */
-	void addConversion(int amount, Object output, Map<Object, Integer> ingredients);
+	void addConversion(int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients);
 }

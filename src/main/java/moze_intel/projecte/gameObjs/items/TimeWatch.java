@@ -271,13 +271,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return (byte) stack.getItemDamage();
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -342,7 +342,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		/* Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		Now the same as activated watch in hand but more powerful.
@@ -362,6 +362,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

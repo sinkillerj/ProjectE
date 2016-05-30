@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TransmutationProxyImpl implements ITransmutationProxy
@@ -22,7 +23,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     private TransmutationProxyImpl() {}
 
     @Override
-    public boolean registerWorldTransmutation(IBlockState origin, IBlockState result1, IBlockState result2)
+    public boolean registerWorldTransmutation(@Nonnull IBlockState origin, @Nonnull IBlockState result1, IBlockState result2)
     {
         Preconditions.checkNotNull(origin);
         Preconditions.checkNotNull(result1);
@@ -38,8 +39,9 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         }
     }
 
+    @Nonnull
     @Override
-    public IKnowledgeProvider getKnowledgeProviderFor(UUID playerUUID)
+    public IKnowledgeProvider getKnowledgeProviderFor(@Nonnull UUID playerUUID)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {

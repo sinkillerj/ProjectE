@@ -190,7 +190,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, BlockPos pos)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
@@ -228,6 +228,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		}
 	}
 
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()

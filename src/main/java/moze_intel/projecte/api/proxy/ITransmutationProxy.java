@@ -3,6 +3,8 @@ package moze_intel.projecte.api.proxy;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.block.state.IBlockState;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface ITransmutationProxy
@@ -15,7 +17,7 @@ public interface ITransmutationProxy
      * @param result2 Alternate result blockstate (when sneaking). You may pass null, in which there will be no alternate transmutation
      * @return Whether the registration succeeded. It may fail if transmutations already exist for block origin
      */
-    boolean registerWorldTransmutation(IBlockState origin, IBlockState result1, IBlockState result2);
+    boolean registerWorldTransmutation(@Nonnull IBlockState origin, @Nonnull IBlockState result1, @Nullable IBlockState result2);
 
     /**
      * Gets an {@link IKnowledgeProvider} representing the UUID provided.
@@ -24,8 +26,11 @@ public interface ITransmutationProxy
      * If called clientside, {@param playerUUID} is ignored and the client player is used instead.
      * If called serverside, this must be called after the server has reached state SERVER_STARTED.
      *
+     * If the provided UUID could not be found both on or offline, an {@link IKnowledgeProvider} with no knowledge is returned.
+     *
      * @param playerUUID The UUID to query
-     * @return an {@link IKnowledgeProvider} representing the UUID provided
+     * @return an {@link IKnowledgeProvider} representing the UUID provided, or an {@link IKnowledgeProvider} representing no knowledge if
+     * the requested UUID could not be found
      */
-    IKnowledgeProvider getKnowledgeProviderFor(UUID playerUUID);
+    @Nonnull IKnowledgeProvider getKnowledgeProviderFor(@Nonnull UUID playerUUID);
 }

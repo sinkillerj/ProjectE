@@ -17,6 +17,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -45,8 +46,9 @@ public final class AlchBagImpl
     {
         private final Map<EnumDyeColor, IItemHandler> inventories = new EnumMap<>(EnumDyeColor.class);
 
+        @Nonnull
         @Override
-        public IItemHandler getBag(EnumDyeColor color)
+        public IItemHandler getBag(@Nonnull EnumDyeColor color)
         {
             if (!inventories.containsKey(color))
             {
@@ -57,7 +59,7 @@ public final class AlchBagImpl
         }
 
         @Override
-        public void sync(EnumDyeColor color, EntityPlayerMP player)
+        public void sync(@Nonnull EnumDyeColor color, @Nonnull EntityPlayerMP player)
         {
             PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
         }

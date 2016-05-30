@@ -77,13 +77,13 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
 		return (byte)stack.getItemDamage();
 	}
 
 	@Override
-	public boolean changeMode(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		stack.setItemDamage((stack.getItemDamage() + 1) % 4);
 		return true;
@@ -193,7 +193,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand) // GIANT FIRE ROW OF DEATH
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand) // GIANT FIRE ROW OF DEATH
 	{
 		World world = player.worldObj;
 		
@@ -237,7 +237,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		

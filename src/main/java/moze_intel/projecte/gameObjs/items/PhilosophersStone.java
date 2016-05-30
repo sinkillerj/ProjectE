@@ -91,7 +91,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		World world = player.worldObj;
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
@@ -102,7 +102,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 	
 	@Override
-	public boolean doExtraFunction(ItemStack stack, EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
 		if (!player.worldObj.isRemote)
 		{

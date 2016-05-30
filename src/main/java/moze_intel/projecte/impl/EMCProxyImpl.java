@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 
+import javax.annotation.Nonnull;
+
 public class EMCProxyImpl implements IEMCProxy
 {
     public static final IEMCProxy instance = new EMCProxyImpl();
@@ -18,7 +20,7 @@ public class EMCProxyImpl implements IEMCProxy
     private EMCProxyImpl() {}
 
     @Override
-    public void registerCustomEMC(ItemStack stack, int value)
+    public void registerCustomEMC(@Nonnull ItemStack stack, int value)
     {
         Preconditions.checkNotNull(stack);
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
@@ -28,7 +30,7 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
-    public void registerCustomEMC(Object o, int value)
+    public void registerCustomEMC(@Nonnull Object o, int value)
     {
         Preconditions.checkNotNull(o);
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
@@ -38,42 +40,42 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
-    public boolean hasValue(Block block)
+    public boolean hasValue(@Nonnull Block block)
     {
         Preconditions.checkNotNull(block);
         return EMCHelper.doesBlockHaveEmc(block);
     }
 
     @Override
-    public boolean hasValue(Item item)
+    public boolean hasValue(@Nonnull Item item)
     {
         Preconditions.checkNotNull(item);
         return EMCHelper.doesItemHaveEmc(item);
     }
 
     @Override
-    public boolean hasValue(ItemStack stack)
+    public boolean hasValue(@Nonnull ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
         return hasValue(stack.getItem());
     }
 
     @Override
-    public int getValue(Block block)
+    public int getValue(@Nonnull Block block)
     {
         Preconditions.checkNotNull(block);
         return EMCHelper.getEmcValue(block);
     }
 
     @Override
-    public int getValue(Item item)
+    public int getValue(@Nonnull Item item)
     {
         Preconditions.checkNotNull(item);        
         return EMCHelper.getEmcValue(item);
     }
 
     @Override
-    public int getValue(ItemStack stack)
+    public int getValue(@Nonnull ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
         return EMCHelper.getEmcValue(stack);
