@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class RecipeShapelessHidden implements IRecipe
 {
 	protected ItemStack output = null;
-	protected ArrayList<Object> input = new ArrayList<>();
+	protected final ArrayList<Object> input = new ArrayList<>();
 
 	public RecipeShapelessHidden(Block result, Object... recipe)
 	{
@@ -145,12 +145,10 @@ public class RecipeShapelessHidden implements IRecipe
 				for (Object aRequired : required) {
 					boolean match = false;
 
-					Object next = aRequired;
-
-					if (next instanceof ItemStack) {
-						match = OreDictionary.itemMatches((ItemStack) next, slot, false);
-					} else if (next instanceof List) {
-						Iterator<ItemStack> itr = ((List<ItemStack>) next).iterator();
+					if (aRequired instanceof ItemStack) {
+						match = OreDictionary.itemMatches((ItemStack) aRequired, slot, false);
+					} else if (aRequired instanceof List) {
+						Iterator<ItemStack> itr = ((List<ItemStack>) aRequired).iterator();
 						while (itr.hasNext() && !match) {
 							match = OreDictionary.itemMatches(itr.next(), slot, false);
 						}
@@ -158,7 +156,7 @@ public class RecipeShapelessHidden implements IRecipe
 
 					if (match) {
 						inRecipe = true;
-						required.remove(next);
+						required.remove(aRequired);
 						break;
 					}
 				}

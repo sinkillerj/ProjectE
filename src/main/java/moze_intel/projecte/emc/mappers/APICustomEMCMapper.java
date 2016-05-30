@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
-	public static APICustomEMCMapper instance = new APICustomEMCMapper();
+	public static final APICustomEMCMapper instance = new APICustomEMCMapper();
 	public static final int PRIORITY_MIN_VALUE = 0;
 	public static final int PRIORITY_MAX_VALUE = 512;
 	public static final int PRIORITY_DEFAULT_VALUE = 1;
 	private APICustomEMCMapper() {}
 
 	//Need a special Map for Items and Blocks because the ItemID-mapping might change, so we need to store modid:unlocalizedName instead of the NormalizedSimpleStack which only holds itemid and metadata
-	Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = Maps.newHashMap();
-	Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
+	final Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = Maps.newHashMap();
+	final Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
 
 	public void registerCustomEMC(ItemStack stack, int emcValue) {
 		if (stack == null || stack.getItem() == null) return;

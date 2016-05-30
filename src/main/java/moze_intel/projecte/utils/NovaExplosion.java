@@ -22,7 +22,7 @@ import java.util.List;
 
 public class NovaExplosion extends Explosion 
 {
-	private World worldObj;
+	private final World worldObj;
 	
 	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius, boolean isFlaming, boolean isSmoking)
 	{

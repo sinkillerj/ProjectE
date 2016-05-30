@@ -69,7 +69,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> userValues = Maps.newHashMap();
+	public static final Map<NormalizedSimpleStack, Integer> userValues = Maps.newHashMap();
 
 	public static void readUserData()
 	{
@@ -355,7 +355,7 @@ public final class CustomEMCParser
 
 					try
 					{
-						meta = Integer.valueOf(line.substring(2));
+						meta = Integer.parseInt(line.substring(2));
 					}
 					catch (NumberFormatException e)
 					{
@@ -435,12 +435,12 @@ public final class CustomEMCParser
 
 	private static class Entry
 	{
-		public String name;
-		public int meta;
-		public int emc;
-		public int nameIndex;
-		public int metaIndex;
-		public int emcIndex;
+		public final String name;
+		public final int meta;
+		public final int emc;
+		public final int nameIndex;
+		public final int metaIndex;
+		public final int emcIndex;
 
 		public Entry(String name, int meta, int emc, int nameIndex, int metaIndex, int emcIndex)
 		{

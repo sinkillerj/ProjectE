@@ -13,7 +13,7 @@ import java.util.Map;
 public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A>  {
 	protected static final boolean DEBUG_GRAPHMAPPER = false;
 
-	protected A arithmetic;
+	protected final A arithmetic;
 	public MappingCollector(A arithmetic) {
 		super(arithmetic);
 		this.arithmetic = arithmetic;
@@ -28,12 +28,12 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		debugFormat("%s", s);
 	}
 
-	protected Map<T, Conversion> overwriteConversion = Maps.newHashMap();
-	protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
-	protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
-	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
-	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
-	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
+	protected final Map<T, Conversion> overwriteConversion = Maps.newHashMap();
+	protected final Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
+	protected final Map<T, List<Conversion>> usedIn = Maps.newHashMap();
+	protected final Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
+	protected final Map<T, V> fixValueAfterInherit = Maps.newHashMap();
+	protected final Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
 	public static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
 		List<V> list;
@@ -136,7 +136,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	abstract public Map<T, V> generateValues();
 
 	protected class Conversion {
-		public T output;
+		public final T output;
 
 		public int outnumber = 1;
 		public V value = arithmetic.getZero();

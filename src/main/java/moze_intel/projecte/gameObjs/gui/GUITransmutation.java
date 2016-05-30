@@ -19,7 +19,7 @@ import java.util.Locale;
 public class GUITransmutation extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
-	private TransmutationInventory inv;
+	private final TransmutationInventory inv;
 	private GuiTextField textBoxFilter;
 
 	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory)

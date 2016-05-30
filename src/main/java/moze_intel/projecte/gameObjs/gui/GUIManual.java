@@ -44,7 +44,7 @@ public class GUIManual extends GuiScreen
 	private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
 	public static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
 	public static final Multimap<IndexPage, IndexLinkButton> indexLinks = ArrayListMultimap.create(); // IndexPage -> IndexLinkButtons
-	private static ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
+	private static final ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
 	public List<String> bodyTexts = Lists.newArrayList();
 	private int currentSpread;
 	private int k;
@@ -294,7 +294,7 @@ public class GUIManual extends GuiScreen
 			if (visible)
 			{
 				GlStateManager.color(0, 0, 0);
-				mc.fontRendererObj.drawString(displayString, Math.round(xPosition), Math.round(yPosition), 0);
+				mc.fontRendererObj.drawString(displayString, xPosition, yPosition, 0);
 			}
 		}
 	}
@@ -303,7 +303,7 @@ public class GUIManual extends GuiScreen
 	private static class PageTurnButton extends GuiButton
 	{
 		private static final int bWidth = 23;
-		private boolean pointsRight;
+		private final boolean pointsRight;
 
 		public PageTurnButton(int ID, int xPos, int yPos, boolean par4)
 		{

@@ -57,7 +57,7 @@ public final class KnowledgeImpl {
     {
 
         private final List<ItemStack> knowledge = new ArrayList<>();
-        private IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
+        private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
         private double emc = 0;
         private boolean fullKnowledge = false;
 

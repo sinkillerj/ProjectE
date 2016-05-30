@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private ItemStackHandler input = new StackHandler(getInvSize()) {
+	private final ItemStackHandler input = new StackHandler(getInvSize()) {
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -34,8 +34,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			else return stack;
 		}
 	};
-	private ItemStackHandler auxSlots = new StackHandler(3);
-	private IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
 		{

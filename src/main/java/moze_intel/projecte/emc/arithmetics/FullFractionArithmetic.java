@@ -38,8 +38,7 @@ public class FullFractionArithmetic implements IValueArithmetic<Fraction>
 		try
 		{
 			if (this.isFree(a)) return getFree();
-			Fraction result = a.divideBy(Fraction.getFraction(b, 1));
-			return result;
+			return a.divideBy(Fraction.getFraction(b, 1));
 		} catch (ArithmeticException e) {
 			//The documentation for Fraction.divideBy states, that this Exception is only thrown if
 			// * you try to divide by `null` (We are not doing this)

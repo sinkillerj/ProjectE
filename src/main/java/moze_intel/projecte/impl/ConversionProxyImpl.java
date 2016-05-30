@@ -22,7 +22,7 @@ public class ConversionProxyImpl implements IConversionProxy
 
 	public static final ConversionProxyImpl instance = new ConversionProxyImpl();
 
-	Map<Object, NormalizedSimpleStack> fakes = Maps.newHashMap();
+	final Map<Object, NormalizedSimpleStack> fakes = Maps.newHashMap();
 
 	@Override
 	public void addConversion(int amount, Object output, Map<Object, Integer> ingredients) {
@@ -43,7 +43,7 @@ public class ConversionProxyImpl implements IConversionProxy
 		conversionsFromMod.add(new APIConversion(amount, nssOut, ImmutableMap.copyOf(ingredientMap.getMap())));
 	}
 
-	public Map<String, List<APIConversion>> storedConversions = Maps.newHashMap();
+	public final Map<String, List<APIConversion>> storedConversions = Maps.newHashMap();
 
 	public NormalizedSimpleStack objectToNSS(Object object)
 	{
@@ -75,7 +75,7 @@ public class ConversionProxyImpl implements IConversionProxy
 		return activeMod == null ? "unknown Mod" : activeMod.getModId();
 	}
 
-	public class APIConversion
+	public static class APIConversion
 	{
 		public final int amount;
 		public final NormalizedSimpleStack output;

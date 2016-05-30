@@ -83,8 +83,8 @@ public class TransmutationOffline
     private static IKnowledgeProvider immutableCopy(final IKnowledgeProvider toCopy)
     {
         return new IKnowledgeProvider() {
-            List<ItemStack> immutableKnowledge = ImmutableList.copyOf(toCopy.getKnowledge());
-            IItemHandlerModifiable immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
+            final List<ItemStack> immutableKnowledge = ImmutableList.copyOf(toCopy.getKnowledge());
+            final IItemHandlerModifiable immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
 
             @Override
             public boolean hasFullKnowledge() {

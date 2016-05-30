@@ -16,8 +16,8 @@ import java.util.Map;
 public class CustomConversionFile
 {
 	public String comment;
-	public Map<String, ConversionGroup> groups = Maps.newHashMap();
-	public FixedValues values = new FixedValues();
+	public final Map<String, ConversionGroup> groups = Maps.newHashMap();
+	public final FixedValues values = new FixedValues();
 
 	public void write(File file) throws IOException
 	{

@@ -8,7 +8,7 @@ import java.util.Map;
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A>
 {
 
-	A defaultArithmetic;
+	final A defaultArithmetic;
 	public AbstractMappingCollector(A defaultArithmetic) {
 		this.defaultArithmetic = defaultArithmetic;
 	}

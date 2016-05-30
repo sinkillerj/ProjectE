@@ -16,7 +16,7 @@ public abstract class AbstractPage
 {
     protected final PageCategory category;
     protected AbstractPage parent = null;
-    protected List<AbstractPage> subPages = Lists.newArrayList();
+    protected final List<AbstractPage> subPages = Lists.newArrayList();
     private boolean indexed = true;
 
     protected AbstractPage(PageCategory category)

@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 
 public class CondenserContainer extends Container
 {	
-	public CondenserTile tile;
+	public final CondenserTile tile;
 	
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{

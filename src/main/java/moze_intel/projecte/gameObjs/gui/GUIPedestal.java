@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIPedestal extends GuiContainer
 {
-	private ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/pedestal.png");
+	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/pedestal.png");
 
 	public GUIPedestal(InventoryPlayer inventory, DMPedestalTile tile)
 	{

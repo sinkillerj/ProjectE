@@ -23,13 +23,13 @@ public final class ProjectEAPI
 	 * The capability object for IAlchBagProvider
 	 */
 	@CapabilityInject(IAlchBagProvider.class)
-	public static Capability<IAlchBagProvider> ALCH_BAG_CAPABILITY = null;
+	public static final Capability<IAlchBagProvider> ALCH_BAG_CAPABILITY = null;
 
 	/**
 	 * The capability object for IKnowledgeProvider
 	 */
 	@CapabilityInject(IKnowledgeProvider.class)
-	public static Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
+	public static final Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
 
 	/**
 	 * Retrieves the proxy for EMC-based API queries.

@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,8 +29,8 @@ import java.util.Random;
 
 public class MatterFurnace extends BlockDirection
 {
-	private boolean isActive;
-	private boolean isHighTier;
+	private final boolean isActive;
+	private final boolean isHighTier;
 	private static boolean isUpdating;
 
 	public MatterFurnace(boolean active, boolean isRM) 
@@ -167,20 +168,25 @@ public class MatterFurnace extends BlockDirection
 				case EAST:
 					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(f + f3), (double)f1, (double)(f2 + f4), 0.0D, 0.0D, 0.0D);
 					world.spawnParticle(EnumParticleTypes.FLAME, (double)(f + f3), (double)f1, (double)(f2 + f4), 0.0D, 0.0D, 0.0D);
+					break;
 				case NORTH:
 					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(f + f4), (double)f1, (double)(f2 - f3), 0.0D, 0.0D, 0.0D);
 					world.spawnParticle(EnumParticleTypes.FLAME, (double)(f + f4), (double)f1, (double)(f2 - f3), 0.0D, 0.0D, 0.0D);
+					break;
 				case SOUTH:
 					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(f + f4), (double)f1, (double)(f2 + f3), 0.0D, 0.0D, 0.0D);
 					world.spawnParticle(EnumParticleTypes.FLAME, (double)(f + f4), (double)f1, (double)(f2 + f3), 0.0D, 0.0D, 0.0D);
+					break;
 			}
 		}
 	}
 	
+	@Nonnull
 	@SideOnly(Side.CLIENT)
-	public Item getItem(World world, BlockPos pos)
+	@Override
+	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
-		return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff) : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+		return isHighTier ? new ItemStack(Item.getItemFromBlock(ObjHandler.rmFurnaceOff)) : new ItemStack(Item.getItemFromBlock(ObjHandler.dmFurnaceOff));
 	}
 
 	@Override

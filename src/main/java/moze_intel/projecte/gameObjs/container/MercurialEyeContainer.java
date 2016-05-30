@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 
 public class MercurialEyeContainer extends Container
 {
-	private MercurialEyeInventory inventory;
+	private final MercurialEyeInventory inventory;
 	
 	public MercurialEyeContainer(InventoryPlayer invPlayer, MercurialEyeInventory mercEyeInv)
 	{

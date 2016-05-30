@@ -92,9 +92,9 @@ public final class WorldHelper
 			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class
 	);
 
-	private static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
-	private static Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{
@@ -540,7 +540,7 @@ public final class WorldHelper
 			IBlockState currentState = world.getBlockState(currentPos);
 			Block block = currentState.getBlock();
 
-			if (block == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
+			if (currentState == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
 			{
 				numMined++;
 				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))

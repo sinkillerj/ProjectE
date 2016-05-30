@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends MappingCollector<T, V, A> implements IValueGenerator<T, V>
 {
-	static boolean OVERWRITE_FIXED_VALUES = false;
-	protected V ZERO;
+	static final boolean OVERWRITE_FIXED_VALUES = false;
+	protected final V ZERO;
 
 	private static boolean logFoundExploits = true;
 	public SimpleGraphMapper(A arithmetic) {

@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +25,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
@@ -65,12 +67,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 		}
 	}
-	
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing facing, float par8, float par9, float par10)
+
+	@Nonnull
+	@Override
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
 	{
 		if (world.isRemote || !player.canPlayerEdit(pos, facing, stack))
 		{
-			return false;
+			return EnumActionResult.FAIL;
 		}
 		
 		if (player.isSneaking())
@@ -79,7 +83,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 			if (obj == null) 
 			{
-				return false;
+				return EnumActionResult.FAIL;
 			}
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
@@ -88,13 +92,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 			
-			return false;
+			return EnumActionResult.FAIL;
 		}
 		
-		return plantSeeds(world, player, pos);
+		return plantSeeds(world, player, pos) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 	
 	private boolean useBoneMeal(World world, BlockPos pos)
@@ -283,7 +287,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return list;
 	}
 
-	private class StackWithSlot
+	private static class StackWithSlot
 	{
 		public final int slot;
 		public final ItemStack stack;

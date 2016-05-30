@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 public class Collector extends BlockDirection
 {
-	private int tier;
+	private final int tier;
 	
 	public Collector(int tier) 
 	{

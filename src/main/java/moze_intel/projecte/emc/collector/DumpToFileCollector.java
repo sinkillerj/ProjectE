@@ -13,8 +13,8 @@ import java.util.Map;
 public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Integer, A>
 {
 	public static String currentGroupName="default";
-	CustomConversionFile out = new CustomConversionFile();
-	IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
+	final CustomConversionFile out = new CustomConversionFile();
+	final IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
 	final File file;
 	public DumpToFileCollector(File f, IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner)
 	{

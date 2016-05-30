@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class IntToFractionCollector<T, A extends IValueArithmetic> extends AbstractMappingCollector<T, Integer, A>
 {
-	IExtendedMappingCollector<T, Fraction, A> inner;
+	final IExtendedMappingCollector<T, Fraction, A> inner;
 	public IntToFractionCollector(IExtendedMappingCollector<T, Fraction, A> inner) {
 		super(inner.getArithmetic());
 		this.inner = inner;

@@ -114,9 +114,9 @@ public final class PlayerTimers
 
 	private static class TimerSet
 	{
-		public Timer repair;
-		public Timer heal;
-		public Timer feed;
+		public final Timer repair;
+		public final Timer heal;
+		public final Timer feed;
 
 		public TimerSet()
 		{

@@ -18,12 +18,12 @@ public class ProjectECMD extends ProjectEBaseCMD
 {
 	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
-	ChangelogCMD changelogcmd = new ChangelogCMD();
-	ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
-	SetEmcCMD setemccmd = new SetEmcCMD();
-	RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
-	ResetEmcCMD resetemccmd = new ResetEmcCMD();
-	ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
+	final ChangelogCMD changelogcmd = new ChangelogCMD();
+	final ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
+	final SetEmcCMD setemccmd = new SetEmcCMD();
+	final RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
+	final ResetEmcCMD resetemccmd = new ResetEmcCMD();
+	final ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
 
 	@Nonnull
 	@Override

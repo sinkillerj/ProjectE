@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 
 public class Relay extends BlockDirection
 {
-	private int tier;
+	private final int tier;
 	
 	public Relay(int tier) 
 	{

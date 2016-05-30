@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class NormalizedSimpleStack {
-	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
+	public static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
 	public static NormalizedSimpleStack getFor(String itemName, int damage) {
 		NSSItem normStack;
@@ -125,7 +125,7 @@ public abstract class NormalizedSimpleStack {
 	public abstract String json();
 
 
-	private static Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
+	private static final Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
 	public static NormalizedSimpleStack forOreDictionary(String oreDictionaryName)
 	{
 		if (oreDictStacks.containsKey(oreDictionaryName))

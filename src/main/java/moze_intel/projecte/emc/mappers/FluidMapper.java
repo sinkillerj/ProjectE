@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
-	private static List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
+	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
 
 	public static void addMelting(String odName, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.forOreDictionary(odName), fluidName, amount);

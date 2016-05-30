@@ -29,9 +29,9 @@ import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
-	Set<Class> canNotMap = Sets.newHashSet();
-	Map<Class, Integer> recipeCount = Maps.newHashMap();
+	final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
+	final Set<Class> canNotMap = Sets.newHashSet();
+	final Map<Class, Integer> recipeCount = Maps.newHashMap();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
@@ -152,8 +152,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	}
 
 	public static class CraftingIngredients {
-		public Iterable<ItemStack> fixedIngredients;
-		public Iterable<Iterable<ItemStack>> multiIngredients;
+		public final Iterable<ItemStack> fixedIngredients;
+		public final Iterable<Iterable<ItemStack>> multiIngredients;
 		public CraftingIngredients( Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
 			this.fixedIngredients = fixedIngredients;
 			this.multiIngredients = multiIngredients;

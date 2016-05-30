@@ -6,7 +6,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class SimpleStack
 {
-	public int id;
+	public final int id;
 	public int damage;
 	public int qnty;
 

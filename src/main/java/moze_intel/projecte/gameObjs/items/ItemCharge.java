@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class ItemCharge extends ItemPE implements IItemCharge
 {
-	byte numCharges;
+	final byte numCharges;
 
 	public ItemCharge(String unlocalName, byte numCharges)
 	{

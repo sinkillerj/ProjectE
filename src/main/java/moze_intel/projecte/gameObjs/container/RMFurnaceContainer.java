@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 public class RMFurnaceContainer extends Container
 {
-	private RMFurnaceTile tile;
+	private final RMFurnaceTile tile;
 	private int lastCookTime;
 	private int lastBurnTime;
 	private int lastItemBurnTime;

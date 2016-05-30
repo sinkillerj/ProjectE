@@ -33,11 +33,6 @@ public class ToolTipEvent
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 
-		if (current == null)
-		{
-			return;
-		}
-
 		if (currentBlock == ObjHandler.dmPedestal)
 		{
 			event.getToolTip().add(I18n.format("pe.pedestal.tooltip1"));

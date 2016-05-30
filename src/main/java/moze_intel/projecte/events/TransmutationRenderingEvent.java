@@ -38,7 +38,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class TransmutationRenderingEvent 
 {
-	private Minecraft mc = Minecraft.getMinecraft();
+	private final Minecraft mc = Minecraft.getMinecraft();
 	private final List<AxisAlignedBB> renderList = Lists.newArrayList();
 	private double playerX;
 	private double playerY;

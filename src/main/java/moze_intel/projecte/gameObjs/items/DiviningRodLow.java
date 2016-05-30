@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 public class DiviningRodLow extends ItemPE implements IModeChanger
 {
 	// Modes should be in the format depthx3x3
-	protected String[] modes;
+	protected final String[] modes;
 
 	public DiviningRodLow()
 	{

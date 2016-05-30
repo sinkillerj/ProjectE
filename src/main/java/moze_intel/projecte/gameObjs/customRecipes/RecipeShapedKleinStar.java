@@ -28,7 +28,7 @@ public class RecipeShapedKleinStar implements IRecipe
 	/**
 	 * Is the ItemStack that you get when craft the recipe.
 	 */
-	private ItemStack recipeOutput;
+	private final ItemStack recipeOutput;
 	private boolean field_92101_f;
 	private static final String __OBFID = "CL_00000093";
 

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public abstract class RingToggle extends ItemPE implements IModeChanger
 {
-	private String name;
+	private final String name;
 	
 	public RingToggle(String unlocalName)
 	{
