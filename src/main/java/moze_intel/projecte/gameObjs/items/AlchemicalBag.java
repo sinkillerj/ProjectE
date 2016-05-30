@@ -29,10 +29,8 @@ import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {
-	private final String[] colors = new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"};
-
 	// MC Lang files have these unlocalized names mapped to raw color names
-	private final String[] unlocalizedColors = new String[] {
+	private final String[] unlocalizedColors = {
 			"item.fireworksCharge.white", "item.fireworksCharge.orange",
 			"item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
 			"item.fireworksCharge.yellow", "item.fireworksCharge.lime",
@@ -40,7 +38,8 @@ public class AlchemicalBag extends ItemPE
 			"item.fireworksCharge.silver", "item.fireworksCharge.cyan",
 			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
 			"item.fireworksCharge.brown", "item.fireworksCharge.green",
-			"item.fireworksCharge.red", "item.fireworksCharge.black"};
+			"item.fireworksCharge.red", "item.fireworksCharge.black"
+	};
 	
 	public AlchemicalBag()
 	{
@@ -60,44 +59,6 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
-	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!(entity instanceof EntityPlayer))
-		{
-			return;
-		}
-		
-		EntityPlayer player = (EntityPlayer) entity;
-		IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-				.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
-
-		boolean hasChanged = false;
-
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
-			ItemStack current = inv.getStackInSlot(i);
-			if (current != null && current.getItem() instanceof  IAlchBagItem)
-			{
-				hasChanged = ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, player, current) || hasChanged;
-			}
-		}
-
-		if (!player.worldObj.isRemote
-				&& !(player.openContainer instanceof AlchBagContainer) // Don't sync when gui is open because container system does it for us
-				&& hasChanged)
-		{
-			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-					.sync(EnumDyeColor.byMetadata(stack.getItemDamage()), ((EntityPlayerMP) player));
-		}
-	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack stack) 
-	{
-		return 1; 
 	}
 
 	@Nonnull
