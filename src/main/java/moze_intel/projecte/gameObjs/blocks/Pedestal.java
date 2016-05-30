@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class Pedestal extends Block
 {
@@ -47,6 +49,7 @@ public class Pedestal extends Block
         return AABB;
     }
 
+    @Override
     public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
     {
         DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
@@ -132,4 +135,12 @@ public class Pedestal extends Block
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new DMPedestalTile();
     }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    {
+        tooltip.add(I18n.format("pe.pedestal.tooltip1"));
+        tooltip.add(I18n.format("pe.pedestal.tooltip2"));
+    }
+
 }

@@ -33,17 +33,6 @@ public class ToolTipEvent
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 
-		if (currentBlock == ObjHandler.dmPedestal)
-		{
-			event.getToolTip().add(I18n.format("pe.pedestal.tooltip1"));
-			event.getToolTip().add(I18n.format("pe.pedestal.tooltip2"));
-		}
-
-		if (currentItem == ObjHandler.manual)
-		{
-			event.getToolTip().add(I18n.format("pe.manual.tooltip1"));
-		}
-
 		if (ProjectEConfig.showPedestalTooltip
 			&& currentItem instanceof IPedestalItem)
 		{
@@ -77,11 +66,6 @@ public class ToolTipEvent
 				}
 			}
 
-		}
-
-		if (ProjectEConfig.showUnlocalizedNames)
-		{
-			event.getToolTip().add("REGISTRY: " + Item.REGISTRY.getNameForObject(current.getItem()));
 		}
 
 		if (ProjectEConfig.showODNames)
@@ -223,11 +207,6 @@ public class ToolTipEvent
 				}
 
 				event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.storedemc_tooltip") + " " + TextFormatting.RESET + Constants.EMC_FORMATTER.format(value));
-			}
-
-			if (current.getTagCompound().hasKey("StoredXP"))
-			{
-				event.getToolTip().add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", current.getTagCompound().getInteger("StoredXP")));
 			}
 		}
 	}

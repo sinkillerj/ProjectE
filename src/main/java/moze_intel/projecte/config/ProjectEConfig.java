@@ -7,7 +7,6 @@ import java.io.File;
 
 public final class ProjectEConfig 
 {
-	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
 	public static boolean enableDebugLog;
 	public static boolean showEMCTooltip;
@@ -71,7 +70,6 @@ public final class ProjectEConfig
 			config.load();
 
 			enableDebugLog = config.getBoolean("debugLogging", "misc", false, "Enable a more verbose debug logging");
-			showUnlocalizedNames = config.getBoolean("unToolTips", "misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
 			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
