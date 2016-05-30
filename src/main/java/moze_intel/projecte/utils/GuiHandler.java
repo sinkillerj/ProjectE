@@ -132,7 +132,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.TRANSMUTATION_GUI:
 				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
 			case Constants.ETERNAL_DENSITY_GUI:
-				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player, hand));
+				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:
 				return new CondenserMK2Container(player.inventory, (CondenserMK2Tile) tile);
 			case Constants.PEDESTAL_GUI:
@@ -203,7 +203,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.TRANSMUTATION_GUI:
 				return new GUITransmutation(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
 			case Constants.ETERNAL_DENSITY_GUI:
-				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player, hand));
+				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:
 				return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);
 			case Constants.PEDESTAL_GUI:

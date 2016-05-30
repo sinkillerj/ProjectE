@@ -26,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -36,9 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -66,13 +65,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			return;
 		}
 		
-		condense(stack, new PlayerMainInvWrapper(((EntityPlayer) entity).inventory));
+		condense(stack, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP));
 	}
 
 	/**
 	 * @return Whether the inventory was changed
 	 */
-	private static boolean condense(ItemStack gem, IItemHandlerModifiable inv)
+	private static boolean condense(ItemStack gem, IItemHandler inv)
 	{
 		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
@@ -96,17 +95,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
-				ItemStack copy = s.copy();
-				copy.stackSize = s.stackSize == 1 ? 1 : s.stackSize / 2;
+				ItemStack copy = inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, false);
 
 				addToList(gem, copy);
-				
-				s.stackSize -= copy.stackSize;
-				
-				if (s.stackSize <= 0)
-				{
-					inv.setStackInSlot(i, null);
-				}
 				
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
 				hasChanged = true;
@@ -396,7 +387,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
 			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-			condense(stack, ((IItemHandlerModifiable) tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)));
+			condense(stack, tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 			tile.markDirty();
 		}
 	}
@@ -404,6 +395,6 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(IItemHandler inv, EntityPlayer player, ItemStack stack)
 	{
-		return !player.worldObj.isRemote && condense(stack, ((IItemHandlerModifiable) inv));
+		return !player.worldObj.isRemote && condense(stack, inv);
 	}
 }

@@ -225,12 +225,20 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
 			return;
 		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
-		if (handler == null && tile instanceof ISidedInventory)
-			handler = new SidedInvWrapper(((ISidedInventory) tile), EnumFacing.DOWN);
-		if (handler == null && tile instanceof IInventory)
-			handler = new InvWrapper(((IInventory) tile));
+
 		if (handler == null)
-			return;
+		{
+			if (tile instanceof ISidedInventory)
+			{
+				handler = new SidedInvWrapper((ISidedInventory) tile, EnumFacing.DOWN);
+			} else if (tile instanceof IInventory)
+			{
+				handler = new InvWrapper((IInventory) tile);
+			} else
+			{
+				return;
+			}
+		}
 
 		for (int i = 0; i < handler.getSlots(); i++)
 		{

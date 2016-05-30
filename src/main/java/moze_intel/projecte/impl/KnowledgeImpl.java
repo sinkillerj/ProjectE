@@ -213,7 +213,7 @@ public final class KnowledgeImpl {
                 inputLocks.setStackInSlot(i, null);
             }
 
-            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTag("inputlock"));
+            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND));
             fullKnowledge = properties.getBoolean("fullknowledge");
         }
 

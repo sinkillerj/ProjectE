@@ -8,6 +8,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -44,13 +45,9 @@ public class EternalDensityContainer extends Container
 		Slot slot = getSlot(slotIndex);
 		if (slotIndex > 8)
 		{
-			int index = inventory.findFirstEmptySlot();
-			if (index != -1)
-			{
-				ItemStack toSet = slot.getStack().copy();
-				toSet.stackSize = 1;
-				inventory.setInventorySlotContents(index, toSet);
-			}
+			ItemStack toSet = slot.getStack().copy();
+			toSet.stackSize = 1;
+			ItemHandlerHelper.insertItem(inventory, toSet, false);
 		}
 		return null;
 	}
@@ -64,14 +61,14 @@ public class EternalDensityContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem(inventory.triggeringHand))
+		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return null;
 		}
 		
 		if (slot >= 0 && slot < 9)
 		{
-			inventory.setInventorySlotContents(slot, null);
+			inventory.setStackInSlot(slot, null);
 		}
 		
 		return super.slotClick(slot, button, flag, player);

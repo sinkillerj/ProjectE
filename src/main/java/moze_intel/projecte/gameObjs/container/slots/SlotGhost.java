@@ -6,10 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotGhost extends Slot
+public class SlotGhost extends SlotItemHandler
 {
-	public SlotGhost(IInventory inv, int slotIndex, int xPos, int yPost) 
+	public SlotGhost(IItemHandler inv, int slotIndex, int xPos, int yPost)
 	{
 		super(inv, slotIndex, xPos, yPost);
 	}

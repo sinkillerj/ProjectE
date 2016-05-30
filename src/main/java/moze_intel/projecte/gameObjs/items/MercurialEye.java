@@ -69,7 +69,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			@Override
 			public void deserializeNBT(NBTTagCompound nbt)
 			{
-				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getTag("Items"));
+				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getTagList("Items", NBT.TAG_COMPOUND));
 			}
 
 			@Override
