@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
  */
 public enum PEKeybind
 {
-	ARMOR_TOGGLE("pe.key.armor_toggle", Keyboard.KEY_F),
+	ARMOR_TOGGLE("pe.key.armor_toggle", Keyboard.KEY_X),
 	CHARGE("pe.key.charge", Keyboard.KEY_V),
 	EXTRA_FUNCTION("pe.key.extra_function", Keyboard.KEY_C),
 	FIRE_PROJECTILE("pe.key.fire_projectile", Keyboard.KEY_R),
