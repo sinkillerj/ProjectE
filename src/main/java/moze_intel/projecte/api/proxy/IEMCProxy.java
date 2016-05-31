@@ -40,7 +40,7 @@ public interface IEMCProxy
     boolean hasValue(Block block);
 
     /**
-     * Queries the EMC value registry if the given item has an EMC value
+     * Queries the EMC value registry if the given item with a damage value of 0 has an EMC value
      * Can be called at any time, but will only return valid results if a world is loaded
      * Can be called on both sides
      * @param item The item we want to query
@@ -50,9 +50,9 @@ public interface IEMCProxy
 
     /**
      * Queries the EMC value registry if the given ItemStack has an EMC value
+     * This will also use the damage value to check if the Item has an EMC value
      * Can be called at any time, but will only return valid results if a world is loaded
      * Can be called on both sides
-     * Note that this is simply a helper function, and is functionally equivalent to IEMCProxy.hasValue(stack.getItem())
      * @param stack The stack we want to query
      * @return Whether the ItemStack has an emc value
      */
