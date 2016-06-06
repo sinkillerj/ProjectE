@@ -29,9 +29,9 @@ import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
-	final Set<Class> canNotMap = Sets.newHashSet();
-	final Map<Class, Integer> recipeCount = Maps.newHashMap();
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
+	private final Set<Class> canNotMap = Sets.newHashSet();
+	private final Map<Class, Integer> recipeCount = Maps.newHashMap();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
@@ -143,15 +143,15 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		return true;
 	}
 
-	public static interface IRecipeMapper {
-		public String getName();
-		public String getDescription();
-		public boolean canHandle(IRecipe recipe);
+	public interface IRecipeMapper {
+		String getName();
+		String getDescription();
+		boolean canHandle(IRecipe recipe);
 
-		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
+		Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
 	}
 
-	public static class CraftingIngredients {
+	private static class CraftingIngredients {
 		public final Iterable<ItemStack> fixedIngredients;
 		public final Iterable<Iterable<ItemStack>> multiIngredients;
 		public CraftingIngredients( Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
@@ -160,7 +160,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		}
 	}
 
-	protected static class VanillaRecipeMapper implements IRecipeMapper {
+	private static class VanillaRecipeMapper implements IRecipeMapper {
 
 		@Override
 		public String getName() {
@@ -195,12 +195,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
 			}
-			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList()));
+			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList<Iterable<ItemStack>>()));
 		}
 
 	}
 
-	protected static class VanillaOreRecipeMapper implements IRecipeMapper {
+	private static class VanillaOreRecipeMapper implements IRecipeMapper {
 
 		@Override
 		public String getName() {
@@ -219,7 +219,6 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			List<IngredientMap<ItemStack>> inputs = new LinkedList<>();
 			Iterable<Object> recipeItems = null;
 			if (recipe instanceof ShapedOreRecipe) {
 				recipeItems = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
@@ -260,7 +259,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		}
 	}
 
-	protected static class PECustomRecipeMapper implements IRecipeMapper {
+	private static class PECustomRecipeMapper implements IRecipeMapper {
 
 		@Override
 		public String getName() {
@@ -295,7 +294,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
 			}
-			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList()));
+			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList<Iterable<ItemStack>>()));
 		}
 
 	}

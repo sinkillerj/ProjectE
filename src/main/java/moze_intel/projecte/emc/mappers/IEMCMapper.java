@@ -13,13 +13,13 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * A unique Name for the IEMCMapper. This is used to identify the IEMCMapper in the Configuration.
 	 * @return A unique Name
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * A Description, that will be included as a Comment in the Configuration File
 	 * @return A <b>short</b> description
 	 */
-	public String getDescription();
+	String getDescription();
 
 	/**
 	 * This method is used to determine if this EMCMapper can work in the current environment.
@@ -27,7 +27,7 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * This method will also be used to determine the default for enabling/disabling this IEMCMapper
 	 * @return {@code true} if you want {@link #addMappings} to be called, {@code false} otherwise.
 	 */
-	public boolean isAvailable();
+	boolean isAvailable();
 
 	/**
 	 * The method that allows the IEMCMapper to contribute to the EMC Mapping. Use the methods provided by the {@link IMappingCollector}.
@@ -39,5 +39,5 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * @param mapper
 	 * @param config
 	 */
-	public void addMappings(IMappingCollector<T, V> mapper, Configuration config);
+	void addMappings(IMappingCollector<T, V> mapper, Configuration config);
 }

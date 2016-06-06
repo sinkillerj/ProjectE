@@ -24,16 +24,19 @@ import java.util.List;
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
 
-	public static void addMelting(String odName, String fluidName, int amount) {
+	private static void addMelting(String odName, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.forOreDictionary(odName), fluidName, amount);
 	}
-	public static void addMelting(Item item, String fluidName, int amount) {
+
+	private static void addMelting(Item item, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.getFor(item), fluidName, amount);
 	}
-	public static void addMelting(Block block, String fluidName, int amount) {
+
+	private static void addMelting(Block block, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.getFor(block), fluidName, amount);
 	}
-	public static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
+
+	private static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
 		Fluid fluid = FluidRegistry.getFluid(fluidName);
 		if (fluid != null) {
 			melting.add(Pair.of(stack, new FluidStack(fluid, amount)));
@@ -41,6 +44,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			PELogger.logWarn("Can not get Fluid '%s'", fluidName);
 		}
 	}
+
 	static {
 		addMelting(Blocks.OBSIDIAN, "obisidan.molten", 288);
 		addMelting(Blocks.GLASS, "glass.molten", 1000);

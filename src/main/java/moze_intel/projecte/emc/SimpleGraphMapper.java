@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends MappingCollector<T, V, A> implements IValueGenerator<T, V>
 {
-	static final boolean OVERWRITE_FIXED_VALUES = false;
-	protected final V ZERO;
+	private static final boolean OVERWRITE_FIXED_VALUES = false;
+	private final V ZERO;
 
 	private static boolean logFoundExploits = true;
 	public SimpleGraphMapper(A arithmetic) {
@@ -21,19 +21,19 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		ZERO = arithmetic.getZero();
 	}
 
-	protected static <K, V extends Comparable<V>> boolean hasSmallerOrEqual(Map<K, V> m, K key, V value) {
+	private static <K, V extends Comparable<V>> boolean hasSmallerOrEqual(Map<K, V> m, K key, V value) {
 		return (m.containsKey(key) && m.get(key).compareTo(value) <= 0);
 	}
 
-	protected static<K,V extends Comparable<V>> boolean hasSmaller(Map<K,V> m, K key, V value) {
+	private static<K,V extends Comparable<V>> boolean hasSmaller(Map<K, V> m, K key, V value) {
 		return (m.containsKey(key) && m.get(key).compareTo(value) < 0);
 	}
 
-	public static void setLogFoundExploits(boolean log) {
+	static void setLogFoundExploits(boolean log) {
 		logFoundExploits = log;
 	}
 
-	protected static<K, V extends Comparable<V>> boolean updateMapWithMinimum(Map<K,V> m, K key, V value) {
+	private static<K, V extends Comparable<V>> boolean updateMapWithMinimum(Map<K, V> m, K key, V value) {
 		if (!hasSmaller(m,key,value)) {
 			//No Value or a value that is smaller than this
 			m.put(key, value);
@@ -42,7 +42,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		return false;
 	}
 
-	protected boolean canOverride(T something, V value) {
+	private boolean canOverride(T something, V value) {
 		if (OVERWRITE_FIXED_VALUES) return  true;
 		if (fixValueBeforeInherit.containsKey(something)) {
 			return fixValueBeforeInherit.get(something).compareTo(value) == 0;
@@ -163,7 +163,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	 * @param conversion The Conversion for which to calculate the combined ingredient cost.
 	 * @return The combined ingredient value, ZERO or arithmetic.getFree()
 	 */
-	protected V valueForConversion(Map<T, V> values, Conversion conversion)
+	private V valueForConversion(Map<T, V> values, Conversion conversion)
 	{
 		try {
 			return valueForConversionUnsafe(values, conversion);
@@ -177,7 +177,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		}
 	}
 
-	protected V valueForConversionUnsafe(Map<T, V> values, Conversion conversion)
+	private V valueForConversionUnsafe(Map<T, V> values, Conversion conversion)
 	{
 		V value = conversion.value;
 		boolean allIngredientsAreFree = true;

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class NormalizedSimpleStack {
-	public static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
+	private static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
 	public static NormalizedSimpleStack getFor(String itemName, int damage) {
 		NSSItem normStack;
@@ -188,7 +188,7 @@ public abstract class NormalizedSimpleStack {
 		return new NSSFake(description);
 	}
 
-	public static class NSSFake extends NormalizedSimpleStack {
+	private static class NSSFake extends NormalizedSimpleStack {
 		public final String description;
 		public final int counter;
 		private static int fakeItemCounter = 0;
@@ -217,7 +217,7 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static class NSSFluid extends NormalizedSimpleStack {
+	private static class NSSFluid extends NormalizedSimpleStack {
 
 		public final String name;
 		private NSSFluid(net.minecraftforge.fluids.Fluid f) {
