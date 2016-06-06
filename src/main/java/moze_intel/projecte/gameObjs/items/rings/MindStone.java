@@ -82,7 +82,8 @@ public class MindStone extends RingToggle implements IPedestalItem
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
 	{
-		tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
+		if(stack.getTagCompound() != null)
+			tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
 	}
 
 
