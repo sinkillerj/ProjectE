@@ -18,7 +18,7 @@ item.pe_matter_red.name=Matière rouge
 item.pe_ring_iron_band.name=Bracelet de fer
 item.pe_black_hole.name=Bracelet de trou noir
 item.pe_harvest_god.name=Bracelet de la déesse des récoltes
-item.pe_archangel_smite.name=Châtiment de l'Archange [WIP]
+item.pe_archangel_smite.name=Châtiment de l'Archange
 item.pe_ignition.name=Anneau de feu
 item.pe_body_stone.name=Pierre du corps
 item.pe_soul_stone.name=Pierre d'âme
@@ -93,8 +93,8 @@ tile.pe_collector_MK3.name=Collecteur d'énergie MK3
 tile.pe_relay_MK1.name=Relais d'anti-matière MK1
 tile.pe_relay_MK2.name=Relais d'anti-matière MK2
 tile.pe_relay_MK3.name=Relais d'anti-matière MK3
-tile.pe_nova_catalyst.name=Catalyseur Nova
-tile.pe_nova_cataclysm.name=Cataclysme Nova
+tile.pe_nova_catalyst.name=Nova Catalyseuse
+tile.pe_nova_cataclysm.name=Nova Cataclysmique
 tile.pe_fuel_block_0.name=Bloc de charbon alchimique
 tile.pe_fuel_block_1.name=Bloc de combustible Mobius
 tile.pe_fuel_block_2.name=Bloc de combustible Aeternalis
@@ -220,9 +220,9 @@ pe.gem.enabled=ACTIVER
 pe.gem.activate=Activé les capacités offensives de l'armure de gem
 pe.gem.deactivate=Desactivé les capacités offensives de l'armure de gem
 
-pe.gem.helm.lorename=Casque de l'abîme
+pe.gem.helm.lorename=Casque Abyssal
 pe.gem.chest.lorename=Armure de l'enfer
-pe.gem.legs.lorename=Cretons de gravité
+pe.gem.legs.lorename=Jambières de gravité
 pe.gem.feet.lorename=Bottes de l'ouragan
 
 pe.gem.nightvision_tooltip=Vision nocturne:
@@ -367,11 +367,41 @@ pe.manual.index_button=ToC
 
 # ItemPages bodies
 pe.manual.pe_alchemical_bag=Un alchimiste en activité comme vous n'a pas le temps de constemment soulever et reposer un coffre alchimique. En soupoudrant une poudre de haute covalence sur un coffre alchimique et en l'emballant dans du tissu, vous avez réussi à reduire le coffre à la taille d'une bourse. Ce sac à les mêmes capacité que le coffre. Curieusement, les sacs semblent être liés à un réseau métaphysique puisque tous les sacs de la même couleur contiennent les même items, que ce soit le votre ou celui de votre voisin. Le sac semble aussi activer des objets magiques de la même manière que le coffre.
-pe.manual.pe_collector_MK1=Vous vous demandez si il ya un moyen d'exploiter l'énergie la plus répandue et constante dans ce monde : la lumière. Après plusieurs semaines de bricolage et beaucoup de voyages dans ces enfers redoutés à la recherche de la poussière qui brille, vous réussissez à rassembler des trucs. Il semble générer environ 4 EMC par seconde quand une forte lumière est donnée, et 0.25 EMC en moins par seconde quand la lumière se détériore. La lumière n'a pas besoin d'être naturelle - une citrouille lumineuse à les mêmes capacités que le soleil. Comme vous avez installé un four dans la machine, vous trouvez que l'EMC est infusée dans les éléments spécifiques placés dans les fentes d'entrés, les transmutant en des matériaux plus puissant alimentés par la collecte d'EMC à travers l'énergie lumineuse. Il peut contenir environ 10000 EMC. La chaleur intense de l'autre monde semble annuler la nécessité d'une énergie lumineuse puisque le collecteur fonctionne à pleine vitesse ici, même si aucun alchimiste avec du bon sens ne voudrait rester longtemps dans ces enfers...  La machine est également capable de concentrer l'EMC dans de puissantes étoiles Klein, quand elles sont placées dans la machine. Conclusions sur les ordres de transmutation:  Charbon de Bois, Redstone, Charbon, Poudre Explosive, Pierre Lumineuse, Charbon Alchimique, Bloc de Redstone, Poudre de Blaze, Bloc de Charbon, Bloc de Pierre Lumineuse, Combustible Mobius, Bloc de Charbon Alchimique, Combustible Aeternalis, Bloc de Combustible Mobius, Bloc de Combustible Aeternalis
-pe.manual.pe_collector_MK3=BLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDIDIS54LKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdfBLARLIDLKFJLSEKLFKJSLKDJFKDSJFLSFDJKFDSLJFDSLKJFLDSKJFLDSJFLSKDFDSdf
+
+pe.manual.pe_philosophers_stone=Pendant des siècles, les légendes ont été répandues à propos de la Pierre Philosophale et ses pouvoirs. Transmutation sans cercles, l'immortalité, toutes les richesses qu'on pourrait désirer, et plus on dit être dans la puissance de manieurs. Bien qu'il puisse être à jamais perdu dans le temps, les alchimistes modernes ont découvert le secret de la synthèse d'un remplacement convenable pour certains des pouvoirs les plus élémentaires. Soyez averti cependant que ceux qui ont réussi à sa création ont souvent un nouveau regard dans leurs yeux, apportant avec eux des histoires de feu et de démons.
+
+pe.manual.pe_repair_talisman= La poussière covalente peut être une panacée pour l'usure des outils et à la déchirure, cependant en le frottant manuellement sur knicks et dings peut devenir fastidieux rapidement. Saisissez le Talisman de réparation, en l'enveloppant des trois couleurs de poudre covalente dans un faisceau serré, il peut être distribué progressivement sur les outils dans votre sac, vous permettant de tondres vos moutons et d'effectuer d'autres tâches de la plus haute importance.
+
+pe.manual.pe_fuel_block_2=Comme les autres combustilbles solides l'Aeternalis peut être compréssé en bloc. Stylé et efficace.
+
+pe.manual.pe_relay_MK1=Les relais sont votre guichet unique pour fournir de l'EMC à un condenseurs et à d'autres dispositifs alchimiques, attachez le simplement sur le côté d'un de ses dispositifs et vous irez loin. L'EMC peut être fournie par les matières premièresou par un collecteur attaché. ToDo merge pages.
+
+pe.manual.pe_alchemy_chest=Il n'est pas inconus que les alchimistes aiment les choses brillantes, un désir d'or sans fin vient avec le territoire, mais des solutions normales de stockage ne répondent pas à ces exigences. Entrez dans le coffre alchimique qui peut stocker 104 stack d'item, au prix d'une brillante et de certaines poudre covalente vous pouvez stocker vos précieux presque à l'infini.
+
+pe.manual.pe_fuel_block_0=Comme les autres combustilbles solides le charbon Alchimique peut être compréssé en bloc. Utilisez-le comme un combustible efficace, ou comme décoration.
+
+pe.manual.pe_dm_block=La matière noire brut et la matière rouges peuvent être formées en un bloc, non seulement il peut être utilisé comme décor de grande classe sous cette forme, mais aussi comme un matériau clé pour un certain nombre de dispositifs alchimiques. ToDo merge pages.
+
+pe.manual.pe_dm_furnace=Les fours de matière sont de puissants dispositifs alchimiques qui peuvent être alimentés par une source d'EMC comme un relais ou Collector. Ils sont bien connus pour l'efficacité due à la fois à leur vitesse et leur capacité pour sortir automatiquement vers un coffre à proximité. ToDo merge pages.
+
+pe.manual.pe_collector_MK1=Les collecteurs sont certains des dispositifs alchimiques les plus controversés en raison de leur capacité à générer de l'EMC en utilisant rien de plus qu'une source de lumière. Cette EMC peut être transféré à un périphérique connecté, comme un relais ou à condensateur, ou utilisé par le collecteur lui-même pour charger un élément alchimique comme une étoile Klein. On peut également utiliser un collecteur pour transformer les matières premières en carburant plus puissants. ToDo merge pages.
+
+pe.manual.pe_condenser=Les Tables de Transmutation sont parfaites pour transformer une chose en une autre, mais le processus est manuel et pas adapté pour l'automatisation. Les condenseurs sont la solution à ce problème, il suffit de définir un élément comme cible et tout ce qui sera déversés dedans sera transmuté en cette cible. La cible peut également être créé à partir d'EMC fournies par un dispositif fixé comme un relais ou Collecteur.
+
+pe.manual.pe_condenser_mk2=Le Condenseur d'énergie MK2 a toutes les caractéristiques du MK1, mais divise l'inventaire pour avoir une entrée et une sortie séparée.
+
+pe.manual.pe_interdiction_torch=La Torche d'Interdiction est plus que juste une alternative élégante à la torche, toute les mobs qui l'approche seront repoussées, comme un homme sage a dit... PERSONNE NE PASSERA! 
+
+pe.manual.pe_fuel_block_0=Comme les autres combustilbles solides le combustible Mobius peut être compréssé en bloc. Utilisez-le comme un combustible efficace, ou comme décoration.
+
+pe.manual.pe_nova_cataclysm=Tout le fun d'une Nova Catalyseuse, mais avec des explosions deux fois plus puissantes!
+
+pe.manual.pe_nova_catalyst=La Nova Catalyseuse est un puissant explosive alchimique, il cause d'importante explosion mais avec l'avantage de conserver les blocs à proximiter pour les rammasser.
+
+pe.manual.pe_transmutation_stone=La table de transmutation permet d'étudier la structure des matèriaux, et de briser les autres pour créer plus d'entre eux. La terre va dedans, les diamants en sortent!
 
 # TextPages headers and bodies
-pe.manual.introduction=Félicitations vous commencez votre nouveau voyage, Minecrafter! Vous êtes peut-être las de faire toujours les mêmes tâches pénibles tous les jours dans votre monde, ou vous désirez simplement plus de puissance pour des fins..., ou vous aimeriez simplement l'utilitée et l'art de la magie à votre dispostion. Peu importe ce que vous pensez, l'alchimie est la pour assouvir vos besoins. L'art de l'alchimie est connu depuis des temps ancestraux. Il a été découvert par un homme nommé x3n0ph0b3, et affiné grâce à de multiples itérations. Après la retraite de x3n0ph0b3, un nouvel apprenti, Pahimar, prit le dévelopement de cet art. Notre histoire devient plus complexe après cela. Les gens du pays commencèrent à en parler franchement, en blamant les alchimistes pour leurs travail, en les traitant de "tricheurs paresseux", prononçant des mots étranges à la famille des "EE2 OP!!!!!!". L'art de l'alchimie lui-même à été dénoncé comme trop puissant par les gens. En reponse à cela, Pahimar abandonna ses développements et commença de nouvelles recherches, préférant enquêter sur d'autres moyens d'alchimie, tandis que d'autres alchimistes étaient forcés à la clandestinité ou abandonnèrent l'alchimie tout simplement. ... Bien que beaucoup de personnes dans le monde au dessus croient que le véritable art de l'alchimie, la connaissance de x3n0ph0b3 lui même a été perdu, nous nous permettons d'être d'un autre avis. Un vagabond, MozeIntel, est tombé sur un morceau de folklore du passé lointain et a tenté de le reproduire dans son intégralité. Pour des raisons inconnues (raisons qu'il a étrangement décrites comme "IRL"), Moze a du se retirer. Un autre apprenti, SinkillerJ, désireux de mener l'enquête, a intensifié ses efforts et est allé de l'avant. En suivant les indices, il est finalement arrivé à la demeure du vieux x3n0ph0b3! Avec sa bénédiction, il se mit à réécrire, sur de nouvelles bases, les connaissance des siècles passés. Maintenant nous entrons dans la lumière. Les yeux du monde sont tournés sur nous de nouveau. Comment les alchimistes seront-ils accueillis cette fois? ... Avec notre dur travail, notre équipe:     SinkillerJ  Blubberblub     Williewillus    Moze_Intel vous transmettent, compagnon artisan, leurs connaissances la plus vaste des arts alchimiques et des pouvoirs magiques associée à leur utilisation. Nous vous souhaitons la bienvenue, joueur, dans le monde de ProjectE. - williewillus, Maître Honoré de l'Histoire
+pe.manual.introduction=En ouvrant ce livre vous avez commencée votre première étape pour devenir un Grand Alchimiste. Vous êtes peut-être las de faire toujours les mêmes tâches pénibles tous les jours dans votre monde, ou vous désirez simplement plus de puissance pour des fins..., ou vous aimeriez simplement l'utilitée et l'art de la magie à votre dispostion. Peu importe ce que vous pensez, l'alchimie est la pour assouvir vos besoins. Avant de commencer il est nécessaire de comprendre le passé... L'art de l'alchimie est connu depuis des temps ancestraux. Il a été découvert par un homme nommé x3n0ph0b3, et affiné grâce à de multiples itérations. Après la retraite de x3n0ph0b3, un nouvel apprenti, Pahimar, prit le dévelopement de cet art, mais beaucoup d'Alchimiste n'apprécié pas c'est nouvelle méthodes, une guerre éclata entre les deux côtés avec d'étranges chants sonores semblables à "tricheurs paresseux" et "EE2 OP !!!!!!" remplissant l'air. Les disciples de x3n0 disait que tout était perdu jusqu'à ce qu'un vagabonde du nom de MozeIntel les conduisit sous terre, il avait étudié et reproduit le travail de x3n0, ainsi l'art ancien vivait. Finalement, pour des raisons inconnues (motifs qu'il a étrangement décrit comme «IRL»), Moze pris sa retraite, laissant son travail à un apprenti enthousiaste, SinkillerJ. Sin a continué à apporter non seulement la paix aux deux parties leur permettant de coexister, mais pour former également un conseil d'alchimistes dédiés à la préservation de l'art ancien: Williewillus - Lord of Refactors Blubberbub - Alchemical Value Archivist Lilylicious - Lady of Little Big Things We, le conseil d'alchimistes, confèrent désormais sur vous notre connaissance la plus étendue des arts alchimiques, et vous accueillent, jeune alchimiste, dans le monde de ProjectE.
 pe.manual.introduction.header=Introduction
 
 # ImagePage headers
