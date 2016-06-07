@@ -20,7 +20,22 @@ import java.util.Set;
 public abstract class NormalizedSimpleStack {
 	private static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
-	private static NormalizedSimpleStack getFor(String itemName, int damage) {
+	public static Set<Integer> getUsedMetadata(String itemName) {
+		if (idWithUsedMetaData.containsKey(itemName)) {
+			return idWithUsedMetaData.get(itemName);
+		} else {
+			return Sets.newHashSet();
+		}
+	}
+	public static Set<Integer> getUsedMetadata(NormalizedSimpleStack nss) {
+		if (nss instanceof NSSItem) {
+			return getUsedMetadata(((NSSItem) nss).itemName);
+		} else {
+			throw new IllegalArgumentException("Can only get Metadata for Items!");
+		}
+	}
+
+	public static NormalizedSimpleStack getFor(String itemName, int damage) {
 		NSSItem normStack;
 		try
 		{
