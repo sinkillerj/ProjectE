@@ -22,6 +22,8 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -78,7 +80,9 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
+
+			Integer[] data = new Integer[] {id, stack.qnty, stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)
@@ -114,7 +118,9 @@ public final class PacketHandler
 				continue;
 			}
 
-			Integer[] data = new Integer[] {stack.id, stack.qnty, stack.damage, entry.getValue()};
+			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
+
+			Integer[] data = new Integer[] {id, stack.qnty, stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)

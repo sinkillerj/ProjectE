@@ -139,8 +139,7 @@ public final class EMCMapper
 				Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
 				if (obj != null)
 				{
-					int id = Item.REGISTRY.getIDForObject(obj);
-					emc.put(new SimpleStack(id, 1, normStackItem.damage), entry.getValue());
+					emc.put(new SimpleStack(obj.getRegistryName(), 1, normStackItem.damage), entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 				}

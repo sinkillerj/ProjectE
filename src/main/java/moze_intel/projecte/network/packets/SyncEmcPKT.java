@@ -7,6 +7,7 @@ import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -83,7 +84,9 @@ public class SyncEmcPKT implements IMessage
 					{
 						Integer[] array = (Integer[]) obj;
 
-						SimpleStack stack = new SimpleStack(array[0], array[1], array[2]);
+						Item i = Item.REGISTRY.getObjectById(array[0]);
+
+						SimpleStack stack = new SimpleStack(i.getRegistryName(), array[1], array[2]);
 
 						if (stack.isValid())
 						{

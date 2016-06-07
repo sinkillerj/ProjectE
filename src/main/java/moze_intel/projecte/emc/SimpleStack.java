@@ -2,15 +2,18 @@ package moze_intel.projecte.emc;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Objects;
 
 public class SimpleStack
 {
-	public final int id;
+	public final ResourceLocation id;
 	public int damage;
 	public int qnty;
 
-	public SimpleStack(int id, int qnty, int damage)
+	public SimpleStack(ResourceLocation id, int qnty, int damage)
 	{
 		this.id = id;
 		this.qnty = qnty;
@@ -21,11 +24,11 @@ public class SimpleStack
 	{
 		if (stack == null)
 		{
-			id = -1;
+			id = new ResourceLocation("minecraft", "air");
 		}
 		else
 		{
-			id = Item.REGISTRY.getIDForObject(stack.getItem());
+			id = stack.getItem().getRegistryName();
 			damage = stack.getItemDamage();
 			qnty = stack.stackSize;
 		}
@@ -33,18 +36,18 @@ public class SimpleStack
 
 	public boolean isValid()
 	{
-		return id != -1;
+		return !id.equals(new ResourceLocation("minecraft", "air"));
 	}
 
 	public ItemStack toItemStack()
 	{
 		if (isValid())
 		{
-			Item item = Item.getItemById(id);
+			Item item = Item.REGISTRY.getObject(id);
 
 			if (item != null)
 			{
-				return new ItemStack(Item.getItemById(id), qnty, damage);
+				return new ItemStack(item, qnty, damage);
 			}
 		}
 
@@ -59,7 +62,10 @@ public class SimpleStack
 	@Override
 	public int hashCode() 
 	{
-		return id;
+		int hash = 31 * qnty << 4 ^ id.hashCode();
+		if (this.damage == OreDictionary.WILDCARD_VALUE)
+			hash = hash * 57 ^ this.damage;
+		return hash;
 	}
 	
 	@Override
@@ -72,11 +78,11 @@ public class SimpleStack
 			if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
 			{
 				//return this.id == other.id;
-				return this.qnty == other.qnty && this.id == other.id;
+				return this.qnty == other.qnty && Objects.equals(this.id, other.id);
 			}
 
 			//return this.id == other.id && this.damage == other.damage;
-			return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
+			return Objects.equals(this.id, other.id) && this.qnty == other.qnty && this.damage == other.damage;
 		}
 		
 		return false;
@@ -85,11 +91,11 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		Item obj = Item.REGISTRY.getObjectById(id);
+		Item obj = Item.REGISTRY.getObject(id);
 		
 		if (obj != null)
 		{
-			return Item.REGISTRY.getNameForObject(obj) + " " + qnty + " " + damage;
+			return id + " " + qnty + " " + damage;
 		}
 		
 		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
