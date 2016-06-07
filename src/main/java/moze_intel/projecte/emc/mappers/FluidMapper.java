@@ -44,7 +44,6 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 			PELogger.logWarn("Can not get Fluid '%s'", fluidName);
 		}
 	}
-
 	static {
 		addMelting(Blocks.OBSIDIAN, "obisidan.molten", 288);
 		addMelting(Blocks.GLASS, "glass.molten", 1000);

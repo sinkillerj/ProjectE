@@ -20,7 +20,7 @@ import java.util.List;
 //Thanks to bdew for a first implementation of this: https://github.com/bdew/ProjectE/blob/f1b08624ff47c6cc716576701024cdb38ff3d297/src/main/java/moze_intel/projecte/emc/ChiselMapper.java
 public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	public final static String[] chiselBlockNames = new String[]{"marble", "limestone", "andesite", "granite", "diorite"};
+	private final static String[] chiselBlockNames = new String[]{"marble", "limestone", "andesite", "granite", "diorite"};
 
 	@Override
 	public String getName() {
@@ -53,7 +53,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		}
 	}
 
-	protected void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, ICarvingGroup group) {
+	private void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config, ICarvingGroup group) {
 		//XXX: Generates way too much Configs
 if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" + group.getName() + (group.getOreName() == null ? "" :  " and oreName=" + group.getOreName())) ) {
 			return;

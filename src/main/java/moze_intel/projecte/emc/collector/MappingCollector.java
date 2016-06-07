@@ -14,7 +14,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	private static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected final A arithmetic;
-	public MappingCollector(A arithmetic) {
+	protected MappingCollector(A arithmetic) {
 		super(arithmetic);
 		this.arithmetic = arithmetic;
 	}
@@ -143,22 +143,14 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		public Map<T, Integer> ingredientsWithAmount;
 		public A arithmeticForConversion;
 
-		protected Conversion(T output) {
+		Conversion(T output) {
 			this.output = output;
 		}
 
-		protected Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
+		Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
 			this(output);
 			this.outnumber = outnumber;
 			this.ingredientsWithAmount = ingredientsWithAmount;
-		}
-
-		public void markInvalid() {
-			if (this.ingredientsWithAmount != null) {
-				this.ingredientsWithAmount.clear();
-				this.ingredientsWithAmount = null;
-			}
-			this.value = arithmetic.getZero();
 		}
 
 		public String toString() {

@@ -20,7 +20,7 @@ import java.util.Set;
 public abstract class NormalizedSimpleStack {
 	private static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
 
-	public static NormalizedSimpleStack getFor(String itemName, int damage) {
+	private static NormalizedSimpleStack getFor(String itemName, int damage) {
 		NSSItem normStack;
 		try
 		{
@@ -78,7 +78,7 @@ public abstract class NormalizedSimpleStack {
 		return identifier;
 	}
 
-	public static NormalizedSimpleStack getFor(Item item, int meta) {
+	private static NormalizedSimpleStack getFor(Item item, int meta) {
 
 		return getFor(getUniqueIdentifierOrNull(item), meta);
 	}
@@ -198,11 +198,10 @@ public abstract class NormalizedSimpleStack {
 			this.description = description;
 		}
 
-		public boolean equals(Object o) {
-			if (o instanceof NSSFake) {
-				return o == this;
-			}
-			return false;
+		@Override
+		public boolean equals(Object o)
+		{
+			return o == this;
 		}
 
 		@Override
@@ -223,11 +222,11 @@ public abstract class NormalizedSimpleStack {
 		private NSSFluid(net.minecraftforge.fluids.Fluid f) {
 			this.name = f.getName();
 		}
-		public boolean equals(Object o) {
-			if (o instanceof NSSFluid) {
-				return name.equals(((NSSFluid) o).name);
-			}
-			return false;
+
+		@Override
+		public boolean equals(Object o)
+		{
+			return o instanceof NSSFluid && name.equals(((NSSFluid) o).name);
 		}
 
 		@Override
@@ -263,10 +262,7 @@ public abstract class NormalizedSimpleStack {
 		@Override
 		public boolean equals(Object o)
 		{
-			if (o instanceof NSSOreDictionary) {
-				return this.od.equals(((NSSOreDictionary) o).od);
-			}
-			return false;
+			return o instanceof NSSOreDictionary && this.od.equals(((NSSOreDictionary) o).od);
 		}
 
 		@Override

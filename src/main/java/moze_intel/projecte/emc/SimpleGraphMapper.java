@@ -43,7 +43,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	}
 
 	private boolean canOverride(T something, V value) {
-		if (OVERWRITE_FIXED_VALUES) return  true;
+		if (OVERWRITE_FIXED_VALUES) return true;
 		if (fixValueBeforeInherit.containsKey(something)) {
 			return fixValueBeforeInherit.get(something).compareTo(value) == 0;
 		}

@@ -7,7 +7,7 @@ import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 import java.io.IOException;
 
-public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
+class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 {
 
 	@Override

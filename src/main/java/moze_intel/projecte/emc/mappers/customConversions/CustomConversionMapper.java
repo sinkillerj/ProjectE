@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
-	public static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults");
+	private static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults");
 
 
 	@Override
@@ -83,16 +83,16 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		}
 	}
 
-	public static File getCustomConversionFolder()
+	private static File getCustomConversionFolder()
 	{
 		return new File(PECore.CONFIG_DIR, "customConversions");
 	}
 
-	public static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	private static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		addMappingsFromFile(parseJson(json), mapper);
 	}
 
-	public static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
 		Map<String, NormalizedSimpleStack> fakes = Maps.newHashMap();
 		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
@@ -170,7 +170,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 
-	private static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes) throws Exception
+	private static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes)
 	{
 		if (s.startsWith("OD|")) {
 			return NormalizedSimpleStack.forOreDictionary(s.substring(3));
@@ -215,7 +215,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 
-	public static void tryToWriteDefaultFiles() {
+	private static void tryToWriteDefaultFiles() {
 		for (String filename: defaultfilenames) {
 			writeDefaultFile(filename);
 		}

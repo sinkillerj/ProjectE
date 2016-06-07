@@ -42,7 +42,7 @@ import java.util.Map;
 public final class EMCMapper 
 {
 	public static final Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
-	public static Map<NormalizedSimpleStack, Integer> graphMapperValues;
+	private static Map<NormalizedSimpleStack, Integer> graphMapperValues;
 
 	public static void map()
 	{
@@ -155,8 +155,8 @@ public final class EMCMapper
 	/**
 	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
 	 */
-	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
-		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
+	private static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
+		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = map.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();
 			if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
