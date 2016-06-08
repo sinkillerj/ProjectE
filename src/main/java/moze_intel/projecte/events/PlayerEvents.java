@@ -40,11 +40,6 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void cloneEvent(PlayerEvent.Clone evt)
 	{
-		if (!evt.isWasDeath())
-		{
-			return; // Vanilla handles it for us.
-		}
-
 		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).serializeNBT();
 		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).deserializeNBT(bags);
 
@@ -52,7 +47,6 @@ public class PlayerEvents
 		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).deserializeNBT(knowledge);
 
 		PELogger.logDebug("Reapplied bag and knowledge on player respawning");
-
 	}
 
 	@SubscribeEvent
