@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
-	private static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults");
+	private static final ImmutableList<String> defaultfilenames = ImmutableList.of("metals", "example", "ODdefaults", "defaults");
 
 
 	@Override
@@ -97,7 +97,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
-			PELogger.logDebug(String.format("Adding conversions from group '%s' with comment '%s'", entry.getKey(), entry.getValue().comment));
+			PELogger.logInfo(String.format("Adding conversions from group '%s' with comment '%s'", entry.getKey(), entry.getValue().comment));
 			try
 			{
 				for (CustomConversion conversion : entry.getValue().conversions)

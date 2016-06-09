@@ -16,7 +16,6 @@ import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
-import moze_intel.projecte.emc.mappers.LazyMapper;
 import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
 import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
@@ -48,15 +47,14 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
-				new LazyMapper(),
-				new Chisel2Mapper(),
-				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
+				new APICustomConversionMapper(),
 				new CustomEMCMapper(),
+				APICustomEMCMapper.instance,
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper(),
-				new APICustomConversionMapper()
+				new Chisel2Mapper()
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(((IValueArithmetic<Fraction>) new HiddenFractionArithmetic()));
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator<>(mapper);

@@ -10,14 +10,14 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Set;
 
-public class OreDictionaryMapper extends LazyMapper {
+public class OreDictionaryMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+
 	private static final Set<String> BLACKLIST_EXCEPTIONS = Sets.newHashSet(
 		"dustPlastic"
 	);
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		this.mapper = mapper;
 		if (config.getBoolean("blacklistOresAndDusts", "", true, "Set EMC=0 for everything that has an OD Name that starts with `ore`, `dust` or `crushed` besides `dustPlastic`")) {
 			//Black-list all ores/dusts
 			for (String s : OreDictionary.getOreNames()) {
