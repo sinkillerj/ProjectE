@@ -106,21 +106,28 @@ public final class KnowledgeImpl {
 
         @Override
         public boolean addKnowledge(@Nonnull ItemStack stack) {
-            boolean added = false;
+            if (fullKnowledge)
+            {
+                return false;
+            }
 
             if (stack.getItem() == ObjHandler.tome)
             {
+                if (!hasKnowledge(stack))
+                {
+                    knowledge.add(stack);
+                }
                 fullKnowledge = true;
-                added = true;
+                return true;
             }
 
             if (!hasKnowledge(stack))
             {
                 knowledge.add(stack);
-                added = true;
+                return true;
             }
 
-            return added;
+            return false;
         }
 
         @Override
@@ -131,6 +138,11 @@ public final class KnowledgeImpl {
             {
                 fullKnowledge = false;
                 removed = true;
+            }
+
+            if (fullKnowledge)
+            {
+                return false;
             }
 
             Iterator<ItemStack> iter = knowledge.iterator();
