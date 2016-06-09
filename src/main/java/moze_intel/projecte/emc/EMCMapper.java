@@ -47,14 +47,14 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
-				new CustomConversionMapper(),
-				new APICustomConversionMapper(),
-				new CustomEMCMapper(),
+				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
+				new CustomConversionMapper(),
+				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper(),
-				new Chisel2Mapper()
+				new APICustomConversionMapper()
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(((IValueArithmetic<Fraction>) new HiddenFractionArithmetic()));
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator<>(mapper);

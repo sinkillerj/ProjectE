@@ -3,7 +3,7 @@
   "groups": {
     "default": {
       "comment": "Default conversion group",
-      "conversion": [
+      "conversions": [
         {
           "output": "minecraft:grass|0",
           "ingredients": {
