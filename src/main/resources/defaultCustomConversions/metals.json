@@ -21,7 +21,7 @@
       {"evalOD": true, "o": "OD|ingotCobalt", "c": 1, "i": {"OD|ingotIron":4}},
       {"evalOD": true, "o": "OD|ingotAluminumBrass", "c": 64, "i": {"OD|ingotAluminum": 48, "OD|ingotCopper": 16}},
       {"evalOD": true, "o": "OD|ingotManyullyn", "c": 1, "i": {"OD|ingotCobalt": 1, "OD|ingotArdite": 1}},
-      {"evalOD": true, "o": "OD|ingotAlumite", "c": 48, "i": {"OD|ingotAluminum": 80, "OD|ingotIron": 32, "OD|ingotObsidian": 32}}
+      {"evalOD": true, "o": "OD|ingotAlumite", "c": 48, "i": {"OD|ingotAluminum": 80, "OD|ingotIron": 32, "OD|ingotObsidian": 32}},
       {"evalOD": true, "o": "OD|ingotPlatinum", "c": 1, "i": {"OD|ingotIron":16}},
 
       {"evalOD": true, "o": "OD|ingotElectrum", "c": 2, "i": ["OD|ingotGold", "OD|ingotSilver"]},
@@ -42,7 +42,7 @@
       {"evalOD": true, "o": "OD|ingotPhasedIron", "c": 1, "i": ["OD|ingotIron", "minecraft:ender_pearl|0"]},
       {"evalOD": true, "o": "OD|ingotDarkSteel", "c": 1, "i": ["OD|ingotIron", "minecraft:coal|1", "minecraft:obsidian|0"]},
       {"evalOD": true, "o": "OD|ingotSoularium", "c": 1, "i": ["OD|ingotGold", "minecraft:soul_sand|0"]},
-      {"evalOD": true, "o": "OD|ingotEnderiumBase", "c": 4, "i": {"OD|ingotTin": 2, "OD|ingotSilver":1 , "OD|ingotPlatinum":1}},
+      {"evalOD": true, "o": "OD|ingotEnderiumBase", "c": 4, "i": {"OD|ingotTin": 2, "OD|ingotSilver":1 , "OD|ingotPlatinum":1}}
     ]
   }
 }
