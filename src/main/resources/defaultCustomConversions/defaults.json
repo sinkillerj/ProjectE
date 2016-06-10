@@ -123,6 +123,7 @@
       "minecraft:blaze_rod|0": 1536,
       "minecraft:ghast_tear|0": 4096,
       "minecraft:dragon_egg|0": 262144,
+      "minecraft:potion|0": 0,
 
       "minecraft:torch|0": 9,
       "minecraft:stick|0": 4,
