@@ -1,3 +1,7 @@
+###Version 1.9.4-PE1.0.3B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* FIXED: Mapping issues introduced in 1.0.2B
+
 ###Version 1.9.4-PE1.0.2B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
 * FIXED: Data loss when returning from the End
