@@ -22,4 +22,8 @@ public class CustomConversion
 		}
 		return conversion;
 	}
+
+	public String toString() {
+		return "{" + count + " * " + output + " = " + ingredients.toString() + "}";
+	}
 }

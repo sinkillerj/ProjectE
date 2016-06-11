@@ -8,6 +8,7 @@ import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
+import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
@@ -59,6 +60,7 @@ public final class EMCMapper
 		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(((IValueArithmetic<Fraction>) new HiddenFractionArithmetic()));
 		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector<>(mapper);
+		mappingCollector = new WildcardSetValueFixCollector<>(mappingCollector);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
