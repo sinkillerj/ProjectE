@@ -574,7 +574,7 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
 			IBlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
+			if (state != Blocks.AIR.getDefaultState() && ItemHelper.isOre(state) && state.getBlockHardness(player.worldObj, pos) != -1 && (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
 				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
 			}
