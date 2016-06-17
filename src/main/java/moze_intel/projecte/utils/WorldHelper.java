@@ -543,11 +543,11 @@ public final class WorldHelper
 			if (currentState == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
 			{
 				numMined++;
-				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 				{
-					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
-					world.setBlockToAir(pos);
-					numMined = harvestVein(world, player, stack, pos, target, currentDrops, numMined);
+					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
+					world.setBlockToAir(currentPos);
+					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 					if (numMined >= Constants.MAX_VEIN_SIZE) {
 						break;
 					}
