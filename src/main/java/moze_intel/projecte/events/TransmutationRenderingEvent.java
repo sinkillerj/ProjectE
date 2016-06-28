@@ -93,7 +93,7 @@ public class TransmutationRenderingEvent
 		playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
 		playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
 		
-		RayTraceResult mop = event.getTarget();
+		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		
 		if (mop != null && mop.typeOfHit == Type.BLOCK)
 		{
