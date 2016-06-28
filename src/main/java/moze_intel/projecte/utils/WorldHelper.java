@@ -130,16 +130,9 @@ public final class WorldHelper
 
 		ItemHelper.compactItemList(drops);
 
-		if (ProjectEConfig.useLootBalls)
+		for (ItemStack drop : drops)
 		{
-			world.spawnEntityInWorld(new EntityLootBall(world, drops, x, y, z));
-		}
-		else
-		{
-			for (ItemStack drop : drops)
-			{
-				spawnEntityItem(world, drop, x, y, z);
-			}
+			spawnEntityItem(world, drop, x, y, z);
 		}
 	}
 

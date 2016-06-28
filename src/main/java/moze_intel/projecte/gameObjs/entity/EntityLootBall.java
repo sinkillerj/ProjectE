@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,10 +27,9 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-
+// todo remove in future
 public class EntityLootBall extends Entity
 {
-	private static final int LIFESPAN = 6000;
 	private List<ItemStack> items;
 	private int age;
 
@@ -106,124 +106,10 @@ public class EntityLootBall extends Entity
 
 		if (!this.worldObj.isRemote)
 		{
-			if (age > LIFESPAN || items.isEmpty())
+			for (ItemStack s : items)
 			{
-				this.setDead();
+				WorldHelper.spawnEntityItem(worldObj, s, posX, posY, posZ);
 			}
-			if (ticksExisted % 60 == 0 && !isDead)
-			{
-				List<EntityLootBall> nearby = worldObj.getEntitiesWithinAABB(EntityLootBall.class, this.getEntityBoundingBox().expand(1.0F, 1.0F, 1.0F));
-				for (EntityLootBall e : nearby)
-				{
-					mergeWith(e);
-				}
-			}
-
-		}
-	}
-
-	public void mergeWith(EntityLootBall other)
-	{
-		if (other == this)
-		{
-			return;
-		}
-		other.setDead();
-		items.addAll(Lists.newArrayList(other.getItemList()));
-		other.getItemList().clear();
-		ItemHelper.compactItemList(items);
-	}
-
-	@Override
-	public void onCollideWithPlayer(EntityPlayer player)
-	{
-		if (this.worldObj.isRemote)
-		{
-			return;
-		}
-		
-		boolean playSound = false;
-		List<ItemStack> list = Lists.newArrayList();
-
-		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
-
-		if (bag != null)
-		{
-			IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-					.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
-
-			for (ItemStack stack : items)
-			{
-				ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, stack, false);
-
-				if (remain == null)
-				{
-					playSound = true;
-				}
-				else
-				{
-					remain = ItemHandlerHelper.insertItemStacked(
-							player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), remain, false);
-
-					if (remain == null)
-					{
-						playSound = true;
-						continue;
-					}
-					else
-					{
-						list.add(remain);
-					}
-
-					if (!ItemHelper.areItemStacksEqual(stack, remain))
-					{
-						playSound = true;
-					}
-				}
-			}
-
-			if (playSound)
-			{
-				player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-						.sync(EnumDyeColor.byMetadata(bag.getItemDamage()), ((EntityPlayerMP) player));
-			}
-		}
-		else
-		{
-			for (ItemStack stack : items)
-			{
-				ItemStack remaining = ItemHandlerHelper.insertItemStacked(
-						player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), stack, false);
-
-				if (remaining == null)
-				{
-					playSound = true;
-					continue;
-				}
-				else
-				{
-					list.add(remaining);
-				}
-
-				if (!ItemHelper.areItemStacksEqual(stack, remaining))
-				{
-					playSound = true;
-				}
-			}
-		}
-
-		if (playSound)
-		{
-			this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-		}
-
-		if (list.size() > 0)
-		{
-			items = list;
-		}
-		else
-		{
-			this.setDead();
 		}
 	}
 	
