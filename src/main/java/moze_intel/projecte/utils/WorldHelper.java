@@ -443,9 +443,9 @@ public final class WorldHelper
 			else if (crop instanceof IGrowable)
 			{
 				IGrowable growable = ((IGrowable) crop);
-				if (harvest && !growable.canGrow(world, currentPos, state, false))
+				if (!growable.canGrow(world, currentPos, state, false))
 				{
-					if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
+					if (harvest && (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos)))
 					{
 						world.destroyBlock(currentPos, true);
 					}
