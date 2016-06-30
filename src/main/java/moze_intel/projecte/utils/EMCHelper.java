@@ -228,7 +228,7 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEnchantEmcBonus(ItemStack stack)
+	private static int getEnchantEmcBonus(ItemStack stack)
 	{
 		int result = 0;
 
@@ -256,7 +256,7 @@ public final class EMCHelper
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
-	public static double getStoredEMCBonus(ItemStack stack) {
+	private static double getStoredEMCBonus(ItemStack stack) {
 		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
 			return stack.getTagCompound().getDouble("StoredEMC");
 		}

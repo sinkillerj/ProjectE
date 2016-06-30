@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.FileHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
@@ -144,7 +143,6 @@ public final class CustomEMCParser
 			return false;
 		}
 
-		PrintWriter writer = null;
 		boolean result = false;
 
 		try
@@ -167,41 +165,36 @@ public final class CustomEMCParser
 				break;
 			}
 
-			if (hasFound)
+			try(PrintWriter writer = new PrintWriter(new FileOutputStream(CONFIG, !hasFound)))
 			{
-				writer = new PrintWriter(new FileOutputStream(CONFIG, false));
-
-				for (String s : file)
+				if (hasFound)
 				{
-					writer.println(s);
+					for (String s : file)
+					{
+						writer.println(s);
+					}
+
+					result = true;
 				}
-
-				result = true;
-			}
-			else
-			{
-				writer = new PrintWriter(new FileOutputStream(CONFIG, true));
-
-				writer.append("\n");
-				writer.append("S:" + toAdd + "\n");
-
-				if (toAdd.contains(":"))
+				else
 				{
-					writer.append("M:" + meta + "\n");
+					writer.append("\n");
+					writer.append("S:" + toAdd + "\n");
+
+					if (toAdd.contains(":"))
+					{
+						writer.append("M:" + meta + "\n");
+					}
+
+					writer.append("E:" + emc + "\n");
+
+					result = true;
 				}
-
-				writer.append("E:" + emc + "\n");
-
-				result = true;
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -215,7 +208,6 @@ public final class CustomEMCParser
 			return false;
 		}
 
-		PrintWriter writer = null;
 		boolean result = false;
 
 		try
@@ -247,21 +239,18 @@ public final class CustomEMCParser
 
 			if (result)
 			{
-				writer = new PrintWriter(new FileOutputStream(CONFIG, false));
-
-				for (String s : file)
+				try (PrintWriter writer = new PrintWriter(new FileOutputStream(CONFIG, false)))
 				{
-					writer.println(s);
+					for (String s : file)
+					{
+						writer.println(s);
+					}
 				}
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(writer);
 		}
 
 		return result;
@@ -270,12 +259,9 @@ public final class CustomEMCParser
 	private static List<String> readAllFile()
 	{
 		List<String> list = Lists.newArrayList();
-		BufferedReader reader = null;
 
-		try
+		try(BufferedReader reader = new BufferedReader(new FileReader(CONFIG)))
 		{
-			reader = new BufferedReader(new FileReader(CONFIG));
-
 			String s;
 
 			while ((s = reader.readLine()) != null)
@@ -289,10 +275,6 @@ public final class CustomEMCParser
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			FileHelper.closeStream(reader);
-		}
 
 		return Lists.newArrayList();
 	}
@@ -300,12 +282,9 @@ public final class CustomEMCParser
 	private static List<Entry> getAllEntries()
 	{
 		List<Entry> list = Lists.newArrayList();
-		LineNumberReader reader = null;
 
-		try
+		try(LineNumberReader reader = new LineNumberReader(new FileReader(CONFIG)))
 		{
-			reader = new LineNumberReader(new FileReader(CONFIG));
-
 			Entry e;
 
 			while ((e = getNextEntry(reader)) != null)
@@ -318,10 +297,6 @@ public final class CustomEMCParser
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(reader);
 		}
 
 		return Lists.newArrayList();
@@ -412,12 +387,8 @@ public final class CustomEMCParser
 
 	private static void writeDefaultFile()
 	{
-		PrintWriter writer = null;
-
-		try
+		try (PrintWriter writer = new PrintWriter(CONFIG))
 		{
-			writer = new PrintWriter(CONFIG);
-
 			writer.println(VERSION);
 			writer.println("Custom EMC file");
 			writer.println("This file is used for custom EMC registration, it is recommended that you do not modify it manually.");
@@ -426,10 +397,6 @@ public final class CustomEMCParser
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(writer);
 		}
 	}
 

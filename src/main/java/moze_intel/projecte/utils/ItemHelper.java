@@ -142,39 +142,6 @@ public final class ItemHelper
 		return false;
 	}
 
-	public static boolean containsItemStack(ItemStack[] stacks, ItemStack toSearch)
-	{
-		for (ItemStack stack : stacks)
-		{
-			if (stack == null)
-			{
-				continue;
-			}
-
-			if (stack.getItem() == toSearch.getItem())
-			{
-				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage())
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Copy an NBTTagList that has inventory indices into the appropriate positions of provided array.
-	 */
-	public static ItemStack[] copyIndexedNBTToArray(NBTTagList list, ItemStack[] dest)
-	{
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound entry = list.getCompoundTagAt(i);
-			dest[entry.getByte("index")] = ItemStack.loadItemStackFromNBT(entry);
-		}
-		return dest;
-	}
-
 	/**
 	 * Returns an ItemStack with stacksize 1.
 	 */
@@ -351,16 +318,6 @@ public final class ItemHelper
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
 
-	public static ItemStack[] nbtToArray(NBTTagList list)
-	{
-		ItemStack[] stacks = new ItemStack[list.tagCount()];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			stacks[i] = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-		}
-		return stacks;
-	}
-
 	public static void pushLootBallInInv(IItemHandler inv, EntityLootBall ball)
 	{
 		List<ItemStack> results = Lists.newArrayList();
@@ -397,26 +354,7 @@ public final class ItemHelper
 		return new ItemStack(state.getBlock(), stackSize, state.getBlock().damageDropped(state));
 	}
 
-	/**
-	 * Takes an array of ItemStacks and turns it into an NBTTaglist.
-	 */
-	public static NBTTagList toIndexedNBTList(ItemStack[] stacks)
-	{
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < stacks.length; i++)
-		{
-			if (stacks[i] != null)
-			{
-				NBTTagCompound entry = new NBTTagCompound();
-				entry.setByte("index", ((byte) i));
-				stacks[i].writeToNBT(entry);
-				list.appendTag(entry);
-			}
-		}
-		return list;
-	}
-
-	public static void trimItemList(List<ItemStack> list)
+	private static void trimItemList(List<ItemStack> list)
 	{
 		Iterator<ItemStack> iter = list.iterator();
 		while (iter.hasNext())
