@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -37,20 +38,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
 	public EvertideAmulet()
 	{
@@ -62,60 +69,60 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Nonnull
 	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
+	{
+		return new ICapabilityProvider() {
+			private final IFluidHandler handler = new InfiniteFluidHandler();
+
+			@Override
+			public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+				return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+			}
+
+			@Override
+			public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+				if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				{
+					return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
+				} else
+				{
+					return null;
+				}
+			}
+		};
+	}
+
+	@Nonnull
+	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (tile instanceof IFluidHandler)
+			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit))
 			{
-				IFluidHandler tank = (IFluidHandler) tile;
-
-				if (FluidHelper.canFillTank(tank, FluidRegistry.WATER, sideHit))
+				FluidHelper.tryFillTank(tile, FluidRegistry.WATER, sideHit, Fluid.BUCKET_VOLUME);
+			} else
+			{
+				IBlockState state = world.getBlockState(pos);
+				if (state.getBlock() == Blocks.CAULDRON)
 				{
-					FluidHelper.fillTank(tank, FluidRegistry.WATER, sideHit, 1000);
+					int waterLevel = state.getValue(BlockCauldron.LEVEL);
+					if (waterLevel < 3)
+					{
+						((BlockCauldron) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+					}
 				}
-			}
-
-			IBlockState state = world.getBlockState(pos);
-			if (state.getBlock() == Blocks.CAULDRON)
-			{
-				int waterLevel = state.getValue(BlockCauldron.LEVEL);
-				if (waterLevel < 3)
+				else
 				{
-					((BlockCauldron) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+					placeWater(world, player, pos.offset(sideHit));
 				}
 			}
 		}
 
 		return EnumActionResult.SUCCESS;
-	}
-
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
-	{
-		if (!world.isRemote)
-		{
-			RayTraceResult mop = this.rayTrace(world, player, false);
-			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
-			{
-				BlockPos blockPosHit = mop.getBlockPos();
-
-				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
-				{
-					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)))
-					{
-						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-						placeWater(world, player, blockPosHit.offset(mop.sideHit));
-						PlayerHelper.swingItem(player);
-					}
-				}
-			}
-		}
-
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	private void placeWater(World world, EntityPlayer player, BlockPos pos)
@@ -203,33 +210,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return false;
 	}
 
-	/** Start IFluidContainerItem **/
-	@Override
-	public FluidStack getFluid(ItemStack container)
-	{
-		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-	}
-
-	@Override
-	public int getCapacity(ItemStack container)
-	{
-		return FluidContainerRegistry.BUCKET_VOLUME;
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
-	{
-		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-	}
-
-	/** End IFluidContainerItem **/
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
@@ -314,4 +294,38 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 		return list;
 	}
+
+	private static class InfiniteFluidHandler implements IFluidHandler
+	{
+
+		private final FluidTankProperties props =
+				new FluidTankProperties(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME), Fluid.BUCKET_VOLUME);
+
+		@Override
+		public IFluidTankProperties[] getTankProperties() {
+			return new IFluidTankProperties[] { props };
+		}
+
+		@Override
+		public int fill(FluidStack resource, boolean doFill) { return 0; }
+
+		@Nullable
+		@Override
+		public FluidStack drain(FluidStack resource, boolean doDrain) {
+			if (resource.getFluid() == FluidRegistry.WATER)
+			{
+				return resource.copy();
+			} else
+			{
+				return null;
+			}
+		}
+
+		@Nullable
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain) {
+			return new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
+		}
+	}
+
 }

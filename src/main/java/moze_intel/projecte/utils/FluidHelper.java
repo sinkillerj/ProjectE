@@ -1,10 +1,11 @@
 package moze_intel.projecte.utils;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * Helper class for anything having to do with Fluids
@@ -12,35 +13,12 @@ import net.minecraftforge.fluids.IFluidHandler;
  */
 public final class FluidHelper
 {
-	public static boolean canFillTank(IFluidHandler tank, Fluid fluid, EnumFacing side)
+	public static void tryFillTank(TileEntity tile, Fluid fluid, EnumFacing side, int quantity)
 	{
-		if (tank.canFill(side, fluid))
+		if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side))
 		{
-			boolean canFill = false;
-
-			for (FluidTankInfo tankInfo : tank.getTankInfo(side))
-			{
-				if (tankInfo.fluid == null)
-				{
-					canFill = true;
-					break;
-				}
-
-				if (tankInfo.fluid.getFluid() == fluid && tankInfo.fluid.amount < tankInfo.capacity)
-				{
-					canFill = true;
-					break;
-				}
-			}
-
-			return canFill;
+			IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+			handler.fill(new FluidStack(fluid, quantity), true);
 		}
-
-		return false;
-	}
-
-	public static void fillTank(IFluidHandler tank, Fluid fluid, EnumFacing side, int quantity)
-	{
-		tank.fill(side, new FluidStack(fluid, quantity), true);
 	}
 }

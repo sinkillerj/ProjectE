@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.Optional;
@@ -59,18 +60,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (tile instanceof IFluidHandler)
+			if (consumeFuel(player, stack, 32.0F, true))
 			{
-				IFluidHandler tank = (IFluidHandler) tile;
-
-				if (FluidHelper.canFillTank(tank, FluidRegistry.LAVA, sideHit))
-				{
-					if (consumeFuel(player, stack, 32.0F, true))
-					{
-						FluidHelper.fillTank(tank, FluidRegistry.LAVA, sideHit, 1000);
-						return EnumActionResult.SUCCESS;
-					}
-				}
+				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
+				return EnumActionResult.SUCCESS;
 			}
 		}
 
