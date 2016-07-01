@@ -16,9 +16,6 @@ Please try the latest release build before reporting, be sure to also include an
 #Downloads
 http://minecraft.curseforge.com/mc-mods/226410-projecte/files
 
-#Classic Textures
-The ProjectE mod now uses EE2 textures. If you prefer the classic ProjectE textures by Magic Banana they can be found here: http://minecraft.curseforge.com/texture-packs/227513-projecte-classic-textures
-
 #Support Development
 ![](/patreon.png?raw=true)
 
