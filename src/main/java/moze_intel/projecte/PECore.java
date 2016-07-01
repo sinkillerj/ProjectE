@@ -54,7 +54,7 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.9.4, 1.11)")
 public class PECore
 {
 	public static final String MODID = "ProjectE";
