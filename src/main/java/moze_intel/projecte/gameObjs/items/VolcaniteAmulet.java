@@ -35,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -60,39 +61,18 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (consumeFuel(player, stack, 32.0F, true))
+			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit)
+					&& consumeFuel(player, stack, 32, true))
 			{
 				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
-				return EnumActionResult.SUCCESS;
-			}
-		}
-
-		return EnumActionResult.PASS;
-	}
-
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
-	{
-		if (!world.isRemote)
-		{
-			RayTraceResult mop = this.rayTrace(world, player, false);
-			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+			} else
 			{
-				BlockPos blockPosHit = mop.getBlockPos();
-				if (!(world.getTileEntity(blockPosHit) instanceof IFluidHandler))
-				{
-					if (world.isAirBlock(blockPosHit.offset(mop.sideHit)) && consumeFuel(player, stack, 32, true))
-					{
-						placeLava(world, player, blockPosHit.offset(mop.sideHit));
-						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-						PlayerHelper.swingItem(player);
-					}
-				}
+				placeLava(world, player, pos.offset(sideHit));
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return EnumActionResult.SUCCESS;
 	}
 
 	private void placeLava(World world, EntityPlayer player, BlockPos pos)
