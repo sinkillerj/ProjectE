@@ -91,7 +91,7 @@ public class DestructionCatalyst extends ItemCharge
 
 					if (world.rand.nextInt(8) == 0)
 					{
-						PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+						PacketHandler.sendToAllAround(new ParticlePKT(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 					}
 				}
 
@@ -106,7 +106,7 @@ public class DestructionCatalyst extends ItemCharge
 
 				if (world.rand.nextInt(8) == 0)
 				{
-					PacketHandler.sendToAllAround(new ParticlePKT(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+					PacketHandler.sendToAllAround(new ParticlePKT(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 				}
 			}
 
