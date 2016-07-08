@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
@@ -8,6 +9,7 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -52,7 +54,7 @@ public class CollectorMK1Container extends Container
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorLock(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36));
+		this.addSlotToContainer(new SlotGhost(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
 
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -74,7 +76,20 @@ public class CollectorMK1Container extends Container
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) (tile.getItemCharge() * 8000));
 	}
-	
+
+	@Override
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	{
+		if (slot >= 0 && getSlot(slot) instanceof SlotGhost)
+		{
+			getSlot(slot).putStack(null);
+			return null;
+		} else
+		{
+			return super.slotClick(slot, button, flag, player);
+		}
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{

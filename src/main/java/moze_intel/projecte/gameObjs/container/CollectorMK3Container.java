@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
@@ -38,7 +39,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorLock(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36));
+		this.addSlotToContainer(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
 
 		//Player inventory
 		for (int i = 0; i < 3; i++)

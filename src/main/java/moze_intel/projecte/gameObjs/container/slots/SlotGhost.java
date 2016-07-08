@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,15 +13,18 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotGhost extends SlotItemHandler
 {
-	public SlotGhost(IItemHandler inv, int slotIndex, int xPos, int yPost)
+	private final Predicate<ItemStack> validator;
+
+	public SlotGhost(IItemHandler inv, int slotIndex, int xPos, int yPos, Predicate<ItemStack> validator)
 	{
-		super(inv, slotIndex, xPos, yPost);
+		super(inv, slotIndex, xPos, yPos);
+		this.validator = validator;
 	}
 	
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && EMCHelper.doesItemHaveEmc(stack))
+		if (stack != null && validator.apply(stack))
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
 		}

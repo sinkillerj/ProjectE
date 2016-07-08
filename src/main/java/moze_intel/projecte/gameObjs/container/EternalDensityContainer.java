@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -23,7 +24,7 @@ public class EternalDensityContainer extends Container
 		 for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 3; ++j)
 			{
-				this.addSlotToContainer(new SlotGhost(gemInv, j + i * 3, 62 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new SlotGhost(gemInv, j + i * 3, 62 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 			}
 
 		for (int i = 0; i < 3; ++i)
