@@ -1,12 +1,12 @@
 item.pe_philosophers_stone.name=Философский камень
-item.pe_alchemical_bag.name=Алхимический мешок
+item.pe_alchemical_bag.name=Алхимическая сумка
 item.pe_repair_talisman.name=Талисман восстановления
-item.pe_klein_star_1.name=Звезда Клейна 1
-item.pe_klein_star_2.name=Звезда Клейна 2
-item.pe_klein_star_3.name=Звезда Клейна 3
-item.pe_klein_star_4.name=Звезда Клейна 4
-item.pe_klein_star_5.name=Звезда Клейна Сфера
-item.pe_klein_star_6.name=Звезда Клейна Омега
+item.pe_klein_star_1.name=Маленькая звезда 1
+item.pe_klein_star_2.name=Маленькая звезда 2
+item.pe_klein_star_3.name=Маленькая звезда 3
+item.pe_klein_star_4.name=Маленькая звезда 4
+item.pe_klein_star_5.name=Маленькая звезда Сфера
+item.pe_klein_star_6.name=Маленькая звезда Омега
 item.pe_fuel_alchemical_coal.name=Алхимический уголь
 item.pe_fuel_mobius.name=Топливо Мёбиуса
 item.pe_fuel_aeternalis.name=Эфирное топливо
@@ -18,7 +18,7 @@ item.pe_matter_red.name=Красная материя
 item.pe_ring_iron_band.name=Железное кольцо
 item.pe_black_hole.name=Кольцо чёрной дыры
 item.pe_harvest_god.name=Кольцо богини урожая
-item.pe_archangel_smite.name=Кара Архангела [WIP]
+item.pe_archangel_smite.name=Кара Архангела
 item.pe_ignition.name=Кольцо воспламенения
 item.pe_body_stone.name=Камень тела
 item.pe_soul_stone.name=Камень души
@@ -29,7 +29,7 @@ item.pe_volcanite_amulet.name=Вулканический амулет
 item.pe_swrg.name=Кольцо ярости стихии
 item.pe_mercurial_eye.name=Ртутное око
 item.pe_time_watch.name=Часы течения времени
-item.pe_gem_density.name=Драгоценный камень вечной плотности
+item.pe_gem_density.name=Самоцвет вечной плотности
 item.pe_divining_rod_1.name=Слабая волшебная лоза
 item.pe_divining_rod_2.name=Средняя волшебная лоза
 item.pe_divining_rod_3.name=Сильная волшебная лоза
@@ -56,7 +56,7 @@ item.pe_rm_hoe.name=Мотыга из красной материи
 item.pe_rm_shears.name=Ножницы из красной материи
 item.pe_rm_hammer.name=Молот из красной материи
 item.pe_rm_katar.name=Красный катар
-item.pe_rm_morning_star.name=Красная утренняя звезда
+item.pe_rm_morning_star.name=Красный моргенштерн
 item.pe_dm_armor_0.name=Шлем из тёмной материи
 item.pe_dm_armor_1.name=Кираса из тёмной материи
 item.pe_dm_armor_2.name=Поножи из тёмной материи
@@ -65,18 +65,21 @@ item.pe_rm_armor_0.name=Шлем из красной материи
 item.pe_rm_armor_1.name=Кираса из красной материи
 item.pe_rm_armor_2.name=Поножи из красной материи
 item.pe_rm_armor_3.name=Ботинки из красной материи
-item.pe_gem_armor_0.name=Шлем из драгоценных камней
-item.pe_gem_armor_1.name=Кираса из драгоценных камней
-item.pe_gem_armor_2.name=Поножи из драгоценных камней
-item.pe_gem_armor_3.name=Ботинки из драгоценных камней
+item.pe_gem_armor_0.name=Самоцветный шлем
+item.pe_gem_armor_1.name=Самоцветная кираса
+item.pe_gem_armor_2.name=Самоцветные поножи
+item.pe_gem_armor_3.name=Самоцветные ботинки
 item.pe_arcana_ring.name=Кольцо тайн
-item.pe_void_ring.name=Кольцо пустоты
+item.pe_void_ring.name=Кольцо вакуума
 item.pe_zero_ring.name=Кольцо абсолютного нуля
 item.pe_tome.name=Том знаний
-item.pe_transmutation_tablet.name=Стол трансмутаций
+item.pe_transmutation_tablet.name=Планшет трансмутаций
+item.pe_manual.name=Книга алхимика [WIP]
+
+pe.manual.tooltip1=Том 2
 
 tile.pe_alchemy_chest.name=Алхимический сундук
-tile.pe_interdiction_torch.name=Факел изгнания
+tile.pe_interdiction_torch.name=Изгоняющий факел
 tile.pe_transmutation_stone.name=Стол трансмутаций
 tile.pe_condenser.name=Конденсатор энергии
 tile.pe_condenser_mk2.name=Конденсатор энергии MK2
@@ -87,11 +90,11 @@ tile.pe_dm_block.name=Блок из тёмной материи
 tile.pe_collector_MK1.name=Сборщик энергии MK1
 tile.pe_collector_MK2.name=Сборщик энергии MK2
 tile.pe_collector_MK3.name=Сборщик энергии MK3
-tile.pe_relay_MK1.name=Реле из антиматерии MK1
-tile.pe_relay_MK2.name=Реле из антиматерии MK2
-tile.pe_relay_MK3.name=Реле из антиматерии MK3
-tile.pe_nova_catalyst.name=Катализатор Новы
-tile.pe_nova_cataclysm.name=Катаклизм Новы
+tile.pe_relay_MK1.name=Реле антиматерии MK1
+tile.pe_relay_MK2.name=Реле антиматерии MK2
+tile.pe_relay_MK3.name=Реле антиматерии MK3
+tile.pe_nova_catalyst.name=Катализатор Сверхновой
+tile.pe_nova_cataclysm.name=Катаклизм Сверхновой
 tile.pe_fuel_block_0.name=Блок алхимического угля
 tile.pe_fuel_block_1.name=Блок топлива Мёбиуса
 tile.pe_fuel_block_2.name=Блок эфирного топлива
@@ -102,12 +105,12 @@ itemGroup.ProjectE=ProjectE
 achievement.phil_stone=Лучший друг алхимиков!
 achievement.phil_stone.desc=Давайте начнём! Сделайте философский камень
 achievement.alch_chest=Улучшение хранилища!
-achievement.alch_chest.desc="Небольшое" улучшение хранилища.
+achievement.alch_chest.desc="Небольшое" улучшение сундука.
 achievement.alch_bag=Карманное хранилище!
 achievement.alch_bag.desc=Все чудеса алхимического сундука в Вашем кармане.
 achievement.transmutation=Превратите это в это!
-achievement.transmutation.desc=Начало и конец всего.
-achievement.condenser=Уплотнение мира!
+achievement.transmutation.desc=Начало (и конец) всего.
+achievement.condenser=Конденсируй мир!
 achievement.condenser.desc=БОЛЬШЕ АЛМАЗОВ!
 achievement.collector=Энергия солнца!
 achievement.collector.desc=Теперь начинается самое интересное.
@@ -117,8 +120,8 @@ achievement.portable_transmutation=Превращение на ходу!
 achievement.portable_transmutation.desc=И тогда Вы подумали, что ничего лучше быть не может.
 achievement.dark_matter=Вся эта материя.
 achievement.dark_matter.desc=Она выглядит... странно....
-achievement.red_matter=Ещё более улучшенная материя!
-achievement.red_matter.desc=Пространство-временной континуум может быть повреждён.
+achievement.red_matter=Даже более хорошая материя!
+achievement.red_matter.desc=Пространственно-временной континуум может быть повреждён.
 achievement.dm_block=Блок материи!
 achievement.dm_block.desc=Объединение материи вместе. Потому что это хорошая идея.
 achievement.rm_block=Красная и блестящая!
@@ -129,7 +132,7 @@ achievement.rm_furnace=Материя - теперь ещё горячее!
 achievement.rm_furnace.desc=Ничего себе, это вещичка быстра.
 achievement.dm_pick=Применение материи на материи
 achievement.dm_pick.desc=Почему бы и нет?
-achievement.rm_pick=Это безопасно?
+achievement.rm_pick=Эта штука безопасна?
 achievement.rm_pick.desc=Скорее всего нет.
 achievement.klein=EMC аккумуляторы
 achievement.klein.desc=Запас EMC на чёрный день.
@@ -154,7 +157,7 @@ pe.body.pedestal2=Восстанавливает половинку голода
 
 pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
 
-pe.command.changelog.uptodate=Для ProjectE обновления не требуются.
+pe.command.changelog.uptodate=Обновление ProjectE не требуется.
 pe.command.clearknowledge.error=Не удалось очистить знания игрока %s
 pe.command.clearknowledge.notify=Ваши знания трансмутаций были очищены администратором %s!
 pe.command.clearknowledge.playernotfound=Не удалось найти игрока с именем: %s
@@ -200,7 +203,7 @@ pe.emc.maxoutrate_tooltip=Максимальная скорость выхода
 pe.emc.maxstorage_tooltip=Максимальное хранилище:
 pe.emc.name=EMC
 pe.emc.rate=EMC/сек
-pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.stackemc_tooltip_prefix=EMC в стеке:
 pe.emc.storedemc_tooltip=Накоплено EMC:
 pe.emc.too_much=СЛИШКОМ МНОГО
 
@@ -224,23 +227,23 @@ pe.gem.feet.lorename=Ураганные ботинки
 
 pe.gem.nightvision_tooltip=Ночное зрение:
 pe.gem.nightvision.prompt=Нажмите %s + %s, чтобы переключить ночное зрение
-pe.gem.stepassist_tooltip=Помощь в шаге:
-pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в шаге
+pe.gem.stepassist_tooltip=Помощь в движении:
+pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в движенни
 
 pe.gemdensity.blacklist=Чёрный список
 pe.gemdensity.mode_switch=Цель установлена на
-pe.gemdensity.tooltip1=Уплотняет предметы на ходу
+pe.gemdensity.tooltip1=Сжимает предметы на ходу
 pe.gemdensity.tooltip2=Текущая цель: %s
 pe.gemdensity.tooltip3=Нажмите %s, чтобы сменить цель
 pe.gemdensity.tooltip4=ПКМ, чтобы установить чёрный/белый список
 pe.gemdensity.tooltip5=Shift-ПКМ, чтобы переключить
 pe.gemdensity.whitelist=Белый список
 
-pe.harvestgod.pedestal1=Ускоряет рост ближайших ростков
-pe.harvestgod.pedestal2=Собирает ближайшие созревшие ростки
+pe.harvestgod.pedestal1=Ускоряет рост ближайших посевов
+pe.harvestgod.pedestal2=Собирает ближайшие созревшие посевы
 pe.harvestgod.pedestal3=Активируется каждые %s
 
-pe.ignition.pedestal1=Сжигает ближайших мобов
+pe.ignition.pedestal1=Поджигает ближайших мобов
 pe.ignition.pedestal2=Активируется каждые %s
 
 pe.item.mode=Режим
@@ -293,7 +296,7 @@ pe.relay.mk1=Реле MKI
 pe.relay.mk2=Реле MKII
 pe.relay.mk3=Реле MKIII
 
-pe.repairtalisman.pedestal1=Чинит предметы ближайших игроков
+pe.repairtalisman.pedestal1=Восстанавливает предметы ближайших игроков
 pe.repairtalisman.pedestal2=Восстанавливает 1 прочность каждые %s
 
 pe.server.high_alchemist=Верховный алхимик
@@ -318,7 +321,7 @@ pe.timewatch.pedestal2=Каждый такт, ближайшие мобы дви
 
 pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
 
-pe.transmutation.already_using=Кто-то уже использует стол трансмутаций!
+pe.transmutation.already_using=Кто-то уже использует этот стол трансмутаций!
 pe.transmutation.transmute=Трансмутация
 pe.transmutation.learned0=В
 pe.transmutation.learned1=ы
@@ -339,7 +342,7 @@ pe.transmutation.unlearned6=е
 pe.transmutation.unlearned7=н
 pe.transmutation.unlearned8=о
 
-pe.update.available=Новое обновление для ProjectE доступно! Новая версия: %s
+pe.update.available=Новая версия ProjectE доступна! Версия: %s
 pe.update.changelog=Используйте /projecte changelog для вызова списка изменений!
 pe.update.getit=Загрузите здесь!
 
@@ -355,3 +358,51 @@ pe.zero.pedestal2=Замораживает окрестности
 pe.zero.pedestal3=Активируется каждые %s
 
 pe.debug.metainvalid.name=Неверные метаданные
+
+pe.nei.worldtransmute=World Transmutation
+pe.nei.philo=Philosopher's Stone Smelting
+
+pe.manual.index=Index
+pe.manual.index_button=ToC
+
+# ItemPages bodies
+pe.manual.pe_alchemical_bag=У практикующего алхимика, вроде вас, нет времени, чтобы постоянно подбирать и ставить Алхимические сундуки. Обработав Алхимический сундук Сильной ковалентной пылью и обернув его в ткан, можно уменьшить сундук до размера мешочка. Сумка имеет полную емкость сундука. Любопытно, что сумки связаны с какой-то метафизической сетью, так как все сумки одного и того же цвета, кажется, содержат одни и те же предметы, независимо от того, ваша это сумка или вашего соседа. Сумка также, активирует магические предметы так же, как это делает сундук.
+
+pe.manual.pe_philosophers_stone=На протяжении многих веков ходили легенды  о философском камне и его возможностях. Трансмутация, бессмертие, все богатства мира, и даже больше, как говорят, были доступны его обладателям. Хотя рецепт казался навсегда утерянным, современные алхимики открыли секрет синтеза подходящей замены для наиболее базовых возможностей. Имейте в виду, что у тех, кто преуспел в его создании часто меняется взгяд на вещи: они упоминают огонь и демонов.
+
+pe.manual.pe_repair_talisman=Ковалентная пыль может быть панацеей от ломающихся инструментов и брони, однако вручную втирать её в царапины и вмятины утомительно и долго. Создайте Талисман восстановления, путем совмещения трёх видов Ковалентной пыли в плотный пучок, что может распространять пыль на инструменты в вашей сумке, чтобы вы могли стричь своих овец и выполнять другие задачи первостепенной важности.
+
+pe.manual.pe_fuel_block_2=Как и другое твёрдое топливо, Эфирное топливо может быть собрано в блоки. Стильно и эффективно.
+
+pe.manual.pe_alchemy_chest=Не секрет, что алхимики любят светящиеся штучки, отсюда и стремление к бесконечному золоту, но обычные варианты хранения не удовлетворяют этим требованиям. Представляем Алхимический сундук, который может хранить 104 стека предметов по цене одной блестяшки и нескольких Ковалентных пылей, где вы можете хранить практически бесконечное число блестяшек.
+
+pe.manual.pe_fuel_block_0=Как и другое твёрдое топливо, Алхимический уголь может быть собран в блоки. Используйте это как эффективное топливо или как декоративную Красную материю бедняков.
+
+pe.manual.pe_relay_MK1=Реле ваш путь для передачи EMC в конденсаторы и другие алхимические устройста, достаточно поставить их вплотную. EMC может быть обеспечена предметами, или присоединенным коллектором.
+
+pe.manual.pe_dm_block=Сырая Темная и Красная материя может быть собрана в блок, который не только он может быть использован в качестве дорогого декора, но и в качестве ключевого материала для ряда алхимических устройств.
+
+pe.manual.pe_dm_furnace=Печи из материи это мощные алхимические устройства, которые могут работать от источников EMC, таких как реле или коллектор. Они весьма эффективны за счет их скорости, а также их способности автоматически выкладывать результат в ближайший сундук.
+
+pe.manual.pe_collector_MK1=Сборщики энергии это одни из самых спорных алхимических устройств из-за их способности генерировать EMC используя ничего, кроме источника света. Эта EMC может быть перенесена в стоящее рядом устройство вроде Реле или Конденсатоа, или использована Сборщиком для зарядки алхимических предметов, Маленькой звезды. Также можно преобразовать топливо в более мощное.
+
+pe.manual.pe_condenser=Столы трансмутаций прекрасны для превращения одного в другое, однако они не подходят для автоматизации. Конденсаторы это решение проблемы, просто установите целевой предмет и всё, что попадает в конденсатор будет преобразовано. Так же возможно создание из EMC полученгой из соседнего Реле или Сборщика энергии.
+
+pe.manual.pe_condenser_mk2=Сборщик энергии MK2 обладает всеми возможностями MK1, но разделяет инвентарь на отдельные вход и выход.
+
+pe.manual.pe_interdiction_torch=Изгоняющий факел не просто стильная альтернатива углю и палкам, любой подошедший моб будет отброшен, как сказал один мудрый человек... НИКТО НЕ ПРОЙДЁТ! 
+
+pe.manual.pe_fuel_block_0=Как и другое твёрдое топливо, Топливо Мёбиуса может быть собрано в блоки. Используйте это как эффективное топливо или как декоративную Красную материю бедняков.
+
+pe.manual.pe_nova_cataclysm=Удвоенное веселье Катализатора Сверхновой!
+
+pe.manual.pe_nova_catalyst=Катализатор Сверхновой это мощная алхимическая взрывчатка, вызывающая большой взрыв с бонусом в виде сохранения всех разрушенных блоков.
+
+pe.manual.pe_transmutation_stone=Стол трансмутаций позволяет алхимику изучить создание одних предметов, и разрушение других для создания первых. На входе Земля, на выходе Алмазы!
+
+# TextPages headers and bodies
+pe.manual.introduction=Открыв эту книгу, вы сделали первый шаг на пути к званию Верховного алхимика. Возможно, вы устали добывать ресурсы снова и снова, или вы просто хотите больше силы для... ваших целей, или хотели бы воспользоваться удобством и красотой магии. Не важно, алхимия вам поможет. Прежде чем начать важно понять прошлое...    Искусство алхимии известно с древних времён. Оно было открыто человеком, известным как x3n0ph0b3, и постепенно уточнено. После выхода на пенсию x3n0ph0b3'а, новый ученик, Pahimar, взялся за развитие искусства, но многие алхимики были недовольны его методами, война разделила их на два лагеря, прозванных with "ленивыми обманщиками" и "EE2 OP!!!!!!". Последователи x3n0 считали, что всё потеряно, пока странник по имени MozeIntel не увёл их в подполье; он изучал и воспроизводил работу x3n0, таким образом сохраняя старое искусство. В конце концов, по неизвестным причинам (они были странно описаны как "IRL"), Moze удалился, оставив свою работу нетерпеливому ученику, SinkillerJ. Sin старался не только принести мир обеим сторонам, но также сформировал совет алхимиков для сохранения старого искусства:    Williewillus - Лорд Рефакторинга    Blubberbub - Архивариус алхемической ценности    Lilylicious - Леди маленьких Больших вещей    Мы, совет алхимиков, теперь передаём тебе наши знания алхимии и преветствуем тебя, молодой алхимик, в мире ProjectE.
+pe.manual.introduction.header=Введение
+
+# ImagePage headers
+pe.manual.img_alchchest.header=alchchest.png
