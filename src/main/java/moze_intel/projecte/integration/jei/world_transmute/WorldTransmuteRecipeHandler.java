@@ -24,6 +24,13 @@ public class WorldTransmuteRecipeHandler implements IRecipeHandler<WorldTransmut
 
     @Nonnull
     @Override
+    public String getRecipeCategoryUid(WorldTransmutations.Entry e)
+    {
+        return getRecipeCategoryUid();
+    }
+
+    @Nonnull
+    @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull WorldTransmutations.Entry recipe)
     {
         return new WorldTransmuteRecipeWrapper(recipe);

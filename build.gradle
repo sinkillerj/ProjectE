@@ -27,7 +27,7 @@ archivesBaseName = "ProjectE"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "run"
-    mappings = 'snapshot_20160518'
+    mappings = 'snapshot_20160718'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
@@ -62,9 +62,9 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    compile "team.chisel:Chisel:MC1.8.9-0.0.2.11:api"
+    compile "team.chisel:Chisel:MC1.9.4-0.0.6.33:api"
 
-    deobfCompile "mezz.jei:jei_1.9.4:3.4.0.202"
+    deobfCompile "mezz.jei:jei_1.10.2:3.7.7.233"
 
     // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
     // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"

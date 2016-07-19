@@ -28,6 +28,7 @@ import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
@@ -295,14 +296,22 @@ public final class WorldHelper
 
 			if (ent instanceof EntitySkeleton)
 			{
-				if (world.rand.nextInt(2) == 0)
+				switch (world.rand.nextInt(3))
 				{
-					((EntitySkeleton) ent).setSkeletonType(1);
-					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
-				}
-				else
-				{
-					ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+					case 0: {
+						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+						break;
+					}
+					case 1: {
+						((EntitySkeleton) ent).setSkeletonType(SkeletonType.WITHER);
+						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
+						break;
+					}
+					case 2: {
+						((EntitySkeleton) ent).setSkeletonType(SkeletonType.STRAY);
+						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+						break;
+					}
 				}
 			}
 			else if (ent instanceof EntityPigZombie)
