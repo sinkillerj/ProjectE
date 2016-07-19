@@ -219,6 +219,10 @@ public final class ItemHelper
 
 	public static String getOreDictionaryName(ItemStack stack)
 	{
+		if (stack == null || stack.getItem() == null)
+		{
+			return "Unknown";
+		}
 		int[] oreIds = OreDictionary.getOreIDs(stack);
 
 		if (oreIds.length == 0)

@@ -528,11 +528,11 @@ public final class WorldHelper
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
-	public static void harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, IBlockState target, List<ItemStack> currentDrops, int numMined)
+	public static int harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, IBlockState target, List<ItemStack> currentDrops, int numMined)
 	{
 		if (numMined >= Constants.MAX_VEIN_SIZE)
 		{
-			return;
+			return numMined;
 		}
 
 		AxisAlignedBB b = new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
@@ -545,14 +545,18 @@ public final class WorldHelper
 			if (currentState == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
 			{
 				numMined++;
-				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 				{
-					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, pos));
-					world.setBlockToAir(pos);
-					harvestVein(world, player, stack, pos, target, currentDrops, numMined);
+					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
+					world.setBlockToAir(currentPos);
+					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
+					if (numMined >= Constants.MAX_VEIN_SIZE) {
+						break;
+					}
 				}
 			}
 		}
+		return numMined;
 	}
 	
 	public static void igniteNearby(World world, EntityPlayer player)
