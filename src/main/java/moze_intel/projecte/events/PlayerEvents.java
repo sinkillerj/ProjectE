@@ -123,16 +123,14 @@ public class PlayerEvents
 
 		if (remainder == null)
 		{
-			event.getItem().setPickupDelay(10);
 			event.getItem().setDead();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId()));
 		}
 		else
 		{
 			event.getItem().setEntityItemStack(remainder);
 		}
-
-		((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId()));
 
 		event.setCanceled(true);
 	}
