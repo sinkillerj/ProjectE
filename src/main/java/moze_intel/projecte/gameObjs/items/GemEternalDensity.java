@@ -88,11 +88,14 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			
-			if (s == null || !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
+			if (s == null
+					|| !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1
+					|| EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)
+					|| inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, true) == null)
 			{
 				continue;
 			}
-			
+
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
 				ItemStack copy = inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, false);
