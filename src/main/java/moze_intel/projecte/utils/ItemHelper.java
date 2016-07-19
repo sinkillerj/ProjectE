@@ -318,6 +318,10 @@ public final class ItemHelper
 		{
 			return true;
 		}
+		if (Item.getItemFromBlock(state.getBlock()) == null)
+		{
+			return false;
+		}
 		String oreDictName = getOreDictionaryName(stateToStack(state, 1));
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
