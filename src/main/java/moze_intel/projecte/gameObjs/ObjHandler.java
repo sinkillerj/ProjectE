@@ -651,7 +651,7 @@ public class ObjHandler
 			"White"
 		};
 
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 16; i++)
 		{
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(alchBag, 1, i), new ItemStack(alchBag, 1, OreDictionary.WILDCARD_VALUE), "dye" + dyes[15 - i]));
 		}
