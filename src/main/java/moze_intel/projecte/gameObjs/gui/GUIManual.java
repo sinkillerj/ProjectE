@@ -58,13 +58,11 @@ public class GUIManual extends GuiScreen
 		RenderHelper.disableStandardItemLighting();
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<String> splitBody(String s)
 	{
 		return peFontRenderer.listFormattedStringToWidth(s, TEXT_WIDTH);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui()
 	{
@@ -84,7 +82,6 @@ public class GUIManual extends GuiScreen
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
@@ -191,7 +188,6 @@ public class GUIManual extends GuiScreen
 		GlStateManager.disableBlend();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void addIndexButtons(int x)
 	{
 		int yOffset = 42;

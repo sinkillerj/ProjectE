@@ -321,7 +321,6 @@ public class ClientProxy implements IProxy
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 3, new ModelResourceLocation("projecte:arcana_swrg_off", "inventory"));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void registerRenderers()
 	{
@@ -372,13 +371,12 @@ public class ClientProxy implements IProxy
 		render.addLayer(new LayerModelYue(render));
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 	{
-		return new IRenderFactory() {
+		return new IRenderFactory<T>() {
 			@Override
-			public Render createRenderFor(RenderManager manager) {
-				return new RenderSnowball(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
+			public Render<? super T> createRenderFor(RenderManager manager) {
+				return new RenderSnowball<>(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
 			}
 		};
 	}
