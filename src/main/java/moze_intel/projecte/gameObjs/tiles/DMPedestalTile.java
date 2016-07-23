@@ -30,17 +30,6 @@ public class DMPedestalTile extends TileEmc
 	@Override
 	public void update()
 	{
-		if (worldObj.isRemote)
-		{
-			if (!worldObj.isBlockLoaded(pos, false))
-			{
-				// Handle condition where this method is called even after the clientside chunk has unloaded.
-				// This will make IPedestalItems below crash with an NPE since the TE they get back is null
-				// Don't you love vanilla???
-				return;
-			}
-		}
-
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
 		centeredZ = pos.getZ() + 0.5;
