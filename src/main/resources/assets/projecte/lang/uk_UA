@@ -217,112 +217,112 @@ pe.gem.enabled=УВІМКНЕНО
 pe.gem.activate=Атакувальні здібності броні увімкнені
 pe.gem.deactivate=Атакувальні здібності броні вимкнені
 
-pe.gem.helm.lorename=Шлем бездны
-pe.gem.chest.lorename=Адская броня
-pe.gem.legs.lorename=Гравитационные поножи
-pe.gem.feet.lorename=Ураганные ботинки
+pe.gem.helm.lorename=Шолом безодні
+pe.gem.chest.lorename=Пекельна броня
+pe.gem.legs.lorename=Гравітаціонні штани
+pe.gem.feet.lorename=Ураганні черевики
 
-pe.gem.nightvision_tooltip=Ночное зрение:
-pe.gem.nightvision.prompt=Нажмите %s + %s, чтобы переключить ночное зрение
-pe.gem.stepassist_tooltip=Помощь в шаге:
-pe.gem.stepassist.prompt=Нажмите %s, чтобы переключить помощь в шаге
+pe.gem.nightvision_tooltip=Нічне бачення:
+pe.gem.nightvision.prompt=Натисніть %s + %s, аби перемкнути нічне бачення  
+pe.gem.stepassist_tooltip=Допомога у кроці:
+pe.gem.stepassist.prompt=Натисніть %s, аби перемкнути допомогу у кроці
 
-pe.gemdensity.blacklist=Чёрный список
-pe.gemdensity.mode_switch=Цель установлена на
-pe.gemdensity.tooltip1=Уплотняет предметы на ходу
-pe.gemdensity.tooltip2=Текущая цель: %s
-pe.gemdensity.tooltip3=Нажмите %s, чтобы сменить цель
-pe.gemdensity.tooltip4=ПКМ, чтобы установить чёрный/белый список
-pe.gemdensity.tooltip5=Shift-ПКМ, чтобы переключить
-pe.gemdensity.whitelist=Белый список
+pe.gemdensity.blacklist=Чорний список
+pe.gemdensity.mode_switch=Ціль назначена на
+pe.gemdensity.tooltip1=Ущільнює предмети на ходу
+pe.gemdensity.tooltip2=Нинішня ціль: %s
+pe.gemdensity.tooltip3=Натисніть %s, аби змінити ціль
+pe.gemdensity.tooltip4=ПКМ, аби встановити чорний/білий список
+pe.gemdensity.tooltip5=Shift-ПКМ, аби перемикнути
+pe.gemdensity.whitelist=Білий список
 
-pe.harvestgod.pedestal1=Ускоряет рост ближайших ростков
-pe.harvestgod.pedestal2=Собирает ближайшие созревшие ростки
-pe.harvestgod.pedestal3=Активируется каждые %s
+pe.harvestgod.pedestal1=Пришвидшує виростання найближчих паростків
+pe.harvestgod.pedestal2=Збирає найближчі виросші паростки
+pe.harvestgod.pedestal3=Активується кожні %s
 
-pe.ignition.pedestal1=Сжигает ближайших мобов
-pe.ignition.pedestal2=Активируется каждые %s
+pe.ignition.pedestal1=Спалює найближчих мобів
+pe.ignition.pedestal2=Активується кожні %s
 
 pe.item.mode=Режим
-pe.item.mode_switch=Переключено на режим: %s
+pe.item.mode_switch=Перемкнено у режим: %s
 
-pe.katar.mode1=Убивать враждебных
-pe.katar.mode2=Убивать всех
+pe.katar.mode1=Вбивати ворожих
+pe.katar.mode2=вбивати всіх
 
-pe.key.armor_toggle=Эффекты брони
-pe.key.charge=Разбег
-pe.key.extra_function=Доп. функция
-pe.key.fire_projectile=Огненный снаряд
-pe.key.mode=Сменить режим
+pe.key.armor_toggle=Ефекти броні
+pe.key.charge=Розбіг
+pe.key.extra_function=Додаткова функція
+pe.key.fire_projectile=Вогняний заряд
+pe.key.mode=Змінити режим
 
-pe.life.pedestal1=Восстанавливает голод и здоровье
-pe.life.pedestal2=По половинке сердца и голода каждые %s
+pe.life.pedestal1=Відновлює голод та здоров'я
+pe.life.pedestal2=По половинці серця та голоду кожні %s
 
-pe.mind.pedestal1=Всасывает ближайшие сферы опыта в камень разума
+pe.mind.pedestal1=Всмоктує найближчі сфери досвіду у камінь розуму
 
-pe.misc.every_tick=каждый такт
-pe.misc.seconds=секунд(-ы)
-pe.misc.storedxp_tooltip=Накоплено опыта:
-pe.misc.wrenched_block=Демонтированный блок!
+pe.misc.every_tick=кожний тік
+pe.misc.seconds=секунд(-и)
+pe.misc.storedxp_tooltip=Наявно досвіду:
+pe.misc.wrenched_block=Демонтований блок!
 
-pe.morningstar.mode1=Стандартный
-pe.morningstar.mode2=3x блока в высоту
-pe.morningstar.mode3=3x блока в ширину
-pe.morningstar.mode4=3x блока в длину
+pe.morningstar.mode1=Стандартний!
+pe.morningstar.mode2=3x блока у висоту
+pe.morningstar.mode3=3x блока у ширину
+pe.morningstar.mode4=3x блока у довжину
 
-pe.pedestal.item_disabled=Функционал пьедестала отключен!
-pe.pedestal.on_pedestal=На пьедестале:
-pe.pedestal.shortname=Пьедестал из ТМ
-pe.pedestal.tooltip1=Shift-ПКМ, чтобы открыть интерфейс
-pe.pedestal.tooltip2=ПКМ, чтобы активировать!
+pe.pedestal.item_disabled=Функціонал п'єдестала вимкнений!
+pe.pedestal.on_pedestal=На п'єдесталі:
+pe.pedestal.shortname=П'єдестал з ТМ
+pe.pedestal.tooltip1=Shift-ПКМ, щоб відкрити інтерфейс
+pe.pedestal.tooltip2=ПКМ, щоб активувати!
 
 pe.philstone.mode1=Куб
 pe.philstone.mode2=Панель
-pe.philstone.mode3=Линия
-pe.philstone.tooltip1=Нажмите %s, чтобы открыть сетку создания
+pe.philstone.mode3=Лінія
+pe.philstone.tooltip1=Натисніть %s, аби відкрити сітку крафта
 
-pe.redpick.mode1=Стандартный
-pe.redpick.mode2=3x блока в высоту
-pe.redpick.mode3=3x блока в ширину
-pe.redpick.mode4=3x блока в длину
+pe.redpick.mode1=Стандартний
+pe.redpick.mode2=3x блока у висоту
+pe.redpick.mode3=3x блока у ширину
+pe.redpick.mode4=3x блока у довжину
 
-pe.redsword.mode1=Убивать враждебных
-pe.redsword.mode2=Убивать всех
+pe.redsword.mode1=Вбивати ворожих
+pe.redsword.mode2=Вбивати всіх
 
-pe.relay.mk1=Реле MKI
-pe.relay.mk2=Реле MKII
-pe.relay.mk3=Реле MKIII
+pe.relay.mk1=Реле вер.1
+pe.relay.mk2=Реле вер.2
+pe.relay.mk3=Реле вер.3
 
-pe.repairtalisman.pedestal1=Чинит предметы ближайших игроков
-pe.repairtalisman.pedestal2=Восстанавливает 1 прочность каждые %s
+pe.repairtalisman.pedestal1=Ремонтує предмети найближчих гравців
+pe.repairtalisman.pedestal2=Ремонтує 1 позначку кожні %s
 
-pe.server.high_alchemist=Верховный алхимик
-pe.server.has_joined=присоединился к серверу
+pe.server.high_alchemist=Верховний алхімік
+pe.server.has_joined=приєднався до серверу
 
-pe.soul.pedestal1=Лечит ближайших игроков
-pe.soul.pedestal2=По половине сердца каждые %s
+pe.soul.pedestal1=Лікує найближчих гравців
+pe.soul.pedestal2=По половині серця кожні %s
 
-pe.swrg.pedestal1=Стреляет молнией в ближайших мобов
-pe.swrg.pedestal2=Активируется каждые %s
+pe.swrg.pedestal1=Стріляє блискавкою у найближчих мобів
+pe.swrg.pedestal2=Активується кожні %s
 
-pe.timewatch.disabled=Предмет отключен администратором
-pe.timewatch.ff=Перемотка вперёд
-pe.timewatch.mode=Режим контроля времени: %s
-pe.timewatch.mode_switch=Режим контроля времени изменён на: %s
-pe.timewatch.off=Выкл.
+pe.timewatch.disabled=Предмет відключен адміністратором
+pe.timewatch.ff=Перемотка вперед
+pe.timewatch.mode=Режим контролю часу: %s
+pe.timewatch.mode_switch=Режим контролю часу змінено на: %s
+pe.timewatch.off=Вимк.
 pe.timewatch.rw=Перемотка
-pe.timewatch.tooltip1=Станьте хозяином времени
-pe.timewatch.tooltip2=ПКМ, чтобы изменить режим
-pe.timewatch.pedestal1=Даёт бонус в %d такта(-ов) ближайшим блокам каждый такт
-pe.timewatch.pedestal2=Каждый такт, ближайшие мобы двигаются в %.3f раз быстрее
+pe.timewatch.tooltip1=Станьте хазяїном часу
+pe.timewatch.tooltip2=ПКМ, аби змінити режим
+pe.timewatch.pedestal1=Дає бонус в %d такта(-ів) найближчим блокам кожен тік
+pe.timewatch.pedestal2=Кожен тік, найближчі моби рухаються у %.3f рази швидше
 
-pe.tome.tooltip1=Открывает все знания трансмутаций, если выучить
+pe.tome.tooltip1=Відкриває усі знання трансмутацій,якщо вивчити
 
-pe.transmutation.already_using=Кто-то уже использует стол трансмутаций!
-pe.transmutation.transmute=Трансмутация
+pe.transmutation.already_using=Хтось вже використовує стіл трансмутацій!
+pe.transmutation.transmute=Трансмутація
 pe.transmutation.learned0=В
-pe.transmutation.learned1=ы
-pe.transmutation.learned2=у
+pe.transmutation.learned1=и
+pe.transmutation.learned2=в
 pe.transmutation.learned3=ч
 pe.transmutation.learned4=е
 pe.transmutation.learned5=н
@@ -332,26 +332,26 @@ pe.transmutation.learned7=!
 pe.transmutation.unlearned0=Н
 pe.transmutation.unlearned1=е
 pe.transmutation.unlearned2=в
-pe.transmutation.unlearned3=ы
-pe.transmutation.unlearned4=у
+pe.transmutation.unlearned3=и
+pe.transmutation.unlearned4=в
 pe.transmutation.unlearned5=ч
 pe.transmutation.unlearned6=е
 pe.transmutation.unlearned7=н
 pe.transmutation.unlearned8=о
 
-pe.update.available=Новое обновление для ProjectE доступно! Новая версия: %s
-pe.update.changelog=Используйте /projecte changelog для вызова списка изменений!
-pe.update.getit=Загрузите здесь!
+pe.update.available=Доступне нове оновлення для ProjectE: %s
+pe.update.changelog=Використовуйте /projecte changelog для виклику списку змін!
+pe.update.getit=Завантажте тут!
 
-pe.volcanite.tooltip1=Нажмите %s, чтобы выпустить лавовый снаряд
-pe.volcanite.tooltip2=Работает как бесконечное полное ведро лавы
-pe.volcanite.tooltip3=ПКМ, чтобы наполнить резервуары
-pe.volcanite.tooltip4=Все операции стоят 32 EMC!
-pe.volcanite.pedestal1=Убирает дождь/снег
-pe.volcanite.pedestal2=Пытается остановить погодные явления каждые %s
+pe.volcanite.tooltip1=Натисніть %s, аби випустити лавовий снаряд
+pe.volcanite.tooltip2=Працює як нескінченне відро лави
+pe.volcanite.tooltip3=ПКМ, аби наповнити резервуари
+pe.volcanite.tooltip4=Усі операції коштують 32 EMC!
+pe.volcanite.pedestal1=Прибирає дощ/сніг
+pe.volcanite.pedestal2=Намагається зупинити погодні умови кожні %s
 
-pe.zero.pedestal1=Тушит сущностей
-pe.zero.pedestal2=Замораживает окрестности
-pe.zero.pedestal3=Активируется каждые %s
+pe.zero.pedestal1=Гасить істот
+pe.zero.pedestal2=Заморожує усе поблизу
+pe.zero.pedestal3=Активується кожні %s
 
-pe.debug.metainvalid.name=Неверные метаданные
+pe.debug.metainvalid.name=Неправильні метадані
