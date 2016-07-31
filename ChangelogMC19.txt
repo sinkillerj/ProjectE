@@ -1,3 +1,15 @@
+###Version 1.9.4-PE1.0.5B
+* NOTICE: This is the final 1.9 release as we are transitioning the beta to 1.10
+* FIXED: A Collector dupe bug
+* FIXED: A Harvest Goddess Band crash
+* FIXED: World fluid transmutations
+* FIXED: Mushroom EMC
+* FIXED: EIO OreDict EMC
+* FIXED: Minor particle corrections
+* FIXED: Slime blocks and Gem armor resulting in ludicrous speed
+* NEW: Gem armor stomp causes damage to nearby mobs
+* CHANGE: Loot balls have been removed as they are troublesome and no longer needed in modern MC versions
+
 ###Version 1.9.4-PE1.0.4B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
 * FIXED: Further EMC mapping issues
