@@ -155,7 +155,7 @@ public final class WorldHelper
 		if (inv == null)
 			return;
 
-		for (int i = 1; i < inv.getSlots(); i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
