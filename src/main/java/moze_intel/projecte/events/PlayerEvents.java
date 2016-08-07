@@ -29,6 +29,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
@@ -99,7 +100,7 @@ public class PlayerEvents
 		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public void pickupItem(EntityItemPickupEvent event)
 	{
 		EntityPlayer player = event.getEntityPlayer();
