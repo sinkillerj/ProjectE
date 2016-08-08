@@ -1,4 +1,4 @@
-item.pe_philosophers_stone.name=贤者之石
+item.pe_philosophers_stone.name=贤♂者之石
 item.pe_alchemical_bag.name=炼金术之袋
 item.pe_repair_talisman.name=修复护符
 item.pe_klein_star_1.name=一级卡莱恩能量之星
@@ -10,15 +10,15 @@ item.pe_klein_star_6.name=六级卡莱恩能量之星
 item.pe_fuel_alchemical_coal.name=炼金煤炭
 item.pe_fuel_mobius.name=莫比乌斯燃料
 item.pe_fuel_aeternalis.name=永恒燃料
-item.pe_covalence_dust_low.name=低等共价粉尘
-item.pe_covalence_dust_medium.name=中等共价粉尘
-item.pe_covalence_dust_high.name=高等共价粉尘
+item.pe_covalence_dust_low.name=低等共价尘
+item.pe_covalence_dust_medium.name=中等共价尘
+item.pe_covalence_dust_high.name=高等共价尘
 item.pe_matter_dark.name=暗物质
 item.pe_matter_red.name=红物质
 item.pe_ring_iron_band.name=铁指环
 item.pe_black_hole.name=黑洞指环
 item.pe_harvest_god.name=丰收女神戒指
-item.pe_archangel_smite.name=大天使的惩戒 [WIP]
+item.pe_archangel_smite.name=大天使的惩戒
 item.pe_ignition.name=烈焰指环
 item.pe_body_stone.name=身之宝石
 item.pe_soul_stone.name=灵魂之石
@@ -57,23 +57,26 @@ item.pe_rm_shears.name=红物质剪刀
 item.pe_rm_hammer.name=红物质锤
 item.pe_rm_katar.name=红物质拳剑
 item.pe_rm_morning_star.name=红物质钉头锤
-item.pe_dm_armor_0.name=暗物质头盔
-item.pe_dm_armor_1.name=暗物质胸甲
-item.pe_dm_armor_2.name=暗物质护腿
-item.pe_dm_armor_3.name=暗物质靴子
-item.pe_rm_armor_0.name=红物质头盔
-item.pe_rm_armor_1.name=红物质胸甲
-item.pe_rm_armor_2.name=红物质护腿
-item.pe_rm_armor_3.name=红物质靴子
-item.pe_gem_armor_0.name=深渊头盔
-item.pe_gem_armor_1.name=炼狱胸甲
-item.pe_gem_armor_2.name=重力护腿
-item.pe_gem_armor_3.name=飓风长靴
+item.pe_dm_armor_0.name=暗物质靴子
+item.pe_dm_armor_1.name=暗物质护腿
+item.pe_dm_armor_2.name=暗物质胸甲
+item.pe_dm_armor_3.name=暗物质头盔
+item.pe_rm_armor_0.name=红物质靴子
+item.pe_rm_armor_1.name=红物质护腿
+item.pe_rm_armor_2.name=红物质胸甲
+item.pe_rm_armor_3.name=红物质头盔
+item.pe_gem_armor_0.name=飓风长靴
+item.pe_gem_armor_1.name=重力护腿
+item.pe_gem_armor_2.name=炼狱胸甲
+item.pe_gem_armor_3.name=深渊头盔
 item.pe_arcana_ring.name=奥术指环
 item.pe_void_ring.name=虚空指环
 item.pe_zero_ring.name=零度指环
 item.pe_tome.name=炼金术秘卷
 item.pe_transmutation_tablet.name=便携式转化桌
+item.pe_manual.name=炼金术士之书
+
+pe.manual.tooltip1=2级
 
 tile.pe_alchemy_chest.name=炼金术箱子
 tile.pe_interdiction_torch.name=禁止火把
@@ -99,44 +102,44 @@ tile.pe_dmPedestal.name=暗物质台座
 
 itemGroup.ProjectE=ProjectE
 
-achievement.phil_stone=炼金术师的挚友
-achievement.phil_stone.desc=用贤者之石开启你的炼金之旅!
-achievement.alch_chest=存储升级!
-achievement.alch_chest.desc=一个"小型的"升级版箱子
-achievement.alch_bag=背袋存储!
-achievement.alch_bag.desc=它具有炼金术箱子的奇妙之处
-achievement.transmutation=转换物品!
-achievement.transmutation.desc=开始亦是结束
-achievement.condenser=汇聚一切!
-achievement.condenser.desc=更多的钻石!
-achievement.collector=烈日之力!
-achievement.collector.desc=有趣的事情开始了
-achievement.relay=权力归花儿
-achievement.relay.desc=与收集器并放在一起提供更多能量
-achievement.portable_transmutation=转换从未止步!
-achievement.portable_transmutation.desc=这太美妙了
-achievement.dark_matter=万物归于物质
-achievement.dark_matter.desc=看上去有些...科幻
-achievement.red_matter=更先进的物质
-achievement.red_matter.desc=它几乎可以打破时空连续体
-achievement.dm_block=物质方块!
-achievement.dm_block.desc=让暗物质聚集在一个方块中,这的确是个好主意
-achievement.rm_block=红色亮闪闪!
-achievement.rm_block.desc=现在的你已经取得了巨大的成就
-achievement.dm_furnace=炽热的物质!
-achievement.dm_furnace.desc=暗物质制成的熔炉或许更为优秀
-achievement.rm_furnace=更炽热的物质!
-achievement.rm_furnace.desc=光速运作的熔炉
-achievement.dm_pick=物质触碰物质
-achievement.dm_pick.desc=为什么不试试这个呢?
-achievement.rm_pick=安全的工具?
-achievement.rm_pick.desc=也许不那么安全
-achievement.klein=能量电池
-achievement.klein.desc=储存EMC以备不时之需
-achievement.klein_big=大容量能量电池
-achievement.klein_big.desc=它能容得下整个宇宙
+achievement.pe_phil_stone=炼金术师的挚友
+achievement.pe_phil_stone.desc=用贤♂者之石开启你的炼金之旅!
+achievement.pe_alch_chest=存储升级!
+achievement.pe_alch_chest.desc=一个"小型的"升级版箱子
+achievement.pe_alch_bag=背袋存储!
+achievement.pe_alch_bag.desc=它具有炼金术箱子的奇妙之处
+achievement.pe_transmutation=转换物品!
+achievement.pe_transmutation.desc=开始亦是结束
+achievement.pe_condenser=汇聚一切!
+achievement.pe_condenser.desc=更多的钻石!
+achievement.pe_collector=烈日之力!
+achievement.pe_collector.desc=有趣的事情开始了!
+achievement.pe_relay=力量之花！
+achievement.pe_relay.desc=与收集器放在一起以提供更多能量！
+achievement.pe_portable_transmutation=转换从未止步!
+achievement.pe_portable_transmutation.desc=这太美妙了!
+achievement.pe_dark_matter=万物归于物质!
+achievement.pe_dark_matter.desc=看上去有些...科幻...
+achievement.pe_red_matter=更先进的物质
+achievement.pe_red_matter.desc=它几乎可以打破时空连续体!
+achievement.pe_dm_block=物质方块!
+achievement.pe_dm_block.desc=让暗物质聚集在一个方块中,这的确是个好主意!
+achievement.pe_rm_block=红色亮闪闪!
+achievement.pe_rm_block.desc=现在,你已经取得了巨大的成就!
+achievement.pe_dm_furnace=炽热的物质!
+achievement.pe_dm_furnace.desc=暗物质制成的熔炉或许更为优秀!
+achievement.pe_rm_furnace=更炽热的物质!
+achievement.pe_rm_furnace.desc=光速运作的熔炉!
+achievement.pe_dm_pick=物质触碰物质!
+achievement.pe_dm_pick.desc=为什么不试试这个呢?
+achievement.pe_rm_pick=安全的工具?
+achievement.pe_rm_pick.desc=也许不那么安全!
+achievement.pe_klein=EMC能量电池!
+achievement.pe_klein.desc=储存EMC以备不时之需!
+achievement.pe_klein_big=大容量的EMC能量电池
+achievement.pe_klein_big.desc=它能容得下整个宇宙!
 
-pe.arcana.mode=模式: 
+pe.arcana.mode=模式:
 pe.arcana.mode.0=零度
 pe.arcana.mode.1=烈焰
 pe.arcana.mode.2=丰收
@@ -165,8 +168,8 @@ pe.command.reload.started=正在更新注册的EMC值...
 pe.command.reload.success=更新完成!更新数据已发送至客户端.
 pe.command.reload.notice=当完成所有变更时，请重启或使用 "/projecte reloadEMC" 指令.
 
-pe.command.remove.invaliditem=错误: 未找到物品" %s ".
-pe.command.remove.invalidmeta=错误: meta数据" %s "是无效的.
+pe.command.remove.invaliditem=错误: 未找到物品"%s" !
+pe.command.remove.invalidmeta=错误: meta数据 "%s" 是无效的.
 pe.command.remove.success=成功移除 %s 的EMC值.
 pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (参数无法指向手持物件)
 
@@ -178,7 +181,7 @@ pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (�
 pe.command.set.invalidemc=错误: " %s "是一个无效的EMC值.
 pe.command.set.invaliditem=错误: 未找到物品" %s ".
 pe.command.set.invalidmeta=错误: meta数据" %s "是无效的.
-pe.command.set.success=已将 %s 的EMC值设定为 %s.
+pe.command.set.success=已将 %s 的EMC值设为 %s.
 pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value] 或 /projecte setEMC [EMC value] (参数指向手持物件)
 
 pe.darkpick.mode1=普通模式
@@ -204,10 +207,10 @@ pe.emc.stackemc_tooltip_prefix=EMC总和:
 pe.emc.storedemc_tooltip=EMC存储:
 pe.emc.too_much=EMC能量已达到上限!
 
-pe.evertide.tooltip1=按[%s]键发射一颗潮汐宝珠
-pe.evertide.tooltip2=能提供无限水
-pe.evertide.tooltip3=右键填充流体储罐或炼药锅
-pe.evertide.tooltip4=使用无需消耗EMC
+pe.evertide.tooltip1=按[%s]键发射一颗潮汐宝珠.
+pe.evertide.tooltip2=能提供无限水.
+pe.evertide.tooltip3=右键填充流体储罐或炼药锅.
+pe.evertide.tooltip4=使用无需消耗EMC!
 pe.evertide.pedestal1=召唤暴风雨/雪
 pe.evertide.pedestal2=每%s激活一次
 
@@ -223,7 +226,7 @@ pe.gem.legs.lorename=重力护腿
 pe.gem.feet.lorename=飓风长靴
 
 pe.gem.nightvision_tooltip=夜视模式:
-pe.gem.nightvision.prompt=按[Shift+%s]键切换夜视模式
+pe.gem.nightvision.prompt=按 [%s + %s] 键切换夜视模式
 pe.gem.stepassist_tooltip=自动跳跃:
 pe.gem.stepassist.prompt=按[%s]键切换自动跳跃
 
@@ -308,15 +311,15 @@ pe.swrg.pedestal2=每%s激活一次
 pe.timewatch.disabled=该物品已被管理员禁止!
 pe.timewatch.ff=加速时间流逝
 pe.timewatch.mode=怀表模式: %s
-pe.timewatch.mode_switch=怀表模式: %s
+pe.timewatch.mode_switch=将怀表模式设为: %s
 pe.timewatch.off=关闭
 pe.timewatch.rw=加速时间倒流
 pe.timewatch.tooltip1=随心所欲的操控时间
 pe.timewatch.tooltip2=右键切换模式
-pe.timewatch.pedestal1=%d倍加快附近方块的刷新及运作速度
-pe.timewatch.pedestal2=%.3f倍降低附近生物的活动速度
+pe.timewatch.pedestal1=以%d倍加快附近方块的刷新及运作速度
+pe.timewatch.pedestal2=以%.3f倍降低附近生物的活动速度
 
-pe.tome.tooltip1=放入转化桌可习得全部转化知识.
+pe.tome.tooltip1=放入转化桌可习得全部转化知识.(创造专属)
 
 pe.transmutation.already_using=有人正在使用这个转化桌!
 pe.transmutation.transmute=转化桌
@@ -340,7 +343,7 @@ pe.transmutation.unlearned7=e
 pe.transmutation.unlearned8=d
 
 pe.update.available=ProjectE有可更新的版本! 版本号: %s
-pe.update.changelog=使用指令/projecte changelog查看更新日志.
+pe.update.changelog=使用指令/projecte changelog 查看更新日志.
 pe.update.getit=下载地址:
 
 pe.volcanite.tooltip1=按[%s]键发射一颗熔焰宝珠
@@ -355,3 +358,136 @@ pe.zero.pedestal2=并冻结周围的一切
 pe.zero.pedestal3=每%s激活一次
 
 pe.debug.metainvalid.name=metadata参数设置无效
+
+pe.nei.worldtransmute=世界转化
+pe.nei.philo=贤♂者之石的转化
+
+pe.manual.index=目录
+pe.manual.index_button=回到首页
+
+# ItemPages bodies
+pe.manual.pe_alchemical_bag=像诸位这样身体力行,专注于研究的炼金师没有多余的时间去不断的放置炼金箱子来进行物品存储.在炼金箱子上撒一些高等共价粉尘并用布料包裹起来,你就能够将箱子收缩到布袋一般大小.它有着完整箱子的储物容量.奇妙的是,这些布袋似乎被绑定到了一种虚幻的网络当中,同种颜色的布袋会装有相同的物品,无论这个袋子是你的还是你的邻居的,这个布袋似乎会像箱子一样激活一些魔法物品
+pe.manual.pe_philosophers_stone=关于贤♂者之石所拥有的强大的力量的传说已经流传了几个世纪。只要掌握了这种能力就能无限制的转化出人们想要的财富。现代的炼金术师花费了大量的时间终于发现用适合的替代品来获得一些基础能力的方法。然而要注意那些成功者的新发现，据说这往往会带来天灾人祸！
+
+pe.manual.pe_repair_talisman=你已经发现共价尘可以修复工具的耐久，但你已经厌倦了乏味的修复过程。快来使用修复护符吧，由多种共价尘制作而成的修复护符只要放在背包内就会自动修复工具的耐久，你可以安心的睡觉或做其他更重要的事。
+
+pe.manual.pe_fuel_block_2=和其他固体燃料一样，永恒燃料可以被压缩成块状。时尚又高效。
+
+pe.manual.pe_alchemy_chest=炼金术士喜欢值钱的东西并不是什么秘密，他们渴望获得无尽的黄金，但正常情况下根本不存在大容量存储箱子。现在你只需花费一些小成本和一些共价尘做成炼金术箱子来储存几乎无限的物品。每个箱子拥有104个槽。
+
+pe.manual.pe_fuel_block_0=与其他固体燃料一样，炼金煤炭可以被压缩成块状。作为一种高效的燃料，也可以作为一种便宜的装饰。
+
+pe.manual.pe_relay_MK1=反物质继电器是一种快速为能量凝聚器和其他炼金设备提供EMC的简易装置，与其他炼金设备相邻放置即可传输，EMC可以由原料提供或者由附近的能量收集器提供。（该功能尚未完成！）
+
+pe.manual.pe_relay_MK2=反物质继电器MK2
+
+pe.manual.pe_relay_MK3=反物质继电器MK3
+
+pe.manual.pe_dmPedestal=暗物质台座
+
+pe.manual.pe_dm_block=暗物质和红物质原料可以被压成块。它不仅可以作为炼金方面的装饰，还是一种极为重要的炼金原料。（该功能尚未完成！）
+
+pe.manual.pe_dm_furnace=物质熔炉是一种反物质继电器或能源收集器提供的EMC来工作的强力炼金设备。物质熔炉的速度取决于输入的EMC的速度。物质熔炉还能将烧好的物品自动输出到附近的箱子。（该功能尚未完成！）
+
+pe.manual.pe_collector_MK1=能源收集器由于其仅仅依靠光源就能产生EMC而备受争议。能源收集器内的EMC可传输到相邻的设备中，比如反物质继电器或能量凝聚器。你也可以在能源收集器内放入充能炼金物品列如卡莱恩能量之星。你还可以将能源收集器改造，让它有更大的输出！（该功能尚未完成！）
+
+pe.manual.pe_collector_MK2=能源收集器MK2
+
+pe.manual.pe_collector_MK3=能源收集器MK3
+
+pe.manual.pe_condenser=转化桌可以将一样物品转化为另一样物品，但这个过程必须手动转化。幸运的是，能量凝聚器诞生了。只需要将一个物品设置为输出物品，再放入含有EMC的物品能量凝聚器就会自动转化。你也可以将能量凝聚器与反物质继电器和能源收集器相邻放置来转化物品。
+
+pe.manual.pe_condenser_mk2=能量凝聚器MK2拥有MK1的所有功能，但拥有独立的输入输出栏。
+
+pe.manual.pe_interdiction_torch=禁止火把不仅仅只是一个时髦的火把，它会把任何试图接近你的任何怪物推开。如同一位哲♂学家曾经说过……没人可以过来！
+
+pe.manual.pe_rm_block=红物质方块
+
+pe.manual.pe_rm_furnace=红物质熔炉
+
+pe.manual.pe_fuel_block_1=像其他固体燃料一样，莫比乌斯燃料可以被压缩成块状。这是一种极高效的燃料，也可以作为一种便宜的装饰。
+
+pe.manual.pe_nova_cataclysm=拥有爆破新星的所有功能，双倍的爆炸力
+
+pe.manual.pe_nova_catalyst=爆破新星是一种强力的炼金爆破工具，一旦点燃就会快速爆炸，并把附近的方块变成掉落物。（它不会对你造成伤害）
+
+pe.manual.pe_transmutation_stone=转化桌允许炼金术师研究材料的基本组成EMC，并分解其他物品来形成更多的EMC。来让垃圾变成钻石吧！
+
+pe.manual.pe_dm_sword=暗物质剑
+pe.manual.pe_dm_shears=暗物质剪刀
+pe.manual.pe_dm_axe=暗物质斧
+pe.manual.pe_dm_shovel=暗物质铲
+pe.manual.pe_dm_hoe=暗物质锄
+pe.manual.pe_dm_hammer=暗物质锤
+pe.manual.pe_dm_pick=暗物质镐
+pe.manual.pe_rm_sword=红物质剑
+pe.manual.pe_rm_morning_star=红物质钉头锤
+pe.manual.pe_rm_shears=红物质剪刀
+pe.manual.pe_rm_katar=红物质拳剑
+pe.manual.pe_rm_axe=红物质斧
+pe.manual.pe_rm_shovel=红物质铲
+pe.manual.pe_rm_hoe=红物质锄
+pe.manual.pe_rm_hammer=红物质锤
+pe.manual.pe_rm_pick=红物质镐
+pe.manual.pe_dm_armor_3=暗物质头盔
+pe.manual.pe_dm_armor_1=暗物质护腿
+pe.manual.pe_dm_armor_2=暗物质胸甲
+pe.manual.pe_dm_armor_0=暗物质靴子
+pe.manual.pe_gem_armor_3=深渊头盔
+pe.manual.pe_gem_armor_2=炼狱胸甲
+pe.manual.pe_rm_armor_3=红物质头盔
+pe.manual.pe_rm_armor_1=红物质护腿
+pe.manual.pe_rm_armor_2=红物质胸甲
+pe.manual.pe_rm_armor_0=红物质靴子
+pe.manual.pe_gem_armor_1=重力护腿
+pe.manual.pe_gem_armor_0=飓风长靴
+pe.manual.pe_klein_star_1=一级卡莱恩能量之星
+pe.manual.pe_klein_star_2=二级卡莱恩能量之星
+pe.manual.pe_klein_star_3=三级卡莱恩能量之星
+pe.manual.pe_klein_star_4=四级卡莱恩能量之星
+pe.manual.pe_klein_star_5=五级卡莱恩能量之星
+pe.manual.pe_klein_star_6=六级卡莱恩能量之星
+pe.manual.pe_hyperkinetic_lens=不稳定水晶
+pe.manual.pe_arcana_ring=奥术指环
+pe.manual.pe_void_ring=虚空指环
+pe.manual.pe_zero_ring=零度指环
+pe.manual.pe_covalence_dust_medium=中等共价尘
+pe.manual.pe_harvest_god=丰收女神戒指
+pe.manual.pe_covalence_dust_low=低等共价尘
+pe.manual.pe_covalence_dust_high=高等共价尘
+pe.manual.pe_transmutation_tablet=便携式转化桌
+pe.manual.pe_catalitic_lens=催化水晶
+pe.manual.pe_mercurial_eye=墨丘利之眼
+pe.manual.pe_time_watch=时间洪流怀表
+pe.manual.pe_archangel_smite=大天使的惩戒
+pe.manual.pe_divining_rod_1=探知之杖<初级>
+pe.manual.pe_divining_rod_2=探知之杖<中极>
+pe.manual.pe_divining_rod_3=探知之杖<高级>
+pe.manual.pe_body_stone=身之宝石
+pe.manual.pe_soul_stone=灵魂之石
+pe.manual.pe_mind_stone=念之宝石
+pe.manual.pe_life_stone=生命之石
+pe.manual.pe_matter_dark=暗物质
+pe.manual.pe_matter_red=红物质
+pe.manual.pe_destruction_catalyst=毁灭燧石
+pe.manual.pe_fuel_aeternalis=永恒燃料
+pe.manual.pe_evertide_amulet=潮汐护符
+pe.manual.pe_volcanite_amulet=熔焰护符
+pe.manual.pe_tome=炼金术秘卷
+pe.manual.pe_fuel_alchemical_coal=炼金煤炭
+pe.manual.pe_ignition=烈焰指环
+pe.manual.pe_swrg=疾风戒指
+pe.manual.pe_gem_density=以太密度宝石
+pe.manual.pe_fuel_mobius=莫比乌斯燃料
+pe.manual.pe_ring_iron_band=铁指环
+pe.manual.pe_black_hole=黑洞指环
+
+# TextPages headers and bodies
+
+pe.manual.introduction=年轻的炼金术师，欢迎来到ProjectE的世界。我们：最高炼金理事会，将负责传授我们所有的炼金知识给你。打开这本书意味着你踏上了成为一个高(哲)级（♂）炼（学）金（♂）术（家）师的第一步。也许你对一遍又一遍的重复相同的工作感到厌倦，或者你仅仅只是希望获得更多的力量来达到你的目的，又或者你想将利用炼金术用于装饰艺术或给生活带来方便。无论如何，炼金术都能满足你的要求。不过在你开始学习炼金术之前你需要先了解过去……自古以来炼金术就被这一领域内的人们所熟知。炼金术是被一个叫x3n0ph0b3的人所发现的，并通过多次反复深入研究。在x3n0ph0b3隐退后,一个新炼金术师Pahimar出现了，他坚信艺术才是真正的炼金术，但许多人都对他的新方法感到不满，接着就爆发了一场关于“懒惰的作弊者”和“EE2太OP”的无声讨伐！x3n0的追随者曾一度感到绝望，一直在地下漫无目的游荡，直到他们遇到了MozeIntel，他研究了x3n0的笔记并将其复刻，从而让古老的炼金术技艺继续流传。最终，因为一些不明的原因（他解释因为奇怪的“IRL”问题），Moze也退出了，将传承炼金术的责任交给了热衷于炼金术的学徒SinkillerJ。自那以后，两方终于可以和平共存。而且还建立了专门传承古老的炼金技艺的组织：Williewillus-主管，Blubberbub-炼金财务员，Lilylicious-首席执行官
+
+pe.manual.introduction.header=简介
+
+# ImagePage headers
+
+pe.manual.img_alchchest.header=炼金术之箱的界面
