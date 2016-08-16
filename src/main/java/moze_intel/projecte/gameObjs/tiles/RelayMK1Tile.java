@@ -19,7 +19,9 @@ import javax.annotation.Nonnull;
 public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
-	private final ItemStackHandler output = new StackHandler(1)
+	private final ItemStackHandler output = new StackHandler(1);
+	private final IItemHandler public_input;
+	private final IItemHandler public_output = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
 	{
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
@@ -31,14 +33,15 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 				if (item.getStoredEmc(stack) >= item.getMaximumEmc(stack))
 				{
 					return super.extractItem(slot, amount, simulate);
+				} else
+				{
+					return null;
 				}
 			}
 
 			return super.extractItem(slot, amount, simulate);
 		}
 	};
-	private final IItemHandler public_input;
-	private final IItemHandler public_output = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT);
 	private final int chargeRate;
 
 	public RelayMK1Tile()

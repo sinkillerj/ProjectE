@@ -48,7 +48,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		{
 			if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc)
 				return super.insertItem(slot, stack, simulate);
-			else return null;
+			else return stack;
 		}
 	};
 	private final IItemHandlerModifiable public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
