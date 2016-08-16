@@ -127,8 +127,6 @@ public final class CustomEMCParser
 			PELogger.logFatal("Couldn't read custom emc file");
 			currentEntries = new CustomEMCFile(new ArrayList<CustomEMCEntry>());
 		}
-
-		dirty = false;
 	}
 
 	private static NormalizedSimpleStack getNss(String str, int meta)
@@ -189,6 +187,8 @@ public final class CustomEMCParser
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			dirty = false;
 		}
 	}
 
