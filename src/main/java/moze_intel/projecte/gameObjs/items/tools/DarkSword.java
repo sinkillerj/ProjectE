@@ -79,7 +79,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage || slot != EntityEquipmentSlot.MAINHAND)
+		if (slot != EntityEquipmentSlot.MAINHAND)
 		{
 			return super.getAttributeModifiers(slot, stack);
 		}
@@ -88,7 +88,11 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		if (!ProjectEConfig.useOldDamage)
+		{
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		}
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}
 }
