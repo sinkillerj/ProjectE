@@ -86,8 +86,6 @@ public class PECore
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
 		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
-		CustomEMCParser.init();
-
 		PacketHandler.register();
 
 		AlchBagImpl.init();
@@ -144,7 +142,7 @@ public class PECore
 
 		long start = System.currentTimeMillis();
 
-		CustomEMCParser.readUserData();
+		CustomEMCParser.init();
 
 		PELogger.logInfo("Starting server-side EMC mapping.");
 

@@ -11,9 +11,9 @@ import java.util.Map;
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		for (Map.Entry<NormalizedSimpleStack,Integer> entry : CustomEMCParser.userValues.entrySet()) {
-			PELogger.logInfo("Adding custom EMC value for " + entry.getKey() + ": " + entry.getValue());
-			mapper.setValueBefore(entry.getKey(), entry.getValue());
+		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
+			PELogger.logInfo("Adding custom EMC value for " + entry.nss + ": " + entry.emc);
+			mapper.setValueBefore(entry.nss, entry.emc);
 		}
 	}
 
@@ -24,7 +24,7 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Intege
 
 	@Override
 	public String getDescription() {
-		return "Uses the `custom_emc.cfg` File to add EMC values.";
+		return "Uses the `custom_emc.json` File to add EMC values.";
 	}
 
 	@Override

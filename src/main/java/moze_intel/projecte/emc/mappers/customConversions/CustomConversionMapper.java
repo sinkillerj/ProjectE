@@ -175,7 +175,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 
-	private static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes)
+	public static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes)
 	{
 		if (s.startsWith("OD|")) {
 			return NormalizedSimpleStack.forOreDictionary(s.substring(3));

@@ -32,7 +32,7 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.started"));
 
 		EMCMapper.clearMaps();
-		CustomEMCParser.readUserData();
+		CustomEMCParser.init();
 		EMCMapper.map();
 		TileEntityHandler.checkAllCondensers();
 
