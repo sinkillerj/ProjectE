@@ -1,29 +1,101 @@
 package moze_intel.projecte.config;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.JsonUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public final class NBTWhitelistParser
 {
-	private static final String VERSION = "#0.1a";
-	private static File CONFIG;
-	private static boolean loaded;
+	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NBTWhiteList.class, new Serializer()).setPrettyPrinting().create();
+	private static final File CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.json");
+
+	private static class NBTWhiteList
+	{
+		public final List<Item> items;
+
+		private NBTWhiteList(List<Item> items)
+		{
+			this.items = items;
+		}
+	}
+
+	private static class Serializer implements JsonSerializer<NBTWhiteList>, JsonDeserializer<NBTWhiteList>
+	{
+		@Override
+		public NBTWhiteList deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			JsonObject obj = JsonUtils.getJsonObject(json, "nbt whitelist");
+			JsonArray arr = JsonUtils.getJsonArray(obj, "items", new JsonArray());
+			List<String> itemNames = context.deserialize(arr, new TypeToken<List<String>>() {}.getType());
+
+			List<Item> items = new ArrayList<>();
+
+			for (String s : itemNames)
+			{
+				Item i = Item.REGISTRY.getObject(new ResourceLocation(s));
+				if (i != null)
+				{
+					items.add(i);
+				}
+				else
+				{
+					PELogger.logWarn("Could not find Item %s specified in nbt_whitelist.cfg", s);
+				}
+			}
+
+			return new NBTWhiteList(items);
+		}
+
+		@Override
+		public JsonElement serialize(NBTWhiteList src, Type typeOfSrc, JsonSerializationContext context)
+		{
+			List<String> registryNames = new ArrayList<>();
+
+			for (Item item : src.items)
+			{
+				registryNames.add(item.getRegistryName().toString());
+			}
+
+			JsonObject ret = new JsonObject();
+			ret.add("items", context.serialize(registryNames));
+			return ret;
+		}
+	}
 
 	public static void init()
 	{
-		CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
-		loaded = false;
-
 		if (!CONFIG.exists())
 		{
 			try
@@ -31,7 +103,6 @@ public final class NBTWhitelistParser
 				if (CONFIG.createNewFile())
 				{
 					writeDefaultFile();
-					loaded = true;
 				}
 			}
 			catch (IOException e)
@@ -40,82 +111,41 @@ public final class NBTWhitelistParser
 				e.printStackTrace();
 			}
 		}
-		else
+
+		try
 		{
-			try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG)))
-			{
-				String line = reader.readLine();
-
-				if (line == null || !line.equals(VERSION))
-				{
-					PELogger.logFatal("Found old NBT whitelist file: resetting.");
-					writeDefaultFile();
-				}
-			}
-			catch (IOException e)
-			{
-				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
-				e.printStackTrace();
-			}
-
-			loaded = true;
-		}
-	}
-
-	public static void readUserData()
-	{
-		if (!loaded)
+			NBTWhiteList whitelist = GSON.fromJson(new BufferedReader(new FileReader(CONFIG)), NBTWhiteList.class);
+			for (Item i : whitelist.items)
+            {
+                NBTWhitelist.register(new ItemStack(i));
+            }
+		} catch (FileNotFoundException e)
 		{
-			PELogger.logFatal("ERROR: configurations files are not loaded!");
-			return;
+			PELogger.logFatal("Couldn't read nbt whitelist file");
 		}
 
-		try (LineNumberReader reader = new LineNumberReader(new FileReader(CONFIG)))
-		{
-			String line;
-
-			while ((line = reader.readLine()) != null)
-			{
-				line = line.trim();
-
-				if (line.isEmpty() || line.charAt(0) == '#')
-				{
-					continue;
-				}
-
-				ItemStack stack = ItemHelper.getStackFromString(line, 0);
-
-				if (stack == null)
-				{
-					PELogger.logFatal("Error in NBT whitelist file: no item stack found for " + line);
-					PELogger.logFatal("At line: " + reader.getLineNumber());
-					continue;
-				}
-
-				if (NBTWhitelist.register(stack))
-				{
-					PELogger.logInfo("Registered user-defined NBT whitelist for: " + line);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	private static void writeDefaultFile()
 	{
-		try (PrintWriter writer = new PrintWriter(CONFIG))
+		List<Item> defaults = new ArrayList<>();
+
+		if (Loader.isModLoaded("tconstruct"))
 		{
-			writer.println(VERSION);
-			writer.println("#Custom NBT whitelist file");
-			writer.println("#This file is used for items that should keep NBT data when condensed/transmuted.");
-			writer.println("#To add an item, just put it's unlocalized name on a new line. Here's some examples:");
-			writer.println("TConstruct:pickaxe");
-			writer.println("ExtraUtilities:unstableingot");
-			writer.println("ExtraUtilities:unstableIngot");
-			writer.println("Botania:specialFlower");
+			defaults.add(Item.getByNameOrId("tconstruct:pickaxe"));
+		}
+
+		if (Loader.isModLoaded("Botania"))
+		{
+			defaults.add(Item.getByNameOrId("botania:specialFlower"));
+		}
+
+		JsonObject obj = (JsonObject) GSON.toJsonTree(new NBTWhiteList(defaults));
+		obj.add("__comment", new JsonPrimitive("To add items to NBT Whitelist, simply add its registry name as a String to the above array"));
+
+		try
+		{
+			Files.write(GSON.toJson(obj), CONFIG, Charsets.UTF_8);
 		}
 		catch (IOException e)
 		{

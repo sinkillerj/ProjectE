@@ -88,8 +88,6 @@ public class PECore
 
 		CustomEMCParser.init();
 
-		NBTWhitelistParser.init();
-
 		PacketHandler.register();
 
 		AlchBagImpl.init();
@@ -123,7 +121,7 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ObjHandler.registerPhiloStoneSmelting();
-		NBTWhitelistParser.readUserData();
+		NBTWhitelistParser.init();
 		proxy.initializeManual();
 		
 		Integration.init();
