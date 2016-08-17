@@ -34,7 +34,7 @@ public class RMFurnaceContainer extends Container
 
 		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
 		IItemHandler input = tile.getInput();
-		IItemHandler output = tile.getOutput();
+		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 
 		//Fuel
 		this.addSlotToContainer(new SlotItemHandler(fuel, 0, 65, 53));
@@ -52,12 +52,12 @@ public class RMFurnaceContainer extends Container
 		counter = output.getSlots() - 1;
 
 		//Output(0)
-		this.addSlotToContainer(new ValidatedSlot(output, counter--, 125, 35, Predicates.<ItemStack>alwaysFalse()));
+		this.addSlotToContainer(new SlotItemHandler(output, counter--, 125, 35));
 
 		//Output Storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(output, counter--, 147 + i * 18, 8 + j * 18, Predicates.<ItemStack>alwaysFalse()));
+				this.addSlotToContainer(new SlotItemHandler(output, counter--, 147 + i * 18, 8 + j * 18));
 		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
