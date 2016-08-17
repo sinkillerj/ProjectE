@@ -23,7 +23,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		super("dm_sword", (byte)2, new String[] {});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "sword";
+		this.toolClasses.add("sword");
 	}
 
 	// Only for RedSword to use

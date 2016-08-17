@@ -36,7 +36,6 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "katar";
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.CLOTH);
@@ -44,9 +43,10 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		this.harvestMaterials.add(Material.LEAVES);
 		this.harvestMaterials.add(Material.VINE);
 
-		this.secondaryClasses.add("sword");
-		this.secondaryClasses.add("axe");
-		this.secondaryClasses.add("shears");
+		this.toolClasses.add("katar");
+		this.toolClasses.add("sword");
+		this.toolClasses.add("axe");
+		this.toolClasses.add("shears");
 	}
 
 	@Override

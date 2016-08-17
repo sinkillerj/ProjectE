@@ -9,7 +9,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -61,16 +60,15 @@ public abstract class PEToolBase extends ItemMode
 	public static final float REDSWORD_BASE_ATTACK = 16.0F;
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
-	protected String pePrimaryToolClass;
 	protected String peToolMaterial;
 	protected final Set<Material> harvestMaterials;
-	protected final Set<String> secondaryClasses;
+	protected final Set<String> toolClasses;
 
 	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
 	{
 		super(unlocalName, numCharge, modeDescrp);
 		harvestMaterials = Sets.newHashSet();
-		secondaryClasses = Sets.newHashSet();
+		toolClasses = Sets.newHashSet();
 	}
 
 	@Override
@@ -80,16 +78,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-
-	@Override
 	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass)
 	{
-		if (this.pePrimaryToolClass.equals(toolClass) || this.secondaryClasses.contains(toolClass))
+		if (this.toolClasses.contains(toolClass))
 		{
 			return 4; // TiCon
 		}

@@ -23,7 +23,7 @@ public class DarkShears extends PEToolBase
 		super("dm_shears", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "shears";
+		this.toolClasses.add("shears");
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.CLOTH);
 		this.harvestMaterials.add(Material.PLANTS);

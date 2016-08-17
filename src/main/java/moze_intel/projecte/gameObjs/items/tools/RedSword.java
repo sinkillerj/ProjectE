@@ -18,7 +18,7 @@ public class RedSword extends DarkSword
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "sword";
+		this.toolClasses.add("sword");
 	}
 
 	@Override

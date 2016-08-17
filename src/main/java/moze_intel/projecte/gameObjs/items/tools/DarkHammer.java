@@ -28,13 +28,13 @@ public class DarkHammer extends PEToolBase
 		super("dm_hammer", (byte)2, new String[] {});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "hammer";
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);
 
-		this.secondaryClasses.add("pickaxe");
-		this.secondaryClasses.add("chisel");
+		this.toolClasses.add("hammer");
+		this.toolClasses.add("pickaxe");
+		this.toolClasses.add("chisel");
 	}
 
 	// Only for RedHammer

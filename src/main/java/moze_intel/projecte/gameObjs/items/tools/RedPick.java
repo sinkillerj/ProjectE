@@ -20,7 +20,7 @@ public class RedPick extends DarkPick
 				"pe.redpick.mode3", "pe.redpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "pickaxe";
+		this.toolClasses.add("pickaxe");
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);

@@ -17,7 +17,7 @@ public class DarkHoe extends PEToolBase
 		super("dm_hoe", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "hoe";
+		this.toolClasses.add("hoe");
 	}
 
 	// Only for RedHoe

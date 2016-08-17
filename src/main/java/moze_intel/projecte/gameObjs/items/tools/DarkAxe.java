@@ -21,7 +21,7 @@ public class DarkAxe extends PEToolBase
 		super("dm_axe", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "axe";
+		this.toolClasses.add("axe");
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.VINE);

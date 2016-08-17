@@ -38,7 +38,6 @@ public class RedStar extends PEToolBase
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "morning_star";
 
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
@@ -54,10 +53,11 @@ public class RedStar extends PEToolBase
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.VINE);
 
-		this.secondaryClasses.add("pickaxe");
-		this.secondaryClasses.add("chisel");
-		this.secondaryClasses.add("shovel");
-		this.secondaryClasses.add("axe");
+		this.toolClasses.add("morning_star");
+		this.toolClasses.add("pickaxe");
+		this.toolClasses.add("chisel");
+		this.toolClasses.add("shovel");
+		this.toolClasses.add("axe");
 	}
 
 	@Override

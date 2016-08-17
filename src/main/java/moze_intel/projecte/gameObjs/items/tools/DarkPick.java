@@ -34,7 +34,7 @@ public class DarkPick extends PEToolBase
 				"pe.darkpick.mode3", "pe.darkpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "pickaxe";
+		this.toolClasses.add("pickaxe");
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);

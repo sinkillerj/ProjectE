@@ -9,7 +9,7 @@ public class RedShovel extends DarkShovel
 		super("rm_shovel", (byte)3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "shovel";
+		this.toolClasses.add("shovel");
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
 		this.harvestMaterials.add(Material.SAND);
