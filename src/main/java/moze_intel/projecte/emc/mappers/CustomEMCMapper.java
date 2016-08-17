@@ -6,8 +6,6 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.common.config.Configuration;
 
-import java.util.Map;
-
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {

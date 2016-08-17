@@ -12,14 +12,12 @@ import org.lwjgl.opengl.GL11;
 public class GUIMercurialEye extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
-	private final MercurialEyeInventory inventory;
-	
+
 	public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) 
 	{
 		super(new MercurialEyeContainer(invPlayer, inventory));
 		this.xSize = 171;
 		this.ySize = 134;
-		this.inventory = inventory;
 	}
 	
 	@Override

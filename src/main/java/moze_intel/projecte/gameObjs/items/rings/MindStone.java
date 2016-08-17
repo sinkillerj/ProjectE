@@ -24,7 +24,7 @@ import java.util.List;
 
 public class MindStone extends RingToggle implements IPedestalItem
 {
-	private final int TRANSFER_RATE = 50;
+	private static final int TRANSFER_RATE = 50;
 
 	public MindStone() 
 	{
@@ -46,12 +46,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 		if (stack.getItemDamage() != 0) 
 		{
-			if (!canStore(stack))
-			{
-				this.changeMode(player, stack, null);
-				return;
-			}
-			
 			if (getXP(player) > 0)
 			{
 				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
@@ -155,13 +149,8 @@ public class MindStone extends RingToggle implements IPedestalItem
 	{
 		return stack.getTagCompound().getInteger("StoredXP");
 	}
-	
-	private boolean canStore(ItemStack stack)
-	{
-		return getStoredXP(stack) <= Integer.MAX_VALUE;
-	}
 
-	private void setStoredXP(ItemStack stack, int XP) 
+	private void setStoredXP(ItemStack stack, int XP)
 	{
 		stack.getTagCompound().setInteger("StoredXP", XP);
 	}
@@ -221,20 +210,17 @@ public class MindStone extends RingToggle implements IPedestalItem
 		{
 			mindStone.setTagCompound(new NBTTagCompound());
 		}
-		
-		if (canStore(mindStone))
+
+		long l = getStoredXP(mindStone);
+		if (l + orb.xpValue > Integer.MAX_VALUE)
 		{
-			long l = getStoredXP(mindStone);
-			if (l + orb.xpValue > Integer.MAX_VALUE)
-			{
-				orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
-				setStoredXP(mindStone, Integer.MAX_VALUE);
-			}
-			else
-			{
-				addStoredXP(mindStone, orb.xpValue);
-				orb.setDead();
-			}
+			orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
+			setStoredXP(mindStone, Integer.MAX_VALUE);
+		}
+		else
+		{
+			addStoredXP(mindStone, orb.xpValue);
+			orb.setDead();
 		}
 	}
 

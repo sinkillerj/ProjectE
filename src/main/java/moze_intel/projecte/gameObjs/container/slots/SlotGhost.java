@@ -1,12 +1,8 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;

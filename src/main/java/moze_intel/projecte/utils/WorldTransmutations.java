@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockNewLeaf;
@@ -23,7 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public final class WorldTransmutations
 {

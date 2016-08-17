@@ -119,7 +119,7 @@ public class RecipeShapedKleinStar implements IRecipe
 
 				if (itemstack1 != null || itemstack != null)
 				{
-					if (itemstack1 == null && itemstack != null || itemstack1 != null && itemstack == null)
+					if (itemstack1 == null || itemstack == null)
 					{
 						return false;
 					}

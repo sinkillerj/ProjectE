@@ -138,7 +138,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 					return 0;
 				} else
 				{
-					return dist > 0.0 ? 1 : -1;
+					return Double.compare(0, dist);
 				}
 			}
 		});

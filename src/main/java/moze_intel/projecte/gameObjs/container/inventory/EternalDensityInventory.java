@@ -17,7 +17,6 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 		protected int getStackLimit(int slot, ItemStack stack) { return 1; }
 	};
 	private boolean isInWhitelist;
-	private final EntityPlayer player;
 	public final ItemStack invItem;
 
 	public EternalDensityInventory(ItemStack stack, EntityPlayer player)
@@ -29,8 +28,6 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 		}
 		
 		readFromNBT(stack.getTagCompound());
-		
-		this.player = player;
 	}
 
 	@Override

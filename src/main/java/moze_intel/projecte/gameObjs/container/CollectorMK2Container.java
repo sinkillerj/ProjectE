@@ -4,7 +4,6 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

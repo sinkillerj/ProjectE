@@ -15,11 +15,8 @@ import javax.annotation.Nonnull;
 
 public abstract class RingToggle extends ItemPE implements IModeChanger
 {
-	private final String name;
-	
 	public RingToggle(String unlocalName)
 	{
-		name = unlocalName;
 		this.setUnlocalizedName(unlocalName);
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);

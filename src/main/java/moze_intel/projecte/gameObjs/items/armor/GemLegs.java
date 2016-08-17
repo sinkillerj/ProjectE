@@ -57,7 +57,7 @@ public class GemLegs extends GemArmorBase
     {
         if (world.isRemote)
         {
-            if (player.isSneaking() && !player.onGround && player.motionY > -8 & !jumpedRecently(player))
+            if (player.isSneaking() && !player.onGround && player.motionY > -8 && !jumpedRecently(player))
             {
                 player.motionY -= 0.32F;
             }
