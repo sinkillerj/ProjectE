@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -42,7 +41,6 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		}
 	};
 	private final ItemStackHandler lock = new StackHandler(1);
-	private boolean loadChecks;
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
 	public int displayEmc;
@@ -50,11 +48,6 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	public int requiredEmc;
-
-	public CondenserTile()
-	{
-		loadChecks = false;
-	}
 
 	public ItemStackHandler getLock()
 	{
@@ -117,12 +110,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 			return;
 		}
 
-		if (!loadChecks)
-		{
-			TileEntityHandler.addCondenser(this);
-			checkLockAndUpdate();
-			loadChecks = true;
-		}
+		checkLockAndUpdate();
 
 		displayEmc = (int) this.getStoredEmc();
 
@@ -251,19 +239,6 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		}
 		
 		return (displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc;
-	}
-
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		loadChecks = false;
-
-		if (!this.worldObj.isRemote)
-		{
-			TileEntityHandler.removeCondenser(this);
-		}
 	}
 
 	@Override

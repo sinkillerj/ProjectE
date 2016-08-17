@@ -2,7 +2,6 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -34,7 +33,6 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 		EMCMapper.clearMaps();
 		CustomEMCParser.init();
 		EMCMapper.map();
-		TileEntityHandler.checkAllCondensers();
 
 		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.success"));
 

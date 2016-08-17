@@ -12,7 +12,6 @@ import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.handlers.TileEntityHandler;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
@@ -167,9 +166,6 @@ public class PECore
 	@Mod.EventHandler
 	public void serverQuit(FMLServerStoppedEvent event)
 	{
-		TileEntityHandler.clearAll();
-		PELogger.logDebug("Cleared tile entity maps.");
-
 		Transmutation.clearCache();
 		PELogger.logDebug("Cleared cached tome knowledge");
 

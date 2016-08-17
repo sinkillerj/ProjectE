@@ -23,7 +23,6 @@ public class SlotCondenserLock extends SlotItemHandler
 		if (stack != null && EMCHelper.doesItemHaveEmc(stack) && !container.tile.getWorld().isRemote)
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
-			container.tile.checkLockAndUpdate();
 			container.detectAndSendChanges();
 		}
 

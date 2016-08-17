@@ -100,7 +100,6 @@ public class CondenserContainer extends Container
 			if (!player.worldObj.isRemote)
 			{
 				tile.getLock().setStackInSlot(0, null);
-				tile.checkLockAndUpdate();
 				this.detectAndSendChanges();
 			}
 
