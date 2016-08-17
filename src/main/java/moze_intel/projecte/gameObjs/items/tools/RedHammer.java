@@ -1,6 +1,12 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 
 public class RedHammer extends DarkHammer
 {
@@ -16,5 +22,19 @@ public class RedHammer extends DarkHammer
 
 		this.secondaryClasses.add("pickaxe");
 		this.secondaryClasses.add("chisel");
+	}
+
+	@Override
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	{
+		Block block = state.getBlock();
+		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER)
+				|| block == ObjHandler.rmFurnaceOff
+				|| block == ObjHandler.rmFurnaceOn)
+		{
+			return 1200000.0F;
+		}
+
+		return super.getStrVsBlock(stack, state);
 	}
 }

@@ -85,7 +85,9 @@ public class DarkPick extends PEToolBase
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		if (block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER
+				|| block == ObjHandler.dmFurnaceOff
+				|| block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}

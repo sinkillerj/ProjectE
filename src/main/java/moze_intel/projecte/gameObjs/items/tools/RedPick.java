@@ -41,7 +41,9 @@ public class RedPick extends DarkPick
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block b = state.getBlock();
-		if ((b == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER || b == ObjHandler.rmFurnaceOff || b == ObjHandler.rmFurnaceOn))
+		if (b == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER
+				|| b == ObjHandler.rmFurnaceOff
+				|| b == ObjHandler.rmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
