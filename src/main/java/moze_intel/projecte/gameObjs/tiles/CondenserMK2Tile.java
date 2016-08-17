@@ -14,7 +14,20 @@ import javax.annotation.Nonnull;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private final IItemHandlerModifiable public_input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
+	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (stack != null && !isStackEqualToLock(stack))
+			{
+				return super.insertItem(slot, stack, simulate);
+			} else
+			{
+				return stack;
+			}
+		}
+	};
 	private final IItemHandlerModifiable public_output = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
 	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_output);
 
@@ -49,7 +62,7 @@ public class CondenserMK2Tile extends CondenserTile
 			@Override
 			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 			{
-				if (!isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack))
+				if (EMCHelper.doesItemHaveEmc(stack))
 					return super.insertItem(slot, stack, simulate);
 				else return stack;
 			}

@@ -17,6 +17,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -26,6 +27,20 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	private final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
+	private final IItemHandler public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
+	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (stack != null && !isStackEqualToLock(stack))
+			{
+				return super.insertItem(slot, stack, simulate);
+			} else
+			{
+				return stack;
+			}
+		}
+	};
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean loadChecks;
 	private boolean isAcceptingEmc;
@@ -63,7 +78,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 			@Override
 			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 			{
-				if (!isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack))
+				if (EMCHelper.doesItemHaveEmc(stack))
 					return super.insertItem(slot, stack, simulate);
 				else return stack;
 			}
@@ -87,7 +102,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inputInventory);
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 		}
 		return super.getCapability(cap, side);
 	}
