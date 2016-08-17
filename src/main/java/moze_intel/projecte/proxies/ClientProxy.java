@@ -17,7 +17,6 @@ import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
@@ -131,7 +130,6 @@ public class ClientProxy implements IProxy
 		// Which was a dumb decision made by somebody way back when. Oh well.
 		registerItem(ObjHandler.waterOrb);
 		registerItem(ObjHandler.lavaOrb);
-		registerItem(ObjHandler.lootBall);
 		registerItem(ObjHandler.mobRandomizer);
 		registerItem(ObjHandler.lensExplosive);
 		registerItem(ObjHandler.windProjectile);
@@ -335,7 +333,6 @@ public class ClientProxy implements IProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, createRenderFactoryForSnowball(ObjHandler.lavaOrb));
 		RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, createRenderFactoryForSnowball(ObjHandler.mobRandomizer));
 		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, createRenderFactoryForSnowball(ObjHandler.lensExplosive));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLootBall.class, createRenderFactoryForSnowball(ObjHandler.lootBall));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, createRenderFactoryForSnowball(ObjHandler.fireProjectile));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, createRenderFactoryForSnowball(ObjHandler.windProjectile));
 

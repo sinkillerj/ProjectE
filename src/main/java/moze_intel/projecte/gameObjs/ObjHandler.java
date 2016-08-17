@@ -22,7 +22,6 @@ import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
@@ -366,7 +365,6 @@ public class ObjHandler
 		//Entities
 		EntityRegistry.registerModEntity(EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(EntityLavaProjectile.class, "LavaProjectile", 2, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(EntityLootBall.class, "LootBall", 3, PECore.instance, 64, 10, true);
 		EntityRegistry.registerModEntity(EntityMobRandomizer.class, "MobRandomizer", 4, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(EntityLensProjectile.class, "LensProjectile", 5, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(EntityNovaCatalystPrimed.class, "NovaCatalystPrimed", 6, PECore.instance, 256, 10, true);

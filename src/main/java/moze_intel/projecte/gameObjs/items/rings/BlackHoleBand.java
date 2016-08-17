@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
@@ -78,13 +77,6 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			{
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
-		}
-		
-		List<EntityLootBall> ballList = world.getEntitiesWithinAABB(EntityLootBall.class, bBox);
-		
-		for (EntityLootBall ball : ballList)
-		{
-			WorldHelper.gravitateEntityTowards(ball, player.posX, player.posY, player.posZ);
 		}
 	}
 
@@ -210,15 +202,6 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 					}
 				}
 			}
-
-			for (EntityLootBall e : tile.getWorld().getEntitiesWithinAABB(EntityLootBall.class, aabb))
-			{
-				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
-				{
-					ItemHelper.pushLootBallInInv(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e);
-				}
-			}
 		}
 	}
 
@@ -227,13 +210,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (stack.getItemDamage() == 1)
 		{
-
 			for (EntityItem e : player.worldObj.getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
-			{
-				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
-			}
-
-			for (EntityLootBall e : player.worldObj.getEntitiesWithinAABB(EntityLootBall.class, player.getEntityBoundingBox().expand(5, 5, 5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

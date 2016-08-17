@@ -431,18 +431,8 @@ public abstract class PEToolBase extends ItemMode
 			if (target.isShearable(stack, player.worldObj, pos) && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
 				List<ItemStack> drops = target.onSheared(stack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-				Random rand = new Random();
 
-				for(ItemStack drop : drops)
-				{
-					float f = 0.7F;
-					double d = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-					EntityItem entityitem = new EntityItem(player.worldObj, (double)pos.getX() + d, (double)pos.getY() + d1, (double)pos.getZ() + d2, drop);
-					entityitem.setPickupDelay(10);
-					player.worldObj.spawnEntityInWorld(entityitem);
-				}
+				WorldHelper.createLootDrop(drops, player.worldObj, pos);
 
 				stack.damageItem(1, player);
 				player.addStat(StatList.getBlockStats(block), 1);

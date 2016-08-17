@@ -1,16 +1,11 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -324,20 +319,6 @@ public final class ItemHelper
 		}
 		String oreDictName = getOreDictionaryName(stateToStack(state, 1));
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
-	}
-
-	public static void pushLootBallInInv(IItemHandler inv, EntityLootBall ball)
-	{
-		List<ItemStack> results = Lists.newArrayList();
-		for (ItemStack s : ball.getItemList())
-		{
-			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, s, false);
-			if (result != null)
-			{
-				results.add(result);
-			}
-		}
-		ball.setItemList(results);
 	}
 
 	public static IBlockState stackToState(ItemStack stack)

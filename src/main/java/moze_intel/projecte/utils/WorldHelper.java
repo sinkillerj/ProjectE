@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockNetherWart;
@@ -124,11 +123,6 @@ public final class WorldHelper
 
 	public static void createLootDrop(List<ItemStack> drops, World world, double x, double y, double z)
 	{
-		if (drops.isEmpty())
-		{
-			return;
-		}
-
 		ItemHelper.compactItemList(drops);
 
 		for (ItemStack drop : drops)
@@ -215,11 +209,6 @@ public final class WorldHelper
 		}
 	}
 	
-	public static List<TileEntity> getAdjacentTileEntities(World world, TileEntity tile)
-	{
-		return ImmutableList.copyOf(getAdjacentTileEntitiesMapped(world, tile).values());
-	}
-
 	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
