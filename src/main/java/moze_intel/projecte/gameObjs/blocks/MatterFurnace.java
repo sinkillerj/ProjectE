@@ -148,7 +148,8 @@ public class MatterFurnace extends BlockDirection
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand)
+	@Override
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand)
 	{
 		if (isActive)
 		{

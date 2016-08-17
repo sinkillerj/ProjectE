@@ -67,19 +67,4 @@ public class TransmutationStone extends Block
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		
-		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
-			stack.getTagCompound().setInteger("x", pos.getX());
-			stack.getTagCompound().setInteger("y", pos.getY());
-			stack.getTagCompound().setInteger("z", pos.getZ());
-			
-			tile.readFromNBT(stack.getTagCompound());
-		}
-	}
 }

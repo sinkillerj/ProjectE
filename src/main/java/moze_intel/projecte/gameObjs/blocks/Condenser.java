@@ -22,7 +22,6 @@ public class Condenser extends AlchemicalChest
 {
 	public Condenser() 
 	{
-		super();
 		this.setUnlocalizedName("pe_condenser");
 	}
 	
