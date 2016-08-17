@@ -52,12 +52,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
-		addPropertyOverride(new ResourceLocation("projecte", "on"), new IItemPropertyGetter() {
-			@Override
-			public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-				return stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0;
-			}
-		});
+		addPropertyOverride(new ResourceLocation("projecte", "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0);
 		setHasSubtypes(true);
 	}
 

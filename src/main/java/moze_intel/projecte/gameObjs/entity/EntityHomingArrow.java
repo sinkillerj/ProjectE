@@ -129,19 +129,16 @@ public class EntityHomingArrow extends EntityTippedArrow
 	private void findNewTarget()
 	{
 		List<EntityLiving> candidates = worldObj.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
-		Collections.sort(candidates, new Comparator<EntityLiving>() {
-			@Override
-			public int compare(EntityLiving o1, EntityLiving o2) {
-				double dist = EntityHomingArrow.this.getDistanceSqToEntity(o1) - EntityHomingArrow.this.getDistanceSqToEntity(o2);
-				if (dist == 0.0)
-				{
-					return 0;
-				} else
-				{
-					return Double.compare(0, dist);
-				}
-			}
-		});
+		Collections.sort(candidates, (o1, o2) -> {
+            double dist = EntityHomingArrow.this.getDistanceSqToEntity(o1) - EntityHomingArrow.this.getDistanceSqToEntity(o2);
+            if (dist == 0.0)
+            {
+                return 0;
+            } else
+            {
+                return Double.compare(0, dist);
+            }
+        });
 
 		if (!candidates.isEmpty())
 		{

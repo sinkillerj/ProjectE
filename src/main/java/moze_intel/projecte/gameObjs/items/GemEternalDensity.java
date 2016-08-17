@@ -125,7 +125,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, Lists.<ItemStack>newArrayList());
+			setItems(gem, Lists.newArrayList());
 			hasChanged = true;
 		}
 

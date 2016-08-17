@@ -47,12 +47,7 @@ public final class KnowledgeImpl {
                     instance.deserializeNBT((NBTTagCompound) nbt);
                 }
             }
-        }, new Callable<IKnowledgeProvider>() {
-            @Override
-            public IKnowledgeProvider call() throws Exception {
-                return new DefaultImpl();
-            }
-        });
+        }, DefaultImpl::new);
     }
 
     private static class DefaultImpl implements IKnowledgeProvider

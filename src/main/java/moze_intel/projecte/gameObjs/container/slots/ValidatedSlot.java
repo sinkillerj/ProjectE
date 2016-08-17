@@ -1,9 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import com.google.common.base.Predicate;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.util.function.Predicate;
 
 // Partial copy of SlotItemhandler with some tweaks to make it saner, and a validator
 public class ValidatedSlot extends SlotItemHandler {
@@ -19,7 +20,7 @@ public class ValidatedSlot extends SlotItemHandler {
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return super.isItemValid(stack) && validator.apply(stack);
+        return super.isItemValid(stack) && validator.test(stack);
     }
 
 }

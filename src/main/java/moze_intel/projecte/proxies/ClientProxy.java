@@ -335,27 +335,9 @@ public class ClientProxy implements IProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, createRenderFactoryForSnowball(ObjHandler.lensExplosive));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, createRenderFactoryForSnowball(ObjHandler.fireProjectile));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, createRenderFactoryForSnowball(ObjHandler.windProjectile));
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, new IRenderFactory<EntityNovaCatalystPrimed>() {
-			@Override
-			public Render<? super EntityNovaCatalystPrimed> createRenderFor(RenderManager manager) {
-				return new NovaCatalystRenderer(manager);
-			}
-		});
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, new IRenderFactory<EntityNovaCataclysmPrimed>() {
-			@Override
-			public Render<? super EntityNovaCataclysmPrimed> createRenderFor(RenderManager manager) {
-				return new NovaCataclysmRenderer(manager);
-			}
-		});
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, new IRenderFactory<EntityHomingArrow>() {
-			@Override
-			public Render<? super EntityHomingArrow> createRenderFor(RenderManager manager) {
-				return new RenderTippedArrow(manager);
-			}
-		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, NovaCatalystRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, NovaCataclysmRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, RenderTippedArrow::new);
 	}
 
 	@Override
@@ -370,12 +352,7 @@ public class ClientProxy implements IProxy
 
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 	{
-		return new IRenderFactory<T>() {
-			@Override
-			public Render<? super T> createRenderFor(RenderManager manager) {
-				return new RenderSnowball<>(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
-			}
-		};
+		return manager -> new RenderSnowball<>(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
 	}
 
 	@Override

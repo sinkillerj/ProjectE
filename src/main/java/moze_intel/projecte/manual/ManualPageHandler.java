@@ -37,12 +37,7 @@ public class ManualPageHandler
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager)
         {
-            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener() {
-                @Override
-                public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
-                    ManualPageHandler.reset();
-                }
-            });
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(resourceManager1 -> ManualPageHandler.reset());
         }
 
         reset();
@@ -61,7 +56,7 @@ public class ManualPageHandler
     {
         for (PageCategory e : PageCategory.values())
         {
-            categoryMap.put(e, Lists.<AbstractPage>newArrayList());
+            categoryMap.put(e, Lists.newArrayList());
         }
 
         addTextPage("introduction", PageCategory.NONE);

@@ -86,7 +86,7 @@ public class NovaExplosion extends Explosion
 
 		this.getAffectedBlockPositions().addAll(hashset);
 		ReflectionHelper.setExplosionSize(this, initialSize);
-		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), ReflectionHelper.getExplosionSize(this));
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.emptyList(), ReflectionHelper.getExplosionSize(this));
 	}
 	
 	@Override

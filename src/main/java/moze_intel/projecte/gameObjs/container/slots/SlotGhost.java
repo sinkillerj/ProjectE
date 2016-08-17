@@ -1,11 +1,12 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import com.google.common.base.Predicate;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.util.function.Predicate;
 
 public class SlotGhost extends SlotItemHandler
 {
@@ -20,7 +21,7 @@ public class SlotGhost extends SlotItemHandler
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		if (stack != null && validator.apply(stack))
+		if (stack != null && validator.test(stack))
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
 		}
