@@ -96,13 +96,4 @@ public abstract class ItemPE extends Item
 		return true;
 	}
 	
-	public String getTexture(String name)
-	{
-		return ("projecte:" + name);
-	}
-	
-	public String getTexture(String folder, String name)
-	{
-		return ("projecte:" + folder + "/" + name);
-	}
 }

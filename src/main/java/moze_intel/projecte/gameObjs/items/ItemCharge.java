@@ -34,7 +34,6 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		byte charge = getCharge(stack);
 		
-		//Must be beetween 0.0D - 1.0D
 		return charge == 0 ? 1.0D : 1.0D - (double) charge / (double) (numCharges);
 	}
 	

@@ -47,7 +47,8 @@ public class Matter extends ItemPE
 			}
 		}
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
 	{

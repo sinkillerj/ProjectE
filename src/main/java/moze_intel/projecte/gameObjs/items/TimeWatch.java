@@ -344,9 +344,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		/* Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-		Now the same as activated watch in hand but more powerful.
-		Can be changed at sinkillerj's discretion. */
+		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 
 		if (!world.isRemote && ProjectEConfig.enableTimeWatch)
 		{

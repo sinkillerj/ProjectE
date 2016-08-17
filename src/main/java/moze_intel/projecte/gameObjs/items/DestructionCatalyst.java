@@ -48,7 +48,7 @@ public class DestructionCatalyst extends ItemCharge
 
 		RayTraceResult mop = this.rayTrace(world, player, false);
 
-		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
+		if (mop != null && mop.typeOfHit == Type.BLOCK)
 		{
 			int numRows = calculateDepthFromCharge(stack);
 			boolean hasAction = false;
@@ -61,7 +61,6 @@ public class DestructionCatalyst extends ItemCharge
 			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 			{
 				IBlockState state = world.getBlockState(pos);
-				Block block = state.getBlock();
 				float hardness = state.getBlockHardness(world, pos);
 
 				if (world.isAirBlock(pos) || hardness >= 50.0F || hardness == -1.0F)
@@ -121,7 +120,7 @@ public class DestructionCatalyst extends ItemCharge
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
-	protected int calculateDepthFromCharge(ItemStack stack)
+	private int calculateDepthFromCharge(ItemStack stack)
 	{
 		byte charge = getCharge(stack);
 		if (charge <= 0)
@@ -130,9 +129,9 @@ public class DestructionCatalyst extends ItemCharge
 		}
 		if (this instanceof CataliticLens)
 		{
-			return 8 + (charge * 8); // Increases linearly by 8, starting at 16 for charge 1
+			return 8 + (charge * 8);
 
 		}
-		return (int) Math.pow(2, 1 + charge); // Default DesCatalyst formula, doubles for every level, starting at 4 for charge 1
+		return (int) Math.pow(2, 1 + charge);
 	}
 }

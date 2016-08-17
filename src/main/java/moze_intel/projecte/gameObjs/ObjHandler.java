@@ -68,7 +68,6 @@ import moze_intel.projecte.gameObjs.items.itemEntities.FireProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
 import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
 import moze_intel.projecte.gameObjs.items.itemEntities.LightningProjectile;
-import moze_intel.projecte.gameObjs.items.itemEntities.LootBallItem;
 import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
 import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
@@ -233,7 +232,6 @@ public class ObjHandler
 
 	public static final Item waterOrb = new WaterOrb();
 	public static final Item lavaOrb = new LavaOrb();
-	public static final Item lootBall = new LootBallItem();
 	public static final Item mobRandomizer = new RandomizerProjectile();
 	public static final Item lensExplosive = new LensExplosive();
 	public static final Item fireProjectile = new FireProjectile();
@@ -337,7 +335,6 @@ public class ObjHandler
 
 		registerObj(waterOrb, waterOrb.getUnlocalizedName());
 		registerObj(lavaOrb, lavaOrb.getUnlocalizedName());
-		registerObj(lootBall, lootBall.getUnlocalizedName());
 		registerObj(mobRandomizer, mobRandomizer.getUnlocalizedName());
 		registerObj(lensExplosive, lensExplosive.getUnlocalizedName());
 		registerObj(fireProjectile, fireProjectile.getUnlocalizedName());

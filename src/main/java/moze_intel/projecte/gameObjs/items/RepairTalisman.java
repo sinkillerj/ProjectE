@@ -69,7 +69,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 	}
 
-	public void repairAllItems(EntityPlayer player)
+	private void repairAllItems(EntityPlayer player)
 	{
 		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 
