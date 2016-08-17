@@ -1,32 +1,32 @@
 package moze_intel.projecte.gameObjs.container;
 
-import com.google.common.base.Predicates;
-import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserMK2Lock;
+import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-import javax.annotation.Nonnull;
-
-public class CondenserMK2Container extends Container
+public class CondenserMK2Container extends CondenserContainer
 {
 	public final CondenserMK2Tile tile;
 
 	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
 	{
+		super(invPlayer, condenser);
 		tile = condenser;
 		tile.numPlayersUsing++;
+	}
 
+	@Override
+	void initSlots(InventoryPlayer invPlayer, CondenserTile condenser)
+	{
 		//Item Lock Slot
-		this.addSlotToContainer(new SlotCondenserMK2Lock(this, 0, 12, 6));
+		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
 
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -35,12 +35,12 @@ public class CondenserMK2Container extends Container
 		//Inputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
+				this.addSlotToContainer(new SlotItemHandler(input, j + i * 6, 12 + j * 18, 26 + i * 18));
 
 		//Outputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, Predicates.<ItemStack>alwaysFalse()));
+				this.addSlotToContainer(new SlotItemHandler(output, j + i * 6, 138 + j * 18, 26 + i * 18));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -93,33 +93,5 @@ public class CondenserMK2Container extends Container
 
 		slot.onPickupFromSlot(player, stack);
 		return newStack;
-	}
-
-	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
-	{
-		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
-	}
-
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed(player);
-		tile.numPlayersUsing--;
-	}
-
-	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
-	{
-		if (slot == 0 && tile.getLock().getStackInSlot(0) != null)
-		{
-			if (!player.worldObj.isRemote)
-			{
-				tile.getLock().setStackInSlot(0, null);
-				this.detectAndSendChanges();
-			}
-
-			return null;
-		} else return super.slotClick(slot, button, flag, player);
 	}
 }

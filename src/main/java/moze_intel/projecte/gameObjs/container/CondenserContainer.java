@@ -22,7 +22,11 @@ public class CondenserContainer extends Container
 	{
 		tile = condenser;
 		tile.numPlayersUsing++;
-		
+		initSlots(invPlayer, condenser);
+	}
+
+	void initSlots(InventoryPlayer invPlayer, CondenserTile condenser)
+	{
 		//Item Lock Slot
 		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
 
@@ -30,15 +34,15 @@ public class CondenserContainer extends Container
 
 		int counter = 0;
 		//Condenser Inventory
-		for (int i = 0; i < 7; i++) 
+		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 13; j++)
 				this.addSlotToContainer(new SlotItemHandler(handler, counter++, 12 + j * 18, 26 + i * 18));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
-			for(int j = 0; j < 9; j++) 
+			for(int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
-		
+
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 212));
