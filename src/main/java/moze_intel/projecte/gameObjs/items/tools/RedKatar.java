@@ -110,14 +110,12 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			PELogger.logInfo("yes");
 			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
 			player.resetCooldown();
 			return true;
 		}
 		else
 		{
-			PELogger.logInfo("no");
 			return false;
 		}
 	}
