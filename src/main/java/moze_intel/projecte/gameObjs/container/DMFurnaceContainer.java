@@ -32,15 +32,15 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		//Fuel Slot
 		this.addSlotToContainer(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
 
-		int counter = 0;
-
 		//Input(0)
-		this.addSlotToContainer(new ValidatedSlot(input, counter++, 49, 17, SlotPredicates.SMELTABLE));
+		this.addSlotToContainer(new ValidatedSlot(input, 0, 49, 17, SlotPredicates.SMELTABLE));
+
+		int counter = input.getSlots() - 1;
 
 		//Input Storage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				this.addSlotToContainer(new ValidatedSlot(input, counter++, 13 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
+				this.addSlotToContainer(new ValidatedSlot(input, counter--, 13 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
 			}
 
 		counter = output.getSlots() - 1;
