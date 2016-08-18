@@ -27,7 +27,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
 	private final ItemStackHandler input = new StackHandlerBuilder().size(getInvSize()).inputValidator(FuelMapper::isStackFuel).build(this);
 	private final ItemStackHandler auxSlots = new StackHandlerBuilder().size(3).inputValidator(FuelMapper::isStackFuel).build(this);
-	private final IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
 		{
@@ -75,7 +75,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			if (side != null && side.getAxis().isVertical())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_auxSlots);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationAuxSlots);
 			} else
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(input);
