@@ -28,6 +28,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
 	private final IItemHandler automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
 	{
 		@Override
@@ -126,25 +127,22 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		if (worldObj.isRemote)
 			return;
 
-		sortInventory();
+		ItemHelper.compactInventory(toSort);
 		checkFuelOrKlein();
 		updateEmc();
+		rotateUpgraded();
 	}
 
-	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
-
-	private void sortInventory()
+	private void rotateUpgraded()
 	{
 		if (getUpgraded() != null)
 		{
-			if (!(getLock() != null
-					&& getUpgraded().getItem() == getLock().getItem()
-					&& getUpgraded().stackSize < getUpgraded().getMaxStackSize())) {
+			if (getLock() == null
+					|| getUpgraded().getItem() != getLock().getItem()
+					|| getUpgraded().stackSize >= getUpgraded().getMaxStackSize()) {
 				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, getUpgraded().copy(), false));
 			}
 		}
-
-		ItemHelper.compactInventory(toSort);
 	}
 	
 	private void checkFuelOrKlein()
