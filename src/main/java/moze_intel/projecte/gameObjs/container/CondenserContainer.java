@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +38,7 @@ public class CondenserContainer extends Container
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new SlotItemHandler(handler, counter++, 12 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new ValidatedSlot(handler, counter++, 12 + j * 18, 26 + i * 18, s -> s != null && !tile.isStackEqualToLock(s)));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)

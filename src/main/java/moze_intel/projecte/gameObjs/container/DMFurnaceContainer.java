@@ -38,7 +38,6 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		//Input Storage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				PELogger.logInfo(Integer.toString(counter));
 				this.addSlotToContainer(new SlotItemHandler(input, counter++, 13 + i * 18, 8 + j * 18));
 			}
 
@@ -50,7 +49,6 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		//OutputStorage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				PELogger.logInfo(Integer.toString(counter));
 				this.addSlotToContainer(new SlotItemHandler(output, counter--, 131 + i * 18, 8 + j * 18));
 			}
 

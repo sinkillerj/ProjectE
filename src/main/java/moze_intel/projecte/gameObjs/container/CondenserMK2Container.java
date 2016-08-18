@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
@@ -36,12 +37,12 @@ public class CondenserMK2Container extends CondenserContainer
 		//Inputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new SlotItemHandler(input, j + i * 6, 12 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, s -> s != null && !tile.isStackEqualToLock(s)));
 
 		//Outputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new SlotItemHandler(output, j + i * 6, 138 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, s -> false));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)

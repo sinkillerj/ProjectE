@@ -203,7 +203,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		return false;
 	}
 	
-	protected boolean isStackEqualToLock(ItemStack stack)
+	public boolean isStackEqualToLock(ItemStack stack)
 	{
 		if (lock.getStackInSlot(0) == null)
 		{
