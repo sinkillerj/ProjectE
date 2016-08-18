@@ -6,6 +6,8 @@ import moze_intel.projecte.manual.AbstractPage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Comparator;
 
@@ -92,6 +94,4 @@ public final class Comparators
 
         return 0;
     };
-
-	public static final Comparator<AbstractPage> PAGE_HEADER = (o1, o2) -> I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText()));
 }

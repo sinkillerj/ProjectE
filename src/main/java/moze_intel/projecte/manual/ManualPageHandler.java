@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -151,7 +152,7 @@ public class ManualPageHandler
 
         for (List<AbstractPage> categoryPages : categoryMap.values())
         {
-            Collections.sort(categoryPages, Comparators.PAGE_HEADER);
+            Collections.sort(categoryPages, (o1, o2) -> I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText())));
             for (AbstractPage page : categoryPages)
             {
                 pages.add(page);
