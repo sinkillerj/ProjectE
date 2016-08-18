@@ -325,7 +325,7 @@ public final class ItemHelper
 	{
 		if (stack.getItem() instanceof ItemBlock)
 		{
-			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getItemDamage());
+			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getMetadata());
 		}
 		else
 		{
