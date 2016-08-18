@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -26,9 +25,9 @@ import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private final ItemStackHandler input = new StackHandlerBuilder().size(getInvSize()).inputValidator(SlotPredicates.COLLECTOR_INV).build(this);
-	private final ItemStackHandler auxSlots = new StackHandler(3);
-	private final IItemHandler publicAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+	private final ItemStackHandler input = new StackHandlerBuilder().size(getInvSize()).inputValidator(FuelMapper::isStackFuel).build(this);
+	private final ItemStackHandler auxSlots = new StackHandlerBuilder().size(3).inputValidator(FuelMapper::isStackFuel).build(this);
+	private final IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
 		{
@@ -76,7 +75,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			if (side != null && side.getAxis().isVertical())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicAuxSlots);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_auxSlots);
 			} else
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(input);

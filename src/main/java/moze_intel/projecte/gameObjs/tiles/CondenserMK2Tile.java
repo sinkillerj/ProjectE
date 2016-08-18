@@ -14,9 +14,9 @@ import javax.annotation.Nonnull;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private final IItemHandlerModifiable publicInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN);
-	private final IItemHandlerModifiable publicOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(publicInput, publicOutput);
+	private final IItemHandlerModifiable public_input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_output = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_output);
 
 	@Nonnull
 	@Override
@@ -30,11 +30,11 @@ public class CondenserMK2Tile extends CondenserTile
 			}
 			else if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicOutput);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
 			}
 			else
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicInput);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 			}
 		}
 

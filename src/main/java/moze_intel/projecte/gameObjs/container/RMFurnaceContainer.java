@@ -32,7 +32,7 @@ public class RMFurnaceContainer extends Container
 	{
 		this.tile = tile;
 
-		IItemHandler fuel = tile.getFuel();
+		IItemHandler fuel = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 

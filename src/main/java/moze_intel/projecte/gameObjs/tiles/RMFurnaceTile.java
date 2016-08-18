@@ -36,12 +36,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			.inputValidator(s -> FurnaceRecipes.instance().getSmeltingResult(s) != null).build(this);
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandlerBuilder().size(1)
-			.inputValidator(s -> TileEntityFurnace.isItemFuel(s) || s.getItem() instanceof IItemEmc)
+			.inputValidator(TileEntityFurnace::isItemFuel)
+			.inputValidator(s -> s.getItem() instanceof IItemEmc)
 			.build(this);
-	private final IItemHandlerModifiable publicInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
-	private final IItemHandlerModifiable publicFuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);
-	private final IItemHandlerModifiable publicOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(publicInput, publicFuel, publicOutput);
+	private final IItemHandlerModifiable public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_fuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);
+	private final IItemHandlerModifiable public_output = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(public_input, public_fuel, public_output);
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
 	public int furnaceBurnTime;
@@ -103,13 +104,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			}
 			else if (side == EnumFacing.UP)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicInput);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
 			} else if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicOutput);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
 			} else if (side.getAxis().isHorizontal())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicFuel);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_fuel);
 			}
 		}
 

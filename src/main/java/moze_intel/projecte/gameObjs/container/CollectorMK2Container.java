@@ -33,10 +33,10 @@ public class CollectorMK2Container extends CollectorMK1Container
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotItemHandler(main, counter--, 18 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Result
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK2Tile.UPGRADE_SLOT, 140, 13, SlotPredicates.COLLECTOR_INV));
+		this.addSlotToContainer(new SlotItemHandler(aux, CollectorMK2Tile.UPGRADE_SLOT, 140, 13));
 
 		//Upgrade Target
 		this.addSlotToContainer(new SlotGhost(aux, CollectorMK2Tile.LOCK_SLOT, 169, 36, SlotPredicates.COLLECTOR_LOCK));

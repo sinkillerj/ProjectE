@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -36,16 +35,16 @@ public class RelayMK1Container extends Container
 		IItemHandler output = tile.getOutput();
 
 		//Klein Star charge slot
-		this.addSlotToContainer(new SlotItemHandler(input, 0, 67, 43));
+		this.addSlotToContainer(new ValidatedSlot(input, 0, 67, 43, SlotPredicates.RELAY_INV));
 
 		int counter = input.getSlots() - 1;
 		//Main Relay inventory
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 2; j++)
-				this.addSlotToContainer(new SlotItemHandler(input, counter--, 27 + i * 18, 17 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(input, counter--, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Burning slot
-		this.addSlotToContainer(new SlotItemHandler(output, 0, 127, 43));
+		this.addSlotToContainer(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
 
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
