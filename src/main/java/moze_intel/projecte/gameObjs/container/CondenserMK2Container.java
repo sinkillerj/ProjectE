@@ -14,20 +14,16 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CondenserMK2Container extends CondenserContainer
 {
-	public final CondenserMK2Tile tile;
-
 	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
 	{
 		super(invPlayer, condenser);
-		tile = condenser;
-		tile.numPlayersUsing++;
 	}
 
 	@Override
-	void initSlots(InventoryPlayer invPlayer, CondenserTile condenser)
+	void initSlots(InventoryPlayer invPlayer)
 	{
 		//Item Lock Slot
-		this.addSlotToContainer(new SlotGhost(condenser.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
+		this.addSlotToContainer(new SlotGhost(tile.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
 
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();

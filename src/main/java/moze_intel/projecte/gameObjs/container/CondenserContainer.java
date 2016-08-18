@@ -12,25 +12,24 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class CondenserContainer extends Container
 {	
-	public final CondenserTile tile;
+	final CondenserTile tile;
 	
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
 		tile = condenser;
 		tile.numPlayersUsing++;
-		initSlots(invPlayer, condenser);
+		initSlots(invPlayer);
 	}
 
-	void initSlots(InventoryPlayer invPlayer, CondenserTile condenser)
+	void initSlots(InventoryPlayer invPlayer)
 	{
 		//Item Lock Slot
-		this.addSlotToContainer(new SlotGhost(condenser.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
+		this.addSlotToContainer(new SlotGhost(tile.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
 
 		IItemHandler handler = tile.getInput();
 
