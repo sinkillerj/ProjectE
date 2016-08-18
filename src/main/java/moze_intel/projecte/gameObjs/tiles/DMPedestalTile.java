@@ -21,7 +21,7 @@ import java.util.Random;
 public class DMPedestalTile extends TileEmc
 {
 	private boolean isActive = false;
-	private ItemStackHandler inventory = new StackHandler(1);
+	private ItemStackHandler inventory = new StackHandlerBuilder().size(1).inputValidator(IPedestalItem.class::isInstance).build(this);
 	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;

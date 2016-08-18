@@ -11,6 +11,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class CollectorMK3Container extends CollectorMK1Container
 {
@@ -32,7 +33,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+				this.addSlotToContainer(new SlotItemHandler(main, counter--, 18 + i * 18, 8 + j * 18));
 
 		//Upgrade Result
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));

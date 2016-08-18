@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -19,9 +20,9 @@ import javax.annotation.Nonnull;
 public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
-	private final ItemStackHandler output = new StackHandler(1);
-	private final IItemHandler public_input;
-	private final IItemHandler public_output = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
+	private final ItemStackHandler output = new StackHandlerBuilder().size(1).inputValidator(SlotPredicates.IITEMEMC).build(this);
+	private final IItemHandler publicInput;
+	private final IItemHandler publicOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
 	{
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
@@ -53,8 +54,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		input = new StackHandlerBuilder().size(sizeInv).inputValidator(EMCHelper::doesItemHaveEmc).build(this);
-		public_input = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
+		input = new StackHandlerBuilder().size(sizeInv).inputValidator(SlotPredicates.RELAY_INV).build(this);
+		publicInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		{
 			if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_output);
-			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(public_input);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicOutput);
+			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicInput);
 		}
 		return super.getCapability(cap, side);
 	}

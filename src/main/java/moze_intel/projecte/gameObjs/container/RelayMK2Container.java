@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class RelayMK2Container extends RelayMK1Container
 {
@@ -23,16 +24,16 @@ public class RelayMK2Container extends RelayMK1Container
 		IItemHandler output = tile.getOutput();
 
 		//Burn slot
-		this.addSlotToContainer(new ValidatedSlot(input, 0, 84, 44, SlotPredicates.RELAY_INV));
+		this.addSlotToContainer(new SlotItemHandler(input, 0, 84, 44));
 
 		int counter = input.getSlots() - 1;
 		//Inventory buffer
 		for (int i = 0; i <= 2; i++)
 			for (int j = 0; j <= 3; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter--, 26 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
+				this.addSlotToContainer(new SlotItemHandler(input, counter--, 26 + i * 18, 18 + j * 18));
 
 		//Klein star slot
-		this.addSlotToContainer(new ValidatedSlot(output, 0, 144, 44, SlotPredicates.IITEMEMC));
+		this.addSlotToContainer(new SlotItemHandler(output, 0, 144, 44));
 
 		//Main player inventory
 		for (int i = 0; i < 3; i++)

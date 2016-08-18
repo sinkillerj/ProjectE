@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -47,7 +48,7 @@ public class CollectorMK1Container extends Container
 		//Fuel Upgrade storage
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 3; j++)
-				this.addSlotToContainer(new ValidatedSlot(main, counter--, 20 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+				this.addSlotToContainer(new SlotItemHandler(main, counter--, 20 + i * 18, 8 + j * 18));
 
 		//Upgrade Result
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.COLLECTOR_INV));
