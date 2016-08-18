@@ -32,25 +32,13 @@ import javax.annotation.Nonnull;
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
-	private final ItemStackHandler inputInventory = new StackHandler(getInvSize()) {
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (FurnaceRecipes.instance().getSmeltingResult(stack) != null)
-				return super.insertItem(slot, stack, simulate);
-			else return stack;
-		}
-	};
+	private final ItemStackHandler inputInventory = new StackHandlerBuilder().size(getInvSize())
+			.inputValidator(s -> FurnaceRecipes.instance().getSmeltingResult(s) != null).build(this);
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
-	private final ItemStackHandler fuelInv = new StackHandler(1) {
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc)
-				return super.insertItem(slot, stack, simulate);
-			else return stack;
-		}
-	};
+	private final ItemStackHandler fuelInv = new StackHandlerBuilder().size(1)
+			.inputValidator(TileEntityFurnace::isItemFuel)
+			.inputValidator(s -> s.getItem() instanceof IItemEmc)
+			.build(this);
 	private final IItemHandlerModifiable public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable public_fuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable public_output = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);

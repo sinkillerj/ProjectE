@@ -25,16 +25,8 @@ import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private final ItemStackHandler input = new StackHandler(getInvSize()) {
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (FuelMapper.isStackFuel(stack))
-				return super.insertItem(slot, stack, simulate);
-			else return stack;
-		}
-	};
-	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final ItemStackHandler input = new StackHandlerBuilder().size(getInvSize()).inputValidator(FuelMapper::isStackFuel).build(this);
+	private final ItemStackHandler auxSlots = new StackHandlerBuilder().size(3).inputValidator(FuelMapper::isStackFuel).build(this);
 	private final IItemHandler public_auxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
