@@ -79,7 +79,7 @@ public class CollectorMK1Container extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) instanceof SlotGhost)
+		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && getSlot(slot).getStack() != null)
 		{
 			getSlot(slot).putStack(null);
 			return null;
