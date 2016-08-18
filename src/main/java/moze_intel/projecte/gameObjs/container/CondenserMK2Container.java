@@ -32,7 +32,7 @@ public class CondenserMK2Container extends CondenserContainer
 		//Inputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, s -> s != null && !tile.isStackEqualToLock(s)));
+				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
 
 		//Outputs
 		for (int i = 0; i < 7; i++)

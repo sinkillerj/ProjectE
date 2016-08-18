@@ -32,13 +32,9 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
-			if (stack != null && !isStackEqualToLock(stack))
-			{
-				return super.insertItem(slot, stack, simulate);
-			} else
-			{
-				return stack;
-			}
+			return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
 		}
 	};
 	private final ItemStackHandler lock = new StackHandler(1);
