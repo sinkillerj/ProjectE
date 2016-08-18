@@ -53,7 +53,7 @@ public final class NBTWhitelistParser
 		public NBTWhiteList deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 		{
 			JsonObject obj = JsonUtils.getJsonObject(json, "nbt whitelist");
-			JsonArray arr = JsonUtils.getJsonArray(obj, "items", new JsonArray());
+			JsonArray arr = JsonUtils.getJsonArray(obj, "items");
 			List<String> itemNames = context.deserialize(arr, new TypeToken<List<String>>() {}.getType());
 
 			List<Item> items = new ArrayList<>();
