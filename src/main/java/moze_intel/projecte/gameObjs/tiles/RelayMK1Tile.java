@@ -21,8 +21,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandlerBuilder().size(1).inputValidator(SlotPredicates.IITEMEMC).build(this);
-	private final IItemHandler automationInput;
-	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
+	private final IItemHandler publicInput;
+	private final IItemHandler publicOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
 	{
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
@@ -55,7 +55,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		super(maxEmc);
 		this.chargeRate = chargeRate;
 		input = new StackHandlerBuilder().size(sizeInv).inputValidator(SlotPredicates.RELAY_INV).build(this);
-		automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
+		publicInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 
 	@Override
@@ -72,8 +72,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		{
 			if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicOutput);
+			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicInput);
 		}
 		return super.getCapability(cap, side);
 	}

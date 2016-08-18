@@ -31,11 +31,7 @@ public class RMFurnaceContainer extends Container
 	public RMFurnaceContainer(InventoryPlayer invPlayer, RMFurnaceTile tile)
 	{
 		this.tile = tile;
-		initSlots(invPlayer, tile);
-	}
 
-	void initSlots(InventoryPlayer invPlayer, RMFurnaceTile tile)
-	{
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
@@ -62,12 +58,12 @@ public class RMFurnaceContainer extends Container
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
 				this.addSlotToContainer(new SlotItemHandler(output, counter--, 147 + i * 18, 8 + j * 18));
-
+		
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 24 + j * 18, 84 + i * 18));
-
+		
 		//Player HotBar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 24 + i * 18, 142));
