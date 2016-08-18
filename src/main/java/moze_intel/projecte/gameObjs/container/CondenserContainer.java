@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserLock;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +29,7 @@ public class CondenserContainer extends Container
 	void initSlots(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
 		//Item Lock Slot
-		this.addSlotToContainer(new SlotCondenserLock(this, 0, 12, 6));
+		this.addSlotToContainer(new SlotGhost(condenser.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
 
 		IItemHandler handler = tile.getInput();
 

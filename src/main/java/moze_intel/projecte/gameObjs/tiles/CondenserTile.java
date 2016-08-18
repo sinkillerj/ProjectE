@@ -26,7 +26,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	private final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
-	private final IItemHandler publicInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
+	private final IItemHandler automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
 	{
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
@@ -86,7 +86,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(publicInput);
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
 		}
 		return super.getCapability(cap, side);
 	}

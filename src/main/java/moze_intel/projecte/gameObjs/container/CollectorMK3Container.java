@@ -27,7 +27,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		//Klein Star Slot
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
+		this.addSlotToContainer(new SlotItemHandler(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58));
 
 		int counter = main.getSlots() - 1;
 		//Fuel Upgrade Slot
@@ -36,7 +36,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 				this.addSlotToContainer(new SlotItemHandler(main, counter--, 18 + i * 18, 8 + j * 18));
 
 		//Upgrade Result
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
+		this.addSlotToContainer(new SlotItemHandler(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13));
 
 		//Upgrade Target
 		this.addSlotToContainer(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
