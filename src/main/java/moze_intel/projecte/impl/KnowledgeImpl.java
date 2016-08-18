@@ -186,7 +186,6 @@ public final class KnowledgeImpl {
             NBTTagCompound properties = new NBTTagCompound();
             properties.setDouble("transmutationEmc", emc);
 
-            pruneStaleKnowledge();
             NBTTagList knowledgeWrite = new NBTTagList();
             for (ItemStack i : knowledge)
             {
@@ -215,6 +214,7 @@ public final class KnowledgeImpl {
                 }
             }
 
+            pruneStaleKnowledge();
             pruneDuplicateKnowledge();
 
             for (int i = 0; i < inputLocks.getSlots(); i++)
