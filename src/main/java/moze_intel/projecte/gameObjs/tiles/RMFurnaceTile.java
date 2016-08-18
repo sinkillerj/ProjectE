@@ -32,12 +32,9 @@ import javax.annotation.Nonnull;
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
-	private final ItemStackHandler inputInventory = new StackHandlerBuilder().size(getInvSize())
-			.inputValidator(s -> FurnaceRecipes.instance().getSmeltingResult(s) != null).build(this);
+	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
-	private final ItemStackHandler fuelInv = new StackHandlerBuilder().size(1)
-			.inputValidator(s -> TileEntityFurnace.isItemFuel(s) || s.getItem() instanceof IItemEmc)
-			.build(this);
+	private final ItemStackHandler fuelInv = new StackHandler(1);
 	private final IItemHandlerModifiable automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable automationFuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);

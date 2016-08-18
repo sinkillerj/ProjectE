@@ -38,7 +38,7 @@ public class CollectorMK1Container extends Container
 	void initSlots(InventoryPlayer invPlayer)
 	{
 		IItemHandler aux = tile.getAux();
-		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler main = tile.getInput();
 
 		//Klein Star Slot
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADING_SLOT, 124, 58, SlotPredicates.COLLECTOR_INV));

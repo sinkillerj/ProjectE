@@ -24,7 +24,7 @@ public class CollectorMK2Container extends CollectorMK1Container
 	@Override
 	void initSlots(InventoryPlayer invPlayer) {
 		IItemHandler aux = tile.getAux();
-		IItemHandler main = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler main = tile.getInput();
 
 		//Klein Star Slot
 		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK2Tile.UPGRADING_SLOT, 140, 58, SlotPredicates.COLLECTOR_INV));
@@ -36,7 +36,7 @@ public class CollectorMK2Container extends CollectorMK1Container
 				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Result
-		this.addSlotToContainer(new SlotItemHandler(aux, CollectorMK2Tile.UPGRADE_SLOT, 140, 13));
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK2Tile.UPGRADE_SLOT, 140, 13, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Target
 		this.addSlotToContainer(new SlotGhost(aux, CollectorMK2Tile.LOCK_SLOT, 169, 36, SlotPredicates.COLLECTOR_LOCK));

@@ -85,59 +85,15 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 	class StackHandler extends ItemStackHandler
 	{
-		private final List<Predicate<ItemStack>> inputValidators;
-
-		private StackHandler(int size, List<Predicate<ItemStack>> inputValidators)
-		{
-			super(size);
-			this.inputValidators = inputValidators;
-		}
-
 		StackHandler(int size)
 		{
-			this(size, ImmutableList.of());
-		}
-
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if (inputValidators.stream().allMatch(p -> p.test(stack)))
-			{
-				return super.insertItem(slot, stack, simulate);
-			}
-			else
-			{
-				return stack;
-			}
+			super(size);
 		}
 
 		@Override
 		public void onContentsChanged(int slot)
 		{
 			TileEmc.this.markDirty();
-		}
-	}
-
-	static class StackHandlerBuilder
-	{
-		private int size;
-		private final List<Predicate<ItemStack>> inputValidators = new ArrayList<>();
-
-		protected StackHandlerBuilder size(int size)
-		{
-			this.size = size;
-			return this;
-		}
-
-		protected StackHandlerBuilder inputValidator(Predicate<ItemStack> pred)
-		{
-			inputValidators.add(pred);
-			return this;
-		}
-
-		protected StackHandler build(TileEmc tile)
-		{
-			return tile.new StackHandler(size, inputValidators);
 		}
 	}
 }

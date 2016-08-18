@@ -45,9 +45,7 @@ public class CondenserMK2Tile extends CondenserTile
 	@Override
 	protected ItemStackHandler createInput()
 	{
-		return new StackHandlerBuilder().size(42)
-				.inputValidator(s -> !isStackEqualToLock(s))
-				.inputValidator(SlotPredicates.HAS_EMC).build(this);
+		return new StackHandler(42);
 	}
 
 	@Override

@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private final ItemStackHandler input = new StackHandlerBuilder().size(getInvSize()).inputValidator(FuelMapper::isStackFuel).build(this);
-	private final ItemStackHandler auxSlots = new StackHandlerBuilder().size(3).inputValidator(FuelMapper::isStackFuel).build(this);
+	private final ItemStackHandler input = new StackHandler(getInvSize());
+	private final ItemStackHandler auxSlots = new StackHandler(3);
 	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
@@ -55,6 +55,11 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		super(maxEmc);
 		this.emcGen = emcGen;
+	}
+
+	public IItemHandler getInput()
+	{
+		return input;
 	}
 
 	public IItemHandler getAux()

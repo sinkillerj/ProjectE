@@ -13,10 +13,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -52,7 +50,7 @@ public class RMFurnaceContainer extends Container
 		//Input storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotItemHandler(input, counter++, 11 + i * 18, 8 + j * 18));
+				this.addSlotToContainer(new ValidatedSlot(input, counter++, 11 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
 
 		counter = output.getSlots() - 1;
 

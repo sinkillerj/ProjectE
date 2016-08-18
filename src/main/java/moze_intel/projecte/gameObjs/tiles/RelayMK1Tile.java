@@ -54,7 +54,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		input = new StackHandlerBuilder().size(sizeInv).inputValidator(SlotPredicates.HAS_EMC).build(this);
+		input = new StackHandler(sizeInv);
 		automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 

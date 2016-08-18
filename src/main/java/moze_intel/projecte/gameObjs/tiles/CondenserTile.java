@@ -67,7 +67,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 	protected ItemStackHandler createInput()
 	{
-		return new StackHandlerBuilder().size(91).inputValidator(SlotPredicates.HAS_EMC).build(this);
+		return new StackHandler(91);
 	}
 
 	protected ItemStackHandler createOutput()
