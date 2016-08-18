@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -27,6 +28,16 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final IItemHandler automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
+	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return SlotPredicates.COLLECTOR_INV.test(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
+		}
+	};
 	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
@@ -83,7 +94,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationAuxSlots);
 			} else
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(input);
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
 			}
 		}
 		return super.getCapability(cap, side);
@@ -114,7 +125,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		if (worldObj.isRemote)
 			return;
-		
+
 		sortInventory();
 		checkFuelOrKlein();
 		updateEmc();

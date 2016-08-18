@@ -22,8 +22,16 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
 	private final IItemHandler automationInput;
-	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.OUT)
+	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
 	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return SlotPredicates.IITEMEMC.test(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
+		}
+
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
@@ -54,7 +62,16 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		input = new StackHandler(sizeInv);
+		input = new StackHandler(sizeInv)
+		{
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			{
+				return SlotPredicates.RELAY_INV.test(stack)
+						? super.insertItem(slot, stack, simulate)
+						: stack;
+			}
+		};
 		automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 

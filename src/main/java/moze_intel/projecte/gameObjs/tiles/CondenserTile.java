@@ -36,6 +36,19 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
+
+		@Override
+		public ItemStack extractItem(int slot, int max, boolean simulate)
+		{
+			if (getStackInSlot(slot) != null && isStackEqualToLock(getStackInSlot(slot)))
+			{
+				return super.extractItem(slot, max, simulate);
+			}
+			else
+			{
+				return null;
+			}
+		}
 	};
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
