@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -66,7 +67,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 	protected ItemStackHandler createInput()
 	{
-		return new StackHandlerBuilder().size(91).inputValidator(EMCHelper::doesItemHaveEmc).build(this);
+		return new StackHandlerBuilder().size(91).inputValidator(SlotPredicates.HAS_EMC).build(this);
 	}
 
 	protected ItemStackHandler createOutput()

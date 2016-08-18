@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +47,7 @@ public class CondenserMK2Tile extends CondenserTile
 	{
 		return new StackHandlerBuilder().size(42)
 				.inputValidator(s -> !isStackEqualToLock(s))
-				.inputValidator(EMCHelper::doesItemHaveEmc).build(this);
+				.inputValidator(SlotPredicates.HAS_EMC).build(this);
 	}
 
 	@Override

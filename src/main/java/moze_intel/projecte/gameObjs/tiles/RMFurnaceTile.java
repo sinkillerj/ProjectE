@@ -36,8 +36,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			.inputValidator(s -> FurnaceRecipes.instance().getSmeltingResult(s) != null).build(this);
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandlerBuilder().size(1)
-			.inputValidator(TileEntityFurnace::isItemFuel)
-			.inputValidator(s -> s.getItem() instanceof IItemEmc)
+			.inputValidator(s -> TileEntityFurnace.isItemFuel(s) || s.getItem() instanceof IItemEmc)
 			.build(this);
 	private final IItemHandlerModifiable public_input = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN);
 	private final IItemHandlerModifiable public_fuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN);

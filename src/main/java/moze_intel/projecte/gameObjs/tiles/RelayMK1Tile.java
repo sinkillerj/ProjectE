@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -53,7 +54,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		input = new StackHandlerBuilder().size(sizeInv).inputValidator(EMCHelper::doesItemHaveEmc).build(this);
+		input = new StackHandlerBuilder().size(sizeInv).inputValidator(SlotPredicates.HAS_EMC).build(this);
 		public_input = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
 
