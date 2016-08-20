@@ -13,7 +13,6 @@ import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
@@ -44,7 +43,6 @@ public final class PacketHandler
 		HANDLER.registerMessage(SyncEmcPKT.Handler.class, SyncEmcPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(KeyPressPKT.Handler.class, KeyPressPKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(ParticlePKT.Handler.class, ParticlePKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(SwingItemPKT.Handler.class, SwingItemPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(StepHeightPKT.Handler.class, StepHeightPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, disc++, Side.CLIENT);

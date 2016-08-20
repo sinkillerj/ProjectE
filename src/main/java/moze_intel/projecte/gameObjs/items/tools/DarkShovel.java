@@ -54,7 +54,7 @@ public class DarkShovel extends PEToolBase
 		}
 		else
 		{
-			digAOE(stack, world, player, false, 0);
+			digAOE(stack, world, player, false, 0, hand);
 		}
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}

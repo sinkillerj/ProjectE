@@ -65,7 +65,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
+			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
 			player.resetCooldown();
 			return true;
 		}

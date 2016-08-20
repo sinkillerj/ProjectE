@@ -83,7 +83,7 @@ public class RedStar extends PEToolBase
 		{
 			if (ProjectEConfig.pickaxeAoeVeinMining)
 			{
-				mineOreVeinsInAOE(stack, player);
+				mineOreVeinsInAOE(stack, player, hand);
 			}
 
 			RayTraceResult mop = this.rayTrace(world, player, true);
@@ -101,7 +101,7 @@ public class RedStar extends PEToolBase
 				{
 					if (ProjectEConfig.pickaxeAoeVeinMining)
 					{
-						digAOE(stack, world, player, false, 0);
+						digAOE(stack, world, player, false, 0, hand);
 					}
 					else
 					{
@@ -117,11 +117,11 @@ public class RedStar extends PEToolBase
 				}
 				else if (block instanceof BlockGrass || block instanceof BlockDirt || block instanceof BlockSand)
 				{
-					digAOE(stack, world, player, false, 0);
+					digAOE(stack, world, player, false, 0, hand);
 				}
 				else
 				{
-					digAOE(stack, world, player, true, 0);
+					digAOE(stack, world, player, true, 0, hand);
 				}
 			}
 		}

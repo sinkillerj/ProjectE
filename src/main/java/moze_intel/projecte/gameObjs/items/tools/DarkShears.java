@@ -61,7 +61,7 @@ public class DarkShears extends PEToolBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		shearEntityAOE(stack, player, 0);
+		shearEntityAOE(stack, player, 0, hand);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 

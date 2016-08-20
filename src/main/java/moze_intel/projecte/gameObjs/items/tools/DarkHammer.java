@@ -55,7 +55,7 @@ public class DarkHammer extends PEToolBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		digAOE(stack, world, player, true, 0);
+		digAOE(stack, world, player, true, 0, hand);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	

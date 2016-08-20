@@ -57,7 +57,7 @@ public class DarkPick extends PEToolBase
 
 		if (ProjectEConfig.pickaxeAoeVeinMining)
 		{
-			mineOreVeinsInAOE(stack, player);
+			mineOreVeinsInAOE(stack, player, hand);
 		}
 		else
 		{

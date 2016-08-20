@@ -108,7 +108,7 @@ public class DestructionCatalyst extends ItemCharge
 				}
 			}
 
-			PlayerHelper.swingItem(player);
+			PlayerHelper.swingItem(player, hand);
 			if (hasAction)
 			{
 				WorldHelper.createLootDrop(drops, world, mop.getBlockPos());

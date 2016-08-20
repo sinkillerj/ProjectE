@@ -5,18 +5,20 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -146,11 +148,11 @@ public final class PlayerHelper
 		ReflectionHelper.setPlayerCapabilityWalkspeed(player.capabilities, value);
 	}
 
-	public static void swingItem(EntityPlayer player)
+	public static void swingItem(EntityPlayer player, EnumHand hand)
 	{
-		if (player instanceof EntityPlayerMP)
+		if (player.worldObj instanceof WorldServer)
 		{
-			PacketHandler.sendTo(new SwingItemPKT(), ((EntityPlayerMP) player));
+			((WorldServer) player.worldObj).getEntityTracker().sendToTrackingAndSelf(player, new SPacketAnimation(player, hand == EnumHand.MAIN_HAND ? 0 : 3));
 		}
 	}
 

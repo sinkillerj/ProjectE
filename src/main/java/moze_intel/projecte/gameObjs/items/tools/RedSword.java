@@ -34,7 +34,7 @@ public class RedSword extends DarkSword
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0);
+			attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0, hand);
 			player.resetCooldown();
 			return true;
 		}

@@ -31,7 +31,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		
 		if (shootProjectile(player, stack, hand))
 		{
-			PlayerHelper.swingItem(player);
+			PlayerHelper.swingItem(player, hand);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);

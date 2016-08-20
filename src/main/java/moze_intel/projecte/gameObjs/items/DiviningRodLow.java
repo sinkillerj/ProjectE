@@ -69,7 +69,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
 		{
-			PlayerHelper.swingItem(player);
+			PlayerHelper.swingItem(player, hand);
 			List<Integer> emcValues = Lists.newArrayList();
 			long totalEmc = 0;
 			int numBlocks = 0;

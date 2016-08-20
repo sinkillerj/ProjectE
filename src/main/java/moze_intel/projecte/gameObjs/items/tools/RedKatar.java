@@ -88,18 +88,18 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 				else if (blockHit instanceof BlockLog)
 				{
 					// Axe
-					clearOdAOE(world, stack, player, "logWood", 0);
+					clearOdAOE(world, stack, player, "logWood", 0, hand);
 				}
 				else if (blockHit instanceof BlockLeaves) {
 					// Shear leaves
-					clearOdAOE(world, stack, player, "treeLeaves", 0);
+					clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
 				}
 			}
 		}
 		else
 		{
 			// Shear
-			shearEntityAOE(stack, player, 0);
+			shearEntityAOE(stack, player, 0, hand);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -110,7 +110,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
+			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0, hand);
 			player.resetCooldown();
 			return true;
 		}

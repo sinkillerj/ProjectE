@@ -127,7 +127,7 @@ public class KeyPressPKT implements IMessage
                                         && PlayerChecks.getProjectileCooldown(player) <= 0
                                         && ((IProjectileShooter) stack.getItem()).shootProjectile(player, stack, hand))
                                 {
-                                    PlayerHelper.swingItem((player));
+                                    PlayerHelper.swingItem(player, hand);
                                     PlayerChecks.resetProjectileCooldown(player);
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))

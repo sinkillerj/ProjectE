@@ -87,7 +87,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 
-			PlayerHelper.swingItem(player);
+			PlayerHelper.swingItem(player, hand);
 		}
 		
 		return EnumActionResult.SUCCESS;

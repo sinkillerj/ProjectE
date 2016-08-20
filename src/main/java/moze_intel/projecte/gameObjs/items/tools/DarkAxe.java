@@ -37,8 +37,8 @@ public class DarkAxe extends PEToolBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		clearOdAOE(world, stack, player, "logWood", 0);
-		clearOdAOE(world, stack, player, "treeLeaves", 0);
+		clearOdAOE(world, stack, player, "logWood", 0, hand);
+		clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
