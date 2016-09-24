@@ -21,7 +21,7 @@ public class ThreadCheckUpdate extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private static final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogMC19.txt";
+	private static final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogMC110.txt";
 	private static final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
 	private final boolean isServerSide;
 	
