@@ -131,20 +131,6 @@ public class MatterFurnace extends BlockDirection
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entLiving, ItemStack stack)
 	{
 		world.setBlockState(pos, state.withProperty(PEStateProps.FACING, entLiving.getHorizontalFacing().getOpposite()));
-
-		TileEntity tile = world.getTileEntity(pos);
-		
-		if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
-			stack.getTagCompound().setInteger("x", pos.getX());
-			stack.getTagCompound().setInteger("y", pos.getY());
-			stack.getTagCompound().setInteger("z", pos.getZ());
-			stack.getTagCompound().setInteger("EMC", 0);
-			stack.getTagCompound().setShort("BurnTime", (short) 0);
-			stack.getTagCompound().setShort("CookTime", (short) 0);
-			
-			tile.readFromNBT(stack.getTagCompound());
-		}
 	}
 	
 	@SideOnly(Side.CLIENT)

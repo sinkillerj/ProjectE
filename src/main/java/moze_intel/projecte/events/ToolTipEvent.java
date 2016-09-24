@@ -163,17 +163,6 @@ public class ToolTipEvent
 
 		if (current.hasTagCompound())
 		{
-			if (current.getTagCompound().getBoolean("ProjectEBlock"))
-			{
-				event.getToolTip().add(TextFormatting.GREEN + I18n.format("pe.misc.wrenched_block"));
-
-				if (current.getTagCompound().getDouble("EMC") > 0)
-				{
-					event.getToolTip().add(TextFormatting.YELLOW + String.format(
-							I18n.format("pe.emc.storedemc_tooltip") + " " + TextFormatting.RESET + "%,d", (int) current.getTagCompound().getDouble("EMC")));
-				}
-			}
-
 			if (current.getItem() instanceof IItemEmc || current.getTagCompound().hasKey("StoredEMC"))
 			{
 				double value = 0;
