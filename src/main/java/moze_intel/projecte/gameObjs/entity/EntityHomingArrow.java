@@ -78,7 +78,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 
 			Vector3d arrowLoc = new Vector3d(posX, posY, posZ);
-			Vector3d targetLoc = new Vector3d(target.posX, target.getEntityBoundingBox().minY + target.height, target.posZ);
+			Vector3d targetLoc = new Vector3d(target.posX, target.posY + target.height / 2, target.posZ);
 
 			// Get the vector that points straight from the arrow to the target
 			Vector3d lookVec = new Vector3d(targetLoc);
