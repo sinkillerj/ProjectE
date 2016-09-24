@@ -5,7 +5,6 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIPedestal;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
@@ -36,36 +35,16 @@ public class ToolTipEvent
 		if (ProjectEConfig.showPedestalTooltip
 			&& currentItem instanceof IPedestalItem)
 		{
-			if (ProjectEConfig.showPedestalTooltipInGUI)
+			event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
+			List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
+			if (description.isEmpty())
 			{
-				if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal)
-				{
-					event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
-					List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
-					if (description.isEmpty())
-					{
-						event.getToolTip().add(IPedestalItem.TOOLTIPDISABLED);
-					}
-					else
-					{
-						event.getToolTip().addAll(((IPedestalItem) currentItem).getPedestalDescription());
-					}
-				}
+				event.getToolTip().add(IPedestalItem.TOOLTIPDISABLED);
 			}
 			else
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
-				List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
-				if (description.isEmpty())
-				{
-					event.getToolTip().add(IPedestalItem.TOOLTIPDISABLED);
-				}
-				else
-				{
-					event.getToolTip().addAll(((IPedestalItem) currentItem).getPedestalDescription());
-				}
+				event.getToolTip().addAll(((IPedestalItem) currentItem).getPedestalDescription());
 			}
-
 		}
 
 		if (ProjectEConfig.showODNames)

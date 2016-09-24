@@ -276,8 +276,8 @@ pe.morningstar.mode4=3x Longshot
 pe.pedestal.item_disabled=Pedestal function has been disabled!
 pe.pedestal.on_pedestal=On Pedestal:
 pe.pedestal.shortname=DM Pedestal
-pe.pedestal.tooltip1=Shift right-click to open GUI
-pe.pedestal.tooltip2=Right click to activate!
+pe.pedestal.tooltip1=Right click to insert an item, left click to remove.
+pe.pedestal.tooltip2=Right click with empty hand to activate!
 
 pe.philstone.mode1=Cube
 pe.philstone.mode2=Panel

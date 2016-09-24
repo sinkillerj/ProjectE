@@ -12,7 +12,6 @@ import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
-import moze_intel.projecte.gameObjs.container.PedestalContainer;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
@@ -32,7 +31,6 @@ import moze_intel.projecte.gameObjs.gui.GUICondenserMK2;
 import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIEternalDensity;
 import moze_intel.projecte.gameObjs.gui.GUIMercurialEye;
-import moze_intel.projecte.gameObjs.gui.GUIPedestal;
 import moze_intel.projecte.gameObjs.gui.GUIPhilosStone;
 import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
@@ -135,8 +133,6 @@ public class GuiHandler implements IGuiHandler
 				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:
 				return new CondenserMK2Container(player.inventory, (CondenserMK2Tile) tile);
-			case Constants.PEDESTAL_GUI:
-				return new PedestalContainer(player.inventory, ((DMPedestalTile) tile));
 		}
 		
 		return null;
@@ -206,8 +202,6 @@ public class GuiHandler implements IGuiHandler
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:
 				return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);
-			case Constants.PEDESTAL_GUI:
-				return new GUIPedestal(player.inventory, ((DMPedestalTile) tile));
 		}
 		
 		return null;

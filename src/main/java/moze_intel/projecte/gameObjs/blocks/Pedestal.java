@@ -25,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -49,16 +50,33 @@ public class Pedestal extends Block
         return AABB;
     }
 
+    private void dropItem(World world, BlockPos pos)
+    {
+        DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
+        if (stack != null)
+        {
+            WorldHelper.spawnEntityItem(world, stack, pos.getX(), pos.getY() + 0.8, pos.getZ());
+            tile.getInventory().setStackInSlot(0, null);
+        }
+    }
+
     @Override
     public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
     {
-        DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-        if (tile.getInventory().getStackInSlot(0) != null)
-        {
-            WorldHelper.spawnEntityItem(world, tile.getInventory().getStackInSlot(0).copy(), pos);
-        }
-        tile.invalidate();
+        dropItem(world, pos);
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
+    {
+        if (!world.isRemote)
+        {
+            dropItem(world, pos);
+            IBlockState state = world.getBlockState(pos);
+            world.notifyBlockUpdate(pos, state, state, 8);
+        }
     }
 
     @Override
@@ -67,26 +85,22 @@ public class Pedestal extends Block
         if (!world.isRemote)
         {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-            if (player.isSneaking())
+            ItemStack item = tile.getInventory().getStackInSlot(0);
+
+            if (stack == null
+                    && item != null
+                    && item.getItem() instanceof IPedestalItem)
             {
-                player.openGui(PECore.instance, Constants.PEDESTAL_GUI, world, pos.getX(), pos.getY(), pos.getZ());
-            }
-            else
+                tile.setActive(!tile.getActive());
+                world.notifyBlockUpdate(pos, state, state, 8);
+            } else if (stack != null && item == null)
             {
-                if (tile.getInventory().getStackInSlot(0) != null && tile.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
+                tile.getInventory().setStackInSlot(0, stack.splitStack(1));
+                if (stack.stackSize <= 0)
                 {
-                    tile.setActive(!tile.getActive());
+                    player.setHeldItem(hand, null);
                 }
-
-                PlayerChunkMapEntry chunk = ((WorldServer) world)
-                        .getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
-                SPacketUpdateTileEntity packet = tile.getUpdatePacket();
-
-                if (chunk != null && packet != null)
-                {
-                    chunk.sendPacket(tile.getUpdatePacket());
-                }
-
+                world.notifyBlockUpdate(pos, state, state, 8);
             }
         }
         return true;

@@ -55,7 +55,6 @@ public final class Constants
 	public static final int TRANSMUTATION_GUI = 14;
 	public static final int ETERNAL_DENSITY_GUI = 15;
 	public static final int CONDENSER_MK2_GUI = 16;
-	public static final int PEDESTAL_GUI = 17;
 
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 

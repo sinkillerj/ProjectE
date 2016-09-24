@@ -145,9 +145,7 @@ public class DMPedestalTile extends TileEmc
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
-		NBTTagCompound cmp = new NBTTagCompound();
-		writeToNBT(cmp);
-		return new SPacketUpdateTileEntity(pos, -1, cmp);
+		return new SPacketUpdateTileEntity(pos, -1, getUpdateTag());
 	}
 
 	@Override
