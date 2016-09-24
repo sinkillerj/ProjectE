@@ -1,11 +1,13 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
@@ -21,11 +23,10 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x + 0.5, y + 1, z + 0.5);
-                GlStateManager.scale(0.5, 0.5, 0.5);
-                GlStateManager.translate(0, 0.3 * Math.sin(0.1 * (te.getWorld().getWorldTime() + partialTicks)), 0);
-                float angle = (te.getWorld().getWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
+                GlStateManager.translate(0, MathHelper.sin((te.getWorld().getTotalWorldTime() + partialTicks) / 10.0F) * 0.1F + 0.1F, 0);
+                GlStateManager.scale(0.75, 0.75, 0.75);
+                float angle = (te.getWorld().getTotalWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
                 GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
-                Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 Minecraft.getMinecraft().getRenderItem().renderItem(te.getInventory().getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND);
                 GlStateManager.popMatrix();
             }
