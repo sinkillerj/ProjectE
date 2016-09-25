@@ -22,7 +22,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
             if (te.getInventory().getStackInSlot(0) != null)
             {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(x + 0.5, y + 1, z + 0.5);
+                GlStateManager.translate(x + 0.5, y + 0.65, z + 0.5);
                 GlStateManager.translate(0, MathHelper.sin((te.getWorld().getTotalWorldTime() + partialTicks) / 10.0F) * 0.1F + 0.1F, 0);
                 GlStateManager.scale(0.75, 0.75, 0.75);
                 float angle = (te.getWorld().getTotalWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
