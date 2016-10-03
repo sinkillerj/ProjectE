@@ -10,13 +10,11 @@ import java.util.Objects;
 public class SimpleStack
 {
 	public final ResourceLocation id;
-	public int damage;
-	public int qnty;
+	public final int damage;
 
-	public SimpleStack(ResourceLocation id, int qnty, int damage)
+	public SimpleStack(ResourceLocation id, int damage)
 	{
 		this.id = id;
-		this.qnty = qnty;
 		this.damage = damage;
 	}
 	
@@ -25,13 +23,18 @@ public class SimpleStack
 		if (stack == null)
 		{
 			id = new ResourceLocation("minecraft", "air");
+			damage = 0;
 		}
 		else
 		{
 			id = stack.getItem().getRegistryName();
 			damage = stack.getItemDamage();
-			qnty = stack.stackSize;
 		}
+	}
+
+	public SimpleStack withMeta(int meta)
+	{
+		return new SimpleStack(id, meta);
 	}
 
 	public boolean isValid()
@@ -47,22 +50,17 @@ public class SimpleStack
 
 			if (item != null)
 			{
-				return new ItemStack(item, qnty, damage);
+				return new ItemStack(item, 1, damage);
 			}
 		}
 
 		return null;
 	}
 
-	public SimpleStack copy()
-	{
-		return new SimpleStack(id, qnty, damage);
-	}
-
 	@Override
 	public int hashCode() 
 	{
-		int hash = 31 * qnty << 4 ^ id.hashCode();
+		int hash = 31 * id.hashCode();
 		if (this.damage == OreDictionary.WILDCARD_VALUE)
 			hash = hash * 57 ^ this.damage;
 		return hash;
@@ -77,12 +75,10 @@ public class SimpleStack
 			 
 			if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
 			{
-				//return this.id == other.id;
-				return this.qnty == other.qnty && Objects.equals(this.id, other.id);
+				return Objects.equals(this.id, other.id);
 			}
 
-			//return this.id == other.id && this.damage == other.damage;
-			return Objects.equals(this.id, other.id) && this.qnty == other.qnty && this.damage == other.damage;
+			return Objects.equals(this.id, other.id) && this.damage == other.damage;
 		}
 		
 		return false;
@@ -95,9 +91,9 @@ public class SimpleStack
 		
 		if (obj != null)
 		{
-			return id + " " + qnty + " " + damage;
+			return id + " " + damage;
 		}
 		
-		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
+		return "id:" + id + " damage:" + damage;
 	}
 }

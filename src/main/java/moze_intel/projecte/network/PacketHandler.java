@@ -79,7 +79,7 @@ public final class PacketHandler
 
 			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
 
-			Integer[] data = new Integer[] {id, stack.qnty, stack.damage, entry.getValue()};
+			Integer[] data = new Integer[] {id, stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)
@@ -117,7 +117,7 @@ public final class PacketHandler
 
 			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
 
-			Integer[] data = new Integer[] {id, stack.qnty, stack.damage, entry.getValue()};
+			Integer[] data = new Integer[] {id, stack.damage, entry.getValue()};
 			list.add(data);
 
 			if (list.size() >= MAX_PKT_SIZE)

@@ -39,7 +39,7 @@ public class SyncEmcPKT implements IMessage
 		{
 			Integer[] array = new Integer[4];
 
-			for (int j = 0; j < 4; j++)
+			for (int j = 0; j < 3; j++)
 			{
 				array[j] = ByteBufUtils.readVarInt(buf, 5);
 			}
@@ -58,7 +58,7 @@ public class SyncEmcPKT implements IMessage
 		{
 			Integer[] array = (Integer[]) obj;
 
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				ByteBufUtils.writeVarInt(buf, array[i], 5);
 			}
@@ -86,11 +86,11 @@ public class SyncEmcPKT implements IMessage
 
 						Item i = Item.REGISTRY.getObjectById(array[0]);
 
-						SimpleStack stack = new SimpleStack(i.getRegistryName(), array[1], array[2]);
+						SimpleStack stack = new SimpleStack(i.getRegistryName(), array[1]);
 
 						if (stack.isValid())
 						{
-							EMCMapper.emc.put(stack, array[3]);
+							EMCMapper.emc.put(stack, array[2]);
 						}
 					}
 

@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class LayerModelYue implements LayerRenderer {
+public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 	private static final ModelYue yuemodel = new ModelYue();
 	private final RenderPlayer render;
 
@@ -25,39 +25,35 @@ public class LayerModelYue implements LayerRenderer {
 	}
 
 	@Override
-	public void doRenderLayer(@Nonnull EntityLivingBase ent, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
+	public void doRenderLayer(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
-		if (ent instanceof EntityPlayer)
+		if(SIN_UUID.equals(player.getUniqueID().toString())
+				|| CLAR_UUID.equals(player.getUniqueID().toString())
+				|| PECore.DEV_ENVIRONMENT)
 		{
-			EntityPlayer player = ((EntityPlayer) ent);
-			if(SIN_UUID.equals(player.getUniqueID().toString())
-					|| CLAR_UUID.equals(player.getUniqueID().toString())
-					|| PECore.DEV_ENVIRONMENT)
+			GlStateManager.pushMatrix();
+			render.getMainModel().bipedBody.postRender(0.0625F);
+			if (player.isSneaking())
 			{
-				GlStateManager.pushMatrix();
-				render.getMainModel().bipedBody.postRender(0.0625F);
-				if (player.isSneaking())
-				{
-					GlStateManager.rotate(-28.64789F, 1.0F, 0.0F, 0.0F);
-					GlStateManager.translate(0.0f, -0.1f, 0.0f);
-				}
-				GlStateManager.rotate(180, 0, 0, 1);
-				GlStateManager.scale(3.0f, 3.0f, 3.0f);
-				GlStateManager.translate(-0.5f, -0.498f, -0.5f);
-				GlStateManager.color(0.0F, 1.0F, 0.0F, 1.0F);
-				GlStateManager.disableLighting();
-				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
-				if (CLAR_UUID.equals(player.getUniqueID().toString()))
-				{
-					Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
-				} else
-				{
-					Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
-				}
-				yuemodel.renderAll();
-				GlStateManager.enableLighting();
-				GlStateManager.popMatrix();
+				GlStateManager.rotate(-28.64789F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0f, -0.1f, 0.0f);
 			}
+			GlStateManager.rotate(180, 0, 0, 1);
+			GlStateManager.scale(3.0f, 3.0f, 3.0f);
+			GlStateManager.translate(-0.5f, -0.498f, -0.5f);
+			GlStateManager.color(0.0F, 1.0F, 0.0F, 1.0F);
+			GlStateManager.disableLighting();
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
+			if (CLAR_UUID.equals(player.getUniqueID().toString()))
+			{
+				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
+			} else
+			{
+				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
+			}
+			yuemodel.renderAll();
+			GlStateManager.enableLighting();
+			GlStateManager.popMatrix();
 		}
 	}
 

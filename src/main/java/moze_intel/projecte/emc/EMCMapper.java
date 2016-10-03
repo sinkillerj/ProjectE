@@ -139,7 +139,7 @@ public final class EMCMapper
 				Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
 				if (obj != null)
 				{
-					emc.put(new SimpleStack(obj.getRegistryName(), 1, normStackItem.damage), entry.getValue());
+					emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 				}
@@ -170,18 +170,12 @@ public final class EMCMapper
 
 	public static boolean mapContains(SimpleStack key)
 	{
-		SimpleStack copy = key.copy();
-		copy.qnty = 1;
-
-		return emc.containsKey(copy);
+		return emc.containsKey(key);
 	}
 
 	public static int getEmcValue(SimpleStack stack)
 	{
-		SimpleStack copy = stack.copy();
-		copy.qnty = 1;
-
-		return emc.get(copy);
+		return emc.get(stack);
 	}
 
 	public static void clearMaps() {

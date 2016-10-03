@@ -81,34 +81,20 @@ public final class FuelMapper
 	{
 		if (stack.isValid())
 		{
-			SimpleStack copy = stack.copy();
-			copy.qnty = 1;
-
-			if (!FUEL_MAP.contains(copy))
+			if (!FUEL_MAP.contains(stack))
 			{
-				FUEL_MAP.add(copy);
+				FUEL_MAP.add(stack);
 			}
 		}
 	}
 
 	private static boolean mapContains(SimpleStack stack)
 	{
-		if (!stack.isValid())
-		{
-			return false;
-		}
-
-		SimpleStack copy = stack.copy();
-		copy.qnty = 1;
-
-		return FUEL_MAP.contains(copy);
+		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
 	private static int indexInMap(SimpleStack stack)
 	{
-		SimpleStack copy = stack.copy();
-		copy.qnty = 1;
-
-		return FUEL_MAP.indexOf(copy);
+		return FUEL_MAP.indexOf(stack);
 	}
 }
