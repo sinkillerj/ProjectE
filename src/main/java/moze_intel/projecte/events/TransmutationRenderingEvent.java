@@ -133,57 +133,49 @@ public class TransmutationRenderingEvent
 		
 		Tessellator tess = Tessellator.getInstance();
 		VertexBuffer wr = tess.getBuffer();
-		
+
+		wr.begin(7, DefaultVertexFormats.POSITION);
+
 		for (AxisAlignedBB b : renderList)
 		{
 			//Top
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
 			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
-			tess.draw();
 
 			//Bottom
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.minX, b.minY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
 			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
-			tess.draw();
 
 			//Front
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
 			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
 			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
 			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
-			tess.draw();
 
 			//Back
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
 			wr.pos(b.minX, b.minY, b.minZ).endVertex();
 			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
-			tess.draw();
 
 			//Left
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
 			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
 			wr.pos(b.minX, b.minY, b.minZ).endVertex();
 			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
-			tess.draw();
 
 			//Right
-			wr.begin(7, DefaultVertexFormats.POSITION);
 			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
 			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
 			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
-			tess.draw();
 		}
+
+		tess.draw();
 
 		GlStateManager.depthMask(true);
 		GlStateManager.enableCull();
