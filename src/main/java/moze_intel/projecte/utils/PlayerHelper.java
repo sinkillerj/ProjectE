@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -78,14 +79,14 @@ public final class PlayerHelper
 		return null;
 	}
 
-	public static IInventory getBaubles(EntityPlayer player)
+	public static IItemHandler getBaubles(EntityPlayer player)
 	{
 		if (!Loader.isModLoaded("Baubles"))
 		{
 			return null;
 		} else
 		{
-			return BaublesApi.getBaubles(player);
+			return BaublesApi.getBaublesHandler(player);
 		}
 	}
 

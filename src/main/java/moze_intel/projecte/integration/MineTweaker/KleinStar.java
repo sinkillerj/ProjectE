@@ -1,7 +1,5 @@
-/* todo 1.8 update to new MT
 package moze_intel.projecte.integration.MineTweaker;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
@@ -12,6 +10,7 @@ import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -184,4 +183,3 @@ public class KleinStar
 	}
 
 }
-*/

@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.Set;
 
@@ -158,10 +159,10 @@ public final class PlayerChecks
 			}
 		}
 
-		IInventory baubles = PlayerHelper.getBaubles(player);
+		IItemHandler baubles = PlayerHelper.getBaubles(player);
 		if (baubles != null)
 		{
-			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
 				if (stack != null
@@ -206,10 +207,10 @@ public final class PlayerChecks
 			}
 		}
 
-		IInventory baubles = PlayerHelper.getBaubles(player);
+		IItemHandler baubles = PlayerHelper.getBaubles(player);
 		if (baubles != null)
 		{
-			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
 				if (stack != null
@@ -248,10 +249,10 @@ public final class PlayerChecks
 			}
 		}
 
-		IInventory baubles = PlayerHelper.getBaubles(player);
+		IItemHandler baubles = PlayerHelper.getBaubles(player);
 		if (baubles != null)
 		{
-			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
 				if (stack != null
@@ -276,10 +277,10 @@ public final class PlayerChecks
 			}
 		}
 
-		IInventory baubles = PlayerHelper.getBaubles(player);
+		IItemHandler baubles = PlayerHelper.getBaubles(player);
 		if (baubles != null)
 		{
-			for (int i = 0; i < baubles.getSizeInventory(); i++)
+			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
 				{

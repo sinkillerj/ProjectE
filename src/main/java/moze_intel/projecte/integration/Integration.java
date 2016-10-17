@@ -1,6 +1,6 @@
 package moze_intel.projecte.integration;
 
-// todo 1.8 restore when MT updates import moze_intel.projecte.integration.MineTweaker.TweakInit;
+import moze_intel.projecte.integration.MineTweaker.TweakInit;
 
 import net.minecraftforge.fml.common.Loader;
 
@@ -23,7 +23,7 @@ public class Integration
 		{
 			try
 			{
-				// todo 1.8 restore when MT updates TweakInit.init();
+				TweakInit.init();
 			} catch (Throwable e)
 			{
 				e.printStackTrace();

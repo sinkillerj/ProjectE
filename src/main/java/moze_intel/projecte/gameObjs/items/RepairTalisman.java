@@ -111,9 +111,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Optional.Method(modid = "Baubles")
 	public void baubleRepair(EntityPlayer player)
 	{
-		IInventory bInv = BaublesApi.getBaubles(player);
+		IItemHandler bInv = BaublesApi.getBaublesHandler(player);
 
-		for (int i = 0; i < bInv.getSizeInventory(); i++)
+		for (int i = 0; i < bInv.getSlots(); i++)
 		{
 			ItemStack bInvStack = bInv.getStackInSlot(i);
 			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())

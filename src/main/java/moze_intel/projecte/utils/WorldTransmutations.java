@@ -187,7 +187,7 @@ public final class WorldTransmutations
 
 	public static List<Entry> getWorldTransmutations()
 	{
-		return Collections.unmodifiableList(ENTRIES);
+		return ENTRIES;
 	}
 
 	public static void register(IBlockState from, IBlockState result, IBlockState altResult)

@@ -1,22 +1,34 @@
-/* todo 1.8 update to new MT
 package moze_intel.projecte.integration.MineTweaker;
 
 import minetweaker.MineTweakerAPI;
-import moze_intel.projecte.utils.FileHelper;
+import moze_intel.projecte.utils.PELogger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TweakInit
 {
-
-
 	public static void init()
 	{
 		MineTweakerAPI.registerClass(PhiloStone.class);
 		MineTweakerAPI.registerClass(KleinStar.class);
 
-		FileHelper.writeDefaultFile("projecte_default.zs", "scripts", generateLines());
+        File parent = new File("scripts");
+
+        if (!parent.isDirectory()) {
+            parent.mkdir();
+        }
+
+        File script = new File(parent, "projecte_default.zs");
+
+        try {
+            Files.write(script.toPath(), generateLines());
+        } catch (IOException ex) {
+            PELogger.logWarn("Failed to write sample script");
+        }
 	}
 
 	private static List<String> generateLines()
@@ -52,4 +64,4 @@ public class TweakInit
 
 		return defaultLines;
 	}
-}*/
+}

@@ -66,10 +66,7 @@ dependencies {
 
     deobfCompile "mezz.jei:jei_1.10.2:3.7.7.233"
 
-    // compile "codechicken:CodeChickenLib:1.8-1.1.2.139:dev"
-    // compile "codechicken:CodeChickenCore:1.8-1.0.5.36:dev"
-    // compile "codechicken:NotEnoughItems:1.8-1.0.5.104:dev"
-    // compile name: 'MineTweaker3', version: 'Dev-1.7.10-3.0.9C', ext: 'jar'
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 compileJava {
