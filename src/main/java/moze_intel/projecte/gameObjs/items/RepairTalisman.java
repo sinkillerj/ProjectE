@@ -71,7 +71,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	private void repairAllItems(EntityPlayer player)
 	{
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
@@ -87,7 +87,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				if (chiselCheck(invStack)) continue;
 			}
 
-			if (invStack.equals(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)) && player.isSwingInProgress)
+			if (invStack == player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) && player.isSwingInProgress)
 			{
 				//Don't repair item that is currently used by the player.
 				continue;
@@ -172,11 +172,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
-				List<EntityPlayerMP> list = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
-				for (EntityPlayerMP player : list)
-				{
-					repairAllItems(player);
-				}
+				world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds()).forEach(this::repairAllItems);
 				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
 			}
 			else
