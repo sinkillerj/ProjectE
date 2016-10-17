@@ -20,6 +20,7 @@ public class PEJeiPlugin implements IModPlugin
     @Override
     public void register(@Nonnull IModRegistry registry)
     {
+        // todo finish this, add alchbag and klein
         registry.addRecipeCategories(new WorldTransmuteRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
         registry.addRecipeHandlers(new WorldTransmuteRecipeHandler());
         registry.addRecipes(WorldTransmutations.getWorldTransmutations());

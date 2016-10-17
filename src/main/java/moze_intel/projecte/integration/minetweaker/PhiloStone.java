@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.MineTweaker;
+package moze_intel.projecte.integration.minetweaker;
 
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;

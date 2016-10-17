@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.MineTweaker;
+package moze_intel.projecte.integration.minetweaker;
 
 import minetweaker.MineTweakerAPI;
 import moze_intel.projecte.utils.PELogger;
