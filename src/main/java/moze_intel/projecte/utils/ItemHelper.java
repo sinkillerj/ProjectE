@@ -411,7 +411,7 @@ public final class ItemHelper
 
 		if (inv instanceof InventoryPlayer)
 		{
-			limit = 36;
+			limit = ((InventoryPlayer) inv).mainInventory.length;
 		}
 		else
 		{
