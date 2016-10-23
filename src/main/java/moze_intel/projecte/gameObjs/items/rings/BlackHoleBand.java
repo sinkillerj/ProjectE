@@ -10,6 +10,8 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,10 +24,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,7 +52,33 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		super("black_hole");
 		this.setNoRepair();
 	}
-	
+
+	@Nonnull
+	@Override
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	{
+		BlockPos fluidPos = pos.offset(facing);
+		IBlockState state = world.getBlockState(fluidPos);
+		if (state.getBlock() instanceof BlockFluidBase
+				|| state.getBlock() instanceof BlockLiquid)
+		{
+			if (!world.isRemote)
+			{
+				world.setBlockToAir(fluidPos);
+				Fluid f = FluidRegistry.lookupFluidForBlock(state.getBlock());
+				if (f != null)
+				{
+					world.playSound(null, pos, f.getFillSound(world, fluidPos), SoundCategory.BLOCKS, 1, 1);
+				}
+			}
+
+			return EnumActionResult.SUCCESS;
+		} else
+		{
+			return EnumActionResult.PASS;
+		}
+	}
+
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
