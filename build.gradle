@@ -63,6 +63,7 @@ dependencies {
 
     deobfCompile "mezz.jei:jei_1.10.2:3.7.7.233"
     deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
+    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"
 
     compile fileTree(dir: 'libs', include: '*.jar')
