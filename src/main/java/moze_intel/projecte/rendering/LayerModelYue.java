@@ -11,13 +11,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 	private static final ModelYue yuemodel = new ModelYue();
 	private final RenderPlayer render;
 
-	private static final String SIN_UUID = "5f86012c-ca4b-451a-989c-8fab167af647";
-	private static final String CLAR_UUID = "e5c59746-9cf7-4940-a849-d09e1f1efc13";
+	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
+	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
 
 	public LayerModelYue(RenderPlayer renderer)
 	{
@@ -27,8 +28,8 @@ public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 	@Override
 	public void doRenderLayer(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
-		if(SIN_UUID.equals(player.getUniqueID().toString())
-				|| CLAR_UUID.equals(player.getUniqueID().toString())
+		if(SIN_UUID.equals(player.getUniqueID())
+				|| CLAR_UUID.equals(player.getUniqueID())
 				|| PECore.DEV_ENVIRONMENT)
 		{
 			GlStateManager.pushMatrix();
@@ -44,7 +45,7 @@ public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 			GlStateManager.color(0.0F, 1.0F, 0.0F, 1.0F);
 			GlStateManager.disableLighting();
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
-			if (CLAR_UUID.equals(player.getUniqueID().toString()))
+			if (CLAR_UUID.equals(player.getUniqueID()))
 			{
 				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
 			} else
