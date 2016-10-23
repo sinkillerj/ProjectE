@@ -18,7 +18,7 @@ item.pe_matter_red.name=Rote Materie
 item.pe_ring_iron_band.name=Eisenband
 item.pe_black_hole.name=Band des Schwarzen Lochs
 item.pe_harvest_god.name=Band der Erntegöttin
-item.pe_archangel_smite.name=Qualen des Erzengels [WIP]
+item.pe_archangel_smite.name=Qualen des Erzengels
 item.pe_ignition.name=Ring des Feuers
 item.pe_body_stone.name=Stein des Körpers
 item.pe_soul_stone.name=Stein der Seele
@@ -74,6 +74,9 @@ item.pe_void_ring.name=Ring der Leere
 item.pe_zero_ring.name=Null-Ring
 item.pe_tome.name=Buch des Wissens
 item.pe_transmutation_tablet.name=Transmutationsplatte
+item.pe_manual.name=Buch des Alchemisten [WIP]
+
+pe.manual.tooltip1=Band 2
 
 tile.pe_alchemy_chest.name=Alchemietruhe
 tile.pe_interdiction_torch.name=Fackel der Abriegelung
@@ -233,7 +236,7 @@ pe.gemdensity.tooltip1=Kondensiert Items unterwegs.
 pe.gemdensity.tooltip2=Aktuelles Ziel: %s.
 pe.gemdensity.tooltip3=Drücke %s, um das Ziel zu ändern.
 pe.gemdensity.tooltip4=Rechtsklick, um Blacklist/Whitelist einzurichten.
-pe.gemdensity.tooltip5=Shift + Rechtsklick zum Ändern.
+pe.gemdensity.tooltip5=Shift + Rechtsklick zum Aktivieren.
 pe.gemdensity.whitelist=Whitelist
 
 pe.harvestgod.pedestal1=Beschleunigt das Wachstum naher Pflanzen.
@@ -279,7 +282,7 @@ pe.pedestal.tooltip2=Rechtsklick zum Aktivieren!
 pe.philstone.mode1=Würfel
 pe.philstone.mode2=Panel
 pe.philstone.mode3=Linie
-pe.philstone.tooltip1=Drücke %s, um Crafting-GUI zu öffnen.
+pe.philstone.tooltip1=%s drücken, um Crafting-GUI zu öffnen.
 
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x Übereinander
@@ -311,7 +314,7 @@ pe.timewatch.mode=Zeitkontroll-Modus: %s
 pe.timewatch.mode_switch=Zeitkontroll-Modus zu %s gesetzt
 pe.timewatch.off=Aus
 pe.timewatch.rw=Zurückspulen
-pe.timewatch.tooltip1=Werde der Meister der Zeit.
+pe.timewatch.tooltip1=Werde Meister der Zeit.
 pe.timewatch.tooltip2=Rechtsklick, um Modus zu ändern.
 pe.timewatch.pedestal1=Gibt jeden Tick %d Bonus-Ticks an nahe Blöcke.
 pe.timewatch.pedestal2=Nahe Kreaturen bewegen sich %.3f mal schneller.
@@ -346,7 +349,7 @@ pe.update.getit=Hier herunterladen!
 pe.volcanite.tooltip1=Drücke %s, um ein Lavaprojektil zu feuern.
 pe.volcanite.tooltip2=Funktioniert wie ein unendlicher Lavaeimer.
 pe.volcanite.tooltip3=Rechtsklick, um einen Tank zu füllen.
-pe.volcanite.tooltip4=Alle Funktionen kosten 32 EMC!
+pe.volcanite.tooltip4=Alle Funktionen verbrauchen 32 EMC!
 pe.volcanite.pedestal1=Verhindert Regen-/Schneestürme.
 pe.volcanite.pedestal2=Versucht alle %s, das Wetter zu stoppen.
 
@@ -354,4 +357,10 @@ pe.zero.pedestal1=Löscht Kreaturen aus.
 pe.zero.pedestal2=Friert die Umgebung.
 pe.zero.pedestal3=Wird jede %s ausgelöst.
 
-pe.debug.metainvalid.name=Ungültige Metadaten
+pe.debug.metainvalid.name=Ungültige Metadaten.
+
+pe.nei.worldtransmute=Welt-Transmutation
+pe.nei.philo=Stein der Weisen-Schmelzen
+
+pe.manual.index=Inhaltsverzeichnis
+pe.manual.index_button=ToC

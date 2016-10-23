@@ -1,0 +1,7 @@
+###Version 1.10.2-PE1.0.6B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* NOTICE: ProjectE now requires Java 8
+* FIXED: An issue causing transmutation knowledge to be wiped in some situations
+* FIXED: Matter block harvesting issues
+* FIXED: Gem armor keybinds
+* CHANGE: Major code cleanup. Expect bugs fire and death

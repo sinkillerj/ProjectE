@@ -1,0 +1,357 @@
+item.pe_philosophers_stone.name=Філософський камінь
+item.pe_alchemical_bag.name=Алхімічний мішок
+item.pe_repair_talisman.name=Талісман відновлення
+item.pe_klein_star_1.name=Зірка Клейна 1
+item.pe_klein_star_2.name=Зірка Клейна 2
+item.pe_klein_star_3.name=Зірка Клейна 3
+item.pe_klein_star_4.name=Зірка Клейна 4
+item.pe_klein_star_5.name=Зірка Клейна Сфера
+item.pe_klein_star_6.name=Зірка Клейна Омега
+item.pe_fuel_alchemical_coal.name=Алхімічне вугілля
+item.pe_fuel_mobius.name=Пальне Мобіуса
+item.pe_fuel_aeternalis.name=Ефірне пальне
+item.pe_covalence_dust_low.name=Слабкий ковалентний пил
+item.pe_covalence_dust_medium.name=Середній ковалентний пил
+item.pe_covalence_dust_high.name=Сильний ковалентний пил
+item.pe_matter_dark.name=Темна матерія
+item.pe_matter_red.name=Червона матерія
+item.pe_ring_iron_band.name=Залізне кільце
+item.pe_black_hole.name=Кільце чорної діри
+item.pe_harvest_god.name=Кільце богині плодороддя
+item.pe_archangel_smite.name=Кара Архангела [WIP]
+item.pe_ignition.name=Кільце загоряння
+item.pe_body_stone.name=Камінь тіла
+item.pe_soul_stone.name=Камінь душі
+item.pe_mind_stone.name=Камінь розуму
+item.pe_life_stone.name=Камінь життя
+item.pe_evertide_amulet.name=Водяний амулет
+item.pe_volcanite_amulet.name=Вулканічний амулет
+item.pe_swrg.name=Кільце стихійної люті
+item.pe_mercurial_eye.name=Ртутне око
+item.pe_time_watch.name=Годинник часового потоку
+item.pe_gem_density.name=Дорогоцінний камінь вічної густини
+item.pe_divining_rod_1.name=Слабка магічна лоза
+item.pe_divining_rod_2.name=Середня магічна лоза
+item.pe_divining_rod_3.name=Сильна магічна лоза
+item.pe_destruction_catalyst.name=Каталізатор знищення
+item.pe_hyperkinetic_lens.name=Гіперкінетична лінза
+item.pe_catalitic_lens.name=Каталітична лінза
+item.pe_lens_explosive.name=Вибухова лінза
+item.pe_water_orb.name=Водяна куля
+item.pe_lava_orb.name=Лавова куля
+item.pe_randomizer.name=Випадкова куля
+item.pe_loot_ball.name=Куля добування
+item.pe_dm_pick.name=Кирка з темної матерії
+item.pe_dm_axe.name=Сокира з темної матерії
+item.pe_dm_shovel.name=Лопата з темної матерії
+item.pe_dm_sword.name=Меч з темної матерії
+item.pe_dm_hoe.name=Мотига з темної матерії
+item.pe_dm_shears.name=Ножиці з темної матерії
+item.pe_dm_hammer.name=Молот з темної матерії
+item.pe_rm_pick.name=Кирка з червоної матерії
+item.pe_rm_axe.name=Сокира з червоної матерії
+item.pe_rm_shovel.name=Лопата з червоної матерії
+item.pe_rm_sword.name=Меч з червоної матерії
+item.pe_rm_hoe.name=Мотига з червоної матерії
+item.pe_rm_shears.name=Ножиці з червоної матерії
+item.pe_rm_hammer.name=Молот з червоної матерії
+item.pe_rm_katar.name=Червоний катар
+item.pe_rm_morning_star.name=Червона вранішня зірка
+item.pe_dm_armor_0.name=Шлем з темної матерії
+item.pe_dm_armor_1.name=Кираса з темної матерії
+item.pe_dm_armor_2.name=Штани з темної матерії
+item.pe_dm_armor_3.name=Черевики з темної матерії
+item.pe_rm_armor_0.name=Шлем з червоної матерії
+item.pe_rm_armor_1.name=Кираса з червоної матерії
+item.pe_rm_armor_2.name=Штани з червоної матерії
+item.pe_rm_armor_3.name=Черевики з червоної матерії
+item.pe_gem_armor_0.name=Шлем з дорогоцінних каменів
+item.pe_gem_armor_1.name=Кираса з дорогоцінних каменів
+item.pe_gem_armor_2.name=Штани з дорогоцінних каменів
+item.pe_gem_armor_3.name=Черевики з дорогоцінних каменів
+item.pe_arcana_ring.name=Кільце таємниць
+item.pe_void_ring.name=Кільце пустоти
+item.pe_zero_ring.name=Кільце абсолютного нуля
+item.pe_tome.name=Книга знань
+item.pe_transmutation_tablet.name=Стіл трансмутацій
+
+tile.pe_alchemy_chest.name=Алхімічна скриня
+tile.pe_interdiction_torch.name=Факел вигнання
+tile.pe_transmutation_stone.name=Стіл трансмутацій
+tile.pe_condenser.name=Конденсатор енергії
+tile.pe_condenser_mk2.name=Конденсатор енергії,вер. 2
+tile.pe_rm_furnace.name=Пічка з червоної матерії
+tile.pe_dm_furnace.name=Пічка з темної матерії
+tile.pe_rm_block.name=Блок червоної матерії
+tile.pe_dm_block.name=Блок темної матерії
+tile.pe_collector_MK1.name=Збирач енергії, вер.1
+tile.pe_collector_MK2.name=Збирач енергії, вер.2
+tile.pe_collector_MK3.name=Збирач енергії, вер.3
+tile.pe_relay_MK1.name=Реле з антиматерії, вер.1
+tile.pe_relay_MK2.name=Реле з антиматерії, вер.2
+tile.pe_relay_MK3.name=Реле з антиматерії, вер.3
+tile.pe_nova_catalyst.name=Каталізатор Нова
+tile.pe_nova_cataclysm.name=Катаклізм Нова
+tile.pe_fuel_block_0.name=Блок алхімічного вугілля
+tile.pe_fuel_block_1.name=Блок пального Мобіуса
+tile.pe_fuel_block_2.name=Блок ефірного пального
+tile.pe_dmPedestal.name=П'єдестал темної матерії
+
+itemGroup.ProjectE=ProjectE
+
+achievement.phil_stone=Найкращий друг алхіміків!
+achievement.phil_stone.desc=Почнемо! Створіть філософський камінь!
+achievement.alch_chest=Покращення сховища!
+achievement.alch_chest.desc="Невелике" покращення сховища.
+achievement.alch_bag=Кишенькове сховище!
+achievement.alch_bag.desc=Усі дива алхімічної скрині у вашій кишені.
+achievement.transmutation=Перетворіть це у це!
+achievement.transmutation.desc=Початок і кінець усього.
+achievement.condenser=Ущільнення світу!
+achievement.condenser.desc=БІЛЬШЕ ДІАМАНТІВ!
+achievement.collector=Сонячна енергія!
+achievement.collector.desc=А тепер починається найцікавіше.
+achievement.relay=Квіткова енергія!
+achievement.relay.desc=Об'єднайте збирачі для ще більшої кількості енергії!.
+achievement.portable_transmutation=Перетворення на ходу!
+achievement.portable_transmutation.desc=І тоді вам здалося, що кращого бути вже не може.
+achievement.dark_matter=Уся ця матерія.
+achievement.dark_matter.desc=Вона виглядає... дивно....
+achievement.red_matter=Ще більш покращенна матерія!
+achievement.red_matter.desc=Просторово-часовий континуум може бути пошкоджено.
+achievement.dm_block=Блок матерії!
+achievement.dm_block.desc=Об'єднання матерії разом. Бо це хороша ідея.
+achievement.rm_block=Червона та блискуча!
+achievement.rm_block.desc=Зараз хоч щось!
+achievement.dm_furnace=Гаряча матерія!
+achievement.dm_furnace.desc=Пічка набагато краща, якщо вона- з темної матерії.
+achievement.rm_furnace=Матерія! Тепер на 100% гарячіша!
+achievement.rm_furnace.desc=Ох курва, ця річ настільки швидка!
+achievement.dm_pick=Використання матерії на матерії
+achievement.dm_pick.desc=Чом би й ні?
+achievement.rm_pick=Чи це безпечно?
+achievement.rm_pick.desc=Навряд чи.
+achievement.klein=Акумулятори ЕМС
+achievement.klein.desc=Запас ЕМС на випадок скрутного становища.
+achievement.klein_big=ВЕЛИКІ акумулятори ЕМС
+achievement.klein_big.desc=Всесвіт у вашій кишені.
+
+pe.arcana.mode=Режим
+pe.arcana.mode.0=Анулювання
+pe.arcana.mode.1=Займання
+pe.arcana.mode.2=Збір
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Вимкнено!
+
+pe.archangel.pedestal1=Випускає стріли у найближчих мобів
+pe.archangel.pedestal2=Спрацьовує кожні %s
+
+pe.bhb.pedestal1=Всмоктує найближчі предмети на землі
+pe.bhb.pedestal2=Закидує їх в сусідні інвентарі
+
+pe.body.pedestal1=Відновлює голод найближчим гравцям
+pe.body.pedestal2=Відновлює половину голоду кожні %s
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
+pe.command.changelog.uptodate=ProjectE не потребує оновлень.
+pe.command.clearknowledge.error=Не вдалося видалити знання гравця %s
+pe.command.clearknowledge.notify=Ваші знання про трансмутації були видалені адміністратором %s!
+pe.command.clearknowledge.playernotfound=Не вдалось знайти гравця з нікнеймом: %s
+pe.command.clearknowledge.success=Знання гравця %s очищенні
+pe.command.clearknowledge.usage=/projecte clearKnowledge [ім'я гравця] (залиште пустим, аби використати на собі)
+
+pe.command.reload.started=Перезавантаження значень ЕМС, можливі лаги.
+pe.command.reload.success=Перезавантаження ЕМС завершено. Відправка значень на клієнти.
+pe.command.reload.notice=Перезавантажтесь або використайте "/projecte reloadEMC", аби зміни вступили в силу.
+
+pe.command.remove.invaliditem=Помилка : предмету з ім'ям "%s" не знайдено!
+pe.command.remove.invalidmeta=Помилка : значення метаданих "%s" неправильне!
+pe.command.remove.success=Значення ЕМС для предмета  %s видалено .
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [метадані] (залиште пустим, аби використату для предмету у руці)
+
+pe.command.reset.invalidmeta=Помилка : значення метаданих "%s" неправильне!
+pe.command.reset.nochange=Значення ЕМС для %s:%s не було змінено!
+pe.command.reset.success=Значення ЕМС для %s було анульовано.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [метадані] (залиште пустим, аби використату для предмету у руці)
+
+pe.command.set.invalidemc=Помилка : значення ЕМС "%s" неправильне!
+pe.command.set.invaliditem=Помилка : предмету на ім'я "%s" не знайдено!
+pe.command.set.invalidmeta=Помилка : значення метаданих "%s" неправильне!
+pe.command.set.success=Значення EMC для %s змінено на %s!
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [метадані] [значення ЕМС], /projecte setEMC [значення ЕМС] (для предмета в руці)
+
+pe.darkpick.mode1=Стандартний
+pe.darkpick.mode2=3х блоків у висоту
+pe.darkpick.mode3=3x блоків у ширину
+pe.darkpick.mode4=3x блоків у довжину
+
+pe.divining.avgemc=Середній ЕМС для %s блоків: %s
+pe.divining.maxemc=Макс. EMC: %s
+pe.divining.secondmax=Другий макс. EMC: %s
+pe.divining.thirdmax=Третій макс. EMC: %s
+
+pe.dmfurnace.shortname=Піч з ТМ
+pe.rmfurnace.shortname=Піч з ЧМ
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Максимальна швидкість генерації:
+pe.emc.maxoutrate_tooltip=Максимальна швидкість виходу:
+pe.emc.maxstorage_tooltip=Максимальна місткість:
+pe.emc.name=EMC
+pe.emc.rate=EMC/сек
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=Накопичено EMC:
+pe.emc.too_much=ЗАНАДТО БАГАТО
+
+pe.evertide.tooltip1=Натисніть %s, аби вистрілити водним снарядом
+pe.evertide.tooltip2=Працює як нескінченне відро води
+pe.evertide.tooltip3=ПКМ, аби наповнити цистерни або тигелі
+pe.evertide.tooltip4=Усі операціх абсолютно безкоштовні!
+pe.evertide.pedestal1=Викликає дощ/сніг
+pe.evertide.pedestal2=Намагається викликати дощ кожні %s
+
+pe.gem.disabled=ВИМКНЕНО
+pe.gem.enabled=УВІМКНЕНО
+
+pe.gem.activate=Атакувальні здібності броні увімкнені
+pe.gem.deactivate=Атакувальні здібності броні вимкнені
+
+pe.gem.helm.lorename=Шолом безодні
+pe.gem.chest.lorename=Пекельна броня
+pe.gem.legs.lorename=Гравітаціонні штани
+pe.gem.feet.lorename=Ураганні черевики
+
+pe.gem.nightvision_tooltip=Нічне бачення:
+pe.gem.nightvision.prompt=Натисніть %s + %s, аби перемкнути нічне бачення  
+pe.gem.stepassist_tooltip=Допомога у кроці:
+pe.gem.stepassist.prompt=Натисніть %s, аби перемкнути допомогу у кроці
+
+pe.gemdensity.blacklist=Чорний список
+pe.gemdensity.mode_switch=Ціль назначена на
+pe.gemdensity.tooltip1=Ущільнює предмети на ходу
+pe.gemdensity.tooltip2=Нинішня ціль: %s
+pe.gemdensity.tooltip3=Натисніть %s, аби змінити ціль
+pe.gemdensity.tooltip4=ПКМ, аби встановити чорний/білий список
+pe.gemdensity.tooltip5=Shift-ПКМ, аби перемикнути
+pe.gemdensity.whitelist=Білий список
+
+pe.harvestgod.pedestal1=Пришвидшує виростання найближчих паростків
+pe.harvestgod.pedestal2=Збирає найближчі виросші паростки
+pe.harvestgod.pedestal3=Активується кожні %s
+
+pe.ignition.pedestal1=Спалює найближчих мобів
+pe.ignition.pedestal2=Активується кожні %s
+
+pe.item.mode=Режим
+pe.item.mode_switch=Перемкнено у режим: %s
+
+pe.katar.mode1=Вбивати ворожих
+pe.katar.mode2=вбивати всіх
+
+pe.key.armor_toggle=Ефекти броні
+pe.key.charge=Розбіг
+pe.key.extra_function=Додаткова функція
+pe.key.fire_projectile=Вогняний заряд
+pe.key.mode=Змінити режим
+
+pe.life.pedestal1=Відновлює голод та здоров'я
+pe.life.pedestal2=По половинці серця та голоду кожні %s
+
+pe.mind.pedestal1=Всмоктує найближчі сфери досвіду у камінь розуму
+
+pe.misc.every_tick=кожний тік
+pe.misc.seconds=секунд(-и)
+pe.misc.storedxp_tooltip=Наявно досвіду:
+pe.misc.wrenched_block=Демонтований блок!
+
+pe.morningstar.mode1=Стандартний!
+pe.morningstar.mode2=3x блока у висоту
+pe.morningstar.mode3=3x блока у ширину
+pe.morningstar.mode4=3x блока у довжину
+
+pe.pedestal.item_disabled=Функціонал п'єдестала вимкнений!
+pe.pedestal.on_pedestal=На п'єдесталі:
+pe.pedestal.shortname=П'єдестал з ТМ
+pe.pedestal.tooltip1=Shift-ПКМ, щоб відкрити інтерфейс
+pe.pedestal.tooltip2=ПКМ, щоб активувати!
+
+pe.philstone.mode1=Куб
+pe.philstone.mode2=Панель
+pe.philstone.mode3=Лінія
+pe.philstone.tooltip1=Натисніть %s, аби відкрити сітку крафта
+
+pe.redpick.mode1=Стандартний
+pe.redpick.mode2=3x блока у висоту
+pe.redpick.mode3=3x блока у ширину
+pe.redpick.mode4=3x блока у довжину
+
+pe.redsword.mode1=Вбивати ворожих
+pe.redsword.mode2=Вбивати всіх
+
+pe.relay.mk1=Реле вер.1
+pe.relay.mk2=Реле вер.2
+pe.relay.mk3=Реле вер.3
+
+pe.repairtalisman.pedestal1=Ремонтує предмети найближчих гравців
+pe.repairtalisman.pedestal2=Ремонтує 1 позначку кожні %s
+
+pe.server.high_alchemist=Верховний алхімік
+pe.server.has_joined=приєднався до серверу
+
+pe.soul.pedestal1=Лікує найближчих гравців
+pe.soul.pedestal2=По половині серця кожні %s
+
+pe.swrg.pedestal1=Стріляє блискавкою у найближчих мобів
+pe.swrg.pedestal2=Активується кожні %s
+
+pe.timewatch.disabled=Предмет відключен адміністратором
+pe.timewatch.ff=Перемотка вперед
+pe.timewatch.mode=Режим контролю часу: %s
+pe.timewatch.mode_switch=Режим контролю часу змінено на: %s
+pe.timewatch.off=Вимк.
+pe.timewatch.rw=Перемотка
+pe.timewatch.tooltip1=Станьте хазяїном часу
+pe.timewatch.tooltip2=ПКМ, аби змінити режим
+pe.timewatch.pedestal1=Дає бонус в %d такта(-ів) найближчим блокам кожен тік
+pe.timewatch.pedestal2=Кожен тік, найближчі моби рухаються у %.3f рази швидше
+
+pe.tome.tooltip1=Відкриває усі знання трансмутацій,якщо вивчити
+
+pe.transmutation.already_using=Хтось вже використовує стіл трансмутацій!
+pe.transmutation.transmute=Трансмутація
+pe.transmutation.learned0=В
+pe.transmutation.learned1=и
+pe.transmutation.learned2=в
+pe.transmutation.learned3=ч
+pe.transmutation.learned4=е
+pe.transmutation.learned5=н
+pe.transmutation.learned6=о
+pe.transmutation.learned7=!
+
+pe.transmutation.unlearned0=Н
+pe.transmutation.unlearned1=е
+pe.transmutation.unlearned2=в
+pe.transmutation.unlearned3=и
+pe.transmutation.unlearned4=в
+pe.transmutation.unlearned5=ч
+pe.transmutation.unlearned6=е
+pe.transmutation.unlearned7=н
+pe.transmutation.unlearned8=о
+
+pe.update.available=Доступне нове оновлення для ProjectE: %s
+pe.update.changelog=Використовуйте /projecte changelog для виклику списку змін!
+pe.update.getit=Завантажте тут!
+
+pe.volcanite.tooltip1=Натисніть %s, аби випустити лавовий снаряд
+pe.volcanite.tooltip2=Працює як нескінченне відро лави
+pe.volcanite.tooltip3=ПКМ, аби наповнити резервуари
+pe.volcanite.tooltip4=Усі операції коштують 32 EMC!
+pe.volcanite.pedestal1=Прибирає дощ/сніг
+pe.volcanite.pedestal2=Намагається зупинити погодні умови кожні %s
+
+pe.zero.pedestal1=Гасить істот
+pe.zero.pedestal2=Заморожує усе поблизу
+pe.zero.pedestal3=Активується кожні %s
+
+pe.debug.metainvalid.name=Неправильні метадані

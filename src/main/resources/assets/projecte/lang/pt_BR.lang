@@ -70,10 +70,13 @@ item.pe_gem_armor_1.name=Perneiras de Jóias
 item.pe_gem_armor_2.name=Peitoral de Jóias
 item.pe_gem_armor_3.name=Capacete de Jóias
 item.pe_arcana_ring.name=Anel de Arcana
-item.pe_void_ring.name=Anel do Void
+item.pe_void_ring.name=Anel do Vazio
 item.pe_zero_ring.name=Anel Zero
-item.pe_tome.name=Tomo Alquímico
+item.pe_tome.name=Tomo da Sabedoria
 item.pe_transmutation_tablet.name=Tablete de Transmutação
+item.pe_manual.name=Livro do Alquimista [WIP]
+
+pe.manual.tooltip1=Vol. 2
 
 tile.pe_alchemy_chest.name=Baú Alquímico
 tile.pe_interdiction_torch.name=Tocha da Interdição
@@ -355,3 +358,6 @@ pe.zero.pedestal2=Congela as proximidades
 pe.zero.pedestal3=Ativa cada %s
 
 pe.debug.metainvalid.name=Metadata inválida
+
+pe.nei.worldtransmute=Transmutação Mundial
+pe.nei.philo=Receita da Pedra Filosofal
