@@ -1,6 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.command.CommandException;
@@ -18,12 +19,12 @@ public class ProjectECMD extends ProjectEBaseCMD
 {
 	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
-	final ChangelogCMD changelogcmd = new ChangelogCMD();
-	final ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
-	final SetEmcCMD setemccmd = new SetEmcCMD();
-	final RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
-	final ResetEmcCMD resetemccmd = new ResetEmcCMD();
-	final ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
+	private final ChangelogCMD changelogcmd = new ChangelogCMD();
+	private final ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
+	private final SetEmcCMD setemccmd = new SetEmcCMD();
+	private final RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
+	private final ResetEmcCMD resetemccmd = new ResetEmcCMD();
+	private final ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
 
 	@Nonnull
 	@Override
@@ -54,7 +55,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 			return Lists.newArrayList(Iterables.filter(commands, new LowerCasePrefixPredicate(params[0])));
 		}
 
-		return null;
+		return ImmutableList.of();
 	}
 
 	@Override
