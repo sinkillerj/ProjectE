@@ -39,10 +39,7 @@ repositories {
 		name "MinecraftForge Maven"
 		url "http://files.minecraftforge.net/maven/"
 	}
-    maven { //NEI Repo
-        name 'CB Repo'
-        url "http://chickenbones.net/maven/"
-    }
+
     maven {
         name 'Chisel'
         url "http://maven.tterrag.com/"
@@ -53,10 +50,10 @@ repositories {
         url "http://dvs1.progwml6.com/files/maven"
     }
 
-//    ivy {
-//        name "MineTweaker3"
-//        artifactPattern "http://minetweaker3.powerofbytes.com/download/[module]-([classifier]-)[revision].[ext]"
-//    }
+    maven {
+        name 'jared'
+        url "http://blamejared.com/maven/"
+    }
 }
  
 dependencies {
@@ -65,6 +62,8 @@ dependencies {
     compile "team.chisel:Chisel:MC1.9.4-0.0.6.33:api"
 
     deobfCompile "mezz.jei:jei_1.10.2:3.7.7.233"
+    deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
+    deobfCompile "MineTweaker3:ZenScript:3.0.11.26"
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }

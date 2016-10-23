@@ -36,7 +36,6 @@ public class KleinStar
 
 	private static void addRecipe(IItemStack output, IItemStack[][] inputs, boolean shaped)
 	{
-
 		ItemStack outputStack = MineTweakerMC.getItemStack(output);
 		if (outputStack.getItem() == ObjHandler.kleinStars)
 		{
