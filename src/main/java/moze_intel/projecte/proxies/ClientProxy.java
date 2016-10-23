@@ -31,7 +31,7 @@ import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
-import moze_intel.projecte.rendering.LayerModelYue;
+import moze_intel.projecte.rendering.LayerYue;
 import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
@@ -40,8 +40,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.renderer.entity.RenderTippedArrow;
@@ -345,9 +343,9 @@ public class ClientProxy implements IProxy
 	{
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
-		render.addLayer(new LayerModelYue(render));
+		render.addLayer(new LayerYue(render));
 		render = skinMap.get("slim");
-		render.addLayer(new LayerModelYue(render));
+		render.addLayer(new LayerYue(render));
 	}
 
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)

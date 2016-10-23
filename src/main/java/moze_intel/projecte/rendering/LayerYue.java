@@ -4,23 +4,24 @@ import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public class LayerModelYue implements LayerRenderer<EntityPlayer> {
-	private static final ModelYue yuemodel = new ModelYue();
+public class LayerYue implements LayerRenderer<EntityPlayer> {
 	private final RenderPlayer render;
 
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
 
-	public LayerModelYue(RenderPlayer renderer)
+	public LayerYue(RenderPlayer renderer)
 	{
 		this.render = renderer;
 	}
@@ -37,7 +38,6 @@ public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 			if (player.isSneaking())
 			{
 				GlStateManager.rotate(-28.64789F, 1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0f, -0.1f, 0.0f);
 			}
 			GlStateManager.rotate(180, 0, 0, 1);
 			GlStateManager.scale(3.0f, 3.0f, 3.0f);
@@ -52,7 +52,16 @@ public class LayerModelYue implements LayerRenderer<EntityPlayer> {
 			{
 				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
 			}
-			yuemodel.renderAll();
+
+			Tessellator tess = Tessellator.getInstance();
+			VertexBuffer r = tess.getBuffer();
+			r.begin(7, DefaultVertexFormats.POSITION_TEX);
+			r.pos(0, 0, 0).tex(0, 0).endVertex();
+			r.pos(0, 0, 1).tex(0, 1).endVertex();
+			r.pos(1, 0, 1).tex(1, 1).endVertex();
+			r.pos(1, 0, 0).tex(1, 0).endVertex();
+			tess.draw();
+
 			GlStateManager.enableLighting();
 			GlStateManager.popMatrix();
 		}
