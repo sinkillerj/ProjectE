@@ -83,29 +83,6 @@ public final class ProjectEConfig
 			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");
 			gemChestCooldown = config.getInt("gemChestCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for Gem Chestplate explosion");
 
-			enableAlcChest = config.getBoolean("enableAlcChest", "blocks", true, "Enable Alchemical Chest recipe");
-
-			enableITorch = config.getBoolean("enableITorch", "blocks", true, "Enable Interdiction Torch recipe");
-
-			enableCollector = config.getBoolean("enableCollector", "blocks", true, "Enable Energy Collector MK1 recipe");
-			enableCollector2 = config.getBoolean("enableCollector2", "blocks", true, "Enable Energy Collector MK2 recipe");
-			enableCollector3 = config.getBoolean("enableCollector3", "blocks", true, "Enable Energy Collector MK3 recipe");
-
-			enableCondenser = config.getBoolean("enableCondenser", "blocks", true, "Enable Energy Condenser recipe");
-			enableCondenser2 = config.getBoolean("enableCondenser2", "blocks", true, "Enable Energy Condenser MK2 recipe");
-
-			enableRelay = config.getBoolean("enableRelay", "blocks", true, "Enable AntiMatter Relay MK1 recipe");
-			enableRelay2 = config.getBoolean("enableRelay2", "blocks", true, "Enable AntiMatter Relay MK2 recipe");
-			enableRelay3 = config.getBoolean("enableRelay3", "blocks", true, "Enable AntiMatter Relay MK3 recipe");
-
-			enableTransTable = config.getBoolean("enableTransTable", "blocks", true, "Enable Transmutation Table recipe");
-
-			enableRedFurnace = config.getBoolean("enableRedFurnace", "blocks", true, "Enable Red Matter Furnace recipe");
-			enableDarkFurnace = config.getBoolean("enableDarkFurnace", "blocks", true, "Enable Dark Matter Furnace recipe");
-
-			enableDarkPedestal = config.getBoolean("enableDarkPedestal", "blocks", true, "Enable DM Pedestal recipe");
-			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
-
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
 			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from ProjectE 1.4.7 and before will be used for weapons.");
