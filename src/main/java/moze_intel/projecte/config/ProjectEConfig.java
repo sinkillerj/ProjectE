@@ -15,23 +15,7 @@ public final class ProjectEConfig
 	public static boolean showPedestalTooltip;
 	public static boolean showPedestalTooltipInGUI;
 
-	public static boolean enableAlcChest;
-	public static boolean enableITorch;
-	public static boolean enableCollector;
-	public static boolean enableCollector2;
-	public static boolean enableCollector3;
-	public static boolean enableCondenser;
-	public static boolean enableCondenser2;
-	public static boolean enableRelay;
-	public static boolean enableRelay2;
-	public static boolean enableRelay3;
-	public static boolean enableTransTable;
-	public static boolean enableRedFurnace;
-	public static boolean enableDarkFurnace;
-
 	public static boolean enableTimeWatch;
-
-	public static boolean enableDarkPedestal;
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
@@ -82,6 +66,8 @@ public final class ProjectEConfig
 			unsafeKeyBinds = config.getBoolean("unsafeKeyBinds", "misc", false, "False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered");
 			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");
 			gemChestCooldown = config.getInt("gemChestCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for Gem Chestplate explosion");
+
+			enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
