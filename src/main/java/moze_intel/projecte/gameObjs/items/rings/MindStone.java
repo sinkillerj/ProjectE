@@ -120,17 +120,17 @@ public class MindStone extends RingToggle implements IPedestalItem
 			return Integer.MAX_VALUE;
 		}
 
-		if (level <= 15) 
+		if (level <= 16)
 		{
-			return level * 17;
+			return level * level + 6 * level;
 		}
 
-		if (level <= 30) 
+		if (level <= 31)
 		{
-			return (int) (((level * level) * 1.5D) - (29.5D * level) + 360.0D);
+			return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
 		}
 
-		return (int) (((level * level) * 3.5D) - (151.5D * level) + 2220.0D);
+		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
 	}
 
 	private int getLvlForXP(int totalXP)
