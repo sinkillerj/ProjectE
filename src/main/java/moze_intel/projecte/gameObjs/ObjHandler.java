@@ -391,10 +391,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(philosStone), "GRG", "RDR", "GRG", 'R', Items.REDSTONE, 'G', Items.GLOWSTONE_DUST, 'D', diamondReplacement);
 
 		//Interdiction torch
-		if (ProjectEConfig.enableITorch)
-		{
-			GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.REDSTONE_TORCH, 'G', Items.GLOWSTONE_DUST, 'D', Items.DIAMOND, 'P', philosStone);
-		}
+		GameRegistry.addRecipe(new ItemStack(confuseTorch, 2), "RDR", "DPD", "GGG", 'R', Blocks.REDSTONE_TORCH, 'G', Items.GLOWSTONE_DUST, 'D', Items.DIAMOND, 'P', philosStone);
 
 		//Repair Talisman
 		GameRegistry.addRecipe(new ItemStack(repairTalisman), "LMH", "SPS", "HML", 'P', Items.PAPER, 'S', Items.STRING, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2));
@@ -408,10 +405,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ItemStack(matter, 1, 1), "ADA", "ADA", "ADA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
 
 		//Alchemical Chest
-		if (ProjectEConfig.enableAlcChest)
-		{
-			GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'S', Blocks.STONE, 'I', Items.IRON_INGOT, 'C', Blocks.CHEST);
-		}
+		GameRegistry.addRecipe(new ItemStack(alchChest), "LMH", "SDS", "ICI", 'D', diamondReplacement, 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'S', Blocks.STONE, 'I', Items.IRON_INGOT, 'C', Blocks.CHEST);
 
 		//Alchemical Bags
 		for (int i = 0; i < 16; i++)
@@ -420,70 +414,34 @@ public class ObjHandler
 		}
 
 		//Condenser
-		if (ProjectEConfig.enableCondenser)
-		{
-			GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.DIAMOND, 'O', new ItemStack(Blocks.OBSIDIAN), 'C', new ItemStack(alchChest));
-		}
+		GameRegistry.addRecipe(new ItemStack(condenser), "ODO", "DCD", "ODO", 'D', Items.DIAMOND, 'O', new ItemStack(Blocks.OBSIDIAN), 'C', new ItemStack(alchChest));
 
 		//Condenser MK2
-		if (ProjectEConfig.enableCondenser2)
-		{
-			GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
-		}
+		GameRegistry.addRecipe(new ItemStack(condenserMk2), "RDR", "DCD", "RDR", 'D', new ItemStack(matterBlock, 1, 0), 'R', new ItemStack(matterBlock, 1, 1), 'C', condenser);
 
 		//Transmutation Table
-		if (ProjectEConfig.enableTransTable)
-		{
-			GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.STONE, 'O', Blocks.OBSIDIAN, 'P', philosStone);
-		}
+		GameRegistry.addRecipe(new ItemStack(transmuteStone), "OSO", "SPS", "OSO", 'S', Blocks.STONE, 'O', Blocks.OBSIDIAN, 'P', philosStone);
 
 		//Matter Blocks
 		GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 0), "DD", "DD", 'D', matter);
 		GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 1), "DD", "DD", 'D', new ItemStack(matter, 1, 1));
 
 		//Matter Furnaces
-		if (ProjectEConfig.enableDarkFurnace)
-		{
-			GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.FURNACE);
-		}
-		if (ProjectEConfig.enableRedFurnace)
-		{
-			GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
-		}
+		GameRegistry.addRecipe(new ItemStack(dmFurnaceOff), "DDD", "DFD", "DDD", 'D', new ItemStack(matterBlock, 1, 0), 'F', Blocks.FURNACE);
+		GameRegistry.addRecipe(new ItemStack(rmFurnaceOff), "XRX", "RFR", 'R', new ItemStack(matterBlock, 1, 1), 'F', dmFurnaceOff);
 
 		// DM Pedestal
-		if (ProjectEConfig.enableDarkPedestal)
-		{
-			GameRegistry.addRecipe(new ItemStack(dmPedestal), "RDR", "RDR", "DDD", 'R', new ItemStack(matter, 1, 1), 'D', new ItemStack(matterBlock, 1, 0));
-		}
+		GameRegistry.addRecipe(new ItemStack(dmPedestal), "RDR", "RDR", "DDD", 'R', new ItemStack(matter, 1, 1), 'D', new ItemStack(matterBlock, 1, 0));
 
 		//Collectors
-		if (ProjectEConfig.enableCollector)
-		{
-			GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.GLOWSTONE, 'F', Blocks.FURNACE, 'D', diamondBlockReplacement, 'T', Blocks.GLASS);
-		}
-		if (ProjectEConfig.enableCollector2)
-		{
-			GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', energyCollector, 'D', matter);
-		}
-		if (ProjectEConfig.enableCollector3)
-		{
-			GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
-		}
+		GameRegistry.addRecipe(new ItemStack(energyCollector), "GTG", "GDG", "GFG", 'G', Blocks.GLOWSTONE, 'F', Blocks.FURNACE, 'D', diamondBlockReplacement, 'T', Blocks.GLASS);
+		GameRegistry.addRecipe(new ItemStack(collectorMK2), "GDG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', energyCollector, 'D', matter);
+		GameRegistry.addRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', Blocks.GLOWSTONE, 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1));
 
 		//AM Relays
-		if (ProjectEConfig.enableRelay)
-		{
-			GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.GLASS, 'D', Blocks.DIAMOND_BLOCK, 'O', Blocks.OBSIDIAN);
-		}
-		if (ProjectEConfig.enableRelay2)
-		{
-			GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.OBSIDIAN);
-		}
-		if (ProjectEConfig.enableRelay3)
-		{
-			GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.OBSIDIAN);
-		}
+		GameRegistry.addRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', Blocks.GLASS, 'D', Blocks.DIRT, 'O', Blocks.OBSIDIAN);
+		GameRegistry.addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.OBSIDIAN);
+		GameRegistry.addRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', Blocks.OBSIDIAN);
 
 		//DM Tools
 		GameRegistry.addRecipe(new ItemStack(dmPick), "MMM", "XDX", "XDX", 'D', Items.DIAMOND, 'M', matter);
