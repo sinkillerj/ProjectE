@@ -4,9 +4,12 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -61,14 +63,26 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event)
+	public void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
-		if (!event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityPlayerMP)
-		{
-			EntityPlayerMP player = ((EntityPlayerMP) event.getEntity());
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(player);
-			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
-		}
+		EntityPlayerMP player = (EntityPlayerMP) event.player;
+
+		PacketHandler.sendFragmentedEmcPacket(player);
+		PacketHandler.sendTo(new CheckUpdatePKT(), player);
+
+		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(player);
+		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
+		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
+
+		PlayerTimers.registerPlayer(event.player);
+	}
+
+	@SubscribeEvent
+	public void playerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event)
+	{
+		PlayerTimers.removePlayer(event.player);
+		PELogger.logInfo("Removing " + event.player.getName() + " from scheduled timers: Player disconnected.");
+		PlayerChecks.removePlayerFromLists(((EntityPlayerMP) event.player));
 	}
 
 	@SubscribeEvent

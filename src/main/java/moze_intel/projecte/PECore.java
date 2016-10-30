@@ -7,7 +7,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.events.ConnectionHandler;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -94,7 +93,6 @@ public class PECore
 
 		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 		MinecraftForge.EVENT_BUS.register(new TickEvents());
-		MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 
 		SoundHandler.init();
 		ObjHandler.register();
