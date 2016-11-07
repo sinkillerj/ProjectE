@@ -44,7 +44,6 @@ MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant Developer:
 Lilylicious - Lady of Little Big Things - Assistant Developer:
 
 * Twitter: https://twitter.com/Lilyliciously
-* Patreon: https://www.patreon.com/lilylicious
 
 #Former Team Members
 MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
