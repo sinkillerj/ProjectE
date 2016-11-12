@@ -88,10 +88,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
 	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
+		super.onUpdate(stack, world, entity, invSlot, isHeld);
 		
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{

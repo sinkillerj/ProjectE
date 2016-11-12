@@ -24,10 +24,11 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		this.numModes = (byte) modeDescrp.length;
 		this.modes = modeDescrp;
 	}
-	
+
+	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.getTagCompound().getByte("Mode");
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Mode") : 0;
 	}
 	
 	private String getUnlocalizedMode(ItemStack stack)

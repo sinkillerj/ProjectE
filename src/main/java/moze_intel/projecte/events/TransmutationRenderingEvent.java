@@ -83,7 +83,7 @@ public class TransmutationRenderingEvent
 		if (stack == null)
 			stack = player.getHeldItem(EnumHand.OFF_HAND);
 		
-		if (stack == null || stack.getItem() != ObjHandler.philosStone || !stack.hasTagCompound())
+		if (stack == null || stack.getItem() != ObjHandler.philosStone)
 		{
 			transmutationResult = null;
 			return;

@@ -307,12 +307,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		if (stack.hasTagCompound())
-		{
-			return stack.getTagCompound().getByte("Target");
-		}
-
-		return 0;
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Target") : 0;
 	}
 
 	@Override

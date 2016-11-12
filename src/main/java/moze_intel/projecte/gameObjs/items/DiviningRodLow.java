@@ -9,6 +9,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -189,7 +193,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.getTagCompound().getByte("Mode");
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Mode") : 0;
 	}
 
 	@Override
@@ -211,5 +215,12 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 
 		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	{
+		list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + modes[getMode(stack)]);
 	}
 }

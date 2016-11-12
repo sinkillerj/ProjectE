@@ -84,7 +84,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
+		byte charge = getCharge(stack);
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

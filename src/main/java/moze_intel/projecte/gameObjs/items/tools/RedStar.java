@@ -150,7 +150,7 @@ public class RedStar extends PEToolBase
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = stack.getTagCompound() == null ? 0 : getCharge(stack);
+		byte charge = getCharge(stack);
 		float damage = STAR_BASE_ATTACK + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
