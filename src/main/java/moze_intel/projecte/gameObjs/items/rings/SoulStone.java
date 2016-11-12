@@ -7,7 +7,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PEInternalCaps;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -55,9 +55,9 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				player.getCapability(PEInternalCaps.CAPABILITY, null).activateHeal();
+				player.getCapability(InternalTimers.CAPABILITY, null).activateHeal();
 
-				if (player.getHealth() < player.getMaxHealth() && player.getCapability(PEInternalCaps.CAPABILITY, null).canHeal())
+				if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 					player.heal(2.0F);

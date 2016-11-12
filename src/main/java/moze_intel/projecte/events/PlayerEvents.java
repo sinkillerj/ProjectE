@@ -3,7 +3,7 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
-import moze_intel.projecte.handlers.PEInternalCaps;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
@@ -62,7 +62,7 @@ public class PlayerEvents
 
 			if (evt.getEntity() instanceof EntityPlayerMP)
 			{
-				evt.addCapability(PEInternalCaps.NAME, new PEInternalCaps.Provider());
+				evt.addCapability(InternalTimers.NAME, new InternalTimers.Provider());
 			}
 		}
 	}

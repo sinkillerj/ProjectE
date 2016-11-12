@@ -5,7 +5,7 @@ import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.handlers.PEInternalCaps;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.handlers.PlayerChecks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -58,7 +58,7 @@ public class TickEvents
 				}
 
 				PlayerChecks.update(((EntityPlayerMP) event.player));
-				event.player.getCapability(PEInternalCaps.CAPABILITY, null).tick();
+				event.player.getCapability(InternalTimers.CAPABILITY, null).tick();
 			}
 		}
 	}

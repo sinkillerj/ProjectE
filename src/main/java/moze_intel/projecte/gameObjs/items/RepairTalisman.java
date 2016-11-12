@@ -12,7 +12,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PEInternalCaps;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -59,9 +59,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		
 		EntityPlayer player = (EntityPlayer) entity;
 
-		player.getCapability(PEInternalCaps.CAPABILITY, null).activateRepair();
+		player.getCapability(InternalTimers.CAPABILITY, null).activateRepair();
 
-		if (player.getCapability(PEInternalCaps.CAPABILITY, null).canRepair())
+		if (player.getCapability(InternalTimers.CAPABILITY, null).canRepair())
 		{
 			repairAllItems(player);
 		}

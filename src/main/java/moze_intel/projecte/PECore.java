@@ -10,7 +10,7 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.handlers.PEInternalCaps;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
@@ -91,7 +91,7 @@ public class PECore
 
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
-		CapabilityManager.INSTANCE.register(PEInternalCaps.class, new DummyIStorage<>(), PEInternalCaps::new);
+		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 

@@ -1,7 +1,5 @@
 package moze_intel.projecte.handlers;
 
-import moze_intel.projecte.utils.DummyIStorage;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,20 +8,15 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
-public class PEInternalCaps
+public class InternalTimers
 {
-    @CapabilityInject(PEInternalCaps.class)
-    public static final Capability<PEInternalCaps> CAPABILITY = null;
-    public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_caps");
+    @CapabilityInject(InternalTimers.class)
+    public static final Capability<InternalTimers> CAPABILITY = null;
+    public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_timers");
 
     private final Timer repair = new Timer();
     private final Timer heal = new Timer();
     private final Timer feed = new Timer();
-    private boolean swrgOverride = false;
-    private boolean gemArmorReady = false;
-    private boolean hadFlightItem = false;
-    private int projectileCooldown = 0;
-    private int gemChestCooldown = 0;
 
     public void tick()
     {
@@ -99,7 +92,7 @@ public class PEInternalCaps
 
     public static class Provider implements ICapabilityProvider
     {
-        private final PEInternalCaps capInstance = new PEInternalCaps();
+        private final InternalTimers capInstance = new InternalTimers();
 
         @Override
         public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
