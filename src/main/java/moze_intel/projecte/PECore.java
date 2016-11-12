@@ -11,7 +11,7 @@ import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
@@ -92,6 +92,7 @@ public class PECore
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
+		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
@@ -170,9 +171,6 @@ public class PECore
 	{
 		Transmutation.clearCache();
 		PELogger.logDebug("Cleared cached tome knowledge");
-
-		PlayerChecks.clearLists();
-		PELogger.logDebug("Cleared player check-lists: server stopping.");
 
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");

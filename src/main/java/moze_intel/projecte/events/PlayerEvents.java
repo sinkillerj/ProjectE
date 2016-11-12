@@ -4,7 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
@@ -63,6 +63,7 @@ public class PlayerEvents
 			if (evt.getEntity() instanceof EntityPlayerMP)
 			{
 				evt.addCapability(InternalTimers.NAME, new InternalTimers.Provider());
+				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((EntityPlayerMP) evt.getEntity()));
 			}
 		}
 	}
@@ -78,12 +79,6 @@ public class PlayerEvents
 		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(player);
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
-	}
-
-	@SubscribeEvent
-	public void playerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event)
-	{
-		PlayerChecks.removePlayerFromLists(((EntityPlayerMP) event.player));
 	}
 
 	@SubscribeEvent
@@ -112,7 +107,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		PlayerChecks.onPlayerChangeDimension((EntityPlayerMP) event.player);
+		event.player.getCapability(InternalAbilities.CAPABILITY, null).onDimensionChange();
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)

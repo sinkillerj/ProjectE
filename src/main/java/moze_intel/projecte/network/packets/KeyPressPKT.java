@@ -11,7 +11,7 @@ import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
-import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -56,6 +56,7 @@ public class KeyPressPKT implements IMessage
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+                    InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY, null);
 
                     if (message.key == PEKeybind.ARMOR_TOGGLE)
                     {
@@ -96,8 +97,8 @@ public class KeyPressPKT implements IMessage
                                 {
                                     if (GemArmorBase.hasAnyPiece(player))
                                     {
-                                        PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
-                                        player.addChatMessage(new TextComponentTranslation(PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
+                                        internalAbilities.setGemState(!internalAbilities.getGemState());
+                                        player.addChatMessage(new TextComponentTranslation(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
                                         return;
                                     }
                                 }
@@ -110,12 +111,12 @@ public class KeyPressPKT implements IMessage
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
                                 {
-                                    if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
+                                    if (internalAbilities.getGemState() && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
                                     {
-                                        if (PlayerChecks.getGemCooldown(player) <= 0)
+                                        if (internalAbilities.getGemCooldown() <= 0)
                                         {
                                             ((GemChest) ObjHandler.gemChest).doExplode(player);
-                                            PlayerChecks.resetGemCooldown(player);
+                                            internalAbilities.resetGemCooldown();
                                             return;
                                         }
                                     }
@@ -124,15 +125,15 @@ public class KeyPressPKT implements IMessage
                             case FIRE_PROJECTILE:
                                 if (stack != null
                                         && stack.getItem() instanceof IProjectileShooter
-                                        && PlayerChecks.getProjectileCooldown(player) <= 0
+                                        && internalAbilities.getProjectileCooldown() <= 0
                                         && ((IProjectileShooter) stack.getItem()).shootProjectile(player, stack, hand))
                                 {
                                     PlayerHelper.swingItem(player, hand);
-                                    PlayerChecks.resetProjectileCooldown(player);
+                                    internalAbilities.resetProjectileCooldown();
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
                                 {
-                                    if (PlayerChecks.getGemState(player)
+                                    if (internalAbilities.getGemState()
                                             && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null
                                             && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemHelmet)
                                     {

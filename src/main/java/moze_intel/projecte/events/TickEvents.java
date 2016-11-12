@@ -6,7 +6,7 @@ import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.InternalAbilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
@@ -57,7 +57,7 @@ public class TickEvents
 					else provider.sync(e, (EntityPlayerMP) event.player);
 				}
 
-				PlayerChecks.update(((EntityPlayerMP) event.player));
+				event.player.getCapability(InternalAbilities.CAPABILITY, null).tick();
 				event.player.getCapability(InternalTimers.CAPABILITY, null).tick();
 			}
 		}

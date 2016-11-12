@@ -1,7 +1,5 @@
 package moze_intel.projecte.handlers;
 
-import com.google.common.collect.Sets;
-import gnu.trove.map.hash.TObjectIntHashMap;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -9,84 +7,93 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.Set;
+import javax.annotation.Nullable;
 
-public final class PlayerChecks
+public final class InternalAbilities
 {
-	private static final Set<EntityPlayerMP> swrgOverrides = Sets.newHashSet();
-	private static final Set<EntityPlayerMP> gemArmorReadyChecks = Sets.newHashSet();
-	private static final Set<EntityPlayerMP> hadFlightItem = Sets.newHashSet();
-	private static final TObjectIntHashMap<EntityPlayerMP> projectileCooldowns = new TObjectIntHashMap<>();
-	private static final TObjectIntHashMap<EntityPlayerMP> gemChestCooldowns = new TObjectIntHashMap<>();
+	@CapabilityInject(InternalAbilities.class)
+	public static final Capability<InternalAbilities> CAPABILITY = null;
+	public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_abilities");
 
-	public static void resetProjectileCooldown(EntityPlayerMP player) {
-		projectileCooldowns.put(player, ProjectEConfig.projectileCooldown);
-	}
+	private final EntityPlayerMP player;
+	private boolean swrgOverride = false;
+	private boolean gemArmorReady = false;
+	private boolean hadFlightItem = false;
+	private int projectileCooldown = 0;
+	private int gemChestCooldown = 0;
 
-	public static int getProjectileCooldown(EntityPlayerMP player) {
-		return projectileCooldowns.containsKey(player) ? projectileCooldowns.get(player) : -1;
-	}
-
-	public static void resetGemCooldown(EntityPlayerMP player) {
-		gemChestCooldowns.put(player, ProjectEConfig.gemChestCooldown);
-	}
-
-	public static int getGemCooldown(EntityPlayerMP player) {
-		return gemChestCooldowns.containsKey(player) ? gemChestCooldowns.get(player) : -1;
-	}
-
-	public static void setGemState(EntityPlayerMP player, boolean state)
+	public InternalAbilities(EntityPlayerMP player)
 	{
-		if (state)
-		{
-			gemArmorReadyChecks.add(player);
-		}
-		else
-		{
-			gemArmorReadyChecks.remove(player);
-		}
+		this.player = player;
 	}
 
-	public static boolean getGemState(EntityPlayerMP player)
+	public void resetProjectileCooldown() {
+		projectileCooldown = ProjectEConfig.projectileCooldown;
+	}
+
+	public int getProjectileCooldown() {
+		return projectileCooldown;
+	}
+
+	public void resetGemCooldown() {
+		gemChestCooldown = ProjectEConfig.gemChestCooldown;
+	}
+
+	public int getGemCooldown() {
+		return gemChestCooldown;
+	}
+
+	public void setGemState(boolean state)
 	{
-		return gemArmorReadyChecks.contains(player);
+		gemArmorReady = state;
+	}
+
+	public boolean getGemState()
+	{
+		return gemArmorReady;
 	}
 
 	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
-	public static void update(EntityPlayerMP player)
+	public void tick()
 	{
-		if (projectileCooldowns.containsKey(player) && projectileCooldowns.get(player) > 0) {
-			projectileCooldowns.adjustValue(player, -1);
+		if (projectileCooldown > 0)
+		{
+			projectileCooldown--;
 		}
 
-		if (gemChestCooldowns.containsKey(player) && gemChestCooldowns.get(player) > 0) {
-			gemChestCooldowns.adjustValue(player, -1);
+		if (gemChestCooldown > 0)
+		{
+			gemChestCooldown--;
 		}
 
-		if (!shouldPlayerFly(player) && hadFlightItem.contains(player))
+		if (!shouldPlayerFly() && hadFlightItem)
 		{
 			if (player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
 			
-			hadFlightItem.remove(player);
+			hadFlightItem = false;
 		}
-		else if(shouldPlayerFly(player) && !hadFlightItem.contains(player))
+		else if(shouldPlayerFly() && !hadFlightItem)
 		{
 			if (!player.capabilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
 			
-			hadFlightItem.add(player);
+			hadFlightItem = true;
 		}
 
-		if (!shouldPlayerResistFire(player))
+		if (!shouldPlayerResistFire())
 		{
 			if (player.isImmuneToFire())
 			{
@@ -101,7 +108,7 @@ public final class PlayerChecks
 			}
 		}
 
-		if (!shouldPlayerStep(player))
+		if (!shouldPlayerStep())
 		{
 			if (player.stepHeight > 0.5F)
 			{
@@ -117,22 +124,21 @@ public final class PlayerChecks
 		}
 	}
 
-
-	public static void onPlayerChangeDimension(EntityPlayerMP playerMP)
+	public void onDimensionChange()
 	{
 		// Resend everything needed on clientside (all except fire resist)
-		PlayerHelper.updateClientServerFlight(playerMP, playerMP.capabilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(playerMP, shouldPlayerStep(playerMP) ? 1.0F : 0.5F);
+		PlayerHelper.updateClientServerFlight(player, player.capabilities.allowFlying);
+		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.5F);
 	}
 
-	private static boolean shouldPlayerFly(EntityPlayerMP player)
+	private boolean shouldPlayerFly()
 	{
-		if (!hasSwrg(player))
+		if (!hasSwrg())
 		{
-			disableSwrgFlightOverride(player);
+			disableSwrgFlightOverride();
 		}
 
-		if (player.capabilities.isCreativeMode || player.isSpectator() || swrgOverrides.contains(player))
+		if (player.capabilities.isCreativeMode || player.isSpectator() || swrgOverride)
 		{
 			return true;
 		}
@@ -177,7 +183,7 @@ public final class PlayerChecks
 		return false;
 	}
 	
-	private static boolean shouldPlayerResistFire(EntityPlayerMP player)
+	private boolean shouldPlayerResistFire()
 	{
 		if (player.capabilities.isCreativeMode)
 		{
@@ -225,7 +231,7 @@ public final class PlayerChecks
 		return false;
 	}
 	
-	private static boolean shouldPlayerStep(EntityPlayerMP player)
+	private boolean shouldPlayerStep()
 	{
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
@@ -267,7 +273,7 @@ public final class PlayerChecks
 		return false;
 	}
 
-	private static boolean hasSwrg(EntityPlayerMP player)
+	private boolean hasSwrg()
 	{
 		for (int i = 0; i <= 8; i++)
 		{
@@ -291,29 +297,37 @@ public final class PlayerChecks
 		return false;
 	}
 
-	public static void enableSwrgFlightOverride(EntityPlayerMP player)
+	public void enableSwrgFlightOverride()
 	{
-		swrgOverrides.add(player);
+		swrgOverride = true;
 	}
 
-	public static void disableSwrgFlightOverride(EntityPlayerMP player)
+	public void disableSwrgFlightOverride()
 	{
-		swrgOverrides.remove(player);
+		swrgOverride = false;
 	}
 
-	public static void clearLists()
+	public static class Provider implements ICapabilityProvider
 	{
-		swrgOverrides.clear();
-		gemArmorReadyChecks.clear();
-		hadFlightItem.clear();
-		projectileCooldowns.clear();
-	}
+		private final InternalAbilities capInstance;
 
-	public static void removePlayerFromLists(EntityPlayerMP player)
-	{
-		swrgOverrides.remove(player);
-		gemArmorReadyChecks.remove(player);
-		hadFlightItem.remove(player);
-		projectileCooldowns.remove(player);
+		public Provider(EntityPlayerMP player)
+		{
+			capInstance = new InternalAbilities(player);
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+		{
+			return capability == CAPABILITY;
+		}
+
+		@Override
+		public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+		{
+			if (capability == CAPABILITY)
+				return CAPABILITY.cast(capInstance);
+			else return null;
+		}
 	}
 }
