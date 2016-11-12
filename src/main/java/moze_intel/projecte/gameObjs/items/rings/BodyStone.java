@@ -7,7 +7,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.handlers.PEInternalCaps;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -58,9 +58,9 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				PlayerTimers.activateFeed(player);
+				player.getCapability(PEInternalCaps.CAPABILITY, null).activateFeed();
 
-				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
+				if (player.getFoodStats().needFood() && player.getCapability(PEInternalCaps.CAPABILITY, null).canFeed())
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 					player.getFoodStats().addStats(2, 10);

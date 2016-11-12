@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
-import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.handlers.PEInternalCaps;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
@@ -57,9 +57,9 @@ public class GemChest extends GemArmorBase implements IFireProtector
         else
         {
             EntityPlayerMP playerMP = ((EntityPlayerMP) player);
-            PlayerTimers.activateFeed(playerMP);
+            player.getCapability(PEInternalCaps.CAPABILITY, null).activateFeed();
 
-            if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP))
+            if (player.getFoodStats().needFood() && player.getCapability(PEInternalCaps.CAPABILITY, null).canFeed())
             {
                 player.getFoodStats().addStats(2, 10);
             }

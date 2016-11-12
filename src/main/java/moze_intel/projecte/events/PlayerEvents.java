@@ -3,8 +3,8 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.handlers.PEInternalCaps;
 import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.handlers.PlayerTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
@@ -59,6 +59,11 @@ public class PlayerEvents
 		{
 			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
 			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider());
+
+			if (evt.getEntity() instanceof EntityPlayerMP)
+			{
+				evt.addCapability(PEInternalCaps.NAME, new PEInternalCaps.Provider());
+			}
 		}
 	}
 
@@ -73,15 +78,11 @@ public class PlayerEvents
 		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(player);
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
-
-		PlayerTimers.registerPlayer(event.player);
 	}
 
 	@SubscribeEvent
 	public void playerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event)
 	{
-		PlayerTimers.removePlayer(event.player);
-		PELogger.logInfo("Removing " + event.player.getName() + " from scheduled timers: Player disconnected.");
 		PlayerChecks.removePlayerFromLists(((EntityPlayerMP) event.player));
 	}
 

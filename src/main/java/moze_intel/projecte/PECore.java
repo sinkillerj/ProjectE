@@ -10,6 +10,7 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.events.PlayerEvents;
 import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.PEInternalCaps;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
@@ -24,6 +25,7 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.SoundHandler;
@@ -32,6 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -88,6 +91,7 @@ public class PECore
 
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
+		CapabilityManager.INSTANCE.register(PEInternalCaps.class, new DummyIStorage<>(), PEInternalCaps::new);
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
