@@ -2,13 +2,17 @@ package moze_intel.projecte.utils;
 
 import com.google.common.base.Throwables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.scoreboard.IScoreCriteria;
 import net.minecraft.world.Explosion;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Helper class for anything that is accessed using reflection. Should only be accessed from other utils.
@@ -21,10 +25,12 @@ public final class ReflectionHelper
 	private static final String[] entityFireImmuneNames = {"isImmuneToFire", "Y", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] explosionSizeNames = {"explosionSize", "i", "field_77280_f"};
+	private static final String[] updateScorePointsNames = { "updateScorePoints", "a", "func_184849_a" };
 
 	private static final MethodHandle
 		arrowInGround_getter, explosionSize_getter, explosionSize_setter,
-		fireImmunity_setter, walkSpeed_setter;
+		fireImmunity_setter, walkSpeed_setter,
+		updateScorePoints;
 
 	static {
 		try {
@@ -47,6 +53,10 @@ public final class ReflectionHelper
 			f = net.minecraftforge.fml.relauncher.ReflectionHelper.findField(PlayerCapabilities.class, playerCapaWalkSpeedNames);
 			f.setAccessible(true);
 			walkSpeed_setter = MethodHandles.publicLookup().unreflectSetter(f);
+
+			Method m = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(EntityPlayerMP.class, null, updateScorePointsNames, IScoreCriteria.class, int.class);
+			m.setAccessible(true);
+			updateScorePoints = MethodHandles.publicLookup().unreflect(m);
 		} catch (IllegalAccessException e) {
 			throw Throwables.propagate(e);
 		}
@@ -88,6 +98,13 @@ public final class ReflectionHelper
 	{
 		try {
 			walkSpeed_setter.invokeExact(instance, value);
+		} catch (Throwable ignored) {}
+	}
+
+	protected static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int score)
+	{
+		try {
+			updateScorePoints.invokeExact(player, objective, score);
 		} catch (Throwable ignored) {}
 	}
 }

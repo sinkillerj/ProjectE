@@ -45,7 +45,7 @@ public class SlotInput extends SlotItemHandler
 			else
 			{
 				itemEmc.addEmc(stack, inv.provider.getEmc());
-				inv.provider.setEmc(0);
+				inv.removeEmc(inv.provider.getEmc());
 			}
 		}
 

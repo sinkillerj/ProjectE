@@ -4,16 +4,18 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -22,7 +24,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public class TransmutationInventory extends CombinedInvWrapper
 {
@@ -292,6 +293,11 @@ public class TransmutationInventory extends CombinedInvWrapper
 		{
 			provider.setEmc(Constants.TILE_MAX_EMC);
 		}
+
+		if (!player.worldObj.isRemote)
+		{
+			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
+		}
 	}
 	
 	public void removeEmc(double value) 
@@ -301,6 +307,11 @@ public class TransmutationInventory extends CombinedInvWrapper
 		if (provider.getEmc() < 0)
 		{
 			provider.setEmc(0);
+		}
+
+		if (!player.worldObj.isRemote)
+		{
+			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
 		}
 	}
 

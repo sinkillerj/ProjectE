@@ -12,6 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
+import net.minecraft.scoreboard.IScoreCriteria;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -172,5 +173,10 @@ public final class PlayerHelper
 	{
 		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
+	}
+
+	public static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int value)
+	{
+		ReflectionHelper.updateScore(player, objective, value);
 	}
 }

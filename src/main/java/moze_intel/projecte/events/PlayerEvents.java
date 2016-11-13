@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -10,8 +11,10 @@ import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
+import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -79,7 +83,10 @@ public class PlayerEvents
 		PacketHandler.sendFragmentedEmcPacket(player);
 		PacketHandler.sendTo(new CheckUpdatePKT(), player);
 
-		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync(player);
+		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
+		knowledge.sync(player);
+		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(knowledge.getEmc()));
+
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
 	}
