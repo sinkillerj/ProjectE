@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -34,19 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DiviningRodLow extends ItemPE implements IModeChanger
+public class DiviningRod extends ItemPE implements IModeChanger
 {
 	// Modes should be in the format depthx3x3
-	protected final String[] modes;
+	private final String[] modes;
 
-	public DiviningRodLow()
-	{
-		this.setUnlocalizedName("divining_rod_1");
-		modes = new String[] {"3x3x3"};
-	}
-
-	// Only for subclasses
-	protected DiviningRodLow(String[] modeDesc)
+	public DiviningRod(String[] modeDesc)
 	{
 		modes = modeDesc;
 	}
@@ -165,11 +159,11 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
-			if (this instanceof DiviningRodMedium)
+			if (this == ObjHandler.dRod2)
 			{
 				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
 			}
-			if (this instanceof DiviningRodHigh)
+			if (this == ObjHandler.dRod3)
 			{
 				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
 				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
