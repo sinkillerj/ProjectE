@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -20,10 +21,11 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.EnumSet;
 import java.util.Set;
 
+@Mod.EventBusSubscriber
 public class TickEvents
 {
 	@SubscribeEvent
-	public void playerTick(TickEvent.PlayerTickEvent event)
+	public static void playerTick(TickEvent.PlayerTickEvent event)
 	{
 		if (event.phase == TickEvent.Phase.END)
 		{
@@ -63,7 +65,7 @@ public class TickEvents
 		}
 	}
 
-	private Set<EnumDyeColor> getBagColorsPresent(EntityPlayer player)
+	private static Set<EnumDyeColor> getBagColorsPresent(EntityPlayer player)
 	{
 		Set<EnumDyeColor> bagsPresent = EnumSet.noneOf(EnumDyeColor.class);
 

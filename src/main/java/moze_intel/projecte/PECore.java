@@ -97,9 +97,6 @@ public class PECore
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
-		MinecraftForge.EVENT_BUS.register(new TickEvents());
-
 		SoundHandler.init();
 		ObjHandler.register();
 		ObjHandler.addRecipes();

@@ -356,12 +356,7 @@ public class ClientProxy implements IProxy
 	@Override
 	public void registerClientOnlyEvents() 
 	{
-		MinecraftForge.EVENT_BUS.register(new ToolTipEvent());
 		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
-		MinecraftForge.EVENT_BUS.register(new KeyPressEvent());
-
-		PlayerRender pr = new PlayerRender();
-		MinecraftForge.EVENT_BUS.register(pr);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.PELogger;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -31,17 +32,19 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+@Mod.EventBusSubscriber
 public class PlayerEvents
 {
 	// Handles playerData props from being wiped on death
 	@SubscribeEvent
-	public void cloneEvent(PlayerEvent.Clone evt)
+	public static void cloneEvent(PlayerEvent.Clone evt)
 	{
 		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).serializeNBT();
 		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).deserializeNBT(bags);
@@ -53,23 +56,23 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void attachCaps(AttachCapabilitiesEvent.Entity evt)
+	public static void attachCaps(AttachCapabilitiesEvent<Entity> evt)
 	{
-		if (evt.getEntity() instanceof EntityPlayer)
+		if (evt.getObject() instanceof EntityPlayer)
 		{
 			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
 			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider());
 
-			if (evt.getEntity() instanceof EntityPlayerMP)
+			if (evt.getObject() instanceof EntityPlayerMP)
 			{
 				evt.addCapability(InternalTimers.NAME, new InternalTimers.Provider());
-				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((EntityPlayerMP) evt.getEntity()));
+				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((EntityPlayerMP) evt.getObject()));
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
+	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
 
@@ -82,7 +85,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onConstruct(EntityEvent.EntityConstructing evt)
+	public static void onConstruct(EntityEvent.EntityConstructing evt)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER // No world to check yet
 			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
@@ -93,7 +96,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
+	public static void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
@@ -105,13 +108,13 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		event.player.getCapability(InternalAbilities.CAPABILITY, null).onDimensionChange();
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public void pickupItem(EntityItemPickupEvent event)
+	public static void pickupItem(EntityItemPickupEvent event)
 	{
 		EntityPlayer player = event.getEntityPlayer();
 		World world = player.worldObj;
