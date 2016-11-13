@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
-public abstract class ItemPE extends Item
+public class ItemPE extends Item
 {
 	public ItemPE()
 	{

@@ -36,6 +36,7 @@ import moze_intel.projecte.gameObjs.items.DiviningRod;
 import moze_intel.projecte.gameObjs.items.EvertideAmulet;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.items.HyperkineticLens;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.Matter;
 import moze_intel.projecte.gameObjs.items.MercurialEye;
@@ -67,7 +68,6 @@ import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.BodyStone;
 import moze_intel.projecte.gameObjs.items.rings.HarvestGoddess;
 import moze_intel.projecte.gameObjs.items.rings.Ignition;
-import moze_intel.projecte.gameObjs.items.rings.IronBand;
 import moze_intel.projecte.gameObjs.items.rings.LifeStone;
 import moze_intel.projecte.gameObjs.items.rings.MindStone;
 import moze_intel.projecte.gameObjs.items.rings.SWRG;
@@ -191,7 +191,7 @@ public class ObjHandler
 	public static final Item gemLegs = new GemLegs();
 	public static final Item gemFeet = new GemFeet();
 
-	public static final Item ironBand = new IronBand();
+	public static final Item ironBand = new ItemPE().setUnlocalizedName("ring_iron_band");
 	public static final Item blackHole = new BlackHoleBand();
 	public static final Item angelSmite = new ArchangelSmite();
 	public static final Item harvestGod = new HarvestGoddess();
