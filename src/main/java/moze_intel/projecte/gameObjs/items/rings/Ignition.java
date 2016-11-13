@@ -14,6 +14,7 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockTNT;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -24,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -96,24 +98,23 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote)
+		IBlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof BlockTNT)
 		{
-			RayTraceResult mop = rayTrace(world, player, false);
-			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+			if (!world.isRemote && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
-				if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockTNT
-						&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.getBlockPos()))
-				{
-					// Ignite TNT or derivatives
-					((BlockTNT) world.getBlockState(mop.getBlockPos()).getBlock()).explode(world, mop.getBlockPos(), world.getBlockState(mop.getBlockPos()).withProperty(BlockTNT.EXPLODE, true), player);
-					world.setBlockToAir(mop.getBlockPos());
-				}
+				// Ignite TNT or derivatives
+				((BlockTNT) state.getBlock()).explode(world, pos, state.withProperty(BlockTNT.EXPLODE, true), player);
+				world.setBlockToAir(pos);
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+			return EnumActionResult.SUCCESS;
 		}
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+
+		return EnumActionResult.PASS;
 	}
 
 	@Override
