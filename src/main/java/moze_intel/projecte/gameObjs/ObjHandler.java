@@ -61,12 +61,6 @@ import moze_intel.projecte.gameObjs.items.itemBlocks.ItemMatterBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRMFurnaceBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemRelayBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemTransmutationBlock;
-import moze_intel.projecte.gameObjs.items.itemEntities.FireProjectile;
-import moze_intel.projecte.gameObjs.items.itemEntities.LavaOrb;
-import moze_intel.projecte.gameObjs.items.itemEntities.LensExplosive;
-import moze_intel.projecte.gameObjs.items.itemEntities.LightningProjectile;
-import moze_intel.projecte.gameObjs.items.itemEntities.RandomizerProjectile;
-import moze_intel.projecte.gameObjs.items.itemEntities.WaterOrb;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
@@ -226,12 +220,12 @@ public class ObjHandler
 
 	public static final Item tome = new Tome();
 
-	public static final Item waterOrb = new WaterOrb();
-	public static final Item lavaOrb = new LavaOrb();
-	public static final Item mobRandomizer = new RandomizerProjectile();
-	public static final Item lensExplosive = new LensExplosive();
-	public static final Item fireProjectile = new FireProjectile();
-	public static final Item windProjectile = new LightningProjectile();
+	public static final Item waterOrb = new Item().setUnlocalizedName("pe_water_orb");
+	public static final Item lavaOrb = new Item().setUnlocalizedName("pe_lava_orb");
+	public static final Item mobRandomizer = new Item().setUnlocalizedName("pe_randomizer");
+	public static final Item lensExplosive = new Item().setUnlocalizedName("pe_lens_explosive");
+	public static final Item fireProjectile = new Item().setUnlocalizedName("pe_fire_projectile");
+	public static final Item windProjectile = new Item().setUnlocalizedName("pe_wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet();
 	public static final Item manual = new PEManual();
 
