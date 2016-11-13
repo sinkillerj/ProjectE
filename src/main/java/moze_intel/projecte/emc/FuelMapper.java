@@ -10,6 +10,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class FuelMapper 
@@ -39,7 +40,7 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
-		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
+		Collections.sort(FUEL_MAP, Comparator.comparing(EMCMapper::getEmcValue));
 	}
 	
 	private static void addToMap(ItemStack stack)

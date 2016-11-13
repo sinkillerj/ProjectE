@@ -1,35 +1,12 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.manual.AbstractPage;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Comparator;
 
 public final class Comparators
 {
-	public static final Comparator<ItemStack> ITEMSTACK_EMC_DESCENDING = (s1, s2) -> {
-        int emc1 = EMCHelper.getEmcValue(s1);
-        int emc2 = EMCHelper.getEmcValue(s2);
-
-        if (emc1 < emc2)
-        {
-            return 1;
-        }
-
-        if (emc1 > emc2)
-        {
-            return -1;
-        }
-
-        return 0;
-    };
-
 	public static final Comparator<ItemStack> ITEMSTACK_ASCENDING = (o1, o2) -> {
         if ((o1 == null && o2 == null))
         {
@@ -62,36 +39,5 @@ public final class Comparators
             }
 
         }
-    };
-
-	public static final Comparator<SimpleStack> SIMPLESTACK_ASCENDING = (s1, s2) -> {
-        int emc1 = EMCMapper.getEmcValue(s1);
-        int emc2 = EMCMapper.getEmcValue(s2);
-
-        if (emc1 < emc2)
-        {
-            return -1;
-        }
-
-        if (emc1 > emc2)
-        {
-            return 1;
-        }
-
-        return 0;
-    };
-	
-	public static final Comparator<Integer> INT_DESCENDING = (i1, i2) -> {
-        if (i1 < i2)
-        {
-            return 1;
-        }
-
-        if (i1 > 2)
-        {
-            return -1;
-        }
-
-        return 0;
     };
 }

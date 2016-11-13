@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -148,7 +149,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 				maxValues[i] = 1;
 			}
 
-			Collections.sort(emcValues, Comparators.INT_DESCENDING);
+			Collections.sort(emcValues, Comparator.reverseOrder());
 
 			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 

@@ -19,8 +19,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 public class TransmutationInventory extends CombinedInvWrapper
 {
@@ -150,7 +152,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		ItemStack lockCopy = null;
 
-		Collections.sort(knowledge, Comparators.ITEMSTACK_EMC_DESCENDING);
+		Collections.sort(knowledge, Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inputLocks.getStackInSlot(LOCK_INDEX) != null)
 		{
