@@ -11,6 +11,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -95,7 +96,7 @@ public class TransmutationContainer extends Container
 		{
 			return null;
 		}
-		else if (slotIndex >= 10 && slotIndex <= 25) // Output Slots
+		else if (slotIndex >= 11 && slotIndex <= 26) // Output Slots
 		{	
 			int emc = EMCHelper.getEmcValue(newStack);
 			
@@ -112,7 +113,7 @@ public class TransmutationContainer extends Container
 			
 			transmutationInventory.updateClientTargets();
 		}
-		else if (slotIndex >= 26) //Unlearn Slot and Player Inventory
+		else if (slotIndex > 26)
 		{
 			int emc = EMCHelper.getEmcValue(stack);
 			
