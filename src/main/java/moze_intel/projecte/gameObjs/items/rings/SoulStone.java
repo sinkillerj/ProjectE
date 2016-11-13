@@ -138,7 +138,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 				{
 					if (player.getHealth() < player.getMaxHealth())
 					{
-						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.BLOCKS, 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart
 					}
 				}
