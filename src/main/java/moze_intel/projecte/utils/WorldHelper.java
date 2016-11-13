@@ -405,10 +405,9 @@ public final class WorldHelper
 		if (vel > 0.0D)
 		{
 			vel *= vel;
-			ent.motionX += dX / dist * vel * 0.05;
-			ent.motionY += dY / dist * vel * 0.1;
-			ent.motionZ += dZ / dist * vel * 0.05;
-			ent.moveEntity(ent.motionX, ent.motionY, ent.motionZ);
+			ent.motionX += dX / dist * vel * 0.1;
+			ent.motionY += dY / dist * vel * 0.2;
+			ent.motionZ += dZ / dist * vel * 0.1;
 		}
 	}
 
