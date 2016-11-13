@@ -27,7 +27,7 @@ archivesBaseName = "ProjectE"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "run"
-    mappings = 'snapshot_20160718'
+    mappings = 'snapshot_20161112'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
@@ -61,7 +61,7 @@ dependencies {
 
     compile "team.chisel:Chisel:MC1.9.4-0.0.6.33:api"
 
-    deobfCompile "mezz.jei:jei_1.10.2:3.7.7.233"
+    deobfCompile "mezz.jei:jei_1.10.2:3.12.8.323"
     deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"
@@ -105,4 +105,3 @@ artifacts {
     archives devJar
 }
 
-idea.module.inheritOutputDirs = true

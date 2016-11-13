@@ -55,12 +55,13 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.9.4, 1.11)")
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = PECore.DEPS)
 public class PECore
 {
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
+	public static final String DEPS = "required-after:Forge@[12.18.2.2097,);after:Baubles@[1.3.BETA11,);after:JEI@[3.12.0,)";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[ProjectE]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;

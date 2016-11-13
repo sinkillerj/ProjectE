@@ -3,6 +3,7 @@ package moze_intel.projecte.integration.jei.world_transmute;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -12,10 +13,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory
 {
-
     public static final String UID = "pe.worldtransmute";
     private final IDrawable background;
     private final IDrawable arrow;
@@ -59,33 +60,34 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     public void drawAnimations(@Nonnull Minecraft minecraft) {}
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper)
+    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {}
+
+    @Override
+    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients)
     {
-        if (!(recipeWrapper instanceof WorldTransmuteRecipeWrapper))
-            return;
-
-        WorldTransmuteRecipeWrapper wrapper = (WorldTransmuteRecipeWrapper) recipeWrapper;
-        boolean inputFluid = wrapper.getInputs().isEmpty();
-
         int itemSlots = 0;
         int fluidSlots = 0;
 
-        if (inputFluid)
+        int xPos = 16;
+        for (List<FluidStack> s : ingredients.getInputs(FluidStack.class))
         {
-            recipeLayout.getFluidStacks().init(fluidSlots, true, 16, 16, 16, 16, 1000, false, null);
-            recipeLayout.getFluidStacks().set(fluidSlots, wrapper.getFluidInputs().get(0));
+            recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, 1000, false, null);
+            recipeLayout.getFluidStacks().set(fluidSlots, s);
             fluidSlots++;
+            xPos += 16;
         }
-        else
+
+        xPos = 16;
+        for (List<ItemStack> s : ingredients.getInputs(ItemStack.class))
         {
-            recipeLayout.getItemStacks().init(itemSlots, true, 16, 16);
-            recipeLayout.getItemStacks().set(itemSlots, wrapper.getInputs().get(0));
+            recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
+            recipeLayout.getItemStacks().set(itemSlots, s);
             itemSlots++;
+            xPos += 16;
         }
 
-        int xPos = 128;
-
-        for (ItemStack s : wrapper.getOutputs())
+        xPos = 128;
+        for (ItemStack s : ingredients.getOutputs(ItemStack.class))
         {
             recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
             recipeLayout.getItemStacks().set(itemSlots, s);
@@ -94,12 +96,13 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         }
 
         xPos = 128;
-        for (FluidStack s : wrapper.getFluidOutputs())
+        for (FluidStack s : ingredients.getOutputs(FluidStack.class))
         {
-            recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 32, 16, 16, 1000, false, null);
+            recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, 1000, false, null);
             recipeLayout.getFluidStacks().set(fluidSlots, s);
             fluidSlots++;
             xPos += 16;
         }
+
     }
 }
