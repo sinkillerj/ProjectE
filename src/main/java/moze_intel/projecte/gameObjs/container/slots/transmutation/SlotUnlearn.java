@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,7 @@ public class SlotUnlearn extends SlotItemHandler
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && EMCHelper.doesItemHaveEmc(stack);
+		return !this.getHasStack() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
 	}
 	
 	@Override
