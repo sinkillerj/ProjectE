@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -241,6 +242,10 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
 				{
+					if (living instanceof EntityTameable && ((EntityTameable) living).isTamed())
+					{
+						continue;
+					}
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ, false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.swrgPedCooldown);
