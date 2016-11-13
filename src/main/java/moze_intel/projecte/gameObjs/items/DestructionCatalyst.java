@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -39,68 +40,62 @@ public class DestructionCatalyst extends ItemCharge
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos coords, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		if (world.isRemote) return EnumActionResult.SUCCESS;
 
-		RayTraceResult mop = this.rayTrace(world, player, false);
+		int numRows = calculateDepthFromCharge(stack);
+		boolean hasAction = false;
 
-		if (mop != null && mop.typeOfHit == Type.BLOCK)
+		AxisAlignedBB box = WorldHelper.getDeepBox(coords, facing, --numRows);
+
+		List<ItemStack> drops = Lists.newArrayList();
+
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
-			int numRows = calculateDepthFromCharge(stack);
-			boolean hasAction = false;
-			
-			BlockPos coords = mop.getBlockPos();
-			AxisAlignedBB box = WorldHelper.getDeepBox(coords, mop.sideHit, --numRows);
-			
-			List<ItemStack> drops = Lists.newArrayList();
+			IBlockState state = world.getBlockState(pos);
+			float hardness = state.getBlockHardness(world, pos);
 
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+			if (world.isAirBlock(pos) || hardness >= 50.0F || hardness == -1.0F)
 			{
-				IBlockState state = world.getBlockState(pos);
-				float hardness = state.getBlockHardness(world, pos);
-
-				if (world.isAirBlock(pos) || hardness >= 50.0F || hardness == -1.0F)
-				{
-					continue;
-				}
-
-				if (!consumeFuel(player, stack, 8, true))
-				{
-					break;
-				}
-
-				if (!hasAction)
-				{
-					hasAction = true;
-				}
-
-				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
-				{
-					List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
-					if (list != null && list.size() > 0)
-					{
-						drops.addAll(list);
-					}
-
-					world.setBlockToAir(pos);
-
-					if (world.rand.nextInt(8) == 0)
-					{
-						((WorldServer) world).spawnParticle(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
-					}
-				}
+				continue;
 			}
 
-			PlayerHelper.swingItem(player, hand);
-			if (hasAction)
+			if (!consumeFuel(player, stack, 8, true))
 			{
-				WorldHelper.createLootDrop(drops, world, mop.getBlockPos());
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				break;
+			}
+
+			if (!hasAction)
+			{
+				hasAction = true;
+			}
+
+			if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+			{
+				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
+				if (list != null && list.size() > 0)
+				{
+					drops.addAll(list);
+				}
+
+				world.setBlockToAir(pos);
+
+				if (world.rand.nextInt(8) == 0)
+				{
+					((WorldServer) world).spawnParticle(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+				}
 			}
 		}
+
+		PlayerHelper.swingItem(player, hand);
+		if (hasAction)
+		{
+			WorldHelper.createLootDrop(drops, world, coords);
+			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		}
 			
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return EnumActionResult.SUCCESS;
 	}
 
 	private int calculateDepthFromCharge(ItemStack stack)
