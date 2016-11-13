@@ -121,7 +121,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 						result = true;
 					}
 
-					growable.grow(world, world.rand, currentPos, state);
+					growable.grow(world, world.rand, currentPos.toImmutable(), state);
 				}
 			}
 		}

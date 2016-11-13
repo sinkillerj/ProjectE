@@ -553,8 +553,7 @@ public final class WorldHelper
 		{
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
-				world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 			}
 		}
 	}

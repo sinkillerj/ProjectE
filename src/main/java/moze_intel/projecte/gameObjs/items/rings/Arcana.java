@@ -206,7 +206,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
@@ -218,7 +218,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
