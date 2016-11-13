@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -89,22 +87,8 @@ public class DestructionCatalyst extends ItemCharge
 
 					if (world.rand.nextInt(8) == 0)
 					{
-						PacketHandler.sendToAllAround(new ParticlePKT(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
+						((WorldServer) world).spawnParticle(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 					}
-				}
-
-				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
-
-				if (list != null && list.size() > 0)
-				{
-					drops.addAll(list);
-				}
-
-				world.setBlockToAir(pos);
-
-				if (world.rand.nextInt(8) == 0)
-				{
-					PacketHandler.sendToAllAround(new ParticlePKT(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(), 32));
 				}
 			}
 
