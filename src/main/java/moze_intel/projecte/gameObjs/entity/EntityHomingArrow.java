@@ -37,6 +37,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 	{
 		super(world, par2);
 		this.setDamage(par3);
+		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
 	}
 
 	@Override
@@ -49,10 +50,6 @@ public class EntityHomingArrow extends EntityTippedArrow
 	@Override
 	public void onUpdate()
 	{
-		onEntityUpdate();
-
-		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
-
 		boolean inGround = WorldHelper.isArrowInGround(this);
 		if (!worldObj.isRemote && this.ticksExisted > 3)
 		{
@@ -105,19 +102,9 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 			// Tell mc to adjust our rotation accordingly
 			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
-			super.onUpdate();
-
-//			old homing code (sucks)
-//			double d5 = target.posX - this.posX;
-//			double d6 = target.boundingBox.minY + target.height - this.posY;
-//			double d7 = target.posZ - this.posZ;
-//
-//			this.setThrowableHeading(d5, d6, d7, 0.1F, 0.0F);
-//			super.onUpdate();
-		} else
-		{
-			super.onUpdate();
 		}
+
+		super.onUpdate();
 	}
 
 	@Nonnull
@@ -129,19 +116,10 @@ public class EntityHomingArrow extends EntityTippedArrow
 	private void findNewTarget()
 	{
 		List<EntityLiving> candidates = worldObj.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
-		Collections.sort(candidates, (o1, o2) -> {
-            double dist = EntityHomingArrow.this.getDistanceSqToEntity(o1) - EntityHomingArrow.this.getDistanceSqToEntity(o2);
-            if (dist == 0.0)
-            {
-                return 0;
-            } else
-            {
-                return Double.compare(0, dist);
-            }
-        });
 
 		if (!candidates.isEmpty())
 		{
+			Collections.sort(candidates, Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
 			dataManager.set(DW_TARGET_ID, candidates.get(0).getEntityId());
 		}
 
