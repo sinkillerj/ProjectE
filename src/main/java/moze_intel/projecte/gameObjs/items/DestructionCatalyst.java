@@ -66,10 +66,7 @@ public class DestructionCatalyst extends ItemCharge
 				break;
 			}
 
-			if (!hasAction)
-			{
-				hasAction = true;
-			}
+			hasAction = true;
 
 			if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
