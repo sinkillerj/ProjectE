@@ -12,12 +12,12 @@ import net.minecraft.util.ResourceLocation;
 public class GUICondenser extends GuiContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png");
-	private final CondenserTile tile;
+	private final CondenserContainer container;
 	
 	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)
 	{
 		super(new CondenserContainer(invPlayer, tile));
-		this.tile = tile;
+		this.container = ((CondenserContainer) inventorySlots);
 		this.xSize = 255;
 		this.ySize = 233;
 	}
@@ -33,14 +33,14 @@ public class GUICondenser extends GuiContainer
 		
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
-		int progress = tile.getProgressScaled();
+		int progress = container.getProgressScaled();
 		this.drawTexturedModalRect(x + 33, y + 10, 0, 235, progress, 10);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		int toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
+		int toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
 		this.fontRendererObj.drawString(Integer.toString(toDisplay), 140, 10, 4210752);
 	}
 }

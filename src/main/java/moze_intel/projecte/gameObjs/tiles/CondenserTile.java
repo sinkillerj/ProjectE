@@ -3,9 +3,6 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CondenserSyncPKT;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
@@ -15,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -119,15 +115,9 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		{
 			condense();
 		}
-		
-		if (numPlayersUsing > 0)
-		{
-			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this),
-				new TargetPoint(this.getWorld().provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 8));
-		}
 	}
 
-	public void checkLockAndUpdate()
+	private void checkLockAndUpdate()
 	{
 		if (lock.getStackInSlot(0) == null)
 		{
@@ -225,21 +215,6 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		}
 
 		return ItemHelper.areItemStacksEqualIgnoreNBT(lock.getStackInSlot(0), stack);
-	}
-	
-	public int getProgressScaled()
-	{
-		if (requiredEmc == 0) 
-		{
-			return 0;
-		}
-
-		if (displayEmc >= requiredEmc) 
-		{
-			return Constants.MAX_CONDENSER_PROGRESS;
-		}
-		
-		return (displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc;
 	}
 
 	@Override
