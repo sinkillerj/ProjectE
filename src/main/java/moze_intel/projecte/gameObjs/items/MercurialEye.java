@@ -234,7 +234,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
             }
 
-			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 		}
 
 		return EnumActionResult.SUCCESS;
@@ -267,7 +267,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		return true;
 	}
 

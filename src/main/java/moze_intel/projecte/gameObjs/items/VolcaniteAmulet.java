@@ -89,7 +89,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.worldObj.isAirBlock(pos))
+		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -98,12 +98,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				player.onGround = true;
 			}
 
-			if (!player.worldObj.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
-		else if (!player.worldObj.isRemote)
+		else if (!player.getEntityWorld().isRemote)
 		{
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{
@@ -115,10 +115,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-		EntityLavaProjectile ent = new EntityLavaProjectile(player.worldObj, player);
+		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		EntityLavaProjectile ent = new EntityLavaProjectile(player.getEntityWorld(), player);
 		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.worldObj.spawnEntityInWorld(ent);
+		player.getEntityWorld().spawnEntityInWorld(ent);
 		return true;
 	}
 
@@ -155,7 +155,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		int z = (int) Math.floor(player.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.worldObj.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.worldObj.isAirBlock(pos))
+		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
 		{
 			if (!player.isSneaking())
 			{
@@ -164,12 +164,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				player.onGround = true;
 			}
 
-			if (!player.worldObj.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
 			{
 				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
 			}
 		}
-		else if (!player.worldObj.isRemote)
+		else if (!player.getEntityWorld().isRemote)
 		{
 			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
 			{

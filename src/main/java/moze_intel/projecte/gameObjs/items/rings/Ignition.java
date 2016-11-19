@@ -128,7 +128,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -195,7 +195,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		
 		if(world.isRemote) return false;
 		

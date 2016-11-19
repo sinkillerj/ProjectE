@@ -103,7 +103,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override

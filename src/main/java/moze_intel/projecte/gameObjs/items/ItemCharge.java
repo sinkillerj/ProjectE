@@ -70,14 +70,14 @@ public class ItemCharge extends ItemPE implements IItemCharge
 		{
 			if (currentCharge > 0)
 			{
-				player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
+				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 				stack.getTagCompound().setByte("Charge", (byte) (currentCharge - 1));
 				return true;
 			}
 		}
 		else if (currentCharge < numCharges)
 		{
-			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
 			stack.getTagCompound().setByte("Charge", (byte) (currentCharge + 1));
 			return true;
 		}

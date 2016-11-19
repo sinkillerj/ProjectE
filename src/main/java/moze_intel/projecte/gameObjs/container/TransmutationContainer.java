@@ -142,7 +142,7 @@ public class TransmutationContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (player.worldObj.isRemote && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs)
+		if (player.getEntityWorld().isRemote && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs)
 		{
 			PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slot), getSlot(slot).getStack()));
 		}

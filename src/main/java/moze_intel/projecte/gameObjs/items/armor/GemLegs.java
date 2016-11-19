@@ -40,16 +40,16 @@ public class GemLegs extends GemArmorBase
     @SubscribeEvent
     public void onJump(LivingEvent.LivingJumpEvent evt)
     {
-        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntityLiving().worldObj.isRemote)
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntityLiving().getEntityWorld().isRemote)
         {
-            lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().worldObj.getTotalWorldTime());
+            lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().getEntityWorld().getTotalWorldTime());
         }
     }
 
     private boolean jumpedRecently(EntityPlayer player)
     {
         return lastJumpTracker.containsKey(player.getEntityId())
-            && player.worldObj.getTotalWorldTime() - lastJumpTracker.get(player.getEntityId()) < 5;
+            && player.getEntityWorld().getTotalWorldTime() - lastJumpTracker.get(player.getEntityId()) < 5;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class GemLegs extends GemArmorBase
 
             if (!world.isRemote && player.motionY < -0.08)
             {
-                List<Entity> entities = player.worldObj.getEntitiesInAABBexcluding(player,
+                List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
                         player.getEntityBoundingBox().addCoord(player.motionX, player.motionY, player.motionZ).expandXyz(2.0D),
                         Predicates.instanceOf(EntityLivingBase.class));
 

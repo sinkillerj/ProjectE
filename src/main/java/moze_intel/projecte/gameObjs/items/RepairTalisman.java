@@ -137,7 +137,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		if (player.worldObj.isRemote)
+		if (player.getEntityWorld().isRemote)
 		{
 			return false;
 		}

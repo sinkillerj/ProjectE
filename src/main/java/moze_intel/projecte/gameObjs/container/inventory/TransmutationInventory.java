@@ -55,7 +55,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		this.outputs = itemHandler[2];
 		this.invItem = invItem;
 
-		if (player.worldObj.isRemote)
+		if (player.getEntityWorld().isRemote)
 		{
 			updateClientTargets();
 		}
@@ -84,7 +84,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			provider.addKnowledge(stack);
 			
-			if (!player.worldObj.isRemote)
+			if (!player.getEntityWorld().isRemote)
 			{
 				provider.sync(((EntityPlayerMP) player));
 			}
@@ -116,7 +116,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			provider.removeKnowledge(stack);
 			
-			if (!player.worldObj.isRemote)
+			if (!player.getEntityWorld().isRemote)
 			{
 				provider.sync(((EntityPlayerMP) player));
 			}
@@ -138,7 +138,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void updateClientTargets()
 	{
-		if (!this.player.worldObj.isRemote)
+		if (!this.player.getEntityWorld().isRemote)
 		{
 			return;
 		}
@@ -294,7 +294,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			provider.setEmc(Constants.TILE_MAX_EMC);
 		}
 
-		if (!player.worldObj.isRemote)
+		if (!player.getEntityWorld().isRemote)
 		{
 			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
 		}
@@ -309,7 +309,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			provider.setEmc(0);
 		}
 
-		if (!player.worldObj.isRemote)
+		if (!player.getEntityWorld().isRemote)
 		{
 			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
 		}

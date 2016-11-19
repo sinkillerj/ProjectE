@@ -354,7 +354,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -393,6 +393,6 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		return !player.worldObj.isRemote && condense(stack, inv);
+		return !player.getEntityWorld().isRemote && condense(stack, inv);
 	}
 }

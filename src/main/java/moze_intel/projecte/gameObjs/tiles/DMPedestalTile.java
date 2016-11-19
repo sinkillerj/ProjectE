@@ -168,7 +168,7 @@ public class DMPedestalTile extends TileEmc
 				worldObj.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
 				{
-					this.worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().spawnParticle(EnumParticleTypes.SPELL_WITCH, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
@@ -179,7 +179,7 @@ public class DMPedestalTile extends TileEmc
 				worldObj.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
 				{
-					this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);

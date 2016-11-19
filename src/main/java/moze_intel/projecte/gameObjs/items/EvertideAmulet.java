@@ -193,7 +193,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 
 		if (!world.provider.doesWaterVaporize())
 		{
@@ -229,7 +229,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override

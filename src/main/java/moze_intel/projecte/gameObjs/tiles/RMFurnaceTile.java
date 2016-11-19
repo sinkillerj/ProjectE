@@ -143,7 +143,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			--furnaceBurnTime;
 		}
 		
-		if (!this.worldObj.isRemote)
+		if (!this.getWorld().isRemote)
 		{
 			pullFromInventories();
 			ItemHelper.compactInventory(inputInventory);
@@ -201,7 +201,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 				flag1 = true;
 				Block block = worldObj.getBlockState(pos).getBlock();
 				
-				if (!this.worldObj.isRemote && block instanceof MatterFurnace)
+				if (!this.getWorld().isRemote && block instanceof MatterFurnace)
 				{
 					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, getPos());
 				}
@@ -224,7 +224,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 
 	private void pullFromInventories()
 	{
-		TileEntity tile = this.worldObj.getTileEntity(pos.up());
+		TileEntity tile = this.getWorld().getTileEntity(pos.up());
 		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
 			return;
 		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);

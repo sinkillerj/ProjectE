@@ -35,9 +35,9 @@ public class EntityWaterProjectile extends PEProjectile
 	{
 		super.onUpdate();
 
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
-			if (ticksExisted > 400 || !this.worldObj.isBlockLoaded(new BlockPos(this)))
+			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 				return;
@@ -48,7 +48,7 @@ public class EntityWaterProjectile extends PEProjectile
 
 				for (BlockPos pos : BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
                 {
-                    Block block = this.worldObj.getBlockState(pos).getBlock();
+                    Block block = this.getEntityWorld().getBlockState(pos).getBlock();
 
                     if (block == Blocks.LAVA)
                     {
@@ -63,7 +63,7 @@ public class EntityWaterProjectile extends PEProjectile
                         continue;
                     }
 
-                    playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                    playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
                 }
 			}
 
@@ -74,7 +74,7 @@ public class EntityWaterProjectile extends PEProjectile
 			
 			if (this.posY > 128)
 			{
-				WorldInfo worldInfo = this.worldObj.getWorldInfo();
+				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
 				this.setDead();
 			}
@@ -84,7 +84,7 @@ public class EntityWaterProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			return;
 		}

@@ -77,7 +77,7 @@ public class TransmutationRenderingEvent
 	public void onOverlay(DrawBlockHighlightEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 
 		if (stack == null)

@@ -38,9 +38,9 @@ public class EntityLavaProjectile extends PEProjectile
 	{
 		super.onUpdate();
 		
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
-			if (ticksExisted > 400 || !this.worldObj.isBlockLoaded(new BlockPos(this)))
+			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 				return;
@@ -51,14 +51,14 @@ public class EntityLavaProjectile extends PEProjectile
 				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
 				for (BlockPos pos : BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
                 {
-                    Block block = this.worldObj.getBlockState(pos).getBlock();
+                    Block block = this.getEntityWorld().getBlockState(pos).getBlock();
 
                     if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
                     {
                         if (PlayerHelper.hasBreakPermission(player, pos))
                         {
-                            this.worldObj.setBlockToAir(pos);
-                            this.worldObj.playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
+                            this.getEntityWorld().setBlockToAir(pos);
+                            this.getEntityWorld().playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
                         }
                     }
                 }
@@ -66,7 +66,7 @@ public class EntityLavaProjectile extends PEProjectile
 
 			if (this.posY > 128)
 			{
-				WorldInfo worldInfo = this.worldObj.getWorldInfo();
+				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(false);
 				this.setDead();
 			}
@@ -76,7 +76,7 @@ public class EntityLavaProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			return;
 		}

@@ -47,7 +47,7 @@ public class TickEvents
 				}
 			}
 
-			if (!event.player.worldObj.isRemote)
+			if (!event.player.getEntityWorld().isRemote)
 			{
 				for (EnumDyeColor e : colorsChanged)
 				{

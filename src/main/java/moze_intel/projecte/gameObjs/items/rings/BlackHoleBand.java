@@ -123,7 +123,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			for (EntityItem e : tile.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.worldObj.isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
+				if (!e.getEntityWorld().isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
 					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getEntityItem(), false);
 					if (result != null)
@@ -242,7 +242,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (stack.getItemDamage() == 1)
 		{
-			for (EntityItem e : player.worldObj.getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
+			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

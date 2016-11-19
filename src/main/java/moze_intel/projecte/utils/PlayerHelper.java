@@ -46,7 +46,7 @@ public final class PlayerHelper
 		{
 			return false;
 		}
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
 		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player);
@@ -94,7 +94,7 @@ public final class PlayerHelper
 	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
 	{
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
-		RayTraceResult mop = player.worldObj.rayTraceBlocks(vecs.getLeft(), vecs.getRight());
+		RayTraceResult mop = player.getEntityWorld().rayTraceBlocks(vecs.getLeft(), vecs.getRight());
 		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
 			return mop.getBlockPos();
@@ -118,12 +118,12 @@ public final class PlayerHelper
 	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
 	{
 		return hasEditPermission(player, pos)
-				&& !(ForgeHooks.onBlockBreakEvent(player.worldObj, player.interactionManager.getGameType(), player, pos) == -1);
+				&& !(ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) == -1);
 	}
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
 	{
-		if (FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.worldObj, pos, player))
+		if (FMLCommonHandler.instance().getMinecraftServerInstance().isBlockProtected(player.getEntityWorld(), pos, player))
 		{
 			return false;
 		}
@@ -152,9 +152,9 @@ public final class PlayerHelper
 
 	public static void swingItem(EntityPlayer player, EnumHand hand)
 	{
-		if (player.worldObj instanceof WorldServer)
+		if (player.getEntityWorld() instanceof WorldServer)
 		{
-			((WorldServer) player.worldObj).getEntityTracker().sendToTrackingAndSelf(player, new SPacketAnimation(player, hand == EnumHand.MAIN_HAND ? 0 : 3));
+			((WorldServer) player.getEntityWorld()).getEntityTracker().sendToTrackingAndSelf(player, new SPacketAnimation(player, hand == EnumHand.MAIN_HAND ? 0 : 3));
 		}
 	}
 

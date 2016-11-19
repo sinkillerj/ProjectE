@@ -27,9 +27,9 @@ public class EntityMobRandomizer extends PEProjectile
 	{
 		super.onUpdate();
 		
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
-			if (ticksExisted > 400 || this.isInWater() || !this.worldObj.isBlockLoaded(new BlockPos(this)))
+			if (ticksExisted > 400 || this.isInWater() || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 			}
@@ -39,7 +39,7 @@ public class EntityMobRandomizer extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
 			if (this.isInWater())
 			{
@@ -48,11 +48,11 @@ public class EntityMobRandomizer extends PEProjectile
 			}
 		}
 
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			for (int i = 0; i < 4; ++i)
 			{
-				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+				this.getEntityWorld().spawnParticle(EnumParticleTypes.PORTAL, this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
 			}
 			return;
 		}
@@ -63,13 +63,13 @@ public class EntityMobRandomizer extends PEProjectile
 		}
 
 		EntityLiving ent = ((EntityLiving) mop.entityHit);
-		Entity randomized = WorldHelper.getRandomEntity(this.worldObj, ent);
+		Entity randomized = WorldHelper.getRandomEntity(this.getEntityWorld(), ent);
 		
 		if (randomized != null && EMCHelper.consumePlayerFuel(((EntityPlayer) getThrower()), 384) != -1)
 		{
 			ent.setDead();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
-			this.worldObj.spawnEntityInWorld(randomized);
+			this.getEntityWorld().spawnEntityInWorld(randomized);
 		}
 	}
 }

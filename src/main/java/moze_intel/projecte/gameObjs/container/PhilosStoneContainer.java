@@ -22,7 +22,7 @@ public class PhilosStoneContainer extends Container
 	
 	public PhilosStoneContainer(InventoryPlayer invPlayer) 
 	{
-		this.worldObj = invPlayer.player.worldObj;
+		this.worldObj = invPlayer.player.getEntityWorld();
 		
 		//CraftingResult
 		this.addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));

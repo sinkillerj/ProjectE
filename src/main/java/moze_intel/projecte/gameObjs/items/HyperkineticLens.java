@@ -40,7 +40,7 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		int requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		
 		if (!consumeFuel(player, stack, requiredEmc, true))

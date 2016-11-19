@@ -152,7 +152,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)
 			{
-				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
+				player.getEntityWorld().addWeatherEffect(new EntityLightningBolt(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
 			}
         }
     }

@@ -106,7 +106,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		updateChest();
 
-		if (this.worldObj.isRemote)
+		if (this.getWorld().isRemote)
 		{
 			return;
 		}
@@ -123,7 +123,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		if (numPlayersUsing > 0)
 		{
 			PacketHandler.sendToAllAround(new CondenserSyncPKT(displayEmc, requiredEmc, this),
-				new TargetPoint(this.worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 8));
+				new TargetPoint(this.getWorld().provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 8));
 		}
 	}
 

@@ -37,12 +37,12 @@ public class EntityLensProjectile extends PEProjectile
 	{
 		super.onUpdate();
 		
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			return;
 		}
 
-		if (ticksExisted > 400 || !this.worldObj.isBlockLoaded(new BlockPos(this)))
+		if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 		{
 			this.setDead();
 			return;
@@ -59,7 +59,7 @@ public class EntityLensProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if (this.worldObj.isRemote) return;
+		if (this.getEntityWorld().isRemote) return;
 		WorldHelper.createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 	}
 	

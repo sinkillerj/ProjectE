@@ -47,7 +47,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	public RayTraceResult getHitBlock(EntityPlayer player)
 	{
-		return rayTrace(player.worldObj, player, player.isSneaking());
+		return rayTrace(player.getEntityWorld(), player, player.isSneaking());
 	}
 
 	@Nonnull
@@ -105,7 +105,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(world, player);
 		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
@@ -116,9 +116,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		if (!player.worldObj.isRemote)
+		if (!player.getEntityWorld().isRemote)
 		{
-			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
 
 		return true;

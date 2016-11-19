@@ -45,13 +45,13 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 		{
 			this.setDead();
 
-			if (!this.worldObj.isRemote)
+			if (!this.getEntityWorld().isRemote)
 				this.explode();
 		}
 		else
 		{
 			this.handleWaterMovement();
-			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.getEntityWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 	

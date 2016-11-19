@@ -129,9 +129,9 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		
-		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayerMP)) return;
+		if(entity.getEntityWorld().isRemote || !(entity instanceof EntityPlayerMP)) return;
 		
-		tick(stack, entity.worldObj, (EntityPlayerMP)entity);
+		tick(stack, entity.getEntityWorld(), (EntityPlayerMP)entity);
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand) // GIANT FIRE ROW OF DEATH
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		
 		if(world.isRemote) return true;
 		
@@ -234,7 +234,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		
 		if(world.isRemote) return false;
 		

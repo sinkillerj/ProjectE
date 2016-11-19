@@ -124,7 +124,7 @@ public class PlayerEvents
 	public static void pickupItem(EntityItemPickupEvent event)
 	{
 		EntityPlayer player = event.getEntityPlayer();
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 		
 		if (world.isRemote)
 		{
