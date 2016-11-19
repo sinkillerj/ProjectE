@@ -2,12 +2,12 @@ package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GUIPhilosStone extends GuiContainer
@@ -27,7 +27,7 @@ public class GUIPhilosStone extends GuiContainer
 
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1, 1, 1, 1);
 		this.mc.getTextureManager().bindTexture(craftingTableGuiTextures);
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;

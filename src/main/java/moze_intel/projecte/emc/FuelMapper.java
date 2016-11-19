@@ -2,7 +2,6 @@ package moze_intel.projecte.emc;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.init.Blocks;

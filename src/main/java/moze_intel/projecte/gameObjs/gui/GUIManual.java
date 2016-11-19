@@ -66,9 +66,9 @@ public class GUIManual extends GuiScreen
 	@Override
 	public void initGui()
 	{
-		GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
+		GlStateManager.scale(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
 		k = (Math.round(this.width / GUI_SCALE_FACTOR) - WINDOW_WIDTH) / 2;
-		GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
+		GlStateManager.scale(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
 		this.buttonList.add(new PageTurnButton(0, Math.round((k + 256 - 40) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), true));
 		this.buttonList.add(new PageTurnButton(1, Math.round((k + 20) * GUI_SCALE_FACTOR), PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f), false));

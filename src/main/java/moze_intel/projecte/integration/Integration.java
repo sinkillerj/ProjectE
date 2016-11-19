@@ -1,7 +1,6 @@
 package moze_intel.projecte.integration;
 
 import moze_intel.projecte.integration.minetweaker.TweakInit;
-
 import net.minecraftforge.fml.common.Loader;
 
 public class Integration
