@@ -1,3 +1,26 @@
+###Version 1.10.2-PE1.1.0B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* NEW: The Black Hole Band can be used to remove world fluids like in EE2
+* NEW: Scoreboard objective projecte:emc_score which reads a players stored transmutation EMC
+* FIXED: Night vision no longer causes particles
+* FIXED: Homing arrow target height
+* FIXED: A pedestal rendering issue resulting from the day cycle being disabled
+* FIXED: Other minor pedestal rendering fixes
+* FIXED: Tooltips referencing the long since removed wrenching feature have been removed
+* FIXED: A Watch of Flowing Time crash
+* FIXED: Repair talisman now targets armor slots
+* FIXED: A sync issue causing transmutation knowledge to appear empty
+* FIXED: XP calculations have been updated to modern MC standards
+* FIXED: Tome of Knowledge can be unlearned again
+* FIXED: Mysterious red zeroes sometimes appearing in the transmutation GUI
+* FIXED: Various sound fixes
+* CHANGE: Pedestal GUI has been removed
+* CHANGE: Various backend optimizations
+* CHANGE: MineTweaker support has returned, further testing is required
+* CHANGE: Minor world transmutation rendering optimization
+* CHANGE: ProjectE recipes now accept OreDict mats. This may be removed in the future if serious exploits arise
+* CHANGE: Swiftwolfs Rending Gale will no longer smite tamed mobs
+
 ###Version 1.10.2-PE1.0.6B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
 * NOTICE: ProjectE now requires Java 8
