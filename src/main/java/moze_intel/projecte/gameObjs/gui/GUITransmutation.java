@@ -4,7 +4,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.integration.jei.PEJeiPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -114,10 +112,6 @@ public class GUITransmutation extends GuiContainer
 			{
 				inv.filter = srch;
 				inv.searchpage = 0;
-				if (Loader.isModLoaded("JEI"))
-				{
-					PEJeiPlugin.RUNTIME.getItemListOverlay().setFilterText(srch);
-				}
 				inv.updateClientTargets();
 			}
 		}
