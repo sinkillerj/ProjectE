@@ -62,6 +62,7 @@ public class TransmutationInventory implements IInventory
 		if (!Transmutation.hasKnowledgeForStack(stack, player))
 		{
 			learnFlag = 300;
+			unlearnFlag = 0;
 			
 			if (stack.getItem() == ObjHandler.tome)
 			{
@@ -101,6 +102,7 @@ public class TransmutationInventory implements IInventory
 		if (Transmutation.hasKnowledgeForStack(stack, player))
 		{
 			unlearnFlag = 300;
+			learnFlag = 0;
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
