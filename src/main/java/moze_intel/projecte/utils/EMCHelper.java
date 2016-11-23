@@ -115,7 +115,7 @@ public final class EMCHelper
 			return false;
 		}
 
-		SimpleStack iStack = new SimpleStack(stack);
+		SimpleStack iStack = new SimpleStack(stack, false);
 
 		if (!iStack.isValid())
 		{
