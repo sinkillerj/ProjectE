@@ -46,7 +46,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 @Mod.EventBusSubscriber
 public class PlayerEvents
 {
-	// Handles playerData props from being wiped on death
+	// On death or return from end, copy the capability data
 	@SubscribeEvent
 	public static void cloneEvent(PlayerEvent.Clone evt)
 	{
@@ -55,8 +55,24 @@ public class PlayerEvents
 
 		NBTTagCompound knowledge = evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).serializeNBT();
 		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).deserializeNBT(knowledge);
+	}
 
-		PELogger.logDebug("Reapplied bag and knowledge on player respawning");
+	// On death or return from end, sync to the client
+	@SubscribeEvent
+	public static void respawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent evt)
+	{
+		evt.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync((EntityPlayerMP) evt.player);
+		evt.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, (EntityPlayerMP) evt.player);
+	}
+
+	@SubscribeEvent
+	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+	{
+		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
+		event.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync((EntityPlayerMP) event.player);
+		event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, (EntityPlayerMP) event.player);
+
+		event.player.getCapability(InternalAbilities.CAPABILITY, null).onDimensionChange();
 	}
 
 	@SubscribeEvent
@@ -112,12 +128,6 @@ public class PlayerEvents
 			ITextComponent latter = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.has_joined"), TextFormatting.BLUE);
 			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}
-	}
-
-	@SubscribeEvent
-	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
-	{
-		event.player.getCapability(InternalAbilities.CAPABILITY, null).onDimensionChange();
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
