@@ -344,7 +344,10 @@ public final class WorldHelper
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
 	{
-		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
+		return BlockPos.getAllInBox(
+				new BlockPos(box.minX, box.minY, box.minZ),
+				new BlockPos(box.maxX - 1, box.maxY - 1, box.maxZ - 1) // -1 because getAllInBox has inclusive upper bound
+		);
 	}
 
 	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
