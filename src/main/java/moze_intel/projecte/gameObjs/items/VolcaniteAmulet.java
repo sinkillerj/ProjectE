@@ -54,12 +54,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
-		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
+		if (!world.isRemote
+				&& PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos)
+				&& consumeFuel(player, stack, 32, true))
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit)
-					&& consumeFuel(player, stack, 32, true))
+			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit))
 			{
 				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
 			} else
