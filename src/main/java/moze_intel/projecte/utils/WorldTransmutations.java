@@ -19,8 +19,8 @@ public final class WorldTransmutations
 		register(Blocks.dirt, Blocks.sand, Blocks.cobblestone);
 		register(Blocks.sand, Blocks.grass, Blocks.cobblestone);
 		register(Blocks.gravel, Blocks.sandstone);
-		register(Blocks.water, Blocks.ice);
-		register(Blocks.lava, Blocks.obsidian);
+		register(Blocks.ice, new MetaBlock[]{Blocks.water});
+		register(Blocks.obsidian, new MetaBlock[]{Blocks.lava});
 		register(Blocks.melon_block, Blocks.pumpkin);
 
 
