@@ -19,6 +19,7 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 
 public class KeyPressPKT implements IMessage
@@ -128,7 +129,15 @@ public class KeyPressPKT implements IMessage
 						((IModeChanger) stack.getItem()).changeMode(player, stack);
 					}
 					break;
-			}
+				case AURA:
+                    ItemStack helm = player.inventory.armorItemInSlot(3);
+
+                    if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
+                    {
+                        GemHelmet.toggleAuraNodes(helm, player);
+                    }
+                    break;
+            }
 			return null;
 		}
 	}

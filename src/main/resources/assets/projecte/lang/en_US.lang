@@ -229,6 +229,7 @@ pe.gem.nightvision_tooltip=Night Vision:
 pe.gem.nightvision.prompt=Press %s + %s to toggle Night Vision
 pe.gem.stepassist_tooltip=Step Assist:
 pe.gem.stepassist.prompt=Press %s to toggle Step Assist
+pe.gem.aura_tooltip=Aura Nodes:
 
 pe.gemdensity.blacklist=Blacklist
 pe.gemdensity.mode_switch=Set target to
@@ -257,6 +258,7 @@ pe.key.charge=Charge
 pe.key.extra_function=Extra Function
 pe.key.fire_projectile=Fire Projectile
 pe.key.mode=Change Mode
+pe.key.aura=Toggle Aura Nodes
 
 pe.life.pedestal1=Restores both hunger and hearts
 pe.life.pedestal2=Half a heart and shank every %s
