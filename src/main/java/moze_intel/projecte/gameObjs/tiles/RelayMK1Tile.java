@@ -1,51 +1,122 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.RelaySyncPKT;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor, IEmcProvider
+import javax.annotation.Nonnull;
+
+public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
-	private ItemStack[] inventory;
-	private int invBufferSize;
+	private final ItemStackHandler input;
+	private final ItemStackHandler output = new StackHandler(1);
+	private final IItemHandler automationInput;
+	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
+	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return SlotPredicates.IITEMEMC.test(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
+		}
+
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			ItemStack stack = getStackInSlot(slot);
+			if (stack != null && stack.getItem() instanceof IItemEmc)
+			{
+				IItemEmc item = ((IItemEmc) stack.getItem());
+				if (item.getStoredEmc(stack) >= item.getMaximumEmc(stack))
+				{
+					return super.extractItem(slot, amount, simulate);
+				} else
+				{
+					return null;
+				}
+			}
+
+			return super.extractItem(slot, amount, simulate);
+		}
+	};
 	private final int chargeRate;
-	public int displayEmc;
-	public double displayChargingEmc;
-	public double displayRawEmc;
-	private int numUsing;
-	
+
 	public RelayMK1Tile()
 	{
-		super(Constants.RELAY_MK1_MAX);
-		chargeRate = Constants.RELAY_MK1_OUTPUT;
-		inventory = new ItemStack[8];
-		invBufferSize = 6;
+		this(7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
 	}
 	
-	public RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
+	RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;
-		inventory = new ItemStack[sizeInv + 2];
-		invBufferSize = sizeInv;
+		input = new StackHandler(sizeInv)
+		{
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			{
+				return SlotPredicates.RELAY_INV.test(stack)
+						? super.insertItem(slot, stack, simulate)
+						: stack;
+			}
+		};
+		automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 	}
-	
+
 	@Override
-	public void updateEntity()
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
+	}
+
+	@Nonnull
+	@Override
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	{
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			if (side == EnumFacing.DOWN)
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
+			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+		}
+		return super.getCapability(cap, side);
+	}
+
+	private ItemStack getCharging()
+	{
+		return output.getStackInSlot(0);
+	}
+
+	private ItemStack getBurn()
+	{
+		return input.getStackInSlot(0);
+	}
+
+	public IItemHandler getInput()
+	{
+		return input;
+	}
+
+	public IItemHandler getOutput()
+	{
+		return output;
+	}
+
+	@Override
+	public void update()
 	{	
 		if (worldObj.isRemote) 
 		{
@@ -53,9 +124,9 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 		}
 
 		sendEmc();
-		sortInventory();
+		ItemHelper.compactInventory(input);
 		
-		ItemStack stack = inventory[0];
+		ItemStack stack = getBurn();
 		
 		if (stack != null)
 		{
@@ -82,26 +153,18 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
 				{
 					this.addEMC(emcVal);
-					decrStackSize(0, 1);
+					getBurn().stackSize--;
+					if (getBurn().stackSize == 0)
+						input.setStackInSlot(0, null);
 				}
 			}
 		}
 		
-		ItemStack chargeable = inventory[getSizeInventory() - 1];
+		ItemStack chargeable = getCharging();
 		
 		if (chargeable != null && this.getStoredEmc() > 0 && chargeable.getItem() instanceof IItemEmc)
 		{
 			chargeItem(chargeable);
-		}
-		
-		displayEmc = (int) this.getStoredEmc();
-		displayChargingEmc = getChargingEMC();
-		displayRawEmc = getRawEmc();
-		
-		if (numUsing > 0)
-		{
-			PacketHandler.sendToAllAround(new RelaySyncPKT(displayEmc, displayChargingEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
-					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
 		}
 	}
 	
@@ -116,44 +179,6 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 		else 
 		{
 			this.sendToAllAcceptors(chargeRate);
-		}
-	}
-	
-	private void sortInventory()
-	{
-		for (int i = 1; i <= invBufferSize; i++)
-		{
-			ItemStack current = getStackInSlot(i);
-
-			if (current == null)
-			{
-				continue;
-			}
-
-			int nextIndex = i < invBufferSize ? i + 1 : 0;
-
-			ItemStack following = inventory[nextIndex];
-
-			if (following == null)
-			{
-				inventory[nextIndex] = current;
-				decrStackSize(i, current.stackSize);
-			}
-			else if (ItemHelper.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
-			{
-				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
-
-				if (current.stackSize <= missingForFullStack)
-				{
-					inventory[nextIndex].stackSize += current.stackSize;
-					inventory[i] = null;
-				}
-				else
-				{
-					inventory[nextIndex].stackSize += missingForFullStack;
-					decrStackSize(i, missingForFullStack);
-				}
-			}
 		}
 	}
 	
@@ -176,223 +201,54 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			this.removeEMC(toSend);
 		}
 	}
-	
-	public int getEmcScaled(int i)
+
+	public double getItemChargeProportion()
 	{
-		return (int) Math.round(displayEmc * i / this.getMaximumEmc());
-	}
-	
-	private double getChargingEMC()
-	{
-		int index = getSizeInventory() - 1;
-		if (inventory[index] != null && inventory[index].getItem() instanceof IItemEmc)
+		if (getCharging() != null && getCharging().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) inventory[index].getItem()).getStoredEmc(inventory[index]);
+			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
 		}
-		
+
 		return 0;
 	}
-	
-	public int getChargingEMCScaled(int i)
+
+	public double getInputBurnProportion()
 	{
-		int index = getSizeInventory() - 1;
-		if (inventory[index] != null && inventory[index].getItem() instanceof IItemEmc)
-		{
-			return ((int) Math.round(displayChargingEmc * i / ((IItemEmc) inventory[index].getItem()).getMaximumEmc(inventory[index])));
-		}
-		
-		return 0;
-	}
-	
-	private double getRawEmc()
-	{
-		if (inventory[0] == null)
+		if (getBurn() == null)
 		{
 			return 0;
 		}
-		
-		if (inventory[0].getItem() instanceof IItemEmc)
+
+		if (getBurn().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) inventory[0].getItem()).getStoredEmc(inventory[0]);
+			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
 		}
-		
-		return EMCHelper.getEmcValue(inventory[0]) * inventory[0].stackSize;
-	}
-	
-	public int getRawEmcScaled(int i)
-	{
-		if (inventory[0] == null)
-		{
-			return 0;
-		}
-		
-		if (inventory[0].getItem() instanceof IItemEmc)
-		{
-			return (int) Math.round(displayRawEmc * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0]));
-		}
-		
-		int emc = EMCHelper.getEmcValue(inventory[0]);
-		
-		return MathHelper.floor_double(displayRawEmc * i / (emc * inventory[0].getMaxStackSize()));
+
+		return getBurn().stackSize / (double) getBurn().getMaxStackSize();
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-
-		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[getSizeInventory()];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			byte slot = subNBT.getByte("Slot");
-			if (slot >= 0 && slot < getSizeInventory())
-				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
-		}
+		input.deserializeNBT(nbt.getCompoundTag("Input"));
+		output.deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
-		
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < getSizeInventory(); i++)
-		{
-			if (inventory[i] == null) continue;
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			inventory[i].writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-		nbt.setTag("Items", list);
+		nbt = super.writeToNBT(nbt);
+		nbt.setTag("Input", input.serializeNBT());
+		nbt.setTag("Output", output.serializeNBT());
+		return nbt;
 	}
 
 	@Override
-	public int getSizeInventory() 
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
-		return inventory.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) 
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int qty) 
-	{
-		ItemStack stack = inventory[slot];
-		if (stack != null)
-		{
-			if (stack.stackSize <= qty)
-				inventory[slot] = null;
-			else
-			{
-				stack = stack.splitStack(qty);
-				if (stack.stackSize == 0)
-					inventory[slot] = null;
-			}
-		}
-		return stack;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
-	{
-		if (inventory[slot] != null)
-		{
-			ItemStack stack = inventory[slot];
-			inventory[slot] = null;
-			return stack;
-		}
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) 
-	{
-		inventory[slot] = stack;
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-			stack.stackSize = this.getInventoryStackLimit();
-		this.markDirty();
-	}
-
-	@Override
-	public String getInventoryName() 
-	{
-		return "pe.relay.mk1";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() 
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) 
-	{
-		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : var1.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory() 
-	{
-		numUsing++;
-	}
-
-	@Override
-	public void closeInventory() 
-	{
-		numUsing--;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
-	{
-		return true;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
-	{
-		int indexes[] = new int[inventory.length - 2];
-		byte counter = 0;
-
-		for (int i = 1; i < inventory.length - 1; i++)
-		{
-			indexes[counter] = i;
-			counter++;
-		}
-
-		return indexes;
-	}
-
-	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side)
-	{
-		return EMCHelper.doesItemHaveEmc(stack);
-	}
-
-	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side)
-	{
-		return false;
-	}
-
-	@Override
-	public double acceptEMC(ForgeDirection side, double toAccept)
-	{
-		if (worldObj.getTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ) instanceof RelayMK1Tile)
+		if (worldObj.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
 			return 0; // Do not accept from other relays - avoid infinite loop / thrashing
 		}
@@ -405,7 +261,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 	}
 
 	@Override
-	public double provideEMC(ForgeDirection side, double toExtract)
+	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;

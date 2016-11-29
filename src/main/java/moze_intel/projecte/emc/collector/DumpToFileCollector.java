@@ -13,13 +13,14 @@ import java.util.Map;
 public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Integer, A>
 {
 	public static String currentGroupName="default";
-	CustomConversionFile out = new CustomConversionFile();
-	IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
-	final File file;
+	private final CustomConversionFile out = new CustomConversionFile();
+	private final IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner;
+	private final File file;
+
 	public DumpToFileCollector(File f, IExtendedMappingCollector<NormalizedSimpleStack, Integer, A> inner)
 	{
 		super(inner.getArithmetic());
-		file = f;
+		this.file = f;
 		this.inner = inner;
 	}
 

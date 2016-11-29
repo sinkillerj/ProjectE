@@ -1,11 +1,16 @@
 package moze_intel.projecte.network.commands;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -14,21 +19,23 @@ public class ProjectECMD extends ProjectEBaseCMD
 {
 	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
-	ChangelogCMD changelogcmd = new ChangelogCMD();
-	ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
-	SetEmcCMD setemccmd = new SetEmcCMD();
-	RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
-	ResetEmcCMD resetemccmd = new ResetEmcCMD();
-	ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
+	private final ChangelogCMD changelogcmd = new ChangelogCMD();
+	private final ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
+	private final SetEmcCMD setemccmd = new SetEmcCMD();
+	private final RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
+	private final ResetEmcCMD resetemccmd = new ResetEmcCMD();
+	private final ClearKnowledgeCMD clearknowledgecmd = new ClearKnowledgeCMD();
 
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.main.usage";
 	}
@@ -39,23 +46,24 @@ public class ProjectECMD extends ProjectEBaseCMD
 		return 0;
 	}
 
+	@Nonnull
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] params)
+	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
 	{
 		if (params.length == 1)
 		{
 			return Lists.newArrayList(Iterables.filter(commands, new LowerCasePrefixPredicate(params[0])));
 		}
 
-		return null;
+		return ImmutableList.of();
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, new ChatComponentTranslation("pe.command.main.usage"));
+			sendError(sender, new TextComponentTranslation("pe.command.main.usage"));
 			return;
 		}
 
@@ -70,68 +78,68 @@ public class ProjectECMD extends ProjectEBaseCMD
 
 		if ("setemc".equals(subName))
 		{
-			if (setemccmd.canCommandSenderUseCommand(sender))
+			if (setemccmd.checkPermission(server, sender))
 			{
-				setemccmd.processCommand(sender, relayparams);
+				setemccmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 		else if ("resetemc".equals(subName))
 		{
-			if (resetemccmd.canCommandSenderUseCommand(sender))
+			if (resetemccmd.checkPermission(server, sender))
 			{
-				resetemccmd.processCommand(sender, relayparams);
+				resetemccmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 		else if ("removeemc".equals(subName))
 		{
-			if (removeemccmd.canCommandSenderUseCommand(sender))
+			if (removeemccmd.checkPermission(server, sender))
 			{
-				removeemccmd.processCommand(sender, relayparams);
+				removeemccmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 		else if ("reloademc".equals(subName))
 		{
-			if (reloademccmd.canCommandSenderUseCommand(sender))
+			if (reloademccmd.checkPermission(server, sender))
 			{
-				reloademccmd.processCommand(sender, relayparams);
+				reloademccmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 		else if ("clearknowledge".equals(subName))
 		{
-			if (clearknowledgecmd.canCommandSenderUseCommand(sender))
+			if (clearknowledgecmd.checkPermission(server, sender))
 			{
-				clearknowledgecmd.processCommand(sender, relayparams);
+				clearknowledgecmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 		else if ("changelog".equals(subName))
 		{
-			if (changelogcmd.canCommandSenderUseCommand(sender))
+			if (changelogcmd.checkPermission(server, sender))
 			{
-				changelogcmd.processCommand(sender, relayparams);
+				changelogcmd.execute(server, sender, relayparams);
 			}
 			else
 			{
-				sendError(sender, new ChatComponentTranslation("commands.generic.permission"));
+				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
 

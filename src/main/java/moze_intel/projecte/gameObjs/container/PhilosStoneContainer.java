@@ -12,15 +12,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class PhilosStoneContainer extends Container
 {
-	private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-	private IInventory craftResult = new InventoryCraftResult();
-	private World worldObj;
+	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+	private final IInventory craftResult = new InventoryCraftResult();
+	private final World worldObj;
 	
 	public PhilosStoneContainer(InventoryPlayer invPlayer) 
 	{
-		this.worldObj = invPlayer.player.worldObj;
+		this.worldObj = invPlayer.player.getEntityWorld();
 		
 		//CraftingResult
 		this.addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
@@ -57,18 +59,18 @@ public class PhilosStoneContainer extends Container
 		{
 			for (int i = 0; i < 9; ++i)
 			{
-				ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+				ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
 
 				if (itemstack != null)
 				{
-					player.dropPlayerItemWithRandomChoice(itemstack, false);
+					player.dropItem(itemstack, false);
 				}
 			}
 		}
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}
@@ -77,7 +79,7 @@ public class PhilosStoneContainer extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
 	{
 		ItemStack itemstack = null;
-		Slot slot = (Slot)this.inventorySlots.get(index);
+		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack())
 		{
@@ -114,7 +116,7 @@ public class PhilosStoneContainer extends Container
 
 			if (itemstack1.stackSize == 0)
 			{
-				slot.putStack((ItemStack)null);
+				slot.putStack(null);
 			}
 			else
 			{
@@ -133,8 +135,8 @@ public class PhilosStoneContainer extends Container
 	}
 	
 	@Override
-	public boolean func_94530_a(ItemStack stack, Slot slot)
+	public boolean canMergeSlot(ItemStack stack, Slot slot)
 	{
-		return slot.inventory != this.craftResult && super.func_94530_a(stack, slot);
+		return slot.inventory != this.craftResult && super.canMergeSlot(stack, slot);
 	}
 }

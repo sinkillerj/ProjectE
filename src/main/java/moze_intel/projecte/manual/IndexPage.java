@@ -1,8 +1,8 @@
 package moze_intel.projecte.manual;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class IndexPage extends AbstractPage
@@ -22,6 +22,6 @@ public class IndexPage extends AbstractPage
     @Override
     public String getHeaderText()
     {
-        return StatCollector.translateToLocal("pe.manual.index");
+        return I18n.format("pe.manual.index");
     }
 }

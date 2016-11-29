@@ -9,8 +9,8 @@ public class RedShears extends DarkShears
 		super("rm_shears", (byte) 3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "shears";
-		this.harvestMaterials.add(Material.web);
-		this.harvestMaterials.add(Material.circuits);
+		this.toolClasses.add("shears");
+		this.harvestMaterials.add(Material.WEB);
+		this.harvestMaterials.add(Material.CIRCUITS);
 	}
 }

@@ -5,8 +5,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class DarkAxe extends PEToolBase
 {
@@ -15,10 +21,10 @@ public class DarkAxe extends PEToolBase
 		super("dm_axe", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "axe";
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
+		this.toolClasses.add("axe");
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.VINE);
 	}
 
 	// Only for RedAxe
@@ -27,19 +33,23 @@ public class DarkAxe extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 	
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		clearOdAOE(world, stack, player, "logWood", 0);
-		clearOdAOE(world, stack, player, "treeLeaves", 0);
-		return stack;
+		clearOdAOE(world, stack, player, "logWood", 0, hand);
+		clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
+	@Nonnull
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Tool modifier", this instanceof RedAxe ? 9 : 8, 0));
+		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedAxe ? 9 : 8, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
 		return multimap;
 	}
 }

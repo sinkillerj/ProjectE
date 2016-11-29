@@ -1,15 +1,20 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class ItemCharge extends ItemPE implements IItemCharge
 {
-	byte numCharges;
+	final byte numCharges;
 
 	public ItemCharge(String unlocalName, byte numCharges)
 	{
@@ -29,7 +34,6 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		byte charge = getCharge(stack);
 		
-		//Must be beetween 0.0D - 1.0D
 		return charge == 0 ? 1.0D : 1.0D - (double) charge / (double) (numCharges);
 	}
 	
@@ -38,7 +42,7 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!world.isRemote)
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
@@ -47,18 +51,18 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	{
 		if (!stack.hasTagCompound())
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 	
 	@Override
-	public byte getCharge(ItemStack stack)
+	public byte getCharge(@Nonnull ItemStack stack)
 	{
-		return stack.stackTagCompound.getByte("Charge");
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Charge") : 0;
 	}
 	
 	@Override
-	public void changeCharge(EntityPlayer player, ItemStack stack)
+	public boolean changeCharge(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		byte currentCharge = getCharge(stack);
 
@@ -66,14 +70,18 @@ public class ItemCharge extends ItemPE implements IItemCharge
 		{
 			if (currentCharge > 0)
 			{
-				player.worldObj.playSoundAtEntity(player, "projecte:item.peuncharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-				stack.stackTagCompound.setByte("Charge", (byte) (currentCharge - 1));
+				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
+				stack.getTagCompound().setByte("Charge", (byte) (currentCharge - 1));
+				return true;
 			}
 		}
 		else if (currentCharge < numCharges)
 		{
-			player.worldObj.playSoundAtEntity(player, "projecte:item.pecharge", 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-			stack.stackTagCompound.setByte("Charge", (byte) (currentCharge + 1));
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
+			stack.getTagCompound().setByte("Charge", (byte) (currentCharge + 1));
+			return true;
 		}
+
+		return false;
 	}
 }

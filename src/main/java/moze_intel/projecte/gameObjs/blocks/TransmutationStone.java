@@ -1,100 +1,67 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class TransmutationStone extends Block
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icon;
-	
+	private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.25, 1);
+
 	public TransmutationStone() 
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("pe_transmutation_stone");
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
+		this.setUnlocalizedName("pe_transmutation_stone");
 		this.setHardness(10.0f);
+	}
+
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return AABB;
 	}
 	
 	@Override
-	public Item getItemDropped(int par1, Random random, int par2)
+	public Item getItemDropped(IBlockState state, Random random, int par2)
 	{
 		return Item.getItemFromBlock(ObjHandler.transmuteStone);
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, x, y, z);
+			player.openGui(PECore.instance, Constants.TRANSMUTE_STONE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
 	
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entLiving, ItemStack stack)
-	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
-			stack.stackTagCompound.setInteger("x", x);
-			stack.stackTagCompound.setInteger("y", y);
-			stack.stackTagCompound.setInteger("z", z);
-			
-			tile.readFromNBT(stack.stackTagCompound);
-		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if (side < 2)
-		{
-			return icon[side];
-		}
-		return icon[2];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		icon = new IIcon[3];
-		icon[0] = register.registerIcon("projecte:transmutation_stone/bottom");
-		icon[1] = register.registerIcon("projecte:transmutation_stone/top");
-		icon[2] = register.registerIcon("projecte:transmutation_stone/side");
-	}
-
 }

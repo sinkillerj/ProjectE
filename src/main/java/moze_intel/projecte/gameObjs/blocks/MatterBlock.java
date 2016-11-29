@@ -1,40 +1,44 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MatterBlock extends Block
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon dmIcon;
-	@SideOnly(Side.CLIENT)
-	private IIcon rmIcon;
 	
 	public MatterBlock() 
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setBlockName("pe_matter_block");
+		this.setDefaultState(this.blockState.getBaseState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.DARK_MATTER));
+		this.setUnlocalizedName("pe_matter_block");
+		this.setHardness(1000000F);
 	}
-	
+
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		if (meta == 0) 
+		EnumMatterType type = state.getValue(PEStateProps.TIER_PROP);
+
+		if (type == EnumMatterType.DARK_MATTER)
 		{
 			return 1000000.0F;
 		}
@@ -45,19 +49,20 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(EntityPlayer player, int meta)
+	public boolean canHarvestBlock(IBlockAccess world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
 	{
-		ItemStack stack = player.getHeldItem();
-		
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+		EnumMatterType type = world.getBlockState(pos).getValue(PEStateProps.TIER_PROP);
+
 		if (stack != null)
 		{
-			if (meta == 1)
+			if (type == EnumMatterType.RED_MATTER)
 			{
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar || stack.getItem() == ObjHandler.rmHammer;
 			}
 			else
 			{
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar;
+				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar || stack.getItem() == ObjHandler.dmHammer || stack.getItem() == ObjHandler.rmHammer;
 			}
 		}
 		
@@ -65,38 +70,39 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public int damageDropped(int meta)
+	public int damageDropped(IBlockState state)
 	{
-		return meta;
+		return this.getMetaFromState(state);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(PEStateProps.TIER_PROP).ordinal();
+	}
+
+	@Nonnull
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return getDefaultState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.values()[meta]);
+	}
+
+	@Nonnull
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new BlockStateContainer(this, PEStateProps.TIER_PROP);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item matterBlock, CreativeTabs cTab, List list)
+	public void getSubBlocks(@Nonnull Item matterBlock, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
 			list.add(new ItemStack(matterBlock , 1, i));
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		dmIcon = register.registerIcon("projecte:dm");
-		rmIcon = register.registerIcon("projecte:rm");
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if (meta == 0) 
-		{
-			return dmIcon;
-		}
-		else return rmIcon;
-	}
-	
+
 }

@@ -1,20 +1,66 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+
+import javax.annotation.Nonnull;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private static final int LOCK_SLOT = 0;
-	private static final int INPUT_SLOTS_LOWER = 1;
-	private static final int INPUT_SLOTS_UPPER = 42;
-	private static final int OUTPUT_SLOTS_LOWER = 43;
-	private static final int OUTPUT_SLOTS_UPPER = 84;
-
-	public CondenserMK2Tile()
+	private final IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
 	{
-		this.inventory = new ItemStack[85];
-		this.loadChecks = false;
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
+		}
+	};
+	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
+	private final CombinedInvWrapper joined = new CombinedInvWrapper(automationInput, automationOutput);
+
+	@Nonnull
+	@Override
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	{
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			if (side == null)
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
+			}
+			else if (side == EnumFacing.DOWN)
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
+			}
+			else
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+			}
+		}
+
+		return super.getCapability(cap, side);
+	}
+
+	@Override
+	protected ItemStackHandler createInput()
+	{
+		return new StackHandler(42);
+	}
+
+	@Override
+	protected ItemStackHandler createOutput()
+	{
+		return new StackHandler(42);
 	}
 
 	@Override
@@ -28,9 +74,9 @@ public class CondenserMK2Tile extends CondenserTile
 
 		if (this.hasSpace())
 		{
-			for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
+			for (int i = 0; i < getInput().getSlots(); i++)
 			{
-				ItemStack stack = inventory[i];
+				ItemStack stack = getInput().getStackInSlot(i);
 
 				if (stack == null)
 				{
@@ -38,68 +84,25 @@ public class CondenserMK2Tile extends CondenserTile
 				}
 
 				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-				inventory[i] = null;
+				getInput().setStackInSlot(i, null);
 				break;
 			}
 		}
 	}
 
 	@Override
-	protected boolean hasSpace()
+	public void readFromNBT(NBTTagCompound nbt)
 	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
-
-			if (stack == null)
-			{
-				return true;
-			}
-
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return true;
-			}
-		}
-
-		return false;
+		super.readFromNBT(nbt);
+		getOutput().deserializeNBT(nbt.getCompoundTag("Output"));
 	}
 
+	@Nonnull
 	@Override
-	protected int getSlotForStack()
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
-
-			if (stack == null)
-			{
-				return i;
-			}
-
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return i;
-			}
-		}
-
-		return 0;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack)
-	{
-		if (slot == LOCK_SLOT || slot >= OUTPUT_SLOTS_LOWER)
-		{
-			return false;
-		}
-
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
-	}
-
-	@Override
-	public String getInventoryName()
-	{
-		return "tile.pe_condenser_mk2.name";
+		nbt = super.writeToNBT(nbt);
+		nbt.setTag("Output", getOutput().serializeNBT());
+		return nbt;
 	}
 }

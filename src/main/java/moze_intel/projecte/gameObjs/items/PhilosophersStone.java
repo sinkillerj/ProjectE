@@ -1,221 +1,96 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Set;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
 	public PhilosophersStone()
 	{
 		super("philosophers_stone", (byte)4, new String[] {
-				StatCollector.translateToLocal("pe.philstone.mode1"),
-				StatCollector.translateToLocal("pe.philstone.mode2"),
-				StatCollector.translateToLocal("pe.philstone.mode3")});
+				"pe.philstone.mode1",
+				"pe.philstone.mode2",
+				"pe.philstone.mode3"});
 		this.setContainerItem(this);
 		this.setNoRepair();
 	}
-	
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
+
+	public RayTraceResult getHitBlock(EntityPlayer player)
 	{
-		return false;
+		return rayTrace(player.getEntityWorld(), player, player.isSneaking());
 	}
 
+	@Nonnull
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ, int sideHit, float px, float py, float pz)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float px, float py, float pz)
 	{
 		if (world.isRemote)
 		{
-			return false;
+			return EnumActionResult.SUCCESS;
 		}
 
-		MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
+		RayTraceResult rtr = getHitBlock(player);
 
-		MetaBlock result = WorldTransmutations.getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
+		if (rtr.getBlockPos() != null && !rtr.getBlockPos().equals(pos))
+		{
+			pos = rtr.getBlockPos();
+			sideHit = rtr.sideHit;
+		}
+
+		IBlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
 
 		if (result != null)
 		{
-			Coordinates pos = new Coordinates(blockX, blockY,blockZ);
 			int mode = this.getMode(stack);
-			int charge = this.getCharge(stack);			
-			ForgeDirection direction = ForgeDirection.getOrientation(sideHit);
-			
-			if (mode == 0)
-			{
-				doWorldTransmutation(world, mBlock, result, pos, 0, 0, charge, player);
-			}
-			else if (mode == 1)
-			{
-				getAxisOrientedPanel(direction, charge, mBlock, result, pos, world, player);
-			}
-			else 
-			{
-				getAxisOrientedLine(direction, charge, mBlock, result, pos, world, player);
-			}
+			int charge = this.getCharge(stack);
 
-			world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-
-			PlayerHelper.swingItem(player);
-		}
-		
-		return true;
-	}
-	
-	private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
-	{
-		int side;
-		
-		if (direction.offsetY != 0)
-		{
-			side = 0;
-		}
-		else if (direction.offsetX != 0)
-		{
-			side = 1;
-		}
-		else
-		{
-			side = 2;
-		}
-		
-		doWorldTransmutation(world, pointed, result, coords, 1, side, charge, player);
-	}
-	
-	private void getAxisOrientedLine(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result, Coordinates coords, World world, EntityPlayer player)
-	{
-		int side;
-		
-		if (direction.offsetX != 0)
-		{
-			side = 0;
-		}
-		else if (direction.offsetZ != 0)
-		{
-			side = 1;
-		}
-		else
-		{
-			String dir = Direction.directions[MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
-			
-			if (dir.equals("NORTH") || dir.equals("SOUTH"))
+			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
-				side = 0;
-			}
-			else
-			{
-				side = 1;
-			}
-		}
-		
-		doWorldTransmutation(world, pointed, result, coords, 2, side, charge, player);
-	}
-	
-	/**
-	 * type 0 = cube, type 1 = panel, type 2 = line
-	 */
-	private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type, int side, int charge, EntityPlayer player)
-	{
-		if (type == 0)
-		{
-			for (int i = coords.x - charge; i <= coords.x + charge; i++)
-				for (int j = coords.y - charge; j <= coords.y + charge; j++)
-					for (int k = coords.z - charge; k <= coords.z + charge; k++)
-					{
-						changeBlock(world, pointed, result, i, j, k, player);
-					}
-		}
-		else if (type == 1)
-		{
-			if (side == 0)
-			{
-				for (int i = coords.x - charge; i <= coords.x + charge; i++)
-					for (int j = coords.z - charge; j <= coords.z + charge; j++)
-					{
-						changeBlock(world, pointed, result, i, coords.y, j, player);
-					}
-			}
-			else if (side == 1)
-			{
-				for (int i = coords.y - charge; i <= coords.y + charge; i++)
-					for (int j = coords.z - charge; j <= coords.z + charge; j++)
-					{
-						changeBlock(world, pointed, result, coords.x, i, j, player);
-					}
-			}
-			else
-			{
-				for (int i = coords.x - charge; i <= coords.x + charge; i++)
-					for (int j = coords.y - charge; j <= coords.y + charge; j++)
-					{
-						changeBlock(world, pointed, result, i, j, coords.z, player);
-					}
-			}
-		}
-		else
-		{
-			if (side == 0)
-			{
-				for (int i = coords.z - charge; i <= coords.z + charge; i++)
+				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
+				if (world.rand.nextInt(8) == 0)
 				{
-					changeBlock(world, pointed, result, coords.x, coords.y, i, player);
+					((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0, new int[0]);
 				}
 			}
-			else 
-			{
-				for (int i = coords.x - charge; i <= coords.x + charge; i++)
-				{
-					changeBlock(world, pointed, result, i, coords.y, coords.z, player);
-				}
-			}
-		}
-	}
-	
-	private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z, EntityPlayer player)
-	{
-		MetaBlock block = new MetaBlock(world, x, y, z);
 
-		if (block.equals(pointed))
-		{
-			PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
-			if (world.rand.nextInt(8) == 0)
-			{
-				PacketHandler.sendToAllAround(new ParticlePKT("largesmoke", x, y + 1, z), new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
-			}
+			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+
+			PlayerHelper.swingItem(player, hand);
 		}
+		
+		return EnumActionResult.SUCCESS;
 	}
-	
+
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
 	{
@@ -228,34 +103,83 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 	
 	@Override
-	public boolean shootProjectile(EntityPlayer player, ItemStack stack) 
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		World world = player.worldObj;
-		world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
-		world.spawnEntityInWorld(new EntityMobRandomizer(world, player));
+		World world = player.getEntityWorld();
+		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		EntityMobRandomizer ent = new EntityMobRandomizer(world, player);
+		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		world.spawnEntityInWorld(ent);
 		return true;
 	}
 	
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player) 
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		if (!player.worldObj.isRemote)
+		if (!player.getEntityWorld().isRemote)
 		{
-			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
+
+		return true;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
-		list.add(String.format(StatCollector.translateToLocal("pe.philstone.tooltip1"), ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+		list.add(I18n.format("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+
+	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, EntityPlayer player, EnumFacing sideHit, int mode, int charge)
 	{
-		this.itemIcon = register.registerIcon(this.getTexture("philosophers_stone"));
+		Set<BlockPos> ret = Sets.newHashSet();
+		IBlockState targeted = world.getBlockState(pos);
+		Iterable<BlockPos> iterable = null;
+
+		switch (mode)
+		{
+			case 0: // Cube
+				iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
+				break;
+			case 1: // Panel
+				if (sideHit == EnumFacing.UP || sideHit == EnumFacing.DOWN)
+				{
+					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
+				}
+				else if (sideHit == EnumFacing.EAST || sideHit == EnumFacing.WEST)
+				{
+					iterable = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
+				}
+				else if (sideHit == EnumFacing.SOUTH || sideHit == EnumFacing.NORTH)
+				{
+					iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
+				}
+				break;
+			case 2: // Line
+				EnumFacing playerFacing = player.getHorizontalFacing();
+
+				if (playerFacing.getAxis() == EnumFacing.Axis.Z)
+				{
+					iterable = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
+				}
+				else if (playerFacing.getAxis() == EnumFacing.Axis.X)
+				{
+					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
+				}
+				break;
+		}
+
+		if (iterable != null) {
+			for (BlockPos currentPos : iterable)
+            {
+                if (world.getBlockState(currentPos) == targeted)
+                {
+                    ret.add(currentPos);
+                }
+            }
+		}
+
+		return ret;
 	}
 }

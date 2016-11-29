@@ -1,46 +1,25 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class NBTWhitelist
 {
-	private static final List<SimpleStack> LIST = Lists.newArrayList();
+	private static final Set<SimpleStack> STACKS = new HashSet<>();
 
 	public static boolean register(ItemStack stack)
 	{
 		SimpleStack s = new SimpleStack(stack);
-
-		if (!s.isValid())
-		{
-			return false;
-		}
-
-		s.qnty = 1;
-		s.damage = OreDictionary.WILDCARD_VALUE;
-
-		if (!LIST.contains(s))
-		{
-			LIST.add(s);
-			return true;
-		}
-
-		return false;
+		return s.isValid() && STACKS.add(s.withMeta(OreDictionary.WILDCARD_VALUE));
 	}
 
 	public static boolean shouldDupeWithNBT(ItemStack stack)
 	{
 		SimpleStack s = new SimpleStack(stack);
-
-		if (!s.isValid())
-		{
-			return false;
-		}
-
-		return LIST.contains(s);
+		return s.isValid() && STACKS.contains(s);
 	}
 }

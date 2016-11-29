@@ -7,6 +7,6 @@ public class RedHoe extends DarkHoe
 		super("rm_hoe", (byte)3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "hoe";
+		this.toolClasses.add("hoe");
 	}
 }

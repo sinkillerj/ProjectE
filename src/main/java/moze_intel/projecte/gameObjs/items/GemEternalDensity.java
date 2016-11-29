@@ -16,14 +16,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,20 +24,28 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon gemOff;
-	@SideOnly(Side.CLIENT)
-	private IIcon gemOn;
-	
 	public GemEternalDensity()
 	{
 		this.setUnlocalizedName("gem_density");
@@ -64,13 +65,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			return;
 		}
 		
-		condense(stack, ((EntityPlayer) entity).inventory.mainInventory);
+		condense(stack, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP));
 	}
 
 	/**
 	 * @return Whether the inventory was changed
 	 */
-	public static boolean condense(ItemStack gem, ItemStack[] inv)
+	private static boolean condense(ItemStack gem, IItemHandler inv)
 	{
 		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
@@ -83,28 +84,23 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		ItemStack target = getTarget(gem);
 		
-		for (int i = 0; i < inv.length; i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
-			ItemStack s = inv[i];
+			ItemStack s = inv.getStackInSlot(i);
 			
-			if (s == null || !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1 || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target))
+			if (s == null
+					|| !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1
+					|| EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)
+					|| inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, true) == null)
 			{
 				continue;
 			}
-			
+
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
-				ItemStack copy = s.copy();
-				copy.stackSize = s.stackSize == 1 ? 1 : s.stackSize / 2;
+				ItemStack copy = inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, false);
 
 				addToList(gem, copy);
-				
-				s.stackSize -= copy.stackSize;
-				
-				if (s.stackSize <= 0)
-				{
-					inv[i] = null;
-				}
 				
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
 				hasChanged = true;
@@ -121,7 +117,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		while (getEmc(gem) >= value)
 		{
-			ItemStack remain = ItemHelper.pushStackInInv(inv, ItemStack.copyItemStack(target));
+			ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, ItemStack.copyItemStack(target), false);
 
 			if (remain != null)
 			{
@@ -129,15 +125,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, Lists.<ItemStack>newArrayList());
+			setItems(gem, Lists.newArrayList());
 			hasChanged = true;
 		}
 
 		return hasChanged;
 	}
 	
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
@@ -164,16 +161,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+				player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 			}
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	private String getTargetName(ItemStack stack)
 	{
-		switch(stack.stackTagCompound.getByte("Target"))
+		switch(stack.getTagCompound().getByte("Target"))
 		{
 			case 0:
 				return "item.ingotIron.name";
@@ -192,20 +189,20 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	private static ItemStack getTarget(ItemStack stack)
 	{
-		switch (stack.stackTagCompound.getByte("Target"))
+		switch (stack.getTagCompound().getByte("Target"))
 		{
 			case 0:
-				return new ItemStack(Items.iron_ingot);
+				return new ItemStack(Items.IRON_INGOT);
 			case 1:
-				return new ItemStack(Items.gold_ingot);
+				return new ItemStack(Items.GOLD_INGOT);
 			case 2:
-				return new ItemStack(Items.diamond);
+				return new ItemStack(Items.DIAMOND);
 			case 3:
 				return new ItemStack(ObjHandler.matter, 1, 0);
 			case 4:
 				return new ItemStack(ObjHandler.matter, 1, 1);
 			default:
-				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.stackTagCompound.getByte("Target"));
+				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.getTagCompound().getByte("Target"));
 				return null;
 		}
 	}
@@ -221,13 +218,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			tList.appendTag(nbt);
 		}
 		
-		stack.stackTagCompound.setTag("Consumed", tList);
+		stack.getTagCompound().setTag("Consumed", tList);
 	}
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
 		List<ItemStack> list = Lists.newArrayList();
-		NBTTagList tList = stack.stackTagCompound.getTagList("Consumed", NBT.TAG_COMPOUND);
+		NBTTagList tList = stack.getTagCompound().getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
 		{
@@ -278,13 +275,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	private static boolean isWhitelistMode(ItemStack stack)
 	{
-		return stack.stackTagCompound.getBoolean("Whitelist");
+		return stack.getTagCompound().getBoolean("Whitelist");
 	}
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
 		List<ItemStack> result = Lists.newArrayList();
-		NBTTagList list = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList list = stack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
@@ -308,61 +305,42 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public byte getMode(ItemStack stack)
+	public byte getMode(@Nonnull ItemStack stack)
 	{
-		if (stack.hasTagCompound())
-		{
-			return stack.stackTagCompound.getByte("Target");
-		}
-
-		return 0;
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Target") : 0;
 	}
 
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		byte oldMode = getMode(stack);
 
 		if (oldMode == 4)
 		{
-			stack.stackTagCompound.setByte("Target", (byte) 0);
+			stack.getTagCompound().setByte("Target", (byte) 0);
 		}
 		else
 		{
-			stack.stackTagCompound.setByte("Target", (byte) (oldMode + 1));
+			stack.getTagCompound().setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new ChatComponentTranslation(getTargetName(stack))));
+		player.addChatComponentMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
+		return true;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) 
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
 	{
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip1"));
+		list.add(I18n.format("pe.gemdensity.tooltip1"));
 		
 		if (stack.hasTagCompound())
 		{
-			list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip2"), StatCollector.translateToLocal(getTargetName(stack))));
+			list.add(I18n.format("pe.gemdensity.tooltip2", I18n.format(getTargetName(stack))));
 		}
-		list.add(String.format(StatCollector.translateToLocal("pe.gemdensity.tooltip3"), ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
-		list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? gemOff : gemOn;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		gemOn = register.registerIcon(this.getTexture("dense_gem_on"));
-		gemOff = register.registerIcon(this.getTexture("dense_gem_off"));
+		list.add(I18n.format("pe.gemdensity.tooltip3", ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		list.add(I18n.format("pe.gemdensity.tooltip4"));
+		list.add(I18n.format("pe.gemdensity.tooltip5"));
 	}
 	
 	@Override
@@ -376,7 +354,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -402,19 +380,19 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(World world, int x, int y, int z, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
 		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
-			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(x, y, z));
-			condense(stack, tile.getBackingInventoryArray());
+			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
+			condense(stack, tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 			tile.markDirty();
 		}
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		return !player.worldObj.isRemote && condense(stack, inv);
+		return !player.getEntityWorld().isRemote && condense(stack, inv);
 	}
 }

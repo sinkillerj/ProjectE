@@ -2,39 +2,43 @@ package moze_intel.projecte.network.commands;
 
 import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
 	public static final List<String> changelog = Lists.newArrayList();
 	
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_changelog";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "/projecte changelog";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new ChatComponentTranslation("pe.command.changelog.uptodate"));
+			sender.addChatMessage(new TextComponentTranslation("pe.command.changelog.uptodate"));
 		}
 		else
 		{
 			for (String s: ChangelogCMD.changelog)
 			{
-				sender.addChatMessage(new ChatComponentText(s));
+				sender.addChatMessage(new TextComponentString(s));
 			}
 		}
 	}
@@ -46,7 +50,7 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
 	{
 		return true;
 	}

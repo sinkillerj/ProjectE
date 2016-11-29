@@ -2,20 +2,19 @@ package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -36,14 +35,7 @@ public class ManualPageHandler
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager)
         {
-            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener()
-            {
-                @Override
-                public void onResourceManagerReload(IResourceManager p_110549_1_)
-                {
-                    ManualPageHandler.reset();
-                }
-            });
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(resourceManager1 -> ManualPageHandler.reset());
         }
 
         reset();
@@ -62,7 +54,7 @@ public class ManualPageHandler
     {
         for (PageCategory e : PageCategory.values())
         {
-            categoryMap.put(e, Lists.<AbstractPage>newArrayList());
+            categoryMap.put(e, Lists.newArrayList());
         }
 
         addTextPage("introduction", PageCategory.NONE);
@@ -157,7 +149,7 @@ public class ManualPageHandler
 
         for (List<AbstractPage> categoryPages : categoryMap.values())
         {
-            Collections.sort(categoryPages, Comparators.PAGE_HEADER);
+            Collections.sort(categoryPages, (o1, o2) -> I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText())));
             for (AbstractPage page : categoryPages)
             {
                 pages.add(page);

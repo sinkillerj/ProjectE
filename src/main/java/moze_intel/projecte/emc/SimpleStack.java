@@ -2,18 +2,19 @@ package moze_intel.projecte.emc;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Objects;
 
 public class SimpleStack
 {
-	public int id;
-	public int damage;
-	public int qnty;
+	public final ResourceLocation id;
+	public final int damage;
 
-	public SimpleStack(int id, int qnty, int damage)
+	public SimpleStack(ResourceLocation id, int damage)
 	{
 		this.id = id;
-		this.qnty = qnty;
 		this.damage = damage;
 	}
 	
@@ -21,45 +22,48 @@ public class SimpleStack
 	{
 		if (stack == null)
 		{
-			id = -1;
+			id = new ResourceLocation("minecraft", "air");
+			damage = 0;
 		}
 		else
 		{
-			id = Item.itemRegistry.getIDForObject(stack.getItem());
+			id = stack.getItem().getRegistryName();
 			damage = stack.getItemDamage();
-			qnty = stack.stackSize;
 		}
+	}
+
+	public SimpleStack withMeta(int meta)
+	{
+		return new SimpleStack(id, meta);
 	}
 
 	public boolean isValid()
 	{
-		return id != -1;
+		return !id.equals(new ResourceLocation("minecraft", "air"));
 	}
 
 	public ItemStack toItemStack()
 	{
 		if (isValid())
 		{
-			Item item = Item.getItemById(id);
+			Item item = Item.REGISTRY.getObject(id);
 
 			if (item != null)
 			{
-				return new ItemStack(Item.getItemById(id), qnty, damage);
+				return new ItemStack(item, 1, damage);
 			}
 		}
 
 		return null;
 	}
 
-	public SimpleStack copy()
-	{
-		return new SimpleStack(id, qnty, damage);
-	}
-
 	@Override
 	public int hashCode() 
 	{
-		return id;
+		int hash = 31 * id.hashCode();
+		if (this.damage == OreDictionary.WILDCARD_VALUE)
+			hash = hash * 57 ^ this.damage;
+		return hash;
 	}
 	
 	@Override
@@ -71,12 +75,10 @@ public class SimpleStack
 			 
 			if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
 			{
-				//return this.id == other.id;
-				return this.qnty == other.qnty && this.id == other.id;
+				return Objects.equals(this.id, other.id);
 			}
 
-			//return this.id == other.id && this.damage == other.damage;
-			return this.id == other.id && this.qnty == other.qnty && this.damage == other.damage;
+			return Objects.equals(this.id, other.id) && this.damage == other.damage;
 		}
 		
 		return false;
@@ -85,13 +87,13 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		Object obj = Item.itemRegistry.getObjectById(id);
+		Item obj = Item.REGISTRY.getObject(id);
 		
 		if (obj != null)
 		{
-			return Item.itemRegistry.getNameForObject(obj) + " " + qnty + " " + damage;
+			return id + " " + damage;
 		}
 		
-		return "id:" + id + " damage:" + damage + " qnty:" + qnty;
+		return "id:" + id + " damage:" + damage;
 	}
 }

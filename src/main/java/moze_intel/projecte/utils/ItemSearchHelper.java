@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import cpw.mods.fml.common.Loader;
-
 import net.minecraft.item.ItemStack;
 
 import java.util.Locale;
@@ -9,11 +7,7 @@ import java.util.Locale;
 public abstract class ItemSearchHelper
 {
 	public static ItemSearchHelper create(String searchString) {
-		if (Loader.isModLoaded("NotEnoughItems")) {
-			return new ItemSearchHelperNEI(searchString);
-		} else {
-			return new DefaultSearch(searchString);
-		}
+		return new DefaultSearch(searchString);
 	}
 
 	public final String searchString;

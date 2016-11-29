@@ -1,34 +1,43 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class DarkPick extends PEToolBase
 {
 	public DarkPick()
 	{
 		super("dm_pick", (byte)2, new String[] {
-				StatCollector.translateToLocal("pe.darkpick.mode1"), StatCollector.translateToLocal("pe.darkpick.mode2"),
-				StatCollector.translateToLocal("pe.darkpick.mode3"), StatCollector.translateToLocal("pe.darkpick.mode4")});
+				"pe.darkpick.mode1", "pe.darkpick.mode2",
+				"pe.darkpick.mode3", "pe.darkpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "pickaxe";
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.toolClasses.add("pickaxe");
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 	}
 
 	// Only for RedPick
@@ -37,50 +46,53 @@ public class DarkPick extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
 		if (ProjectEConfig.pickaxeAoeVeinMining)
 		{
-			mineOreVeinsInAOE(stack, player);
+			mineOreVeinsInAOE(stack, player, hand);
 		}
 		else
 		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			RayTraceResult mop = this.rayTrace(world, player, false);
+			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
-				Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-				if (ItemHelper.isOre(b, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ)))
+				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
 				{
 					tryVeinMine(stack, player, mop);
 				}
 			}
 		}
 
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, x, y, z, eLiving);
+		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
-		if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn)
+		Block block = state.getBlock();
+		if (block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER
+				|| block == ObjHandler.dmFurnaceOff
+				|| block == ObjHandler.dmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata);
+		return super.getStrVsBlock(stack, state);
 	}
 	
 	@Override
@@ -94,11 +106,14 @@ public class DarkPick extends PEToolBase
 		}
 	}
 
+	@Nonnull
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
+		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.8, 0));
 		return multimap;
 	}
 }

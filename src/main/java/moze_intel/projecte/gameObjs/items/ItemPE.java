@@ -2,42 +2,52 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class ItemPE extends Item
+import javax.annotation.Nonnull;
+
+public class ItemPE extends Item
 {
 	public ItemPE()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 
+	@Nonnull
 	@Override
-	public Item setUnlocalizedName(String message)
+	public Item setUnlocalizedName(@Nonnull String message)
 	{
 		return super.setUnlocalizedName("pe_" + message);
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
+	{
+		return !ItemHelper.basicAreStacksEqual(oldStack, newStack);
+	}
+
 	public static double getEmc(ItemStack stack)
 	{
-		if (stack.stackTagCompound == null)
+		if (stack.getTagCompound() == null)
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		return stack.stackTagCompound.getDouble("StoredEMC");
+		return stack.getTagCompound().getDouble("StoredEMC");
 	}
 	
 	public static void setEmc(ItemStack stack, double amount)
 	{
-		if (stack.stackTagCompound == null)
+		if (stack.getTagCompound() == null)
 		{
-			stack.stackTagCompound = new NBTTagCompound();
+			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setDouble("StoredEMC", amount);
+		stack.getTagCompound().setDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmcToStack(ItemStack stack, double amount)
@@ -86,13 +96,4 @@ public abstract class ItemPE extends Item
 		return true;
 	}
 	
-	public String getTexture(String name)
-	{
-		return ("projecte:" + name);
-	}
-	
-	public String getTexture(String folder, String name)
-	{
-		return ("projecte:" + folder + "/" + name);
-	}
 }

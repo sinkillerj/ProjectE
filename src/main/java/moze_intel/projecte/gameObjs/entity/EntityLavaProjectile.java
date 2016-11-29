@@ -8,11 +8,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class EntityLavaProjectile extends PEProjectile
 {
@@ -36,9 +38,9 @@ public class EntityLavaProjectile extends PEProjectile
 	{
 		super.onUpdate();
 		
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
-			if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 				return;
@@ -47,27 +49,24 @@ public class EntityLavaProjectile extends PEProjectile
 			if (getThrower() instanceof EntityPlayerMP)
 			{
 				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
-				for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
-					for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
-						for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
-						{
-							Block block = this.worldObj.getBlock(x, y, z);
+				for (BlockPos pos : BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+                {
+                    Block block = this.getEntityWorld().getBlockState(pos).getBlock();
 
-							if (block == Blocks.water || block == Blocks.flowing_water)
-							{
-								if (PlayerHelper.hasBreakPermission(player, x, y, z))
-								{
-									this.worldObj.setBlockToAir(x, y, z);
-									this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-								}
-							}
-						}
-
+                    if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
+                    {
+                        if (PlayerHelper.hasBreakPermission(player, pos))
+                        {
+                            this.getEntityWorld().setBlockToAir(pos);
+                            this.getEntityWorld().playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
+                        }
+                    }
+                }
 			}
 
 			if (this.posY > 128)
 			{
-				WorldInfo worldInfo = this.worldObj.getWorldInfo();
+				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(false);
 				this.setDead();
 			}
@@ -75,9 +74,9 @@ public class EntityLavaProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			return;
 		}
@@ -87,8 +86,7 @@ public class EntityLavaProjectile extends PEProjectile
 			switch (mop.typeOfHit)
 			{
 				case BLOCK:
-					ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_lava, 0);
+					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.FLOWING_LAVA.getDefaultState());
 					break;
 				case ENTITY:
 					Entity ent = mop.entityHit;

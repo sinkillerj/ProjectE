@@ -6,11 +6,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class EntityWaterProjectile extends PEProjectile
 {
@@ -34,35 +35,36 @@ public class EntityWaterProjectile extends PEProjectile
 	{
 		super.onUpdate();
 
-		if (!this.worldObj.isRemote)
+		if (!this.getEntityWorld().isRemote)
 		{
-			if (ticksExisted > 400 || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ)))
+			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
 				this.setDead();
 				return;
 			}
 
-			if (getThrower() instanceof EntityPlayerMP)
-			{
+			if (getThrower() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = ((EntityPlayerMP) getThrower());
-				for (int x = (int) (this.posX - 3); x <= this.posX + 3; x++)
-					for (int y = (int) (this.posY - 3); y <= this.posY + 3; y++)
-						for (int z = (int) (this.posZ - 3); z <= this.posZ + 3; z++)
-						{
-							Block block = this.worldObj.getBlock(x, y, z);
 
-							if (block == Blocks.lava)
-							{
-								PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.obsidian, 0);
-								this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-							}
-							else if (block == Blocks.flowing_lava)
-							{
-								PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.cobblestone, 0);
-								this.worldObj.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "random.fizz", 0.5F, 2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
-							}
+				for (BlockPos pos : BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)))
+                {
+                    Block block = this.getEntityWorld().getBlockState(pos).getBlock();
 
-						}
+                    if (block == Blocks.LAVA)
+                    {
+                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.OBSIDIAN.getDefaultState());
+                    }
+                    else if (block == Blocks.FLOWING_LAVA)
+                    {
+                        PlayerHelper.checkedReplaceBlock(player, pos, Blocks.COBBLESTONE.getDefaultState());
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
+                }
 			}
 
 			if (this.isInWater())
@@ -72,7 +74,7 @@ public class EntityWaterProjectile extends PEProjectile
 			
 			if (this.posY > 128)
 			{
-				WorldInfo worldInfo = this.worldObj.getWorldInfo();
+				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
 				this.setDead();
 			}
@@ -80,22 +82,22 @@ public class EntityWaterProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
-		if (this.worldObj.isRemote)
+		if (this.getEntityWorld().isRemote)
 		{
 			return;
 		}
 
-		if (mop.typeOfHit == MovingObjectType.BLOCK)
+		if (mop.typeOfHit == Type.BLOCK)
 		{
-			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-			if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ))
+			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
+			if (worldObj.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ, Blocks.flowing_water, 0);
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.FLOWING_WATER.getDefaultState());
 			}
 		}
-		else if (mop.typeOfHit == MovingObjectType.ENTITY)
+		else if (mop.typeOfHit == Type.ENTITY)
 		{
 			Entity ent = mop.entityHit;
 

@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "fueltype": {
+      "alchemical_coal": { "textures": { "all": "projecte:blocks/fuels_0" } },
+      "mobius_fuel": { "textures": { "all": "projecte:blocks/fuels_1" } },
+      "aeternalis_fuel": { "textures": { "all": "projecte:blocks/fuels_2" } }
+    }
+  }
+}

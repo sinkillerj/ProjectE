@@ -1,13 +1,12 @@
 package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.CollectionHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public abstract class AbstractPage
 {
     protected final PageCategory category;
     protected AbstractPage parent = null;
-    protected List<AbstractPage> subPages = Lists.newArrayList();
+    protected final List<AbstractPage> subPages = Lists.newArrayList();
     private boolean indexed = true;
 
     protected AbstractPage(PageCategory category)
@@ -52,8 +51,8 @@ public abstract class AbstractPage
 
     public static AbstractPage createItemPage(ItemStack stack, PageCategory category)
     {
-        String body = StatCollector.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5));
-        List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
+        String body = I18n.format("pe.manual." + stack.getUnlocalizedName().substring(5));
+        List<List<String>> parts = Lists.partition(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new ItemPage(stack.copy(), category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)
         {
@@ -64,8 +63,8 @@ public abstract class AbstractPage
 
     public static AbstractPage createTextPages(String identifier, PageCategory category)
     {
-        String body = StatCollector.translateToLocal("pe.manual." + identifier);
-        List<List<String>> parts = CollectionHelper.splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
+        String body = I18n.format("pe.manual." + identifier);
+        List<List<String>> parts = Lists.partition(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new TextPage(identifier, category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)
         {

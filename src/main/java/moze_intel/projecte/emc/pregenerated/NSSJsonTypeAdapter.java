@@ -1,17 +1,13 @@
 package moze_intel.projecte.emc.pregenerated;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.PELogger;
-
-import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.item.Item;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 import java.io.IOException;
 
-public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
+class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 {
 
 	@Override

@@ -1,13 +1,12 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.PELogger;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,18 +22,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
-	private static List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
+	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
 
-	public static void addMelting(String odName, String fluidName, int amount) {
+	private static void addMelting(String odName, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.forOreDictionary(odName), fluidName, amount);
 	}
-	public static void addMelting(Item item, String fluidName, int amount) {
+
+	private static void addMelting(Item item, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.getFor(item), fluidName, amount);
 	}
-	public static void addMelting(Block block, String fluidName, int amount) {
+
+	private static void addMelting(Block block, String fluidName, int amount) {
 		addMelting(NormalizedSimpleStack.getFor(block), fluidName, amount);
 	}
-	public static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
+
+	private static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
 		Fluid fluid = FluidRegistry.getFluid(fluidName);
 		if (fluid != null) {
 			melting.add(Pair.of(stack, new FluidStack(fluid, amount)));
@@ -43,10 +45,10 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		}
 	}
 	static {
-		addMelting(Blocks.obsidian, "obisidan.molten", 288);
-		addMelting(Blocks.glass, "glass.molten", 1000);
-		addMelting(Blocks.glass_pane, "glass.molten", 250);
-		addMelting(Items.ender_pearl, "ender", 250);
+		addMelting(Blocks.OBSIDIAN, "obisidan.molten", 288);
+		addMelting(Blocks.GLASS, "glass.molten", 1000);
+		addMelting(Blocks.GLASS_PANE, "glass.molten", 250);
+		addMelting(Items.ENDER_PEARL, "ender", 250);
 
 		addMelting("ingotIron", "iron.molten", 144);
 		addMelting("ingotGold", "gold.molten", 144);
@@ -84,12 +86,12 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
+		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16);
-		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.milk_bucket), Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
+		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.MILK_BUCKET), Arrays.asList(NormalizedSimpleStack.getFor(Items.BUCKET), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {

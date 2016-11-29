@@ -1,10 +1,12 @@
 package moze_intel.projecte.gameObjs;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class CreativeTab extends CreativeTabs
 {
@@ -13,6 +15,7 @@ public class CreativeTab extends CreativeTabs
 		super(PECore.MODID);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem() 

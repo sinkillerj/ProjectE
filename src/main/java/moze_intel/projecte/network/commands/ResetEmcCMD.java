@@ -1,24 +1,29 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+
+import javax.annotation.Nonnull;
 
 public class ResetEmcCMD extends ProjectEBaseCMD
 {
+	@Nonnull
 	@Override
 	public String getCommandName() 
 	{
 		return "projecte_resetEMC";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getCommandUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.reset.usage";
 	}
@@ -30,22 +35,27 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
 		String name = "";
 		int meta = 0;
 
 		if (params.length == 0)
 		{
-			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem();
+			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
 
 			if (heldItem == null)
 			{
-				sendError(sender, new ChatComponentTranslation("pe.command.reset.usage"));
+				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
+			}
+
+			if (heldItem == null)
+			{
+				sendError(sender, new TextComponentTranslation("pe.command.reset.usage"));
 				return;
 			}
 
-			name = Item.itemRegistry.getNameForObject(heldItem.getItem());
+			name = Item.REGISTRY.getNameForObject(heldItem.getItem()).toString();
 			meta = heldItem.getItemDamage();
 		}
 		else
@@ -58,7 +68,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 				if (meta < 0)
 				{
-					sendError(sender, new ChatComponentTranslation("pe.command.reset.invalidmeta", params[1]));
+					sendError(sender, new TextComponentTranslation("pe.command.reset.invalidmeta", params[1]));
 					return;
 				}
 			}
@@ -66,12 +76,12 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			sender.addChatMessage(new ChatComponentTranslation("pe.command.reset.success", name));
-			sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.notice"));
+			sender.addChatMessage(new TextComponentTranslation("pe.command.reset.success", name));
+			sender.addChatMessage(new TextComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{
-			sendError(sender, new ChatComponentTranslation("pe.command.reset.nochange", name, meta));
+			sendError(sender, new TextComponentTranslation("pe.command.reset.nochange", name, meta));
 		}
 	}
 }

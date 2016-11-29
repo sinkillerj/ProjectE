@@ -8,11 +8,11 @@ import java.util.Map;
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A>
 {
 
-	A defaultArithmetic;
-	public AbstractMappingCollector(A defaultArithmetic) {
+	private final A defaultArithmetic;
+
+	AbstractMappingCollector(A defaultArithmetic) {
 		this.defaultArithmetic = defaultArithmetic;
 	}
-
 
 	public void addConversion(int outnumber, T output, Iterable<T> ingredients) {
 		addConversion(outnumber, output, listToMapOfCounts(ingredients));
@@ -22,7 +22,7 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 		addConversion(outnumber, output, listToMapOfCounts(ingredients), arithmeticForConversion);
 	}
 
-	protected Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
+	private Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
 		Map<T, Integer> map = new HashMap<>();
 		for (T ingredient : iterable) {
 			if (map.containsKey(ingredient)) {

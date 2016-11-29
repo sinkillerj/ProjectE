@@ -1,29 +1,31 @@
 package moze_intel.projecte.utils;
 
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * Utility class to get comparator outputs for a block
  */
 public final class ComparatorHelper
 {
-	public static int getForAlchChest(World world, int x, int y, int z)
+	public static int getForAlchChest(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((AlchChestTile) world.getTileEntity(x, y, z)));
+		return calcRedstoneFromInventory(world.getTileEntity(pos)
+				.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 	}
 
-	public static int getForCollector(World world, int x, int y, int z)
+	public static int getForCollector(World world, BlockPos pos)
 	{
-		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(x, y, z));
-		ItemStack charging = tile.getChargingItem();
+		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
+		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (charging != null)
 		{
 			if (charging.getItem() instanceof IItemEmc)
@@ -44,19 +46,49 @@ public final class ComparatorHelper
 		}
 	}
 
-	public static int getForCondenser(World world, int x, int y, int z)
+	public static int getForCondenser(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((CondenserTile) world.getTileEntity(x, y, z)));
+		return calcRedstoneFromInventory(world.getTileEntity(pos)
+				.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 	}
 
-	public static int getForMatterFurnace(World world, int x, int y, int z)
+	public static int getForMatterFurnace(World world, BlockPos pos)
 	{
-		return Container.calcRedstoneFromInventory(((RMFurnaceTile) world.getTileEntity(x, y, z)));
+		return calcRedstoneFromInventory(world.getTileEntity(pos)
+				.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 	}
 
-	public static int getForRelay(World world, int x, int y, int z)
+	public static int getForRelay(World world, BlockPos pos)
 	{
-		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(x, y, z));
+		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(pos));
 		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
+	}
+
+	// Copy of Container.calcRedstoneFromInventory for IItemHandler
+	private static int calcRedstoneFromInventory(IItemHandler handler)
+	{
+		if (handler == null)
+		{
+			return 0;
+		}
+		else
+		{
+			int i = 0;
+			float f = 0.0F;
+
+			for (int j = 0; j < handler.getSlots(); ++j)
+			{
+				ItemStack itemstack = handler.getStackInSlot(j);
+
+				if (itemstack != null)
+				{
+					f += (float)itemstack.stackSize / itemstack.getMaxStackSize(); // todo (float)Math.min(handler.getInventoryStackLimit(), itemstack.getMaxStackSize());
+					++i;
+				}
+			}
+
+			f = f / (float)handler.getSlots();
+			return MathHelper.floor_float(f * 14.0F) + (i > 0 ? 1 : 0);
+		}
 	}
 }

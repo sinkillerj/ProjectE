@@ -19,7 +19,7 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * @param output What is produced
 	 * @param ingredientsWithAmount What is consumed and how many of it
 	 */
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
+	void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount);
 
 	/**
 	 * Add a Conversion that produced {@code outnumber} items of {@code output} by consuming the {@code ingredients}. <br/>
@@ -28,7 +28,7 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * @param output What is produced
 	 * @param ingredients What is consumed
 	 */
-	public void addConversion(int outnumber, T output, Iterable<T> ingredients);
+	void addConversion(int outnumber, T output, Iterable<T> ingredients);
 
 	/**
 	 * Set a fixed {@code value} for {@code something} before the calculation happens.<br/>
@@ -38,7 +38,7 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * @param something The thing that should get the Value.
 	 * @param value The value. >= 0 or {@link IValueArithmetic#isFree(Comparable)}{@code == true}
 	 */
-	public void setValueBefore(T something, V value);
+	void setValueBefore(T something, V value);
 
 	/**
 	 * Set a fixed {@code value} for {@code something} after the calculation was done. This value will not be propagated.<br/>
@@ -47,11 +47,11 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * @param something The thing that should get the Value.
 	 * @param value The value. >= 0
 	 */
-	public void setValueAfter(T something, V value);
+	void setValueAfter(T something, V value);
 
-	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients);
+	void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients);
 
-	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
+	void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount);
 
-	public void finishCollection();
+	void finishCollection();
 }

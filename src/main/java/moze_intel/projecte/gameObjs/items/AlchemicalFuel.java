@@ -1,21 +1,18 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class AlchemicalFuel extends ItemPE
 {
 	private final String[] names = new String[] {"alchemical_coal", "mobius", "aeternalis"};
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
 	
 	public AlchemicalFuel()
 	{
@@ -24,6 +21,7 @@ public class AlchemicalFuel extends ItemPE
 		this.setMaxDamage(0);
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{	
@@ -36,24 +34,9 @@ public class AlchemicalFuel extends ItemPE
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs cTab, List list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
 	{
 		for (int i = 0; i < 3; ++i)
 			list.add(new ItemStack(item, 1, i));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1)
-	{
-		return icons[MathHelper.clamp_int(par1, 0, 2)];
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons = new IIcon[3];
-		for (int i = 0; i < 3; i++)
-			icons[i] = register.registerIcon(this.getTexture("fuels", names[i]));
 	}
 }

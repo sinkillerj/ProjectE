@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
 
 /**
@@ -10,19 +8,6 @@ import java.util.List;
  */
 public final class CollectionHelper
 {
-	/**
-	 * Splits list into length-long sublists.
-	 */
-	public static <T> List<List<T>> splitToLength(List<T> list, int length)
-	{
-		List<List<T>> parts = Lists.newArrayList();
-		for (int i = 0; i < list.size(); i += length)
-		{
-			parts.add(Lists.newArrayList(list.subList(i, Math.min(list.size(), i + length))));
-		}
-		return parts;
-	}
-
 	public static <T> T getRandomListEntry(List<T> list, T toExclude)
 	{
 		T obj;

@@ -34,14 +34,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 		return fixed;
 	}
 
-	Map<String, Integer> parseSetValueMapFromObject(JsonObject o, String key) {
-		if (o.has(key)) {
-			return parseSetValueMap(o.getAsJsonObject(key));
-		}
-		return Maps.newHashMap();
-	}
-
-	Map<String, Integer> parseSetValueMap(JsonObject o) {
+	private Map<String, Integer> parseSetValueMap(JsonObject o) {
 		Map<String, Integer> out = Maps.newHashMap();
 		for (Map.Entry<String, JsonElement> entry: o.entrySet()) {
 			JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();

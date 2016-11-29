@@ -3,38 +3,49 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class RedKatar extends PEToolBase implements IExtraFunction
 {
 	public RedKatar() 
 	{
 		super("rm_katar", (byte)4, new String[] {
-				StatCollector.translateToLocal("pe.katar.mode1"), StatCollector.translateToLocal("pe.katar.mode2"),
+				"pe.katar.mode1", "pe.katar.mode2",
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "katar";
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.web);
-		this.harvestMaterials.add(Material.cloth);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.leaves);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.WEB);
+		this.harvestMaterials.add(Material.CLOTH);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.LEAVES);
+		this.harvestMaterials.add(Material.VINE);
 
-		this.secondaryClasses.add("sword");
-		this.secondaryClasses.add("axe");
-		this.secondaryClasses.add("shears");
+		this.toolClasses.add("katar");
+		this.toolClasses.add("sword");
+		this.toolClasses.add("axe");
+		this.toolClasses.add("shears");
 	}
 
 	@Override
@@ -46,62 +57,73 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player)
 	{
 		// Shear
-		shearBlock(stack, x, y, z, player);
+		shearBlock(stack, pos, player);
 		return false;
 	}
 	
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+		RayTraceResult mop = this.rayTrace(world, player, false);
 		if (mop != null)
 		{
-			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			if (mop.typeOfHit == RayTraceResult.Type.BLOCK)
 			{
-				Block blockHit = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				IBlockState state = world.getBlockState(mop.getBlockPos());
+				Block blockHit = state.getBlock();
 				if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt)
 				{
 					// Hoe
-					tillAOE(stack, player, world, mop.blockX, mop.blockY, mop.blockZ, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ), 0);
+					tillAOE(stack, player, world, mop.getBlockPos(), mop.sideHit, 0);
 				}
 				else if (blockHit instanceof BlockLog)
 				{
 					// Axe
-					clearOdAOE(world, stack, player, "logWood", 0);
+					clearOdAOE(world, stack, player, "logWood", 0, hand);
 				}
 				else if (blockHit instanceof BlockLeaves) {
 					// Shear leaves
-					clearOdAOE(world, stack, player, "treeLeaves", 0);
+					clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
 				}
 			}
 		}
 		else
 		{
 			// Shear
-			shearEntityAOE(stack, player, 0);
+			shearEntityAOE(stack, player, 0, hand);
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0);
+		if (player.getCooledAttackStrength(0F) == 1)
+		{
+			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0, hand);
+			player.resetCooldown();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
-		return EnumAction.block;
+		return EnumAction.BLOCK;
 	}
 
 	@Override
@@ -110,19 +132,24 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		return 72000;
 	}
 
+	@Nonnull
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (slot != EntityEquipmentSlot.MAINHAND)
 		{
-			return super.getAttributeModifiers(stack);
+			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		if (!ProjectEConfig.useOldDamage)
+		{
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		}
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}
 

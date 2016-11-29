@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IngredientMap<T> {
-	protected HashMap<T, Integer> ingredientsWithAmount = Maps.newHashMap();
+	private final HashMap<T, Integer> ingredientsWithAmount = Maps.newHashMap();
 
 	public void addIngredient(T stackNorm, int amount) {
 		int count = amount;

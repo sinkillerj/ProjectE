@@ -2,18 +2,14 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 
-public class InterdictionTile extends TileEntity
+public class InterdictionTile extends TileEntity implements ITickable
 {
-	private AxisAlignedBB effectBounds = null;
-	
-	public void updateEntity()
+	@Override
+	public void update()
 	{
-		if (effectBounds == null)
-		{
-			effectBounds = AxisAlignedBB.getBoundingBox(xCoord - 8, yCoord - 8, zCoord - 8, xCoord + 8, yCoord + 8, zCoord + 8);
-		}
-		WorldHelper.repelEntitiesInAABBFromPoint(worldObj, effectBounds, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, false);
+		WorldHelper.repelEntitiesInAABBFromPoint(worldObj, new AxisAlignedBB(pos.add(-8, -8, -8), pos.add(8, 8, 8)), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, false);
 	}
 }

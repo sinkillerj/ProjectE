@@ -3,21 +3,28 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -50,19 +57,19 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				PlayerTimers.activateFeed(player);
-				PlayerTimers.activateHeal(player);
+				player.getCapability(InternalTimers.CAPABILITY, null).activateFeed();
+				player.getCapability(InternalTimers.CAPABILITY, null).activateHeal();
 
-				if (player.getHealth() < player.getMaxHealth() && PlayerTimers.canHeal(player))
+				if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
 				{
-					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 					player.heal(2.0F);
 					removeEmc(stack, 64);
 				}
 
-				if (player.getFoodStats().needFood() && PlayerTimers.canFeed(player))
+				if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
 				{
-					world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 					player.getFoodStats().addStats(2, 10);
 					removeEmc(stack, 64);
 				}
@@ -71,7 +78,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	}
 	
 	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
+	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		if (stack.getItemDamage() == 0)
 		{
@@ -88,6 +95,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		{
 			stack.setItemDamage(0);
 		}
+		return true;
 	}
 	
 	@Override
@@ -101,7 +109,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Optional.Method(modid = "Baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.worldObj, player, 0, false);
+		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -127,11 +135,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote && ProjectEConfig.lifePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
@@ -140,12 +148,12 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 				{
 					if (player.getHealth() < player.getMaxHealth())
 					{
-						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.heal(1.0F); // 1/2 heart
 					}
 					if (player.getFoodStats().needFood())
 					{
-						world.playSoundAtEntity(player, "projecte:item.peheal", 1.0F, 1.0F);
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
@@ -159,15 +167,16 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		}
 	}
 
+	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
 		if (ProjectEConfig.lifePedCooldown != -1)
 		{
-			list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.life.pedestal1"));
-			list.add(EnumChatFormatting.BLUE + String.format(
-					StatCollector.translateToLocal("pe.life.pedestal2"), MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal1"));
+			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
 		}
 		return list;
 	}

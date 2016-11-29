@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IExtraFunction;
@@ -9,25 +7,25 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon void_off;
-	@SideOnly(Side.CLIENT)
-	private IIcon void_on;
-
 	public VoidRing()
 	{
 		this.setUnlocalizedName("void_ring");
@@ -47,11 +45,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, x, y, z);
+		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
 	}
 
+	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
@@ -59,60 +59,48 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int dmg)
-	{
-		return dmg == 0 ? void_off : void_on;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		void_off = register.registerIcon(this.getTexture("rings", "void_off"));
-		void_on = register.registerIcon(this.getTexture("rings", "void_on"));
-	}
-
-	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
 		if (stack.getTagCompound().getByte("teleportCooldown") > 0 )
 		{
-			return;
+			return false;
 		}
 
-		Vec3 c = PlayerHelper.getBlockLookingAt(player, 64);
+		BlockPos c = PlayerHelper.getBlockLookingAt(player, 64);
 		if (c == null)
 		{
-			c = PlayerHelper.getLookVec(player, 32).getRight();
+			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
 		}
 
-		EnderTeleportEvent event = new EnderTeleportEvent(player, c.xCoord, c.yCoord, c.zCoord, 0);
+		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
 		if (!MinecraftForge.EVENT_BUS.post(event))
 		{
 			if (player.isRiding())
 			{
-				player.mountEntity(null);
+				player.dismountRidingEntity();
 			}
 
-			player.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-			player.worldObj.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
-	public boolean updateInAlchBag(ItemStack[] inv, EntityPlayer player, ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 	}
 
 	@Override
-	public void updateInAlchChest(World world, int x, int y, int z, ItemStack stack)
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
-		super.updateInAlchChest(world, x, y, z, stack); // Gem of Eternal Density
-		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(world, x, y, z, stack);
+		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
+		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(world, pos, stack);
 	}
 }

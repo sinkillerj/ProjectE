@@ -7,7 +7,6 @@ import moze_intel.projecte.utils.PELogger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
@@ -15,9 +14,9 @@ public class ThreadCheckUUID extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/haUUID.txt";
-	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
-	private boolean isServerSide;
+	private static final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/haUUID.txt";
+	private static final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private final boolean isServerSide;
 	
 	public ThreadCheckUUID(boolean isServer) 
 	{
@@ -28,17 +27,8 @@ public class ThreadCheckUUID extends Thread
 	@Override
 	public void run()
 	{
-		HttpURLConnection connection = null;
-		BufferedReader reader = null; 
-		
-		try
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(uuidURL).openStream())))
 		{
-			connection = (HttpURLConnection) new URL(uuidURL).openConnection();
-
-			connection.connect();
-			
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			
 			String line = reader.readLine();
 			
 			if (line == null)
@@ -64,31 +54,13 @@ public class ThreadCheckUUID extends Thread
 
 			PECore.uuids.addAll(uuids);
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			PELogger.logFatal("Caught exception in UUID Checker thread!");
 			e.printStackTrace();
 		}
 		finally
 		{
-			if (reader != null)
-			{
-				try 
-				{
-					reader.close();
-				} 
-				catch (IOException e) 
-				{
-					PELogger.logFatal("Caught exception in UUID Checker thread!");
-					e.printStackTrace();
-				}
-			}
-			
-			if (connection != null)
-			{
-				connection.disconnect();
-			}
-			
 			if (isServerSide)
 			{
 				hasRunServer = true;

@@ -6,7 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntitySWRGProjectile extends PEProjectile
@@ -22,21 +23,18 @@ public class EntitySWRGProjectile extends PEProjectile
 	}
 	
 	@Override
-	protected void apply(MovingObjectPosition mop)
+	protected void apply(RayTraceResult mop)
 	{
-		if(!worldObj.isRemote && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		if(!worldObj.isRemote && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
-			int x = mop.blockX;
-			int y = mop.blockY;
-			int z = mop.blockZ;
+			BlockPos pos = mop.getBlockPos();
+			Block up = worldObj.getBlockState(pos.up()).getBlock();
 			
-			Block up = worldObj.getBlock(x, y + 1, z);
-			
-			if(up == Blocks.air || up == Blocks.snow_layer)
+			if(worldObj.isAirBlock(pos) || up == Blocks.SNOW_LAYER)
 			{
 				if(tryConsumeEmc(((ItemPE) ObjHandler.arcana), 768))
 				{
-					EntityLightningBolt lightning = new EntityLightningBolt(worldObj, x, y, z);
+					EntityLightningBolt lightning = new EntityLightningBolt(worldObj, pos.getX(), pos.getY(), pos.getZ(), false);
 					worldObj.addWeatherEffect(lightning);
 				}
 			}

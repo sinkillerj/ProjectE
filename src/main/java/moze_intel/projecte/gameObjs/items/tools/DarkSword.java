@@ -3,16 +3,18 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumAction;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.util.EnumHand;
+
+import javax.annotation.Nonnull;
 
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
@@ -21,7 +23,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		super("dm_sword", (byte)2, new String[] {});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "sword";
+		this.toolClasses.add("sword");
 	}
 
 	// Only for RedSword to use
@@ -39,63 +41,58 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack p_150893_1_, Block p_150893_2_, int meta)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
-		if (p_150893_2_ == Blocks.web)
+		if (state.getBlock() == Blocks.WEB)
 		{
 			return 15.0F;
 		}
 		else
 		{
-			Material material = p_150893_2_.getMaterial();
-			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
+			Material material = state.getMaterial();
+			return material != Material.PLANTS && material != Material.VINE && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
 		}
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
-		return EnumAction.block;
-	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
-	{
-		return 72000;
+		return state.getBlock() == Blocks.WEB;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
-		return par1ItemStack;
-	}
-
-	@Override
-	public boolean canHarvestBlock(Block p_150897_1_, ItemStack stack)
-	{
-		return p_150897_1_ == Blocks.web;
-	}
-
-	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player)
-	{
-		attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0);
-	}
-
-	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
-	{
-		if (ProjectEConfig.useOldDamage)
+		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			return super.getAttributeModifiers(stack);
+			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
+			player.resetCooldown();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	@Nonnull
+	@Override
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
+	{
+		if (slot != EntityEquipmentSlot.MAINHAND)
+		{
+			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = getCharge(stack);
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		if (!ProjectEConfig.useOldDamage)
+		{
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		}
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}
 }

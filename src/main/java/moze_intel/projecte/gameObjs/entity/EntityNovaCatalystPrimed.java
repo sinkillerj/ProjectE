@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.entity;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityNovaCatalystPrimed extends EntityTNTPrimed
@@ -10,13 +11,13 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 	public EntityNovaCatalystPrimed(World world) 
 	{
 		super(world);
-		this.fuse = 20;
+		setFuse(20);
 	}
 	
 	public EntityNovaCatalystPrimed(World world, double x, double y, double z, EntityLivingBase placer)
 	{
 		super(world, x, y, z, placer);
-		this.fuse = 20;
+		setFuse(20);
 	}
 
 	// Need exact override to do our own explosion
@@ -39,15 +40,19 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 			this.motionY *= -0.5D;
 		}
 
-		if (this.fuse-- <= 0)
+		setFuse(getFuse() - 1);
+		if (this.getFuse() <= 0)
 		{
 			this.setDead();
 
-			if (!this.worldObj.isRemote)
+			if (!this.getEntityWorld().isRemote)
 				this.explode();
 		}
 		else
-			this.worldObj.spawnParticle("smoke", this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+		{
+			this.handleWaterMovement();
+			this.getEntityWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+		}
 	}
 	
 	private void explode()

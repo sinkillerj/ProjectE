@@ -1,6 +1,8 @@
 package moze_intel.projecte.api.tile;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nonnull;
 
 /**
  * Reference implementation of IEMCAcceptor
@@ -10,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor
 {
 	@Override
-	public double acceptEMC(ForgeDirection side, double toAccept)
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
 		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 		addEMC(toAdd);

@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ItemFuelBlock extends ItemBlock
 {
 	public ItemFuelBlock(Block block) 
@@ -13,6 +15,7 @@ public class ItemFuelBlock extends ItemBlock
 		this.hasSubtypes = true;
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{

@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "projecte:orientable_horizontal",
+    "textures": {
+      "top": "projecte:blocks/collectors/top_3",
+      "front": "projecte:blocks/collectors/front",
+      "side": "projecte:blocks/collectors/other",
+      "bottom": "projecte:blocks/collectors/other"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": { "y": 180 },
+      "west": { "y": 270 },
+      "east": { "y": 90 }
+    },
+    "inventory": [{}]
+  }
+}

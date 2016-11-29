@@ -6,12 +6,12 @@ public class CollectorMK2Tile extends CollectorMK1Tile
 {
 	public CollectorMK2Tile()
 	{
-		super(Constants.COLLECTOR_MK2_MAX, Constants.COLLECTOR_MK2_GEN, 13, 14);
+		super(Constants.COLLECTOR_MK2_MAX, Constants.COLLECTOR_MK2_GEN);
 	}
 
 	@Override
-	public String getInventoryName()
+	protected int getInvSize()
 	{
-		return "tile.pe_collector_MK2.name";
+		return 12;
 	}
 }

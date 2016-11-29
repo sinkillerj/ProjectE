@@ -1,6 +1,8 @@
 package moze_intel.projecte.api.tile;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nonnull;
 
 /**
  * Implement this interface to specify that "EMC can be given to this Tile Entity from an external source"
@@ -18,5 +20,5 @@ public interface IEmcAcceptor extends IEmcStorage
 	 * @param toAccept The maximum amount to accept
 	 * @return The amount actually accepted
 	 */
-	double acceptEMC(ForgeDirection side, double toAccept);
+	double acceptEMC(@Nonnull EnumFacing side, double toAccept);
 }

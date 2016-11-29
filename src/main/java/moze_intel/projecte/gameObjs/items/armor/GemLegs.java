@@ -1,16 +1,22 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.EnumArmorType;
+import com.google.common.base.Predicates;
+import gnu.trove.map.hash.TIntLongHashMap;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -18,14 +24,32 @@ public class GemLegs extends GemArmorBase
 {
     public GemLegs()
     {
-        super(EnumArmorType.LEGS);
+        super(EntityEquipmentSlot.LEGS);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean unused)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
     {
-        tooltips.add(StatCollector.translateToLocal("pe.gem.legs.lorename"));
+        tooltips.add(I18n.format("pe.gem.legs.lorename"));
+    }
+
+    private final TIntLongHashMap lastJumpTracker = new TIntLongHashMap();
+
+    @SubscribeEvent
+    public void onJump(LivingEvent.LivingJumpEvent evt)
+    {
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntityLiving().getEntityWorld().isRemote)
+        {
+            lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().getEntityWorld().getTotalWorldTime());
+        }
+    }
+
+    private boolean jumpedRecently(EntityPlayer player)
+    {
+        return lastJumpTracker.containsKey(player.getEntityId())
+            && player.getEntityWorld().getTotalWorldTime() - lastJumpTracker.get(player.getEntityId()) < 5;
     }
 
     @Override
@@ -33,16 +57,31 @@ public class GemLegs extends GemArmorBase
     {
         if (world.isRemote)
         {
-            if (player.isSneaking() && !player.onGround && player.motionY <= 0)
+            if (player.isSneaking() && !player.onGround && player.motionY > -8 && !jumpedRecently(player))
             {
-                player.motionY *= 2;
+                player.motionY -= 0.32F;
             }
         }
 
         if (player.isSneaking())
         {
-            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
+            AxisAlignedBB box = new AxisAlignedBB(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
             WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
+
+            if (!world.isRemote && player.motionY < -0.08)
+            {
+                List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
+                        player.getEntityBoundingBox().addCoord(player.motionX, player.motionY, player.motionZ).expandXyz(2.0D),
+                        Predicates.instanceOf(EntityLivingBase.class));
+
+                for (Entity e : entities)
+                {
+                    if (e.canBeCollidedWith())
+                    {
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) -player.motionY * 6F);
+                    }
+                }
+            }
         }
     }
 }

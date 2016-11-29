@@ -3,61 +3,66 @@ package moze_intel.projecte;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.events.ConnectionHandler;
-import moze_intel.projecte.events.PlayerEvents;
-import moze_intel.projecte.events.TickEvents;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.handlers.InternalAbilities;
+import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
+import moze_intel.projecte.impl.KnowledgeImpl;
+import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.playerData.TransmutationOffline;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = PECore.DEPS)
 public class PECore
 {
 	public static final String MODID = "ProjectE";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
+	public static final String DEPS = "required-after:Forge@[12.18.2.2097,);after:Baubles@[1.3.3,);after:JEI@[3.12.0,)";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[ProjectE]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
+	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -80,32 +85,30 @@ public class PECore
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
 		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
-		CustomEMCParser.init();
-
-		NBTWhitelistParser.init();
-
 		PacketHandler.register();
+
+		AlchBagImpl.init();
+		KnowledgeImpl.init();
+		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
+		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		PlayerEvents pe = new PlayerEvents();
-		MinecraftForge.EVENT_BUS.register(pe);
-		FMLCommonHandler.instance().bus().register(pe);
-
-		FMLCommonHandler.instance().bus().register(new TickEvents());
-		FMLCommonHandler.instance().bus().register(new ConnectionHandler());
-
-		proxy.registerClientOnlyEvents();
-
+		SoundHandler.init();
 		ObjHandler.register();
 		ObjHandler.addRecipes();
+
+		proxy.registerClientOnlyEvents();
+		proxy.registerModels();
+		proxy.registerRenderers();
+
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
+		proxy.registerLayerRenderers();
 		proxy.registerKeyBinds();
-		proxy.registerRenderers();
 		AchievementHandler.init();
 	}
 	
@@ -113,7 +116,7 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ObjHandler.registerPhiloStoneSmelting();
-		NBTWhitelistParser.readUserData();
+		NBTWhitelistParser.init();
 		proxy.initializeManual();
 		
 		Integration.init();
@@ -136,7 +139,7 @@ public class PECore
 
 		long start = System.currentTimeMillis();
 
-		CustomEMCParser.readUserData();
+		CustomEMCParser.init();
 
 		PELogger.logInfo("Starting server-side EMC mapping.");
 
@@ -161,14 +164,8 @@ public class PECore
 	@Mod.EventHandler
 	public void serverQuit(FMLServerStoppedEvent event)
 	{
-		TileEntityHandler.clearAll();
-		PELogger.logDebug("Cleared tile entity maps.");
-
 		Transmutation.clearCache();
 		PELogger.logDebug("Cleared cached tome knowledge");
-
-		PlayerChecks.clearLists();
-		PELogger.logDebug("Cleared player check-lists: server stopping.");
 
 		EMCMapper.clearMaps();
 		PELogger.logInfo("Completed server-stop actions.");
@@ -192,7 +189,7 @@ public class PECore
 				String subName = mapping.name.split(":")[1];
 				if (mapping.type == GameRegistry.Type.ITEM)
 				{
-					Item remappedItem = GameRegistry.findItem(PECore.MODID, "item.pe_" + subName.substring(5)); // strip "item." off of subName
+					Item remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, "item.pe_" + subName.substring(5))); // strip "item." off of subName
 					if (remappedItem != null)
 					{
 						// legacy remap (adding pe_ prefix)
@@ -202,7 +199,7 @@ public class PECore
 					{
 						// Space strip remap - ItemBlocks
 						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-						remappedItem = GameRegistry.findItem(PECore.MODID, newSubName);
+						remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, newSubName));
 
 						if (remappedItem != null)
 						{
@@ -219,7 +216,7 @@ public class PECore
 				{
 					// Space strip remap - Blocks
 					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-					Block remappedBlock = GameRegistry.findBlock(PECore.MODID, newSubName);
+					Block remappedBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(PECore.MODID, newSubName));
 
 					if (remappedBlock != null)
 					{

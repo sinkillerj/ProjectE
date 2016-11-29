@@ -7,13 +7,11 @@ import java.io.File;
 
 public final class ProjectEConfig 
 {
-	public static boolean showUnlocalizedNames;
 	public static boolean showODNames;
 	public static boolean enableDebugLog;
 	public static boolean showEMCTooltip;
 	public static boolean showStatTooltip;
 	public static boolean showPedestalTooltip;
-	public static boolean showPedestalTooltipInGUI;
 
 	public static boolean enableTimeWatch;
 
@@ -37,7 +35,6 @@ public final class ProjectEConfig
 	public static boolean interdictionMode;
 	public static boolean pickaxeAoeVeinMining;
 	public static boolean harvBandGrass;
-	public static boolean useLootBalls;
 	public static boolean pulsatingOverlay;
 	public static boolean unsafeKeyBinds;
 	public static boolean offensiveAbilities;
@@ -55,13 +52,10 @@ public final class ProjectEConfig
 			config.load();
 
 			enableDebugLog = config.getBoolean("debugLogging", "misc", false, "Enable a more verbose debug logging");
-			showUnlocalizedNames = config.getBoolean("unToolTips", "misc", false, "Show item unlocalized names in tooltips (useful for custom EMC registration)");
 			showODNames = config.getBoolean("odToolTips", "misc", false, "Show item Ore Dictionary names in tooltips (useful for custom EMC registration)");
 			showEMCTooltip = config.getBoolean("emcToolTips", "misc", true, "Show the EMC value as a tooltip on items and blocks");
 			showStatTooltip = config.getBoolean("statToolTips", "misc", true, "Show stats as tooltips for various ProjectE blocks");
 			showPedestalTooltip = config.getBoolean("pedestalToolTips", "misc", true, "Show DM pedestal functions in item tooltips");
-			showPedestalTooltipInGUI = config.getBoolean("pedestalToolTipsInGUI", "misc", false, "Show pedestal function tooltips only in pedestal GUI");
-			useLootBalls = config.getBoolean("useLootBalls", "misc", true, "Make loot balls for drops. Disabling this may potentially cause bad performance when large amounts of loot are spawned!");
 			pulsatingOverlay = config.getBoolean("pulsatingOverlay", "misc", false, "The Philosopher's Stone overlay softly pulsates");
 			unsafeKeyBinds = config.getBoolean("unsafeKeyBinds", "misc", false, "False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered");
 			projectileCooldown = config.getInt("projectileCooldown", "misc", 0, 0, Integer.MAX_VALUE, "A cooldown (in ticks) for firing projectiles");

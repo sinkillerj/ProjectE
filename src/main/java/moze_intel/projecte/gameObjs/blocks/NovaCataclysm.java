@@ -1,44 +1,47 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.BlockTNT;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class NovaCataclysm extends NovaCatalyst
+import javax.annotation.Nonnull;
+
+public class NovaCataclysm extends BlockTNT
 {
 	public NovaCataclysm()
 	{
-		this.setBlockName("pe_nova_cataclysm");
+		this.setUnlocalizedName("pe_nova_cataclysm");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
 	@Override
-	public void func_150114_a(World world, int x, int y, int z, int par5, EntityLivingBase entity)
+	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityLivingBase entity)
 	{
-		if (world.isRemote || par5 != 1)
+		if (!world.isRemote)
 		{
-			return;
+			if (state.getValue(EXPLODE))
+			{
+				EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+				world.spawnEntityInWorld(cataclysmPrimed);
+				cataclysmPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
+			}
 		}
-		
-		if (entity == null)
-		{
-			entity = world.getClosestPlayer(x, y, z, 64);
-		}
-
-		EntityNovaCataclysmPrimed ent = new EntityNovaCataclysmPrimed(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), entity); 
-		world.spawnEntityInWorld(ent);
-		world.playSoundAtEntity(ent, "game.tnt.primed", 1.0F, 1.0F);
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+
+	@Override
+	public void onBlockDestroyedByExplosion(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
-		this.blockIcon = register.registerIcon("projecte:explosives/nova1_side");
-		topIcon = register.registerIcon("projecte:explosives/top");
-		bottomIcon = register.registerIcon("projecte:explosives/bottom");
+		if (!world.isRemote)
+		{
+			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
+			cataclysmPrimed.setFuse(world.rand.nextInt(cataclysmPrimed.getFuse() / 4) + cataclysmPrimed.getFuse() / 8);
+			world.spawnEntityInWorld(cataclysmPrimed);
+		}
 	}
 }

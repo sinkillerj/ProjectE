@@ -1,77 +1,66 @@
 package moze_intel.projecte.rendering;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelChest;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class CondenserRenderer extends TileEntitySpecialRenderer
+public class CondenserRenderer extends TileEntitySpecialRenderer<CondenserTile>
 {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser.png");
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float var8) 
+	public void renderTileEntityAt(@Nonnull CondenserTile condenser, double x, double y, double z, float par8, int par9)
 	{
-		if (!(tile instanceof CondenserTile)) 
+		EnumFacing direction = null;
+		if (condenser.getWorld() != null && !condenser.isInvalid())
 		{
-			return;
+			IBlockState state = condenser.getWorld().getBlockState(condenser.getPos());
+			direction = state.getBlock() == ObjHandler.condenser ? state.getValue(PEStateProps.FACING) : null;
 		}
-		
-		CondenserTile condenser = (CondenserTile) tile;
-		ForgeDirection direction = null;
-		
-		if (condenser.getWorldObj() != null)
-		{
-			direction = condenser.getOrientation();
-		}
-		
+
 		this.bindTexture(texture);
-		GL11.glPushMatrix();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glTranslatef((float) x, (float) y + 1.0F, (float) z + 1.0F);
-		GL11.glScalef(1.0F, -1.0F, -1.0F);
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		GlStateManager.pushMatrix();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.translate(x, y + 1.0F, z + 1.0F);
+		GlStateManager.scale(1.0F, -1.0F, -1.0F);
+		GlStateManager.translate(0.5F, 0.5F, 0.5F);
+
 		short angle = 0;
 
 		if (direction != null)
 		{
-			if (direction == ForgeDirection.NORTH)
+			switch (direction)
 			{
-				angle = 180;
-			}
-			else if (direction == ForgeDirection.SOUTH)
-			{
-				angle = 0;
-			}
-			else if (direction == ForgeDirection.WEST)
-			{
-				angle = 90;
-			}
-			else if (direction == ForgeDirection.EAST)
-			{
-				angle = -90;
+				case NORTH: angle = 180; break;
+				case SOUTH: angle = 0; break;
+				case WEST: angle = 90; break;
+				case EAST: angle = -90; break;
 			}
 		}
 
-		GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-		float adjustedLidAngle = condenser.prevLidAngle + (condenser.lidAngle - condenser.prevLidAngle) * var8;
+		GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+		float adjustedLidAngle = condenser.prevLidAngle + (condenser.lidAngle - condenser.prevLidAngle) * par8;
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
 		model.chestLid.rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);
 		model.renderAll();
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		GL11.glPopMatrix();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.disableRescaleNormal();
+		GlStateManager.popMatrix();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

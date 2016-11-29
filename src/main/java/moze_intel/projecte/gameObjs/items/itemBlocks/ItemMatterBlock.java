@@ -7,6 +7,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemMatterBlock extends ItemBlock
 {
 	public ItemMatterBlock(Block block) 
@@ -16,6 +18,7 @@ public class ItemMatterBlock extends ItemBlock
 		this.hasSubtypes = true;
 	}
 	
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{

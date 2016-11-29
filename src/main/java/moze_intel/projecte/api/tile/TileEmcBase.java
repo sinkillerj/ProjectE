@@ -3,6 +3,8 @@ package moze_intel.projecte.api.tile;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nonnull;
+
 /**
  * Base class for the reference implementations TileEmcProvider, TileEmcAcceptor, and TileEmcHandler
  * Usually you want to use one of three derived reference implementations
@@ -65,15 +67,17 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 		}
 	}
 
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
-		super.writeToNBT(tag);
+		tag = super.writeToNBT(tag);
 		if (currentEMC > maximumEMC)
 		{
 			currentEMC = maximumEMC;
 		}
 		tag.setDouble("EMC", currentEMC);
+		return tag;
 	}
 
 	@Override

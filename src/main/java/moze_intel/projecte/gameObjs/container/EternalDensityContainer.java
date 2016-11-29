@@ -2,15 +2,20 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
+
+import javax.annotation.Nonnull;
 
 public class EternalDensityContainer extends Container
 {
-	private EternalDensityInventory inventory;
+	private final EternalDensityInventory inventory;
 	
 	public EternalDensityContainer(InventoryPlayer invPlayer, EternalDensityInventory gemInv)
 	{
@@ -19,7 +24,7 @@ public class EternalDensityContainer extends Container
 		 for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 3; ++j)
 			{
-				this.addSlotToContainer(new SlotGhost(gemInv, j + i * 3, 62 + j * 18, 26 + i * 18));
+				this.addSlotToContainer(new SlotGhost(gemInv, j + i * 3, 62 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 			}
 
 		for (int i = 0; i < 3; ++i)
@@ -41,34 +46,30 @@ public class EternalDensityContainer extends Container
 		Slot slot = getSlot(slotIndex);
 		if (slotIndex > 8)
 		{
-			int index = inventory.findFirstEmptySlot();
-			if (index != -1)
-			{
-				ItemStack toSet = slot.getStack().copy();
-				toSet.stackSize = 1;
-				inventory.setInventorySlotContents(index, toSet);
-			}
+			ItemStack toSet = slot.getStack().copy();
+			toSet.stackSize = 1;
+			ItemHandlerHelper.insertItem(inventory, toSet, false);
 		}
 		return null;
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) 
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}
 	
 	@Override
-	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem()) 
+		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return null;
 		}
 		
 		if (slot >= 0 && slot < 9)
 		{
-			inventory.setInventorySlotContents(slot, null);
+			inventory.setStackInSlot(slot, null);
 		}
 		
 		return super.slotClick(slot, button, flag, player);

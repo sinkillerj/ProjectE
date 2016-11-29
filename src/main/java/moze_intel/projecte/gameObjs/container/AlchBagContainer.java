@@ -4,14 +4,18 @@ import invtweaks.api.container.ChestContainer;
 import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchBagContainer extends Container
 {
-	public AlchBagInventory inventory;
+	public final AlchBagInventory inventory;
 	
 	public AlchBagContainer(InventoryPlayer invPlayer, AlchBagInventory invBag)
 	{
@@ -20,7 +24,7 @@ public class AlchBagContainer extends Container
 		//Bag Inventory
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new Slot(inventory, j + i * 13, 12 + j * 18, 5 + i * 18));
+				this.addSlotToContainer(new SlotItemHandler(inventory, j + i * 13, 12 + j * 18, 5 + i * 18));
 				
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
@@ -33,7 +37,7 @@ public class AlchBagContainer extends Container
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer player) 
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return true;
 	}
@@ -63,7 +67,7 @@ public class AlchBagContainer extends Container
 		}
 		if (stack.stackSize == 0)
 		{
-			slot.putStack((ItemStack) null);
+			slot.putStack(null);
 		}
 		else
 		{
@@ -75,20 +79,13 @@ public class AlchBagContainer extends Container
 	}
 	
 	@Override
-	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return null;
 		}
 		
 		return super.slotClick(slot, button, flag, player);
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player) 
-	{
-		inventory.closeInventory();
-		super.onContainerClosed(player);
 	}
 }

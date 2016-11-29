@@ -2,17 +2,15 @@ package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PELogger;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +18,22 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class NormalizedSimpleStack {
-	public static Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
+	private static final Map<String, Set<Integer>> idWithUsedMetaData = Maps.newHashMap();
+
+	public static Set<Integer> getUsedMetadata(String itemName) {
+		if (idWithUsedMetaData.containsKey(itemName)) {
+			return idWithUsedMetaData.get(itemName);
+		} else {
+			return Sets.newHashSet();
+		}
+	}
+	public static Set<Integer> getUsedMetadata(NormalizedSimpleStack nss) {
+		if (nss instanceof NSSItem) {
+			return getUsedMetadata(((NSSItem) nss).itemName);
+		} else {
+			throw new IllegalArgumentException("Can only get Metadata for Items!");
+		}
+	}
 
 	public static NormalizedSimpleStack getFor(String itemName, int damage) {
 		NSSItem normStack;
@@ -46,11 +59,11 @@ public abstract class NormalizedSimpleStack {
 		return getFor(block, 0);
 	}
 
-	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Block block) {
-		GameRegistry.UniqueIdentifier identifier;
+	private static ResourceLocation getUniqueIdentifierOrNull(Block block) {
+		ResourceLocation identifier;
 		try
 		{
-			identifier = GameRegistry.findUniqueIdentifierFor(block);
+			identifier = ForgeRegistries.BLOCKS.getKey(block);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", block != null ? block.getClass().getName() : "null");
 			e.printStackTrace();
@@ -67,11 +80,11 @@ public abstract class NormalizedSimpleStack {
 		return getFor(item, 0);
 	}
 
-	private static GameRegistry.UniqueIdentifier getUniqueIdentifierOrNull(Item item) {
-		GameRegistry.UniqueIdentifier identifier;
+	private static ResourceLocation getUniqueIdentifierOrNull(Item item) {
+		ResourceLocation identifier;
 		try
 		{
-			identifier = GameRegistry.findUniqueIdentifierFor(item);
+			identifier = ForgeRegistries.ITEMS.getKey(item);
 		} catch (Exception e) {
 			PELogger.logFatal("Could not findUniqueIdentifierFor(%s)", item != null ? item.getClass().getName() : "null");
 			e.printStackTrace();
@@ -80,15 +93,15 @@ public abstract class NormalizedSimpleStack {
 		return identifier;
 	}
 
-	public static NormalizedSimpleStack getFor(Item item, int meta) {
+	private static NormalizedSimpleStack getFor(Item item, int meta) {
 
 		return getFor(getUniqueIdentifierOrNull(item), meta);
 	}
 
-	private static NormalizedSimpleStack getFor(GameRegistry.UniqueIdentifier uniqueIdentifier, int damage)
+	private static NormalizedSimpleStack getFor(ResourceLocation uniqueIdentifier, int damage)
 	{
 		if (uniqueIdentifier == null) return null;
-		return getFor(uniqueIdentifier.modId + ":" + uniqueIdentifier.name, damage);
+		return getFor(uniqueIdentifier.toString(), damage);
 	}
 
 
@@ -127,7 +140,7 @@ public abstract class NormalizedSimpleStack {
 	public abstract String json();
 
 
-	private static Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
+	private static final Map<String, NormalizedSimpleStack> oreDictStacks = Maps.newHashMap();
 	public static NormalizedSimpleStack forOreDictionary(String oreDictionaryName)
 	{
 		if (oreDictStacks.containsKey(oreDictionaryName))
@@ -146,7 +159,7 @@ public abstract class NormalizedSimpleStack {
 		public final int damage;
 		private NSSItem(String itemName, int damage) {
 			this.itemName = itemName;
-			if (Item.itemRegistry.getObject(itemName) == null) {
+			if (Item.REGISTRY.getObject(new ResourceLocation(itemName)) == null) {
 				throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
 			}
 			this.damage = damage;
@@ -176,10 +189,10 @@ public abstract class NormalizedSimpleStack {
 
 		@Override
 		public String toString() {
-			Object obj = Item.itemRegistry.getObject(itemName);
+			Item obj = Item.REGISTRY.getObject(new ResourceLocation(itemName));
 
 			if (obj != null) {
-				return String.format("%s(%s:%s)", itemName, Item.itemRegistry.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+				return String.format("%s(%s:%s)", itemName, Item.REGISTRY.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 			}
 
 			return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
@@ -190,7 +203,7 @@ public abstract class NormalizedSimpleStack {
 		return new NSSFake(description);
 	}
 
-	public static class NSSFake extends NormalizedSimpleStack {
+	private static class NSSFake extends NormalizedSimpleStack {
 		public final String description;
 		public final int counter;
 		private static int fakeItemCounter = 0;
@@ -200,11 +213,10 @@ public abstract class NormalizedSimpleStack {
 			this.description = description;
 		}
 
-		public boolean equals(Object o) {
-			if (o instanceof NSSFake) {
-				return o == this;
-			}
-			return false;
+		@Override
+		public boolean equals(Object o)
+		{
+			return o == this;
 		}
 
 		@Override
@@ -219,17 +231,17 @@ public abstract class NormalizedSimpleStack {
 		}
 	}
 
-	public static class NSSFluid extends NormalizedSimpleStack {
+	private static class NSSFluid extends NormalizedSimpleStack {
 
 		public final String name;
 		private NSSFluid(net.minecraftforge.fluids.Fluid f) {
 			this.name = f.getName();
 		}
-		public boolean equals(Object o) {
-			if (o instanceof NSSFluid) {
-				return name.equals(((NSSFluid) o).name);
-			}
-			return false;
+
+		@Override
+		public boolean equals(Object o)
+		{
+			return o instanceof NSSFluid && name.equals(((NSSFluid) o).name);
 		}
 
 		@Override
@@ -265,10 +277,7 @@ public abstract class NormalizedSimpleStack {
 		@Override
 		public boolean equals(Object o)
 		{
-			if (o instanceof NSSOreDictionary) {
-				return this.od.equals(((NSSOreDictionary) o).od);
-			}
-			return false;
+			return o instanceof NSSOreDictionary && this.od.equals(((NSSOreDictionary) o).od);
 		}
 
 		@Override

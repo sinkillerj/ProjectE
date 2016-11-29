@@ -5,15 +5,15 @@ import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
 
 public class GUIRMFurnace extends GuiContainer 
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/rmfurnace.png");
-	private RMFurnaceTile tile;
+	private final RMFurnaceTile tile;
 	
 	public GUIRMFurnace(InventoryPlayer invPlayer, RMFurnaceTile tile)
 	{
@@ -26,7 +26,7 @@ public class GUIRMFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
-		GL11.glColor4f(1F, 1F, 1F, 1F);
+		GlStateManager.color(1, 1, 1, 1);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		
 		int x = (width - xSize) / 2;
@@ -50,7 +50,7 @@ public class GUIRMFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.rmfurnace.shortname"), 76, 5, 4210752);
-		this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 76, ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(I18n.format("pe.rmfurnace.shortname"), 76, 5, 4210752);
+		this.fontRendererObj.drawString(I18n.format("container.inventory"), 76, ySize - 96 + 2, 4210752);
 	}
 }

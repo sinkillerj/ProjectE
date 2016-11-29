@@ -1,10 +1,13 @@
 package moze_intel.projecte.emc.generators;
 
-import moze_intel.projecte.emc.collector.IMappingCollector;
-
 import java.util.Map;
 
+/**
+ * Defines something that can simply yield a mapping of values.
+ * @param <T> The key type
+ * @param <V> The value type
+ */
 public interface IValueGenerator<T, V extends Comparable<V>>
 {
-	public Map<T, V> generateValues();
+	Map<T, V> generateValues();
 }

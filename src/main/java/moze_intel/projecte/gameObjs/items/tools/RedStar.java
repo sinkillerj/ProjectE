@@ -5,52 +5,59 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGravel;
-import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class RedStar extends PEToolBase
 {
 	public RedStar() 
 	{
 		super("rm_morning_star", (byte) 4, new String[]{
-				StatCollector.translateToLocal("pe.morningstar.mode1"), StatCollector.translateToLocal("pe.morningstar.mode2"),
-				StatCollector.translateToLocal("pe.morningstar.mode3"), StatCollector.translateToLocal("pe.morningstar.mode4"),
+				"pe.morningstar.mode1", "pe.morningstar.mode2",
+				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.pePrimaryToolClass = "morning_star";
 
-		this.harvestMaterials.add(Material.grass);
-		this.harvestMaterials.add(Material.ground);
-		this.harvestMaterials.add(Material.sand);
-		this.harvestMaterials.add(Material.snow);
-		this.harvestMaterials.add(Material.clay);
+		this.harvestMaterials.add(Material.GRASS);
+		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.SAND);
+		this.harvestMaterials.add(Material.SNOW);
+		this.harvestMaterials.add(Material.CLAY);
 		
-		this.harvestMaterials.add(Material.iron);
-		this.harvestMaterials.add(Material.anvil);
-		this.harvestMaterials.add(Material.rock);
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 
-		this.harvestMaterials.add(Material.wood);
-		this.harvestMaterials.add(Material.plants);
-		this.harvestMaterials.add(Material.vine);
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.VINE);
 
-		this.secondaryClasses.add("pickaxe");
-		this.secondaryClasses.add("chisel");
-		this.secondaryClasses.add("shovel");
-		this.secondaryClasses.add("axe");
+		this.toolClasses.add("morning_star");
+		this.toolClasses.add("pickaxe");
+		this.toolClasses.add("chisel");
+		this.toolClasses.add("shovel");
+		this.toolClasses.add("axe");
 	}
 
 	@Override
@@ -62,44 +69,46 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase eLiving)
 	{
-		digBasedOnMode(stack, world, block, x, y, z, eLiving);
+		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
 			if (ProjectEConfig.pickaxeAoeVeinMining)
 			{
-				mineOreVeinsInAOE(stack, player);
+				mineOreVeinsInAOE(stack, player, hand);
 			}
 
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+			RayTraceResult mop = this.rayTrace(world, player, true);
 
 			if (mop == null)
 			{
-				return stack;
+				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
-			else if (mop.typeOfHit == MovingObjectType.BLOCK)
+			else if (mop.typeOfHit == Type.BLOCK)
 			{
-				Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				IBlockState state = world.getBlockState(mop.getBlockPos());
+				Block block = state.getBlock();
 
 				if (block instanceof BlockGravel || block instanceof BlockClay)
 				{
 					if (ProjectEConfig.pickaxeAoeVeinMining)
 					{
-						digAOE(stack, world, player, false, 0);
+						digAOE(stack, world, player, false, 0, hand);
 					}
 					else
 					{
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (ItemHelper.isOre(block, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ)))
+				else if (ItemHelper.isOre(state))
 				{
 					if (!ProjectEConfig.pickaxeAoeVeinMining)
 					{
@@ -108,42 +117,48 @@ public class RedStar extends PEToolBase
 				}
 				else if (block instanceof BlockGrass || block instanceof BlockDirt || block instanceof BlockSand)
 				{
-					digAOE(stack, world, player, false, 0);
+					digAOE(stack, world, player, false, 0, hand);
 				}
 				else
 				{
-					digAOE(stack, world, player, true, 0);
+					digAOE(stack, world, player, true, 0, hand);
 				}
 			}
 		}
 		
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int metadata)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
+		Block block = state.getBlock();
 		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
 		{
 			return 1200000.0F;
 		}
 		
-		return super.getDigSpeed(stack, block, metadata) + 48.0F;
+		return super.getStrVsBlock(stack, state) + 48.0F;
 	}
 
+	@Nonnull
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		if (ProjectEConfig.useOldDamage)
+		if (slot != EntityEquipmentSlot.MAINHAND)
 		{
-			return super.getAttributeModifiers(stack);
+			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = stack.stackTagCompound == null ? 0 : getCharge(stack);
+		byte charge = getCharge(stack);
 		float damage = STAR_BASE_ATTACK + charge;
 
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		if(!ProjectEConfig.useOldDamage)
+		{
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		}
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
 		return multimap;
 	}
 }

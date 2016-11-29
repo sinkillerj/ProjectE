@@ -1,0 +1,48 @@
+{
+  "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+  "__author": "williewillus",
+  "textures": {
+    "particle" : "#pedestal"
+  },
+  "elements": [
+    {
+      "name": "Base",
+      "from": [ 3.0, 0.0, 3.0 ],
+      "to": [ 13.0, 2.0, 13.0 ],
+      "faces": {
+        "north": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 2.0 ] },
+        "east": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 2.0 ] },
+        "south": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 2.0 ] },
+        "west": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 2.0 ] },
+        "up": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 10.0 ] },
+        "down": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 10.0, 10.0 ] }
+      }
+    },
+    {
+      "name": "Post",
+      "from": [ 6.0, 2.0, 6.0 ],
+      "to": [ 10.0, 9.0, 10.0 ],
+      "faces": {
+        "north": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 7.0 ] },
+        "east": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 7.0 ] },
+        "south": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 7.0 ] },
+        "west": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 7.0 ] },
+        "up": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+        "down": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 4.0, 4.0 ] }
+      }
+    },
+    {
+      "name": "Top",
+      "from": [ 5.0, 9.0, 5.0 ],
+      "to": [ 11.0, 10.0, 11.0 ],
+      "faces": {
+        "north": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
+        "east": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
+        "south": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
+        "west": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
+        "up": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 6.0 ] },
+        "down": { "texture": "#pedestal", "uv": [ 0.0, 0.0, 6.0, 6.0 ] }
+      }
+    }
+  ]
+}

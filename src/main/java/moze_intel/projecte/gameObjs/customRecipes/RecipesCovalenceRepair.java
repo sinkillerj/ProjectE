@@ -17,13 +17,16 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+
+import javax.annotation.Nonnull;
 
 public class RecipesCovalenceRepair implements IRecipe
 {
 	private ItemStack output;
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		ItemStack[] dust = new ItemStack[8];
 		ItemStack tool = null;
@@ -111,10 +114,10 @@ public class RecipesCovalenceRepair implements IRecipe
 			ItemArmor armor = ((ItemArmor) toRepair);
 			switch(armor.armorType)
 			{
-				case 0: return dustCounter == 5;
-				case 1: return dustCounter == 8;
-				case 2: return dustCounter == 7;
-				case 3: return dustCounter == 4;
+				case HEAD: return dustCounter == 5;
+				case CHEST: return dustCounter == 8;
+				case LEGS: return dustCounter == 7;
+				case FEET: return dustCounter == 4;
 				default: return false;
 			}
 		}
@@ -171,7 +174,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		}
 		else if (item instanceof ItemHoe)
 		{
-			name = ((ItemHoe) item).getToolMaterialName();
+			name = ((ItemHoe) item).getMaterialName();
 		}
 		else if (item instanceof ItemArmor)
 		{
@@ -192,7 +195,7 @@ public class RecipesCovalenceRepair implements IRecipe
 	}
 	
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1) 
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
 	{
 		return output.copy();
 	}
@@ -207,5 +210,12 @@ public class RecipesCovalenceRepair implements IRecipe
 	public ItemStack getRecipeOutput() 
 	{
 		return output;
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }

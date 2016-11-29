@@ -1,9 +1,10 @@
 package moze_intel.projecte.api.event;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
+
+import javax.annotation.Nonnull;
+import java.util.UUID;
 
 /**
  * This event is fired after a players transmutation knowledge is changed
@@ -12,10 +13,17 @@ import cpw.mods.fml.common.eventhandler.Event;
  */
 public class PlayerKnowledgeChangeEvent extends Event
 {
-	public final UUID playerUUID;
+	private final UUID playerUUID;
 
-    public PlayerKnowledgeChangeEvent(EntityPlayer entityPlayer)
+    public PlayerKnowledgeChangeEvent(@Nonnull EntityPlayer entityPlayer)
     {
     	playerUUID = entityPlayer.getUniqueID();
     }
+
+    @Nonnull
+    public UUID getPlayerUUID()
+    {
+        return playerUUID;
+    }
+
 }

@@ -1,86 +1,52 @@
 package moze_intel.projecte.gameObjs.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
-public class CollectorMK3Container extends Container
+public class CollectorMK3Container extends CollectorMK1Container
 {
-	private CollectorMK3Tile tile;
-	private int sunLevel;
-	
 	public CollectorMK3Container(InventoryPlayer invPlayer, CollectorMK3Tile collector)
 	{
-		this.tile = collector;
-		tile.openInventory();
-		
+		super(invPlayer, collector);
+	}
+
+	@Override
+	void initSlots(InventoryPlayer invPlayer)
+	{
+		IItemHandler aux = tile.getAux();
+		IItemHandler main = tile.getInput();
+
 		//Klein Star Slot
-		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 158, 58));
-						
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
+
+		int counter = main.getSlots() - 1;
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new SlotCollectorInv(tile, i * 4 + j + 1, 18 + i * 18, 8 + j * 18));
-					
+				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+
 		//Upgrade Result
-		this.addSlotToContainer(new SlotCollectorInv(tile, 17, 158, 13));
-						
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
+
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorLock(tile, 18, 187, 36));
-					
+		this.addSlotToContainer(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
+
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 30 + j * 18, 84 + i * 18));
-						
+
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 30 + i * 18, 142));
-	}
-	
-	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
-	{
-		super.addCraftingToCrafters(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
-	}
-	
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
-		
-		for (int i = 0; i < this.crafters.size(); ++i)
-		{
-			ICrafting icrafting = (ICrafting)this.crafters.get(i);
-
-			if(sunLevel != tile.getSunLevel())
-				icrafting.sendProgressBarUpdate(this, 1, tile.getSunLevel());
-		}
-		
-		sunLevel = tile.getSunLevel();
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
-	{
-		tile.displaySunLevel = par2;
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed(player);
-		tile.closeInventory();
 	}
 	
 	@Override
@@ -103,7 +69,7 @@ public class CollectorMK3Container extends Container
 				return null;
 			}
 		}
-		else if (slotIndex >= 19 && slotIndex <= 54)
+		else if (slotIndex <= 54)
 		{
 			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 16, false))
 			{
@@ -126,11 +92,5 @@ public class CollectorMK3Container extends Container
 		
 		slot.onPickupFromSlot(player, stack);
 		return newStack;
-	}
-
-	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
-		return player.getDistanceSq(tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5) <= 64.0;
 	}
 }

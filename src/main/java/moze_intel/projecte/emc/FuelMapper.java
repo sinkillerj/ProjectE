@@ -2,7 +2,6 @@ package moze_intel.projecte.emc;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.init.Blocks;
@@ -10,6 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class FuelMapper 
@@ -23,23 +23,23 @@ public final class FuelMapper
 			FUEL_MAP.clear();
 		}
 		
-		addToMap(new ItemStack(Items.coal, 1, 1));
-		addToMap(new ItemStack(Items.redstone));
-		addToMap(new ItemStack(Blocks.redstone_block));
-		addToMap(new ItemStack(Items.coal));
-		addToMap(new ItemStack(Blocks.coal_block));
-		addToMap(new ItemStack(Items.gunpowder));
-		addToMap(new ItemStack(Items.glowstone_dust));
+		addToMap(new ItemStack(Items.COAL, 1, 1));
+		addToMap(new ItemStack(Items.REDSTONE));
+		addToMap(new ItemStack(Blocks.REDSTONE_BLOCK));
+		addToMap(new ItemStack(Items.COAL));
+		addToMap(new ItemStack(Blocks.COAL_BLOCK));
+		addToMap(new ItemStack(Items.GUNPOWDER));
+		addToMap(new ItemStack(Items.GLOWSTONE_DUST));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 0));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 0));
-		addToMap(new ItemStack(Items.blaze_powder));
-		addToMap(new ItemStack(Blocks.glowstone));
+		addToMap(new ItemStack(Items.BLAZE_POWDER));
+		addToMap(new ItemStack(Blocks.GLOWSTONE));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 1));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
-		Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
+		Collections.sort(FUEL_MAP, Comparator.comparing(EMCMapper::getEmcValue));
 	}
 	
 	private static void addToMap(ItemStack stack)
@@ -81,34 +81,20 @@ public final class FuelMapper
 	{
 		if (stack.isValid())
 		{
-			SimpleStack copy = stack.copy();
-			copy.qnty = 1;
-
-			if (!FUEL_MAP.contains(copy))
+			if (!FUEL_MAP.contains(stack))
 			{
-				FUEL_MAP.add(copy);
+				FUEL_MAP.add(stack);
 			}
 		}
 	}
 
 	private static boolean mapContains(SimpleStack stack)
 	{
-		if (!stack.isValid())
-		{
-			return false;
-		}
-
-		SimpleStack copy = stack.copy();
-		copy.qnty = 1;
-
-		return FUEL_MAP.contains(copy);
+		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
 	private static int indexInMap(SimpleStack stack)
 	{
-		SimpleStack copy = stack.copy();
-		copy.qnty = 1;
-
-		return FUEL_MAP.indexOf(copy);
+		return FUEL_MAP.indexOf(stack);
 	}
 }

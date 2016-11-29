@@ -6,9 +6,15 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class DarkShovel extends PEToolBase
 {
@@ -17,12 +23,12 @@ public class DarkShovel extends PEToolBase
 		super("dm_shovel", (byte)1, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
-		this.pePrimaryToolClass = "shovel";
-		this.harvestMaterials.add(Material.grass);
-		this.harvestMaterials.add(Material.ground);
-		this.harvestMaterials.add(Material.sand);
-		this.harvestMaterials.add(Material.snow);
-		this.harvestMaterials.add(Material.clay);
+		this.toolClasses.add("shovel");
+		this.harvestMaterials.add(Material.GRASS);
+		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.SAND);
+		this.harvestMaterials.add(Material.SNOW);
+		this.harvestMaterials.add(Material.CLAY);
 	}
 
 	// Only for RedShovel
@@ -31,32 +37,36 @@ public class DarkShovel extends PEToolBase
 		super(name, numCharges, modeDesc);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if (world.isRemote)
 		{
-			return stack;
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
-		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-				&& world.getBlock(mop.blockX, mop.blockY, mop.blockZ) == Blocks.gravel)
+		RayTraceResult mop = this.rayTrace(world, player, false);
+		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK
+				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.GRAVEL)
 		{
 			tryVeinMine(stack, player, mop);
 		}
 		else
 		{
-			digAOE(stack, world, player, false, 0);
+			digAOE(stack, world, player, false, 0, hand);
 		}
-		return stack;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
+	@Nonnull
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
+		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
 		return multimap;
 	}
 }

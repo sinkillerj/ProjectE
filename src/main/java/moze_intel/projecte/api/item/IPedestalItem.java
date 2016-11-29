@@ -1,9 +1,13 @@
 package moze_intel.projecte.api.item;
 
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -13,16 +17,18 @@ import java.util.List;
  */
 public interface IPedestalItem {
 
-	String TOOLTIPDISABLED = EnumChatFormatting.RED + StatCollector.translateToLocal("pe.pedestal.item_disabled");
+	@SideOnly(Side.CLIENT)
+	String TOOLTIPDISABLED = TextFormatting.RED + I18n.format("pe.pedestal.item_disabled");
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside
 	 */
-    void updateInPedestal(World world, int x, int y, int z);
+    void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
 	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
-	List<String> getPedestalDescription();
+	@SideOnly(Side.CLIENT)
+	@Nonnull List<String> getPedestalDescription();
 }

@@ -1,18 +1,19 @@
 package moze_intel.projecte.emc.collector;
 
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-
 import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Map;
 
 public class IntToFractionCollector<T, A extends IValueArithmetic> extends AbstractMappingCollector<T, Integer, A>
 {
-	IExtendedMappingCollector<T, Fraction, A> inner;
+	private final IExtendedMappingCollector<T, Fraction, A> inner;
+
 	public IntToFractionCollector(IExtendedMappingCollector<T, Fraction, A> inner) {
 		super(inner.getArithmetic());
 		this.inner = inner;
 	}
+
 	@Override
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
 	{

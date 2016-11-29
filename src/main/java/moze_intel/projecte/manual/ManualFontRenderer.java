@@ -1,11 +1,12 @@
 package moze_intel.projecte.manual;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,13 +21,14 @@ public class ManualFontRenderer extends FontRenderer
         super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
     }
 
+    @Nonnull
     @Override
-    public List listFormattedStringToWidth(String string, int width)
+    public List<String> listFormattedStringToWidth(@Nonnull String string, int width)
     {
         return Arrays.asList(this.wrapFormStringToWidth(string, width).split("\n"));
     }
 
-    String wrapFormStringToWidth(String str, int width)
+    private String wrapFormStringToWidth(String str, int width)
     {
         int j = this.sizeStringToWidth(str, width);
 
@@ -84,7 +86,7 @@ public class ManualFontRenderer extends FontRenderer
                 case 32:
                     i1 = l;
                 default:
-                    k += Minecraft.getMinecraft().fontRenderer.getCharWidth(c0); // Need to call it on the real fontrenderer due to state stuff >.>
+                    k += Minecraft.getMinecraft().fontRendererObj.getCharWidth(c0); // Need to call it on the real fontrenderer due to state stuff >.>
 
                     if (flag)
                     {
@@ -108,39 +110,8 @@ public class ManualFontRenderer extends FontRenderer
         return l != j && i1 != -1 && i1 < l ? i1 : l;
     }
 
-    private static String getFormatFromString(String p_78282_0_)
+    private static boolean isFormatColor(char color)
     {
-        String s1 = "";
-        int i = -1;
-        int j = p_78282_0_.length();
-
-        while ((i = p_78282_0_.indexOf(167, i + 1)) != -1)
-        {
-            if (i < j - 1)
-            {
-                char c0 = p_78282_0_.charAt(i + 1);
-
-                if (isFormatColor(c0))
-                {
-                    s1 = "\u00a7" + c0;
-                } else if (isFormatSpecial(c0))
-                {
-                    s1 = s1 + "\u00a7" + c0;
-                }
-            }
-        }
-
-        return s1;
+        return color >= 48 && color <= 57 || color >= 97 && color <= 102 || color >= 65 && color <= 70;
     }
-
-    private static boolean isFormatColor(char p_78272_0_)
-    {
-        return p_78272_0_ >= 48 && p_78272_0_ <= 57 || p_78272_0_ >= 97 && p_78272_0_ <= 102 || p_78272_0_ >= 65 && p_78272_0_ <= 70;
-    }
-
-    private static boolean isFormatSpecial(char p_78270_0_)
-    {
-        return p_78270_0_ >= 107 && p_78270_0_ <= 111 || p_78270_0_ >= 75 && p_78270_0_ <= 79 || p_78270_0_ == 114 || p_78270_0_ == 82;
-    }
-
 }

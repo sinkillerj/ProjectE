@@ -1,10 +1,10 @@
 package moze_intel.projecte.impl;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import java.util.Locale;
 

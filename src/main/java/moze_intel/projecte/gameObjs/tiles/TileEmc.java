@@ -7,12 +7,19 @@ import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
-public abstract class TileEmc extends TileEmcBase
+public abstract class TileEmc extends TileEmcBase implements ITickable
 {
 	public TileEmc()
 	{
@@ -23,8 +30,20 @@ public abstract class TileEmc extends TileEmcBase
 	{
 		setMaximumEMC(maxAmount);
 	}
+
+	@Override
+	public final NBTTagCompound getUpdateTag()
+	{
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState state, @Nonnull IBlockState newState)
+	{
+		return state.getBlock() != newState.getBlock();
+	}
 	
-	public boolean hasMaxedEmc()
+	protected boolean hasMaxedEmc()
 	{
 		return getStoredEmc() >= getMaximumEmc();
 	}
@@ -35,7 +54,7 @@ public abstract class TileEmc extends TileEmcBase
 	 *
 	 * @param emc The maximum combined emc to send to others
 	 */
-	public void sendToAllAcceptors(double emc)
+	protected void sendToAllAcceptors(double emc)
 	{
 		if (!(this instanceof IEmcProvider))
 		{
@@ -44,10 +63,10 @@ public abstract class TileEmc extends TileEmcBase
 		}
 
 
-		Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEmcAcceptor.class));
+		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEmcAcceptor.class));
 
 		double emcPer = emc / tiles.size();
-		for (Map.Entry<ForgeDirection, TileEntity> entry : tiles.entrySet())
+		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())
 		{
 			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
 			{
@@ -56,6 +75,20 @@ public abstract class TileEmc extends TileEmcBase
 			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
 			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
 			this.addEMC(remain);
+		}
+	}
+
+	class StackHandler extends ItemStackHandler
+	{
+		StackHandler(int size)
+		{
+			super(size);
+		}
+
+		@Override
+		public void onContentsChanged(int slot)
+		{
+			TileEmc.this.markDirty();
 		}
 	}
 }

@@ -3,7 +3,6 @@ package moze_intel.projecte.emc;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
@@ -34,8 +33,8 @@ public class GraphMapperTest {
 	public void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
-		valueGenerator = new FractionToIntGenerator(mapper);
-		mappingCollector = new IntToFractionCollector(mapper);
+		valueGenerator = new FractionToIntGenerator<>(mapper);
+		mappingCollector = new IntToFractionCollector<>(mapper);
 	}
 
 	@Rule

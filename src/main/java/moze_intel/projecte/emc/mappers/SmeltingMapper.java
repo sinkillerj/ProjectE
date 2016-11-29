@@ -1,8 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.config.Configuration;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.smelting().getSmeltingList();
+		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.instance().getSmeltingList();
 		for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
 			ItemStack input = entry.getKey();
 			ItemStack output = entry.getValue();

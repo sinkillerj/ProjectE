@@ -9,9 +9,11 @@ import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,12 +35,12 @@ public final class EMCHelper
 			return minFuel;
 		}
 
-		IInventory inv = player.inventory;
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 
-		for (int i = 0; i < inv.getSizeInventory(); i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
@@ -88,7 +90,7 @@ public final class EMCHelper
 		{
 			for (Map.Entry<Integer, Integer> entry : map.entrySet())
 			{
-				inv.decrStackSize(entry.getKey(), entry.getValue());
+				inv.extractItem(entry.getKey(), entry.getValue(), false);
 			}
 
 			player.inventoryContainer.detectAndSendChanges();
@@ -100,12 +102,7 @@ public final class EMCHelper
 
 	public static boolean doesBlockHaveEmc(Block block)
 	{
-		if (block == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(block));
+		return block != null && doesItemHaveEmc(new ItemStack(block));
 	}
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
@@ -124,7 +121,7 @@ public final class EMCHelper
 
 		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
-			iStack.damage = 0;
+			iStack = iStack.withMeta(0);
 		}
 
 		return EMCMapper.mapContains(iStack);
@@ -132,17 +129,12 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(Item item)
 	{
-		if (item == null)
-		{
-			return false;
-		}
-
-		return doesItemHaveEmc(new ItemStack(item));
+		return item != null && doesItemHaveEmc(new ItemStack(item));
 	}
 
-	public static int getEmcValue(Block Block)
+	public static int getEmcValue(Block block)
 	{
-		SimpleStack stack = new SimpleStack(new ItemStack(Block));
+		SimpleStack stack = new SimpleStack(new ItemStack(block));
 
 		if (stack.isValid() && EMCMapper.mapContains(stack))
 		{
@@ -184,7 +176,7 @@ public final class EMCHelper
 		if (!EMCMapper.mapContains(iStack) && !stack.getHasSubtypes() && stack.getMaxDamage() != 0)
 		{
 			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.
-			iStack.damage = 0;
+			iStack = iStack.withMeta(0);
 
 			if (EMCMapper.mapContains(iStack))
 			{
@@ -235,24 +227,23 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEnchantEmcBonus(ItemStack stack)
+	private static int getEnchantEmcBonus(ItemStack stack)
 	{
 		int result = 0;
 
-		Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
 		if (!enchants.isEmpty())
 		{
-			for (Map.Entry<Integer, Integer> entry : enchants.entrySet())
+			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet())
 			{
-				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
-
-				if (ench.getWeight() == 0)
+				Enchantment ench = entry.getKey();
+				if (ench == null || ench.getRarity().getWeight() == 0)
 				{
 					continue;
 				}
 
-				result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
+				result += Constants.ENCH_EMC_BONUS / ench.getRarity().getWeight() * entry.getValue();
 			}
 		}
 
@@ -264,9 +255,9 @@ public final class EMCHelper
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
-	public static double getStoredEMCBonus(ItemStack stack) {
-		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
-			return stack.stackTagCompound.getDouble("StoredEMC");
+	private static double getStoredEMCBonus(ItemStack stack) {
+		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
+			return stack.getTagCompound().getDouble("StoredEMC");
 		}
 		return 0;
 	}

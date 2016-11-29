@@ -1,116 +1,138 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SyncPedestalPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Pedestal extends Block {
+import javax.annotation.Nonnull;
+import java.util.List;
 
-    public Pedestal() {
-        super(Material.rock);
+public class Pedestal extends Block
+{
+
+    private static final AxisAlignedBB AABB = new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 0.75, 0.8125);
+
+    public Pedestal()
+    {
+        super(Material.ROCK);
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
-        this.setBlockBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 0.75F, 0.8125F);
-        this.setBlockTextureName(PECore.MODID.toLowerCase() + ":dm");
-        setBlockName("pe_dmPedestal");
+        this.setUnlocalizedName("pe_dmPedestal");
     }
 
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    @Nonnull
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
-        if (tile.getItemStack() != null)
-        {
-            WorldHelper.spawnEntityItem(world, tile.getItemStack().copy(), x, y, z);
-        }
-        tile.invalidate();
-        super.breakBlock(world, x, y, z, block, meta);
+        return AABB;
     }
 
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    private void dropItem(World world, BlockPos pos)
+    {
+        DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
+        if (stack != null)
+        {
+            WorldHelper.spawnEntityItem(world, stack, pos.getX(), pos.getY() + 0.8, pos.getZ());
+            tile.getInventory().setStackInSlot(0, null);
+        }
+    }
+
+    @Override
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
+    {
+        dropItem(world, pos);
+        super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
     {
         if (!world.isRemote)
         {
-            DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
-            if (player.isSneaking())
+            dropItem(world, pos);
+            IBlockState state = world.getBlockState(pos);
+            world.notifyBlockUpdate(pos, state, state, 8);
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        if (!world.isRemote)
+        {
+            DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+            ItemStack item = tile.getInventory().getStackInSlot(0);
+
+            if (stack == null
+                    && item != null
+                    && item.getItem() instanceof IPedestalItem)
             {
-                player.openGui(PECore.instance, Constants.PEDESTAL_GUI, world, x, y, z);
-            }
-            else
+                tile.setActive(!tile.getActive());
+                world.notifyBlockUpdate(pos, state, state, 8);
+            } else if (stack != null && item == null)
             {
-                if (tile.getItemStack() != null && tile.getItemStack().getItem() instanceof IPedestalItem)
+                tile.getInventory().setStackInSlot(0, stack.splitStack(1));
+                if (stack.stackSize <= 0)
                 {
-                    tile.setActive(!tile.getActive());
+                    player.setHeldItem(hand, null);
                 }
-                PELogger.logDebug("Pedestal: " + (tile.getActive() ? "ON" : "OFF"));
+                world.notifyBlockUpdate(pos, state, state, 8);
             }
-            PacketHandler.sendToAllAround(new SyncPedestalPKT(tile), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32));
         }
         return true;
     }
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase ent, ItemStack stack)
-	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if (stack.hasTagCompound() && stack.stackTagCompound.getBoolean("ProjectEBlock") && tile instanceof TileEmc)
-		{
-			stack.stackTagCompound.setInteger("x", x);
-			stack.stackTagCompound.setInteger("y", y);
-			stack.stackTagCompound.setInteger("z", z);
-
-			tile.readFromNBT(stack.stackTagCompound);
-		}
-	}
-
-	@Override
-    public boolean renderAsNormalBlock()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public int getRenderType()
-    {
-        return Constants.PEDESTAL_RENDER_ID;
-    }
-
-    @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    public int getLightValue(@Nonnull IBlockState state, IBlockAccess world, @Nonnull BlockPos pos)
     {
         return 12;
     }
 
     @Override
-    public boolean hasTileEntity(int meta)
+    public boolean hasTileEntity(IBlockState state)
     {
         return true;
     }
 
+    @Nonnull
     @Override
-    public TileEntity createTileEntity(World world, int meta) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new DMPedestalTile();
     }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    {
+        tooltip.add(I18n.format("pe.pedestal.tooltip1"));
+        tooltip.add(I18n.format("pe.pedestal.tooltip2"));
+    }
+
 }

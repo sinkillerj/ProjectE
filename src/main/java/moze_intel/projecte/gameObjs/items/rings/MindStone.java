@@ -4,19 +4,27 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MindStone extends RingToggle implements IPedestalItem
 {
-	private final int TRANSFER_RATE = 50;
+	private static final int TRANSFER_RATE = 50;
 
 	public MindStone() 
 	{
@@ -38,12 +46,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 		if (stack.getItemDamage() != 0) 
 		{
-			if (!canStore(stack))
-			{
-				this.changeMode(player, stack);
-				return;
-			}
-			
 			if (getXP(player) > 0)
 			{
 				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
@@ -53,8 +55,9 @@ public class MindStone extends RingToggle implements IPedestalItem
 		}
 	}
 	
+	@Nonnull
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float par8, float par9, float par10)
 	{
 		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
 		{
@@ -63,13 +66,21 @@ public class MindStone extends RingToggle implements IPedestalItem
 			if (toAdd > 0)
 			{
 				addXP(player, toAdd);
-				return true;
 			}
 		}
 		
-		return false;
+		return EnumActionResult.SUCCESS;
 	}
-	
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	{
+		if(stack.getTagCompound() != null)
+			tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
+	}
+
+
 	private void removeXP(EntityPlayer player, int amount)
 	{
 		int experiencetotal = getXP(player) - amount;
@@ -109,17 +120,17 @@ public class MindStone extends RingToggle implements IPedestalItem
 			return Integer.MAX_VALUE;
 		}
 
-		if (level <= 15) 
+		if (level <= 16)
 		{
-			return level * 17;
+			return level * level + 6 * level;
 		}
 
-		if (level <= 30) 
+		if (level <= 31)
 		{
-			return (int) (((level * level) * 1.5D) - (29.5D * level) + 360.0D);
+			return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
 		}
 
-		return (int) (((level * level) * 3.5D) - (151.5D * level) + 2220.0D);
+		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
 	}
 
 	private int getLvlForXP(int totalXP)
@@ -136,17 +147,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return stack.stackTagCompound.getInteger("StoredXP");
-	}
-	
-	private boolean canStore(ItemStack stack)
-	{
-		return getStoredXP(stack) <= Integer.MAX_VALUE;
+		return stack.getTagCompound().getInteger("StoredXP");
 	}
 
-	private void setStoredXP(ItemStack stack, int XP) 
+	private void setStoredXP(ItemStack stack, int XP)
 	{
-		stack.stackTagCompound.setInteger("StoredXP", XP);
+		stack.getTagCompound().setInteger("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 
@@ -183,16 +189,16 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(World world, int x, int y, int z)
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
+		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
 		for (EntityXPOrb orb : orbs)
 		{
-			WorldHelper.gravitateEntityTowards(orb, x + 0.5, y + 0.5, z + 0.5);
-			if (!world.isRemote && orb.getDistanceSq(x + 0.5,y + 0.5, z + 0.5) < 1.21)
+			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21)
 			{
-				suckXP(orb, tile.getItemStack());
+				suckXP(orb, tile.getInventory().getStackInSlot(0));
 			}
 		}
 
@@ -204,26 +210,25 @@ public class MindStone extends RingToggle implements IPedestalItem
 		{
 			mindStone.setTagCompound(new NBTTagCompound());
 		}
-		
-		if (canStore(mindStone))
+
+		long l = getStoredXP(mindStone);
+		if (l + orb.xpValue > Integer.MAX_VALUE)
 		{
-			long l = getStoredXP(mindStone);
-			if (l + orb.xpValue > Integer.MAX_VALUE)
-			{
-				orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
-				setStoredXP(mindStone, Integer.MAX_VALUE);
-			}
-			else
-			{
-				addStoredXP(mindStone, orb.xpValue);
-				orb.setDead();
-			}
+			orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
+			setStoredXP(mindStone, Integer.MAX_VALUE);
+		}
+		else
+		{
+			addStoredXP(mindStone, orb.xpValue);
+			orb.setDead();
 		}
 	}
 
+	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		return Lists.newArrayList(StatCollector.translateToLocal("pe.mind.pedestal1"));
+		return Lists.newArrayList(I18n.format("pe.mind.pedestal1"));
 	}
 }

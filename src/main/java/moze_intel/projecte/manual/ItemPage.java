@@ -1,9 +1,9 @@
 package moze_intel.projecte.manual;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ItemPage extends AbstractPage
@@ -26,7 +26,7 @@ public class ItemPage extends AbstractPage
     @Override
     public String getHeaderText()
     {
-        return StatCollector.translateToLocal(stack.getUnlocalizedName() + ".name");
+        return I18n.format(stack.getUnlocalizedName() + ".name");
     }
 
     @Override

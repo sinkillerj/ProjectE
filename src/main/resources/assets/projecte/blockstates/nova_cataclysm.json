@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_bottom_top",
+    "textures": {
+      "bottom": "projecte:blocks/explosives/bottom",
+      "top": "projecte:blocks/explosives/top",
+      "side": "projecte:blocks/explosives/nova1_side"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [
+      {},
+      { "y": 90 },
+      { "y": 180 },
+      { "y": 270 }
+    ],
+    "inventory": [{}]
+  }
+}

@@ -1,198 +1,156 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider
+public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 {
-	private ItemStack[] inventory;
-	private int[] accessibleSlots;
-	private final int invBufferSize;
+	private final ItemStackHandler input = new StackHandler(getInvSize());
+	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
+	private final IItemHandler automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
+	{
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return SlotPredicates.COLLECTOR_INV.test(stack)
+					? super.insertItem(slot, stack, simulate)
+					: stack;
+		}
+	};
+	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+		@Override
+		public ItemStack extractItem(int slot, int count, boolean simulate)
+		{
+			if (slot == UPGRADE_SLOT)
+				return super.extractItem(slot, count, simulate);
+			else return null;
+		}
+	};
+	public static final int UPGRADING_SLOT = 0;
+	public static final int UPGRADE_SLOT = 1;
+	public static final int LOCK_SLOT = 2;
+
 	private final int emcGen;
-	private final int lockSlot;
-	private final int upgradedSlot;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
-	public double storedFuelEmc;
-	public int displayEmc;
-	public int displaySunLevel;
-	public double displayItemCharge;
-	private int numUsing;
-	
+	private double storedFuelEmc;
+
 	public CollectorMK1Tile()
 	{
 		super(Constants.COLLECTOR_MK1_MAX);
-		inventory = new ItemStack[11];
-		invBufferSize = 8;
-		
-		accessibleSlots = new int[invBufferSize];
-		
-		for (int i = 0; i < invBufferSize; i++)
-		{
-			accessibleSlots[i] = i + 1;
-		}
-		
 		emcGen = Constants.COLLECTOR_MK1_GEN;
-		upgradedSlot = 9;
-		lockSlot = 10;
 	}
 	
-	public CollectorMK1Tile(int maxEmc, int emcGen, int upgradedSlot, int lockSlot)
+	public CollectorMK1Tile(int maxEmc, int emcGen)
 	{
 		super(maxEmc);
-		inventory = new ItemStack[lockSlot + 1];
-		invBufferSize = lockSlot - 2;
-		
-		accessibleSlots = new int[invBufferSize];
-		
-		for (int i = 0; i < invBufferSize; i++)
-		{
-			accessibleSlots[i] = i + 1;
-		}
-		
 		this.emcGen = emcGen;
-		this.upgradedSlot = upgradedSlot;
-		this.lockSlot = lockSlot;
 	}
-	
-	@Override
-	public void updateEntity()
-	{
-		if (worldObj.isRemote) 
-		{
-			return;
-		}
-		
-		sortInventory();
-		
-		if (inventory[0] == null)
-		{
-			hasChargeableItem = false;
-			hasFuel = false;
-		}
-		else 
-		{
-			checkFuelOrKlein();
-		}
-		
-		if (!this.hasMaxedEmc())
-		{
-			this.addEMC(getSunRelativeEmc(emcGen) / 20.0f);
-		}
-		
-		updateEmc();
-		
-		displayEmc = (int) this.getStoredEmc();
-		displaySunLevel = getSunLevel();
-		displayItemCharge = getItemCharge();
-		
-		if (numUsing > 0)
-		{
-			PacketHandler.sendToAllAround(new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
-					new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
-		}
-	}
-	
-	private void sortInventory()
-	{
-		if (inventory[upgradedSlot] != null)
-		{
-			if (!(inventory[lockSlot] != null
-					&& inventory[upgradedSlot].getItem() == inventory[lockSlot].getItem()
-					&& inventory[upgradedSlot].stackSize < inventory[upgradedSlot].getMaxStackSize())) {
-				for (int i = 1; i < invBufferSize; i++)
-				{
-					if (inventory[i] == null)
-					{
-						inventory[i] = inventory[upgradedSlot];
-						inventory[upgradedSlot] = null;
-						break;
-					}
-					else if (ItemHelper.areItemStacksEqual(inventory[i], inventory[upgradedSlot]))
-					{
-						int remain = inventory[i].getMaxStackSize() - inventory[i].stackSize;
 
-						if (remain >= inventory[upgradedSlot].stackSize)
-						{
-							inventory[i].stackSize += inventory[upgradedSlot].stackSize;
-							inventory[upgradedSlot] = null;
-							break;
-						}
-						else
-						{
-							inventory[i].stackSize += remain;
-							inventory[upgradedSlot].stackSize -= remain;
-						}
-					}
-				}
+	public IItemHandler getInput()
+	{
+		return input;
+	}
+
+	public IItemHandler getAux()
+	{
+		return auxSlots;
+	}
+
+	@Override
+	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	{
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
+	}
+
+	@Nonnull
+	@Override
+	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			if (side != null && side.getAxis().isVertical())
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationAuxSlots);
+			} else
+			{
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
 			}
 		}
-		
-		for (int i = 1; i <= invBufferSize; i++)
+		return super.getCapability(cap, side);
+	}
+
+	protected int getInvSize()
+	{
+		return 8;
+	}
+
+	private ItemStack getUpgraded()
+	{
+		return auxSlots.getStackInSlot(UPGRADE_SLOT);
+	}
+
+	private ItemStack getLock()
+	{
+		return auxSlots.getStackInSlot(LOCK_SLOT);
+	}
+
+	private ItemStack getUpgrading()
+	{
+		return auxSlots.getStackInSlot(UPGRADING_SLOT);
+	}
+
+	@Override
+	public void update()
+	{
+		if (worldObj.isRemote)
+			return;
+
+		ItemHelper.compactInventory(toSort);
+		checkFuelOrKlein();
+		updateEmc();
+		rotateUpgraded();
+	}
+
+	private void rotateUpgraded()
+	{
+		if (getUpgraded() != null)
 		{
-			ItemStack current = getStackInSlot(i);
-			
-			if (current == null)
-			{
-				continue;
-			}
-			
-			int nextIndex = i < invBufferSize ? i + 1 : 0;
-			
-			ItemStack following = inventory[nextIndex];
-			
-			if (following == null)
-			{
-				inventory[nextIndex] = current;
-				decrStackSize(i, current.stackSize);
-				
-				continue;
-			}
-			else if (ItemHelper.areItemStacksEqual(current, following) && following.stackSize < following.getMaxStackSize())
-			{
-				int missingForFullStack = following.getMaxStackSize() - following.stackSize;
-				
-				if (current.stackSize <= missingForFullStack)
-				{
-					inventory[nextIndex].stackSize += current.stackSize;
-					inventory[i] = null;
-				}
-				else
-				{
-					inventory[nextIndex].stackSize += missingForFullStack;
-					decrStackSize(i, missingForFullStack);
-				}
-				
-				continue;
+			if (getLock() == null
+					|| getUpgraded().getItem() != getLock().getItem()
+					|| getUpgraded().stackSize >= getUpgraded().getMaxStackSize()) {
+				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, getUpgraded().copy(), false));
 			}
 		}
 	}
 	
-	public void checkFuelOrKlein()
+	private void checkFuelOrKlein()
 	{
-		if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
+		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
 		{
-			IItemEmc itemEmc = ((IItemEmc) inventory[0].getItem());
-			if(itemEmc.getStoredEmc(inventory[0]) != itemEmc.getMaximumEmc(inventory[0]))
+			IItemEmc itemEmc = ((IItemEmc) getUpgrading().getItem());
+			if(itemEmc.getStoredEmc(getUpgrading()) != itemEmc.getMaximumEmc(getUpgrading()))
 			{
 				hasChargeableItem = true;
 				hasFuel = false;
@@ -202,15 +160,24 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 				hasChargeableItem = false;
 			}
 		}
-		else
+		else if (getUpgrading() != null)
 		{
 			hasFuel = true;
+			hasChargeableItem = false;
+		} else
+		{
+			hasFuel = false;
 			hasChargeableItem = false;
 		}
 	}
 	
-	public void updateEmc()
+	private void updateEmc()
 	{
+		if (!this.hasMaxedEmc())
+		{
+			this.addEMC(getSunRelativeEmc(emcGen) / 20.0f);
+		}
+
 		if (this.getStoredEmc() == 0)
 		{
 			return;
@@ -219,43 +186,47 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			
-			double starEmc = ItemPE.getEmc(inventory[0]);
-			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(inventory[0]);
+			double starEmc = ItemPE.getEmc(getUpgrading());
+			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(getUpgrading());
 			
 			if ((starEmc + toSend) > maxStarEmc)
 			{
 				toSend = maxStarEmc - starEmc;
 			}
 			
-			ItemPE.addEmcToStack(inventory[0], toSend);
+			ItemPE.addEmcToStack(getUpgrading(), toSend);
 			this.removeEMC(toSend);
 		}
 		else if (hasFuel)
 		{
-			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
 			{
-				this.setInventorySlotContents(0, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 			}
 
-			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
+			ItemStack result = getLock() == null ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
 			
-			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
+			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
-				ItemStack upgrade = inventory[upgradedSlot];
+				ItemStack upgrade = getUpgraded();
 
-				if (inventory[upgradedSlot] == null)
+				if (getUpgraded() == null)
 				{
 					this.removeEMC(upgradeCost);
-					this.setInventorySlotContents(upgradedSlot, result);
-					this.decrStackSize(0, 1);
+					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
+					getUpgrading().stackSize--;
+					if (getUpgrading().stackSize == 0)
+						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				}
 				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
 				{
 					this.removeEMC(upgradeCost);
-					inventory[upgradedSlot].stackSize++;
-					this.decrStackSize(0, 1);
+					getUpgraded().stackSize++;
+					getUpgrading().stackSize--;
+					if (getUpgrading().stackSize == 0)
+						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				}
 			}
 		}
@@ -272,79 +243,62 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		return (float) getSunLevel() * emc / 16;
 	}
 
-	public ItemStack getChargingItem()
-	{
-		return inventory[0];
-	}
-
 	public double getEmcToNextGoal()
 	{
-		if (inventory[lockSlot] != null)
+		if (getLock() != null)
 		{
-			return EMCHelper.getEmcValue(inventory[lockSlot]) - EMCHelper.getEmcValue(inventory[0]);
+			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 		}
 		else
 		{
-			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 		}
 	}
 
-	private double getItemCharge()
+	public double getItemCharge()
 	{
-		if (inventory[0] != null && inventory[0].getItem() instanceof IItemEmc)
+		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) inventory[0].getItem()).getStoredEmc(inventory[0]);
+			return ((IItemEmc) getUpgrading().getItem()).getStoredEmc(getUpgrading());
 		}
-		
+
 		return -1;
 	}
-	
-	public int getKleinStarChargeScaled(int i)
+
+	public double getItemChargeProportion()
 	{
-		if (inventory[0] == null || displayItemCharge <= 0)
+		double charge = getItemCharge();
+
+		if (getUpgrading() == null || charge <= 0 || !(getUpgrading().getItem() instanceof IItemEmc))
 		{
-			return 0;
+			return -1;
 		}
-		
-		return ((int) Math.round(displayItemCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
+
+		return charge / ((IItemEmc) getUpgrading().getItem()).getMaximumEmc(getUpgrading());
 	}
 	
 	public int getSunLevel()
 	{
-		if (worldObj.provider.isHellWorld)
+		if (worldObj.provider.doesWaterVaporize())
 		{
 			return 16;
 		}
-		return worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
+		return worldObj.getLight(getPos().up()) + 1;
 	}
-	
-	public int getEmcScaled(int i)
+
+	public double getFuelProgress()
 	{
-		if (displayEmc == 0) 
+		if (getUpgrading() == null || !FuelMapper.isStackFuel(getUpgrading()))
 		{
 			return 0;
 		}
-		return ((int) Math.round(displayEmc * i / this.getMaximumEmc()));
-	}
-	
-	public int getSunLevelScaled(int i)
-	{
-		return displaySunLevel * i / 16;
-	}
-	
-	public int getFuelProgressScaled(int i)
-	{
-		if (inventory[0] == null || !FuelMapper.isStackFuel(inventory[0]))
+
+		int reqEmc;
+
+		if (getLock() != null)
 		{
-			return 0;
-		}
-		
-		int reqEmc = 0;
-		
-		if (inventory[lockSlot] != null)
-		{
-			reqEmc = EMCHelper.getEmcValue(inventory[lockSlot]) - EMCHelper.getEmcValue(inventory[0]);
-			
+			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
+
 			if (reqEmc < 0)
 			{
 				return 0;
@@ -352,24 +306,24 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		}
 		else
 		{
-			if (FuelMapper.getFuelUpgrade(inventory[0]) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
 			{
-				this.setInventorySlotContents(0, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
 				return 0;
 			}
 			else
 			{
-				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0])) - EMCHelper.getEmcValue(inventory[0]);
+				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 			}
 
 		}
-		
-		if (displayEmc >= reqEmc)
+
+		if (getStoredEmc() >= reqEmc)
 		{
-			return i;
+			return 1;
 		}
-		
-		return displayEmc * i / reqEmc;
+
+		return getStoredEmc() / reqEmc;
 	}
 	
 	@Override
@@ -377,179 +331,26 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	{
 		super.readFromNBT(nbt);
 		storedFuelEmc = nbt.getDouble("FuelEMC");
-		
-		NBTTagList list = nbt.getTagList("Items", 10);
-		inventory = new ItemStack[getSizeInventory()];
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound subNBT = list.getCompoundTagAt(i);
-			
-			byte slot = subNBT.getByte("Slot");
-			
-			if (slot >= 0 && slot < getSizeInventory())
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(subNBT);
-			}
-		}
+		input.deserializeNBT(nbt.getCompoundTag("Input"));
+		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
 	}
 	
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
-		nbt.setDouble("EMC", this.getStoredEmc());
+		nbt = super.writeToNBT(nbt);
 		nbt.setDouble("FuelEMC", storedFuelEmc);
-		
-		NBTTagList list = new NBTTagList();
-		
-		for (int i = 0; i < getSizeInventory(); i++)
-		{
-			if (inventory[i] == null) 
-			{
-				continue;
-			}
-			
-			NBTTagCompound subNBT = new NBTTagCompound();
-			subNBT.setByte("Slot", (byte) i);
-			inventory[i].writeToNBT(subNBT);
-			list.appendTag(subNBT);
-		}
-		nbt.setTag("Items", list);
-	}
-
-	@Override
-	public int getSizeInventory() 
-	{
-		return inventory.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) 
-	{
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int qty) 
-	{
-		ItemStack stack = inventory[slot];
-		if (stack != null)
-		{
-			if (stack.stackSize <= qty)
-			{
-				inventory[slot] = null;
-			}
-			else
-			{
-				stack = stack.splitStack(qty);
-				if (stack.stackSize == 0)
-					inventory[slot] = null;
-			}
-		}
-		return stack;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) 
-	{
-		if (inventory[slot] != null)
-		{
-			ItemStack stack = inventory[slot];
-			inventory[slot] = null;
-			return stack;
-		}
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) 
-	{
-		inventory[slot] = stack;
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-			stack.stackSize = this.getInventoryStackLimit();
-		this.markDirty();
-	}
-
-	@Override
-	public String getInventoryName() 
-	{
-		return "tile.pe_collector_MK1.name";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() 
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) 
-	{
-		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : var1.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory() 
-	{
-		numUsing++;
-	}
-
-	@Override
-	public void closeInventory() 
-	{
-		numUsing--;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) 
-	{
-		return true;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
-	{
-		if (side == 0 || side == 1)
-		{
-			return new int[] {upgradedSlot};
-		}
-		
-		return accessibleSlots;
-	}
-
-	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) 
-	{
-		if (side == 0 || side == 1)
-		{
-			return false;
-		}
-		
-		return FuelMapper.isStackFuel(stack);
-	}
-
-	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) 
-	{
-		if (side == 0 || side == 1)
-		{
-			return slot == upgradedSlot;
-		}
-		
-		return false;
+		nbt.setTag("Input", input.serializeNBT());
+		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
+		return nbt;
 	}
 
 	private void sendRelayBonus()
 	{
-		for (Map.Entry<ForgeDirection, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this).entrySet())
+		for (Map.Entry<EnumFacing, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this).entrySet())
 		{
-			ForgeDirection dir = entry.getKey();
+			EnumFacing dir = entry.getKey();
 			TileEntity tile = entry.getValue();
 
 			if (tile instanceof RelayMK3Tile)
@@ -568,7 +369,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	}
 
 	@Override
-	public double provideEMC(ForgeDirection side, double toExtract)
+	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);

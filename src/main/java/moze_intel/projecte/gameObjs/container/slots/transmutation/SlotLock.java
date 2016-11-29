@@ -1,17 +1,16 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotLock extends Slot
+public class SlotLock extends SlotItemHandler
 {
-	private TransmutationInventory inv;
+	private final TransmutationInventory inv;
 	
 	public SlotLock(TransmutationInventory inv, int par2, int par3, int par4)
 	{
@@ -38,7 +37,7 @@ public class SlotLock extends Slot
 		if (stack.getItem() instanceof IItemEmc)
 		{
 			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.emc);
+			int remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.provider.getEmc());
 			
 			if (itemEmc.getStoredEmc(stack) >= remainEmc)
 			{
@@ -50,19 +49,9 @@ public class SlotLock extends Slot
 				inv.addEmc(itemEmc.getStoredEmc(stack));
 				itemEmc.extractEmc(stack, itemEmc.getStoredEmc(stack));
 			}
-			
-			inv.handleKnowledge(stack.copy());
-			return;
 		}
 		
-		if (stack.getItem() != ObjHandler.tome)
-		{
-			inv.handleKnowledge(stack.copy());
-		}
-		else
-		{
-			inv.updateOutputs();
-		}
+		inv.handleKnowledge(stack.copy());
 	}
 	
 	@Override
@@ -70,7 +59,7 @@ public class SlotLock extends Slot
 	{
 		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
 		
-		inv.updateOutputs();
+		inv.updateClientTargets();
 	}
 	
 	@Override

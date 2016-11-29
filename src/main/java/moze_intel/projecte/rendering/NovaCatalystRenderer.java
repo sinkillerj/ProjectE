@@ -1,87 +1,79 @@
 package moze_intel.projecte.rendering;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class NovaCatalystRenderer extends Render
+public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
 {
-	private RenderBlocks blockRenderer = new RenderBlocks();
-
-	public NovaCatalystRenderer()
+	public NovaCatalystRenderer(RenderManager manager)
 	{
+		super(manager);
 		this.shadowSize = 0.5F;
 	}
-	
-	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f1, float f2)
-	{
-		this.doRender((EntityNovaCatalystPrimed) entity, x, y, z, f1, f2);
-	}
 
-	public void doRender(EntityNovaCatalystPrimed entity, double x, double y, double z, float par8, float par9)
+	@Override
+	public void doRender(@Nonnull EntityNovaCatalystPrimed entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x, (float) y, (float) z);
+		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 		float f2;
 
-		if ((float) entity.fuse - par9 + 1.0F < 10.0F)
+		if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
 		{
-			f2 = 1.0F - ((float) entity.fuse - par9 + 1.0F) / 10.0F;
-
-			if (f2 < 0.0F)
-			{
-				f2 = 0.0F;
-			}
-
-			if (f2 > 1.0F)
-			{
-				f2 = 1.0F;
-			}
-
+			f2 = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
+			f2 = MathHelper.clamp_float(f2, 0.0F, 1.0F);
 			f2 *= f2;
 			f2 *= f2;
 			float f3 = 1.0F + f2 * 0.3F;
-			GL11.glScalef(f3, f3, f3);
+			GlStateManager.scale(f3, f3, f3);
 		}
 
-		f2 = (1.0F - ((float) entity.fuse - par9 + 1.0F) / 100.0F) * 0.8F;
+		f2 = (1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
 		this.bindEntityTexture(entity);
-		this.blockRenderer.renderBlockAsItem(ObjHandler.novaCatalyst, 0, entity.getBrightness(par9));
+		GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+		blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCatalyst.getDefaultState(), entity.getBrightness(partialTicks));
+		GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
-		if (entity.fuse / 5 % 2 == 0)
+		if (entity.getFuse() / 5 % 2 == 0)
 		{
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, f2);
-			this.blockRenderer.renderBlockAsItem(ObjHandler.novaCatalyst, 0, 1.0F);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GlStateManager.disableTexture2D();
+			GlStateManager.disableLighting();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(770, 772);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
+			GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+			GlStateManager.enablePolygonOffset();
+			blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCatalyst.getDefaultState(), 1.0F);
+			GlStateManager.doPolygonOffset(0.0F, 0.0F);
+			GlStateManager.disablePolygonOffset();
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.disableBlend();
+			GlStateManager.enableLighting();
+			GlStateManager.enableTexture2D();
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 
-	protected ResourceLocation getEntityTexture(EntityNovaCatalystPrimed entity) 
-	{
-		return TextureMap.locationBlocksTexture;
-	}
-	
+	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture(@Nonnull EntityNovaCatalystPrimed entity)
 	{
-		return this.getEntityTexture((EntityNovaCatalystPrimed) entity);
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

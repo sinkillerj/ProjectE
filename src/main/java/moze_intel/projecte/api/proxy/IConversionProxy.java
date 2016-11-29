@@ -1,11 +1,12 @@
 package moze_intel.projecte.api.proxy;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public interface IConversionProxy
@@ -38,22 +39,22 @@ public interface IConversionProxy
 	 *
 	 * <pre>{@code
 	 * //Furnace Crafting Recipe:
-	 * addConversion(1, Blocks.furnace, ImmutableMap.of((Object)Blocks.cobblestone, 8));
+	 * addConversion(1, Blocks.FURNACE, ImmutableMap.of((Object)Blocks.COBBLESTONE, 8));
 	 * //alternatively:
-	 * addConversion(1, Blocks.furnace, ImmutableMap.<Object, Integer>of(Blocks.cobblestone, 8));
+	 * addConversion(1, Blocks.FURNACE, ImmutableMap.<Object, Integer>of(Blocks.COBBLESTONE, 8));
 	 *
 	 * //Bed Crafting Recipe with OreDictionary Names:
-	 * //3 "plankWood" and 3 "blockWool" turn into 1 Blocks.bed
-	 * addConversion(1, Blocks.bed, ImmutableMap.<Object, Integer>of("plankWood", 3, "blockWool", 3));
+	 * //3 "plankWood" and 3 "blockWool" turn into 1 Blocks.BED
+	 * addConversion(1, Blocks.BED, ImmutableMap.<Object, Integer>of("plankWood", 3, "blockWool", 3));
 	 *
 	 * //For Recipes that have multiple possible Ingredients, that don't belong to a known OreDict entry you can use a fake-item Object:
 	 * Object blackOrWhite = new Object();
 	 * //1 White Wool can be turned into 1 'blackOrWhite'
-	 * addConversion(1, blackOrWhite, ImmutableMap.of((Object)new ItemStack(Blocks.wool, 1, 0), 1));
+	 * addConversion(1, blackOrWhite, ImmutableMap.of((Object)new ItemStack(Blocks.WOOL, 1, 0), 1));
 	 * //1 Black Wool can be turned into 1 'blackOrWhite'
-	 * addConversion(1, blackOrWhite, ImmutableMap.of((Object)new ItemStack(Blocks.wool, 1, 15), 1));
+	 * addConversion(1, blackOrWhite, ImmutableMap.of((Object)new ItemStack(Blocks.WOOL, 1, 15), 1));
 	 * //Bed created with black or white wool only
-	 * addConversion(1, Blocks.bed, ImmutableMap.of(blackOrWhite, 3, "plankWood", 3));
+	 * addConversion(1, Blocks.BED, ImmutableMap.of(blackOrWhite, 3, "plankWood", 3));
 	 * }
 	 * </pre>
 	 *
@@ -61,5 +62,5 @@ public interface IConversionProxy
 	 * @param output
 	 * @param ingredients
 	 */
-	void addConversion(int amount, Object output, Map<Object, Integer> ingredients);
+	void addConversion(int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients);
 }

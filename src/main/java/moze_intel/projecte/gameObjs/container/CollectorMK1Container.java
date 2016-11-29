@@ -1,89 +1,162 @@
 package moze_intel.projecte.gameObjs.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
+import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class CollectorMK1Container extends Container
 {
-	private CollectorMK1Tile tile;
-	private int sunLevel;
-
+	final CollectorMK1Tile tile;
+	public int sunLevel = 0;
+	public int emc = 0;
+	public double kleinChargeProgress = 0;
+	public double fuelProgress = 0;
+	public int kleinEmc = 0;
 
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
 	{
 		this.tile = collector;
-		tile.openInventory();
-		
+		initSlots(invPlayer);
+	}
+
+	void initSlots(InventoryPlayer invPlayer)
+	{
+		IItemHandler aux = tile.getAux();
+		IItemHandler main = tile.getInput();
+
 		//Klein Star Slot
-		this.addSlotToContainer(new SlotCollectorInv(tile, 0, 124, 58));
-		
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADING_SLOT, 124, 58, SlotPredicates.COLLECTOR_INV));
+
+		int counter = main.getSlots() - 1;
 		//Fuel Upgrade storage
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 3; j++)
-				this.addSlotToContainer(new SlotCollectorInv(tile, i * 4 + j + 1, 20 + i * 18, 8 + j * 18));
-		
+				this.addSlotToContainer(new ValidatedSlot(main, counter--, 20 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+
 		//Upgrade Result
-		this.addSlotToContainer(new SlotCollectorInv(tile, 9, 124, 13));
-		
+		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.COLLECTOR_INV));
+
 		//Upgrade Target
-		this.addSlotToContainer(new SlotCollectorLock(tile, 10, 153, 36));
-		
+		this.addSlotToContainer(new SlotGhost(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
+
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-		
+
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 	}
-	
+
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
+	public void addListener(IContainerListener listener)
 	{
-		super.addCraftingToCrafters(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
+		super.addListener(listener);
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.getSunLevel());
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) (tile.getItemCharge() * 8000));
 	}
-	
+
+	@Override
+	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	{
+		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && getSlot(slot).getStack() != null)
+		{
+			getSlot(slot).putStack(null);
+			return null;
+		} else
+		{
+			return super.slotClick(slot, button, flag, player);
+		}
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		
-		for (int i = 0; i < this.crafters.size(); ++i)
-		{
-			ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-			if(sunLevel != tile.getSunLevel())
+		if (sunLevel != tile.getSunLevel())
+		{
+			for (IContainerListener icrafting : this.listeners)
 			{
-				icrafting.sendProgressBarUpdate(this, 0, tile.getSunLevel());
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 0, tile.getSunLevel());
 			}
+
+			sunLevel = tile.getSunLevel();
 		}
-		
-		sunLevel = tile.getSunLevel();
+
+		if (emc != ((int) tile.getStoredEmc()))
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 1, ((int) tile.getStoredEmc()));
+			}
+
+			emc = ((int) tile.getStoredEmc());
+		}
+
+		if (kleinChargeProgress != tile.getItemChargeProportion())
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getItemChargeProportion() * 8000));
+			}
+
+			kleinChargeProgress = tile.getItemChargeProportion();
+		}
+
+		if (fuelProgress != tile.getFuelProgress())
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 3, (int) (tile.getFuelProgress() * 8000));
+			}
+
+			fuelProgress = tile.getFuelProgress();
+		}
+
+		if (kleinEmc != ((int) tile.getItemCharge()))
+		{
+			for (IContainerListener icrafting : this.listeners)
+			{
+				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 4, (int) (tile.getItemCharge()));
+			}
+
+			kleinEmc = ((int) tile.getItemCharge());
+		}
+
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
-	{
-		tile.displaySunLevel = par2;
-	}
-	
+
 	@Override
-	public void onContainerClosed(EntityPlayer player)
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int id, int data)
 	{
-		super.onContainerClosed(player);
-		tile.closeInventory();
+		switch (id)
+		{
+			case 0: sunLevel = data; break;
+			case 1: emc = data; break;
+			case 2: kleinChargeProgress = data / 8000.0; break;
+			case 3: fuelProgress = data / 8000.0; break;
+			case 4: kleinEmc = data; break;
+		}
 	}
 	
 	@Override
@@ -106,7 +179,7 @@ public class CollectorMK1Container extends Container
 				return null;
 			}
 		}
-		else if (slotIndex >= 11 && slotIndex <= 46)
+		else if (slotIndex <= 46)
 		{
 			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 8, false))
 			{
@@ -132,8 +205,8 @@ public class CollectorMK1Container extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return player.getDistanceSq(tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5) <= 64.0;
+		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

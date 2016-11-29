@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+
+import javax.annotation.Nonnull;
 
 public class RecipeShapedKleinStar implements IRecipe
 {
@@ -25,7 +28,7 @@ public class RecipeShapedKleinStar implements IRecipe
 	/**
 	 * Is the ItemStack that you get when craft the recipe.
 	 */
-	private ItemStack recipeOutput;
+	private final ItemStack recipeOutput;
 	private boolean field_92101_f;
 	private static final String __OBFID = "CL_00000093";
 
@@ -42,10 +45,16 @@ public class RecipeShapedKleinStar implements IRecipe
 		return this.recipeOutput;
 	}
 
+	@Nonnull
+	@Override
+	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv) {
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	}
+
 	/**
 	 * Used to check if a recipe matches current crafting inventory
 	 */
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		double storedEMC = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++)
@@ -110,7 +119,7 @@ public class RecipeShapedKleinStar implements IRecipe
 
 				if (itemstack1 != null || itemstack != null)
 				{
-					if (itemstack1 == null && itemstack != null || itemstack1 != null && itemstack == null)
+					if (itemstack1 == null || itemstack == null)
 					{
 						return false;
 					}
@@ -134,7 +143,7 @@ public class RecipeShapedKleinStar implements IRecipe
 	/**
 	 * Returns an Item that is the result of this recipe
 	 */
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting p_77572_1_)
 	{
 		ItemStack itemstack = this.getRecipeOutput().copy();
 
@@ -146,7 +155,7 @@ public class RecipeShapedKleinStar implements IRecipe
 
 				if (itemstack1 != null && itemstack1.hasTagCompound())
 				{
-					itemstack.setTagCompound((NBTTagCompound) itemstack1.stackTagCompound.copy());
+					itemstack.setTagCompound((NBTTagCompound) itemstack1.getTagCompound().copy());
 				}
 			}
 		}
