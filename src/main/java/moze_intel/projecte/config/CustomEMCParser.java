@@ -144,19 +144,27 @@ public final class CustomEMCParser
 	public static boolean addToFile(String toAdd, int meta, int emc)
 	{
 		NormalizedSimpleStack nss = getNss(toAdd, meta);
+		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
 
-		int addAt = currentEntries.entries.size();
+		int setAt = -1;
 
 		for (int i = 0; i < currentEntries.entries.size(); i++)
 		{
 			if (currentEntries.entries.get(i).nss.equals(nss))
 			{
-				addAt = i;
+				setAt = i;
 				break;
 			}
 		}
 
-		currentEntries.entries.add(addAt, new CustomEMCEntry(nss, emc));
+		if (setAt == -1)
+		{
+			currentEntries.entries.add(entry);
+		} else
+		{
+			currentEntries.entries.set(setAt, entry);
+		}
+
 		dirty = true;
 		return true;
 	}
