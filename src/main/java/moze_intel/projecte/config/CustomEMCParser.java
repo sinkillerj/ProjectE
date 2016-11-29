@@ -145,15 +145,18 @@ public final class CustomEMCParser
 	{
 		NormalizedSimpleStack nss = getNss(toAdd, meta);
 
-		for (CustomEMCEntry entry : currentEntries.entries)
+		int addAt = currentEntries.entries.size();
+
+		for (int i = 0; i < currentEntries.entries.size(); i++)
 		{
-			if (entry.nss.equals(nss))
+			if (currentEntries.entries.get(i).nss.equals(nss))
 			{
-				return false;
+				addAt = i;
+				break;
 			}
 		}
 
-		currentEntries.entries.add(new CustomEMCEntry(nss, emc));
+		currentEntries.entries.add(addAt, new CustomEMCEntry(nss, emc));
 		dirty = true;
 		return true;
 	}
