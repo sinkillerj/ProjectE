@@ -17,6 +17,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -56,122 +57,116 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (world.isRemote)
 		{
-			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+			return EnumActionResult.SUCCESS;
 		}
 
-		RayTraceResult mop = this.rayTrace(world, player, false);
+		PlayerHelper.swingItem(player, hand);
+		List<Integer> emcValues = Lists.newArrayList();
+		long totalEmc = 0;
+		int numBlocks = 0;
 
-		if (mop != null && mop.typeOfHit.equals(Type.BLOCK))
+		byte mode = getMode(stack);
+		int depth = getDepthFromMode(mode);
+		AxisAlignedBB box = WorldHelper.getDeepBox(pos, facing, depth);
+
+		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
-			PlayerHelper.swingItem(player, hand);
-			List<Integer> emcValues = Lists.newArrayList();
-			long totalEmc = 0;
-			int numBlocks = 0;
+			IBlockState state = world.getBlockState(digPos);
+			Block block = state.getBlock();
 
-			byte mode = getMode(stack);
-			int depth = getDepthFromMode(mode);
-			AxisAlignedBB box = WorldHelper.getDeepBox(mop.getBlockPos(), mop.sideHit, depth);
-
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
+			if (world.isAirBlock(digPos))
 			{
-				IBlockState state = world.getBlockState(pos);
-				Block block = state.getBlock();
+				continue;
+			}
 
-				if (world.isAirBlock(pos))
+			List<ItemStack> drops = block.getDrops(world, digPos, state, 0);
+
+			if (drops.size() == 0)
+			{
+				continue;
+			}
+
+			ItemStack blockStack = drops.get(0);
+			int blockEmc = EMCHelper.getEmcValue(blockStack);
+
+			if (blockEmc == 0)
+			{
+				Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
+
+				for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 				{
-					continue;
-				}
-
-				List<ItemStack> drops = block.getDrops(world, pos, state, 0);
-
-				if (drops.size() == 0)
-				{
-					continue;
-				}
-
-				ItemStack blockStack = drops.get(0);
-				int blockEmc = EMCHelper.getEmcValue(blockStack);
-
-				if (blockEmc == 0)
-				{
-					Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
-
-					for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+					if (entry == null || entry.getKey() == null)
 					{
-						if (entry == null || entry.getKey() == null)
-						{
-							continue;
-						}
+						continue;
+					}
 
-						if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
-						{
-							int currentValue = EMCHelper.getEmcValue(entry.getValue());
+					if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
+					{
+						int currentValue = EMCHelper.getEmcValue(entry.getValue());
 
-							if (currentValue != 0)
+						if (currentValue != 0)
+						{
+							if (!emcValues.contains(currentValue))
 							{
-								if (!emcValues.contains(currentValue))
-								{
-									emcValues.add(currentValue);
-								}
-
-								totalEmc += currentValue;
+								emcValues.add(currentValue);
 							}
+
+							totalEmc += currentValue;
 						}
 					}
 				}
-				else
+			}
+			else
+			{
+				if (!emcValues.contains(blockEmc))
 				{
-					if (!emcValues.contains(blockEmc))
-					{
-						emcValues.add(blockEmc);
-					}
-
-					totalEmc += blockEmc;
+					emcValues.add(blockEmc);
 				}
 
-				numBlocks++;
+				totalEmc += blockEmc;
 			}
 
-			if (numBlocks == 0)
-			{
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
-			}
-			
-			int[] maxValues = new int[3];
-
-			for (int i = 0; i < 3; i++)
-			{
-				maxValues[i] = 1;
-			}
-
-			Collections.sort(emcValues, Comparator.reverseOrder());
-
-			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
-
-			for (int i = 0; i < num; i++)
-			{
-				maxValues[i] = emcValues.get(i);
-			}
-
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
-
-			if (this == ObjHandler.dRod2)
-			{
-				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
-			}
-			if (this == ObjHandler.dRod3)
-			{
-				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
-				player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
-			}
+			numBlocks++;
 		}
 
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		if (numBlocks == 0)
+		{
+			return EnumActionResult.FAIL;
+		}
 
+		int[] maxValues = new int[3];
+
+		for (int i = 0; i < 3; i++)
+		{
+			maxValues[i] = 1;
+		}
+
+		Collections.sort(emcValues, Comparator.reverseOrder());
+
+		int num = emcValues.size() >= 3 ? 3 : emcValues.size();
+
+		for (int i = 0; i < num; i++)
+		{
+			maxValues[i] = emcValues.get(i);
+		}
+
+		player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+
+		if (this == ObjHandler.dRod2)
+		{
+			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
+		}
+		if (this == ObjHandler.dRod3)
+		{
+			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
+			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+		}
+
+		return EnumActionResult.SUCCESS;
 	}
 
 	/**
