@@ -51,8 +51,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
-		attackWithCharge(stack, damaged, damager, flag ? KATAR_BASE_ATTACK : 1.0F);
+		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -145,10 +144,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if (!ProjectEConfig.useOldDamage)
-		{
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
-		}
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}

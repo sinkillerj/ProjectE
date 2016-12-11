@@ -17,7 +17,6 @@ public final class ProjectEConfig
 
 	public static boolean craftableTome;
 	public static boolean altCraftingMat;
-	public static boolean useOldDamage;
 	public static int archangelPedCooldown;
 	public static int bodyPedCooldown;
 	public static int evertidePedCooldown;
@@ -65,7 +64,6 @@ public final class ProjectEConfig
 
 			craftableTome = config.getBoolean("craftableTome", "difficulty", false, "The Tome of Knowledge can be crafted.");
 			altCraftingMat = config.getBoolean("altCraftingMat", "difficulty", false, "If true some ProjectE items require a nether star instead of a diamond.");
-			useOldDamage = config.getBoolean("useOldDamage", "difficulty", false, "If true the old damage amounts from ProjectE 1.4.7 and before will be used for weapons.");
 			offensiveAbilities = config.getBoolean("offensiveAbilities", "difficulty", true, "Set to false to disable Gem Armor offensive abilities (helmet zap and chestplate explosion)");
 			katarDeathAura = config.getFloat("katarDeathAura", "difficulty", 1000F, 0, Integer.MAX_VALUE, "Amount of damage Katar 'C' key deals");
 
