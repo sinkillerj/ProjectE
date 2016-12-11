@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.BlockNetherWart;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -192,17 +189,28 @@ public final class WorldHelper
 			}
 			else if (b.isSideSolid(world.getBlockState(pos), world, pos, EnumFacing.UP))
 			{
-				Block b2 = world.getBlockState(pos.up()).getBlock();
+				BlockPos up = pos.up();
+				IBlockState stateUp = world.getBlockState(up);
+				IBlockState newState = null;
 
-				if (b2 == Blocks.AIR && (!random || world.rand.nextInt(128) == 0))
+				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0))
+				{
+					newState = Blocks.SNOW_LAYER.getDefaultState();
+				} else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
+							&& world.rand.nextInt(512) == 0)
+				{
+					newState = stateUp.withProperty(BlockSnow.LAYERS, stateUp.getValue(BlockSnow.LAYERS) + 1);
+				}
+
+				if (newState != null)
 				{
 					if (player != null)
 					{
-						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos.up(), Blocks.SNOW_LAYER.getDefaultState());
+						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), up, newState);
 					}
 					else
 					{
-						world.setBlockState(pos.up(), Blocks.SNOW_LAYER.getDefaultState());
+						world.setBlockState(up, newState);
 					}
 				}
 			}
