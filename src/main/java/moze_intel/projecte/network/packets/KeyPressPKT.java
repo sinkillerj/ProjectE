@@ -83,7 +83,6 @@ public class KeyPressPKT implements IMessage
 
                     for (EnumHand hand : EnumHand.values())
                     {
-                        PELogger.logInfo("%s", ProjectEConfig.unsafeKeyBinds);
                         ItemStack stack = player.getHeldItem(hand);
                         switch (message.key)
                         {
