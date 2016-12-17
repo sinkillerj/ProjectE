@@ -156,10 +156,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 		player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
-		if (this == ObjHandler.dRod2)
+		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3)
 		{
 			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
 		}
+
 		if (this == ObjHandler.dRod3)
 		{
 			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
