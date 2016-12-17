@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -59,7 +60,7 @@ public class GUITransmutation extends GuiContainer
 	{
 		this.fontRendererObj.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
-		String emc = String.format(I18n.format("pe.emc.emc_tooltip_prefix") + " %,d", (int) emcAmount);
+		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
 		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)

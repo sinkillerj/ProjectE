@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,6 +42,6 @@ public class GUICondenserMK2 extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		int toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
-		this.fontRendererObj.drawString(String.format("%,d", toDisplay), 140, 10, 4210752);
+		this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(toDisplay), 140, 10, 4210752);
 	}
 }
