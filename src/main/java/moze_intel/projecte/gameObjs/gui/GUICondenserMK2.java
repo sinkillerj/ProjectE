@@ -41,6 +41,6 @@ public class GUICondenserMK2 extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		int toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
-		this.fontRendererObj.drawString(Integer.toString(toDisplay), 140, 10, 4210752);
+		this.fontRendererObj.drawString(String.format("%,d", toDisplay), 140, 10, 4210752);
 	}
 }
