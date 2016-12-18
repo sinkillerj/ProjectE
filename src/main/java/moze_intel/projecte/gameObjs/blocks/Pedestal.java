@@ -98,6 +98,31 @@ public class Pedestal extends Block
         return true;
     }
 
+    // [VanillaCopy] Adapted from BlockNote
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighbor)
+    {
+        boolean flag = world.isBlockPowered(pos);
+        TileEntity te = world.getTileEntity(pos);
+
+        if (te instanceof DMPedestalTile)
+        {
+            DMPedestalTile ped = ((DMPedestalTile) te);
+
+            if (ped.previousRedstoneState != flag)
+            {
+                if (flag && ped.getInventory().getStackInSlot(0) != null
+                        && ped.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
+                {
+                    ped.setActive(!ped.getActive());
+                    world.notifyBlockUpdate(pos, state, state, 11);
+                }
+
+                ped.previousRedstoneState = flag;
+            }
+        }
+    }
+
 	@Override
     public boolean isFullCube(IBlockState state)
     {

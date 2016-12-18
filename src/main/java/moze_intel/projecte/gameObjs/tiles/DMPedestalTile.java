@@ -26,6 +26,7 @@ public class DMPedestalTile extends TileEmc
 	private ItemStackHandler inventory = new StackHandler(1);
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
+	public boolean previousRedstoneState = false;
 	public double centeredX, centeredY, centeredZ;
 
 	@Override
@@ -119,6 +120,7 @@ public class DMPedestalTile extends TileEmc
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
 		activityCooldown = tag.getInteger("activityCooldown");
+		previousRedstoneState = tag.getBoolean("powered");
 	}
 
 	@Nonnull
@@ -129,6 +131,7 @@ public class DMPedestalTile extends TileEmc
 		tag.merge(inventory.serializeNBT());
 		tag.setBoolean("isActive", getActive());
 		tag.setInteger("activityCooldown", activityCooldown);
+		tag.setBoolean("powered", previousRedstoneState);
 		return tag;
 	}
 
