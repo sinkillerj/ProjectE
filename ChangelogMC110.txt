@@ -1,3 +1,19 @@
+###Version 1.10.2-PE1.1.1B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* NEW: The Zero Ring can build up multiple layers of snow over time
+* FIXED: Empty knowledge desync when traveling between dimensions
+* FIXED: Matter block and furnace blast resistance
+* FIXED: EMC cost when using the Volcanite Amulet
+* FIXED: A minor pedestal rendering issue
+* FIXED: Rendering issues with the world transmutation preview
+* FIXED: Various Divining Rod issues
+* FIXED: Being unable to override a custom value with setEMC
+* FIXED: Harvest Goddess Band breaking stems
+* FIXED: Unnecessary key bind logging
+* CHANGE: EMC value displays such as the condenser GUI now use the magic of commas
+* CHANGE: Various backend optimizations
+* CHANGE: Old damage config removed
+
 ###Version 1.10.2-PE1.1.0B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
 * NEW: The Black Hole Band can be used to remove world fluids like in EE2
