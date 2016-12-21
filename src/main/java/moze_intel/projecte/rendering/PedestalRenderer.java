@@ -32,7 +32,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
                 AxisAlignedBB aabb = te.getEffectBounds().offset(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
                 RenderGlobal.drawBoundingBox(
                         aabb.minX, aabb.minY, aabb.minZ,
-                        aabb.maxX, aabb.maxY, aabb.maxZ,
+                        aabb.maxX + 1, aabb.maxY + 1, aabb.maxZ + 1,
                         1F, 0F, 1F, 1F);
                 GlStateManager.enableBlend();
                 GlStateManager.enableCull();

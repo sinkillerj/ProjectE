@@ -107,9 +107,12 @@ public class DMPedestalTile extends TileEmc
 		activityCooldown--;
 	}
 
+	/**
+	 * @return Inclusive bounding box of all positions this pedestal should apply effects in
+	 */
 	public AxisAlignedBB getEffectBounds()
 	{
-		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE + 1, RANGE + 1, RANGE + 1));
+		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE, RANGE, RANGE));
 	}
 
 	@Override

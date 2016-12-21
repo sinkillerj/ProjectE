@@ -349,13 +349,11 @@ public final class WorldHelper
 
 	/**
 	 * Wrapper around BlockPos.getAllInBox() with an AABB
+	 * Note that this is inclusive of all positions in the AABB!
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
 	{
-		return BlockPos.getAllInBox(
-				new BlockPos(box.minX, box.minY, box.minZ),
-				new BlockPos(box.maxX - 1, box.maxY - 1, box.maxZ - 1) // -1 because getAllInBox has inclusive upper bound
-		);
+		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
 	}
 
 	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
