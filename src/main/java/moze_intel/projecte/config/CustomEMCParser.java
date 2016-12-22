@@ -123,6 +123,7 @@ public final class CustomEMCParser
 
 		try {
 			currentEntries = GSON.fromJson(new BufferedReader(new FileReader(CONFIG)), CustomEMCFile.class);
+			currentEntries.entries.removeIf(e -> e.nss == null);
 		} catch (FileNotFoundException e) {
 			PELogger.logFatal("Couldn't read custom emc file");
 			currentEntries = new CustomEMCFile(new ArrayList<CustomEMCEntry>());
