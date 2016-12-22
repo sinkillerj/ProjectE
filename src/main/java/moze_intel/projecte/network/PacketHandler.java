@@ -4,17 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.network.packets.CheckUpdatePKT;
-import moze_intel.projecte.network.packets.KeyPressPKT;
-import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
-import moze_intel.projecte.network.packets.SetFlyPKT;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SyncBagDataPKT;
-import moze_intel.projecte.network.packets.SyncEmcPKT;
-import moze_intel.projecte.network.packets.UpdateGemModePKT;
-import moze_intel.projecte.network.packets.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -49,6 +39,7 @@ public final class PacketHandler
 		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(UpdateWindowIntPKT.Handler.class, UpdateWindowIntPKT.class, disc++, Side.CLIENT);
+		HANDLER.registerMessage(CooldownResetPKT.Handler.class, CooldownResetPKT.class, disc++, Side.CLIENT);
 	}
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)

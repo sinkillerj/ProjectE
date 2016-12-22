@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public class RedSword extends DarkSword
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
 			attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0, hand);
-			player.resetCooldown();
+			PlayerHelper.resetCooldown(player);
 			return true;
 		}
 		else

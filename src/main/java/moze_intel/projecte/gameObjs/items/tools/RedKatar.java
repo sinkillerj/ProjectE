@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
@@ -109,7 +110,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
 			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0, hand);
-			player.resetCooldown();
+			PlayerHelper.resetCooldown(player);
 			return true;
 		}
 		else
