@@ -307,6 +307,11 @@ public final class ItemHelper
 		return false;
 	}
 
+	public static boolean isDamageable(ItemStack stack)
+	{
+		return !stack.getHasSubtypes() && stack.getMaxDamage() != 0;
+	}
+
 	public static boolean isOre(IBlockState state)
 	{
 		if (state.getBlock() == Blocks.LIT_REDSTONE_ORE)

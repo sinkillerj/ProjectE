@@ -13,6 +13,7 @@ import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -91,7 +92,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+			if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
 			{
 				invStack.setItemDamage(invStack.getItemDamage() - 1);
 			}
@@ -119,7 +120,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (!bInvStack.getHasSubtypes() && bInvStack.getMaxDamage() != 0 && bInvStack.getItemDamage() > 0)
+			if (ItemHelper.isDamageable(bInvStack) && bInvStack.getItemDamage() > 0)
 			{
 				bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
 			}
@@ -229,7 +230,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 					continue;
 				}
 
-				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
 				{
 					invStack.setItemDamage(invStack.getItemDamage() - 1);
 
@@ -280,7 +281,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 					continue;
 				}
 
-				if (!invStack.getHasSubtypes() && invStack.getMaxDamage() != 0 && invStack.getItemDamage() > 0)
+				if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
 				{
 					invStack.setItemDamage(invStack.getItemDamage() - 1);
 

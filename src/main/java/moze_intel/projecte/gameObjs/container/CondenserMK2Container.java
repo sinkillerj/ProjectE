@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -21,8 +22,7 @@ public class CondenserMK2Container extends CondenserContainer
 	@Override
 	void initSlots(InventoryPlayer invPlayer)
 	{
-		//Item Lock Slot
-		this.addSlotToContainer(new SlotGhost(tile.getLock(), 0, 12, 6, SlotPredicates.HAS_EMC));
+		this.addSlotToContainer(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();

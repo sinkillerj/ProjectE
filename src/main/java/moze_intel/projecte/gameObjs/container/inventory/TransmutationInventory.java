@@ -68,7 +68,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			stack.stackSize = 1;
 		}
 		
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		if (ItemHelper.isDamageable(stack))
 		{
 			stack.setItemDamage(0);
 		}
@@ -100,7 +100,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			stack.stackSize = 1;
 		}
 
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0 && stack.getItemDamage() != 0)
+		if (ItemHelper.isDamageable(stack))
 		{
 			stack.setItemDamage(0);
 		}
