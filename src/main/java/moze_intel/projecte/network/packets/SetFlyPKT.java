@@ -37,11 +37,11 @@ public class SetFlyPKT implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					Minecraft.getMinecraft().thePlayer.capabilities.allowFlying = message.flag;
+					Minecraft.getMinecraft().player.capabilities.allowFlying = message.flag;
 
 					if (!message.flag)
 					{
-						Minecraft.getMinecraft().thePlayer.capabilities.isFlying = false;
+						Minecraft.getMinecraft().player.capabilities.isFlying = false;
 					}
 				}
 			});

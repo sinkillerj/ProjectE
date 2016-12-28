@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -91,7 +92,7 @@ public class AlchemicalBag extends ItemPE
 			list.add(new ItemStack(item, 1, i));
 	}
 
-	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, ItemStack[] inventory)
+	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)
 	{
 		for (ItemStack stack : inventory)
 		{

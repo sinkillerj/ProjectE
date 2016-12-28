@@ -66,12 +66,12 @@ public class ToolTipEvent
 				event.getToolTip().add(TextFormatting.YELLOW +
 						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value));
 
-				if (current.stackSize > 1)
+				if (current.getCount() > 1)
 				{
 					long total;
 					try
 					{
-						total = LongMath.checkedMultiply(value, current.stackSize);
+						total = LongMath.checkedMultiply(value, current.getCount());
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
@@ -81,7 +81,7 @@ public class ToolTipEvent
 					}
 					else
 					{
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.stackSize));
+						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()));
 					}
 
 				}

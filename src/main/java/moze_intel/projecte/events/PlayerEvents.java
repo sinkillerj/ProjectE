@@ -101,7 +101,7 @@ public class PlayerEvents
 
 		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
 		knowledge.sync(player);
-		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(knowledge.getEmc()));
+		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
@@ -126,7 +126,7 @@ public class PlayerEvents
 			ITextComponent prior = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.high_alchemist"), TextFormatting.BLUE);
 			ITextComponent playername = ChatHelper.modifyColor(new TextComponentString(" " + evt.player.getName() + " "), TextFormatting.GOLD);
 			ITextComponent latter = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.has_joined"), TextFormatting.BLUE);
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
 		}
 	}
 
@@ -156,7 +156,7 @@ public class PlayerEvents
 		{
 			event.getItem().setDead();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId()));
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId(), 1));
 		}
 		else
 		{
