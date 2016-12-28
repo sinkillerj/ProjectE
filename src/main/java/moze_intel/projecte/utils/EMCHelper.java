@@ -65,7 +65,7 @@ public final class EMCHelper
 					int emc = getEmcValue(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 
-					if (stack.stackSize >= toRemove)
+					if (stack.getCount() >= toRemove)
 					{
 						map.put(i, toRemove);
 						emcConsumed += emc * toRemove;
@@ -73,8 +73,8 @@ public final class EMCHelper
 					}
 					else
 					{
-						map.put(i, stack.stackSize);
-						emcConsumed += emc * stack.stackSize;
+						map.put(i, stack.getCount());
+						emcConsumed += emc * stack.getCount();
 
 						if (emcConsumed >= minFuel)
 						{

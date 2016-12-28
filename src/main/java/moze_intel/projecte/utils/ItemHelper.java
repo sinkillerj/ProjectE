@@ -80,15 +80,15 @@ public final class ItemHelper
 				ItemStack s1 = list.get(j);
 				if (areItemStacksEqual(s, s1))
 				{
-					if (s.stackSize + s1.stackSize <= s.getMaxStackSize())
+					if (s.getCount() + s1.getCount() <= s.getMaxStackSize())
 					{
-						s.stackSize += s1.stackSize;
-						s1.stackSize = 0;
+						s.grow(s1.getCount());
+						s1.setCount(0);
 					}
 					else
 					{
-						s1.stackSize = (s1.stackSize + s.stackSize) - s.getMaxStackSize();
-						s.stackSize = s.getMaxStackSize();
+						s1.setCount((s1.getCount() + s.getCount()) - s.getMaxStackSize());
+						s.setCount(s.getMaxStackSize());
 					}
 				}
 			}
@@ -111,8 +111,8 @@ public final class ItemHelper
 				ItemStack s1 = list.get(j);
 				if (areItemStacksEqual(s, s1))
 				{
-					s.stackSize += s1.stackSize;
-					s1.stackSize = 0;
+					s.grow(s1.getCount());
+					s1.setCount(0);
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public final class ItemHelper
 	public static ItemStack getNormalizedStack(ItemStack stack)
 	{
 		ItemStack result = stack.copy();
-		result.stackSize = 1;
+		result.setCount(1);
 		return result;
 	}
 
@@ -249,7 +249,7 @@ public final class ItemHelper
 				return true;
 			}
 
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize())
 			{
 				return true;
 			}
@@ -288,7 +288,13 @@ public final class ItemHelper
 
 			@Override
 			public ItemStack extractItem(int slot, int amount, boolean simulate) {
-				return null;
+				return ItemStack.EMPTY;
+			}
+
+			@Override
+			public int getSlotLimit(int slot)
+			{
+				return getStackInSlot(slot).getMaxStackSize();
 			}
 		};
 	}
@@ -354,7 +360,7 @@ public final class ItemHelper
 		while (iter.hasNext())
 		{
 			ItemStack s = iter.next();
-			if (s.stackSize <= 0)
+			if (s.isEmpty())
 			{
 				iter.remove();
 			}

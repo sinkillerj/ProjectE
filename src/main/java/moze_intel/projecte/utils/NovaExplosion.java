@@ -128,7 +128,7 @@ public class NovaExplosion extends Explosion
                 double d3 = d0 - x;
                 double d4 = d1 - y;
                 double d5 = d2 - z;
-                double d6 = (double) MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
+                double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
                 d3 /= d6;
                 d4 /= d6;
                 d5 /= d6;

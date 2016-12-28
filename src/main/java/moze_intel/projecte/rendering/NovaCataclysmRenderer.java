@@ -35,7 +35,7 @@ public class NovaCataclysmRenderer extends Render<EntityNovaCataclysmPrimed>
 		if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
 		{
 			f2 = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
-			f2 = MathHelper.clamp_float(f2, 0.0F, 1.0F);
+			f2 = MathHelper.clamp(f2, 0.0F, 1.0F);
 			f2 *= f2;
 			f2 *= f2;
 			float f3 = 1.0F + f2 * 0.3F;

@@ -82,7 +82,7 @@ public final class ComparatorHelper
 
 				if (itemstack != null)
 				{
-					f += (float)itemstack.stackSize / itemstack.getMaxStackSize(); // todo (float)Math.min(handler.getInventoryStackLimit(), itemstack.getMaxStackSize());
+					f += (float)itemstack.getCount() / (float)Math.min(handler.getSlotLimit(j), itemstack.getMaxStackSize());
 					++i;
 				}
 			}

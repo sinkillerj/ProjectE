@@ -206,7 +206,7 @@ public final class KnowledgeImpl {
             NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.tagCount(); i++)
             {
-                ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+                ItemStack item = new ItemStack(list.getCompoundTagAt(i));
                 if (item != null)
                 {
                     knowledge.add(item);
@@ -230,9 +230,9 @@ public final class KnowledgeImpl {
             ItemHelper.compactItemListNoStacksize(knowledge);
             for (ItemStack s : knowledge)
             {
-                if (s.stackSize > 1)
+                if (s.getCount() > 1)
                 {
-                    s.stackSize = 1;
+                    s.setCount(1);
                 }
             }
         }

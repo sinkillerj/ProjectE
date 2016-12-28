@@ -31,7 +31,7 @@ public final class Transmutation
 			try
 			{
 				ItemStack s = stack.toItemStack();
-				s.stackSize = 1;
+				s.setCount(1);
 
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))

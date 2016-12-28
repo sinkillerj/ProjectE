@@ -110,7 +110,7 @@ public class KeyPressPKT implements IMessage
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
                                 {
-                                    if (internalAbilities.getGemState() && player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest)
+                                    if (internalAbilities.getGemState() && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemChest)
                                     {
                                         if (internalAbilities.getGemCooldown() <= 0)
                                         {
