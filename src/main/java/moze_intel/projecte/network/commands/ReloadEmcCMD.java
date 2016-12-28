@@ -28,13 +28,13 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
-		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.started"));
+		sender.sendMessage(new TextComponentTranslation("pe.command.reload.started"));
 
 		EMCMapper.clearMaps();
 		CustomEMCParser.init();
 		EMCMapper.map();
 
-		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.success"));
+		sender.sendMessage(new TextComponentTranslation("pe.command.reload.success"));
 
 		PacketHandler.sendFragmentedEmcPacketToAll();
 	}

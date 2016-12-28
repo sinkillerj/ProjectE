@@ -38,6 +38,6 @@ public abstract class ProjectEBaseCMD extends CommandBase
 	
 	protected void sendMessage(ICommandSender sender, ITextComponent message)
 	{
-		sender.addChatMessage(message);
+		sender.sendMessage(message);
 	}
 }

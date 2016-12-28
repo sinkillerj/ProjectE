@@ -97,7 +97,7 @@ public class KeyPressPKT implements IMessage
                                     if (GemArmorBase.hasAnyPiece(player))
                                     {
                                         internalAbilities.setGemState(!internalAbilities.getGemState());
-                                        player.addChatMessage(new TextComponentTranslation(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
+                                        player.sendMessage(new TextComponentTranslation(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
                                         return;
                                     }
                                 }

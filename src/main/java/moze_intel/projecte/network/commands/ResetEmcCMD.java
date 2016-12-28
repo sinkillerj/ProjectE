@@ -76,8 +76,8 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.removeFromFile(name, meta))
 		{
-			sender.addChatMessage(new TextComponentTranslation("pe.command.reset.success", name));
-			sender.addChatMessage(new TextComponentTranslation("pe.command.reload.notice"));
+			sender.sendMessage(new TextComponentTranslation("pe.command.reset.success", name));
+			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{

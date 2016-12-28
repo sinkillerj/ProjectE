@@ -32,13 +32,13 @@ public class ChangelogCMD extends ProjectEBaseCMD
 	{
 		if (ChangelogCMD.changelog.isEmpty())
 		{
-			sender.addChatMessage(new TextComponentTranslation("pe.command.changelog.uptodate"));
+			sender.sendMessage(new TextComponentTranslation("pe.command.changelog.uptodate"));
 		}
 		else
 		{
 			for (String s: ChangelogCMD.changelog)
 			{
-				sender.addChatMessage(new TextComponentString(s));
+				sender.sendMessage(new TextComponentString(s));
 			}
 		}
 	}

@@ -88,14 +88,14 @@ public class ThreadCheckUpdate extends Thread
 				}
 				else
 				{
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.available", latestVersion)));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.getit")));
+					Minecraft.getMinecraft().thePlayer.sendMessage(new TextComponentString(I18n.format("pe.update.available", latestVersion)));
+					Minecraft.getMinecraft().thePlayer.sendMessage(new TextComponentString(I18n.format("pe.update.getit")));
 
 					ITextComponent link = new TextComponentString(curseURL);
 					link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(link);
+					Minecraft.getMinecraft().thePlayer.sendMessage(link);
 
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(I18n.format("pe.update.changelog")));
+					Minecraft.getMinecraft().thePlayer.sendMessage(new TextComponentString(I18n.format("pe.update.changelog")));
 				}
 			}
 			else

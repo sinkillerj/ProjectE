@@ -75,8 +75,8 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			sender.addChatMessage(new TextComponentTranslation("pe.command.remove.success", name));
-			sender.addChatMessage(new TextComponentTranslation("pe.command.reload.notice"));
+			sender.sendMessage(new TextComponentTranslation("pe.command.remove.success", name));
+			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{

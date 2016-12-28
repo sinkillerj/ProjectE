@@ -121,8 +121,8 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		if (CustomEMCParser.addToFile(name, meta, emc))
 		{
-			sender.addChatMessage(new TextComponentTranslation("pe.command.set.success", name, emc));
-			sender.addChatMessage(new TextComponentTranslation("pe.command.reload.notice"));
+			sender.sendMessage(new TextComponentTranslation("pe.command.set.success", name, emc));
+			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{

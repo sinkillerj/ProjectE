@@ -65,7 +65,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
+        player.sendMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
                 .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
     }
 

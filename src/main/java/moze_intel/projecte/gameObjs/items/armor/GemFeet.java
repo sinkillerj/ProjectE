@@ -63,7 +63,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
+        player.sendMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
                 .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
     }
 
@@ -128,7 +128,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         if (slot != EntityEquipmentSlot.FEET) return super.getAttributeModifiers(slot, stack);
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
+        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
         return multimap;
     }
 
