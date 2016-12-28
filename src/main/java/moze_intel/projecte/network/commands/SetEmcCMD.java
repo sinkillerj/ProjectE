@@ -16,14 +16,14 @@ public class SetEmcCMD extends ProjectEBaseCMD
 {
 	@Nonnull
 	@Override
-	public String getCommandName() 
+	public String getName()
 	{
 		return "projecte_setEMC";
 	}
 
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.set.usage";
 	}

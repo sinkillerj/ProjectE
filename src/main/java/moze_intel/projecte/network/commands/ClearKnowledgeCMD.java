@@ -17,14 +17,14 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 {
 	@Nonnull
 	@Override
-	public String getCommandName() 
+	public String getName()
 	{
 		return "projecte_clearKnowledge";
 	}
 	
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.clearknowledge.usage";
 	}
@@ -57,7 +57,7 @@ public class ClearKnowledgeCMD extends ProjectEBaseCMD
 					
 					if (!player.getName().equals(sender.getName()))
 					{
-						player.addChatComponentMessage(ChatHelper.modifyColor(new TextComponentTranslation("pe.command.clearknowledge.notify", sender.getName()), TextFormatting.RED));
+						player.sendMessage(ChatHelper.modifyColor(new TextComponentTranslation("pe.command.clearknowledge.notify", sender.getName()), TextFormatting.RED));
 					}
 					
 					return;

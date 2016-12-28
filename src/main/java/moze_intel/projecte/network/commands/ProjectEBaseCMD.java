@@ -14,14 +14,14 @@ public abstract class ProjectEBaseCMD extends CommandBase
 {
 	@Nonnull
 	@Override
-	public abstract String getCommandName();
+	public abstract String getName();
 	
 	@Override
 	public abstract int getRequiredPermissionLevel();
 
 	@Nonnull
 	@Override
-	public abstract String getCommandUsage(@Nonnull ICommandSender sender);
+	public abstract String getUsage(@Nonnull ICommandSender sender);
 
 	@Override
 	public abstract void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException;

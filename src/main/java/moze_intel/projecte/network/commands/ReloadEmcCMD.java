@@ -13,14 +13,14 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 {
 	@Nonnull
 	@Override
-	public String getCommandName() 
+	public String getName()
 	{
 		return "projecte_reloadEMC";
 	}
 	
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "/projecte reloadEMC";
 	}
