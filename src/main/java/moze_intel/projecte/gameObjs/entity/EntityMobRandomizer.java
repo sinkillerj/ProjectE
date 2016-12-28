@@ -69,7 +69,7 @@ public class EntityMobRandomizer extends PEProjectile
 		{
 			ent.setDead();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
-			this.getEntityWorld().spawnEntityInWorld(randomized);
+			this.getEntityWorld().spawnEntity(randomized);
 		}
 	}
 }

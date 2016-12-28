@@ -66,7 +66,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
 
     private EntityPlayer findOnlinePlayer(UUID playerUUID)
     {
-        for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList())
+        for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
         {
             if (player.getUniqueID().equals(playerUUID))
             {

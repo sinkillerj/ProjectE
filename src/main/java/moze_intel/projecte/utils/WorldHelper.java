@@ -626,6 +626,6 @@ public final class WorldHelper
 		entityitem.motionX = world.rand.nextGaussian() * 0.05;
 		entityitem.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
 		entityitem.motionZ = world.rand.nextGaussian() * 0.05;
-		world.spawnEntityInWorld(entityitem);
+		world.spawnEntity(entityitem);
 	}
 }

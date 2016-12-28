@@ -277,7 +277,7 @@ public final class InternalAbilities
 	{
 		for (int i = 0; i <= 8; i++)
 		{
-			if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg)
+			if (!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == ObjHandler.swrg)
 			{
 				return true;
 			}

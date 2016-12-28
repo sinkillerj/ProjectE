@@ -490,7 +490,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						((EntityAgeable) e).setGrowingAge(-24000);
 					}
-					world.spawnEntityInWorld(e);
+					world.spawnEntity(e);
 				}
 			}
 

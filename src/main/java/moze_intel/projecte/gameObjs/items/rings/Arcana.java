@@ -240,19 +240,19 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		{
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
-				world.spawnEntityInWorld(snowball);
+				world.spawnEntity(snowball);
 				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);
 				fire.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-				world.spawnEntityInWorld(fire);
+				world.spawnEntity(fire);
 				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player, true);
 				lightning.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-				world.spawnEntityInWorld(lightning);
+				world.spawnEntity(lightning);
 				// lightning.playSound(PESounds.WIND, 1.0F, 1.0F);
 				break;
 		}

@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
@@ -13,7 +12,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -104,13 +102,6 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
 			emapper.addConversion(pair.getValue().amount, NormalizedSimpleStack.getFor(pair.getValue().getFluid()), Arrays.asList(pair.getKey()), fluidArithmetic);
-		}
-
-		for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()) {
-			Fluid fluid = data.fluid.getFluid();
-			mapper.addConversion(1, NormalizedSimpleStack.getFor(data.filledContainer),
-					ImmutableMap.of(NormalizedSimpleStack.getFor(data.emptyContainer), 1, NormalizedSimpleStack.getFor(fluid), data.fluid.amount)
-			);
 		}
 	}
 

@@ -280,7 +280,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	{
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.worldObj, player, false);
 		projectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.worldObj.spawnEntityInWorld(projectile);
+		player.worldObj.spawnEntity(projectile);
 		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);
 		return true;
 	}
