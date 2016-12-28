@@ -5,6 +5,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,7 +51,7 @@ public class Matter extends ItemPE
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 2; i++)
 		{

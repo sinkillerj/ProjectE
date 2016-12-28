@@ -60,13 +60,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
 			if (!ProjectEConfig.enableTimeWatch)
 			{
-				player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.disabled"));
+				player.sendMessage(new TextComponentTranslation("pe.timewatch.disabled"));
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
 
@@ -79,7 +80,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.addChatComponentMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedComponentText()));
+			player.sendMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedComponentText()));
 		}
 
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -256,7 +257,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		stack.getTagCompound().setByte("TimeMode", (byte) MathHelper.clamp_int(time, 0, 2));
+		stack.getTagCompound().setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)

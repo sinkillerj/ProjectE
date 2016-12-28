@@ -37,10 +37,11 @@ public class DestructionCatalyst extends ItemCharge
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos coords, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos coords, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (world.isRemote) return EnumActionResult.SUCCESS;
 
+		ItemStack stack = player.getHeldItem(hand);
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
 

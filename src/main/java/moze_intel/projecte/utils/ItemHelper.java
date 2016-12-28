@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -240,11 +241,11 @@ public final class ItemHelper
 		return new ItemStack(item, 1, metaData);
 	}
 
-	public static boolean hasSpace(ItemStack[] inv, ItemStack stack)
+	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
 		{
-			if (invStack == null)
+			if (invStack.isEmpty())
 			{
 				return true;
 			}

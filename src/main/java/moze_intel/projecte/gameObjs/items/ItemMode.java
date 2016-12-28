@@ -52,7 +52,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		changeMode(stack);
 
 		TextComponentTranslation modeName = new TextComponentTranslation(modes[getMode(stack)]);
-		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
+		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
 		return true;
 	}
 	

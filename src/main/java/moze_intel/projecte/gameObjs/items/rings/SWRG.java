@@ -142,8 +142,9 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
 			int newMode = 0;
@@ -278,9 +279,9 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand)
 	{
-		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.worldObj, player, false);
+		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.world, player, false);
 		projectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.worldObj.spawnEntity(projectile);
+		player.world.spawnEntity(projectile);
 		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);
 		return true;
 	}

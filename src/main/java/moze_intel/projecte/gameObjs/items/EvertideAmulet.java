@@ -66,32 +66,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Nonnull
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
-	{
-		return new ICapabilityProvider() {
-			private final IFluidHandler handler = new InfiniteFluidHandler();
-
-			@Override
-			public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-				return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
-			}
-
-			@Override
-			public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-				if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-				{
-					return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
-				} else
-				{
-					return null;
-				}
-			}
-		};
-	}
-
-	@Nonnull
-	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
@@ -120,6 +95,31 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 
 		return EnumActionResult.SUCCESS;
+	}
+
+	@Nonnull
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
+	{
+		return new ICapabilityProvider() {
+			private final IFluidHandler handler = new InfiniteFluidHandler();
+
+			@Override
+			public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+				return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+			}
+
+			@Override
+			public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+				if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				{
+					return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
+				} else
+				{
+					return null;
+				}
+			}
+		};
 	}
 
 	private void placeWater(World world, EntityPlayer player, BlockPos pos)

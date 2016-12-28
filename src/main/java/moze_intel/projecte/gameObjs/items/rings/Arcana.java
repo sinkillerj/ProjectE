@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +57,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 4; ++i)
 			list.add(new ItemStack(item, 1, i));
@@ -173,16 +174,16 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
-			NBTTagCompound compound = stack.getTagCompound();
+			NBTTagCompound compound = player.getHeldItem(hand).getTagCompound();
 			
 			compound.setBoolean("Active", !compound.getBoolean("Active"));
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Override

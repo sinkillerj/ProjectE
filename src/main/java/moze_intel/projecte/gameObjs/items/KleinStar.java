@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -53,14 +54,16 @@ public class KleinStar extends ItemPE implements IItemEmc
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
 		{
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 	
 	@Override
@@ -101,9 +104,10 @@ public class KleinStar extends ItemPE implements IItemEmc
 
 		return super.getUnlocalizedName()+ "_" + (stack.getItemDamage() + 1);
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 6; ++i)
 		{

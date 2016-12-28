@@ -25,13 +25,13 @@ public class PEManual extends ItemPE
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
     {
         if (world.isRemote)
         {
             FMLCommonHandler.instance().showGuiScreen(new GUIManual());
         }
-        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+        return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     @SideOnly(Side.CLIENT)

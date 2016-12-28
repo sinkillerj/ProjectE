@@ -57,8 +57,9 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float par8, float par9, float par10)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);

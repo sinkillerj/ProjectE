@@ -55,7 +55,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		BlockPos fluidPos = pos.offset(facing);
 		IBlockState state = world.getBlockState(fluidPos);
@@ -81,14 +81,14 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			changeMode(player, stack, hand);
+			changeMode(player, player.getHeldItem(hand), hand);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 	
 	@Override
@@ -183,7 +183,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getEntityItem(), false);
 
-			if (result == null)
+			if (result.isEmpty())
 			{
 				item.setDead();
 				return;
@@ -224,7 +224,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				if (!e.getEntityWorld().isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
 					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getEntityItem(), false);
-					if (result != null)
+					if (result.isEmpty())
 					{
 						e.setEntityItemStack(result);
 					}

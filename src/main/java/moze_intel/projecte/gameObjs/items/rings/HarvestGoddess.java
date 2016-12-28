@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -70,9 +71,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
 	{
-		if (world.isRemote || !player.canPlayerEdit(pos, facing, stack))
+		if (world.isRemote || !player.canPlayerEdit(pos, facing, player.getHeldItem(hand)))
 		{
 			return EnumActionResult.FAIL;
 		}
@@ -168,9 +169,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					player.inventory.decrStackSize(s.slot, 1);
 					player.inventoryContainer.detectAndSendChanges();
 
-					s.stack.stackSize--;
+					s.stack.shrink(1);
 
-					if (s.stack.stackSize <= 0)
+					if (s.stack.isEmpty())
 					{
 						seeds.remove(i);
 					}
@@ -185,15 +186,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private List<StackWithSlot> getAllSeeds(ItemStack[] inv) 
+	private List<StackWithSlot> getAllSeeds(NonNullList<ItemStack> inv)
 	{
 		List<StackWithSlot> result = Lists.newArrayList();
 		
-		for (int i = 0; i < inv.length; i++)
+		for (int i = 0; i < inv.size(); i++)
 		{
-			ItemStack stack = inv[i];
+			ItemStack stack = inv.get(i);
 			
-			if (stack != null)
+			if (!stack.isEmpty())
 			{
 				if (stack.getItem() instanceof IPlantable)
 				{
@@ -213,15 +214,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
+	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
 		
-		for (int i = 0; i < inv.length;i++)
+		for (int i = 0; i < inv.size(); i++)
 		{
-			ItemStack stack = inv[i];
+			ItemStack stack = inv.get(i);
 			
-			if (stack != null && stack.stackSize >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
+			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
 			{
 				obj[0] = i;
 				obj[1] = stack;

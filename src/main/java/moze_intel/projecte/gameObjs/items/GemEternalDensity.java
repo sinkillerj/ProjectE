@@ -88,21 +88,21 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			
-			if (s == null
+			if (s.isEmpty()
 					|| !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1
 					|| EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)
-					|| inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, true) == null)
+					|| inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty())
 			{
 				continue;
 			}
 
 			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s)))
 			{
-				ItemStack copy = inv.extractItem(i, s.stackSize == 1 ? 1 : s.stackSize / 2, false);
+				ItemStack copy = inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, false);
 
 				addToList(gem, copy);
 				
-				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.stackSize);
+				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.getCount());
 				hasChanged = true;
 				break;
 			}
@@ -117,9 +117,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		while (getEmc(gem) >= value)
 		{
-			ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, ItemStack.copyItemStack(target), false);
+			ItemStack remain = ItemHandlerHelper.insertItemStacked(inv, target.copy(), false);
 
-			if (remain != null)
+			if (!remain.isEmpty())
 			{
 				return false;
 			}
@@ -134,8 +134,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
 			if (player.isSneaking())
@@ -228,7 +229,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		for (int i = 0; i < tList.tagCount(); i++)
 		{
-			list.add(ItemStack.loadItemStackFromNBT(tList.getCompoundTagAt(i)));
+			list.add(new ItemStack(tList.getCompoundTagAt(i)));
 		}
 		
 		return list;
@@ -249,20 +250,20 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		for (ItemStack s : list)
 		{
-			if (s.stackSize < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack))
+			if (s.getCount() < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack))
 			{
-				int remain = s.getMaxStackSize() - s.stackSize;
+				int remain = s.getMaxStackSize() - s.getCount();
 
-				if (stack.stackSize <= remain)
+				if (stack.getCount() <= remain)
 				{
-					s.stackSize += stack.stackSize;
+					s.grow(stack.getCount());
 					hasFound = true;
 					break;
 				}
 				else
 				{
-					s.stackSize += remain;
-					stack.stackSize -= remain;
+					s.grow(remain);
+					stack.shrink(remain);
 				}
 			}
 		}
@@ -285,7 +286,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		for (int i = 0; i < list.tagCount(); i++)
 		{
-			result.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
+			result.add(new ItemStack(list.getCompoundTagAt(i)));
 		}
 		
 		return result;
@@ -324,7 +325,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			stack.getTagCompound().setByte("Target", (byte) (oldMode + 1));
 		}
 
-		player.addChatComponentMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
+		player.sendMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
 		return true;
 	}
 	

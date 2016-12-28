@@ -48,14 +48,14 @@ public class AlchemicalBag extends ItemPE
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
 			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Nonnull
@@ -84,9 +84,10 @@ public class AlchemicalBag extends ItemPE
 			player.addStat(AchievementHandler.ALCH_BAG, 1);
 		}
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 16; ++i)
 			list.add(new ItemStack(item, 1, i));

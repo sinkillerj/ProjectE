@@ -58,8 +58,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
 			int offset = 3 + this.getCharge(stack);

@@ -52,7 +52,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float px, float py, float pz)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float px, float py, float pz)
 	{
 		if (world.isRemote)
 		{
@@ -71,8 +71,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (result != null)
 		{
-			int mode = this.getMode(stack);
-			int charge = this.getCharge(stack);
+			int mode = this.getMode(player.getHeldItem(hand));
+			int charge = this.getCharge(player.getHeldItem(hand));
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{

@@ -57,7 +57,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (world.isRemote)
 		{
@@ -69,7 +69,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		long totalEmc = 0;
 		int numBlocks = 0;
 
-		byte mode = getMode(stack);
+		byte mode = getMode(player.getHeldItem(hand));
 		int depth = getDepthFromMode(mode);
 		AxisAlignedBB box = WorldHelper.getDeepBox(pos, facing, depth);
 
@@ -154,17 +154,17 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			maxValues[i] = emcValues.get(i);
 		}
 
-		player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+		player.sendMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3)
 		{
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
 		}
 
 		if (this == ObjHandler.dRod3)
 		{
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
 		}
 
 		return EnumActionResult.SUCCESS;
@@ -202,7 +202,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			stack.getTagCompound().setByte("Mode", ((byte) (getMode(stack) + 1)));
 		}
 
-		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 
 		return true;
 	}

@@ -52,7 +52,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			fireArrow(stack, player.worldObj, player, 4F);
+			fireArrow(stack, player.world, player, 4F);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	public void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
 	{
 		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY
-				&& evt.getItemStack() != null && evt.getItemStack().getItem() == this)
+				&& !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this)
 		{
 			fireVolley(evt.getItemStack(), evt.getEntityPlayer());
 		}
@@ -75,7 +75,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		if (!player.worldObj.isRemote)
+		if (!player.world.isRemote)
 		{
 			fireVolley(stack, player);
 		}
@@ -93,13 +93,13 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			fireArrow(stack, world, player, 1F);
+			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	private void fireArrow(ItemStack ring, World world, EntityLivingBase shooter, float inaccuracy)

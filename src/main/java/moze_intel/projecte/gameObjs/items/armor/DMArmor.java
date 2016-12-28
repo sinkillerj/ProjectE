@@ -29,7 +29,7 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 	}
 	
 	@Override
-	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) 
+	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
 		EntityEquipmentSlot type = ((DMArmor) armor.getItem()).armorPiece;
 		if (source.isExplosion())
@@ -37,7 +37,7 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 			return new ArmorProperties(1, 1.0D, 350);
 		}
 
-		if (type == EntityEquipmentSlot.HEAD && source == DamageSource.fall)
+		if (type == EntityEquipmentSlot.HEAD && source == DamageSource.FALL)
 		{
 			return new ArmorProperties(1, 1.0D, 5);
 		}
@@ -51,16 +51,15 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 	}
 
 	@Override
-	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) 
+	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
 	{
 		EntityEquipmentSlot type = ((DMArmor) armor.getItem()).armorPiece;
 		return (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET) ? 4 : 6;
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
+	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
 
-	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)

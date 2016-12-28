@@ -90,13 +90,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
+			ItemStack stack = player.getHeldItem(hand);
 			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-			if (inventory.getStackInSlot(0) == null || inventory.getStackInSlot(1) == null)
+			if (inventory.getStackInSlot(0).isEmpty()|| inventory.getStackInSlot(1).isEmpty())
 			{
 				return EnumActionResult.FAIL;
 			}
@@ -209,7 +210,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                         if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
                         {
                             int difference = emc - reqEmc;
-                            kleinEmc += MathHelper.clamp_double(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
+                            kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
                             addKleinEMC(stack, difference);
                         }
                     }
@@ -246,7 +247,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		ItemStack stack = handler.getStackInSlot(0);
 
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 		{
 			((IItemEmc) stack.getItem()).addEmc(stack, amount);
 		}
@@ -258,7 +259,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		ItemStack stack = handler.getStackInSlot(0);
 
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 		{
 			((IItemEmc) stack.getItem()).extractEmc(stack, amount);
 		}
