@@ -51,7 +51,7 @@ public class EntityLensProjectile extends PEProjectile
 		if (this.isInWater())
 		{
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			((WorldServer) worldObj).spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ, 2, 0, 0, 0, 0, new int[0]);
+			((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ, 2, 0, 0, 0, 0, new int[0]);
 			this.setDead();
 		}
 	}
@@ -60,7 +60,7 @@ public class EntityLensProjectile extends PEProjectile
 	protected void apply(RayTraceResult mop)
 	{
 		if (this.getEntityWorld().isRemote) return;
-		WorldHelper.createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+		WorldHelper.createNovaExplosion(world, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)

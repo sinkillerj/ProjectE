@@ -51,7 +51,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 	public void onUpdate()
 	{
 		boolean inGround = WorldHelper.isArrowInGround(this);
-		if (!worldObj.isRemote && this.ticksExisted > 3)
+		if (!world.isRemote && this.ticksExisted > 3)
 		{
 			if (hasTarget() && (!getTarget().isEntityAlive() || inGround))
 			{
@@ -115,7 +115,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private void findNewTarget()
 	{
-		List<EntityLiving> candidates = worldObj.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
+		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
 
 		if (!candidates.isEmpty())
 		{
@@ -128,7 +128,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private EntityLiving getTarget()
 	{
-		return ((EntityLiving) worldObj.getEntityByID(dataManager.get(DW_TARGET_ID)));
+		return ((EntityLiving) world.getEntityByID(dataManager.get(DW_TARGET_ID)));
 	}
 
 	private boolean hasTarget()

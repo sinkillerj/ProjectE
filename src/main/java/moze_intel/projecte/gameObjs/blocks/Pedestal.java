@@ -72,25 +72,26 @@ public class Pedestal extends Block
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
             ItemStack item = tile.getInventory().getStackInSlot(0);
+            ItemStack stack = player.getHeldItem(hand);
 
-            if (stack == null
-                    && item != null
+            if (stack.isEmpty()
+                    && !item.isEmpty()
                     && item.getItem() instanceof IPedestalItem)
             {
                 tile.setActive(!tile.getActive());
                 world.notifyBlockUpdate(pos, state, state, 8);
-            } else if (stack != null && item == null)
+            } else if (!stack.isEmpty() && item.isEmpty())
             {
                 tile.getInventory().setStackInSlot(0, stack.splitStack(1));
-                if (stack.stackSize <= 0)
+                if (stack.getCount() <= 0)
                 {
-                    player.setHeldItem(hand, null);
+                    player.setHeldItem(hand, ItemStack.EMPTY);
                 }
                 world.notifyBlockUpdate(pos, state, state, 8);
             }
@@ -100,7 +101,7 @@ public class Pedestal extends Block
 
     // [VanillaCopy] Adapted from BlockNote
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighbor)
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos)
     {
         boolean flag = world.isBlockPowered(pos);
         TileEntity te = world.getTileEntity(pos);

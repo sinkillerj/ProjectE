@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
@@ -183,7 +184,8 @@ public class RecipeShapelessHidden implements IRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv) //getRecipeLeftovers
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) //getRecipeLeftovers
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-	}}
+	}
+}

@@ -29,20 +29,20 @@ public class EntityFireProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if(!worldObj.isRemote && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+		if(!world.isRemote && mop.typeOfHit == RayTraceResult.Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos();
-			Block block = worldObj.getBlockState(pos).getBlock();
+			Block block = world.getBlockState(pos).getBlock();
 			
 			if(block == Blocks.OBSIDIAN)
 			{
-				worldObj.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
+				world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
 			}
 			else if(block == Blocks.SAND)
 			{
 				for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-2, -2, -2), mop.getBlockPos().add(2, 2, 2)))
 				{
-					if(worldObj.getBlockState(currentPos).getBlock() == Blocks.SAND)
+					if(world.getBlockState(currentPos).getBlock() == Blocks.SAND)
 					{
 						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.GLASS.getDefaultState());
 					}
@@ -52,7 +52,7 @@ public class EntityFireProjectile extends PEProjectile
 			{
 				for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-1, -1, -1), mop.getBlockPos().add(1, 1, 1)))
 				{
-					if(worldObj.isAirBlock(currentPos))
+					if(world.isAirBlock(currentPos))
 					{
 						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), currentPos, Blocks.FIRE.getDefaultState());
 					}

@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -56,7 +57,7 @@ public class FuelBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(@Nonnull Item fuelBlock, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubBlocks(@Nonnull Item fuelBlock, CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 3; i++)
 		{
