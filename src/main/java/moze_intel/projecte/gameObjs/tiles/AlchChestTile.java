@@ -22,14 +22,13 @@ public class AlchChestTile extends TileEmc
 	private int ticksSinceSync;
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -59,7 +58,7 @@ public class AlchChestTile extends TileEmc
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			worldObj.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
+			world.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
@@ -67,7 +66,7 @@ public class AlchChestTile extends TileEmc
 
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -90,7 +89,7 @@ public class AlchChestTile extends TileEmc
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)
@@ -102,9 +101,9 @@ public class AlchChestTile extends TileEmc
 		for (int i = 0; i < inventory.getSlots(); i++)
 		{
 			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack != null && stack.getItem() instanceof IAlchChestItem)
+			if (!stack.isEmpty() && stack.getItem() instanceof IAlchChestItem)
 			{
-				((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, pos, stack);
+				((IAlchChestItem) stack.getItem()).updateInAlchChest(world, pos, stack);
 			}
 		}
 	}

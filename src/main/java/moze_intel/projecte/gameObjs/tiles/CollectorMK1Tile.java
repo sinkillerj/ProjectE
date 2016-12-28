@@ -31,6 +31,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
 	private final IItemHandler automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
 	{
+		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -40,12 +41,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	};
 	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
 		{
 			if (slot == UPGRADE_SLOT)
 				return super.extractItem(slot, count, simulate);
-			else return null;
+			else return ItemStack.EMPTY;
 		}
 	};
 	public static final int UPGRADING_SLOT = 0;
@@ -80,14 +82,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side != null && side.getAxis().isVertical())
@@ -124,7 +125,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	@Override
 	public void update()
 	{
-		if (worldObj.isRemote)
+		if (world.isRemote)
 			return;
 
 		ItemHelper.compactInventory(toSort);
@@ -135,11 +136,11 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	private void rotateUpgraded()
 	{
-		if (getUpgraded() != null)
+		if (!getUpgraded().isEmpty())
 		{
-			if (getLock() == null
+			if (getLock().isEmpty()
 					|| getUpgraded().getItem() != getLock().getItem()
-					|| getUpgraded().stackSize >= getUpgraded().getMaxStackSize()) {
+					|| getUpgraded().getCount() >= getUpgraded().getMaxStackSize()) {
 				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, getUpgraded().copy(), false));
 			}
 		}
@@ -147,7 +148,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	private void checkFuelOrKlein()
 	{
-		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
+		if (!getUpgrading().isEmpty() && getUpgrading().getItem() instanceof IItemEmc)
 		{
 			IItemEmc itemEmc = ((IItemEmc) getUpgrading().getItem());
 			if(itemEmc.getStoredEmc(getUpgrading()) != itemEmc.getMaximumEmc(getUpgrading()))
@@ -160,7 +161,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				hasChargeableItem = false;
 			}
 		}
-		else if (getUpgrading() != null)
+		else if (!getUpgrading().isEmpty())
 		{
 			hasFuel = true;
 			hasChargeableItem = false;
@@ -199,12 +200,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 		else if (hasFuel)
 		{
-			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty())
 			{
-				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 			}
 
-			ItemStack result = getLock() == null ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
+			ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
 			
 			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 			
@@ -212,21 +213,17 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			{
 				ItemStack upgrade = getUpgraded();
 
-				if (getUpgraded() == null)
+				if (getUpgraded().isEmpty())
 				{
 					this.removeEMC(upgradeCost);
 					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
-					getUpgrading().stackSize--;
-					if (getUpgrading().stackSize == 0)
-						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
+					getUpgrading().shrink(1);
 				}
-				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.stackSize < upgrade.getMaxStackSize())
+				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize())
 				{
 					this.removeEMC(upgradeCost);
-					getUpgraded().stackSize++;
-					getUpgrading().stackSize--;
-					if (getUpgrading().stackSize == 0)
-						auxSlots.setStackInSlot(UPGRADING_SLOT, null);
+					getUpgraded().grow(1);
+					getUpgrading().shrink(1);
 				}
 			}
 		}
@@ -245,7 +242,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	public double getEmcToNextGoal()
 	{
-		if (getLock() != null)
+		if (!getLock().isEmpty())
 		{
 			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 		}
@@ -257,7 +254,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	public double getItemCharge()
 	{
-		if (getUpgrading() != null && getUpgrading().getItem() instanceof IItemEmc)
+		if (!getUpgrading().isEmpty() && getUpgrading().getItem() instanceof IItemEmc)
 		{
 			return ((IItemEmc) getUpgrading().getItem()).getStoredEmc(getUpgrading());
 		}
@@ -269,7 +266,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		double charge = getItemCharge();
 
-		if (getUpgrading() == null || charge <= 0 || !(getUpgrading().getItem() instanceof IItemEmc))
+		if (getUpgrading().isEmpty() || charge <= 0 || !(getUpgrading().getItem() instanceof IItemEmc))
 		{
 			return -1;
 		}
@@ -279,23 +276,23 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	public int getSunLevel()
 	{
-		if (worldObj.provider.doesWaterVaporize())
+		if (world.provider.doesWaterVaporize())
 		{
 			return 16;
 		}
-		return worldObj.getLight(getPos().up()) + 1;
+		return world.getLight(getPos().up()) + 1;
 	}
 
 	public double getFuelProgress()
 	{
-		if (getUpgrading() == null || !FuelMapper.isStackFuel(getUpgrading()))
+		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading()))
 		{
 			return 0;
 		}
 
 		int reqEmc;
 
-		if (getLock() != null)
+		if (!getLock().isEmpty())
 		{
 			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 
@@ -306,9 +303,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 		else
 		{
-			if (FuelMapper.getFuelUpgrade(getUpgrading()) == null)
+			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty())
 			{
-				auxSlots.setStackInSlot(UPGRADING_SLOT, null);
+				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				return 0;
 			}
 			else
@@ -348,7 +345,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	private void sendRelayBonus()
 	{
-		for (Map.Entry<EnumFacing, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this).entrySet())
+		for (Map.Entry<EnumFacing, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet())
 		{
 			EnumFacing dir = entry.getKey();
 			TileEntity tile = entry.getValue();

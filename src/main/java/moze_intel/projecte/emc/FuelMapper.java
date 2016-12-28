@@ -69,7 +69,7 @@ public final class FuelMapper
 		if (index == -1)
 		{
 			PELogger.logFatal("Tried to upgrade invalid fuel: " + stack);
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;

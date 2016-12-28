@@ -17,6 +17,7 @@ public class CondenserMK2Tile extends CondenserTile
 {
 	private final IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
 	{
+		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -28,9 +29,8 @@ public class CondenserMK2Tile extends CondenserTile
 	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
 	private final CombinedInvWrapper joined = new CombinedInvWrapper(automationInput, automationOutput);
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -78,13 +78,13 @@ public class CondenserMK2Tile extends CondenserTile
 			{
 				ItemStack stack = getInput().getStackInSlot(i);
 
-				if (stack == null)
+				if (stack.isEmpty())
 				{
 					continue;
 				}
 
-				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-				getInput().setStackInSlot(i, null);
+				this.addEMC(EMCHelper.getEmcValue(stack) * stack.getCount());
+				getInput().setStackInSlot(i, ItemStack.EMPTY);
 				break;
 			}
 		}

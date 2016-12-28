@@ -25,6 +25,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	private final ItemStackHandler outputInventory = createOutput();
 	private final IItemHandler automationInventory = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
 	{
+		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
@@ -33,16 +34,17 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 					: stack;
 		}
 
+		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int max, boolean simulate)
 		{
-			if (getStackInSlot(slot) != null && isStackEqualToLock(getStackInSlot(slot)))
+			if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot)))
 			{
 				return super.extractItem(slot, max, simulate);
 			}
 			else
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 	};
@@ -81,14 +83,13 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -111,7 +112,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		displayEmc = (int) this.getStoredEmc();
 
-		if (lock.getStackInSlot(0) != null && requiredEmc != 0)
+		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0)
 		{
 			condense();
 		}
@@ -119,7 +120,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 	private void checkLockAndUpdate()
 	{
-		if (lock.getStackInSlot(0) == null)
+		if (lock.getStackInSlot(0).isEmpty())
 		{
 			displayEmc = 0;
 			requiredEmc = 0;
@@ -139,7 +140,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		}
 		else
 		{
-			lock.setStackInSlot(0, null);
+			lock.setStackInSlot(0, ItemStack.EMPTY);
 
 			displayEmc = 0;
 			requiredEmc = 0;
@@ -153,7 +154,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		{
 			ItemStack stack = inputInventory.getStackInSlot(i);
 			
-			if (stack == null || isStackEqualToLock(stack)) 
+			if (stack.isEmpty() || isStackEqualToLock(stack))
 			{
 				continue;
 			}
@@ -188,12 +189,12 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		{
 			ItemStack stack = outputInventory.getStackInSlot(i);
 			
-			if (stack == null) 
+			if (stack.isEmpty())
 			{
 				return true;
 			}
 			
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize()) 
+			if (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize())
 			{
 				return true;
 			}
@@ -204,7 +205,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	
 	public boolean isStackEqualToLock(ItemStack stack)
 	{
-		if (lock.getStackInSlot(0) == null)
+		if (lock.getStackInSlot(0).isEmpty())
 		{
 			return false;
 		}
@@ -239,7 +240,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			worldObj.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
+			world.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
@@ -247,7 +248,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		if (numPlayersUsing > 0 && lidAngle == 0.0F)
 		{
-			worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
@@ -270,7 +271,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 			if (lidAngle < 0.5F && var8 >= 0.5F)
 			{
-				worldObj.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (lidAngle < 0.0F)
