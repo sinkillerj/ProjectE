@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,8 +36,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
-		attackWithCharge(stack, damaged, damager, flag ? DARKSWORD_BASE_ATTACK : 1.0F);
+		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -66,7 +66,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
 			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
-			player.resetCooldown();
+			PlayerHelper.resetCooldown(player);
 			return true;
 		}
 		else
@@ -88,10 +88,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if (!ProjectEConfig.useOldDamage)
-		{
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
-		}
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}

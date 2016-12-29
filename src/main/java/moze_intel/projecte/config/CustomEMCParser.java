@@ -123,6 +123,7 @@ public final class CustomEMCParser
 
 		try {
 			currentEntries = GSON.fromJson(new BufferedReader(new FileReader(CONFIG)), CustomEMCFile.class);
+			currentEntries.entries.removeIf(e -> e.nss == null);
 		} catch (FileNotFoundException e) {
 			PELogger.logFatal("Couldn't read custom emc file");
 			currentEntries = new CustomEMCFile(new ArrayList<CustomEMCEntry>());
@@ -144,16 +145,27 @@ public final class CustomEMCParser
 	public static boolean addToFile(String toAdd, int meta, int emc)
 	{
 		NormalizedSimpleStack nss = getNss(toAdd, meta);
+		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
 
-		for (CustomEMCEntry entry : currentEntries.entries)
+		int setAt = -1;
+
+		for (int i = 0; i < currentEntries.entries.size(); i++)
 		{
-			if (entry.nss.equals(nss))
+			if (currentEntries.entries.get(i).nss.equals(nss))
 			{
-				return false;
+				setAt = i;
+				break;
 			}
 		}
 
-		currentEntries.entries.add(new CustomEMCEntry(nss, emc));
+		if (setAt == -1)
+		{
+			currentEntries.entries.add(entry);
+		} else
+		{
+			currentEntries.entries.set(setAt, entry);
+		}
+
 		dirty = true;
 		return true;
 	}

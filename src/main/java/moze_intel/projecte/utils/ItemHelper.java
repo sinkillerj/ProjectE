@@ -5,15 +5,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary
@@ -68,34 +70,6 @@ public final class ItemHelper
 		}
 	}
 
-	public static void compactItemList(List<ItemStack> list)
-	{
-		for (int i = 0; i < list.size(); i++)
-		{
-			ItemStack s = list.get(i);
-			for (int j = i + 1; j < list.size(); j++)
-			{
-				ItemStack s1 = list.get(j);
-				if (areItemStacksEqual(s, s1))
-				{
-					if (s.stackSize + s1.stackSize <= s.getMaxStackSize())
-					{
-						s.stackSize += s1.stackSize;
-						s1.stackSize = 0;
-					}
-					else
-					{
-						s1.stackSize = (s1.stackSize + s.stackSize) - s.getMaxStackSize();
-						s.stackSize = s.getMaxStackSize();
-					}
-				}
-			}
-		}
-
-		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
-		trimItemList(list);
-	}
-
 	/**
 	 * Compacts and sorts list of items, without regard for stack sizes
 	 */
@@ -104,19 +78,22 @@ public final class ItemHelper
 		for (int i = 0; i < list.size(); i++)
 		{
 			ItemStack s = list.get(i);
-			for (int j = i + 1; j < list.size(); j++)
+			if (s != null)
 			{
-				ItemStack s1 = list.get(j);
-				if (areItemStacksEqual(s, s1))
+				for (int j = i + 1; j < list.size(); j++)
 				{
-					s.stackSize += s1.stackSize;
-					s1.stackSize = 0;
+					ItemStack s1 = list.get(j);
+					if (ItemHandlerHelper.canItemStacksStack(s, s1))
+					{
+						s.stackSize += s1.stackSize;
+						list.set(j, null);
+					}
 				}
 			}
 		}
 
-		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
-		trimItemList(list);
+		list.removeIf(Objects::isNull);
+		list.sort(Comparators.ITEMSTACK_ASCENDING);
 	}
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
@@ -226,18 +203,6 @@ public final class ItemHelper
 		return OreDictionary.getOreName(oreIds[0]);
 	}
 
-	public static ItemStack getStackFromString(String internal, int metaData)
-	{
-		Item item = Item.REGISTRY.getObject(new ResourceLocation(internal));
-
-		if (item == null)
-		{
-			return null;
-		}
-
-		return new ItemStack(item, 1, metaData);
-	}
-
 	public static boolean hasSpace(ItemStack[] inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
@@ -327,6 +292,11 @@ public final class ItemHelper
 		return false;
 	}
 
+	public static boolean isDamageable(ItemStack stack)
+	{
+		return !stack.getHasSubtypes() && stack.getMaxDamage() != 0;
+	}
+
 	public static boolean isOre(IBlockState state)
 	{
 		if (state.getBlock() == Blocks.LIT_REDSTONE_ORE)
@@ -361,18 +331,5 @@ public final class ItemHelper
 	public static ItemStack stateToDroppedStack(IBlockState state, int stackSize)
 	{
 		return new ItemStack(state.getBlock(), stackSize, state.getBlock().damageDropped(state));
-	}
-
-	private static void trimItemList(List<ItemStack> list)
-	{
-		Iterator<ItemStack> iter = list.iterator();
-		while (iter.hasNext())
-		{
-			ItemStack s = iter.next();
-			if (s.stackSize <= 0)
-			{
-				iter.remove();
-			}
-		}
 	}
 }

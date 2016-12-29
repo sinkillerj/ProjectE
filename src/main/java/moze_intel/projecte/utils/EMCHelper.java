@@ -119,7 +119,7 @@ public final class EMCHelper
 			return false;
 		}
 
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
+		if (ItemHelper.isDamageable(stack))
 		{
 			iStack = iStack.withMeta(0);
 		}
@@ -173,7 +173,7 @@ public final class EMCHelper
 			return 0;
 		}
 
-		if (!EMCMapper.mapContains(iStack) && !stack.getHasSubtypes() && stack.getMaxDamage() != 0)
+		if (!EMCMapper.mapContains(iStack) && ItemHelper.isDamageable(stack))
 		{
 			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.
 			iStack = iStack.withMeta(0);

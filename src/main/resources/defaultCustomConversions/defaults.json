@@ -13,6 +13,22 @@
           }
         },
         {
+          "output": "minecraft:dirt|2",
+          "ingredients": {
+            "minecraft:dirt|0": 2
+          }
+        },
+        {
+          "output": "minecraft:mycelium|0",
+          "ingredients": {
+            "minecraft:dirt|0": 2
+          }
+        },
+        {
+          "output": "minecraft:grass_path|0",
+          "ingredients": [ "minecraft:grass|0" ]
+        },
+        {
           "output": "minecraft:iron_horse_armor|0",
           "ingredients": {
             "minecraft:iron_ingot|0": 8
@@ -45,8 +61,6 @@
       "minecraft:end_stone|0": 1,
       "minecraft:netherrack|0": 1,
       "minecraft:dirt|0": 1,
-      "minecraft:dirt|2": 2,
-      "minecraft:mycelium|0": 2,
       "minecraft:sand|0": 1,
       "minecraft:sand|1": 1,
       "minecraft:snow|0": 1,
@@ -85,6 +99,7 @@
       "minecraft:double_plant|2": 1,
       "minecraft:double_plant|3": 1,
       "minecraft:packed_ice|0": 4,
+      "minecraft:magma|0": 128,
 
       "minecraft:chorus_plant|0": 64,
       "minecraft:chorus_flower|0": 96,
@@ -125,7 +140,6 @@
       "minecraft:dragon_egg|0": 262144,
       "minecraft:potion|0": 0,
 
-      "minecraft:torch|0": 9,
       "minecraft:stick|0": 4,
       "minecraft:saddle|0": 192,
       "minecraft:name_tag|0": 192,

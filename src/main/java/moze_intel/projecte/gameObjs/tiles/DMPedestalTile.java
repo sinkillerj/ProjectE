@@ -10,6 +10,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -20,11 +21,12 @@ import java.util.Random;
 
 public class DMPedestalTile extends TileEmc
 {
+	private static final int RANGE = 4;
 	private boolean isActive = false;
 	private ItemStackHandler inventory = new StackHandler(1);
-	private AxisAlignedBB effectBounds;
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
+	public boolean previousRedstoneState = false;
 	public double centeredX, centeredY, centeredZ;
 
 	@Override
@@ -33,12 +35,6 @@ public class DMPedestalTile extends TileEmc
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
 		centeredZ = pos.getZ() + 0.5;
-
-		if (effectBounds == null)
-		{
-			effectBounds = new AxisAlignedBB(centeredX - 4.5, centeredY - 4.5, centeredZ - 4.5,
-					centeredX + 4.5, centeredY + 4.5, centeredZ + 4.5);
-		}
 
 		if (getActive())
 		{
@@ -111,14 +107,12 @@ public class DMPedestalTile extends TileEmc
 		activityCooldown--;
 	}
 
+	/**
+	 * @return Inclusive bounding box of all positions this pedestal should apply effects in
+	 */
 	public AxisAlignedBB getEffectBounds()
 	{
-		if (effectBounds == null)
-		{
-			// Chunk is still loading weirdness, return an empty box just for this tick.
-			return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
-		}
-		return effectBounds;
+		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE, RANGE, RANGE));
 	}
 
 	@Override
@@ -129,6 +123,7 @@ public class DMPedestalTile extends TileEmc
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
 		activityCooldown = tag.getInteger("activityCooldown");
+		previousRedstoneState = tag.getBoolean("powered");
 	}
 
 	@Nonnull
@@ -139,6 +134,7 @@ public class DMPedestalTile extends TileEmc
 		tag.merge(inventory.serializeNBT());
 		tag.setBoolean("isActive", getActive());
 		tag.setInteger("activityCooldown", activityCooldown);
+		tag.setBoolean("powered", previousRedstoneState);
 		return tag;
 	}
 

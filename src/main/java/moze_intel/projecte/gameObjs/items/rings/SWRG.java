@@ -3,8 +3,11 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -32,10 +35,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider
+public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider, IProjectileShooter
 {
 	public SWRG()
 	{
@@ -269,5 +273,15 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand)
+	{
+		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.worldObj, player, false);
+		projectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		player.worldObj.spawnEntityInWorld(projectile);
+		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);
+		return true;
 	}
 }

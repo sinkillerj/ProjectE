@@ -31,12 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 {
 	private static final String EXAMPLE_FILENAME = "example";
-	private static final ImmutableList<String> defaultfilenames = ImmutableList.of(EXAMPLE_FILENAME, "metals", "ODdefaults", "defaults");
+	private static final ImmutableList<String> defaultFilenames = ImmutableList.of("defaults", "ODdefaults", "metals");
 
 	@Override
 	public String getName()
@@ -47,7 +50,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public String getDescription()
 	{
-		return "";
+		return "Uses json files within config/ProjectE/customConversions/ to add values and conversions";
 	}
 
 	@Override
@@ -65,27 +68,43 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			{
 				tryToWriteDefaultFiles();
 			}
-			for (File f: customConversionFolder.listFiles()) {
-				if (f.isFile() && f.canRead()) {
-					if (f.getName().toLowerCase().endsWith(".json")) {
-						String name = f.getName().substring(0, f.getName().length() - 5);
-						if (!EXAMPLE_FILENAME.equals(name)
-							&& config.getBoolean(name, "", true, String.format("Read file: %s?", f.getName()))) {
-							try
-							{
-								addMappingsFromFile(new FileReader(f), mapper);
-								PELogger.logInfo("Collected Mappings from " + f.getName());
-							} catch (Exception e) {
-								PELogger.logFatal("Exception when reading file: " + f);
-								e.printStackTrace();
-							}
-						}
-					}
-				}
+
+			for (String defaultFile : defaultFilenames)
+			{
+				readFile(new File(customConversionFolder, defaultFile + ".json"), config, mapper, true);
+			}
+
+			List<File> sortedFiles = Arrays.asList(customConversionFolder.listFiles());
+			Collections.sort(sortedFiles);
+
+			for (File f : sortedFiles)
+			{
+				readFile(f, config, mapper, false);
 			}
 		} else {
 			PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
 		}
+	}
+
+	private static void readFile(File f, Configuration config, IMappingCollector<NormalizedSimpleStack, Integer> mapper, boolean allowDefaults)
+	{
+		if (f.isFile() && f.canRead() && f.getName().toLowerCase().endsWith(".json")) {
+			String name = f.getName().substring(0, f.getName().length() - ".json".length());
+
+			if (!EXAMPLE_FILENAME.equals(name)
+					&& (allowDefaults || !defaultFilenames.contains(name))
+					&& config.getBoolean(name, "", true, String.format("Read file: %s?", f.getName()))) {
+				try
+				{
+					addMappingsFromFile(new FileReader(f), mapper);
+					PELogger.logInfo("Collected Mappings from " + f.getName());
+				} catch (Exception e) {
+					PELogger.logFatal("Exception when reading file: " + f);
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	private static File getCustomConversionFolder()
@@ -221,7 +240,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 
 	private static void tryToWriteDefaultFiles() {
-		for (String filename: defaultfilenames) {
+		writeDefaultFile(EXAMPLE_FILENAME);
+
+		for (String filename : defaultFilenames) {
 			writeDefaultFile(filename);
 		}
 	}

@@ -431,7 +431,7 @@ public class ObjHandler
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(collectorMK3), "GRG", "GCG", "GGG", 'G', "glowstone", 'C', collectorMK2, 'R', new ItemStack(matter, 1, 1)));
 
 		//AM Relays
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', "blockGlassColorless", 'D', "dirt", 'O', "obsidian"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(relay), "OSO", "ODO", "OOO", 'S', "blockGlassColorless", 'D', "blockDiamond", 'O', "obsidian"));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', "obsidian"));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(relayMK3), "ORO", "OAO", "OOO", 'A', relayMK2, 'R', new ItemStack(matter, 1, 1), 'O', "obsidian"));
 

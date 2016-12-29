@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.ReflectionHelperClient;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -66,7 +68,10 @@ public class TransmutationRenderingEvent
 				} else
 				{
 					RenderHelper.enableStandardItemLighting();
-					mc.getRenderItem().renderItemIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0);
+
+					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(transmutationResult);
+					ReflectionHelperClient.renderBakedModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
+
 					RenderHelper.disableStandardItemLighting();
 				}
 			}

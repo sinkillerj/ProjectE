@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,8 +24,7 @@ public class RedSword extends DarkSword
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
-		attackWithCharge(stack, damaged, damager, flag ? REDSWORD_BASE_ATTACK : 1.0F);
+		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -35,7 +34,7 @@ public class RedSword extends DarkSword
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
 			attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0, hand);
-			player.resetCooldown();
+			PlayerHelper.resetCooldown(player);
 			return true;
 		}
 		else

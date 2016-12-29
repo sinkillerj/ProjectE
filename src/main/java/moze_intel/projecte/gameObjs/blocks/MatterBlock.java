@@ -30,12 +30,13 @@ public class MatterBlock extends Block
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.DARK_MATTER));
 		this.setUnlocalizedName("pe_matter_block");
+		this.setHardness(1000000F);
 	}
 
 	@Override
 	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
 	{
-		EnumMatterType type = world.getBlockState(pos).getValue(PEStateProps.TIER_PROP);
+		EnumMatterType type = state.getValue(PEStateProps.TIER_PROP);
 
 		if (type == EnumMatterType.DARK_MATTER)
 		{

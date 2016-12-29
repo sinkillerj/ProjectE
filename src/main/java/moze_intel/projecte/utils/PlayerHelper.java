@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import baubles.api.BaublesApi;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import net.minecraft.block.state.IBlockState;
@@ -138,6 +139,11 @@ public final class PlayerHelper
 		return true;
 	}
 
+	public static void resetCooldown(EntityPlayer player)
+	{
+		player.resetCooldown();
+		PacketHandler.sendTo(new CooldownResetPKT(), (EntityPlayerMP) player);
+	}
 
 	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
 	{

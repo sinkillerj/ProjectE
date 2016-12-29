@@ -4,18 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.network.packets.CheckUpdatePKT;
-import moze_intel.projecte.network.packets.CondenserSyncPKT;
-import moze_intel.projecte.network.packets.KeyPressPKT;
-import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
-import moze_intel.projecte.network.packets.SetFlyPKT;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SyncBagDataPKT;
-import moze_intel.projecte.network.packets.SyncEmcPKT;
-import moze_intel.projecte.network.packets.UpdateGemModePKT;
-import moze_intel.projecte.network.packets.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -44,13 +33,14 @@ public final class PacketHandler
 		HANDLER.registerMessage(StepHeightPKT.Handler.class, StepHeightPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(CondenserSyncPKT.Handler.class, CondenserSyncPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(CheckUpdatePKT.Handler.class, CheckUpdatePKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(SyncBagDataPKT.Handler.class, SyncBagDataPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(UpdateWindowIntPKT.Handler.class, UpdateWindowIntPKT.class, disc++, Side.CLIENT);
+		HANDLER.registerMessage(CooldownResetPKT.Handler.class, CooldownResetPKT.class, disc++, Side.CLIENT);
+		HANDLER.registerMessage(LeftClickArchangelPKT.Handler.class, LeftClickArchangelPKT.class, disc++, Side.SERVER);
 	}
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)

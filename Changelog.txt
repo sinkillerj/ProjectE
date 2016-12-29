@@ -1,3 +1,15 @@
+###Version 1.7.10-PE1.10.1
+* NOTICE: 1.7 is now a legacy build and will no longer be officially supported. Minor fixes may come in the future but are not guaranteed. Development and support will continue for 1.10 and above
+* NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further
+* NEW: Ukrainian language file added
+* NEW: Russian language file updates
+* NEW: Portuguese language file updates
+* NEW: German language file updates
+* NEW: Chinese language file updates
+* FIXED: Conflict with littleMaidMobX and other mods with similar InventoryPlayer interactions
+* FIXED: A hasValue api issue
+* CHANGE: Incomplete recipe disabling configs have been removed. Minetweaker and other mods do a better job of providing this functionality
+
 ###Version 1.7.10-PE1.10.0
 * NOTICE: While unrelated Sin has a game on Steam Greenlight. Yes votes appreciated: http://steamcommunity.com/sharedfiles/filedetails/?id=596224516
 * NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further

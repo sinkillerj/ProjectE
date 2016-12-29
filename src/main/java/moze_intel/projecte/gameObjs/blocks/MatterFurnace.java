@@ -39,6 +39,7 @@ public class MatterFurnace extends BlockDirection
 		isActive = active;
 		isHighTier = isRM;
 		this.setUnlocalizedName("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
+		this.setHardness(1000000F);
 		
 		if (isActive) 
 		{

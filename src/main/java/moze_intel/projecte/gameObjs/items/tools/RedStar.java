@@ -63,8 +63,7 @@ public class RedStar extends PEToolBase
 	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
 	{
-		boolean flag = ProjectEConfig.useOldDamage;
-		attackWithCharge(stack, damaged, damager, flag ? STAR_BASE_ATTACK : 1.0F);
+		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -154,10 +153,7 @@ public class RedStar extends PEToolBase
 		float damage = STAR_BASE_ATTACK + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if(!ProjectEConfig.useOldDamage)
-		{
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
-		}
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
 		return multimap;
 	}

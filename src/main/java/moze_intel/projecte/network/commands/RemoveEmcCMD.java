@@ -54,7 +54,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 				return;
 			}
 
-			name = Item.REGISTRY.getNameForObject(heldItem.getItem()).toString();
+			name = heldItem.getItem().getRegistryName().toString();
 			meta = heldItem.getItemDamage();
 		}
 		else
