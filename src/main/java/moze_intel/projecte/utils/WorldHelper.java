@@ -120,7 +120,7 @@ public final class WorldHelper
 
 	public static void createLootDrop(List<ItemStack> drops, World world, double x, double y, double z)
 	{
-		ItemHelper.compactItemList(drops);
+		ItemHelper.compactItemListNoStacksize(drops);
 
 		for (ItemStack drop : drops)
 		{
