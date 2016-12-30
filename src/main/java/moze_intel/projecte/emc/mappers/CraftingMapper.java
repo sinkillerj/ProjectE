@@ -95,8 +95,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 									//} TODO 1.8 method doesContainerItemLeave... no longer exists
 								}
 							}
-							if (recipeOutput.stackSize > 0) {
-								mapper.addConversion(recipeOutput.stackSize, recipeOutputNorm, ingredientMap.getMap());
+							if (recipeOutput.getCount() > 0) {
+								mapper.addConversion(recipeOutput.getCount(), recipeOutputNorm, ingredientMap.getMap());
 							} else {
 								PELogger.logWarn("Ignoring Recipe because outnumber <= 0: " + ingredientMap.getMap().toString() + " -> " + recipeOutput);
 							}

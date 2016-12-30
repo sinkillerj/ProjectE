@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory
@@ -50,17 +51,18 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         return background;
     }
 
+    @Nullable
+    @Override
+    public IDrawable getIcon()
+    {
+        return null;
+    }
+
     @Override
     public void drawExtras(@Nonnull Minecraft minecraft)
     {
         arrow.draw(minecraft, -30, 0);
     }
-
-    @Override
-    public void drawAnimations(@Nonnull Minecraft minecraft) {}
-
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {}
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients)
@@ -87,19 +89,19 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         }
 
         xPos = 128;
-        for (ItemStack s : ingredients.getOutputs(ItemStack.class))
+        for (List<ItemStack> stacks : ingredients.getOutputs(ItemStack.class))
         {
             recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
-            recipeLayout.getItemStacks().set(itemSlots, s);
+            recipeLayout.getItemStacks().set(itemSlots, stacks);
             itemSlots++;
             xPos += 16;
         }
 
         xPos = 128;
-        for (FluidStack s : ingredients.getOutputs(FluidStack.class))
+        for (List<FluidStack> stacks : ingredients.getOutputs(FluidStack.class))
         {
             recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, 1000, false, null);
-            recipeLayout.getFluidStacks().set(fluidSlots, s);
+            recipeLayout.getFluidStacks().set(fluidSlots, stacks);
             fluidSlots++;
             xPos += 16;
         }

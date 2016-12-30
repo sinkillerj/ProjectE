@@ -639,7 +639,7 @@ public class ObjHandler
 
 			ItemStack input = entry.getKey();
 			ItemStack output = entry.getValue().copy();
-			output.stackSize *= 7;
+			output.setCount(output.getCount() * 7);
 
 			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
 

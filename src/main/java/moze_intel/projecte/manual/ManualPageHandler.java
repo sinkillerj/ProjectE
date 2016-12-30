@@ -12,6 +12,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -242,7 +243,7 @@ public class ManualPageHandler
 
     private static List<ItemStack> getSubItems(Item i)
     {
-        List<ItemStack> list = Lists.newArrayList();
+        NonNullList<ItemStack> list = NonNullList.create();
         i.getSubItems(i, null, list);
         return list;
     }

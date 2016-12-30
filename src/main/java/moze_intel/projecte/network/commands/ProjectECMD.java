@@ -48,7 +48,7 @@ public class ProjectECMD extends ProjectEBaseCMD
 
 	@Nonnull
 	@Override
-	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
 	{
 		if (params.length == 1)
 		{

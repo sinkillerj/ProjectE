@@ -21,10 +21,12 @@ import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
@@ -34,10 +36,11 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.HorseType;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -86,7 +89,9 @@ public final class WorldHelper
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
-			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class
+			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class,
+			EntityStray.class, EntityWitherSkeleton.class, EntitySkeletonHorse.class, EntityZombieHorse.class,
+			EntityZombieVillager.class
 	);
 
 	private static final Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
@@ -293,23 +298,15 @@ public final class WorldHelper
 
 			if (ent instanceof EntitySkeleton)
 			{
-				switch (world.rand.nextInt(3))
-				{
-					case 0: {
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-						break;
-					}
-					case 1: {
-						((EntitySkeleton) ent).setSkeletonType(SkeletonType.WITHER);
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
-						break;
-					}
-					case 2: {
-						((EntitySkeleton) ent).setSkeletonType(SkeletonType.STRAY);
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-						break;
-					}
-				}
+				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+			}
+			else if (ent instanceof EntityWitherSkeleton)
+			{
+				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
+			}
+			else if (ent instanceof EntityStray)
+			{
+				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 			}
 			else if (ent instanceof EntityPigZombie)
 			{
@@ -329,11 +326,7 @@ public final class WorldHelper
 			}
 			else if (ent instanceof EntityHorse)
 			{
-				((EntityHorse) ent).setType(HorseType.values()[MathUtils.randomIntInRange(0, 2)]);
-				if (((EntityHorse) ent).getType() == HorseType.HORSE)
-				{
-					((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
-				}
+				((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
 			}
 
 			return ent;
