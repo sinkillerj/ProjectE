@@ -18,7 +18,7 @@ public class SearchUpdatePKT implements IMessage
 	public SearchUpdatePKT(int slot, ItemStack itemStack)
 	{
 		this.slot = slot;
-		this.itemStack = itemStack != null ? itemStack.copy() : null;
+		this.itemStack = itemStack.copy();
 	}
 
 	@Override

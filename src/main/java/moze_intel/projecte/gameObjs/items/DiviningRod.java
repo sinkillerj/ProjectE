@@ -99,7 +99,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 				for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 				{
-					if (entry == null || entry.getKey() == null)
+					if (entry == null || entry.getKey().isEmpty())
 					{
 						continue;
 					}

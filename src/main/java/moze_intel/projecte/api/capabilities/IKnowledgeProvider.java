@@ -38,7 +38,7 @@ public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
      * @param stack The stack to query
      * @return Whether the player has transmutation knowledge for this stack
      */
-    boolean hasKnowledge(@Nullable ItemStack stack);
+    boolean hasKnowledge(@Nonnull ItemStack stack);
 
     /**
      * @param stack The stack to add to knowledge

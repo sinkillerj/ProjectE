@@ -58,10 +58,10 @@ public final class ItemHelper
 		List<ItemStack> temp = new ArrayList<>();
 		for (int i = 0; i < inventory.getSlots(); i++)
 		{
-			if (inventory.getStackInSlot(i) != null)
+			if (!inventory.getStackInSlot(i).isEmpty())
 			{
 				temp.add(inventory.getStackInSlot(i));
-				inventory.setStackInSlot(i, null);
+				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
 
@@ -125,7 +125,7 @@ public final class ItemHelper
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
 		for (ItemStack stack : list) {
-			if (stack == null) {
+			if (stack.isEmpty()) {
 				continue;
 			}
 
@@ -158,7 +158,7 @@ public final class ItemHelper
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
@@ -215,7 +215,7 @@ public final class ItemHelper
 
 	public static String getOreDictionaryName(ItemStack stack)
 	{
-		if (stack == null || stack.getItem() == null)
+		if (stack.isEmpty())
 		{
 			return "Unknown";
 		}
@@ -306,7 +306,7 @@ public final class ItemHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack != null && basicAreStacksEqual(stack, toSearch))
+			if (!stack.isEmpty() && basicAreStacksEqual(stack, toSearch))
 			{
 				return true;
 			}

@@ -72,12 +72,12 @@ public final class PlayerHelper
 	{
 		for (ItemStack s : player.inventory.mainInventory)
 		{
-			if (s != null && s.getItem() == consumeFrom)
+			if (!s.isEmpty() && s.getItem() == consumeFrom)
 			{
 				return s;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public static IItemHandler getBaubles(EntityPlayer player)

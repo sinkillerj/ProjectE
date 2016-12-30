@@ -44,7 +44,7 @@ public final class EMCHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
@@ -107,7 +107,7 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return false;
 		}
@@ -161,7 +161,7 @@ public final class EMCHelper
 	 */
 	public static int getEmcValue(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return 0;
 		}

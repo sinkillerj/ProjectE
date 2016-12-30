@@ -13,7 +13,7 @@ public class PlayerRender
 	@SubscribeEvent
 	public static void onFOVUpdateEvent(FOVUpdateEvent evt)
 	{
-		if (evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET) != null && evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem() == ObjHandler.gemFeet)
+		if (!evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET).isEmpty() && evt.getEntity().getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem() == ObjHandler.gemFeet)
 		{
 			evt.setNewfov(evt.getFov() - 0.4F);
 		}

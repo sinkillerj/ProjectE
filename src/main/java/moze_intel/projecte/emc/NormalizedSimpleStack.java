@@ -107,7 +107,7 @@ public abstract class NormalizedSimpleStack {
 
 
 	public static NormalizedSimpleStack getFor(ItemStack stack) {
-		if (stack == null || stack.getItem() == null) return null;
+		if (stack.isEmpty()) return null;
 		return getFor(stack.getItem(), stack.getItemDamage());
 	}
 

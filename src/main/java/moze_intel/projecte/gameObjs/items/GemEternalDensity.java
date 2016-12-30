@@ -204,7 +204,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				return new ItemStack(ObjHandler.matter, 1, 1);
 			default:
 				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.getTagCompound().getByte("Target"));
-				return null;
+				return ItemStack.EMPTY;
 		}
 	}
 	

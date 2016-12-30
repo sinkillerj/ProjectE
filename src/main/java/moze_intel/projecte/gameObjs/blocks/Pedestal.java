@@ -46,10 +46,10 @@ public class Pedestal extends Block
     {
         DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
         ItemStack stack = tile.getInventory().getStackInSlot(0);
-        if (stack != null)
+        if (!stack.isEmpty())
         {
             WorldHelper.spawnEntityItem(world, stack, pos.getX(), pos.getY() + 0.8, pos.getZ());
-            tile.getInventory().setStackInSlot(0, null);
+            tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
         }
     }
 
@@ -112,7 +112,7 @@ public class Pedestal extends Block
 
             if (ped.previousRedstoneState != flag)
             {
-                if (flag && ped.getInventory().getStackInSlot(0) != null
+                if (flag && !ped.getInventory().getStackInSlot(0).isEmpty()
                         && ped.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
                 {
                     ped.setActive(!ped.getActive());

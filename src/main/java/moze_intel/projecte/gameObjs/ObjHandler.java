@@ -632,7 +632,7 @@ public class ObjHandler
 	{
 		for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
-			if (entry.getKey() == null || entry.getValue() == null)
+			if (entry.getKey().isEmpty() || entry.getValue().isEmpty())
 			{
 				continue;
 			}

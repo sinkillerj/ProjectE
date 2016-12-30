@@ -85,10 +85,10 @@ public class TransmutationRenderingEvent
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 
-		if (stack == null)
+		if (stack.isEmpty())
 			stack = player.getHeldItem(EnumHand.OFF_HAND);
 		
-		if (stack == null || stack.getItem() != ObjHandler.philosStone)
+		if (stack.isEmpty() || stack.getItem() != ObjHandler.philosStone)
 		{
 			transmutationResult = null;
 			return;

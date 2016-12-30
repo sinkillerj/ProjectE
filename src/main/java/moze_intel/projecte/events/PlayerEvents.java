@@ -143,7 +143,7 @@ public class PlayerEvents
 
 		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 
-		if (bag == null)
+		if (bag.isEmpty())
 		{
 			return;
 		}
@@ -152,7 +152,7 @@ public class PlayerEvents
 				.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getEntityItem(), false);
 
-		if (remainder == null)
+		if (remainder.isEmpty())
 		{
 			event.getItem().setDead();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);

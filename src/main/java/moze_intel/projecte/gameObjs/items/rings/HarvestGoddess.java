@@ -89,7 +89,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
 
-			if (boneMeal != null && useBoneMeal(world, pos))
+			if (!boneMeal.isEmpty() && useBoneMeal(world, pos))
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();

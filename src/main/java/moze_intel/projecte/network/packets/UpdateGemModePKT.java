@@ -40,10 +40,10 @@ public class UpdateGemModePKT implements IMessage
 				@Override
 				public void run() {
 					ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem(EnumHand.MAIN_HAND);
-					if (stack == null)
+					if (stack.isEmpty())
 						stack = ctx.getServerHandler().playerEntity.getHeldItem(EnumHand.OFF_HAND);
 
-					if (stack != null && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
+					if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
 					{
 						stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
 					}

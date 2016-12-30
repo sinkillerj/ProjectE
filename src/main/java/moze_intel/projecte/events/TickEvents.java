@@ -39,7 +39,7 @@ public class TickEvents
 				for (int i = 0; i < inv.getSlots(); i++)
 				{
 					ItemStack current = inv.getStackInSlot(i);
-					if (current != null && current.getItem() instanceof IAlchBagItem
+					if (!current.isEmpty() && current.getItem() instanceof IAlchBagItem
 							&& ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, event.player, current))
 					{
 						colorsChanged.add(color);
@@ -73,7 +73,7 @@ public class TickEvents
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			if (stack != null && stack.getItem() == ObjHandler.alchBag)
+			if (!stack.isEmpty() && stack.getItem() == ObjHandler.alchBag)
 			{
 				bagsPresent.add(EnumDyeColor.byMetadata(stack.getItemDamage()));
 			}

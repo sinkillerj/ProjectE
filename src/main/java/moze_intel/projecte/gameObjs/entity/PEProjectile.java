@@ -51,6 +51,6 @@ public abstract class PEProjectile extends EntityThrowable
     {
         EntityPlayer player = ((EntityPlayer) getThrower());
         ItemStack found = PlayerHelper.findFirstItem(player, consumeFrom);
-        return found != null && ItemPE.consumeFuel(player, found, amount, true);
+        return !found.isEmpty() && ItemPE.consumeFuel(player, found, amount, true);
     }
 }

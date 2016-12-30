@@ -16,7 +16,7 @@ public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
 			ItemStack input = entry.getKey();
 			ItemStack output = entry.getValue();
-			if (input == null || output == null) {
+			if (input.isEmpty()|| output.isEmpty()) {
 				continue;
 			}
 			IngredientMap<NormalizedSimpleStack> map = new IngredientMap<>();

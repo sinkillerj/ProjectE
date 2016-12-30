@@ -43,12 +43,12 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 		if (params.length == 0)
 		{
 			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
 				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
 			}
 
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
 				sendError(sender, new TextComponentTranslation("pe.command.remove.usage"));
 				return;

@@ -31,7 +31,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	private final Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
 
 	public void registerCustomEMC(ItemStack stack, int emcValue) {
-		if (stack == null || stack.getItem() == null) return;
+		if (stack.isEmpty()) return;
 		if (emcValue < 0) emcValue = 0;
 		ModContainer activeMod = Loader.instance().activeModContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();

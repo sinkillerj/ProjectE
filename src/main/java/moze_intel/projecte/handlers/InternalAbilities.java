@@ -145,7 +145,7 @@ public final class InternalAbilities
 
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFlightProvider
 					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
@@ -157,7 +157,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFlightProvider
 					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
@@ -171,7 +171,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFlightProvider
 						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 				{
@@ -193,7 +193,7 @@ public final class InternalAbilities
 
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFireProtector
 					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 			{
@@ -205,7 +205,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFireProtector
 					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 			{
@@ -219,7 +219,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFireProtector
 						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 				{
@@ -235,7 +235,7 @@ public final class InternalAbilities
 	{
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IStepAssister
 					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
@@ -247,7 +247,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IStepAssister
 					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
@@ -261,7 +261,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IStepAssister
 						&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 				{
@@ -288,7 +288,7 @@ public final class InternalAbilities
 		{
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
-				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
 				{
 					return true;
 				}

@@ -78,7 +78,7 @@ public abstract class BlockDirection extends Block
 		
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		
-		if (stack != null && stack.getItem() == ObjHandler.philosStone)
+		if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone)
 		{
 			setFacingMeta(world, pos, player);
 		}

@@ -27,7 +27,7 @@ public class LeftClickArchangelPKT implements IMessage
 				public void run() {
 					EntityPlayer player = ctx.getServerHandler().playerEntity;
 					ItemStack main = player.getHeldItemMainhand();
-					if (main != null && main.getItem() == ObjHandler.angelSmite)
+					if (!main.isEmpty() && main.getItem() == ObjHandler.angelSmite)
 					{
 						((ArchangelSmite) ObjHandler.angelSmite).fireVolley(main, player);
 					}

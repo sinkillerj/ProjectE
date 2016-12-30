@@ -57,7 +57,7 @@ public class IMCHandler
     private static void whitelistNBT(FMLInterModComms.IMCMessage msg)
     {
         ItemStack s = msg.getItemStackValue();
-        if (s != null)
+        if (!s.isEmpty())
         {
             ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doWhitelistNBT(s, msg.getSender());
         }

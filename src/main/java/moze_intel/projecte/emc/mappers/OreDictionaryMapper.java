@@ -33,7 +33,7 @@ public class OreDictionaryMapper implements IEMCMapper<NormalizedSimpleStack, In
 					}
 
 					for (ItemStack stack : ItemHelper.getODItems(s)) {
-						if (stack == null) {
+						if (stack.isEmpty()) {
 							continue;
 						}
 

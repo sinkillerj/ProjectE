@@ -50,12 +50,12 @@ public class SetEmcCMD extends ProjectEBaseCMD
 		if (params.length == 1)
 		{
 			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
 				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
 			}
 
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
 				sendError(sender, new TextComponentTranslation("pe.command.set.usage"));
 				return;

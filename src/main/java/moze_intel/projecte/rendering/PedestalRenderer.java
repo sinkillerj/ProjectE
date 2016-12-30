@@ -42,7 +42,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
                 GlStateManager.popMatrix();
             }
 
-            if (te.getInventory().getStackInSlot(0) != null)
+            if (!te.getInventory().getStackInSlot(0).isEmpty())
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x + 0.5, y + 0.7, z + 0.5);

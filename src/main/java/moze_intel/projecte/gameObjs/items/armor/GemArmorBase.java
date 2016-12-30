@@ -32,7 +32,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	{
 		for (ItemStack i : player.inventory.armorInventory)
 		{
-			if (i != null && i.getItem() instanceof GemArmorBase)
+			if (!i.isEmpty() && i.getItem() instanceof GemArmorBase)
 			{
 				return true;
 			}
@@ -44,7 +44,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	{
 		for (ItemStack i : player.inventory.armorInventory)
 		{
-			if (i == null || !(i.getItem() instanceof GemArmorBase))
+			if (!i.isEmpty() || !(i.getItem() instanceof GemArmorBase))
 			{
 				return false;
 			}

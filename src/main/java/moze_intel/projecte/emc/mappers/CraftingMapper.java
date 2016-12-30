@@ -52,7 +52,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 						for (CraftingIngredients variation : craftingIngredientIterable) {
 							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 							for (ItemStack stack : variation.fixedIngredients) {
-								if (stack == null || stack.getItem() == null) continue;
+								if (stack.isEmpty()) continue;
 								if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
 									//Don't check for doesContainerItemLeaveCraftingGrid for WILDCARD-ItemStacks
 									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
@@ -84,7 +84,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createFake(multiIngredient.toString());
 								ingredientMap.addIngredient(normalizedSimpleStack, 1);
 								for (ItemStack stack : multiIngredient) {
-									if (stack == null || stack.getItem() == null) continue;
+									if (stack.isEmpty()) continue;
 									//if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 										if (stack.getItem().hasContainerItem(stack)) {

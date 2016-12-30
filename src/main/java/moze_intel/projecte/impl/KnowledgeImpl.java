@@ -77,8 +77,8 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public boolean hasKnowledge(@Nullable ItemStack stack) {
-            if (stack == null)
+        public boolean hasKnowledge(@Nonnull ItemStack stack) {
+            if (stack.isEmpty())
             {
                 return false;
             }
@@ -207,7 +207,7 @@ public final class KnowledgeImpl {
             for (int i = 0; i < list.tagCount(); i++)
             {
                 ItemStack item = new ItemStack(list.getCompoundTagAt(i));
-                if (item != null)
+                if (!item.isEmpty())
                 {
                     knowledge.add(item);
                 }
@@ -218,7 +218,7 @@ public final class KnowledgeImpl {
 
             for (int i = 0; i < inputLocks.getSlots(); i++)
             {
-                inputLocks.setStackInSlot(i, null);
+                inputLocks.setStackInSlot(i, ItemStack.EMPTY);
             }
 
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND));

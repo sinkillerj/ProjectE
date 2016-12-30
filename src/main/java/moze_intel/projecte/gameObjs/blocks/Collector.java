@@ -103,7 +103,7 @@ public class Collector extends BlockDirection
 		IItemHandler handler = ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 		for (int i = 0; i < handler.getSlots(); i++)
 		{
-			if (i != CollectorMK1Tile.LOCK_SLOT && handler.getStackInSlot(i) != null)
+			if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty())
 			{
 				InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
 			}

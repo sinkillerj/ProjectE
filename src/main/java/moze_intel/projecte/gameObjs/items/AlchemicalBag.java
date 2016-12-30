@@ -97,7 +97,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		for (ItemStack stack : inventory)
 		{
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
@@ -112,6 +112,6 @@ public class AlchemicalBag extends ItemPE
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

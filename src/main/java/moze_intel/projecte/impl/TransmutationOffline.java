@@ -97,7 +97,7 @@ public class TransmutationOffline
             public void clearKnowledge() {}
 
             @Override
-            public boolean hasKnowledge(@Nullable ItemStack stack) {
+            public boolean hasKnowledge(@Nonnull ItemStack stack) {
                 return toCopy.hasKnowledge(stack);
             }
 

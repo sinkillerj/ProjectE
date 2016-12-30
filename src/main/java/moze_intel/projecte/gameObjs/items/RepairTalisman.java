@@ -115,7 +115,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		for (int i = 0; i < bInv.getSlots(); i++)
 		{
 			ItemStack bInvStack = bInv.getStackInSlot(i);
-			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
+			if (bInvStack.isEmpty() || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
 			{
 				continue;
 			}

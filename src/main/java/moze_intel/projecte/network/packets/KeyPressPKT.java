@@ -64,7 +64,7 @@ public class KeyPressPKT implements IMessage
                         {
                             ItemStack helm = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 
-                            if (helm != null && helm.getItem() == ObjHandler.gemHelmet)
+                            if (!helm.isEmpty() && helm.getItem() == ObjHandler.gemHelmet)
                             {
                                 GemHelmet.toggleNightVision(helm, player);
                             }
@@ -73,7 +73,7 @@ public class KeyPressPKT implements IMessage
                         {
                             ItemStack boots = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-                            if (boots != null && boots.getItem() == ObjHandler.gemFeet)
+                            if (!boots.isEmpty() && boots.getItem() == ObjHandler.gemFeet)
                             {
                                 ((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
                             }
@@ -87,12 +87,12 @@ public class KeyPressPKT implements IMessage
                         switch (message.key)
                         {
                             case CHARGE:
-                                if (stack != null
+                                if (!stack.isEmpty()
                                         && stack.getItem() instanceof IItemCharge
                                         && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
                                 {
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (GemArmorBase.hasAnyPiece(player))
                                     {
@@ -103,12 +103,12 @@ public class KeyPressPKT implements IMessage
                                 }
                                 break;
                             case EXTRA_FUNCTION:
-                                if (stack != null
+                                if (!stack.isEmpty()
                                         && stack.getItem() instanceof IExtraFunction
                                         && ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player, hand))
                                 {
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (internalAbilities.getGemState() && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemChest)
                                     {
@@ -122,7 +122,7 @@ public class KeyPressPKT implements IMessage
                                 }
                                 break;
                             case FIRE_PROJECTILE:
-                                if (stack != null
+                                if (!stack.isEmpty()
                                         && stack.getItem() instanceof IProjectileShooter
                                         && internalAbilities.getProjectileCooldown() <= 0
                                         && ((IProjectileShooter) stack.getItem()).shootProjectile(player, stack, hand))
@@ -130,10 +130,10 @@ public class KeyPressPKT implements IMessage
                                     PlayerHelper.swingItem(player, hand);
                                     internalAbilities.resetProjectileCooldown();
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack == null))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (internalAbilities.getGemState()
-                                            && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null
+                                            && !player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()
                                             && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemHelmet)
                                     {
                                         ((GemHelmet) ObjHandler.gemHelmet).doZap(player);
@@ -142,7 +142,7 @@ public class KeyPressPKT implements IMessage
                                 }
                                 break;
                             case MODE:
-                                if (stack != null
+                                if (!stack.isEmpty()
                                         && stack.getItem() instanceof IModeChanger
                                         && ((IModeChanger) stack.getItem()).changeMode(player, stack, hand))
                                 {

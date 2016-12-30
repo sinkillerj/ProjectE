@@ -55,7 +55,7 @@ public class MatterBlock extends Block
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		EnumMatterType type = world.getBlockState(pos).getValue(PEStateProps.TIER_PROP);
 
-		if (stack != null)
+		if (!stack.isEmpty())
 		{
 			if (type == EnumMatterType.RED_MATTER)
 			{

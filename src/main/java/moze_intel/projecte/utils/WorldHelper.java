@@ -155,7 +155,7 @@ public final class WorldHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
