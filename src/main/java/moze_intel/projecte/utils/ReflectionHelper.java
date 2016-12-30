@@ -21,7 +21,7 @@ public final class ReflectionHelper
 {
 	// Mappings. Be sure to have MCP, obf, and SRG name. Not sure if obf name is necessary but doesn't hurt to have it.
 	private static final String[] arrowInGroundNames = {"inGround", "a", "field_70254_i"};
-	private static final String[] entityFireImmuneNames = {"isImmuneToFire", "Y", "field_70178_ae"};
+	private static final String[] entityFireImmuneNames = {"isImmuneToFire", "X", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] explosionSizeNames = {"explosionSize", "i", "field_77280_f"};
 	private static final String[] updateScorePointsNames = { "updateScorePoints", "a", "func_184849_a" };

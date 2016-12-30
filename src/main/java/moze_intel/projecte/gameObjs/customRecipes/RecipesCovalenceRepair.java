@@ -24,13 +24,13 @@ import javax.annotation.Nonnull;
 
 public class RecipesCovalenceRepair implements IRecipe
 {
-	private ItemStack output;
+	private ItemStack output = ItemStack.EMPTY;
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		ItemStack[] dust = new ItemStack[8];
-		ItemStack tool = null;
+		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
 		int dustCounter = 0;
 		
@@ -38,7 +38,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		{
 			ItemStack input = inv.getStackInSlot(i);
 			
-			if (input == null)
+			if (input.isEmpty())
 			{
 				continue;
 			}
@@ -69,7 +69,7 @@ public class RecipesCovalenceRepair implements IRecipe
 			}
 		}
 		
-		if (tool == null || !foundItem || dustCounter == 0)
+		if (tool.isEmpty() || !foundItem || dustCounter == 0)
 		{
 			return false;
 		}
@@ -82,7 +82,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		int dustDamage = getDustType(tool);
 
 		for (ItemStack stack : dust) {
-			if (stack != null && stack.getItemDamage() < dustDamage) {
+			if (!stack.isEmpty() && stack.getItemDamage() < dustDamage) {
 				return false;
 			}
 		}

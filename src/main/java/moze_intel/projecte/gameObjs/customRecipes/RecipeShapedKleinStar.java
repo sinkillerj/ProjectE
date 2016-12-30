@@ -12,6 +12,7 @@ import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
 
+// TODO fix this and not make it a copy paste fest
 public class RecipeShapedKleinStar implements IRecipe
 {
 	/**

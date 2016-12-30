@@ -25,20 +25,13 @@ import java.util.Map.Entry;
 // thus hiding those recipes from the Shapeless Recipes list.
 public class RecipeShapelessHidden implements IRecipe
 {
-	protected ItemStack output = null;
-	protected final ArrayList<Object> input = new ArrayList<>();
+	protected ItemStack output = ItemStack.EMPTY;
+	protected NonNullList<Object> input = NonNullList.create();
 
-	public RecipeShapelessHidden(Block result, Object... recipe)
-	{
-		this(new ItemStack(result), recipe);
-	}
+	public RecipeShapelessHidden(Block result, Object... recipe){ this(new ItemStack(result), recipe); }
+	public RecipeShapelessHidden(Item  result, Object... recipe){ this(new ItemStack(result), recipe); }
 
-	public RecipeShapelessHidden(Item result, Object... recipe)
-	{
-		this(new ItemStack(result), recipe);
-	}
-
-	public RecipeShapelessHidden(ItemStack result, Object... recipe)
+	public RecipeShapelessHidden(@Nonnull ItemStack result, Object... recipe)
 	{
 		output = result.copy();
 		for (Object in : recipe)
@@ -72,17 +65,16 @@ public class RecipeShapelessHidden implements IRecipe
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	RecipeShapelessHidden(ShapelessRecipes recipe, Map<ItemStack, String> replacements)
 	{
 		output = recipe.getRecipeOutput();
 
-		for(ItemStack ingred : recipe.recipeItems)
+		for(ItemStack ingredient : recipe.recipeItems)
 		{
-			Object finalObj = ingred;
+			Object finalObj = ingredient;
 			for(Entry<ItemStack, String> replace : replacements.entrySet())
 			{
-				if(OreDictionary.itemMatches(replace.getKey(), ingred, false))
+				if(OreDictionary.itemMatches(replace.getKey(), ingredient, false))
 				{
 					finalObj = OreDictionary.getOres(replace.getValue());
 					break;
@@ -105,59 +97,50 @@ public class RecipeShapelessHidden implements IRecipe
 	 * Returns an Item that is the result of this recipe
 	 */
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1){ return output.copy(); }
+	public ItemStack getCraftingResult(InventoryCrafting var1){ return output.copy(); }
 
 	/**
 	 * Used to check if a recipe matches current crafting inventory
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
+	public boolean matches(InventoryCrafting var1, World world)
 	{
-		ArrayList<Object> required = new ArrayList<>(input);
+		NonNullList<Object> required = NonNullList.create();
+		required.addAll(input);
 
-		double storedEMC = 0;
-		for (int i = 0; i < inv.getSizeInventory(); i++)
+		for (int x = 0; x < var1.getSizeInventory(); x++)
 		{
-			ItemStack stack = inv.getStackInSlot(i);
-			if (stack != null && stack.getItem() == ObjHandler.kleinStars)
-			{
-				storedEMC += KleinStar.getEmc(stack);
-			}
-		}
+			ItemStack slot = var1.getStackInSlot(x);
 
-		if (output.getItem() == ObjHandler.kleinStars)
-		{
-			if (!output.hasTagCompound())
-			{
-				output.setTagCompound(new NBTTagCompound());
-			}
-			KleinStar.setEmc(output, storedEMC);
-		}
-		
-		for (int x = 0; x < inv.getSizeInventory(); x++)
-		{
-			ItemStack slot = inv.getStackInSlot(x);
-
-			if (slot != null)
+			if (!slot.isEmpty())
 			{
 				boolean inRecipe = false;
+				Iterator<Object> req = required.iterator();
 
-				for (Object aRequired : required) {
+				while (req.hasNext())
+				{
 					boolean match = false;
 
-					if (aRequired instanceof ItemStack) {
-						match = OreDictionary.itemMatches((ItemStack) aRequired, slot, false);
-					} else if (aRequired instanceof List) {
-						Iterator<ItemStack> itr = ((List<ItemStack>) aRequired).iterator();
-						while (itr.hasNext() && !match) {
+					Object next = req.next();
+
+					if (next instanceof ItemStack)
+					{
+						match = OreDictionary.itemMatches((ItemStack)next, slot, false);
+					}
+					else if (next instanceof List)
+					{
+						Iterator<ItemStack> itr = ((List<ItemStack>)next).iterator();
+						while (itr.hasNext() && !match)
+						{
 							match = OreDictionary.itemMatches(itr.next(), slot, false);
 						}
 					}
 
-					if (match) {
+					if (match)
+					{
 						inRecipe = true;
-						required.remove(aRequired);
+						required.remove(next);
 						break;
 					}
 				}
@@ -177,14 +160,13 @@ public class RecipeShapelessHidden implements IRecipe
 	 * manipulate the values in this array as it will effect the recipe itself.
 	 * @return The recipes input vales.
 	 */
-	public ArrayList<Object> getInput()
+	public NonNullList<Object> getInput()
 	{
 		return this.input;
 	}
 
-	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) //getRecipeLeftovers
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
