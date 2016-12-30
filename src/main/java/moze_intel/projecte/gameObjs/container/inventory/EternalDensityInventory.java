@@ -10,12 +10,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+
 public class EternalDensityInventory implements IItemHandlerModifiable
 {
-	private final IItemHandlerModifiable inventory = new ItemStackHandler(9) {
-		@Override
-		protected int getStackLimit(int slot, ItemStack stack) { return 1; }
-	};
+	private final IItemHandlerModifiable inventory = new ItemStackHandler(9);
 	private boolean isInWhitelist;
 	public final ItemStack invItem;
 
@@ -36,20 +35,23 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 		return inventory.getSlots();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) 
 	{
 		return inventory.getStackInSlot(slot);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 	{
 		ItemStack ret = inventory.insertItem(slot, stack, simulate);
 		writeBack();
 		return ret;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
@@ -59,7 +61,13 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	}
 
 	@Override
-	public void setStackInSlot(int slot, ItemStack stack)
+	public int getSlotLimit(int slot)
+	{
+		return 1;
+	}
+
+	@Override
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 	{
 		inventory.setStackInSlot(slot, stack);
 		writeBack();
@@ -69,9 +77,9 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	{
 		for (int i = 0; i < inventory.getSlots(); ++i)
 		{
-			if (inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).stackSize == 0)
+			if (inventory.getStackInSlot(i).isEmpty())
 			{
-				inventory.setStackInSlot(i, null);
+				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
 
@@ -101,17 +109,5 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	public boolean isWhitelistMode()
 	{
 		return isInWhitelist;
-	}
-
-	public int findFirstEmptySlot()
-	{
-		for (int i = 0; i < inventory.getSlots(); i++)
-		{
-			if (inventory.getStackInSlot(i) == null)
-			{
-				return i;
-			}
-		}
-		return -1;
 	}
 }

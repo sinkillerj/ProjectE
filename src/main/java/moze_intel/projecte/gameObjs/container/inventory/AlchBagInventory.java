@@ -5,6 +5,8 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
+
 public class AlchBagInventory implements IItemHandlerModifiable
 {
 	public final ItemStack invItem;
@@ -17,7 +19,7 @@ public class AlchBagInventory implements IItemHandlerModifiable
 	}
 
 	@Override
-	public void setStackInSlot(int slot, ItemStack stack) {
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
 		compose.setStackInSlot(slot, stack);
 	}
 
@@ -26,20 +28,29 @@ public class AlchBagInventory implements IItemHandlerModifiable
 		return compose.getSlots();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return compose.getStackInSlot(slot);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (stack == invItem)
 			return stack; // Cannot put the bag into itself
 		else return compose.insertItem(slot, stack, simulate);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		return compose.extractItem(slot, amount, simulate);
+	}
+
+	@Override
+	public int getSlotLimit(int slot)
+	{
+		return compose.getSlotLimit(slot);
 	}
 }

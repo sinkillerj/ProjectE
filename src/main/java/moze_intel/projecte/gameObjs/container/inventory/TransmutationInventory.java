@@ -63,9 +63,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void handleKnowledge(ItemStack stack)
 	{
-		if (stack.stackSize > 1)
+		if (stack.getCount() > 1)
 		{
-			stack.stackSize = 1;
+			stack.setCount(1);
 		}
 		
 		if (ItemHelper.isDamageable(stack))
@@ -95,9 +95,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void handleUnlearn(ItemStack stack)
 	{
-		if (stack.stackSize > 1)
+		if (stack.getCount() > 1)
 		{
-			stack.stackSize = 1;
+			stack.setCount(1);
 		}
 
 		if (ItemHelper.isDamageable(stack))
@@ -148,14 +148,14 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		for (int i = 0; i < outputs.getSlots(); i++)
 		{
-			outputs.setStackInSlot(i, null);
+			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
 
 		ItemStack lockCopy = null;
 
-		Collections.sort(knowledge, Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
+		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
-		if (inputLocks.getStackInSlot(LOCK_INDEX) != null)
+		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty())
 		{
 			int reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
 			
@@ -296,7 +296,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 	
@@ -311,7 +311,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 
