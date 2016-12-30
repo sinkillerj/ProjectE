@@ -12,6 +12,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class CondenserMK2Container extends CondenserContainer
 {
 	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
@@ -48,19 +50,20 @@ public class CondenserMK2Container extends CondenserContainer
 			this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 212));
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
 		if (slotIndex == 0)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		Slot slot = this.getSlot(slotIndex);
 
 		if (slot == null || !slot.getHasStack())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack stack = slot.getStack();
@@ -70,24 +73,23 @@ public class CondenserMK2Container extends CondenserContainer
 		{
 			if (!this.mergeItemStack(stack, 85, 120, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else if (!EMCHelper.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 42, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 
-		slot.onPickupFromSlot(player, stack);
-		return newStack;
+		return slot.onTake(player, stack);
 	}
 }

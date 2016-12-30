@@ -77,7 +77,8 @@ public class TransmutationContainer extends Container
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -85,7 +86,7 @@ public class TransmutationContainer extends Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -93,7 +94,7 @@ public class TransmutationContainer extends Container
 		
 		if (slotIndex <= 7) //Input Slots
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		else if (slotIndex >= 11 && slotIndex <= 26) // Output Slots
 		{	
@@ -118,26 +119,27 @@ public class TransmutationContainer extends Container
 			
 			if (emc == 0 && stack.getItem() != ObjHandler.tome)
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 			
-			while(!transmutationInventory.hasMaxedEmc() && stack.stackSize > 0)
+			while(!transmutationInventory.hasMaxedEmc() && stack.getCount() > 0)
 			{
 				transmutationInventory.addEmc(emc);
-				--stack.stackSize;
+				stack.shrink(1);
 			}
 			
 			transmutationInventory.handleKnowledge(newStack);
 
-			if (stack.stackSize == 0)
+			if (stack.isEmpty())
 			{
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 			}
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
@@ -148,10 +150,10 @@ public class TransmutationContainer extends Container
 
 		if (slot >= 0 && getSlot(slot) != null)
 		{
-			if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
+			if (!getSlot(slot).getStack().isEmpty() && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
 				&& getSlot(slot).getStack() == transmutationInventory.invItem)
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 

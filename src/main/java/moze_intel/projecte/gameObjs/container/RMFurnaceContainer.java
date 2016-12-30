@@ -119,7 +119,8 @@ public class RMFurnaceContainer extends Container
 		if (par1 == 2)
 			tile.currentItemBurnTime = par2;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -127,7 +128,7 @@ public class RMFurnaceContainer extends Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -137,7 +138,7 @@ public class RMFurnaceContainer extends Container
 		{
 			if (!this.mergeItemStack(stack, 27, 63, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else
@@ -147,25 +148,25 @@ public class RMFurnaceContainer extends Container
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
-			else if (FurnaceRecipes.instance().getSmeltingResult(newStack) != null)
+			else if (!FurnaceRecipes.instance().getSmeltingResult(newStack).isEmpty())
 			{
 				if (!this.mergeItemStack(stack, 1, 14, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{

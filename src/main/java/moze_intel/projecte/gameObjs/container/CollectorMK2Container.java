@@ -11,6 +11,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class CollectorMK2Container extends CollectorMK1Container
 {
 
@@ -48,7 +50,8 @@ public class CollectorMK2Container extends CollectorMK1Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 20 + i * 18, 142));
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -56,7 +59,7 @@ public class CollectorMK2Container extends CollectorMK1Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -66,31 +69,30 @@ public class CollectorMK2Container extends CollectorMK1Container
 		{
 			if (!this.mergeItemStack(stack, 15, 50, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else if (slotIndex <= 50)
 		{
 			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 12, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 		
-		slot.onPickupFromSlot(player, stack);
-		return newStack;
+		return slot.onTake(player, stack);
 	}
 }

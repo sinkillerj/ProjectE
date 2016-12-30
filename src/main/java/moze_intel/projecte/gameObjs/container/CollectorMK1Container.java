@@ -75,13 +75,14 @@ public class CollectorMK1Container extends Container
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) (tile.getItemCharge() * 8000));
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && getSlot(slot).getStack() != null)
+		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && !getSlot(slot).getStack().isEmpty())
 		{
-			getSlot(slot).putStack(null);
-			return null;
+			getSlot(slot).putStack(ItemStack.EMPTY);
+			return ItemStack.EMPTY;
 		} else
 		{
 			return super.slotClick(slot, button, flag, player);
@@ -158,7 +159,8 @@ public class CollectorMK1Container extends Container
 			case 4: kleinEmc = data; break;
 		}
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -166,7 +168,7 @@ public class CollectorMK1Container extends Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -176,32 +178,31 @@ public class CollectorMK1Container extends Container
 		{
 			if (!this.mergeItemStack(stack, 11, 46, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else if (slotIndex <= 46)
 		{
 			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 8, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 		
-		slot.onPickupFromSlot(player, stack);
-		return newStack;
+		return slot.onTake(player, stack);
 	}
 
 	@Override

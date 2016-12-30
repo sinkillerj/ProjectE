@@ -44,7 +44,8 @@ public class AlchChestContainer extends Container
 	{
 		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -52,7 +53,7 @@ public class AlchChestContainer extends Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -62,17 +63,17 @@ public class AlchChestContainer extends Container
 		{
 			if (!this.mergeItemStack(stack, 104, this.inventorySlots.size(), false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else if (!this.mergeItemStack(stack, 0, 104, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else 
 		{

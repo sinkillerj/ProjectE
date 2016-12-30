@@ -39,7 +39,8 @@ public class EternalDensityContainer extends Container
 		}
 
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -47,10 +48,10 @@ public class EternalDensityContainer extends Container
 		if (slotIndex > 8)
 		{
 			ItemStack toSet = slot.getStack().copy();
-			toSet.stackSize = 1;
+			toSet.setCount(1);
 			ItemHandlerHelper.insertItem(inventory, toSet, false);
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -58,18 +59,19 @@ public class EternalDensityContainer extends Container
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		if (slot >= 0 && slot < 9)
 		{
-			inventory.setStackInSlot(slot, null);
+			inventory.setStackInSlot(slot, ItemStack.EMPTY);
 		}
 		
 		return super.slotClick(slot, button, flag, player);

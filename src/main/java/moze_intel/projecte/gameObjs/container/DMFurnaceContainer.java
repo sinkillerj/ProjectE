@@ -12,6 +12,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class DMFurnaceContainer extends RMFurnaceContainer
 {
 	public DMFurnaceContainer(InventoryPlayer invPlayer, DMFurnaceTile tile)
@@ -59,7 +61,8 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -67,7 +70,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -77,7 +80,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		{
 			if (!this.mergeItemStack(stack, 19, 55, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else
@@ -87,25 +90,25 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
-			else if (FurnaceRecipes.instance().getSmeltingResult(newStack) != null)
+			else if (!FurnaceRecipes.instance().getSmeltingResult(newStack).isEmpty())
 			{
 				if (!this.mergeItemStack(stack, 1, 10, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
