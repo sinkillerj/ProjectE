@@ -6,6 +6,8 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotInput extends SlotItemHandler
 {
 	private final TransmutationInventory inv;
@@ -17,15 +19,15 @@ public class SlotInput extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
 		return EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
+	public void putStack(@Nonnull ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return;
 		}

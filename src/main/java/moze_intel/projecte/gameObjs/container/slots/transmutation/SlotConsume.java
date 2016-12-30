@@ -6,6 +6,8 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotConsume extends SlotItemHandler
 {
 	private final TransmutationInventory inv;
@@ -17,9 +19,9 @@ public class SlotConsume extends SlotItemHandler
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
+	public void putStack(@Nonnull ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return;
 		}
@@ -28,10 +30,10 @@ public class SlotConsume extends SlotItemHandler
 		
 		double toAdd = 0;
 		
-		while (!inv.hasMaxedEmc() && stack.stackSize > 0)
+		while (!inv.hasMaxedEmc() && stack.getCount() > 0)
 		{
 			toAdd += EMCHelper.getEmcValue(stack);
-			stack.stackSize--;
+			stack.shrink(1);
 		}
 		
 		inv.addEmc(toAdd);
@@ -40,7 +42,7 @@ public class SlotConsume extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
 		return !inv.hasMaxedEmc() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
 	}

@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 public class SlotGhost extends SlotItemHandler
@@ -19,9 +20,9 @@ public class SlotGhost extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
-		if (stack != null && validator.test(stack))
+		if (!stack.isEmpty() && validator.test(stack))
 		{
 			this.putStack(ItemHelper.getNormalizedStack(stack));
 		}

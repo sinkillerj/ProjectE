@@ -4,9 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
-// Partial copy of SlotItemhandler with some tweaks to make it saner, and a validator
+// Partial copy of SlotItemhandler with a validator
 public class ValidatedSlot extends SlotItemHandler {
 
     private final Predicate<ItemStack> validator;
@@ -18,7 +19,7 @@ public class ValidatedSlot extends SlotItemHandler {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean isItemValid(@Nonnull ItemStack stack)
     {
         return super.isItemValid(stack) && validator.test(stack);
     }

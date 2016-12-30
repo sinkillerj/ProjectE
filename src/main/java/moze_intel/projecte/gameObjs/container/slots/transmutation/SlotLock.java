@@ -8,6 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotLock extends SlotItemHandler
 {
 	private final TransmutationInventory inv;
@@ -19,15 +21,15 @@ public class SlotLock extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
 		return EMCHelper.doesItemHaveEmc(stack);
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
+	public void putStack(@Nonnull ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return;
 		}
@@ -55,11 +57,11 @@ public class SlotLock extends SlotItemHandler
 	}
 	
 	@Override
-	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
+	public ItemStack onTake(EntityPlayer player, ItemStack stack)
 	{
-		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
-		
+		stack = super.onTake(player, stack);
 		inv.updateClientTargets();
+		return stack;
 	}
 	
 	@Override
