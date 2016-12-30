@@ -45,6 +45,7 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass)
+	public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if (this.toolClasses.contains(toolClass))
 		{
@@ -470,7 +471,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						for (ItemStack drop : entDrops)
 						{
-							drop.stackSize *= 2;
+							drop.grow(drop.getCount());
 						}
 
 						drops.addAll(entDrops);
@@ -478,7 +479,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 				if (Math.random() < 0.01)
 				{
-					Entity e = EntityList.createEntityByName(EntityList.getEntityString(ent), world);
+					Entity e = EntityList.createEntityByIDFromName(EntityList.getKey(ent), world);
 					NBTTagCompound tag = new NBTTagCompound();
 					e.writeToNBT(tag);
 					e.readFromNBT(tag);
