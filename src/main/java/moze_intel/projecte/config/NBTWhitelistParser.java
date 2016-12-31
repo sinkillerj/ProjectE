@@ -108,14 +108,14 @@ public final class NBTWhitelistParser
 			}
 		}
 
-		try
+		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG)))
 		{
-			NBTWhiteList whitelist = GSON.fromJson(new BufferedReader(new FileReader(CONFIG)), NBTWhiteList.class);
+			NBTWhiteList whitelist = GSON.fromJson(reader, NBTWhiteList.class);
 			for (Item i : whitelist.items)
             {
                 NBTWhitelist.register(new ItemStack(i));
             }
-		} catch (FileNotFoundException e)
+		} catch (IOException e)
 		{
 			PELogger.logFatal("Couldn't read nbt whitelist file");
 		}
