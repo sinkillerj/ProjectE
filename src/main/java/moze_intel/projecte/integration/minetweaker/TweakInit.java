@@ -1,6 +1,6 @@
 package moze_intel.projecte.integration.minetweaker;
 
-import minetweaker.MineTweakerAPI;
+//import minetweaker.MineTweakerAPI;
 import moze_intel.projecte.utils.PELogger;
 
 import java.io.File;
@@ -13,8 +13,8 @@ public class TweakInit
 {
 	public static void init()
 	{
-		MineTweakerAPI.registerClass(PhiloStone.class);
-		MineTweakerAPI.registerClass(KleinStar.class);
+		//MineTweakerAPI.registerClass(PhiloStone.class);
+		//MineTweakerAPI.registerClass(KleinStar.class);
 
         File parent = new File("scripts");
 

@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.minetweaker;
 
 import minetweaker.IUndoableAction;
@@ -342,3 +343,4 @@ public class PhiloStone
 		}
 	}
 }
+*/
