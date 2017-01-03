@@ -80,7 +80,7 @@ public final class ComparatorHelper
 			{
 				ItemStack itemstack = handler.getStackInSlot(j);
 
-				if (itemstack != null)
+				if (!itemstack.isEmpty())
 				{
 					f += (float)itemstack.getCount() / (float)Math.min(handler.getSlotLimit(j), itemstack.getMaxStackSize());
 					++i;

@@ -25,19 +25,6 @@ public class CondenserMK2 extends Condenser
 
 	@Nonnull
 	@Override
-	public Item getItemDropped(IBlockState state, Random random, int par2)
-	{
-		return Item.getItemFromBlock(ObjHandler.condenserMk2);
-	}
-
-	@Override
-	public boolean hasTileEntity(IBlockState state)
-	{
-		return true;
-	}
-
-	@Nonnull
-	@Override
 	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		return new CondenserMK2Tile();

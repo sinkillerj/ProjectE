@@ -26,19 +26,6 @@ public class Condenser extends AlchemicalChest
 	
 	@Nonnull
 	@Override
-	public Item getItemDropped(IBlockState state, Random random, int par2)
-	{
-		return Item.getItemFromBlock(ObjHandler.condenser);
-	}
-
-	@Override
-	public boolean hasTileEntity(IBlockState state)
-	{
-		return true;
-	}
-
-	@Nonnull
-	@Override
 	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		return new CondenserTile();

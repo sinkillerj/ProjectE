@@ -43,13 +43,6 @@ public class AlchemicalChest extends BlockDirection
 		return AABB;
 	}
 	
-	@Nonnull
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int par2)
-	{
-		return Item.getItemFromBlock(ObjHandler.alchChest);
-	}
-	
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
