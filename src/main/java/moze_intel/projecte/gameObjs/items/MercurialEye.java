@@ -70,13 +70,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 
 			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 			{
 				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 			}
 
 			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
 					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);

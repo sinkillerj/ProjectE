@@ -110,13 +110,13 @@ public final class AlchBagImpl
         private final IAlchBagProvider cap = new DefaultImpl();
 
         @Override
-        public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
         {
             return capability == ProjectEAPI.ALCH_BAG_CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
         {
             if (capability == ProjectEAPI.ALCH_BAG_CAPABILITY)
             {

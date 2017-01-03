@@ -56,8 +56,9 @@ public class SlotLock extends SlotItemHandler
 		inv.handleKnowledge(stack.copy());
 	}
 	
+	@Nonnull
 	@Override
-	public ItemStack onTake(EntityPlayer player, ItemStack stack)
+	public ItemStack onTake(EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		stack = super.onTake(player, stack);
 		inv.updateClientTargets();

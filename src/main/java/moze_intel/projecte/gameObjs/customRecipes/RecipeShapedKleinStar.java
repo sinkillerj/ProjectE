@@ -42,6 +42,7 @@ public class RecipeShapedKleinStar implements IRecipe
 		this.recipeOutput = output;
 	}
 
+	@Nonnull
 	public ItemStack getRecipeOutput()
 	{
 		return this.recipeOutput;
@@ -145,6 +146,7 @@ public class RecipeShapedKleinStar implements IRecipe
 	/**
 	 * Returns an Item that is the result of this recipe
 	 */
+	@Nonnull
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting p_77572_1_)
 	{
 		ItemStack itemstack = this.getRecipeOutput().copy();
@@ -157,7 +159,7 @@ public class RecipeShapedKleinStar implements IRecipe
 
 				if (itemstack1 != null && itemstack1.hasTagCompound())
 				{
-					itemstack.setTagCompound((NBTTagCompound) itemstack1.getTagCompound().copy());
+					itemstack.setTagCompound(itemstack1.getTagCompound().copy());
 				}
 			}
 		}

@@ -149,7 +149,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					{
 						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
 
-						setItems(stack, new ArrayList<ItemStack>());
+						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
 					

@@ -39,7 +39,7 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
-		Collections.sort(FUEL_MAP, Comparator.comparing(EMCMapper::getEmcValue));
+		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
 	}
 	
 	private static void addToMap(ItemStack stack)

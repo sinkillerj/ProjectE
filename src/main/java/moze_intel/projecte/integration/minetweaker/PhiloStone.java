@@ -75,7 +75,7 @@ public class PhiloStone
 		private final ItemStack fuel;
 
 
-		IRecipe recipe;
+		final IRecipe recipe;
 
 
 		//GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
@@ -136,7 +136,7 @@ public class PhiloStone
 	private static class RemoveRecipeAction implements IUndoableAction
 	{
 		IRecipe recipe = null;
-		ItemStack remove;
+		final ItemStack remove;
 
 		public RemoveRecipeAction(IItemStack rem)
 		{
@@ -237,15 +237,11 @@ public class PhiloStone
 
 				if (entry.input == this.input && entry.outputs.getLeft() == this.output)
 				{
-					if (entry.outputs.getRight() != null && entry.outputs.getRight() != this.sneakOutput)
-					{
-						continue;
-					} else
+					if (entry.outputs.getRight() == null || entry.outputs.getRight() == this.sneakOutput)
 					{
 						it.remove();
 					}
 				}
-
 			}
 		}
 

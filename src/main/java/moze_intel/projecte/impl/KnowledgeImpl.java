@@ -24,7 +24,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -239,14 +238,7 @@ public final class KnowledgeImpl {
 
         private void pruneStaleKnowledge()
         {
-            Iterator<ItemStack> iter = knowledge.iterator();
-            while (iter.hasNext())
-            {
-                if (!EMCHelper.doesItemHaveEmc(iter.next()))
-                {
-                    iter.remove();
-                }
-            }
+            knowledge.removeIf(stack -> !EMCHelper.doesItemHaveEmc(stack));
         }
 
     }
@@ -259,12 +251,12 @@ public final class KnowledgeImpl {
         private final DefaultImpl knowledge = new DefaultImpl();
 
         @Override
-        public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
             return capability == ProjectEAPI.KNOWLEDGE_CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
             if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
             {
                 return ProjectEAPI.KNOWLEDGE_CAPABILITY.cast(knowledge);

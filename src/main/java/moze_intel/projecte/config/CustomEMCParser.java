@@ -87,7 +87,7 @@ public final class CustomEMCParser
 				throw new JsonParseException("Invalid EMC amount: " + emc);
 			}
 			// todo stop reaching into other code. Pull out, refactor, and unify all json stuff.
-			return new CustomEMCEntry(CustomConversionMapper.getNSSfromJsonString(nss, new HashMap<String, NormalizedSimpleStack>()), emc);
+			return new CustomEMCEntry(CustomConversionMapper.getNSSfromJsonString(nss, new HashMap<>()), emc);
 		}
 
 		@Override
@@ -126,7 +126,7 @@ public final class CustomEMCParser
 			currentEntries.entries.removeIf(e -> e.nss == null);
 		} catch (FileNotFoundException e) {
 			PELogger.logFatal("Couldn't read custom emc file");
-			currentEntries = new CustomEMCFile(new ArrayList<CustomEMCEntry>());
+			currentEntries = new CustomEMCFile(new ArrayList<>());
 		}
 	}
 
@@ -206,7 +206,7 @@ public final class CustomEMCParser
 
 	private static void writeDefaultFile()
 	{
-		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<CustomEMCEntry>()));
+		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<>()));
 		elem.add("__comment", new JsonPrimitive("Use the in-game commands to edit this file"));
 		try
 		{

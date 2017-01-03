@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 public class ClientKeyHelper
 {
     public static ImmutableBiMap<KeyBinding, PEKeybind> mcToPe;
-    public static ImmutableBiMap<PEKeybind, KeyBinding> peToMc;
+    private static ImmutableBiMap<PEKeybind, KeyBinding> peToMc;
 
     public static void registerMCBindings()
     {

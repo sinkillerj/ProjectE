@@ -15,15 +15,15 @@ import java.util.Map;
  * These are then delayed until finishCollection() and will be expanded to all metadata that has been found.
  */
 public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, V, A> {
-	IExtendedMappingCollector<NormalizedSimpleStack, V, A> inner;
+	final IExtendedMappingCollector<NormalizedSimpleStack, V, A> inner;
 	public WildcardSetValueFixCollector(IExtendedMappingCollector<NormalizedSimpleStack, V, A> inner) {
 		super(inner.getArithmetic());
 		this.inner = inner;
 	}
 
-	Map<NormalizedSimpleStack.NSSItem, V> setValueBeforeMap = Maps.newHashMap();
-	Map<NormalizedSimpleStack.NSSItem, V> setValueAfterMap = Maps.newHashMap();
-	List<CustomConversion> setValueConversionList = Lists.newArrayList();
+	final Map<NormalizedSimpleStack.NSSItem, V> setValueBeforeMap = Maps.newHashMap();
+	final Map<NormalizedSimpleStack.NSSItem, V> setValueAfterMap = Maps.newHashMap();
+	final List<CustomConversion> setValueConversionList = Lists.newArrayList();
 	private boolean isWildCard(NormalizedSimpleStack nss) {
 		return nss instanceof NormalizedSimpleStack.NSSItem && ((NormalizedSimpleStack.NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE;
 	}

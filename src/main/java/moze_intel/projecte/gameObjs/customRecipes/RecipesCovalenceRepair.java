@@ -195,6 +195,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		return 2;
 	}
 	
+	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
 	{
@@ -207,6 +208,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		return 10;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() 
 	{

@@ -84,7 +84,7 @@ public abstract class BlockDirection extends Block
 		}
 	}
 
-	protected void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
+	private void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
 		world.setBlockState(pos, world.getBlockState(pos).withProperty(PEStateProps.FACING, player.getHorizontalFacing().getOpposite()));
 	}

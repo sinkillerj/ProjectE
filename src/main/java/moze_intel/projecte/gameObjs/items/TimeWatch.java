@@ -142,8 +142,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		}
 		
 		int charge = this.getCharge(stack);
-		int bonusTicks = 0;
-		float mobSlowdown = 0;
+		int bonusTicks;
+		float mobSlowdown;
 		
 		if (charge == 0)
 		{

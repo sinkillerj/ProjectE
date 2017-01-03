@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
@@ -84,7 +85,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.OBSIDIAN)));
+		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Collections.singletonList(NormalizedSimpleStack.getFor(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
@@ -93,7 +94,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {
-			mapper.addConversion(1000, NormalizedSimpleStack.getFor(milkFluid), Arrays.asList(fakeMilkFluid));
+			mapper.addConversion(1000, NormalizedSimpleStack.getFor(milkFluid), Collections.singletonList(fakeMilkFluid));
 		}
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
@@ -101,7 +102,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		FullFractionArithmetic fluidArithmetic = new FullFractionArithmetic();
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
-			emapper.addConversion(pair.getValue().amount, NormalizedSimpleStack.getFor(pair.getValue().getFluid()), Arrays.asList(pair.getKey()), fluidArithmetic);
+			emapper.addConversion(pair.getValue().amount, NormalizedSimpleStack.getFor(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 	}
 

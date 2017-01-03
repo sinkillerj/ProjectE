@@ -155,7 +155,7 @@ public final class WorldTransmutations
 		}
 	}
 
-	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty property)
+	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty<?> property)
 	{
 		IBlockState result = state;
 		for (int i = 0; i < property.getAllowedValues().size() - 1; i++)

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +123,7 @@ public abstract class NormalizedSimpleStack {
 			entry.getValue().add(0);
 			NormalizedSimpleStack stackWildcard = new NSSItem(entry.getKey(), OreDictionary.WILDCARD_VALUE);
 			for (int metadata : entry.getValue()) {
-				mapper.addConversion(1, stackWildcard, Arrays.asList((NormalizedSimpleStack)new NSSItem(entry.getKey(), metadata)));
+				mapper.addConversion(1, stackWildcard, Collections.singletonList((NormalizedSimpleStack) new NSSItem(entry.getKey(), metadata)));
 			}
 		}
 
@@ -130,8 +131,8 @@ public abstract class NormalizedSimpleStack {
 			NormalizedSimpleStack oreDictStack = entry.getValue();
 			List<ItemStack> list = ItemHelper.getODItems(entry.getKey());
 			for (ItemStack i: list) {
-				mapper.addConversion(1, oreDictStack, Arrays.asList(NormalizedSimpleStack.getFor(i)));
-				mapper.addConversion(1, NormalizedSimpleStack.getFor(i), Arrays.asList(oreDictStack));
+				mapper.addConversion(1, oreDictStack, Collections.singletonList(NormalizedSimpleStack.getFor(i)));
+				mapper.addConversion(1, NormalizedSimpleStack.getFor(i), Collections.singletonList(oreDictStack));
 			}
 		}
 	}

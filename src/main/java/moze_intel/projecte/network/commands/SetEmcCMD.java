@@ -4,7 +4,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;

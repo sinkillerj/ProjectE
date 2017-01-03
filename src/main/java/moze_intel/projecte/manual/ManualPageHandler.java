@@ -150,7 +150,7 @@ public class ManualPageHandler
 
         for (List<AbstractPage> categoryPages : categoryMap.values())
         {
-            Collections.sort(categoryPages, (o1, o2) -> I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText())));
+            categoryPages.sort((o1, o2) -> I18n.format(o1.getHeaderText()).compareToIgnoreCase(I18n.format(o2.getHeaderText())));
             for (AbstractPage page : categoryPages)
             {
                 pages.add(page);
@@ -201,7 +201,7 @@ public class ManualPageHandler
             if (i == list.size() - 1)
             {
                 // Handle last page being odd
-                spreads.add(ImmutablePair.of(list.get(i), ((AbstractPage) null)));
+                spreads.add(ImmutablePair.of(list.get(i), null));
                 continue;
             }
             spreads.add(ImmutablePair.of(list.get(i), list.get(i + 1)));

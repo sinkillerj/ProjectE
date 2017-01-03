@@ -124,7 +124,7 @@ public class KleinStar
 	private static class RemoveRecipeAction implements IUndoableAction
 	{
 		IRecipe recipe = null;
-		ItemStack remove;
+		final ItemStack remove;
 
 		public RemoveRecipeAction(IItemStack rem)
 		{

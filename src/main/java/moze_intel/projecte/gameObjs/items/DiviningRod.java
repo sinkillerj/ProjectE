@@ -15,14 +15,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -145,7 +142,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			maxValues[i] = 1;
 		}
 
-		Collections.sort(emcValues, Comparator.reverseOrder());
+		emcValues.sort(Comparator.reverseOrder());
 
 		int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 

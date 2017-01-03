@@ -119,7 +119,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 		if (!candidates.isEmpty())
 		{
-			Collections.sort(candidates, Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
+			candidates.sort(Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
 			dataManager.set(DW_TARGET_ID, candidates.get(0).getEntityId());
 		}
 

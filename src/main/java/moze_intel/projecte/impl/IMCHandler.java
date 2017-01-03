@@ -63,6 +63,7 @@ public class IMCHandler
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static <T, U extends T> Class<U> loadAndCheckSubclass(String name, Class<T> toCheck)
     {
         try

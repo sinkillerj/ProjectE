@@ -74,7 +74,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if (this.toolClasses.contains(toolClass))
 		{

@@ -6,6 +6,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class InternalTimers
@@ -95,13 +96,13 @@ public class InternalTimers
         private final InternalTimers capInstance = new InternalTimers();
 
         @Override
-        public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
         {
             return capability == CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
         {
             if (capability == CAPABILITY)
                 return CAPABILITY.cast(capInstance);

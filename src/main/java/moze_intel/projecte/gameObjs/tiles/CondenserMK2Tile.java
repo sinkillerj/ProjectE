@@ -19,7 +19,7 @@ public class CondenserMK2Tile extends CondenserTile
 	{
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
 					? super.insertItem(slot, stack, simulate)

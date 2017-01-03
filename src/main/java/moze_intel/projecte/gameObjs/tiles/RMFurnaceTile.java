@@ -40,7 +40,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	{
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			return SlotPredicates.SMELTABLE.test(stack)
 					? super.insertItem(slot, stack, simulate)
@@ -51,7 +51,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	{
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			return SlotPredicates.FURNACE_FUEL.test(stack)
 					? super.insertItem(slot, stack, simulate)

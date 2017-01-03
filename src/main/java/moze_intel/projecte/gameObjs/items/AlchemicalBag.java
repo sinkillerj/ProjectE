@@ -22,7 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {

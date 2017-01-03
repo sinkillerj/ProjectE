@@ -171,8 +171,8 @@ public class MindStone extends RingToggle implements IPedestalItem
 	private int removeStoredXP(ItemStack stack, int XP) 
 	{
 		int currentXP = getStoredXP(stack);
-		int result = 0;
-		int returnResult = 0;
+		int result;
+		int returnResult;
 		
 		if (currentXP < XP)
 		{

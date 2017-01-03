@@ -13,6 +13,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -95,7 +96,7 @@ public final class ItemHelper
 			}
 		}
 
-		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
+		list.sort(Comparators.ITEMSTACK_ASCENDING);
 		trimItemList(list);
 	}
 
@@ -118,7 +119,7 @@ public final class ItemHelper
 			}
 		}
 
-		Collections.sort(list, Comparators.ITEMSTACK_ASCENDING);
+		list.sort(Comparators.ITEMSTACK_ASCENDING);
 		trimItemList(list);
 	}
 
@@ -270,23 +271,26 @@ public final class ItemHelper
 		return new IItemHandlerModifiable()
 		{
 			@Override
-			public void setStackInSlot(int slot, ItemStack stack) {}
+			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {}
 
 			@Override
 			public int getSlots() {
 				return list.size();
 			}
 
+			@Nonnull
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				return list.get(slot);
 			}
 
+			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 				return stack;
 			}
 
+			@Nonnull
 			@Override
 			public ItemStack extractItem(int slot, int amount, boolean simulate) {
 				return ItemStack.EMPTY;
@@ -357,14 +361,6 @@ public final class ItemHelper
 
 	private static void trimItemList(List<ItemStack> list)
 	{
-		Iterator<ItemStack> iter = list.iterator();
-		while (iter.hasNext())
-		{
-			ItemStack s = iter.next();
-			if (s.isEmpty())
-			{
-				iter.remove();
-			}
-		}
+		list.removeIf(ItemStack::isEmpty);
 	}
 }

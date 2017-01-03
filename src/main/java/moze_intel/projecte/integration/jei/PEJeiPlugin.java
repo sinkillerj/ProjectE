@@ -21,10 +21,10 @@ public class PEJeiPlugin implements IModPlugin
     public static IJeiRuntime RUNTIME = null;
 
     @Override
-    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {}
+    public void registerItemSubtypes(@Nonnull ISubtypeRegistry subtypeRegistry) {}
 
     @Override
-    public void registerIngredients(IModIngredientRegistration registry) {}
+    public void registerIngredients(@Nonnull IModIngredientRegistration registry) {}
 
     @Override
     public void register(@Nonnull IModRegistry registry)

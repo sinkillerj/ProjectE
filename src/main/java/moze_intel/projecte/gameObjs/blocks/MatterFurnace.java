@@ -54,6 +54,7 @@ public class MatterFurnace extends BlockDirection
 		return isHighTier ? 2000000F : 1000000F;
 	}
 	
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{

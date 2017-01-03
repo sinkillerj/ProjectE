@@ -90,7 +90,7 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.showStatTooltip)
 		{
-			/**
+			/*
 			 * Collector ToolTips
 			 */
 			String unit = I18n.format("pe.emc.name");
@@ -126,7 +126,7 @@ public class ToolTipEvent
 						+ TextFormatting.BLUE + " %d " + unit, Constants.COLLECTOR_MK3_MAX));
 			}
 
-			/**
+			/*
 			 * Relay ToolTips
 			 */
 			if (currentBlock == ObjHandler.relay)
@@ -164,7 +164,7 @@ public class ToolTipEvent
 		{
 			if (current.getItem() instanceof IItemEmc || current.getTagCompound().hasKey("StoredEMC"))
 			{
-				double value = 0;
+				double value;
 				if (current.getTagCompound().hasKey("StoredEMC"))
 				{
 					value = current.getTagCompound().getDouble("StoredEMC");

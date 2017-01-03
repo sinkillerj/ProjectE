@@ -33,7 +33,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			return SlotPredicates.COLLECTOR_INV.test(stack)
 					? super.insertItem(slot, stack, simulate)

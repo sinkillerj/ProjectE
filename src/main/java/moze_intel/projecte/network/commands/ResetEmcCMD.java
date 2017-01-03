@@ -37,7 +37,7 @@ public class ResetEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
 	{
-		String name = "";
+		String name;
 		int meta = 0;
 
 		if (params.length == 0)

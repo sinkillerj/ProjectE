@@ -22,6 +22,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -195,7 +196,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
 			}
-			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList<Iterable<ItemStack>>()));
+			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
 		}
 
 	}
@@ -255,7 +256,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					variableInputs.add(recipeItemOptions);
 				}
 			}
-			return Arrays.asList(new CraftingIngredients(fixedInputs, variableInputs));
+			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
 	}
 
@@ -294,7 +295,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
 				}
 			}
-			return Arrays.asList(new CraftingIngredients(inputs, new LinkedList<Iterable<ItemStack>>()));
+			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
 		}
 
 	}
