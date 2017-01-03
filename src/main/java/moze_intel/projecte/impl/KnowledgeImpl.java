@@ -1,5 +1,6 @@
 package moze_intel.projecte.impl;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -246,7 +247,7 @@ public final class KnowledgeImpl {
     public static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
 
-        public static final ResourceLocation NAME = new ResourceLocation("projecte", "knowledge");
+        public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
         private final DefaultImpl knowledge = new DefaultImpl();
 

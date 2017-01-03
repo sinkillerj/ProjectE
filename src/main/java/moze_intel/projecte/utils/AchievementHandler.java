@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.IScoreCriteria;
@@ -12,7 +13,7 @@ import net.minecraftforge.common.AchievementPage;
 public final class AchievementHandler
 {
 
-	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly("projecte:emc_score");
+	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly(PECore.MODID + ":emc_score");
 	public final static Achievement PHIL_STONE = (Achievement) new Achievement("pe_phil_stone", "pe_phil_stone", 0, 2, ObjHandler.philosStone, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_CHEST = (Achievement) new Achievement("pe_alch_chest", "pe_alch_chest", 0, -2, ObjHandler.alchChest, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_BAG = (Achievement) new Achievement("pe_alch_bag", "pe_alch_bag", 0, -4, ObjHandler.alchBag, ALCH_CHEST).registerStat();
@@ -40,6 +41,6 @@ public final class AchievementHandler
 
 	public static void init()
 	{
-		AchievementPage.registerAchievementPage(new AchievementPage("ProjectE", list.toArray(new Achievement[list.size()])));
+		AchievementPage.registerAchievementPage(new AchievementPage(PECore.MODNAME, list.toArray(new Achievement[list.size()])));
 	}
 }

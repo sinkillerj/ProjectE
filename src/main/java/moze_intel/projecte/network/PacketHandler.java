@@ -2,6 +2,7 @@ package moze_intel.projecte.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.*;
@@ -23,7 +24,7 @@ import java.util.Map;
 public final class PacketHandler
 {
 	private static final int MAX_PKT_SIZE = 256;
-	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("projecte");
+	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel(PECore.MODID);
 	
 	public static void register()
 	{

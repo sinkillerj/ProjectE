@@ -1,5 +1,6 @@
 package moze_intel.projecte.impl;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.network.PacketHandler;
@@ -105,7 +106,7 @@ public final class AlchBagImpl
     public static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
 
-        public static final ResourceLocation NAME = new ResourceLocation("projecte", "alch_bags");
+        public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "alch_bags");
 
         private final IAlchBagProvider cap = new DefaultImpl();
 

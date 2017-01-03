@@ -6,6 +6,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     public WorldTransmuteRecipeCategory(IGuiHelper guiHelper)
     {
         background = guiHelper.createBlankDrawable(175, 48);
-        arrow = guiHelper.createDrawable(new ResourceLocation("projecte:textures/gui/arrow.png"), 0, 0, 32, 32);
+        arrow = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 32, 32);
         localizedName = I18n.format("pe.nei.worldtransmute");
     }
 

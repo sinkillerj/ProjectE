@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -89,6 +90,6 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		char index = this.armorPiece == EntityEquipmentSlot.LEGS ? '2' : '1';
-		return "projecte:textures/armor/gem_" + index + ".png";
+		return PECore.MODID + ":textures/armor/gem_" + index + ".png";
 	}
 }

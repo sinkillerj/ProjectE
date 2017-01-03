@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -22,7 +23,7 @@ public final class InternalAbilities
 {
 	@CapabilityInject(InternalAbilities.class)
 	public static final Capability<InternalAbilities> CAPABILITY = null;
-	public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_abilities");
+	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_abilities");
 
 	private final EntityPlayerMP player;
 	private boolean swrgOverride = false;

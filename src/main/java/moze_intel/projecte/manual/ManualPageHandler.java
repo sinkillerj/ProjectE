@@ -2,6 +2,7 @@ package moze_intel.projecte.manual;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
 import moze_intel.projecte.utils.PELogger;
@@ -62,7 +63,7 @@ public class ManualPageHandler
 
         //Blocks
         addBlock(ObjHandler.alchChest, PageCategory.BLOCK);
-        addImagePage("img_alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"), PageCategory.BLOCK);
+        addImagePage("img_alchchest", new ResourceLocation(PECore.MODID, "textures/gui/alchchest.png"), PageCategory.BLOCK);
         addBlock(ObjHandler.confuseTorch, PageCategory.BLOCK);
         addBlock(ObjHandler.transmuteStone, PageCategory.BLOCK);
         addBlock(ObjHandler.condenser, PageCategory.BLOCK);

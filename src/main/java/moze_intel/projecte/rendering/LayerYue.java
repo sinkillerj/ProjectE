@@ -21,6 +21,9 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
 
+	private static final ResourceLocation HEART_LOC = new ResourceLocation(PECore.MODID, "textures/models/heartcircle.png");
+	private static final ResourceLocation YUE_LOC = new ResourceLocation(PECore.MODID, "textures/models/yuecircle.png");
+
 	public LayerYue(RenderPlayer renderer)
 	{
 		this.render = renderer;
@@ -47,10 +50,10 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
 			if (CLAR_UUID.equals(player.getUniqueID()))
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
+				Minecraft.getMinecraft().renderEngine.bindTexture(HEART_LOC);
 			} else
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
+				Minecraft.getMinecraft().renderEngine.bindTexture(YUE_LOC);
 			}
 
 			Tessellator tess = Tessellator.getInstance();

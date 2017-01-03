@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -51,7 +52,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
-		addPropertyOverride(new ResourceLocation("projecte", "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0);
+		addPropertyOverride(new ResourceLocation(PECore.MODID, "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0);
 		setHasSubtypes(true);
 	}
 

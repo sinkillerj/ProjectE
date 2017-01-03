@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.manual.AbstractPage;
 import moze_intel.projecte.manual.ImagePage;
 import moze_intel.projecte.manual.IndexPage;
@@ -40,7 +41,7 @@ public class GUIManual extends GuiScreen
 	public static final int BUTTON_HEIGHT = 13;
 	private static final int CHARACTER_HEIGHT = 9;
 	private static final int BUTTON_ID_OFFSET = 3; // Offset of button ID's due to the page turn and TOC buttons
-	private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation("projecte:textures/gui/bookTexture.png");
+	private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation(PECore.MODID, "textures/gui/bookTexture.png");
 	private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
 	public static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
 	public static final Multimap<IndexPage, IndexLinkButton> indexLinks = ArrayListMultimap.create(); // IndexPage -> IndexLinkButtons

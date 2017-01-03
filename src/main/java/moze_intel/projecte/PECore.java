@@ -59,7 +59,7 @@ public class PECore
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
 	public static final String DEPS = "required-after:forge@[13.19.1.2188,);after:baubles@[1.3.3,);after:jei@[4.2.0,)";
-	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[ProjectE]");
+	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
 	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
@@ -146,7 +146,7 @@ public class PECore
 
 		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 		
-		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
+		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), MODNAME);
 		
 		if (!dir.exists())
 		{

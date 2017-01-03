@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import moze_intel.projecte.PECore;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,7 +14,7 @@ public class InternalTimers
 {
     @CapabilityInject(InternalTimers.class)
     public static final Capability<InternalTimers> CAPABILITY = null;
-    public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_timers");
+    public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_timers");
 
     private final Timer repair = new Timer();
     private final Timer heal = new Timer();

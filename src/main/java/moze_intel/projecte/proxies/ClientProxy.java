@@ -1,5 +1,6 @@
 package moze_intel.projecte.proxies;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -220,16 +221,16 @@ public class ClientProxy implements IProxy
 
 	private void registerCovalenceDust()
 	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 0, new ModelResourceLocation("projecte:covalence_low", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 1, new ModelResourceLocation("projecte:covalence_medium", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 2, new ModelResourceLocation("projecte:covalence_high", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 0, new ModelResourceLocation(PECore.MODID + ":" + "covalence_low", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 1, new ModelResourceLocation(PECore.MODID + ":" + "covalence_medium", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 2, new ModelResourceLocation(PECore.MODID + ":" + "covalence_high", "inventory"));
 	}
 
 	private void registerBags()
 	{
 		for (EnumDyeColor e : EnumDyeColor.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.alchBag, e.getMetadata(), new ModelResourceLocation("projecte:bags/alchbag_" + e.getName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(ObjHandler.alchBag, e.getMetadata(), new ModelResourceLocation(PECore.MODID + ":" + "bags/alchbag_" + e.getName(), "inventory"));
 		}
 	}
 
@@ -237,7 +238,7 @@ public class ClientProxy implements IProxy
 	{
 		for (EnumFuelType e : EnumFuelType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation("projecte:" + e.getName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + e.getName(), "inventory"));
 
 			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.fuelBlock).toString();
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.fuelBlock), new ModelResourceLocation(name, "fueltype=" + e.getName()));
@@ -249,7 +250,7 @@ public class ClientProxy implements IProxy
 	{
 		for (EnumMatterType m : EnumMatterType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation("projecte:" + m.getName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + m.getName(), "inventory"));
 
 			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.matterBlock).toString();
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.matterBlock), new ModelResourceLocation(name, "tier=" + m.getName()));
@@ -261,57 +262,57 @@ public class ClientProxy implements IProxy
 	{
 		for (KleinStar.EnumKleinTier e : KleinStar.EnumKleinTier.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.kleinStars, e.ordinal(), new ModelResourceLocation("projecte:stars/klein_star_" + e.name, "inventory"));
+			ModelLoader.setCustomModelResourceLocation(ObjHandler.kleinStars, e.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + "stars/klein_star_" + e.name, "inventory"));
 		}
 	}
 
 	private void registerPowerStones()
 	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation("projecte:body_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation("projecte:body_stone_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 0, new ModelResourceLocation("projecte:soul_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 1, new ModelResourceLocation("projecte:soul_stone_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "soul_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "soul_stone_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 0, new ModelResourceLocation("projecte:mind_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 1, new ModelResourceLocation("projecte:mind_stone_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "mind_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "mind_stone_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 0, new ModelResourceLocation("projecte:life_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation("projecte:life_stone_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "life_stone_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "life_stone_on", "inventory"));
 	}
 
 	private void registerPowerItems()
 	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation("projecte:bhb_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation("projecte:bhb_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation(PECore.MODID + ":" + "bhb_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation(PECore.MODID + ":" + "bhb_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 0, new ModelResourceLocation("projecte:harvgod_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 1, new ModelResourceLocation("projecte:harvgod_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 0, new ModelResourceLocation(PECore.MODID + ":" + "harvgod_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 1, new ModelResourceLocation(PECore.MODID + ":" + "harvgod_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 0, new ModelResourceLocation("projecte:goed_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 1, new ModelResourceLocation("projecte:goed_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 0, new ModelResourceLocation(PECore.MODID + ":" + "goed_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 1, new ModelResourceLocation(PECore.MODID + ":" + "goed_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 0, new ModelResourceLocation("projecte:timewatch_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 1, new ModelResourceLocation("projecte:timewatch_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 0, new ModelResourceLocation(PECore.MODID + ":" + "timewatch_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 1, new ModelResourceLocation(PECore.MODID + ":" + "timewatch_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 0, new ModelResourceLocation("projecte:ignition_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 1, new ModelResourceLocation("projecte:ignition_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 0, new ModelResourceLocation(PECore.MODID + ":" + "ignition_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 1, new ModelResourceLocation(PECore.MODID + ":" + "ignition_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 0, new ModelResourceLocation("projecte:zero_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 1, new ModelResourceLocation("projecte:zero_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 0, new ModelResourceLocation(PECore.MODID + ":" + "zero_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 1, new ModelResourceLocation(PECore.MODID + ":" + "zero_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 0, new ModelResourceLocation("projecte:swrg_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation("projecte:swrg_fly", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation("projecte:swrg_repel", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation("projecte:swrg_both", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 0, new ModelResourceLocation(PECore.MODID + ":" + "swrg_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation(PECore.MODID + ":" + "swrg_fly", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation(PECore.MODID + ":" + "swrg_repel", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation(PECore.MODID + ":" + "swrg_both", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 0, new ModelResourceLocation("projecte:voidring_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation("projecte:voidring_on", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 0, new ModelResourceLocation(PECore.MODID + ":" + "voidring_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation(PECore.MODID + ":" + "voidring_on", "inventory"));
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 0, new ModelResourceLocation("projecte:arcana_zero_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 1, new ModelResourceLocation("projecte:arcana_ignition_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 2, new ModelResourceLocation("projecte:arcana_harv_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 3, new ModelResourceLocation("projecte:arcana_swrg_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 0, new ModelResourceLocation(PECore.MODID + ":" + "arcana_zero_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 1, new ModelResourceLocation(PECore.MODID + ":" + "arcana_ignition_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 2, new ModelResourceLocation(PECore.MODID + ":" + "arcana_harv_off", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 3, new ModelResourceLocation(PECore.MODID + ":" + "arcana_swrg_off", "inventory"));
 	}
 
 	@Override
