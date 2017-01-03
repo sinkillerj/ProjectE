@@ -81,7 +81,7 @@ public class RedStar extends PEToolBase
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
-			if (ProjectEConfig.pickaxeAoeVeinMining)
+			if (ProjectEConfig.items.pickaxeAoeVeinMining)
 			{
 				mineOreVeinsInAOE(stack, player, hand);
 			}
@@ -99,7 +99,7 @@ public class RedStar extends PEToolBase
 
 				if (block instanceof BlockGravel || block instanceof BlockClay)
 				{
-					if (ProjectEConfig.pickaxeAoeVeinMining)
+					if (ProjectEConfig.items.pickaxeAoeVeinMining)
 					{
 						digAOE(stack, world, player, false, 0, hand);
 					}
@@ -110,7 +110,7 @@ public class RedStar extends PEToolBase
 				}
 				else if (ItemHelper.isOre(state))
 				{
-					if (!ProjectEConfig.pickaxeAoeVeinMining)
+					if (!ProjectEConfig.items.pickaxeAoeVeinMining)
 					{
 						tryVeinMine(stack, player, mop);
 					}

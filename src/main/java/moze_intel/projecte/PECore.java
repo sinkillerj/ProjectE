@@ -75,7 +75,7 @@ public class PECore
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CONFIG_DIR = new File(event.getModConfigurationDirectory(), "ProjectE");
+		CONFIG_DIR = new File(event.getModConfigurationDirectory(), MODNAME);
 		
 		if (!CONFIG_DIR.exists())
 		{
@@ -83,7 +83,6 @@ public class PECore
 		}
 
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
-		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
 		PacketHandler.register();
 

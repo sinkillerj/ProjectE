@@ -446,7 +446,7 @@ public final class WorldHelper
 				}
 				else if (world.rand.nextInt(chance) == 0)
 				{
-					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
+					if (ProjectEConfig.items.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 					{
 						growable.grow(world, world.rand, currentPos, state);
 					}
@@ -580,7 +580,7 @@ public final class WorldHelper
 					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (!isSWRG && ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
+					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}

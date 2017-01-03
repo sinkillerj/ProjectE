@@ -67,7 +67,7 @@ public class GemChest extends GemArmorBase implements IFireProtector
 
     public void doExplode(EntityPlayer player)
     {
-        if (ProjectEConfig.offensiveAbilities)
+        if (ProjectEConfig.difficulty.offensiveAbilities)
         {
             WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.posX, player.posY, player.posZ, 9.0F);
         }

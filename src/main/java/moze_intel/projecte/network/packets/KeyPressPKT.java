@@ -91,7 +91,7 @@ public class KeyPressPKT implements IMessage
                                         && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
                                 {
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (GemArmorBase.hasAnyPiece(player))
                                     {
@@ -107,7 +107,7 @@ public class KeyPressPKT implements IMessage
                                         && ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player, hand))
                                 {
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (internalAbilities.getGemState() && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemChest)
                                     {
@@ -129,7 +129,7 @@ public class KeyPressPKT implements IMessage
                                     PlayerHelper.swingItem(player, hand);
                                     internalAbilities.resetProjectileCooldown();
                                     return;
-                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.unsafeKeyBinds || stack.isEmpty()))
+                                } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
                                 {
                                     if (internalAbilities.getGemState()
                                             && !player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()

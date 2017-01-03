@@ -204,7 +204,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
@@ -214,7 +214,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
 
-				tile.setActivityCooldown(ProjectEConfig.volcanitePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanitePedCooldown);
 			}
 			else
 			{
@@ -229,10 +229,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.volcanitePedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanitePedCooldown)));
 		}
 		return list;
 	}

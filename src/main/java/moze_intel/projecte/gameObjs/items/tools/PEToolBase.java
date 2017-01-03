@@ -109,7 +109,7 @@ public abstract class PEToolBase extends ItemMode
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost, EnumHand hand)
 	{
 		byte charge = getCharge(stack);
-		if (charge == 0 || world.isRemote || ProjectEConfig.disableAllRadiusMining)
+		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -261,7 +261,7 @@ public abstract class PEToolBase extends ItemMode
 		BlockPos hitPos = mop.getBlockPos();
 		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
-		if (!ProjectEConfig.disableAllRadiusMining) {
+		if (!ProjectEConfig.items.disableAllRadiusMining) {
 			switch (mode) {
 				case 1: // 3x Tallshot
 					box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
@@ -310,7 +310,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost, EnumHand hand)
 	{
-		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.disableAllRadiusMining)
+		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -505,7 +505,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, RayTraceResult mop)
 	{
-		if (player.getEntityWorld().isRemote || ProjectEConfig.disableAllRadiusMining)
+		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -540,7 +540,7 @@ public abstract class PEToolBase extends ItemMode
 	 * Mines all ore veins in a Box around the player.
 	 */
 	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player, EnumHand hand) {
-		if (player.getEntityWorld().isRemote || ProjectEConfig.disableAllRadiusMining)
+		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}

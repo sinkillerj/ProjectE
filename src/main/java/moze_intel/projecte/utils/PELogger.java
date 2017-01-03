@@ -32,7 +32,7 @@ public final class PELogger
 
 	public static void logDebug(String msg)
 	{
-		if (ProjectEConfig.enableDebugLog) // visible in main console
+		if (ProjectEConfig.misc.debugLogging) // visible in main console
 		{
 			logger.info(msg);
 		}
@@ -64,7 +64,7 @@ public final class PELogger
 
 	public static void logDebug(String msg, Object... args)
 	{
-		if (ProjectEConfig.enableDebugLog) // visible in main console
+		if (ProjectEConfig.misc.debugLogging) // visible in main console
 		{
 			logger.info(String.format(msg, args));
 		}

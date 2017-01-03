@@ -65,7 +65,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
-			if (!ProjectEConfig.enableTimeWatch)
+			if (!ProjectEConfig.items.enableTimeWatch)
 			{
 				player.sendMessage(new TextComponentTranslation("pe.timewatch.disabled"));
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
@@ -96,7 +96,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			return;
 		}
 
-		if (!ProjectEConfig.enableTimeWatch)
+		if (!ProjectEConfig.items.enableTimeWatch)
 		{
 			return;
 		}
@@ -342,16 +342,16 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 
-		if (!world.isRemote && ProjectEConfig.enableTimeWatch)
+		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch)
 		{
 			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(pos)).getEffectBounds();
-			if (ProjectEConfig.timePedBonus > 0) {
-				speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
-				speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);
+			if (ProjectEConfig.effects.timePedBonus > 0) {
+				speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
+				speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
 			}
 
-			if (ProjectEConfig.timePedMobSlowness < 1.0F) {
-				slowMobs(world, bBox, ProjectEConfig.timePedMobSlowness);
+			if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
+				slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
 			}
 		}
 	}
@@ -362,12 +362,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.timePedBonus > 0) {
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.timePedBonus));
+		if (ProjectEConfig.effects.timePedBonus > 0) {
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus));
 		}
-		if (ProjectEConfig.timePedMobSlowness < 1.0F)
+		if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.timePedMobSlowness));
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness));
 		}
 		return list;
 	}

@@ -117,7 +117,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.archangelPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
@@ -137,7 +137,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 						world.spawnEntity(arrow);
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.archangelPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.archangelPedCooldown);
 			}
 			else
 			{
@@ -152,9 +152,9 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.archangelPedCooldown != -1) {
+		if (ProjectEConfig.pedestalCooldown.archangelPedCooldown != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangelPedCooldown)));
 		}
 		return list;
 	}

@@ -134,7 +134,7 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableLighting();
 		GlStateManager.depthMask(false);
 
-		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.misc.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tess = Tessellator.getInstance();
 		VertexBuffer wr = tess.getBuffer();

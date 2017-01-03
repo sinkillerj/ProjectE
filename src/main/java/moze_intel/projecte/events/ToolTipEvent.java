@@ -31,7 +31,7 @@ public class ToolTipEvent
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 
-		if (ProjectEConfig.showPedestalTooltip
+		if (ProjectEConfig.misc.pedestalToolTips
 			&& currentItem instanceof IPedestalItem)
 		{
 			event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
@@ -46,7 +46,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.showODNames)
+		if (ProjectEConfig.misc.odToolTips)
 		{
 			for (int id : OreDictionary.getOreIDs(current))
 			{
@@ -57,7 +57,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.showEMCTooltip)
+		if (ProjectEConfig.misc.emcToolTips)
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
@@ -88,7 +88,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.showStatTooltip)
+		if (ProjectEConfig.misc.statToolTips)
 		{
 			/*
 			 * Collector ToolTips
