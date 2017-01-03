@@ -100,7 +100,7 @@ tile.pe_fuel_block_1.name=Block aus Mobiuskraftstoff
 tile.pe_fuel_block_2.name=Block aus Aeternaliskraftstoff
 tile.pe_dmPedestal.name=Podest aus Dunkler Materie
 
-itemGroup.ProjectE=ProjectE
+itemGroup.projecte=ProjectE
 
 achievement.pe_phil_stone=Der beste Freund eines Alchemisten!
 achievement.pe_phil_stone.desc=Lass uns anfangen! Stelle einen Stein der Weisen her.

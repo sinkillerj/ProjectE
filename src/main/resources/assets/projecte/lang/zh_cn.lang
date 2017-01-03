@@ -100,7 +100,7 @@ tile.pe_fuel_block_1.name=莫比乌斯燃料块
 tile.pe_fuel_block_2.name=永恒燃料块
 tile.pe_dmPedestal.name=暗物质台座
 
-# itemGroup.ProjectE=ProjectE
+# itemGroup.projecte=ProjectE
 
 achievement.pe_phil_stone=炼金术师的挚友
 achievement.pe_phil_stone.desc=用贤者之石开启你的炼金之旅!

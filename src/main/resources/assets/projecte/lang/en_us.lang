@@ -100,7 +100,7 @@ tile.pe_fuel_block_1.name=Mobius Fuel Block
 tile.pe_fuel_block_2.name=Aeternalis Fuel Block
 tile.pe_dmPedestal.name=Dark Matter Pedestal
 
-itemGroup.ProjectE=ProjectE
+itemGroup.projecte=ProjectE
 
 achievement.pe_phil_stone=An alchemist's best friend!
 achievement.pe_phil_stone.desc=Let's get things started! Craft a philosopher's stone

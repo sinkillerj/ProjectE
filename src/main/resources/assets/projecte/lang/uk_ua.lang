@@ -97,7 +97,7 @@ tile.pe_fuel_block_1.name=Блок пального Мобіуса
 tile.pe_fuel_block_2.name=Блок ефірного пального
 tile.pe_dmPedestal.name=П'єдестал темної матерії
 
-itemGroup.ProjectE=ProjectE
+itemGroup.projecte=ProjectE
 
 achievement.phil_stone=Найкращий друг алхіміків!
 achievement.phil_stone.desc=Почнемо! Створіть філософський камінь!

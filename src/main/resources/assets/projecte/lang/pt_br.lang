@@ -100,7 +100,7 @@ tile.pe_fuel_block_1.name=Bloco de Combustível Mobius
 tile.pe_fuel_block_2.name=Bloco de Combustível Aeternalis
 tile.pe_dmPedestal.name=Pedestal de Matéria Escura
 
-itemGroup.ProjectE=ProjectE
+itemGroup.projecte=ProjectE
 
 achievement.pe_phil_stone=O melhor amigo de um alquimista!
 achievement.pe_phil_stone.desc=Vamos começar as coisas! Faça uma pedra filosofal
