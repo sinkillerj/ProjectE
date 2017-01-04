@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
 import com.google.common.collect.Maps;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
 import java.util.Map;
 

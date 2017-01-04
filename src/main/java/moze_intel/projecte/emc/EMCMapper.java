@@ -11,6 +11,8 @@ import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
 import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.Chisel2Mapper;
@@ -133,9 +135,9 @@ public final class EMCMapper
 
 
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
-			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
+			if (entry.getKey() instanceof NSSItem)
 			{
-				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
+				NSSItem normStackItem = (NSSItem)entry.getKey();
 				Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
 				if (obj != null)
 				{
@@ -152,14 +154,14 @@ public final class EMCMapper
 	}
 
 	/**
-	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
+	 * Remove all entrys from the map, that are not {@link NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
 	 */
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
 		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = map.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();
-			if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
-				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;
+			if (normStack instanceof NSSItem && entry.getValue() > 0) {
+				NSSItem normStackItem = (NSSItem)normStack;
 				if (normStackItem.damage != OreDictionary.WILDCARD_VALUE) {
 					continue;
 				}

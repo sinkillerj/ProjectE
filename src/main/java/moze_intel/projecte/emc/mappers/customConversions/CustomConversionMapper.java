@@ -5,7 +5,11 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSFake;
+import moze_intel.projecte.emc.json.NSSFluid;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
@@ -144,12 +148,12 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 					{
 						NormalizedSimpleStack something = getNSSfromJsonString(entry.getKey(), fakes);
 						mapper.setValueBefore(something, entry.getValue());
-						if (something instanceof NormalizedSimpleStack.NSSOreDictionary)
+						if (something instanceof NSSOreDictionary)
 						{
-							String odName = ((NormalizedSimpleStack.NSSOreDictionary) something).od;
+							String odName = ((NSSOreDictionary) something).od;
 							for (ItemStack itemStack : OreDictionary.getOres(odName))
 							{
-								mapper.setValueBefore(NormalizedSimpleStack.getFor(itemStack), entry.getValue());
+								mapper.setValueBefore(NSSItem.create(itemStack), entry.getValue());
 							}
 						}
 					}
@@ -160,12 +164,12 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 					{
 						NormalizedSimpleStack something = getNSSfromJsonString(entry.getKey(), fakes);
 						mapper.setValueAfter(something, entry.getValue());
-						if (something instanceof NormalizedSimpleStack.NSSOreDictionary)
+						if (something instanceof NSSOreDictionary)
 						{
-							String odName = ((NormalizedSimpleStack.NSSOreDictionary) something).od;
+							String odName = ((NSSOreDictionary) something).od;
 							for (ItemStack itemStack : OreDictionary.getOres(odName))
 							{
-								mapper.setValueAfter(NormalizedSimpleStack.getFor(itemStack), entry.getValue());
+								mapper.setValueAfter(NSSItem.create(itemStack), entry.getValue());
 							}
 						}
 					}
@@ -175,12 +179,12 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 					for (CustomConversion conversion : file.values.conversion)
 					{
 						NormalizedSimpleStack out = getNSSfromJsonString(conversion.output, fakes);
-						if (conversion.evalOD && out instanceof NormalizedSimpleStack.NSSOreDictionary)
+						if (conversion.evalOD && out instanceof NSSOreDictionary)
 						{
-							String odName = ((NormalizedSimpleStack.NSSOreDictionary) out).od;
+							String odName = ((NSSOreDictionary) out).od;
 							for (ItemStack itemStack : OreDictionary.getOres(odName))
 							{
-								mapper.setValueFromConversion(conversion.count, NormalizedSimpleStack.getFor(itemStack), convertToNSSMap(conversion.ingredients, fakes));
+								mapper.setValueFromConversion(conversion.count, NSSItem.create(itemStack), convertToNSSMap(conversion.ingredients, fakes));
 							}
 						}
 						mapper.setValueFromConversion(conversion.count, out, convertToNSSMap(conversion.ingredients, fakes));
@@ -197,7 +201,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	public static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes)
 	{
 		if (s.startsWith("OD|")) {
-			return NormalizedSimpleStack.forOreDictionary(s.substring(3));
+			return NSSOreDictionary.create(s.substring(3));
 		} else if (s.startsWith("FAKE|"))
 		{
 			String fakeIdentifier = s.substring(5);
@@ -207,7 +211,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			}
 			else
 			{
-				NormalizedSimpleStack nssFake = NormalizedSimpleStack.createFake(fakeIdentifier);
+				NormalizedSimpleStack nssFake = NSSFake.create(fakeIdentifier);
 				fakes.put(fakeIdentifier, nssFake);
 				return nssFake;
 			}
@@ -215,7 +219,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			String fluidName = s.substring("FLUID|".length());
 			Fluid fluid = FluidRegistry.getFluid(fluidName);
 			if (fluid == null) return null;
-			return NormalizedSimpleStack.getFor(fluid);
+			return NSSFluid.create(fluid);
 		} else {
 			return NormalizedSimpleStack.fromSerializedItem(s);
 		}

@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSFake;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
@@ -42,7 +44,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
-			NormalizedSimpleStack recipeOutputNorm = NormalizedSimpleStack.getFor(recipeOutput);
+			NormalizedSimpleStack recipeOutputNorm = NSSItem.create(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
 					continue;
@@ -56,7 +58,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								if (stack.isEmpty()) continue;
 								if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
 									//Don't check for doesContainerItemLeaveCraftingGrid for WILDCARD-ItemStacks
-									ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+									ingredientMap.addIngredient(NSSItem.create(stack), 1);
 								} else {
 									//stack does not have a wildcard damage value
 									try
@@ -65,9 +67,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 										{
 											if (stack.getItem().hasContainerItem(stack))
 											{
-												ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
+												ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
 											}
-											ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+											ingredientMap.addIngredient(NSSItem.create(stack), 1);
 										}
 										//else if (config.getBoolean("emcDependencyForUnconsumedItems", "", true, "If this option is enabled items that are made by crafting, with unconsumed ingredients, should only get an emc value, if the unconsumed item also has a value. (Examples: Extra Utilities Sigil, Cutting Board, Mixer, Juicer...)"))
 										//{
@@ -82,16 +84,16 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 								}
 							}
 							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
-								NormalizedSimpleStack normalizedSimpleStack = NormalizedSimpleStack.createFake(multiIngredient.toString());
+								NormalizedSimpleStack normalizedSimpleStack = NSSFake.create(multiIngredient.toString());
 								ingredientMap.addIngredient(normalizedSimpleStack, 1);
 								for (ItemStack stack : multiIngredient) {
 									if (stack.isEmpty()) continue;
 									//if (stack.getItem().doesContainerItemLeaveCraftingGrid(stack)) {
 										IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 										if (stack.getItem().hasContainerItem(stack)) {
-											groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack.getItem().getContainerItem(stack)), -1);
+											groupIngredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
 										}
-										groupIngredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 1);
+										groupIngredientMap.addIngredient(NSSItem.create(stack), 1);
 										mapper.addConversion(1, normalizedSimpleStack, groupIngredientMap.getMap());
 									//} TODO 1.8 method doesContainerItemLeave... no longer exists
 								}

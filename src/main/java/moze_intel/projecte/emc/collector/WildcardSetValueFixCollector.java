@@ -2,7 +2,8 @@ package moze_intel.projecte.emc.collector;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import net.minecraftforge.oredict.OreDictionary;
@@ -21,17 +22,17 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 		this.inner = inner;
 	}
 
-	final Map<NormalizedSimpleStack.NSSItem, V> setValueBeforeMap = Maps.newHashMap();
-	final Map<NormalizedSimpleStack.NSSItem, V> setValueAfterMap = Maps.newHashMap();
+	final Map<NSSItem, V> setValueBeforeMap = Maps.newHashMap();
+	final Map<NSSItem, V> setValueAfterMap = Maps.newHashMap();
 	final List<CustomConversion> setValueConversionList = Lists.newArrayList();
 	private boolean isWildCard(NormalizedSimpleStack nss) {
-		return nss instanceof NormalizedSimpleStack.NSSItem && ((NormalizedSimpleStack.NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE;
+		return nss instanceof NSSItem && ((NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE;
 	}
 
 	@Override
 	public void setValueBefore(NormalizedSimpleStack something, V value) {
 		if (this.isWildCard(something)) {
-			setValueBeforeMap.put((NormalizedSimpleStack.NSSItem) something, value);
+			setValueBeforeMap.put((NSSItem) something, value);
 		} else {
 			inner.setValueBefore(something, value);
 		}
@@ -40,7 +41,7 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 	@Override
 	public void setValueAfter(NormalizedSimpleStack something, V value) {
 		if (this.isWildCard(something)) {
-			setValueAfterMap.put((NormalizedSimpleStack.NSSItem) something, value);
+			setValueAfterMap.put((NSSItem) something, value);
 		} else {
 			inner.setValueAfter(something, value);
 		}
@@ -63,27 +64,27 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 
 	@Override
 	public void finishCollection() {
-		for (Map.Entry<NormalizedSimpleStack.NSSItem, V> entry: setValueBeforeMap.entrySet()) {
-			for (Integer meta: NormalizedSimpleStack.getUsedMetadata(entry.getKey())) {
+		for (Map.Entry<NSSItem, V> entry: setValueBeforeMap.entrySet()) {
+			for (Integer meta: NSSItem.getUsedMetadata(entry.getKey())) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
 				MappingCollector.debugFormat("Inserting Wildcard SetValueBefore %s:%d to %s", entry.getKey().itemName, meta, entry.getValue());
-				inner.setValueBefore(NormalizedSimpleStack.getFor(entry.getKey().itemName, meta), entry.getValue());
+				inner.setValueBefore(NSSItem.create(entry.getKey().itemName, meta), entry.getValue());
 			}
 		}
 
-		for (Map.Entry<NormalizedSimpleStack.NSSItem, V> entry: setValueAfterMap.entrySet()) {
-			for (Integer meta: NormalizedSimpleStack.getUsedMetadata(entry.getKey())) {
+		for (Map.Entry<NSSItem, V> entry: setValueAfterMap.entrySet()) {
+			for (Integer meta: NSSItem.getUsedMetadata(entry.getKey())) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
-				inner.setValueAfter(NormalizedSimpleStack.getFor(entry.getKey().itemName, meta), entry.getValue());
+				inner.setValueAfter(NSSItem.create(entry.getKey().itemName, meta), entry.getValue());
 				MappingCollector.debugFormat("Inserting Wildcard SetValueAfter: %s:%d to %s", entry.getKey().itemName, meta, entry.getValue());
 			}
 		}
 
 		for (CustomConversion conversion: setValueConversionList) {
-			for (Integer meta: NormalizedSimpleStack.getUsedMetadata(conversion.output)) {
+			for (Integer meta: NSSItem.getUsedMetadata(conversion.output)) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
 				MappingCollector.debugFormat("Inserting Wildcard SetValueFromConversion %s:%d to %s", conversion.output, meta, conversion);
-				inner.setValueFromConversion(conversion.count, NormalizedSimpleStack.getFor(conversion.output, meta), ingredientMapFromStringMap(conversion.ingredients));
+				inner.setValueFromConversion(conversion.count, NSSItem.create(conversion.output, meta), ingredientMapFromStringMap(conversion.ingredients));
 			}
 		}
 		inner.finishCollection();

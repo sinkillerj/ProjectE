@@ -1,7 +1,11 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSFake;
+import moze_intel.projecte.emc.json.NSSFluid;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
@@ -24,15 +28,15 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
 
 	private static void addMelting(String odName, String fluidName, int amount) {
-		addMelting(NormalizedSimpleStack.forOreDictionary(odName), fluidName, amount);
+		addMelting(NSSOreDictionary.create(odName), fluidName, amount);
 	}
 
 	private static void addMelting(Item item, String fluidName, int amount) {
-		addMelting(NormalizedSimpleStack.getFor(item), fluidName, amount);
+		addMelting(NSSItem.create(item), fluidName, amount);
 	}
 
 	private static void addMelting(Block block, String fluidName, int amount) {
-		addMelting(NormalizedSimpleStack.getFor(block), fluidName, amount);
+		addMelting(NSSItem.create(block), fluidName, amount);
 	}
 
 	private static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
@@ -83,18 +87,18 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+		mapper.setValueBefore(NSSFluid.create(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Collections.singletonList(NormalizedSimpleStack.getFor(Blocks.OBSIDIAN)));
+		mapper.addConversion(1000, NSSFluid.create(FluidRegistry.LAVA), Collections.singletonList(NSSItem.create(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
-		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
+		NormalizedSimpleStack fakeMilkFluid = NSSFake.create("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16);
-		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.MILK_BUCKET), Arrays.asList(NormalizedSimpleStack.getFor(Items.BUCKET), fakeMilkFluid));
+		mapper.addConversion(1, NSSItem.create(Items.MILK_BUCKET), Arrays.asList(NSSItem.create(Items.BUCKET), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {
-			mapper.addConversion(1000, NormalizedSimpleStack.getFor(milkFluid), Collections.singletonList(fakeMilkFluid));
+			mapper.addConversion(1000, NSSFluid.create(milkFluid), Collections.singletonList(fakeMilkFluid));
 		}
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
@@ -102,7 +106,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		FullFractionArithmetic fluidArithmetic = new FullFractionArithmetic();
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
-			emapper.addConversion(pair.getValue().amount, NormalizedSimpleStack.getFor(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+			emapper.addConversion(pair.getValue().amount, NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 	}
 

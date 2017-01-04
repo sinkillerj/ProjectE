@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Integer>
 		for (String name: chiselBlockNames) {
 			Block block = Block.getBlockFromName("chisel:" + name);
 			if (block != null) {
-				mapper.setValueBefore(NormalizedSimpleStack.getFor(block), 1);
+				mapper.setValueBefore(NSSItem.create(block), 1);
 			}
 		}
 
@@ -61,11 +62,11 @@ if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICa
 
 		List<NormalizedSimpleStack> stacks = new ArrayList<>();
 		for (ICarvingVariation v : group.getVariations()) {
-			stacks.add(NormalizedSimpleStack.getFor(v.getBlock(), v.getBlock().getMetaFromState(v.getBlockState())));
+			stacks.add(NSSItem.create(v.getBlock(), v.getBlock().getMetaFromState(v.getBlockState())));
 		}
 		if (group.getOreName() != null) {
 			for (ItemStack ore : OreDictionary.getOres(group.getOreName())) {
-				stacks.add(NormalizedSimpleStack.getFor(ore));
+				stacks.add(NSSItem.create(ore));
 			}
 		}
 		for (int i = 1; i < stacks.size(); i++) {

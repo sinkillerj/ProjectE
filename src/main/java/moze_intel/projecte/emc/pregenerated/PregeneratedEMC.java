@@ -3,7 +3,7 @@ package moze_intel.projecte.emc.pregenerated;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
 import java.io.File;
 import java.io.FileReader;

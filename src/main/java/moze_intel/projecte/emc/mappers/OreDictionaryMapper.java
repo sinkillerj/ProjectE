@@ -1,7 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.Sets;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.ItemStack;
@@ -37,8 +38,8 @@ public class OreDictionaryMapper implements IEMCMapper<NormalizedSimpleStack, In
 							continue;
 						}
 
-						mapper.setValueBefore(NormalizedSimpleStack.getFor(stack), 0);
-						mapper.setValueAfter(NormalizedSimpleStack.getFor(stack), 0);
+						mapper.setValueBefore(NSSItem.create(stack), 0);
+						mapper.setValueAfter(NSSItem.create(stack), 0);
 					}
 				}
 			}

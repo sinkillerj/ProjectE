@@ -3,7 +3,8 @@ package moze_intel.projecte.emc.pregenerated;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
 import java.io.IOException;
 
@@ -13,9 +14,9 @@ class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack>
 	@Override
 	public void write(JsonWriter out, NormalizedSimpleStack stack) throws IOException
 	{
-		if (stack instanceof NormalizedSimpleStack.NSSItem)
+		if (stack instanceof NSSItem)
 		{
-			NormalizedSimpleStack.NSSItem item = (NormalizedSimpleStack.NSSItem) stack;
+			NSSItem item = (NSSItem) stack;
 			out.value(String.format("%s|%d", item.itemName, item.damage));
 		}
 		else

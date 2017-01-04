@@ -1,7 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -20,8 +21,8 @@ public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 				continue;
 			}
 			IngredientMap<NormalizedSimpleStack> map = new IngredientMap<>();
-			NormalizedSimpleStack normInput = NormalizedSimpleStack.getFor(input);
-			NormalizedSimpleStack normOutput = NormalizedSimpleStack.getFor(output);
+			NormalizedSimpleStack normInput = NSSItem.create(input);
+			NormalizedSimpleStack normOutput = NSSItem.create(output);
 			map.addIngredient(normInput, input.getCount());
 			mapper.addConversion(output.getCount(), normOutput, map.getMap());
 			if (config.getBoolean("doBackwardsMapping", "", false, "If X has a value and is smelted from Y, Y will get a value too. This is an experimental thing and might result in Mappings you did not expect/want to happen.")) {

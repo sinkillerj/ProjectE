@@ -13,7 +13,9 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.util.JsonUtils;
@@ -134,11 +136,11 @@ public final class CustomEMCParser
 	{
 		if (str.contains(":"))
 		{
-			return NormalizedSimpleStack.getFor(str, meta);
+			return NSSItem.create(str, meta);
 		}
 		else
 		{
-			return NormalizedSimpleStack.forOreDictionary(str);
+			return NSSOreDictionary.create(str);
 		}
 	}
 
