@@ -74,10 +74,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	{
 		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory() || customConversionFolder.mkdir()) {
-			if (config.getBoolean("writeDefaultFiles", "", true, "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present."))
-			{
-				tryToWriteDefaultFiles();
-			}
+			tryToWriteDefaultFiles();
 
 			for (String defaultFile : defaultFilenames)
 			{
