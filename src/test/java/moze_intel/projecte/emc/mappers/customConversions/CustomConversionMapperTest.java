@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
@@ -144,22 +143,27 @@ public class CustomConversionMapperTest
 	@Test
 	public void testNonInteferingFakes() {
 		String file1 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingr': ['FAKE|BAR'] }] }  }";
-		String file2 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingr': ['FAKE|BAR'] }] }  }";
 
 		NSSFake.setCurrentNamespace("file1");
 		CustomConversionFile f1 = CustomConversionMapper.parseJson(new StringReader(file1));
+		CustomConversionFile f2 = CustomConversionMapper.parseJson(new StringReader(file1));
 		NSSFake.setCurrentNamespace("file2");
-		CustomConversionFile f2 = CustomConversionMapper.parseJson(new StringReader(file2));
+		CustomConversionFile f3 = CustomConversionMapper.parseJson(new StringReader(file1));
 
 		assertNotNull(f1);
 		assertNotNull(f2);
+		assertNotNull(f3);
 
 		CustomConversion conversion1 = f1.values.conversion.get(0);
 		CustomConversion conversion2 = f2.values.conversion.get(0);
+		CustomConversion conversion3 = f3.values.conversion.get(0);
 
 		assertNotNull(conversion1);
 		assertNotNull(conversion2);
+		assertNotNull(conversion3);
 
-		assertNotEquals(conversion1.output, conversion2.output);
+		assertEquals(conversion1.output, conversion2.output);
+		assertNotEquals(conversion1.output, conversion3.output);
+		assertNotEquals(conversion2.output, conversion3.output);
 	}
 }

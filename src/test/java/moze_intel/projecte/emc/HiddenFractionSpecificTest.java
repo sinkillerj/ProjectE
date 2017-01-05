@@ -17,19 +17,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 public class HiddenFractionSpecificTest
 {
-	public IValueGenerator<String, Integer> valueGenerator;
-	public IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
+	private IValueGenerator<String, Integer> valueGenerator;
+	private IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
 
 	@Before
 	public void setup()
 	{
-		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
-		valueGenerator = new FractionToIntGenerator(mapper);
-		mappingCollector = new IntToFractionCollector(mapper);
+		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(new HiddenFractionArithmetic());
+		valueGenerator = new FractionToIntGenerator<>(mapper);
+		mappingCollector = new IntToFractionCollector<>(mapper);
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class HiddenFractionSpecificTest
 	{
 		mappingCollector.setValueBefore("ingot", 2048);
 		mappingCollector.setValueBefore("melon", 16);
-		mappingCollector.addConversion(9, "nugget", Arrays.asList("ingot"));
+		mappingCollector.addConversion(9, "nugget", Collections.singletonList("ingot"));
 		mappingCollector.addConversion(1, "goldmelon", Arrays.asList(
 				"nugget", "nugget", "nugget",
 				"nugget", "melon", "nugget",
@@ -78,7 +79,7 @@ public class HiddenFractionSpecificTest
 		mappingCollector.setValueBefore("bucket", 768);
 
 		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
-		mappingCollector.addConversion(250*1000, "moltenEnder", Arrays.asList("enderpearl"));
+		mappingCollector.addConversion(250*1000, "moltenEnder", Collections.singletonList("enderpearl"));
 		mappingCollector.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000 * 1000, "bucket", 1));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -97,11 +98,11 @@ public class HiddenFractionSpecificTest
 		mappingCollector.setValueBefore("bucket", 768);
 
 		//Conversion using milibuckets with a "don't round anything down"-arithmetic
-		mappingCollector.addConversion(250, "moltenEnder", Arrays.asList("enderpearl"), fullFractionArithmetic);
+		mappingCollector.addConversion(250, "moltenEnder", Collections.singletonList("enderpearl"), fullFractionArithmetic);
 		mappingCollector.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000, "bucket", 1));
 
 		//Without using the full fraction arithmetic
-		mappingCollector.addConversion(250, "moltenEnder2", Arrays.asList("enderpearl"));
+		mappingCollector.addConversion(250, "moltenEnder2", Collections.singletonList("enderpearl"));
 		mappingCollector.addConversion(1, "moltenEnderBucket2", ImmutableMap.of("moltenEnder2", 1000, "bucket", 1));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
