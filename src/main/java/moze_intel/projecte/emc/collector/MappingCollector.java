@@ -35,23 +35,12 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	protected final Map<T, V> fixValueAfterInherit = Maps.newHashMap();
 	private final Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
-	public static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
-		List<V> list;
-		if (map.containsKey(key)) {
-			list = map.get(key);
-		} else {
-			list = new LinkedList<>();
-			map.put(key, list);
-		}
-		return list;
-	}
-
 	private List<Conversion> getConversionsFor(T something) {
-		return getOrCreateList(conversionsFor, something);
+		return conversionsFor.computeIfAbsent(something, t -> new LinkedList<>());
 	}
 
 	protected List<Conversion> getUsesFor(T something) {
-		return getOrCreateList(usedIn, something);
+		return usedIn.computeIfAbsent(something, t -> new LinkedList<>());
 	}
 
 	private int getNoDependencyConversionCountFor(T something) {

@@ -43,16 +43,6 @@ public class GraphMapperTest {
 	private IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
 
 	@org.junit.Test
-	public void testGetOrCreateList() throws Exception {
-		Map<String, List<Integer>> map = new HashMap<>();
-		List<Integer> l1 = MappingCollector.getOrCreateList(map, "abc");
-		assertNotNull(l1);
-		assertTrue(map.containsKey("abc"));
-		List<Integer> l2 = MappingCollector.getOrCreateList(map, "abc");
-		assertSame(l1, l2);
-	}
-
-	@org.junit.Test
 	public void testGenerateValuesSimple() throws Exception {
 		mappingCollector.setValueBefore("a1", 1);
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
