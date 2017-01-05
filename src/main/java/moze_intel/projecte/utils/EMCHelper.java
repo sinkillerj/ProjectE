@@ -182,11 +182,14 @@ public final class EMCHelper
 			{
 				int emc = EMCMapper.getEmcValue(iStack);
 
-				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
+				// maxDmg + 1 because vanilla lets you use the tool one more time
+				// when item damage == max damage (shows as Durability: 0 / max)
+				int relDamage = (stack.getMaxDamage() + 1 - stack.getItemDamage());
 
 				if (relDamage <= 0)
 				{
-					//Not Impossible. Don't use durability or enchants for emc calculation if this happens.
+					// This may happen when mods overflow their max damage or item damage.
+					// Don't use durability or enchants for emc calculation if this happens.
 					return emc;
 				}
 
