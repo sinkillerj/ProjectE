@@ -59,8 +59,6 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    compile "team.chisel:Chisel:MC1.9.4-0.0.6.33:api"
-
     deobfCompile "mezz.jei:jei_1.11.2:4.2.0.210"
     /*deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"

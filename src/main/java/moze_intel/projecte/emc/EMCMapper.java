@@ -15,7 +15,6 @@ import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.emc.mappers.Chisel2Mapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -49,7 +48,6 @@ public final class EMCMapper
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
-				new Chisel2Mapper(),
 				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),

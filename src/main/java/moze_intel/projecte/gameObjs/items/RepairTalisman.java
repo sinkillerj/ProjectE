@@ -81,11 +81,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (Loader.isModLoaded("chisel"))
-			{
-				if (chiselCheck(invStack)) continue;
-			}
-
 			if (invStack == player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) && player.isSwingInProgress)
 			{
 				//Don't repair item that is currently used by the player.
@@ -99,12 +94,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 
 		if (Loader.isModLoaded("Baubles")) baubleRepair(player);
-	}
-
-	@Optional.Method(modid = "chisel")
-	public boolean chiselCheck(ItemStack is)
-	{
-		return false; // todo return is.getItem() instanceof IChiselItem;
 	}
 
 	@Optional.Method(modid = "Baubles")
