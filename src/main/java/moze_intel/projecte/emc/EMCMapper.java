@@ -135,16 +135,13 @@ public final class EMCMapper
 
 
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
-			if (entry.getKey() instanceof NSSItem)
+			NSSItem normStackItem = (NSSItem)entry.getKey();
+			Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
+			if (obj != null)
 			{
-				NSSItem normStackItem = (NSSItem)entry.getKey();
-				Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
-				if (obj != null)
-				{
-					emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
-				} else {
-					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
-				}
+				emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
+			} else {
+				PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 			}
 		}
 
@@ -153,21 +150,10 @@ public final class EMCMapper
 		FuelMapper.loadMap();
 	}
 
-	/**
-	 * Remove all entrys from the map, that are not {@link NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
-	 */
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
-		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = map.entrySet().iterator(); iter.hasNext();) {
-			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
-			NormalizedSimpleStack normStack = entry.getKey();
-			if (normStack instanceof NSSItem && entry.getValue() > 0) {
-				NSSItem normStackItem = (NSSItem)normStack;
-				if (normStackItem.damage != OreDictionary.WILDCARD_VALUE) {
-					continue;
-				}
-			}
-			iter.remove();
-		}
+		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem)
+										|| ((NSSItem) e.getKey()).damage == OreDictionary.WILDCARD_VALUE
+										|| e.getValue() <= 0);
 	}
 
 	public static boolean mapContains(SimpleStack key)

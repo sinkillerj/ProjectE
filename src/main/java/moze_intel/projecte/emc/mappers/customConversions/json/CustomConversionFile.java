@@ -3,6 +3,8 @@ package moze_intel.projecte.emc.mappers.customConversions.json;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,10 +23,9 @@ public class CustomConversionFile
 
 	public void write(File file) throws IOException
 	{
-		FileWriter fileWriter = new FileWriter(file);
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
-		gson.toJson(this, fileWriter);
-		fileWriter.close();
+		try (FileWriter fileWriter = new FileWriter(file))
+		{
+			CustomConversionMapper.GSON.toJson(this, fileWriter);
+		}
 	}
 }

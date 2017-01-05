@@ -47,7 +47,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	{
 		inner.setValueBefore(something, value);
 		if (something == null) return;
-		out.values.setValueBefore.put(something.json(), value);
+		out.values.setValueBefore.put(something, value);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	{
 		inner.setValueAfter(something, value);
 		if (something == null) return;
-		out.values.setValueAfter.put(something.json(), value);
+		out.values.setValueAfter.put(something, value);
 	}
 
 	@Override

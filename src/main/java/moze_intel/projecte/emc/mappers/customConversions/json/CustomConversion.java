@@ -8,21 +8,22 @@ import java.util.Map;
 public class CustomConversion
 {
 	public int count = 1;
-	public String output;
-	public Map<String, Integer> ingredients;
+	public NormalizedSimpleStack output;
+	public Map<NormalizedSimpleStack, Integer> ingredients;
 	public transient boolean evalOD = false;
 
 	public static CustomConversion getFor(int count, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredients) {
 		CustomConversion conversion = new CustomConversion();
 		conversion.count = count;
-		conversion.output = output.json();
+		conversion.output = output;
 		conversion.ingredients = Maps.newHashMap();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: ingredients.entrySet()) {
-			conversion.ingredients.put(entry.getKey().json(), entry.getValue());
+			conversion.ingredients.put(entry.getKey(), entry.getValue());
 		}
 		return conversion;
 	}
 
+	@Override
 	public String toString() {
 		return "{" + count + " * " + output + " = " + ingredients.toString() + "}";
 	}

@@ -2,13 +2,17 @@ package moze_intel.projecte.emc.mappers.customConversions.json;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -31,17 +35,17 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 					throw new JsonParseException("Multiple values for output field");
 				}
 				foundOutput = true;
-				out.output = element.getAsString();
+				out.output = context.deserialize(new JsonPrimitive(element.getAsString()), NormalizedSimpleStack.class);
 			} else if (isInList(entry.getKey(), "ingredients", "ingr", "i")) {
 				if (foundIngredients) {
 					throw new JsonParseException("Multiple values for ingredient field");
 				}
 				foundIngredients = true;
 				if (element.isJsonArray()) {
-					Map<String, Integer> outMap = Maps.newHashMap();
+					Map<NormalizedSimpleStack, Integer> outMap = Maps.newHashMap();
 					JsonArray array = element.getAsJsonArray();
 					for (JsonElement e: array) {
-						String v = e.getAsString();
+						NormalizedSimpleStack v = context.deserialize(new JsonPrimitive(e.getAsString()), NormalizedSimpleStack.class);
 						int count = 0;
 						if (outMap.containsKey(v)) {
 							count = outMap.get(v);
@@ -51,7 +55,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 					}
 					out.ingredients = outMap;
 				} else if (element.isJsonObject()) {
-					out.ingredients = new Gson().fromJson(element, new TypeToken<Map<String, Integer>>(){}.getType());
+					out.ingredients = CustomConversionMapper.GSON.fromJson(element, new TypeToken<Map<NormalizedSimpleStack, Integer>>(){}.getType());
 				} else {
 					throw new JsonParseException("Could not parse ingredients!");
 				}

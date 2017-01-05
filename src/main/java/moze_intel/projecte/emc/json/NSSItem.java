@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.json;
 
+import com.google.common.collect.ImmutableSet;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -20,9 +21,6 @@ public class NSSItem implements NormalizedSimpleStack {
 
 	NSSItem(String itemName, int damage) {
 		this.itemName = itemName;
-		if (Item.REGISTRY.getObject(new ResourceLocation(itemName)) == null) {
-			throw new IllegalArgumentException("Invalid Item with itemName = " + itemName);
-		}
 		this.damage = damage;
 	}
 
@@ -72,17 +70,9 @@ public class NSSItem implements NormalizedSimpleStack {
 		return normStack;
 	}
 
-	public static Set<Integer> getUsedMetadata(String itemName) {
-		if (idWithUsedMetaData.containsKey(itemName)) {
-			return idWithUsedMetaData.get(itemName);
-		} else {
-			return new HashSet<>();
-		}
-	}
-
 	public static Set<Integer> getUsedMetadata(NormalizedSimpleStack nss) {
 		if (nss instanceof NSSItem) {
-			return getUsedMetadata(((NSSItem) nss).itemName);
+			return idWithUsedMetaData.getOrDefault(((NSSItem) nss).itemName, ImmutableSet.of());
 		} else {
 			throw new IllegalArgumentException("Can only get Metadata for Items!");
 		}

@@ -14,7 +14,9 @@ import java.util.Map;
 
 public class PregeneratedEMC
 {
-	private static final Gson gson =  new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe()).enableComplexMapKeySerialization().setPrettyPrinting().create();
+	private static final Gson gson =  new GsonBuilder()
+			.registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE)
+			.enableComplexMapKeySerialization().setPrettyPrinting().create();
 
 	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> map)
 	{

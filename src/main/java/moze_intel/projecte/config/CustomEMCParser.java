@@ -12,6 +12,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.annotations.SerializedName;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSOreDictionary;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public final class CustomEMCParser
 {
-	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(CustomEMCEntry.class, new Serializer()).setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE).setPrettyPrinting().create();
 	private static final File CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.json");
 
 	public static class CustomEMCFile
@@ -48,6 +49,7 @@ public final class CustomEMCParser
 
 	public static class CustomEMCEntry
 	{
+		@SerializedName("item")
 		public final NormalizedSimpleStack nss;
 		public final int emc;
 
@@ -70,34 +72,6 @@ public final class CustomEMCParser
 		public int hashCode()
 		{
 			return nss.hashCode() ^ 31 * emc;
-		}
-	}
-
-	private static class Serializer implements JsonSerializer<CustomEMCEntry>, JsonDeserializer<CustomEMCEntry>
-	{
-		@Override
-		public CustomEMCEntry deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			JsonObject obj = JsonUtils.getJsonObject(json, "custom emc entry");
-			if (!JsonUtils.hasField(obj, "item") || !JsonUtils.hasField(obj, "emc"))
-			{
-				throw new JsonParseException("Missing fields from Custom EMC entry");
-			}
-			String nss = JsonUtils.getString(obj.get("item"), "item");
-			int emc = JsonUtils.getInt(obj.get("emc"), "emc");
-			if (emc < 0)
-			{
-				throw new JsonParseException("Invalid EMC amount: " + emc);
-			}
-			// todo stop reaching into other code. Pull out, refactor, and unify all json stuff.
-			return new CustomEMCEntry(CustomConversionMapper.getNSSfromJsonString(nss, new HashMap<>()), emc);
-		}
-
-		@Override
-		public JsonElement serialize(CustomEMCEntry src, Type typeOfSrc, JsonSerializationContext context) {
-			JsonObject obj = new JsonObject();
-			obj.add("item", new JsonPrimitive(src.nss.json()));
-			obj.add("emc", new JsonPrimitive(src.emc));
-			return obj;
 		}
 	}
 
@@ -125,9 +99,10 @@ public final class CustomEMCParser
 
 		try {
 			currentEntries = GSON.fromJson(new BufferedReader(new FileReader(CONFIG)), CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> e.nss == null);
-		} catch (FileNotFoundException e) {
+			currentEntries.entries.removeIf(e -> e.nss == null || e.emc < 0 || !(e.nss instanceof NSSItem || e.nss instanceof NSSOreDictionary));
+		} catch (FileNotFoundException | JsonParseException e) {
 			PELogger.logFatal("Couldn't read custom emc file");
+			e.printStackTrace();
 			currentEntries = new CustomEMCFile(new ArrayList<>());
 		}
 	}
