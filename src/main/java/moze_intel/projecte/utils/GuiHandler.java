@@ -93,7 +93,7 @@ public class GuiHandler implements IGuiHandler
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);
 				break;
 			case Constants.TRANSMUTE_STONE_GUI:
-				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, null));
+				return new TransmutationContainer(player.inventory, new TransmutationInventory(player), null);
 			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new RMFurnaceContainer(player.inventory, (RMFurnaceTile) tile);
@@ -131,7 +131,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PHILOS_STONE_GUI:
 				return new PhilosStoneContainer(player.inventory);
 			case Constants.TRANSMUTATION_GUI:
-				return new TransmutationContainer(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
+				return new TransmutationContainer(player.inventory, new TransmutationInventory(player), hand);
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new EternalDensityContainer(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:
@@ -165,7 +165,7 @@ public class GuiHandler implements IGuiHandler
 					return new GUICondenser(player.inventory, (CondenserTile) tile);
 				break;
 			case Constants.TRANSMUTE_STONE_GUI:
-				return new GUITransmutation(player.inventory, new TransmutationInventory(player, null));
+				return new GUITransmutation(player.inventory, new TransmutationInventory(player), null);
 			case Constants.RM_FURNACE_GUI:
 				if (tile != null && tile instanceof RMFurnaceTile)
 					return new GUIRMFurnace(player.inventory, (RMFurnaceTile) tile);
@@ -203,7 +203,7 @@ public class GuiHandler implements IGuiHandler
 			case Constants.PHILOS_STONE_GUI:
 				return new GUIPhilosStone(player.inventory);
 			case Constants.TRANSMUTATION_GUI:
-				return new GUITransmutation(player.inventory, new TransmutationInventory(player, player.getHeldItem(hand)));
+				return new GUITransmutation(player.inventory, new TransmutationInventory(player), hand);
 			case Constants.ETERNAL_DENSITY_GUI:
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			case Constants.CONDENSER_MK2_GUI:

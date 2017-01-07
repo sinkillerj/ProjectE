@@ -18,17 +18,20 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TransmutationContainer extends Container
 {
 	public final TransmutationInventory transmutationInventory;
+	private final int blocked;
 
-	public TransmutationContainer(InventoryPlayer invPlayer, TransmutationInventory inventory)
+	public TransmutationContainer(InventoryPlayer invPlayer, TransmutationInventory inventory, @Nullable EnumHand hand)
 	{
 		this.transmutationInventory = inventory;
 		
@@ -69,7 +72,8 @@ public class TransmutationContainer extends Container
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 35 + i * 18, 175));
-		
+
+		blocked = hand == EnumHand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
 	}
 
 	@Override
@@ -146,13 +150,9 @@ public class TransmutationContainer extends Container
 			PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slot), getSlot(slot).getStack()));
 		}
 
-		if (slot >= 0 && getSlot(slot) != null)
+		if (slot == blocked)
 		{
-			if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
-				&& getSlot(slot).getStack() == transmutationInventory.invItem)
-			{
-				return null;
-			}
+			return null;
 		}
 
 		return super.slotClick(slot, button, flag, player);
