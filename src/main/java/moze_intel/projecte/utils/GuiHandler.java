@@ -18,7 +18,6 @@ import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.container.RelayMK3Container;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
-import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
@@ -49,11 +48,13 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.Set;
 
@@ -82,8 +83,11 @@ public class GuiHandler implements IGuiHandler
 				if (tile != null && tile instanceof AlchChestTile)
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
 				break;
-			case Constants.ALCH_BAG_GUI:
-				return new AlchBagContainer(player.inventory, new AlchBagInventory(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null), player.getHeldItem(hand)));
+			case Constants.ALCH_BAG_GUI: {
+				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
+				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).getBag(color);
+				return new AlchBagContainer(player.inventory, hand, inventory);
+			}
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new CondenserContainer(player.inventory, (CondenserTile) tile);
@@ -151,8 +155,11 @@ public class GuiHandler implements IGuiHandler
 				if (tile != null && tile instanceof AlchChestTile)
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
 				break;
-			case Constants.ALCH_BAG_GUI:
-				return new GUIAlchChest(player.inventory, new AlchBagInventory(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null), player.getHeldItem(hand)));
+			case Constants.ALCH_BAG_GUI: {
+				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
+				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).getBag(color);
+				return new GUIAlchChest(player.inventory, hand, inventory);
+			}
 			case Constants.CONDENSER_GUI:
 				if (tile != null && tile instanceof CondenserTile)
 					return new GUICondenser(player.inventory, (CondenserTile) tile);
