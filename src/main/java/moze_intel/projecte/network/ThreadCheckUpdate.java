@@ -9,6 +9,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,19 +111,8 @@ public class ThreadCheckUpdate extends Thread
 		}
 		finally
 		{
-			if (reader != null)
-			{
-				try 
-				{
-					reader.close();
-				} 
-				catch (IOException e) 
-				{
-					PELogger.logFatal("Caught exception in Update Checker thread!");
-					e.printStackTrace();
-				}
-			}
-			
+			IOUtils.closeQuietly(reader);
+
 			if (connection != null)
 			{
 				connection.disconnect();

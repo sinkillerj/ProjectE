@@ -12,8 +12,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -23,9 +25,9 @@ public class GUITransmutation extends GuiContainer
 	private final TransmutationInventory inv;
 	private GuiTextField textBoxFilter;
 
-	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory)
+	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory, @Nullable EnumHand hand)
 	{
-		super(new TransmutationContainer(invPlayer, inventory));
+		super(new TransmutationContainer(invPlayer, inventory, hand));
 		this.inv = inventory;
 		this.xSize = 228;
 		this.ySize = 196;

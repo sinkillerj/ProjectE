@@ -15,9 +15,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary
@@ -72,34 +71,6 @@ public final class ItemHelper
 		}
 	}
 
-	public static void compactItemList(List<ItemStack> list)
-	{
-		for (int i = 0; i < list.size(); i++)
-		{
-			ItemStack s = list.get(i);
-			for (int j = i + 1; j < list.size(); j++)
-			{
-				ItemStack s1 = list.get(j);
-				if (areItemStacksEqual(s, s1))
-				{
-					if (s.getCount() + s1.getCount() <= s.getMaxStackSize())
-					{
-						s.grow(s1.getCount());
-						s1.setCount(0);
-					}
-					else
-					{
-						s1.setCount((s1.getCount() + s.getCount()) - s.getMaxStackSize());
-						s.setCount(s.getMaxStackSize());
-					}
-				}
-			}
-		}
-
-		list.sort(Comparators.ITEMSTACK_ASCENDING);
-		trimItemList(list);
-	}
-
 	/**
 	 * Compacts and sorts list of items, without regard for stack sizes
 	 */
@@ -108,19 +79,22 @@ public final class ItemHelper
 		for (int i = 0; i < list.size(); i++)
 		{
 			ItemStack s = list.get(i);
-			for (int j = i + 1; j < list.size(); j++)
+			if (!s.isEmpty())
 			{
-				ItemStack s1 = list.get(j);
-				if (areItemStacksEqual(s, s1))
+				for (int j = i + 1; j < list.size(); j++)
 				{
-					s.grow(s1.getCount());
-					s1.setCount(0);
+					ItemStack s1 = list.get(j);
+					if (ItemHandlerHelper.canItemStacksStack(s, s1))
+					{
+						s.grow(s1.getCount());
+						s1.setCount(0);
+					}
 				}
 			}
 		}
 
+		list.removeIf(ItemStack::isEmpty);
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
-		trimItemList(list);
 	}
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
@@ -357,10 +331,5 @@ public final class ItemHelper
 	public static ItemStack stateToDroppedStack(IBlockState state, int stackSize)
 	{
 		return new ItemStack(state.getBlock(), stackSize, state.getBlock().damageDropped(state));
-	}
-
-	private static void trimItemList(List<ItemStack> list)
-	{
-		list.removeIf(ItemStack::isEmpty);
 	}
 }

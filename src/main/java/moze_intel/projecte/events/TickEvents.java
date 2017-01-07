@@ -52,7 +52,7 @@ public class TickEvents
 				for (EnumDyeColor e : colorsChanged)
 				{
 					if (event.player.openContainer instanceof AlchBagContainer
-							&& ((AlchBagContainer) event.player.openContainer).inventory.invItem.getItemDamage() == e.getMetadata())
+							&& event.player.getHeldItem(((AlchBagContainer) event.player.openContainer).hand).getItemDamage() == e.getMetadata())
 						// Do not sync if this color is open, the container system does it for us
 						// and we'll stay out of its way.
 						continue;
