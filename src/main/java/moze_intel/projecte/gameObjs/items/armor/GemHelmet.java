@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -19,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -66,7 +66,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
         player.addChatMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
-                .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
+                .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
     }
 
     @Override
