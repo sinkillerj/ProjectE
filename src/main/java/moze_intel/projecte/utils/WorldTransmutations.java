@@ -1,15 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockNewLeaf;
-import net.minecraft.block.BlockNewLog;
-import net.minecraft.block.BlockOldLeaf;
-import net.minecraft.block.BlockOldLog;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.block.BlockPumpkin;
-import net.minecraft.block.BlockSapling;
+import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -153,9 +145,17 @@ public final class WorldTransmutations
 			IBlockState state = Blocks.WOOL.getDefaultState().withProperty(BlockColored.COLOR, e);
 			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
 		}
+
+		IBlockState granite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE);
+		IBlockState diorite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE);
+		IBlockState andesite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE);
+
+		register(granite, diorite, andesite);
+		register(diorite, andesite, granite);
+		register(andesite, granite, diorite);
 	}
 
-	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty property)
+	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty<?> property)
 	{
 		IBlockState result = state;
 		for (int i = 0; i < property.getAllowedValues().size() - 1; i++)
