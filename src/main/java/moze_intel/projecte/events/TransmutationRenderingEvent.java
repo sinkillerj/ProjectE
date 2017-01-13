@@ -8,6 +8,7 @@ import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ReflectionHelperClient;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -112,7 +113,7 @@ public class TransmutationRenderingEvent
 
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
 				{
-					addBlockToRenderList(pos);
+					addBlockToRenderList(world, pos);
 				}
 				
 				drawAll();
@@ -189,9 +190,9 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableBlend();
 	}
 	
-	private void addBlockToRenderList(BlockPos pos)
+	private void addBlockToRenderList(World world, BlockPos pos)
 	{
-		AxisAlignedBB box = new AxisAlignedBB(pos.getX() - 0.02f, pos.getY() - 0.02f, pos.getZ() - 0.02f, pos.getX() + 1.02f, pos.getY() + 1.02f, pos.getZ() + 1.02f);
+		AxisAlignedBB box = world.getBlockState(pos).getSelectedBoundingBox(world, pos).expandXyz(0.02);
 		box = box.offset(-playerX, -playerY, -playerZ);
 		renderList.add(box);
 	}
