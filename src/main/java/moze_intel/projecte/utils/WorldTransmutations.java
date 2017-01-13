@@ -144,6 +144,12 @@ public final class WorldTransmutations
 		{
 			IBlockState state = Blocks.WOOL.getDefaultState().withProperty(BlockColored.COLOR, e);
 			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
+
+			state = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR, e);
+			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
+
+			state = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, e);
+			register(state, state.cycleProperty(BlockCarpet.COLOR), cyclePropertyBackwards(state, BlockCarpet.COLOR));
 		}
 
 		IBlockState granite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE);
