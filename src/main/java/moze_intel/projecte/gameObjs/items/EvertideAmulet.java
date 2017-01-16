@@ -44,6 +44,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -102,18 +103,18 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
 	{
 		return new ICapabilityProvider() {
-			private final IFluidHandler handler = new InfiniteFluidHandler();
+			private final IFluidHandlerItem handler = new InfiniteFluidHandler(stack);
 
 			@Override
 			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-				return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+				return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
 			}
 
 			@Override
 			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-				if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 				{
-					return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
+					return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.cast(handler);
 				} else
 				{
 					return null;
@@ -292,8 +293,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return list;
 	}
 
-	private static class InfiniteFluidHandler implements IFluidHandler
+	private static class InfiniteFluidHandler implements IFluidHandlerItem
 	{
+		private final ItemStack container;
+
+		InfiniteFluidHandler(ItemStack stack) {
+			container = stack;
+		}
 
 		private final FluidTankProperties props =
 				new FluidTankProperties(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME), Fluid.BUCKET_VOLUME);
@@ -322,6 +328,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		@Override
 		public FluidStack drain(int maxDrain, boolean doDrain) {
 			return new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack getContainer() {
+			return container;
 		}
 	}
 
