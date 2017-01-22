@@ -3,6 +3,8 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.*;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -217,6 +219,28 @@ public final class ItemHelper
 		}
 
 		return false;
+	}
+
+	public static boolean isItemRepairable(ItemStack stack)
+	{
+		if (stack.getHasSubtypes())
+		{
+			return false;
+		}
+
+		if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0)
+		{
+			return false;
+		}
+
+		Item item = stack.getItem();
+
+		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel || item instanceof ItemFishingRod || item instanceof ItemBow)
+		{
+			return true;
+		}
+
+		return (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor);
 	}
 
 	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy)
