@@ -1,3 +1,26 @@
+###Version 1.10.2-PE1.2.0
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* NEW: Pedestals can be toggled using redstone
+* NEW: Swiftwolfs Rending Gale now has its mob launching and rain into thunder abilities
+* NEW: Archangels Smite now has its arrow volley ability
+* FIXED: Multiple block targeting issues
+* FIXED: Default EMC files overwriting custom ones in some situations
+* FIXED: Custom EMC values for invalid or removed items will be removed instead of crashing
+* FIXED: Matter weapon cooldowns are now properly synced to the client
+* FIXED: Relays are no longer craftable using a dirt block... Yea we really effed that one up...
+* FIXED: Condensers no longer create damaged tools
+* FIXED: Some BufferedReaders being left open
+* FIXED: Ukrainian language file
+* FIXED: A minor EMC calculation error with tools
+* FIXED: World transmutation now works on the new stones from 1.8. Hard clay are carpet are also added
+* FIXED: Dark Matter furnace no longer always doubles ores as this behavior is intended to be limited to the Red Matter variant
+* CHANGE: Covalence Dust now adds a flat amount of EMC to the target during repairs. This change was made to make its usage less confusing and to facilitate future Repair Talisman enhancements
+* CHANGE: Default EMC values for newer vanilla blocks have been adjusted
+* CHANGE: Performance enhancements for ProjectE loot drops
+* CHANGE: Backend inventory optimizations
+* CHANGE: Chat text style handling has been updated to modern standards
+* CHANGE: World transmutation highlight more accurately represents a blocks shape
+
 ###Version 1.10.2-PE1.1.1B
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
 * NEW: The Zero Ring can build up multiple layers of snow over time
