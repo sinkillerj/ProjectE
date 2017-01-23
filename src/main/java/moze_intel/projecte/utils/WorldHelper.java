@@ -288,55 +288,7 @@ public final class WorldHelper
 	{
 		try
 		{
-			Constructor<T> constr = c.getConstructor(World.class);
-			T ent = constr.newInstance(world);
-
-			if (ent instanceof EntitySkeleton)
-			{
-				switch (world.rand.nextInt(3))
-				{
-					case 0: {
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-						break;
-					}
-					case 1: {
-						((EntitySkeleton) ent).setSkeletonType(SkeletonType.WITHER);
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
-						break;
-					}
-					case 2: {
-						((EntitySkeleton) ent).setSkeletonType(SkeletonType.STRAY);
-						ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-						break;
-					}
-				}
-			}
-			else if (ent instanceof EntityPigZombie)
-			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
-			}
-			else if (ent instanceof EntitySheep)
-			{
-				((EntitySheep) ent).setFleeceColor(EnumDyeColor.byMetadata(MathUtils.randomIntInRange(0, 15)));
-			}
-			else if (ent instanceof EntityVillager)
-			{
-				VillagerRegistry.setRandomProfession(((EntityVillager) ent), world.rand);
-			}
-			else if (ent instanceof EntityRabbit)
-			{
-				((EntityRabbit) ent).setRabbitType(world.rand.nextInt(6));
-			}
-			else if (ent instanceof EntityHorse)
-			{
-				((EntityHorse) ent).setType(HorseType.values()[MathUtils.randomIntInRange(0, 2)]);
-				if (((EntityHorse) ent).getType() == HorseType.HORSE)
-				{
-					((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
-				}
-			}
-
-			return ent;
+			return c.getConstructor(World.class).newInstance(world);
 		}
 		catch (Exception e)
 		{
