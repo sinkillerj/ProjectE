@@ -122,13 +122,14 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					//This is a Loophole. We remove it by setting the value to 0.
 					if (ZERO.compareTo(conversionValue) < 0 && conversionValueSingle.compareTo(resultValueSingle) < 0) {
 						if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
-							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s value of result: %s setValueFromConversion: %s", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output)));
+							if (logFoundExploits)
+								PELogger.logWarn(String.format("EMC Exploit: ingredients (%s) cost %s but output value is %s (setValueFromConversion: %s)", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output)));
 						} else if (canOverride(entry.getKey(), ZERO)) {
 							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValueSingle, conversionValue, conversion);
 							newValueFor.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
-							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s fixed value of result: %s", conversion, conversionValue, resultValueSingle));
+							PELogger.logWarn(String.format("EMC Exploit: ingredients (%s) cost %s but output value is %s", conversion, conversionValue, resultValueSingle));
 						}
 					}
 				}
