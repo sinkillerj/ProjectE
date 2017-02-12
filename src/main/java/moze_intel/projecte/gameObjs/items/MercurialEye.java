@@ -48,8 +48,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	
 	final private int PILLAR_STEP_RANGE = 3;
 
-	private double kleinEmcCache;
-
 	@SubscribeEvent
 	public void onLeftClick(PlayerInteractEvent event)
 	{		
@@ -135,7 +133,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		int newBlockMeta = inventory[1].getItemDamage();
 
-		kleinEmcCache = ItemPE.getEmc(inventory[0]);
 		int newBlockEmc = EMCHelper.getEmcValue(inventory[1]);
 
 	
@@ -241,10 +238,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					{
 						for (int pz = (int) box.minZ; pz <= (int) box.maxZ; pz++)
 						{
-							if (kleinEmcCache < newBlockEmc)
-								break;
-							
-							//if ((entitiesInBox == null) || (entitiesInBox.size() == 0))
 							if (!entitiesInBlock(world, startingBlock, px, py, pz))
 							{
 								Block placeBlock = world.getBlock(px, py, pz);
@@ -358,9 +351,17 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return ((!(entitiesInBox == null)) && (entitiesInBox.size() > 0));
 	}
 	
-	private boolean processAdjustmentsForBlock(World world, EntityPlayer player, Block oldBlock, int oldBlockMeta, BlockPosition placePos, Block newBlock, int newBlockMeta, ItemStack kleinStar, int oldEMC, int newEMC)
+	private boolean processAdjustmentsForBlock(World world, EntityPlayer player, Block oldBlock, int oldBlockMeta, BlockPosition placePos, Block newBlock, int newBlockMeta, ItemStack eyeStack, int oldEMC, int newEMC)
 	{
-		if ((kleinEmcCache - (newEMC - oldEMC)) < 0)
+		ItemStack[] inventory = getInventory(eyeStack);
+
+		if (inventory[0] == null)
+		{
+			return false;
+		}
+		double kleinEmc = ItemPE.getEmc(inventory[0]);
+
+		if ((kleinEmc - (newEMC - oldEMC)) < 0)
 			return false;
 			
 		if (world.getTileEntity(placePos.x, placePos.y, placePos.z) != null)
@@ -374,16 +375,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			{
 				for(ItemStack drop : drops)
 					world.spawnEntityInWorld(new EntityItem(world, placePos.x + 0.5, placePos.y + 0.5, placePos.z + 0.5, drop));
-				removeKleinEMC(kleinStar, newEMC);
+				removeKleinEMC(eyeStack, newEMC);
 				return true;
 			}
 			else if (oldEMC > newEMC)
 			{
-				addKleinEMC(kleinStar, oldEMC-newEMC);
+				addKleinEMC(eyeStack, oldEMC-newEMC);
 			}
 			else if (oldEMC < newEMC)
 			{
-				removeKleinEMC(kleinStar, newEMC-oldEMC);
+				removeKleinEMC(eyeStack, newEMC-oldEMC);
 				return true;
 			}
 			else
@@ -394,10 +395,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return false;
 	}
 
-	private void addKleinEMC(ItemStack eye, int amount)
+	private double addKleinEMC(ItemStack eye, int amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
+		double newEmc = 0;
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound nbt = list.getCompoundTagAt(i);
@@ -408,17 +410,19 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 				NBTTagCompound tag = nbt.getCompoundTag("tag");
 
-				kleinEmcCache = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
-				tag.setDouble("StoredEMC", kleinEmcCache);
+				newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
+				tag.setDouble("StoredEMC", newEmc);
 				break;
 			}
 		}
+		return newEmc;
 	}
 
-	private void removeKleinEMC(ItemStack eye, int amount)
+	private double removeKleinEMC(ItemStack eye, int amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
+		double newEmc = 0;
 		for (int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound nbt = list.getCompoundTagAt(i);
@@ -429,11 +433,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 				NBTTagCompound tag = nbt.getCompoundTag("tag");
 				
-				kleinEmcCache = MathHelper.clamp_double(tag.getDouble("StoredEMC") - amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
-				tag.setDouble("StoredEMC", kleinEmcCache);
+				newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") - amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
+				tag.setDouble("StoredEMC", newEmc);
 				break;
 			}
 		}
+		return newEmc;
 	}
 
 	private ItemStack[] getInventory(ItemStack eye)
