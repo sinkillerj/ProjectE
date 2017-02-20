@@ -1,0 +1,37 @@
+###Version 1.9.4-PE1.0.5B
+* NOTICE: This is the final 1.9 release as we are transitioning the beta to 1.10
+* FIXED: A Collector dupe bug
+* FIXED: A Harvest Goddess Band crash
+* FIXED: World fluid transmutations
+* FIXED: Mushroom EMC
+* FIXED: EIO OreDict EMC
+* FIXED: Minor particle corrections
+* FIXED: Slime blocks and Gem armor resulting in ludicrous speed
+* NEW: Gem armor stomp causes damage to nearby mobs
+* CHANGE: Loot balls have been removed as they are troublesome and no longer needed in modern MC versions
+
+###Version 1.9.4-PE1.0.4B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* FIXED: Further EMC mapping issues
+
+###Version 1.9.4-PE1.0.3B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* FIXED: Mapping issues introduced in 1.0.2B
+
+###Version 1.9.4-PE1.0.2B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* FIXED: Data loss when returning from the End
+* FIXED: A issue with the Tome of Knowledge
+* NEW: Default EMC values for 1.9 content
+* CHANGE: When unlearning the Tome of Knowledge your knowledge will return to its prior state
+* CHANGE: Default EMC values have been moved from hardcoded to json
+
+###Version 1.9.4-PE1.0.1B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* FIXED: MindStone.getStoredXP null Render Crash
+* FIXED: Inverted armor name order
+* CHANGE: Made achievement ID's less generic to avoid mod conflicts
+
+###Version 1.9.4-PE1.0.0B
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.9
+* NEW: Initial 1.9 version. Mostly feature complete with 1.7.10-PE1.10.0
