@@ -20,7 +20,7 @@ public class SimpleStack
 	
 	public SimpleStack(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack == null || stack.getItem() == null)
 		{
 			id = new ResourceLocation("minecraft", "air");
 			damage = 0;

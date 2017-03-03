@@ -4,11 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,37 +12,53 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
 	public MercurialEye()
 	{
-		super("mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
+		super("mercurial_eye", (byte)4, new String[] {"Extension", "Transmutation", "Pillar"});
 		this.setNoRepair();
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
-	private static final int NORMAL_MODE = 0;
+	private static final int EXTENSION_MODE = 0;
 	private static final int TRANSMUTATION_MODE = 1;
+	private static final int PILLAR_MODE = 2;
+	private static final int PILLAR_STEP_RANGE = 3;
 
-	private static final double WALL_MODE = Math.sin(Math.toRadians(45));
+	@SubscribeEvent
+	public void onLeftClick(PlayerInteractEvent.LeftClickBlock evt)
+	{
+		if (!evt.getWorld().isRemote && evt.getItemStack() != null && evt.getItemStack().getItem() == this)
+		{
+			byte mode = getMode(evt.getItemStack());
+			formBlocks(evt.getItemStack(), evt.getEntityPlayer(), evt.getPos(), evt.getFace(), 1, mode);
+			evt.setCanceled(true);
+		}
+	}
 
 	@Nonnull
 	@Override
@@ -92,176 +104,238 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote)
+		byte charge = this.getCharge(stack);
+		byte mode = this.getMode(stack);
+
+		int magnitude = mode == PILLAR_MODE
+				? (charge+1) * PILLAR_STEP_RANGE
+				: (charge+1) * (charge+1) * (charge+1);
+
+		PELogger.logInfo("mag %d mode %d", magnitude, mode);
+
+		return world.isRemote ? EnumActionResult.SUCCESS : formBlocks(stack, player, pos, facing, magnitude, mode);
+	}
+
+	@Nonnull
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	{
+		byte mode = this.getMode(stack);
+
+		if (mode == PILLAR_MODE)
 		{
-			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-			if (inventory.getStackInSlot(0) == null || inventory.getStackInSlot(1) == null)
+			if (world.isRemote)
 			{
-				return EnumActionResult.FAIL;
-			}
-
-			if (!(inventory.getStackInSlot(0).getItem() instanceof IItemEmc))
+				return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+			} else
 			{
-				return EnumActionResult.FAIL;
-			}
+				Vec3d eyeVec = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+				Vec3d lookVec = player.getLookVec();
+				//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
+				Vec3d targVec = eyeVec.addVector(lookVec.xCoord * 2, lookVec.yCoord * 2, lookVec.zCoord * 2);
 
-			IBlockState newState = ItemHelper.stackToState(inventory.getStackInSlot(1));
-			if (newState == null || newState.getBlock() == Blocks.AIR)
+				return ActionResult.newResult(formBlocks(stack, player, new BlockPos(targVec), null, 0, mode), stack);
+			}
+		}
+
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
+	}
+
+	private EnumActionResult formBlocks(ItemStack eye, EntityPlayer player, BlockPos startingPos, @Nullable EnumFacing facing, int magnitude, byte mode)
+	{
+		World world = player.getEntityWorld();
+		IItemHandler inventory = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if (inventory.getStackInSlot(0) == null || inventory.getStackInSlot(1) == null)
+		{
+			return EnumActionResult.FAIL;
+		}
+
+		ItemStack target = inventory.getStackInSlot(1);
+
+		IBlockState newState = ItemHelper.stackToState(target);
+		int newBlockEmc = EMCHelper.getEmcValue(target);
+
+		if (newState == null)
+		{
+			return EnumActionResult.FAIL;
+		}
+
+		IBlockState startingState = world.getBlockState(startingPos);
+		int startingBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(startingState, 1));
+
+		if (startingState.getBlock() == Blocks.BEDROCK)
+		{
+			return EnumActionResult.FAIL;
+		}
+
+		int hitTargets = 0;
+
+		if ((mode == EXTENSION_MODE || mode == PILLAR_MODE)
+				&& startingBlockEmc != 0)
+		{
+			newState = startingState;
+			newBlockEmc = startingBlockEmc;
+		}
+
+		if (mode == PILLAR_MODE)
+		{
+			facing = facing != null ? facing.getOpposite() : null;
+			BlockPos start = startingPos;
+			BlockPos end = startingPos;
+
+			if (magnitude > 0)
 			{
-				return EnumActionResult.FAIL;
-			}
-
-			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
-			int reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
-
-			byte charge = getCharge(stack);
-			byte mode = this.getMode(stack);
-
-			Vec3d look = player.getLookVec();
-
-			int dX = 0, dY = 0, dZ = 0;
-
-			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
-			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
-
-			boolean lookingAlongZ = facing.getAxis() == EnumFacing.Axis.Z;
-
-			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
-			switch (facing) {
-				case UP:
-					if (lookingDown || mode == TRANSMUTATION_MODE)
+				PELogger.logInfo("mag %d", magnitude);
+				magnitude--;
+				if (facing != null)
+				{
+					switch (facing)
 					{
-						box = box.expand(charge, 0, charge);
-						dY = 1;
+						case DOWN:
+							start = start.add(-1, -magnitude, -1);
+							end = end.add(1, 0, 1);
+							break;
+						case UP:
+							start = start.add(-1, 0, -1);
+							end = end.add(1, magnitude, 1);
+							break;
+						case NORTH:
+							start = start.add(-1, -1, -magnitude);
+							end = end.add(1, 1, 0);
+							break;
+						case SOUTH:
+							start = start.add(-1, -1, 0);
+							end = end.add(1, 1, magnitude);
+							break;
+						case WEST:
+							start = start.add(-magnitude, -1, -1);
+							end = end.add(0, 1, 1);
+							break;
+						case EAST:
+							start = start.add(0, -1, -1);
+							end = end.add(magnitude, 1, 1);
+							break;
 					}
-					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
-					else
-						box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
-
-					break;
-
-				case DOWN:
-					if (lookingUp || mode == TRANSMUTATION_MODE)
-					{
-						box = box.expand(charge, 0, charge);
-						dY = -1;
-
-					}
-					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
-					else
-						box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
-
-					break;
-
-				case EAST:
-					box = box.expand(0, charge, charge);
-					dX = 1;
-					break;
-
-				case WEST:
-					box = box.expand(0, charge, charge);
-					dX = -1;
-					break;
-
-				case SOUTH:
-					box = box.expand(charge, charge, 0);
-					dZ = 1;
-					break;
-
-				case NORTH:
-					box = box.expand(charge, charge, 0);
-					dZ = -1;
-					break;
+				}
 			}
 
-			if (NORMAL_MODE == mode)
-				box = box.offset(dX, dY, dZ);
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(start, end)))
+			{
+				AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
+				if (bb == null || world.checkNoEntityCollision(bb))
+				{
+					IBlockState placeState = world.getBlockState(pos);
+					int placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
 
-			for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
-            {
-                IBlockState oldState = world.getBlockState(currentPos);
-                Block oldBlock = oldState.getBlock();
+					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc))
+					{
+						hitTargets++;
+					}
+				}
+			}
+		} else
+		{
+			if (startingState.getBlock().isAir(startingState, world, startingPos))
+			{
+				return EnumActionResult.FAIL;
+			}
 
-                if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
-                {
-                    if (kleinEmc < reqEmc)
-                        break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
-                    {
-                        removeKleinEMC(stack, reqEmc);
-                        kleinEmc -= reqEmc;
-                    }
-                }
-                else if (mode == TRANSMUTATION_MODE)
-                {
-                    if (oldState == newState || oldBlock == Blocks.AIR || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
-                    {
-                        continue;
-                    }
+			Set<BlockPos> visited = new HashSet<>();
+			visited.add(startingPos);
 
-                    int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
+			LinkedList<BlockPos> possibleBlocks = new LinkedList<>();
+			possibleBlocks.add(startingPos);
 
-                    if (emc > reqEmc)
-                    {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
-                        {
-                            int difference = emc - reqEmc;
-                            kleinEmc += MathHelper.clamp_double(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
-                            addKleinEMC(stack, difference);
-                        }
-                    }
-                    else if (emc < reqEmc)
-                    {
-                        int difference = reqEmc - emc;
+			int attemptedTargets = 0;
+			int maxTargets = magnitude;
 
-                        if (kleinEmc >= difference)
-                        {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
-                            {
-                                kleinEmc -= difference;
-                                removeKleinEMC(stack, difference);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
-                    }
-                }
+			while (!possibleBlocks.isEmpty() && hitTargets < maxTargets && attemptedTargets < maxTargets * 4)
+			{
+				boolean hit = false;
+				attemptedTargets++;
+				BlockPos pos = possibleBlocks.poll();
+				PELogger.logInfo("deque: " + pos);
 
-            }
+				IBlockState checkState = world.getBlockState(pos);
 
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
+				if (checkState != startingState)
+					continue;
+
+				BlockPos offsetPos = pos.offset(facing); // todo check null face
+				IBlockState offsetState = world.getBlockState(offsetPos);
+				int offsetBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(offsetState, 1));
+
+				if (!offsetState.isSideSolid(world, offsetPos, facing))
+				{
+					if (mode == EXTENSION_MODE)
+					{
+						if (world.checkNoEntityCollision(startingState.getCollisionBoundingBox(world, offsetPos))) // todo null
+						{
+							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc);
+						}
+					} else if (mode == TRANSMUTATION_MODE)
+					{
+						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc);
+					}
+				}
+
+				if (hit)
+				{
+					hitTargets++;
+
+					for (EnumFacing e : EnumFacing.VALUES)
+					{
+						if (facing.getAxis() != e.getAxis())
+						{
+							if (visited.add(pos.offset(e)))
+								possibleBlocks.offer(pos.offset(e));
+							if (visited.add(pos.offset(e.getOpposite())))
+								possibleBlocks.offer(pos.offset(e.getOpposite()));
+						}
+					}
+				}
+			}
+		}
+
+		if (hitTargets > 0)
+		{
+
 		}
 
 		return EnumActionResult.SUCCESS;
 	}
 
-	private void addKleinEMC(ItemStack eye, int amount)
+	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, int oldEMC, int newEMC)
 	{
-		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		ItemStack klein = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
 
-		ItemStack stack = handler.getStackInSlot(0);
-
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (klein == null
+				|| ItemPE.getEmc(klein) - (newEMC - oldEMC) < 0
+				|| oldState == newState
+				|| player.getEntityWorld().getTileEntity(placePos) != null)
 		{
-			((IItemEmc) stack.getItem()).addEmc(stack, amount);
+			return false;
 		}
-	}
 
-	private void removeKleinEMC(ItemStack eye, int amount)
-	{
-		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		List<ItemStack> drops = oldState.getBlock().getDrops(player.getEntityWorld(), placePos, oldState, 0);
 
-		ItemStack stack = handler.getStackInSlot(0);
-
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (PlayerHelper.checkedReplaceBlock((EntityPlayerMP) player, placePos, newState))
 		{
-			((IItemEmc) stack.getItem()).extractEmc(stack, amount);
+			if (oldEMC == 0)
+			{
+				drops.forEach(d -> Block.spawnAsEntity(player.getEntityWorld(), placePos, d));
+				((IItemEmc) klein.getItem()).extractEmc(klein, newEMC);
+			} else if (oldEMC > newEMC)
+			{
+				((IItemEmc) klein.getItem()).addEmc(klein, oldEMC - newEMC);
+			} else if (oldEMC < newEMC)
+			{
+				((IItemEmc) klein.getItem()).extractEmc(klein, newEMC - oldEMC);
+			}
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
