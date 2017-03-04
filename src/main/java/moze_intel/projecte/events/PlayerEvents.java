@@ -13,7 +13,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ChatHelper;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -104,7 +103,7 @@ public class PlayerEvents
 		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
-		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
+		PECore.LOGGER.info("Sent knowledge and bag data to {}", player.getName());
 	}
 
 	@SubscribeEvent
@@ -114,7 +113,7 @@ public class PlayerEvents
 			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.getEntity().getUniqueID());
-			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
+			PECore.debugLog("Clearing offline data cache in preparation to load online data");
 		}
 	}
 

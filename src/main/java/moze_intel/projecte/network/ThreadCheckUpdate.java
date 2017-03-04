@@ -3,7 +3,6 @@ package moze_intel.projecte.network;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
@@ -50,7 +49,7 @@ public class ThreadCheckUpdate extends Thread
 			
 			if (line == null)
 			{
-				PELogger.logFatal("Update check failed!");
+				PECore.LOGGER.fatal("Update check failed!");
 				throw new IOException("No data from github changelog!");
 			}
 			
@@ -76,11 +75,11 @@ public class ThreadCheckUpdate extends Thread
 			
 			if (!PECore.VERSION.equals(latestVersion))
 			{
-				PELogger.logInfo("Mod is outdated! Check " + curseURL + " to get the latest version (" + latestVersion + ").");
+				PECore.LOGGER.info("Mod is outdated! Check {} to get the latest version ({}).", curseURL, latestVersion);
 				
 				for (String s : changes)
 				{
-					PELogger.logInfo(s);
+					PECore.LOGGER.info(s);
 				}
 				
 				if (isServerSide)
@@ -101,12 +100,12 @@ public class ThreadCheckUpdate extends Thread
 			}
 			else
 			{
-				PELogger.logInfo("Mod is updated.");
+				PECore.LOGGER.info("Mod is updated.");
 			}
 		}
 		catch(Exception e)
 		{
-			PELogger.logFatal("Caught exception in Update Checker thread!");
+			PECore.LOGGER.fatal("Caught exception in Update Checker thread!");
 			e.printStackTrace();
 		}
 		finally

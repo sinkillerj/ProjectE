@@ -2,7 +2,6 @@ package moze_intel.projecte.network;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.PELogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class ThreadCheckUUID extends Thread
 			
 			if (line == null)
 			{
-				PELogger.logFatal("UUID check failed!");
+				PECore.LOGGER.fatal("UUID check failed!");
 				throw new IOException("No data from github UUID list!");
 			}
 
@@ -56,7 +55,7 @@ public class ThreadCheckUUID extends Thread
 		}
 		catch(IOException e)
 		{
-			PELogger.logFatal("Caught exception in UUID Checker thread!");
+			PECore.LOGGER.fatal("Caught exception in UUID Checker thread!");
 			e.printStackTrace();
 		}
 		finally

@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
@@ -333,7 +334,7 @@ public final class WorldHelper
 		}
 		catch (Exception e)
 		{
-			PELogger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
+			PECore.LOGGER.fatal("Could not create new entity instance for: {}", c.getCanonicalName());
 			e.printStackTrace();
 		}
 

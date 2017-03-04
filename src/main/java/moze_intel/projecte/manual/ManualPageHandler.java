@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -157,7 +156,7 @@ public class ManualPageHandler
                 pages.add(page);
             }
         }
-        PELogger.logDebug("Built %d standard pages", pages.size());
+        PECore.debugLog("Built {} standard pages", pages.size());
         generateDummyIndexPages();
         buildPageSpreads();
     }
@@ -166,14 +165,14 @@ public class ManualPageHandler
     {
         List<IndexPage> toAdd = Lists.newArrayList();
         int numIndexPages = Math.round(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
-        PELogger.logDebug("" + (float) ManualPageHandler.pages.size() / GUIManual.ENTRIES_PER_PAGE);
+        PECore.debugLog("{}", (float) ManualPageHandler.pages.size() / GUIManual.ENTRIES_PER_PAGE);
         for (int i = 0; i < numIndexPages; i++)
         {
             toAdd.add(new IndexPage());
         }
         indexPages.addAll(toAdd);
         pages.addAll(0, indexPages);
-        PELogger.logDebug("Built %d dummy index pages", indexPages.size());
+        PECore.debugLog("Built {} dummy index pages", indexPages.size());
     }
 
     private static void buildPageSpreads()
@@ -190,9 +189,9 @@ public class ManualPageHandler
 
         // Build index and normal spreads separately
         doBuildSpread(pages.subList(0, firstNormalPage));
-        PELogger.logDebug("Built %d index spreads", spreads.size());
+        PECore.debugLog("Built {} index spreads", spreads.size());
         doBuildSpread(pages.subList(firstNormalPage, pages.size()));
-        PELogger.logDebug("Built %d spreads total", spreads.size());
+        PECore.debugLog("Built {} spreads total", spreads.size());
     }
 
     private static void doBuildSpread(List<AbstractPage> list)
@@ -219,7 +218,7 @@ public class ManualPageHandler
             AbstractPage page = AbstractPage.createItemPage(s, category);
             categoryMap.get(category).add(page);
             categoryMap.get(category).addAll(page.subPages);
-            PELogger.logDebug("Added %d item pages for stack %s", page.subPages.size() + 1, s.toString());
+            PECore.debugLog("Added {} item pages for stack {}", page.subPages.size() + 1, s.toString());
         }
     }
 
@@ -233,7 +232,7 @@ public class ManualPageHandler
         AbstractPage page = AbstractPage.createTextPages(identifier, category);
         categoryMap.get(category).add(page);
         categoryMap.get(category).addAll(page.subPages);
-        PELogger.logDebug("Added %d text pages for identifier %s", page.subPages.size() + 1, identifier);
+        PECore.debugLog("Added {} text pages for identifier {}", page.subPages.size() + 1, identifier);
     }
 
     private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)

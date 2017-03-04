@@ -25,7 +25,6 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -47,6 +46,8 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -63,6 +64,7 @@ public class PECore
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
 	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -71,7 +73,18 @@ public class PECore
 	public static IProxy proxy;
 
 	public static final List<String> uuids = Lists.newArrayList();
-	
+
+	public static void debugLog(String msg, Object... args)
+	{
+		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging)
+		{
+			LOGGER.info(msg, args);
+		} else
+		{
+			LOGGER.debug(msg, args);
+		}
+	}
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -140,11 +153,11 @@ public class PECore
 
 		CustomEMCParser.init();
 
-		PELogger.logInfo("Starting server-side EMC mapping.");
+		LOGGER.info("Starting server-side EMC mapping.");
 
 		EMCMapper.map();
 
-		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+		LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 		
 		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), MODNAME);
 		
@@ -164,10 +177,10 @@ public class PECore
 	public void serverQuit(FMLServerStoppedEvent event)
 	{
 		Transmutation.clearCache();
-		PELogger.logDebug("Cleared cached tome knowledge");
+		LOGGER.debug("Cleared cached tome knowledge");
 
 		EMCMapper.clearMaps();
-		PELogger.logInfo("Completed server-stop actions.");
+		LOGGER.info("Completed server-stop actions.");
 	}
 
 	@Mod.EventHandler
@@ -203,11 +216,11 @@ public class PECore
 						if (remappedItem != null)
 						{
 							mapping.remap(remappedItem);
-							PELogger.logInfo(String.format("Remapped ProjectE ItemBlock from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
+							LOGGER.info("Remapped ProjectE ItemBlock from {} to {}", mapping.name, PECore.MODID + ":" + newSubName);
 						}
 						else
 						{
-							PELogger.logFatal("Failed to remap ProjectE ItemBlock: " + mapping.name);
+							LOGGER.fatal("Failed to remap ProjectE ItemBlock: {}", mapping.name);
 						}
 					}
 				}
@@ -220,11 +233,11 @@ public class PECore
 					if (remappedBlock != null)
 					{
 						mapping.remap(remappedBlock);
-						PELogger.logInfo(String.format("Remapped ProjectE Block from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
+						LOGGER.info("Remapped ProjectE Block from {} to {}", mapping.name, PECore.MODID + ":" + newSubName);
 					}
 					else
 					{
-						PELogger.logFatal("Failed to remap PE Block: " + mapping.name);
+						LOGGER.fatal("Failed to remap PE Block: {}", mapping.name);
 					}
 				}
 			} catch (Throwable t)

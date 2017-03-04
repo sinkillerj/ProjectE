@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.mappers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSItem;
@@ -10,7 +11,6 @@ import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -77,7 +77,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 											//ingredientMap.addIngredient(NormalizedSimpleStack.getFor(stack), 0);
 										//} TODO 1.8 method doesContainerItemLeave... no longer exists
 									} catch (Exception e) {
-										PELogger.logFatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: %s, Ingredient: %s", recipe.getClass().getName(), stack.toString());
+										PECore.LOGGER.fatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: {}, Ingredient: {}", recipe.getClass().getName(), stack.toString());
 										e.printStackTrace();
 										continue recipeloop;
 									}
@@ -101,11 +101,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 							if (recipeOutput.getCount() > 0) {
 								mapper.addConversion(recipeOutput.getCount(), recipeOutputNorm, ingredientMap.getMap());
 							} else {
-								PELogger.logWarn("Ignoring Recipe because outnumber <= 0: " + ingredientMap.getMap().toString() + " -> " + recipeOutput);
+								PECore.LOGGER.warn("Ignoring Recipe because outnumber <= 0: {} -> {}", ingredientMap.getMap().toString(), recipeOutput);
 							}
 						}
 					} else {
-						PELogger.logWarn("RecipeMapper " + recipeMapper + " failed to map Recipe" + recipe);
+						PECore.LOGGER.warn("RecipeMapper {} failed to map Recipe {}", recipeMapper, recipe);
 					}
 					break;
 				}
@@ -113,7 +113,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			if (!handled) {
 				if (!canNotMap.contains(recipe.getClass())) {
 					canNotMap.add(recipe.getClass());
-					PELogger.logWarn("Can not map Crafting Recipes with Type: " + recipe.getClass().getName());
+					PECore.LOGGER.warn("Can not map Crafting Recipes with Type: {}", recipe.getClass().getName());
 				}
 			} else {
 				int count = 0;
@@ -125,9 +125,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			}
 		}
 
-		PELogger.logInfo("CraftingMapper Statistics:");
+		PECore.LOGGER.info("CraftingMapper Statistics:");
 		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
-			PELogger.logInfo(String.format("Found %d Recipes of Type %s", entry.getValue(), entry.getKey()));
+			PECore.LOGGER.info("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
 		}
 	}
 
@@ -195,7 +195,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					ItemStack recipeItem = (ItemStack) o;
 					inputs.add(recipeItem.copy());
 				} else {
-					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
+					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
 				}
 			}
 			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
@@ -242,7 +242,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 						if (element instanceof ItemStack) {
 							fixedInputs.add(((ItemStack) element).copy());
 						} else {
-							PELogger.logWarn("Can not map recipe " + recipe + " because found " + element.toString() + " instead of ItemStack");
+							PECore.LOGGER.warn("Can not map recipe {} because found {} instead of ItemStack", recipe, element);
 							return null;
 						}
 						continue;
@@ -251,7 +251,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 						if (option instanceof ItemStack) {
 							recipeItemOptions.add(((ItemStack) option).copy());
 						} else {
-							PELogger.logWarn("Can not map recipe " + recipe + " because found " + option.toString() + " instead of ItemStack");
+							PECore.LOGGER.warn("Can not map recipe {} because found {} instead of ItemStack", recipe, option);
 							return null;
 						}
 					}
@@ -294,7 +294,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					ItemStack recipeItem = (ItemStack) o;
 					inputs.add(recipeItem);
 				} else {
-					PELogger.logWarn("Illegal Ingredient in Crafting Recipe: " + o.toString());
+					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
 				}
 			}
 			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));

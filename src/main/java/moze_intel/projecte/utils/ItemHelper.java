@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -163,8 +164,8 @@ public final class ItemHelper
 					}
 					catch (Exception e)
 					{
-						PELogger.logFatal("Couldn't retrieve OD items for: " + oreName);
-						PELogger.logFatal("Caused by: " + e.toString());
+						PECore.LOGGER.fatal("Couldn't retrieve OD items for: {}", oreName);
+						e.printStackTrace();
 
 						result.addAll(list);
 						break;

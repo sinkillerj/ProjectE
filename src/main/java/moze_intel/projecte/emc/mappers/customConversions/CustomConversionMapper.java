@@ -18,11 +18,8 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDe
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.io.IOUtils;
 
@@ -91,7 +88,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			NSSFake.resetNamespace();
 		} else {
-			PELogger.logFatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
+			PECore.LOGGER.fatal("COULD NOT CREATE customConversions FOLDER IN config/ProjectE");
 		}
 	}
 
@@ -107,9 +104,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				{
 					NSSFake.setCurrentNamespace(name);
 					addMappingsFromFile(new FileReader(f), mapper);
-					PELogger.logInfo("Collected Mappings from " + f.getName());
+					PECore.LOGGER.info("Collected Mappings from {}", f.getName());
 				} catch (Exception e) {
-					PELogger.logFatal("Exception when reading file: " + f);
+					PECore.LOGGER.fatal("Exception when reading file: {}", f);
 					e.printStackTrace();
 				}
 			}
@@ -130,7 +127,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
-			PELogger.logInfo(String.format("Adding conversions from group '%s' with comment '%s'", entry.getKey(), entry.getValue().comment));
+			PECore.LOGGER.info("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);
 			try
 			{
 				for (CustomConversion conversion : entry.getValue().conversions)
@@ -138,7 +135,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 					mapper.addConversion(conversion.count, conversion.output, conversion.ingredients);
 				}
 			} catch (Exception e) {
-				PELogger.logFatal(String.format("ERROR reading custom conversion from group %s!", entry.getKey()));
+				PECore.LOGGER.fatal("ERROR reading custom conversion from group {}!", entry.getKey());
 				e.printStackTrace();
 			}
 		}
@@ -196,7 +193,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				}
 			}
 		} catch (Exception e) {
-			PELogger.logFatal("ERROR reading custom conversion values!");
+			PECore.LOGGER.fatal("ERROR reading custom conversion values!");
 			e.printStackTrace();
 		}
 	}

@@ -2,11 +2,11 @@ package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
@@ -131,11 +131,11 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
 						mapper.setValueBefore(normStack, entry.getValue());
-						PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
+						PECore.LOGGER.info("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 					else
 					{
-						PELogger.logInfo(String.format("Disallowed %s to set the value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
+						PECore.LOGGER.info("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 				}
 			}
@@ -146,11 +146,11 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
 						mapper.setValueBefore(normStack, entry.getValue());
-						PELogger.logInfo(String.format("%s setting value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
+						PECore.LOGGER.info("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 					else
 					{
-						PELogger.logInfo(String.format("Disallowed %s to set the value for %s to %s", modIdOrUnknown, normStack, entry.getValue()));
+						PECore.LOGGER.info("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 				}
 			}

@@ -1,14 +1,13 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -68,7 +67,7 @@ public final class FuelMapper
 		
 		if (index == -1)
 		{
-			PELogger.logFatal("Tried to upgrade invalid fuel: " + stack);
+			PECore.LOGGER.fatal("Tried to upgrade invalid fuel: {}", stack);
 			return ItemStack.EMPTY;
 		}
 		

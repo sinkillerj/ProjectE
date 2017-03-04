@@ -10,7 +10,6 @@ import moze_intel.projecte.manual.IndexPage;
 import moze_intel.projecte.manual.ItemPage;
 import moze_intel.projecte.manual.ManualFontRenderer;
 import moze_intel.projecte.manual.ManualPageHandler;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -128,7 +127,7 @@ public class GUIManual extends GuiScreen
 				break;
 			default:
 				int val = Math.round((button.id - 3) / 2.0F);
-				PELogger.logDebug("Clicked button %d which is supposed to be page %d, taking you to spread %d which has page %d on the left", button.id, button.id - 3, val, ManualPageHandler.pages.indexOf(ManualPageHandler.spreads.get(val).getLeft()));
+				PECore.debugLog("Clicked button {} which is supposed to be page {}, taking you to spread {} which has page {} on the left", button.id, button.id - 3, val, ManualPageHandler.pages.indexOf(ManualPageHandler.spreads.get(val).getLeft()));
 				currentSpread = val;
 		}
 		this.updateButtons();

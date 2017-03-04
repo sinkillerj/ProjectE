@@ -1,12 +1,11 @@
 package moze_intel.projecte.emc;
 
 import com.google.common.collect.Maps;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
-import moze_intel.projecte.utils.PELogger;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -122,13 +121,13 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					//This is a Loophole. We remove it by setting the value to 0.
 					if (ZERO.compareTo(conversionValue) < 0 && conversionValueSingle.compareTo(resultValueSingle) < 0) {
 						if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
-							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s value of result: %s setValueFromConversion: %s", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output)));
+							PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} value of result: {} setValueFromConversion: {}", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output));
 						} else if (canOverride(entry.getKey(), ZERO)) {
 							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValueSingle, conversionValue, conversion);
 							newValueFor.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
-							PELogger.logWarn(String.format("EMC Exploit: \"%s\" ingredient cost: %s fixed value of result: %s", conversion, conversionValue, resultValueSingle));
+							PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} fixed value of result: {}", conversion, conversionValue, resultValueSingle);
 						}
 					}
 				}
@@ -163,10 +162,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		try {
 			return valueForConversionUnsafe(values, conversion);
 		} catch (ArithmeticException e) {
-			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
+			PECore.LOGGER.warn("Could not calculate value for {}: {}", conversion.toString(), e.toString());
 			return ZERO;
 		} catch (Exception e) {
-			PELogger.logWarn(String.format("Could not calculate value for %s: %s", conversion.toString(), e.toString()));
+			PECore.LOGGER.warn("Could not calculate value for {}: {}", conversion.toString(), e.toString());
 			e.printStackTrace();
 			return ZERO;
 		}

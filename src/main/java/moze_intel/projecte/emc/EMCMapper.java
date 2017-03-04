@@ -23,7 +23,6 @@ import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -74,7 +73,7 @@ public final class EMCMapper
 		Map<NormalizedSimpleStack, Integer> graphMapperValues;
 		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap()))
 		{
-			PELogger.logInfo(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
+			PECore.LOGGER.info(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
 		}
 		else
 		{
@@ -86,7 +85,7 @@ public final class EMCMapper
 							"Exploits that derive from conversions that are unknown to ProjectE will not be found."
 			));
 
-			PELogger.logInfo("Starting to collect Mappings...");
+			PECore.LOGGER.info("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)
 			{
 				try
@@ -95,26 +94,26 @@ public final class EMCMapper
 					{
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
 						emcMapper.addMappings(mappingCollector, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
-						PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+						PECore.LOGGER.info("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e)
 				{
-					PELogger.logFatal(String.format("Exception during Mapping Collection from Mapper %s. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName()));
+					PECore.LOGGER.fatal("Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName());
 					e.printStackTrace();
 				}
 			}
 			DumpToFileCollector.currentGroupName = "NSSHelper";
 			NormalizedSimpleStack.addMappings(mappingCollector);
 
-			PELogger.logInfo("Mapping Collection finished");
+			PECore.LOGGER.info("Mapping Collection finished");
 			mappingCollector.finishCollection();
 
-			PELogger.logInfo("Starting to generate Values:");
+			PECore.LOGGER.info("Starting to generate Values:");
 
 			config.save();
 
 			graphMapperValues = valueGenerator.generateValues();
-			PELogger.logInfo("Generated Values...");
+			PECore.LOGGER.info("Generated Values...");
 
 			filterEMCMap(graphMapperValues);
 
@@ -123,7 +122,7 @@ public final class EMCMapper
 				try
 				{
 					PregeneratedEMC.write(PECore.PREGENERATED_EMC_FILE, graphMapperValues);
-					PELogger.logInfo("Wrote Pregen-file!");
+					PECore.LOGGER.info("Wrote Pregen-file!");
 				} catch (IOException e)
 				{
 					e.printStackTrace();
@@ -139,7 +138,7 @@ public final class EMCMapper
 			{
 				emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
 			} else {
-				PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
+				PECore.LOGGER.warn("Could not add EMC value for {}|{}. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 			}
 		}
 

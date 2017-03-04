@@ -16,7 +16,6 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
@@ -67,7 +66,7 @@ public final class NBTWhitelistParser
 				}
 				else
 				{
-					PELogger.logWarn("Could not find Item %s specified in nbt_whitelist.cfg", s);
+					PECore.LOGGER.warn("Could not find Item {} specified in nbt_whitelist.cfg", s);
 				}
 			}
 
@@ -103,7 +102,7 @@ public final class NBTWhitelistParser
 			}
 			catch (IOException e)
 			{
-				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
+				PECore.LOGGER.fatal("Exception in file I/O: couldn't create custom configuration files.");
 				e.printStackTrace();
 			}
 		}
@@ -117,7 +116,7 @@ public final class NBTWhitelistParser
             }
 		} catch (IOException e)
 		{
-			PELogger.logFatal("Couldn't read nbt whitelist file");
+			PECore.LOGGER.fatal("Couldn't read nbt whitelist file");
 		}
 
 	}

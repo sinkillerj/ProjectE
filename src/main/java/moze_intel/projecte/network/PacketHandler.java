@@ -6,7 +6,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.*;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -86,8 +85,8 @@ public final class PacketHandler
 			counter++;
 		}
 
-		PELogger.logInfo("Sent EMC data packets to: " + player.getName());
-		PELogger.logDebug("Total packets: " + counter);
+		PECore.LOGGER.info("Sent EMC data packets to: {}", player.getName());
+		PECore.debugLog("Total packets: {}", counter);
 	}
 
 	public static void sendFragmentedEmcPacketToAll()
@@ -124,8 +123,8 @@ public final class PacketHandler
 			counter++;
 		}
 
-		PELogger.logInfo("Sent EMC data packets to all players.");
-		PELogger.logDebug("Total packets per player: " + counter);
+		PECore.LOGGER.info("Sent EMC data packets to all players.");
+		PECore.debugLog("Total packets per player: {}", counter);
 	}
 
 	/**

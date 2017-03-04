@@ -2,8 +2,8 @@ package moze_intel.projecte.emc.collector;
 
 
 import com.google.common.collect.Maps;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.utils.PELogger;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,11 +21,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 
 	protected static void debugFormat(String format, Object... args) {
 		if (DEBUG_GRAPHMAPPER)
-			PELogger.logInfo(String.format(format, args));
+			PECore.debugLog(format, args);
 	}
 
 	protected static void debugPrintln(String s) {
-		debugFormat("%s", s);
+		debugFormat(s);
 	}
 
 	protected final Map<T, Conversion> overwriteConversion = Maps.newHashMap();
@@ -65,7 +65,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
-			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
+			PECore.LOGGER.warn("Ignoring Recipe because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, output);
 			return;
 		}
 		if (outnumber <= 0)
@@ -84,7 +84,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueBefore(T something, V value) {
 		if (something == null) return;
 		if (fixValueBeforeInherit.containsKey(something))
-			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
+			PECore.LOGGER.warn("Overwriting fixValueBeforeInherit for {}:{} to {}", something, fixValueBeforeInherit.get(something), value);
 		fixValueBeforeInherit.put(something, value);
 		fixValueAfterInherit.remove(something);
 	}
@@ -93,7 +93,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueAfter(T something, V value) {
 		if (something == null) return;
 		if (fixValueAfterInherit.containsKey(something))
-			PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
+			PECore.LOGGER.warn("Overwriting fixValueAfterInherit for {}:{} to {}", something, fixValueAfterInherit.get(something), value);
 		fixValueAfterInherit.put(something, value);
 	}
 
@@ -103,7 +103,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
 	{
 		if (something == null || ingredientsWithAmount.containsKey(null)) {
-			PELogger.logWarn(String.format("Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, something));
+			PECore.LOGGER.warn("Ignoring setValueFromConversion because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, something);
 			return;
 		}
 		if (outnumber <= 0)
@@ -112,7 +112,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		conversion.arithmeticForConversion = this.arithmetic;
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
-			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
+			PECore.LOGGER.warn("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
 			for (T ingredient: ingredientsWithAmount.keySet()) {
 				getUsesFor(ingredient).remove(oldConversion);
 			}

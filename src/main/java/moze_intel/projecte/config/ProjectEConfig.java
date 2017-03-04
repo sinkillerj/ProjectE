@@ -1,11 +1,7 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 @Config(modid = PECore.MODID, name = PECore.MODNAME + "/" + PECore.MODNAME)
 public final class ProjectEConfig 

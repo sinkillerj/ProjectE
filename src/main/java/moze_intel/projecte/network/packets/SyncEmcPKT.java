@@ -1,11 +1,11 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -75,7 +75,7 @@ public class SyncEmcPKT implements IMessage
 				public void run() {
 					if (pkt.packetNum == 0)
 					{
-						PELogger.logInfo("Receiving EMC data from server.");
+						PECore.LOGGER.info("Receiving EMC data from server.");
 
 						EMCMapper.emc.clear();
 					}
@@ -96,7 +96,7 @@ public class SyncEmcPKT implements IMessage
 
 					if (pkt.packetNum == -1)
 					{
-						PELogger.logInfo("Received all packets!");
+						PECore.LOGGER.info("Received all packets!");
 
 						Transmutation.cacheFullKnowledge();
 						FuelMapper.loadMap();

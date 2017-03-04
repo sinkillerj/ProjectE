@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
@@ -9,7 +10,6 @@ import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -44,7 +44,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		if (fluid != null) {
 			melting.add(Pair.of(stack, new FluidStack(fluid, amount)));
 		} else {
-			PELogger.logWarn("Can not get Fluid '%s'", fluidName);
+			PECore.LOGGER.warn("Can not get Fluid '{}'", fluidName);
 		}
 	}
 	static {

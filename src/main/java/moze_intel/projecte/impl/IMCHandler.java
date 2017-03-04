@@ -1,6 +1,6 @@
 package moze_intel.projecte.impl;
 
-import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -13,9 +13,7 @@ public class IMCHandler
     public static void handleIMC(FMLInterModComms.IMCMessage msg)
     {
         String messageKey = msg.key.toLowerCase(Locale.ROOT);
-        if ("registeremc".equals(messageKey)) {
-            PELogger.logWarn("Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored", msg.getSender());
-        } else if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
+        if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
             blacklist(false, msg);
         } else if ("swrgblacklist".equals(messageKey) && msg.isStringMessage()) {
             blacklist(true, msg);
@@ -24,7 +22,7 @@ public class IMCHandler
         } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
             blacklistWatch(msg);
         } else {
-            PELogger.logWarn("Received unknown message \"%s\" from mod %s, ignoring.", messageKey, msg.getSender());
+            PECore.LOGGER.warn("Received unknown message \"{}\" from mod {}, ignoring.", messageKey, msg.getSender());
         }
     }
 
@@ -74,7 +72,7 @@ public class IMCHandler
                 return (Class<U>) clazz;
             }
         } catch (ClassNotFoundException ex) {
-            PELogger.logWarn("IMC tried to identify a class that couldn't be found: %s", name);
+            PECore.LOGGER.warn("IMC tried to identify a class that couldn't be found: {}", name);
         }
         return null;
     }

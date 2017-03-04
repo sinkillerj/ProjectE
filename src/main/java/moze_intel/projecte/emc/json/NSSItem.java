@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.json;
 
 import com.google.common.collect.ImmutableSet;
-import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ public class NSSItem implements NormalizedSimpleStack {
 		try {
 			normStack = new NSSItem(itemName, damage);
 		} catch (Exception e) {
-			PELogger.logFatal("Could not create NSSItem: " + e.getMessage());
+			PECore.LOGGER.fatal("Could not create NSSItem: {}", e.getMessage());
 			return null;
 		}
 		Set<Integer> usedMetadata;

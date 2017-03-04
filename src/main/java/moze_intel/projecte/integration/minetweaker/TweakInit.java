@@ -1,7 +1,8 @@
 package moze_intel.projecte.integration.minetweaker;
 
 //import minetweaker.MineTweakerAPI;
-import moze_intel.projecte.utils.PELogger;
+
+import moze_intel.projecte.PECore;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class TweakInit
         try {
             Files.write(script.toPath(), generateLines());
         } catch (IOException ex) {
-            PELogger.logWarn("Failed to write sample script");
+			PECore.LOGGER.warn("Failed to write sample script");
         }
 	}
 

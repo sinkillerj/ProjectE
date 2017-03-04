@@ -1,10 +1,10 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -59,24 +59,24 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     protected void doBlacklistInterdiction(Class<? extends Entity> clazz, String modName)
     {
         WorldHelper.blacklistInterdiction(clazz);
-        PELogger.logInfo("Mod %s blacklisted %s for interdiction torch", modName, clazz.getCanonicalName());
+        PECore.LOGGER.info("Mod {} blacklisted {} for interdiction torch", modName, clazz.getCanonicalName());
     }
 
     protected void doBlacklistSwiftwolf(Class<? extends Entity> clazz, String modName)
     {
         WorldHelper.blacklistSwrg(clazz);
-        PELogger.logInfo("Mod %s blacklisted %s for SWRG repel", modName, clazz.getCanonicalName());
+        PECore.LOGGER.info("Mod {} blacklisted {} for SWRG repel", modName, clazz.getCanonicalName());
     }
 
     protected void doBlacklistTimewatch(Class<? extends TileEntity> clazz, String modName)
     {
         TimeWatch.blacklist(clazz);
-        PELogger.logInfo("Mod %s blacklisted %s for Time Watch acceleration", modName, clazz.getCanonicalName());
+        PECore.LOGGER.info("Mod {} blacklisted {} for Time Watch acceleration", modName, clazz.getCanonicalName());
     }
 
     protected void doWhitelistNBT(ItemStack s, String modName)
     {
         NBTWhitelist.register(s);
-        PELogger.logInfo("Mod %s whitelisted %s for NBT duping", modName, s.toString());
+        PECore.LOGGER.info("Mod {} whitelisted {} for NBT duping", modName, s.toString());
     }
 }

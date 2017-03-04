@@ -4,31 +4,20 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSOreDictionary;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
-import moze_intel.projecte.utils.PELogger;
-import net.minecraft.util.JsonUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,7 +82,7 @@ public final class CustomEMCParser
 			}
 			catch (IOException e)
 			{
-				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
+				PECore.LOGGER.fatal("Exception in file I/O: couldn't create custom configuration files.");
 			}
 		}
 
@@ -101,7 +90,7 @@ public final class CustomEMCParser
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
 			currentEntries.entries.removeIf(e -> e.nss == null || e.emc < 0 || !(e.nss instanceof NSSItem || e.nss instanceof NSSOreDictionary));
 		} catch (IOException | JsonParseException e) {
-			PELogger.logFatal("Couldn't read custom emc file");
+			PECore.LOGGER.fatal("Couldn't read custom emc file");
 			e.printStackTrace();
 			currentEntries = new CustomEMCFile(new ArrayList<>());
 		}

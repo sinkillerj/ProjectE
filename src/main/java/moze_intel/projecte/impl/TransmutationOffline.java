@@ -2,10 +2,10 @@ package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -67,10 +67,10 @@ public class TransmutationOffline
                     ProjectEAPI.KNOWLEDGE_CAPABILITY.readNBT(provider, null, knowledgeProvider);
                     cachedKnowledgeProviders.put(playerUUID, immutableCopy(provider));
 
-                    PELogger.logDebug("Caching offline data for UUID: %s", playerUUID);
+                    PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
                     return true;
                 } catch (IOException e) {
-                    PELogger.logWarn("Failed to cache offline data for API calls for UUID: %s", playerUUID);
+                    PECore.LOGGER.warn("Failed to cache offline data for API calls for UUID: {}", playerUUID);
                 }
             }
         }

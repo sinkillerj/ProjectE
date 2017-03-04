@@ -14,7 +14,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -203,7 +202,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			case 4:
 				return new ItemStack(ObjHandler.matter, 1, 1);
 			default:
-				PELogger.logFatal("Invalid target for gem of eternal density: " + stack.getTagCompound().getByte("Target"));
+				PECore.LOGGER.fatal("Invalid target for gem of eternal density: {}", stack.getTagCompound().getByte("Target"));
 				return ItemStack.EMPTY;
 		}
 	}
