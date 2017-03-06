@@ -17,11 +17,8 @@ public final class FuelMapper
 	
 	public static void loadMap()
 	{
-		if (!FUEL_MAP.isEmpty())
-		{
-			FUEL_MAP.clear();
-		}
-		
+		FUEL_MAP.clear();
+
 		addToMap(new ItemStack(Items.COAL, 1, 1));
 		addToMap(new ItemStack(Items.REDSTONE));
 		addToMap(new ItemStack(Blocks.REDSTONE_BLOCK));
@@ -56,18 +53,18 @@ public final class FuelMapper
 	
 	public static boolean isStackMaxFuel(ItemStack stack)
 	{
-		return indexInMap(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
+		return FUEL_MAP.indexOf(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
 	}
 	
 	public static ItemStack getFuelUpgrade(ItemStack stack)
 	{
 		SimpleStack fuel = new SimpleStack(stack);
 
-		int index = indexInMap(fuel);
+		int index = FUEL_MAP.indexOf(fuel);
 		
 		if (index == -1)
 		{
-			PECore.LOGGER.fatal("Tried to upgrade invalid fuel: {}", stack);
+			PECore.LOGGER.warn("Tried to upgrade invalid fuel: {}", stack);
 			return ItemStack.EMPTY;
 		}
 		
@@ -92,8 +89,4 @@ public final class FuelMapper
 		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
-	private static int indexInMap(SimpleStack stack)
-	{
-		return FUEL_MAP.indexOf(stack);
-	}
 }

@@ -54,7 +54,7 @@ public class SimpleStack
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
