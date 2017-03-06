@@ -38,7 +38,6 @@ public class PregeneratedEMC
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
 			Map<NormalizedSimpleStack, Integer> map = gson.fromJson(reader, type);
-			reader.close();
 			map.remove(null);
 			return map;
 		}

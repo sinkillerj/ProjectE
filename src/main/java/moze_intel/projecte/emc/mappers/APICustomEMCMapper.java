@@ -78,7 +78,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		final Map<String, Integer> priorityMap = new HashMap<>();
+		Map<String, Integer> priorityMap = new HashMap<>();
 		Set<String> modIdSet = Sets.newHashSet();
 		modIdSet.addAll(customEMCforMod.keySet());
 		modIdSet.addAll(customNonItemEMCforMod.keySet());
@@ -111,15 +111,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		}
 
 		List<String> modIds = new ArrayList<>(modIdSet);
-		modIds.sort(new Comparator<String>() {
-            @Override
-            public int compare(String a, String b) {
-                //a < b => -1
-                //a > b => +1
-                //Reverse sorting so high priority comes first
-                return -(priorityMap.get(a) - priorityMap.get(b));
-            }
-        });
+		modIds.sort(Comparator.comparingInt(priorityMap::get).reversed());
 
 		for(String modId : modIds) {
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;

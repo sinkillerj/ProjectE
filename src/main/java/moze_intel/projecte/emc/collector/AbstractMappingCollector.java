@@ -25,12 +25,7 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 	private Map<T, Integer> listToMapOfCounts(Iterable<T> iterable) {
 		Map<T, Integer> map = new HashMap<>();
 		for (T ingredient : iterable) {
-			if (map.containsKey(ingredient)) {
-				int amount = map.get(ingredient);
-				map.put(ingredient, amount + 1);
-			} else {
-				map.put(ingredient, 1);
-			}
+			map.merge(ingredient, 1, Integer::sum);
 		}
 		return map;
 	}

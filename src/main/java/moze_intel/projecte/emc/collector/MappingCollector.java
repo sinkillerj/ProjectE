@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T, V, A>  {
 	private static final boolean DEBUG_GRAPHMAPPER = false;
@@ -148,19 +149,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 
 		public String ingredientsToString() {
 			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
-			StringBuilder sb = new StringBuilder();
-			Iterator<Map.Entry<T,Integer>> iter = ingredientsWithAmount.entrySet().iterator();
-			if (iter.hasNext()) {
-				Map.Entry<T, Integer> entry = iter.next();
-				sb.append(entry.getValue()).append("*").append(entry.getKey().toString());
-				while(iter.hasNext()) {
-					entry = iter.next();
-					sb.append(" + ").append(entry.getValue()).append("*").append(entry.getKey().toString());
-				}
-			}
-
-
-			return sb.toString();
+			return ingredientsWithAmount.entrySet().stream()
+					.map(e -> e.getValue() + "*" + e.getKey())
+					.collect(Collectors.joining(" + "));
 		}
 
 		public boolean equals(Conversion other) {
