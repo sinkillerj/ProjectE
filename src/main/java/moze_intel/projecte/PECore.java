@@ -59,7 +59,7 @@ public class PECore
 	public static final String MODID = "projecte";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
-	public static final String DEPS = "required-after:forge@[13.19.1.2188,);after:baubles@[1.3.3,);after:jei@[4.2.0,)";
+	public static final String DEPS = "required-after:forge@[13.20.0.2253,);after:baubles@[1.3.3,);after:jei@[4.2.0,)";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
