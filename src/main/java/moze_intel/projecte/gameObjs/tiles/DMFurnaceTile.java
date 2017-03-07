@@ -14,6 +14,11 @@ public class DMFurnaceTile extends RMFurnaceTile
 	}
 
 	@Override
+	protected float getOreDoubleChance() {
+		return 0.5F;
+	}
+
+	@Override
 	public int getCookProgressScaled(int value)
 	{
 		return furnaceCookTime * value / ticksBeforeSmelt;

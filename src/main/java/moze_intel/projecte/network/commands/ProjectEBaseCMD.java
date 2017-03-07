@@ -1,11 +1,11 @@
 package moze_intel.projecte.network.commands;
 
-import moze_intel.projecte.utils.ChatHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -28,12 +28,12 @@ public abstract class ProjectEBaseCMD extends CommandBase
 	
 	protected void sendSuccess(ICommandSender sender, ITextComponent message)
 	{
-		sendMessage(sender, ChatHelper.modifyColor(message, TextFormatting.GREEN));
+		sendMessage(sender, message.setStyle(new Style().setParentStyle(message.getStyle()).setColor(TextFormatting.GREEN)));
 	}
 	
 	protected void sendError(ICommandSender sender, ITextComponent message)
 	{
-		sendMessage(sender, ChatHelper.modifyColor(message, TextFormatting.RED));
+		sendMessage(sender, message.setStyle(new Style().setParentStyle(message.getStyle()).setColor(TextFormatting.RED)));
 	}
 	
 	protected void sendMessage(ICommandSender sender, ITextComponent message)

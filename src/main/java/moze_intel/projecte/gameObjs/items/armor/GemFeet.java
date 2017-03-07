@@ -4,7 +4,6 @@ import com.google.common.collect.Multimap;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
-import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import net.minecraft.client.resources.I18n;
@@ -15,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -64,7 +64,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
         player.sendMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
-                .appendSibling(ChatHelper.modifyColor(new TextComponentTranslation(s), e)));
+                .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
     }
 
     @Override

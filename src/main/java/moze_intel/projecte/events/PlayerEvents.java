@@ -12,7 +12,6 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.ChatHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,10 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -122,10 +118,10 @@ public class PlayerEvents
 	{
 		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
 		{
-			ITextComponent prior = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.high_alchemist"), TextFormatting.BLUE);
-			ITextComponent playername = ChatHelper.modifyColor(new TextComponentString(" " + evt.player.getName() + " "), TextFormatting.GOLD);
-			ITextComponent latter = ChatHelper.modifyColor(new TextComponentTranslation("pe.server.has_joined"), TextFormatting.BLUE);
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter)); // Sends to all everywhere, not just same world like before.
+			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
+			ITextComponent playername = new TextComponentString(" " + evt.player.getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
+			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
 		}
 	}
 

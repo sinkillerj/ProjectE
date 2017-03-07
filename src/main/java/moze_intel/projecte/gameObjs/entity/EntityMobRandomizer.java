@@ -63,13 +63,15 @@ public class EntityMobRandomizer extends PEProjectile
 		}
 
 		EntityLiving ent = ((EntityLiving) mop.entityHit);
-		Entity randomized = WorldHelper.getRandomEntity(this.getEntityWorld(), ent);
+		EntityLiving randomized = WorldHelper.getRandomEntity(this.getEntityWorld(), ent);
 		
 		if (randomized != null && EMCHelper.consumePlayerFuel(((EntityPlayer) getThrower()), 384) != -1)
 		{
 			ent.setDead();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
+			randomized.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(randomized)), null);
 			this.getEntityWorld().spawnEntity(randomized);
+			randomized.spawnExplosionParticle();
 		}
 	}
 }

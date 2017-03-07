@@ -13,10 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.*;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -480,13 +477,17 @@ public abstract class PEToolBase extends ItemMode
 				if (Math.random() < 0.01)
 				{
 					Entity e = EntityList.createEntityByIDFromName(EntityList.getKey(ent), world);
-					NBTTagCompound tag = new NBTTagCompound();
-					e.writeToNBT(tag);
-					e.readFromNBT(tag);
+
+					if (e instanceof EntityLiving)
+					{
+						((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null);
+					}
+
 					if (e instanceof EntitySheep)
 					{
 						((EntitySheep) e).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
 					}
+
 					if (e instanceof EntityAgeable)
 					{
 						((EntityAgeable) e).setGrowingAge(-24000);

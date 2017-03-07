@@ -294,43 +294,7 @@ public final class WorldHelper
 	{
 		try
 		{
-			Constructor<T> constr = c.getConstructor(World.class);
-			T ent = constr.newInstance(world);
-
-			if (ent instanceof EntitySkeleton)
-			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-			}
-			else if (ent instanceof EntityWitherSkeleton)
-			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
-			}
-			else if (ent instanceof EntityStray)
-			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-			}
-			else if (ent instanceof EntityPigZombie)
-			{
-				ent.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
-			}
-			else if (ent instanceof EntitySheep)
-			{
-				((EntitySheep) ent).setFleeceColor(EnumDyeColor.byMetadata(MathUtils.randomIntInRange(0, 15)));
-			}
-			else if (ent instanceof EntityVillager)
-			{
-				VillagerRegistry.setRandomProfession(((EntityVillager) ent), world.rand);
-			}
-			else if (ent instanceof EntityRabbit)
-			{
-				((EntityRabbit) ent).setRabbitType(world.rand.nextInt(6));
-			}
-			else if (ent instanceof EntityHorse)
-			{
-				((EntityHorse) ent).setHorseVariant(MathUtils.randomIntInRange(0, 6));
-			}
-
-			return ent;
+			return c.getConstructor(World.class).newInstance(world);
 		}
 		catch (Exception e)
 		{

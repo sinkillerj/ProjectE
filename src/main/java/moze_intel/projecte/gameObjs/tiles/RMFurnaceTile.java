@@ -83,6 +83,10 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		return 13;
 	}
 
+	protected float getOreDoubleChance() {
+		return 1F;
+	}
+
 	public IItemHandler getFuel()
 	{
 		return fuelInv;
@@ -277,7 +281,8 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
 
-		if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
+		if (world.rand.nextFloat() < getOreDoubleChance()
+			&& ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
 		{
 			smeltResult.grow(smeltResult.getCount());
 		}
