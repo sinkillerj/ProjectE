@@ -5,10 +5,12 @@ import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T, V, A>  {
@@ -72,9 +74,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
-		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
-		conversion.value = arithmetic.getZero();
-		conversion.arithmeticForConversion = arithmeticForConversion;
+		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount, arithmeticForConversion, arithmetic.getZero());
 		if (getConversionsFor(output).contains(conversion)) return;
 		getConversionsFor(output).add(conversion);
 		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
@@ -109,8 +109,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		}
 		if (outnumber <= 0)
 			throw new IllegalArgumentException("outnumber has to be > 0!");
-		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
-		conversion.arithmeticForConversion = this.arithmetic;
+		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount, this.arithmetic);
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
 			PECore.LOGGER.warn("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
@@ -128,41 +127,44 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	protected class Conversion {
 		public final T output;
 
-		public int outnumber = 1;
-		public V value = arithmetic.getZero();
-		public Map<T, Integer> ingredientsWithAmount;
-		public A arithmeticForConversion;
+		public final int outnumber;
+		public final V value;
+		public final Map<T, Integer> ingredientsWithAmount;
+		public final A arithmeticForConversion;
 
-		Conversion(T output) {
+		Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
+			this(output, outnumber, ingredientsWithAmount, arithmeticForConversion, arithmetic.getZero());
+		}
+
+		Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion, V value) {
 			this.output = output;
-		}
-
-		Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
-			this(output);
 			this.outnumber = outnumber;
-			this.ingredientsWithAmount = ingredientsWithAmount;
+			this.ingredientsWithAmount = ingredientsWithAmount == null ? Collections.emptyMap() : ingredientsWithAmount;
+			this.arithmeticForConversion = arithmeticForConversion;
+			this.value = value;
 		}
 
+		@Override
 		public String toString() {
 			return "" + value + " + " + ingredientsToString() + " => " + outnumber + "*" + output;
 		}
 
-		public String ingredientsToString() {
+		private String ingredientsToString() {
 			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
 			return ingredientsWithAmount.entrySet().stream()
 					.map(e -> e.getValue() + "*" + e.getKey())
 					.collect(Collectors.joining(" + "));
 		}
 
-		public boolean equals(Conversion other) {
-			if (output.equals(other.output) && value.equals(other.value)) {
-				if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
-					return other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0;
-				} else {
-					return ingredientsWithAmount.equals(other.ingredientsWithAmount);
-				}
-			}
-			return false;
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof MappingCollector.Conversion))
+				return false;
+			Conversion other = (Conversion) o;
+
+			return Objects.equals(output, other.output)
+					&& Objects.equals(value, other.value)
+					&& Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
 		}
 	}
 
