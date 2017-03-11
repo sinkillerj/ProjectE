@@ -83,7 +83,7 @@ public class CondenserMK2Tile extends CondenserTile
 					continue;
 				}
 
-				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
+				this.addEMC(EMCHelper.getEmcSellValue(stack) * stack.stackSize);
 				getInput().setStackInSlot(i, null);
 				break;
 			}

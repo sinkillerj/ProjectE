@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -251,6 +252,32 @@ public final class EMCHelper
 		}
 
 		return result;
+	}
+
+	public static int getEmcSellValue(Block block)
+	{
+		ItemStack stack = new ItemStack(block);
+
+		return EMCHelper.getEmcSellValue(stack);
+	}
+
+	public static int getEmcSellValue(Item item)
+	{
+		ItemStack stack = new ItemStack(item);
+
+		return EMCHelper.getEmcSellValue(stack);
+	}
+
+	public static int getEmcSellValue(ItemStack stack)
+	{
+		int emc = (int)Math.floor(EMCHelper.getEmcValue(stack) * ProjectEConfig.covalenceLoss);
+
+		if (emc < 1)
+		{
+			emc = 1;
+		}
+
+		return emc;
 	}
 
 	public static int getKleinStarMaxEmc(ItemStack stack)
