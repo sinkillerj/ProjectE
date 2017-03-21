@@ -4,8 +4,8 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -85,7 +85,8 @@ public class Relay extends BlockDirection
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		return ComparatorHelper.getForRelay(world, pos);
+		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(pos));
+		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 	}
 
 	@Override

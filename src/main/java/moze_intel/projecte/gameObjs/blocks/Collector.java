@@ -1,15 +1,17 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
-import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -86,7 +88,26 @@ public class Collector extends BlockDirection
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		return ComparatorHelper.getForCollector(world, pos);
+		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
+		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
+		if (!charging.isEmpty())
+		{
+			if (charging.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) charging.getItem());
+				double max = itemEmc.getMaximumEmc(charging);
+				double current = itemEmc.getStoredEmc(charging);
+				return MathUtils.scaleToRedstone(current, max);
+			} else
+			{
+				double needed = tile.getEmcToNextGoal();
+				double current = tile.getStoredEmc();
+				return MathUtils.scaleToRedstone(current, needed);
+			}
+		} else
+		{
+			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaximumEmc());
+		}
 	}
 
 	@Override
