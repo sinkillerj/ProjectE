@@ -82,7 +82,7 @@ public final class PlayerHelper
 
 	public static IItemHandler getBaubles(EntityPlayer player)
 	{
-		if (!Loader.isModLoaded("Baubles"))
+		if (!Loader.isModLoaded("baubles"))
 		{
 			return null;
 		} else

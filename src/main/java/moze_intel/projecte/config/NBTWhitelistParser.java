@@ -130,7 +130,7 @@ public final class NBTWhitelistParser
 			defaults.add(Item.getByNameOrId("tconstruct:pickaxe"));
 		}
 
-		if (Loader.isModLoaded("Botania"))
+		if (Loader.isModLoaded("botania"))
 		{
 			defaults.add(Item.getByNameOrId("botania:specialFlower"));
 		}
