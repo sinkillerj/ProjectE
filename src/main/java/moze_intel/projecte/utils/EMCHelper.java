@@ -6,6 +6,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -270,7 +271,7 @@ public final class EMCHelper
 
 	public static int getEmcSellValue(ItemStack stack)
 	{
-		int emc = (int)Math.floor(EMCHelper.getEmcValue(stack) * ProjectEConfig.covalenceLoss);
+		int emc = (int)Math.floor(EMCHelper.getEmcValue(stack) * EMCMapper.covalenceLoss);
 
 		if (emc < 1)
 		{
@@ -278,6 +279,18 @@ public final class EMCHelper
 		}
 
 		return emc;
+	}
+
+	public static String getEmcSellString(ItemStack stack, int stackSize)
+	{
+		if (EMCMapper.covalenceLoss == 1.0)
+		{
+			return " ";
+		}
+
+		int emc = EMCHelper.getEmcSellValue(stack);
+
+		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
 	}
 
 	public static int getKleinStarMaxEmc(ItemStack stack)

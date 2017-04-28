@@ -3,6 +3,7 @@ package moze_intel.projecte.emc;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
@@ -43,6 +44,8 @@ public final class EMCMapper
 {
 	public static final Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
 	private static Map<NormalizedSimpleStack, Integer> graphMapperValues;
+
+	public static double covalenceLoss = ProjectEConfig.covalenceLoss;
 
 	public static void map()
 	{
