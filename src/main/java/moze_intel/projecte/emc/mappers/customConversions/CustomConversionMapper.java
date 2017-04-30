@@ -142,56 +142,53 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 		try
 		{
-			if (file.values != null)
-			{
-				if (file.values.setValueBefore != null) {
-					for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueBefore.entrySet())
-					{
-						NormalizedSimpleStack something = entry.getKey();
-						mapper.setValueBefore(something, entry.getValue());
-						if (something instanceof NSSOreDictionary)
-						{
-							String odName = ((NSSOreDictionary) something).od;
-							for (ItemStack itemStack : OreDictionary.getOres(odName))
-							{
-								mapper.setValueBefore(NSSItem.create(itemStack), entry.getValue());
-							}
-						}
-					}
-				}
-				if (file.values.setValueAfter != null)
-				{
-					for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueAfter.entrySet())
-					{
-						NormalizedSimpleStack something = entry.getKey();
-						mapper.setValueAfter(something, entry.getValue());
-						if (something instanceof NSSOreDictionary)
-						{
-							String odName = ((NSSOreDictionary) something).od;
-							for (ItemStack itemStack : OreDictionary.getOres(odName))
-							{
-								mapper.setValueAfter(NSSItem.create(itemStack), entry.getValue());
-							}
-						}
-					}
-				}
-				if (file.values.conversion != null)
-				{
-					for (CustomConversion conversion : file.values.conversion)
-					{
-						NormalizedSimpleStack out = conversion.output;
-						if (conversion.evalOD && out instanceof NSSOreDictionary)
-						{
-							String odName = ((NSSOreDictionary) out).od;
-							for (ItemStack itemStack : OreDictionary.getOres(odName))
-							{
-								mapper.setValueFromConversion(conversion.count, NSSItem.create(itemStack), conversion.ingredients);
-							}
-						}
-						mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);
-					}
-				}
-			}
+			if (file.values.setValueBefore != null) {
+                for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueBefore.entrySet())
+                {
+                    NormalizedSimpleStack something = entry.getKey();
+                    mapper.setValueBefore(something, entry.getValue());
+                    if (something instanceof NSSOreDictionary)
+                    {
+                        String odName = ((NSSOreDictionary) something).od;
+                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        {
+                            mapper.setValueBefore(NSSItem.create(itemStack), entry.getValue());
+                        }
+                    }
+                }
+            }
+			if (file.values.setValueAfter != null)
+            {
+                for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueAfter.entrySet())
+                {
+                    NormalizedSimpleStack something = entry.getKey();
+                    mapper.setValueAfter(something, entry.getValue());
+                    if (something instanceof NSSOreDictionary)
+                    {
+                        String odName = ((NSSOreDictionary) something).od;
+                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        {
+                            mapper.setValueAfter(NSSItem.create(itemStack), entry.getValue());
+                        }
+                    }
+                }
+            }
+			if (file.values.conversion != null)
+            {
+                for (CustomConversion conversion : file.values.conversion)
+                {
+                    NormalizedSimpleStack out = conversion.output;
+                    if (conversion.evalOD && out instanceof NSSOreDictionary)
+                    {
+                        String odName = ((NSSOreDictionary) out).od;
+                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        {
+                            mapper.setValueFromConversion(conversion.count, NSSItem.create(itemStack), conversion.ingredients);
+                        }
+                    }
+                    mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);
+                }
+            }
 		} catch (Exception e) {
 			PECore.LOGGER.fatal("ERROR reading custom conversion values!");
 			e.printStackTrace();

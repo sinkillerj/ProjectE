@@ -19,15 +19,7 @@ public class NSSOreDictionary implements NormalizedSimpleStack {
 
 	@Nullable
 	public static NormalizedSimpleStack create(String oreDictionaryName) {
-		if (oreDictStacks.containsKey(oreDictionaryName))
-			return oreDictStacks.get(oreDictionaryName);
-		List<ItemStack> list = OreDictionary.getOres(oreDictionaryName);
-		if (list == null || list.size() == 0) {
-			return null;
-		}
-		NormalizedSimpleStack nss = new NSSOreDictionary(oreDictionaryName);
-		oreDictStacks.put(oreDictionaryName, nss);
-		return nss;
+		return oreDictStacks.computeIfAbsent(oreDictionaryName, NSSOreDictionary::new);
 	}
 
 	@Override

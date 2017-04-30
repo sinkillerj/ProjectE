@@ -158,13 +158,6 @@ public class PECore
 		EMCMapper.map();
 
 		LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-		
-		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), MODNAME);
-		
-		if (!dir.exists())
-		{
-			dir.mkdirs(); 
-		}
 	}
 
 	@Mod.EventHandler
