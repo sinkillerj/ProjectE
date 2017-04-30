@@ -23,29 +23,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	private final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
-	private final IItemHandler automationInventory = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
-	{
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
-					? super.insertItem(slot, stack, simulate)
-					: stack;
-		}
-
-		@Override
-		public ItemStack extractItem(int slot, int max, boolean simulate)
-		{
-			if (getStackInSlot(slot) != null && isStackEqualToLock(getStackInSlot(slot)))
-			{
-				return super.extractItem(slot, max, simulate);
-			}
-			else
-			{
-				return null;
-			}
-		}
-	};
+	private final IItemHandler automationInventory = createAutomationInventory();
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
@@ -78,6 +56,33 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	protected ItemStackHandler createOutput()
 	{
 		return inputInventory;
+	}
+
+	protected IItemHandler createAutomationInventory()
+	{
+		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
+		{
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			{
+				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
+						? super.insertItem(slot, stack, simulate)
+						: stack;
+			}
+
+			@Override
+			public ItemStack extractItem(int slot, int max, boolean simulate)
+			{
+				if (getStackInSlot(slot) != null && isStackEqualToLock(getStackInSlot(slot)))
+				{
+					return super.extractItem(slot, max, simulate);
+				}
+				else
+				{
+					return null;
+				}
+			}
+		};
 	}
 
 	@Override
