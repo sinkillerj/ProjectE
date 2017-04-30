@@ -3,6 +3,7 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
@@ -11,6 +12,7 @@ import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
+import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
@@ -99,6 +101,9 @@ public class PlayerEvents
 		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
+
+		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.difficulty.covalenceLoss), player);
+
 		PECore.LOGGER.info("Sent knowledge and bag data to {}", player.getName());
 	}
 

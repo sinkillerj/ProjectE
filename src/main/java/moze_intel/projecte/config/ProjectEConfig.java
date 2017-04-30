@@ -21,6 +21,10 @@ public final class ProjectEConfig
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("Amount of damage Katar 'C' key deals")
 		public float katarDeathAura = 1000F;
+
+		@Config.RangeDouble(min = 0.1, max = 1.0)
+		@Config.Comment("Adjusting this ratio changes how much EMC is received when burning a item. For example setting this to 0.5 will return half of the EMC cost.")
+		public double covalenceLoss = 1.0;
 	}
 
 	public static Items items = new Items();

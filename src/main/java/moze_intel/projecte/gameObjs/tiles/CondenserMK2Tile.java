@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -15,40 +16,20 @@ import javax.annotation.Nonnull;
 
 public class CondenserMK2Tile extends CondenserTile
 {
-	private final IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
+	protected IItemHandler createAutomationInventory()
 	{
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
 		{
-			return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
-					? super.insertItem(slot, stack, simulate)
-					: stack;
-		}
-	};
-	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(automationInput, automationOutput);
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
-	{
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			if (side == null)
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
+				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
+						? super.insertItem(slot, stack, simulate)
+						: stack;
 			}
-			else if (side == EnumFacing.DOWN)
-			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-			}
-			else
-			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
-			}
-		}
-
-		return super.getCapability(cap, side);
+		};
+		IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
+		return new CombinedInvWrapper(automationInput, automationOutput);
 	}
 
 	@Override
@@ -83,7 +64,7 @@ public class CondenserMK2Tile extends CondenserTile
 					continue;
 				}
 
-				this.addEMC(EMCHelper.getEmcValue(stack) * stack.getCount());
+				this.addEMC(EMCHelper.getEmcSellValue(stack) * stack.getCount());
 				getInput().setStackInSlot(i, ItemStack.EMPTY);
 				break;
 			}

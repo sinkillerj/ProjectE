@@ -155,14 +155,19 @@ public class TransmutationInventory extends CombinedInvWrapper
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty())
 		{
+			lockCopy = ItemHelper.getNormalizedStack(inputLocks.getStackInSlot(LOCK_INDEX));
+
+			if (ItemHelper.isDamageable(lockCopy))
+			{
+				lockCopy.setItemDamage(0);
+			}
+
 			int reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
 			
 			if (provider.getEmc() < reqEmc)
 			{
 				return;
 			}
-
-			lockCopy = ItemHelper.getNormalizedStack(inputLocks.getStackInSlot(LOCK_INDEX));
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{

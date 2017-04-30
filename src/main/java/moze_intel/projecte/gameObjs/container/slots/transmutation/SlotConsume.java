@@ -32,7 +32,7 @@ public class SlotConsume extends SlotItemHandler
 		
 		while (!inv.hasMaxedEmc() && stack.getCount() > 0)
 		{
-			toAdd += EMCHelper.getEmcValue(stack);
+			toAdd += EMCHelper.getEmcSellValue(stack);
 			stack.shrink(1);
 		}
 		

@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -22,10 +22,10 @@ public class MercurialEyeContainer extends Container
 		inventory = mercEyeInv;
 
 		//Klein Star
-		this.addSlotToContainer(new ValidatedSlot(mercEyeInv, 0, 50, 26, SlotPredicates.IITEMEMC));
+		this.addSlotToContainer(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.IITEMEMC));
 
 		//Target
-		this.addSlotToContainer(new SlotMercurialTarget(inventory, 1, 104, 26));
+		this.addSlotToContainer(new SlotGhost(inventory, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
@@ -50,6 +50,12 @@ public class MercurialEyeContainer extends Container
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
 			return ItemStack.EMPTY;
+		}
+
+		if (slot == 1 && inventory.getStackInSlot(slot) != null)
+		{
+			inventory.setStackInSlot(1, null);
+			return null;
 		}
 		
 		return super.slotClick(slot, button, flag, player);

@@ -59,6 +59,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		}
 	};
 	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
+	private final IItemHandler automationSides = new CombinedInvWrapper(automationFuel, automationOutput);
 	private final CombinedInvWrapper joined = new CombinedInvWrapper(automationInput, automationFuel, automationOutput);
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
@@ -122,15 +123,14 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			{
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
 			}
-			else if (side == EnumFacing.UP)
+			else
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
-			} else if (side == EnumFacing.DOWN)
-			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-			} else if (side.getAxis().isHorizontal())
-			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationFuel);
+				switch (side)
+				{
+					case UP: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+					case DOWN: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
+					default: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationSides);
+				}
 			}
 		}
 

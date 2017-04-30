@@ -64,7 +64,7 @@ public class ToolTipEvent
 				int value = EMCHelper.getEmcValue(current);
 
 				event.getToolTip().add(TextFormatting.YELLOW +
-						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value));
+						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, 1));
 
 				if (current.getCount() > 1)
 				{
@@ -81,7 +81,7 @@ public class ToolTipEvent
 					}
 					else
 					{
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()));
+						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
 					}
 
 				}

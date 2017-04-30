@@ -1,3 +1,11 @@
+###Version 1.10.2-PE1.3.0
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* NEW: Covalence Loss. The long requested Inequivalent Exchange. Adjusting this config changes how much EMC is received when burning a item.
+* FIXED: Entity initialization issue with the Philosophers Stone randomizer
+* FIXED: EMC exploit log ignoring config
+* FIXED: Damaged items causing a transmutation GUI desync
+* CHANGE: Mercurial Eye target is now a ghost slot
+
 ###Version 1.10.2-PE1.2.0
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
 * NEW: Pedestals can be toggled using redstone
