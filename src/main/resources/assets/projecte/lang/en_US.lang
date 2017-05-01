@@ -208,7 +208,7 @@ pe.emc.storedemc_tooltip=Stored EMC:
 pe.emc.too_much=WAY TOO MUCH
 
 pe.evertide.tooltip1=Press %s to fire a water projectile
-pe.evertide.tooltip2=Acts as an infinite water bucket
+pe.evertide.tooltip2=Acts as an infinitely full water bucket
 pe.evertide.tooltip3=Right click to fill tanks and cauldrons
 pe.evertide.tooltip4=All operations are completely free!
 pe.evertide.pedestal1=Create rain/snow storms
@@ -300,7 +300,7 @@ pe.repairtalisman.pedestal1=Repairs nearby players' items
 pe.repairtalisman.pedestal2=Restores 1 durability every %s
 
 pe.server.high_alchemist=High alchemist
-pe.server.has_joined=has joined the server
+pe.server.has_joined=has joined the game
 
 pe.soul.pedestal1=Heals nearby players
 pe.soul.pedestal2=Half a heart every %s
