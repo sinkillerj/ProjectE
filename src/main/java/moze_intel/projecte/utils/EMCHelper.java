@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -255,23 +256,16 @@ public final class EMCHelper
 		return result;
 	}
 
-	public static int getEmcSellValue(Block block)
-	{
-		ItemStack stack = new ItemStack(block);
-
-		return EMCHelper.getEmcSellValue(stack);
-	}
-
-	public static int getEmcSellValue(Item item)
-	{
-		ItemStack stack = new ItemStack(item);
-
-		return EMCHelper.getEmcSellValue(stack);
-	}
-
 	public static int getEmcSellValue(ItemStack stack)
 	{
-		int emc = (int)Math.floor(EMCHelper.getEmcValue(stack) * EMCMapper.covalenceLoss);
+		double originalValue = EMCHelper.getEmcValue(stack);
+
+		if (originalValue == 0)
+		{
+			return 0;
+		}
+
+		int emc = MathHelper.floor_double(originalValue * EMCMapper.covalenceLoss);
 
 		if (emc < 1)
 		{
