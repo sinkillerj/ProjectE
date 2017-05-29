@@ -6,12 +6,12 @@ Discover powerful alchemical tools, items, and devices. Break down unwanted item
 
 
 # Can I include it in a modpack?
-This mod may be redistributed as part of a modpack, both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer", legal action will be taken against sites found violating this. It is requested that you credit the mod on any lists as ProjectE, there is no space in the name.
+This mod may be redistributed as part of a modpack; both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer"; legal action will be taken against sites found violating this. It is requested that you credit the mod on any lists as ProjectE; there is no space in the name.
 
 # I found a bug
 Bugs can be reported at: https://github.com/sinkillerj/ProjectE/issues
 
-Please try the latest release build before reporting, be sure to also include any logs or steps to reproduce you may have, as well as your Forge version, and whether or not you are using a third party loader such as Cauldron. When submitting logs please use a service such as Pastebin, do not paste the log directly into the issue.
+Please try the latest release build before reporting; be sure to also include any logs or steps to reproduce you may have, as well as your Forge version, and whether or not you are using a third party loader such as Cauldron. When submitting logs please use a service such as Pastebin—do not paste the log directly into the issue.
 
 # Downloads
 http://minecraft.curseforge.com/mc-mods/projecte/files
