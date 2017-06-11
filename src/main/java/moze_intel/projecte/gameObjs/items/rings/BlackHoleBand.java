@@ -105,7 +105,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		
 		for (EntityItem item : itemList)
 		{
-			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getEntityItem()))
+			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem()))
 			{
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
@@ -181,7 +181,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				inv = new InvWrapper((IInventory) e.getValue());
 			}
 
-			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getEntityItem(), false);
+			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 
 			if (result.isEmpty())
 			{
@@ -190,7 +190,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				item.setEntityItemStack(result);
+				item.setItem(result);
 			}
 		}
 	}
@@ -223,10 +223,10 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.getEntityWorld().isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getEntityItem(), false);
-					if (result.isEmpty())
+					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getItem(), false);
+					if (!result.isEmpty())
 					{
-						e.setEntityItemStack(result);
+						e.setItem(result);
 					}
 					else
 					{

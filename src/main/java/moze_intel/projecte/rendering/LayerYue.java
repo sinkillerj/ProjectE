@@ -2,10 +2,10 @@ package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -57,7 +57,7 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			}
 
 			Tessellator tess = Tessellator.getInstance();
-			VertexBuffer r = tess.getBuffer();
+			BufferBuilder r = tess.getBuffer();
 			r.begin(7, DefaultVertexFormats.POSITION_TEX);
 			r.pos(0, 0, 0).tex(0, 0).endVertex();
 			r.pos(0, 0, 1).tex(0, 1).endVertex();

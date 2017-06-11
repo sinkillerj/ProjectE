@@ -123,8 +123,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			int dX = 0, dY = 0, dZ = 0;
 
-			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
-			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
+			boolean lookingDown = look.y >= -1 && look.y <= -WALL_MODE;
+			boolean lookingUp   = look.y <=  1 && look.y >=  WALL_MODE;
 
 			boolean lookingAlongZ = facing.getAxis() == EnumFacing.Axis.Z;
 

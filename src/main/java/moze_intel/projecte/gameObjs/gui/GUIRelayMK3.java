@@ -29,8 +29,8 @@ public class GUIRelayMK3 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(I18n.format("pe.relay.mk3"), 38, 6, 4210752);
-		this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(container.emc), 125, 39, 4210752);
+		this.fontRenderer.drawString(I18n.format("pe.relay.mk3"), 38, 6, 4210752);
+		this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(container.emc), 125, 39, 4210752);
 	}
 
 	@Override

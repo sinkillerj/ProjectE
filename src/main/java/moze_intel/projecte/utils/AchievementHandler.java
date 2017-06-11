@@ -6,15 +6,13 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.IScoreCriteria;
 import net.minecraft.scoreboard.ScoreCriteriaReadOnly;
-import net.minecraft.stats.Achievement;
-import net.minecraftforge.common.AchievementPage;
 
 
 public final class AchievementHandler
 {
 
 	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly(PECore.MODID + ":emc_score");
-	public final static Achievement PHIL_STONE = (Achievement) new Achievement("pe_phil_stone", "pe_phil_stone", 0, 2, ObjHandler.philosStone, null).initIndependentStat().registerStat();
+	/*public final static Achievement PHIL_STONE = (Achievement) new Achievement("pe_phil_stone", "pe_phil_stone", 0, 2, ObjHandler.philosStone, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_CHEST = (Achievement) new Achievement("pe_alch_chest", "pe_alch_chest", 0, -2, ObjHandler.alchChest, null).initIndependentStat().registerStat();
 	public final static Achievement ALCH_BAG = (Achievement) new Achievement("pe_alch_bag", "pe_alch_bag", 0, -4, ObjHandler.alchBag, ALCH_CHEST).registerStat();
 	public final static Achievement TRANSMUTATION = (Achievement) new Achievement("pe_transmutation", "pe_transmutation", 0, 0, ObjHandler.transmuteStone, PHIL_STONE).registerStat();
@@ -37,10 +35,10 @@ public final class AchievementHandler
 			PHIL_STONE, ALCH_CHEST, ALCH_BAG, TRANSMUTATION, CONDENSER,
 			COLLECTOR, RELAY, PORTABLE_TRANSMUTATION, DARK_MATTER, RED_MATTER, DM_BLOCK,
 			RM_BLOCK, DM_FURNACE, RM_FURNACE, DM_PICK, RM_PICK, KLEIN_BASIC, KLEIN_MASTER
-	);
+	);*/
 
 	public static void init()
 	{
-		AchievementPage.registerAchievementPage(new AchievementPage(PECore.MODNAME, list.toArray(new Achievement[list.size()])));
+		// AchievementPage.registerAchievementPage(new AchievementPage(PECore.MODNAME, list.toArray(new Achievement[list.size()])));
 	}
 }

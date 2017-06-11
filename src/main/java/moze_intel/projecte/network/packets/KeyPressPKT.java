@@ -51,10 +51,10 @@ public class KeyPressPKT implements IMessage
 		@Override
 		public IMessage onMessage(final KeyPressPKT message, final MessageContext ctx)
 		{
-			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+                    EntityPlayerMP player = ctx.getServerHandler().player;
                     InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY, null);
 
                     if (message.key == PEKeybind.ARMOR_TOGGLE)

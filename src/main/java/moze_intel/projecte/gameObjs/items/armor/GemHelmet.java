@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,7 +72,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
+    public void addInformation(ItemStack stack, World world, List<String> tooltips, ITooltipFlag flags)
     {
         tooltips.add(I18n.format("pe.gem.helm.lorename"));
 

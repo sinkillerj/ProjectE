@@ -22,10 +22,10 @@ public class LeftClickArchangelPKT implements IMessage
 		@Override
 		public IMessage onMessage(LeftClickArchangelPKT message, MessageContext ctx)
 		{
-			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					EntityPlayer player = ctx.getServerHandler().playerEntity;
+					EntityPlayer player = ctx.getServerHandler().player;
 					ItemStack main = player.getHeldItemMainhand();
 					if (!main.isEmpty() && main.getItem() == ObjHandler.angelSmite)
 					{

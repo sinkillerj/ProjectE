@@ -150,7 +150,7 @@ public class PlayerEvents
 
 		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
 				.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
-		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getEntityItem(), false);
+		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 
 		if (remainder.isEmpty())
 		{
@@ -160,7 +160,7 @@ public class PlayerEvents
 		}
 		else
 		{
-			event.getItem().setEntityItemStack(remainder);
+			event.getItem().setItem(remainder);
 		}
 
 		event.setCanceled(true);

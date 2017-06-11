@@ -40,7 +40,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
-		recipeloop: for (IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
+		recipeloop: for (IRecipe recipe : CraftingManager.field_193380_a) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;

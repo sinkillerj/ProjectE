@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory
@@ -43,6 +44,12 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     public String getTitle()
     {
         return localizedName;
+    }
+
+    @Nonnull
+    @Override
+    public String getModName() {
+        return PECore.MODNAME;
     }
 
     @Nonnull
@@ -107,5 +114,11 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
             xPos += 16;
         }
 
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+        return Collections.emptyList();
     }
 }

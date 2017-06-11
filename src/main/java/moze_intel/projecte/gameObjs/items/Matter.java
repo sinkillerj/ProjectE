@@ -50,11 +50,11 @@ public class Matter extends ItemPE
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 2; i++)
 		{
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(this, 1, i));
 		}
 	}
 }

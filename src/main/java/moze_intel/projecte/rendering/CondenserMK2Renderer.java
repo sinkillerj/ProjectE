@@ -22,7 +22,7 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer<CondenserMK2
 	private final ModelChest model = new ModelChest();
 
 	@Override
-	public void renderTileEntityAt(@Nonnull CondenserMK2Tile condenser, double x, double y, double z, float par8, int par9)
+	public void func_192841_a(@Nonnull CondenserMK2Tile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unknown)
 	{
 		EnumFacing direction = null;
 		if (condenser.getWorld() != null && !condenser.isInvalid())
@@ -54,7 +54,7 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer<CondenserMK2
 
 		GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-		float adjustedLidAngle = condenser.prevLidAngle + (condenser.lidAngle - condenser.prevLidAngle) * par8;
+		float adjustedLidAngle = condenser.prevLidAngle + (condenser.lidAngle - condenser.prevLidAngle) * partialTicks;
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
 		model.chestLid.rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);

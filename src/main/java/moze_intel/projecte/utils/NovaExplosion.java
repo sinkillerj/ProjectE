@@ -55,9 +55,9 @@ public class NovaExplosion extends Explosion
 						d1 /= d3;
 						d2 /= d3;
 						float f = initialSize * (0.7F + this.worldObj.rand.nextFloat() * 0.6F);
-						double d4 = this.getPosition().xCoord;
-						double d6 = this.getPosition().yCoord;
-						double d8 = this.getPosition().zCoord;
+						double d4 = this.getPosition().x;
+						double d6 = this.getPosition().y;
+						double d8 = this.getPosition().z;
 
 						for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
@@ -70,7 +70,7 @@ public class NovaExplosion extends Explosion
 								f -= (f2 + 0.3F) * 0.3F;
 							}
 
-							if (f > 0.0F && (this.getExplosivePlacedBy() == null || this.getExplosivePlacedBy().verifyExplosion(this, this.worldObj, blockpos, iblockstate, f)))
+							if (f > 0.0F && (this.getExplosivePlacedBy() == null || this.getExplosivePlacedBy().canExplosionDestroyBlock(this, this.worldObj, blockpos, iblockstate, f)))
 							{
 								hashset.add(blockpos);
 							}
@@ -93,9 +93,9 @@ public class NovaExplosion extends Explosion
 	public void doExplosionB(boolean spawnParticles)
 	{
 		float cachedExplosionSize = ReflectionHelper.getExplosionSize(this);
-		double x = getPosition().xCoord;
-		double y = getPosition().yCoord;
-		double z = getPosition().zCoord;
+		double x = getPosition().x;
+		double y = getPosition().y;
+		double z = getPosition().z;
 
 		this.worldObj.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 

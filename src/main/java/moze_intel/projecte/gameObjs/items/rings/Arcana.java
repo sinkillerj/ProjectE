@@ -15,6 +15,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -58,10 +59,10 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 4; ++i)
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(this, 1, i));
 	}
 
 	@Override
@@ -158,7 +159,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean b)
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
 	{
 		if(stack.hasTagCompound())
 		{

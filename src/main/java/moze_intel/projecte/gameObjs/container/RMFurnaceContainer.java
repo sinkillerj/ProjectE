@@ -80,9 +80,9 @@ public class RMFurnaceContainer extends Container
 	public void addListener(IContainerListener par1IContainerListener)
 	{
 		super.addListener(par1IContainerListener);
-		par1IContainerListener.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
-		par1IContainerListener.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
-		par1IContainerListener.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+		par1IContainerListener.sendWindowProperty(this, 0, tile.furnaceCookTime);
+		par1IContainerListener.sendWindowProperty(this, 1, tile.furnaceBurnTime);
+		par1IContainerListener.sendWindowProperty(this, 2, tile.currentItemBurnTime);
 	}
 	
 	@Override
@@ -93,13 +93,13 @@ public class RMFurnaceContainer extends Container
 		for (IContainerListener crafter : this.listeners)
 		{
 			if (lastCookTime != tile.furnaceCookTime)
-				crafter.sendProgressBarUpdate(this, 0, tile.furnaceCookTime);
+				crafter.sendWindowProperty(this, 0, tile.furnaceCookTime);
 
 			if (lastBurnTime != tile.furnaceBurnTime)
-				crafter.sendProgressBarUpdate(this, 1, tile.furnaceBurnTime);
+				crafter.sendWindowProperty(this, 1, tile.furnaceBurnTime);
 
 			if (lastItemBurnTime != tile.currentItemBurnTime)
-				crafter.sendProgressBarUpdate(this, 2, tile.currentItemBurnTime);
+				crafter.sendWindowProperty(this, 2, tile.currentItemBurnTime);
 		}
 
 		lastCookTime = tile.furnaceCookTime;

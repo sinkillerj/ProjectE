@@ -244,7 +244,7 @@ public class ManualPageHandler
     private static List<ItemStack> getSubItems(Item i)
     {
         NonNullList<ItemStack> list = NonNullList.create();
-        i.getSubItems(i, null, list);
+        i.getSubItems(null, list);
         return list;
     }
 }

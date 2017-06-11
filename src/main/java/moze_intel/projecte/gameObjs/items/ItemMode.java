@@ -2,15 +2,18 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.item.IModeChanger;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger
@@ -58,7 +61,7 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag advanced)
 	{
 		if (stack.hasTagCompound() && this.numModes > 0)
 		{

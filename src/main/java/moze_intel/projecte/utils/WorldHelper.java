@@ -559,11 +559,11 @@ public final class WorldHelper
 						Vec3d t = new Vec3d(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
 
-						Vec3d r = new Vec3d(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
+						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
 
-						ent.motionX += r.xCoord / 1.5D / distance;
-						ent.motionY += r.yCoord / 1.5D / distance;
-						ent.motionZ += r.zCoord / 1.5D / distance;
+						ent.motionX += r.x / 1.5D / distance;
+						ent.motionY += r.y / 1.5D / distance;
+						ent.motionZ += r.z / 1.5D / distance;
 					}
 				}
 			}

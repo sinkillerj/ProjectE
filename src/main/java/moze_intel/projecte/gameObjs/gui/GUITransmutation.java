@@ -41,7 +41,7 @@ public class GUITransmutation extends GuiContainer
 		int xLocation = (this.width - this.xSize) / 2;
 		int yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(0, this.fontRendererObj, xLocation + 88, yLocation + 8, 45, 10);
+		this.textBoxFilter = new GuiTextField(0, this.fontRenderer, xLocation + 88, yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(inv.filter);
 
 		this.buttonList.add(new GuiButton(1, xLocation + 125, yLocation + 100, 14, 14, "<"));
@@ -60,36 +60,36 @@ public class GUITransmutation extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
+		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
 		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
-		this.fontRendererObj.drawString(emc, 6, this.ySize - 94, 4210752);
+		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
 		{
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
 			
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0)
 		{
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
-			this.fontRendererObj.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
+			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
 			
 			inv.unlearnFlag--;
 		}
@@ -130,8 +130,8 @@ public class GUITransmutation extends GuiContainer
 	{
 		super.mouseClicked(x, y, mouseButton);
 
-		int minX = textBoxFilter.xPosition;
-		int minY = textBoxFilter.yPosition;
+		int minX = textBoxFilter.x;
+		int minY = textBoxFilter.y;
 		int maxX = minX + textBoxFilter.width;
 		int maxY = minY + textBoxFilter.height;
 

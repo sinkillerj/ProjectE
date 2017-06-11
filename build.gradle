@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
@@ -27,7 +27,7 @@ archivesBaseName = "ProjectE"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "run"
-    mappings = 'snapshot_20161227'
+    mappings = 'snapshot_20170611'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"
@@ -59,7 +59,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    deobfCompile "mezz.jei:jei_1.11.2:4.2.0.210"
+    deobfCompile "mezz.jei:jei_1.12:4.6.0.59"
     /*deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"*/

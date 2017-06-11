@@ -111,7 +111,7 @@ public final class PlayerHelper
 		Vec3d look = player.getLook(1.0F);
 		Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
 		Vec3d src = playerPos.addVector(0, player.getEyeHeight(), 0);
-		Vec3d dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+		Vec3d dest = src.addVector(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 

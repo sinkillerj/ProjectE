@@ -6,6 +6,7 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
@@ -25,6 +26,11 @@ public class PEJeiPlugin implements IModPlugin
 
     @Override
     public void registerIngredients(@Nonnull IModIngredientRegistration registry) {}
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registry) {
+        // todo 1.12
+    }
 
     @Override
     public void register(@Nonnull IModRegistry registry)

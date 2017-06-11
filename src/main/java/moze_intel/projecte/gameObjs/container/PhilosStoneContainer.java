@@ -47,7 +47,7 @@ public class PhilosStoneContainer extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inv)
 	{
-		craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+		craftResult.setInventorySlotContents(0, CraftingManager.findMatchingRecipe(craftMatrix, worldObj));
 	}
 	
 	@Override
