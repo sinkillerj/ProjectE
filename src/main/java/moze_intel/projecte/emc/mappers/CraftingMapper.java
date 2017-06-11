@@ -183,20 +183,17 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable recipeItems = null;
-			if (recipe instanceof ShapedRecipes) {
-				recipeItems = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-			} else if (recipe instanceof ShapelessRecipes) {
-				recipeItems = ((ShapelessRecipes) recipe).recipeItems;
+			Iterable<Ingredient> recipeItems = null;
+			if (canHandle(recipe)) {
+				recipeItems = recipe.func_192400_c();
 			}
 			List<ItemStack> inputs = new LinkedList<>();
-			for (Object o : recipeItems) {
-				if (o == null) continue;
-				if (o instanceof ItemStack) {
-					ItemStack recipeItem = (ItemStack) o;
-					inputs.add(recipeItem.copy());
-				} else {
-					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
+			for (Ingredient o : recipeItems) {
+				ItemStack[] stacks = o.func_193365_a();
+
+				if (stacks.length > 0) {
+					// todo 1.12 vanilla recipes can now have multiple options for one spot, adjust?
+					inputs.add(stacks[0]);
 				}
 			}
 			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
