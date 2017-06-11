@@ -23,7 +23,7 @@ public final class ReflectionHelper
 	private static final String[] arrowInGroundNames = {"inGround", "a", "field_70254_i"};
 	private static final String[] entityFireImmuneNames = {"isImmuneToFire", "X", "field_70178_ae"};
 	private static final String[] playerCapaWalkSpeedNames = {"walkSpeed", "g", "field_75097_g"};
-	private static final String[] explosionSizeNames = {"explosionSize", "i", "field_77280_f"};
+	private static final String[] explosionSizeNames = {"size", "i", "field_77280_f"};
 	private static final String[] updateScorePointsNames = { "updateScorePoints", "a", "func_184849_a" };
 
 	private static final MethodHandle
@@ -57,6 +57,7 @@ public final class ReflectionHelper
 			m.setAccessible(true);
 			updateScorePoints = MethodHandles.publicLookup().unreflect(m);
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 			throw Throwables.propagate(e);
 		}
 	}

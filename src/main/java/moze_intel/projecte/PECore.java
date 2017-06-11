@@ -53,13 +53,13 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.11,1.11.2]", dependencies = PECore.DEPS)
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.12,]", dependencies = PECore.DEPS)
 public class PECore
 {
 	public static final String MODID = "projecte";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
-	public static final String DEPS = "required-after:forge@[13.20.0.2253,);after:baubles@[1.3.3,);after:jei@[4.2.0,)";
+	public static final String DEPS = "required-after:forge@[13.20.0.2253,);after:baubles@[1.3.3,);after:jei@[4.6.0,)";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
@@ -106,6 +106,7 @@ public class PECore
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
+		proxy.registerKeyBinds();
 		SoundHandler.init();
 		ObjHandler.register();
 		ObjHandler.addRecipes();
@@ -120,7 +121,6 @@ public class PECore
 	public void load(FMLInitializationEvent event)
 	{
 		proxy.registerLayerRenderers();
-		proxy.registerKeyBinds();
 		AchievementHandler.init();
 	}
 	
