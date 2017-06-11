@@ -265,7 +265,7 @@ public final class EMCHelper
 			return 0;
 		}
 
-		int emc = MathHelper.floor_double(originalValue * EMCMapper.covalenceLoss);
+		int emc = MathHelper.floor(originalValue * EMCMapper.covalenceLoss);
 
 		if (emc < 1)
 		{
