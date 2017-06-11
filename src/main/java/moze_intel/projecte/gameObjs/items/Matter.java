@@ -34,9 +34,12 @@ public class Matter extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
-		for (int i = 0; i < 2; i++)
+		if (func_194125_a(cTab))
 		{
-			list.add(new ItemStack(this, 1, i));
+			for (int i = 0; i < 2; i++)
+			{
+				list.add(new ItemStack(this, 1, i));
+			}
 		}
 	}
 }

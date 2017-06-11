@@ -77,8 +77,11 @@ public class AlchemicalBag extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
-		for (int i = 0; i < 16; ++i)
-			list.add(new ItemStack(this, 1, i));
+		if (func_194125_a(cTab))
+		{
+			for (int i = 0; i < 16; ++i)
+				list.add(new ItemStack(this, 1, i));
+		}
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)
