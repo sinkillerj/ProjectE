@@ -367,6 +367,7 @@ public class ObjHandler
 
 	public static void addRecipes()
 	{
+		/*
 		String diamondReplacement = "gemDiamond";
 		String diamondBlockReplacement = "blockDiamond";
 
@@ -597,6 +598,7 @@ public class ObjHandler
 		RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
 		RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
+*/
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
 	}
@@ -635,7 +637,7 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.setCount(output.getCount() * 7);
 
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
+			// GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
 
 		}
 		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
