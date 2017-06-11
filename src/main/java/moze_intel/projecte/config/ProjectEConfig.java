@@ -12,9 +12,6 @@ public final class ProjectEConfig
 		@Config.Comment("The Tome of Knowledge can be crafted.")
 		public boolean craftableTome = false;
 
-		@Config.Comment("If true some ProjectE items require a nether star instead of a diamond.")
-		public boolean altCraftingMat = false;
-
 		@Config.Comment("Set to false to disable Gem Armor offensive abilities (helmet zap and chestplate explosion)")
 		public boolean offensiveAbilities = true;
 

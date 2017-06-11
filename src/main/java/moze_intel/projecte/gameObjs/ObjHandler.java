@@ -370,12 +370,6 @@ public class ObjHandler
 		String diamondReplacement = "gemDiamond";
 		String diamondBlockReplacement = "blockDiamond";
 
-		if (ProjectEConfig.difficulty.altCraftingMat)
-		{
-			diamondReplacement = "netherStar";
-			diamondBlockReplacement = "netherStar";
-		}
-
 		//Shaped Recipes
 		//Philos Stone
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(philosStone), "RGR", "GDG", "RGR", 'R', "dustRedstone", 'G', "dustGlowstone", 'D', diamondReplacement));
