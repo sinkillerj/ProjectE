@@ -37,22 +37,4 @@ public class ItemMatterBlock extends ItemBlock
 	{
 		return meta;
 	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			if (stack.getItemDamage() == 0)
-			{
-				player.addStat(AchievementHandler.DM_BLOCK, 1);
-			}
-			else
-			{
-				player.addStat(AchievementHandler.RM_BLOCK, 1);
-			}
-		}
-	}
 }

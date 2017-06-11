@@ -27,17 +27,6 @@ public class RedPick extends DarkPick
 	}
 	
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.RM_PICK, 1);
-		}
-	}
-
-	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		Block b = state.getBlock();

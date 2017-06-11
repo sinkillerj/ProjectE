@@ -13,14 +13,5 @@ public class ItemRelayBlock extends ItemBlock
 	{
 		super(block);
 	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (world != null)
-		{
-			player.addStat(AchievementHandler.RELAY, 1);
-		}
-	}
 }
 

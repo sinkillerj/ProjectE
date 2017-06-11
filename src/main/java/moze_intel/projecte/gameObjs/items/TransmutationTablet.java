@@ -31,15 +31,4 @@ public class TransmutationTablet extends ItemPE
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.PORTABLE_TRANSMUTATION, 1);
-		}
-	}
 }

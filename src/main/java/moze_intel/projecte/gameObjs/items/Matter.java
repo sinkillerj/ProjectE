@@ -31,24 +31,6 @@ public class Matter extends ItemPE
 	}
 	
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			if (stack.getItemDamage() == 0)
-			{
-				player.addStat(AchievementHandler.DARK_MATTER, 1);
-			}
-			else
-			{
-				player.addStat(AchievementHandler.RED_MATTER, 1);
-			}
-		}
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{

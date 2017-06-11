@@ -93,17 +93,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.PHIL_STONE, 1);
-		}
-	}
-	
-	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		World world = player.getEntityWorld();

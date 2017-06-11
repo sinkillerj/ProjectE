@@ -72,24 +72,13 @@ public class AlchemicalBag extends ItemPE
 		String color = " (" + I18n.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.ALCH_BAG, 1);
-		}
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 16; ++i)
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(this, 1, i));
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)

@@ -74,24 +74,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 		}
 	}
 	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			if (stack.getItemDamage() == 5)
-			{
-				player.addStat(AchievementHandler.KLEIN_MASTER, 1);
-			}
-			else
-			{
-				player.addStat(AchievementHandler.KLEIN_BASIC, 1);
-			}
-		}
-	}
-	
 	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
@@ -106,11 +88,11 @@ public class KleinStar extends ItemPE implements IItemEmc
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i < 6; ++i)
 		{
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(this, 1, i));
 		}
 	}
 

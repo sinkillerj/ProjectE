@@ -13,13 +13,4 @@ public class ItemCollectorBlock extends ItemBlock
 	{
 		super(block);
 	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		if (world != null)
-		{
-			player.addStat(AchievementHandler.COLLECTOR, 1);
-		}
-	}
 }

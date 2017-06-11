@@ -96,17 +96,6 @@ public class DarkPick extends PEToolBase
 		return super.getStrVsBlock(stack, state);
 	}
 	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.DM_PICK, 1);
-		}
-	}
-
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
