@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.config.Configuration;
@@ -222,41 +223,20 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Object> recipeItems = null;
-			if (recipe instanceof ShapedOreRecipe) {
-				recipeItems = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-			} else if (recipe instanceof ShapelessOreRecipe) {
-				recipeItems = ((ShapelessOreRecipe) recipe).getInput();
-			}
-			if (recipeItems == null) return null;
+			Iterable<Ingredient> recipeItems = recipe.func_192400_c();
 			ArrayList<Iterable<ItemStack>> variableInputs = Lists.newArrayList();
 			ArrayList<ItemStack> fixedInputs = Lists.newArrayList();
-			for (Object recipeItem : recipeItems) {
-				if (recipeItem instanceof ItemStack) {
-					fixedInputs.add((ItemStack) recipeItem);
-				} else if (recipeItem instanceof Collection) {
-					List<ItemStack> recipeItemOptions = new LinkedList<>();
-					Collection recipeItemCollection = ((Collection) recipeItem);
-					if (recipeItemCollection.size() == 1) {
-						Object element = recipeItemCollection.iterator().next();
-						if (element instanceof ItemStack) {
-							fixedInputs.add(((ItemStack) element).copy());
-						} else {
-							PECore.LOGGER.warn("Can not map recipe {} because found {} instead of ItemStack", recipe, element);
-							return null;
-						}
-						continue;
-					}
-					for (Object option : recipeItemCollection) {
-						if (option instanceof ItemStack) {
-							recipeItemOptions.add(((ItemStack) option).copy());
-						} else {
-							PECore.LOGGER.warn("Can not map recipe {} because found {} instead of ItemStack", recipe, option);
-							return null;
-						}
-					}
-					variableInputs.add(recipeItemOptions);
+			for (Ingredient recipeItem : recipeItems) {
+				List<ItemStack> recipeItemOptions = new LinkedList<>();
+				ItemStack[] recipeItemCollection = recipeItem.func_193365_a();
+				if (recipeItemCollection.length == 1) {
+					fixedInputs.add(recipeItemCollection[0].copy());
+					continue;
 				}
+				for (ItemStack option : recipeItemCollection) {
+					recipeItemOptions.add(option.copy());
+				}
+				variableInputs.add(recipeItemOptions);
 			}
 			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
