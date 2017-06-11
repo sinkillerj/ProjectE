@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_shovel"
+  },
+  "pattern": [
+    "XRX",
+    "XSX",
+    "XMX"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "S": {
+      "item": "projecte:item.pe_dm_shovel"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter"
+    }
+  }
+}

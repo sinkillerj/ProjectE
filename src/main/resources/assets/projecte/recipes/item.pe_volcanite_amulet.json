@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "projecte:item.pe_volcanite_amulet"
+  },
+  "pattern": [
+    "LLL",
+    "DDD",
+    "LLL"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  }
+}

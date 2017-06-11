@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "projecte:rm_furnace"
+  },
+  "pattern": [
+    "XRX",
+    "RFR"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:matter_block",
+      "data": 1
+    },
+    "F": {
+      "item": "projecte:dm_furnace"
+    }
+  }
+}

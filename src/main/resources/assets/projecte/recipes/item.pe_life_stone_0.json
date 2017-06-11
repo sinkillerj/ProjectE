@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "projecte:item.pe_life_stone"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_body_stone"
+    },
+    {
+      "item": "projecte:item.pe_soul_stone"
+    }
+  ],
+  "type": "crafting_shapeless"
+}

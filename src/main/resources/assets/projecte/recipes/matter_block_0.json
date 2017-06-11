@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "projecte:matter_block"
+  },
+  "pattern": [
+    "DD",
+    "DD"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter"
+    }
+  }
+}

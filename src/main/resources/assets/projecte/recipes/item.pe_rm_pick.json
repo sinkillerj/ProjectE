@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_pick"
+  },
+  "pattern": [
+    "RRR",
+    "XPX",
+    "XMX"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "P": {
+      "item": "projecte:item.pe_dm_pick"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "M": {
+      "item": "projecte:item.pe_matter"
+    }
+  }
+}
