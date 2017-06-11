@@ -66,6 +66,7 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			tess.draw();
 
 			GlStateManager.enableLighting();
+			GlStateManager.color(1F, 1F, 1F);
 			GlStateManager.popMatrix();
 		}
 	}
