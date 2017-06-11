@@ -261,18 +261,14 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable recipeItems = null;
-			if (recipe instanceof RecipeShapedKleinStar) {
-				recipeItems = Arrays.asList(((RecipeShapedKleinStar) recipe).recipeItems);
-			} else if (recipe instanceof RecipeShapelessHidden) {
-				recipeItems = ((RecipeShapelessHidden) recipe).getInput();
+			Iterable<Ingredient> recipeItems = null;
+			if (recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden) {
+				recipeItems = recipe.func_192400_c();
 			}
 			List<ItemStack> inputs = new LinkedList<>();
-			for (Object o : recipeItems) {
-				if (o == null) continue;
-				if (o instanceof ItemStack) {
-					ItemStack recipeItem = (ItemStack) o;
-					inputs.add(recipeItem);
+			for (Ingredient o : recipeItems) {
+				if (o.func_193365_a().length == 1) {
+					inputs.add(o.func_193365_a()[0]);
 				} else {
 					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
 				}

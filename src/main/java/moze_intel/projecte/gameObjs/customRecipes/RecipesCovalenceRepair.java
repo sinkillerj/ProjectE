@@ -92,9 +92,8 @@ public class RecipesCovalenceRepair implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize() 
-	{
-		return 10;
+	public boolean func_194133_a(int width, int height) {
+		return width > 1 || height > 1;
 	}
 
 	@Nonnull
