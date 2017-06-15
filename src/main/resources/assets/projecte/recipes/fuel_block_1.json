@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "projecte:fuel_block",
+    "data": 1
+  },
+  "pattern": [
+    "FFF",
+    "FFF",
+    "FFF"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    }
+  }
+}

@@ -13,7 +13,7 @@ public class RecipeShapelessHidden extends ShapelessRecipes
 
 	// TODO 1.12 - ensure JEI respects this or bother them to do so
 	@Override
-	public boolean func_192399_d() {
+	public boolean isHidden() {
 		return true;
 	}
 }

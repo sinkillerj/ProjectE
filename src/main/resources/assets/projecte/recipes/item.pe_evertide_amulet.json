@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:item.pe_evertide_amulet"
+  },
+  "pattern": [
+    "WWW",
+    "DDD",
+    "WWW"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    }
+  }
+}

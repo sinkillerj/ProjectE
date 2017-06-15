@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "projecte:item.pe_ignition",
+    "data": 0
+  },
+  "pattern": [
+    "FMF",
+    "DID",
+    "FMF"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "F": {
+      "item": "minecraft:flint_and_steel",
+      "data": 32767
+    },
+    "I": {
+      "item": "projecte:item.pe_ring_iron_band"
+    },
+    "M": {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    }
+  }
+}

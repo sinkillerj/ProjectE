@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_morning_star"
+  },
+  "pattern": [
+    "123",
+    "RRR",
+    "RRR"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "1": {
+      "item": "projecte:item.pe_rm_hammer"
+    },
+    "2": {
+      "item": "projecte:item.pe_rm_pick"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "3": {
+      "item": "projecte:item.pe_rm_shovel"
+    }
+  }
+}

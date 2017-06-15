@@ -22,7 +22,7 @@ public class CondenserRenderer extends TileEntitySpecialRenderer<CondenserTile>
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void func_192841_a(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+	public void renderTileEntityAt(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unused)
 	{
 		EnumFacing direction = null;
 		if (condenser.getWorld() != null && !condenser.isInvalid())

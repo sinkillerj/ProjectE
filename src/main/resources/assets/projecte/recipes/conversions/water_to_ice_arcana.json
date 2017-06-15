@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:ice"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_arcana_ring",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:water_bucket"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

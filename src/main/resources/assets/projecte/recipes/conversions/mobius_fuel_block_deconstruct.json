@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "projecte:item.pe_fuel",
+    "data": 1,
+    "count": 9
+  },
+  "ingredients": [
+    {
+      "item": "projecte:fuel_block",
+      "data": 1
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

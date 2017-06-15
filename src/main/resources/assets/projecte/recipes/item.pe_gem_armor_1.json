@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:item.pe_gem_armor_1"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_rm_armor_1"
+    },
+    {
+      "item": "projecte:item.pe_klein_star",
+      "data": 5
+    },
+    {
+      "item": "projecte:item.pe_black_hole",
+      "data": 0
+    },
+    {
+      "item": "projecte:item.pe_time_watch"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

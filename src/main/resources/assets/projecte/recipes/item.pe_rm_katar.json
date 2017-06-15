@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_katar"
+  },
+  "pattern": [
+    "123",
+    "4RR",
+    "RRR"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "1": {
+      "item": "projecte:item.pe_rm_shears"
+    },
+    "2": {
+      "item": "projecte:item.pe_rm_axe"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "3": {
+      "item": "projecte:item.pe_rm_sword"
+    },
+    "4": {
+      "item": "projecte:item.pe_rm_hoe"
+    }
+  }
+}

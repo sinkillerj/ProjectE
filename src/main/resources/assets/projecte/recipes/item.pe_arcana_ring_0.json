@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "projecte:item.pe_arcana_ring",
+    "data": 0
+  },
+  "pattern": [
+    "ZIH",
+    "SMM",
+    "MMM"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "projecte:item.pe_swrg"
+    },
+    "H": {
+      "item": "projecte:item.pe_harvest_god",
+      "data": 0
+    },
+    "I": {
+      "item": "projecte:item.pe_ignition",
+      "data": 0
+    },
+    "Z": {
+      "item": "projecte:item.pe_zero_ring"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    }
+  }
+}

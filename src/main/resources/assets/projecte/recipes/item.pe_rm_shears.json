@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_shears"
+  },
+  "pattern": [
+    " R",
+    "S "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "S": {
+      "item": "projecte:item.pe_dm_shears"
+    }
+  }
+}

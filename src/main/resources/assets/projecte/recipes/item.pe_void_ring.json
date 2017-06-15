@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_void_ring"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_black_hole",
+      "data": 0
+    },
+    {
+      "item": "projecte:item.pe_gem_density"
+    },
+    {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "projecte:item.pe_dm_armor_3"
+  },
+  "pattern": [
+    "MMM",
+    "M M"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

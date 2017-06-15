@@ -77,7 +77,7 @@ public class AlchemicalBag extends ItemPE
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
-		if (func_194125_a(cTab))
+		if (isInCreativeTab(cTab))
 		{
 			for (int i = 0; i < 16; ++i)
 				list.add(new ItemStack(this, 1, i));

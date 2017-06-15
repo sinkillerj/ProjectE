@@ -21,12 +21,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesCovalenceRepair implements IRecipe
+public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	private ItemStack output = ItemStack.EMPTY;
 
@@ -92,7 +93,7 @@ public class RecipesCovalenceRepair implements IRecipe
 	}
 
 	@Override
-	public boolean func_194133_a(int width, int height) {
+	public boolean canFit(int width, int height) {
 		return width > 1 || height > 1;
 	}
 

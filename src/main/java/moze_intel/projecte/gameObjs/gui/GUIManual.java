@@ -106,7 +106,7 @@ public class GUIManual extends GuiScreen
 
 		for (GuiButton button : this.buttonList)
 		{
-			button.func_191745_a(this.mc, mouseX, mouseY, partialTicks);
+			button.drawButton(this.mc, mouseX, mouseY, partialTicks);
 		}
 
 	}
@@ -285,7 +285,7 @@ public class GUIManual extends GuiScreen
 		}
 
 		@Override
-		public void func_191745_a(@Nonnull Minecraft mc, int par2, int par3, float partialTicks)
+		public void drawButton(@Nonnull Minecraft mc, int par2, int par3, float partialTicks)
 		{
 			if (visible)
 			{
@@ -308,7 +308,7 @@ public class GUIManual extends GuiScreen
 		}
 
 		@Override
-		public void func_191745_a(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks)
+		public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks)
 		{
 			if (this.visible)
 			{

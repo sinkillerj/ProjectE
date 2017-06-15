@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "projecte:alchemical_chest"
+  },
+  "type": "forge:ore_shaped",
+  "group": "projecte:philosophers_stone",
+  "pattern": [
+    "LMH",
+    "SDS",
+    "ICI"
+  ],
+  "key": {
+    "L": { "item": "projecte:item.pe_covalence_dust", "data": 0 },
+    "M": { "item": "projecte:item.pe_covalence_dust", "data": 1 },
+    "H": { "item": "projecte:item.pe_covalence_dust", "data": 2 },
+    "S": { "item": "#STONE" },
+    "I": { "item": "#IRON" },
+    "C": { "item": "#CHEST" },
+    "D": { "item": "#DIAMOND" }
+  }
+}

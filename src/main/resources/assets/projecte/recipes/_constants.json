@@ -1,0 +1,72 @@
+[
+  {
+    "name": "OBSIDIAN",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "obsidian"
+    }
+  },
+  {
+    "name": "STONE",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stone"
+    }
+  },
+  {
+    "name": "IRON",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  },
+  {
+    "name": "CHEST",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "chestWood"
+    }
+  },
+  {
+    "name": "PAPER",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "paper"
+    }
+  },
+  {
+    "name": "STRING",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  },
+  {
+    "name": "REDSTONE",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    }
+  },
+  {
+    "name": "GLOWSTONE",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "dustGlowstone"
+    }
+  },
+  {
+    "name": "DIAMOND",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    }
+  },
+  {
+    "name": "DIAMOND_BLOCK",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockDiamond"
+    }
+  }
+]

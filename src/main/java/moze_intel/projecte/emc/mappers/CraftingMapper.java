@@ -41,7 +41,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
-		recipeloop: for (IRecipe recipe : CraftingManager.field_193380_a) {
+		recipeloop: for (IRecipe recipe : CraftingManager.REGISTRY) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput == null) continue;
@@ -185,11 +185,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable<Ingredient> recipeItems = null;
 			if (canHandle(recipe)) {
-				recipeItems = recipe.func_192400_c();
+				recipeItems = recipe.getIngredients();
 			}
 			List<ItemStack> inputs = new LinkedList<>();
 			for (Ingredient o : recipeItems) {
-				ItemStack[] stacks = o.func_193365_a();
+				ItemStack[] stacks = o.getMatchingStacks();
 
 				if (stacks.length > 0) {
 					// todo 1.12 vanilla recipes can now have multiple options for one spot, adjust?
@@ -220,12 +220,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Ingredient> recipeItems = recipe.func_192400_c();
+			Iterable<Ingredient> recipeItems = recipe.getIngredients();
 			ArrayList<Iterable<ItemStack>> variableInputs = Lists.newArrayList();
 			ArrayList<ItemStack> fixedInputs = Lists.newArrayList();
 			for (Ingredient recipeItem : recipeItems) {
 				List<ItemStack> recipeItemOptions = new LinkedList<>();
-				ItemStack[] recipeItemCollection = recipeItem.func_193365_a();
+				ItemStack[] recipeItemCollection = recipeItem.getMatchingStacks();
 				if (recipeItemCollection.length == 1) {
 					fixedInputs.add(recipeItemCollection[0].copy());
 					continue;
@@ -260,12 +260,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable<Ingredient> recipeItems = null;
 			if (recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden) {
-				recipeItems = recipe.func_192400_c();
+				recipeItems = recipe.getIngredients();
 			}
 			List<ItemStack> inputs = new LinkedList<>();
 			for (Ingredient o : recipeItems) {
-				if (o.func_193365_a().length == 1) {
-					inputs.add(o.func_193365_a()[0]);
+				if (o.getMatchingStacks().length == 1) {
+					inputs.add(o.getMatchingStacks()[0]);
 				} else {
 					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
 				}

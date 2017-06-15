@@ -17,13 +17,15 @@ import javax.annotation.Nonnull;
 public class PhilosStoneContainer extends Container
 {
 	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-	private final IInventory craftResult = new InventoryCraftResult();
+	private final InventoryCraftResult craftResult = new InventoryCraftResult();
 	private final World worldObj;
+	private final EntityPlayer player;
 	
 	public PhilosStoneContainer(InventoryPlayer invPlayer) 
 	{
-		this.worldObj = invPlayer.player.getEntityWorld();
-		
+		this.player = invPlayer.player;
+		this.worldObj = player.getEntityWorld();
+
 		//CraftingResult
 		this.addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
 		
@@ -47,7 +49,7 @@ public class PhilosStoneContainer extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inv)
 	{
-		craftResult.setInventorySlotContents(0, CraftingManager.findMatchingRecipe(craftMatrix, worldObj));
+		this.func_192389_a(player.world, this.player, this.craftMatrix, this.craftResult);
 	}
 	
 	@Override
