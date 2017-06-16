@@ -9,8 +9,14 @@
     "OSO"
   ],
   "key": {
-    "S": { "item": "#STONE" },
-    "O": { "item": "#OBSIDIAN" },
-    "P": { "item": "projecte:item.pe_philosophers_stone" }
+    "S": {
+      "item": "#STONE"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "P": {
+      "item": "projecte:item.pe_philosophers_stone"
+    }
   }
 }

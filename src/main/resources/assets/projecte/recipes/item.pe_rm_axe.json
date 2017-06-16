@@ -3,9 +3,9 @@
     "item": "projecte:item.pe_rm_axe"
   },
   "pattern": [
-    "RR ",
-    "RA ",
-    " M "
+    "RR",
+    "RA",
+    " M"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {

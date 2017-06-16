@@ -9,8 +9,15 @@
     "OOO"
   ],
   "key": {
-    "A": { "item": "projecte:relay_mk2" },
-    "O": { "item": "#OBSIDIAN" },
-    "R": { "item": "projecte:item.pe_matter", "data": 1 }
+    "A": {
+      "item": "projecte:relay_mk2"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    }
   }
 }

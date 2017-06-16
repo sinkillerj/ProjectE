@@ -6,7 +6,12 @@
   },
   "type": "forge:ore_shapeless",
   "ingredients": [
-    { "item": "#DIAMOND" },
-    { "item": "minecraft:coal", "data": 0 }
+    {
+      "item": "#DIAMOND"
+    },
+    {
+      "item": "minecraft:coal",
+      "data": 0
+    }
   ]
 }

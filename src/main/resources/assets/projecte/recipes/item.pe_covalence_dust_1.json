@@ -6,7 +6,11 @@
   },
   "type": "forge:ore_shapeless",
   "ingredients": [
-    { "item": "#IRON" },
-    { "item": "#REDSTONE" }
+    {
+      "item": "#IRON"
+    },
+    {
+      "item": "#REDSTONE"
+    }
   ]
 }

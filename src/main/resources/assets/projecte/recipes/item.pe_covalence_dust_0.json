@@ -6,14 +6,33 @@
   },
   "type": "forge:ore_shapeless",
   "ingredients": [
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "#COBBLE" },
-    { "item": "minecraft:coal", "data": 0 }
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "#COBBLE"
+    },
+    {
+      "item": "minecraft:coal",
+      "data": 0
+    }
   ]
 }

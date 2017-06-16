@@ -9,8 +9,14 @@
     "OOO"
   ],
   "key": {
-    "S": { "item": "#GLASS" },
-    "O": { "item": "#OBSIDIAN" },
-    "D": { "item": "#DIAMOND_BLOCK" }
+    "S": {
+      "item": "#GLASS"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "D": {
+      "item": "#DIAMOND_BLOCK"
+    }
   }
 }

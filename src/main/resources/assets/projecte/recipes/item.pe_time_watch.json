@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "projecte:item.pe_time_watch"
+  },
+  "pattern": [
+    "DGD",
+    "OCO",
+    "DGD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_swrg"
+  },
+  "pattern": [
+    "DFD",
+    "FIF",
+    "DFD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "F": {
+      "item": "#FEATHER"
+    },
+    "I": {
+      "item": "projecte:item.pe_ring_iron_band"
+    }
+  }
+}

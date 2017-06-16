@@ -9,8 +9,14 @@
     "ODO"
   ],
   "key": {
-    "C": { "item": "projecte:alchemical_chest" },
-    "O": { "item": "#OBSIDIAN" },
-    "D": { "item": "#DIAMOND" }
+    "C": {
+      "item": "projecte:alchemical_chest"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "D": {
+      "item": "#DIAMOND"
+    }
   }
 }

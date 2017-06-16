@@ -9,9 +9,17 @@
     "GGG"
   ],
   "key": {
-    "R": { "item": "minecraft:redstone_torch" },
-    "G": { "item": "#GLOWSTONE" },
-    "D": { "item": "#DIAMOND" },
-    "P": { "item": "projecte:item.pe_philosophers_stone" }
+    "R": {
+      "item": "minecraft:redstone_torch"
+    },
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "D": {
+      "item": "#DIAMOND"
+    },
+    "P": {
+      "item": "projecte:item.pe_philosophers_stone"
+    }
   }
 }

@@ -3,9 +3,9 @@
     "item": "projecte:item.pe_rm_sword"
   },
   "pattern": [
-    " R ",
-    " R ",
-    " S "
+    "R",
+    "R",
+    "S"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {

@@ -9,8 +9,15 @@
     "GGG"
   ],
   "key": {
-    "G": { "item": "#GLOWSTONE" },
-    "C": { "item": "projecte:collector_mk1" },
-    "R": { "item": "projecte:item.pe_matter", "data": 1 }
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "C": {
+      "item": "projecte:collector_mk1"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    }
   }
 }

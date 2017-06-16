@@ -10,7 +10,12 @@
     "MMM"
   ],
   "key": {
-    "M": { "item": "projecte:item.pe_fuel", "data": 1 },
-    "D": { "item": "#DIAMOND" }
+    "M": {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    "D": {
+      "item": "#DIAMOND"
+    }
   }
 }

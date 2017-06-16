@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "projecte:item.pe_alchemical_bag",
+    "data": 15
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_alchemical_bag",
+      "data": 32767
+    },
+    {
+      "item": "#DYEBLACK"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

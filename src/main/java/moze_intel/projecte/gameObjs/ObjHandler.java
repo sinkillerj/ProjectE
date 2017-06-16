@@ -1,5 +1,8 @@
 package moze_intel.projecte.gameObjs;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
@@ -124,6 +127,14 @@ import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ObjHandler
@@ -367,116 +378,19 @@ public class ObjHandler
 
 	public static void addRecipes()
 	{
-		/*
-		String diamondReplacement = "gemDiamond";
-		String diamondBlockReplacement = "blockDiamond";
-
-		//Shaped Recipes
-
-		//DM Tools
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmPick), "MMM", "XDX", "XDX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmAxe), "MMX", "MDX", "XDX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmShovel), "XMX", "XDX", "XDX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmSword), "XMX", "XMX", "XDX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmHoe), "MMX", "XDX", "XDX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmShears), "XM", "DX", 'D', "gemDiamond", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dmHammer), "MDM", "XDX", "XDX", 'D', "gemDiamond", 'M', matter));
-
-		//Rings
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', "ingotIron", 'L', Items.LAVA_BUCKET));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ironBand), "III", "ILI", "III", 'I', "ingotIron", 'L', volcanite));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(harvestGod), "SFS", "DID", "SFS", 'I', ironBand, 'S', "treeSapling", 'F', Blocks.RED_FLOWER, 'F', Blocks.RED_FLOWER, 'D', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(swrg), "DFD", "FIF", "DFD", 'I', ironBand, 'F', "feather", 'D', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(bodyStone), "SSS", "RLR", "SSS", 'R', new ItemStack(matter, 1, 1), 'S', Items.SUGAR, 'L', "gemLapis"));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(soulStone), "GGG", "RLR", "GGG", 'R', new ItemStack(matter, 1, 1), 'G', "dustGlowstone", 'L', "gemLapis"));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(mindStone), "BBB", "RLR", "BBB", 'R', new ItemStack(matter, 1, 1), 'B', Items.BOOK, 'L', "gemLapis"));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blackHole), "SSS", "DID", "SSS", 'I', ironBand, 'S', "string", 'D', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(eternalDensity), "DOD", "MDM", "DOD", 'D', "gemDiamond", 'O', "obsidian", 'M', matter));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(angelSmite), "BFB", "MIM", "BFB", 'B', Items.BOW, 'F', "feather", 'M', matter, 'I', ironBand));
-
-		//Watch of flowing time
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(timeWatch), "DOD", "GCG", "DOD", 'D', matter, 'O', "obsidian", 'G', "glowstone", 'C', Items.CLOCK));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(timeWatch), "DGD", "OCO", "DGD", 'D', matter, 'O', "obsidian", 'G', "glowstone", 'C', Items.CLOCK));
-
-		//Divining rods
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dRod1), "DDD", "DSD", "DDD", 'D', covalence, 'S', "stickWood"));
-
-		//Explosive items
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(hyperLens), "DDD", "MNM", "DDD", 'N', novaCatalyst, 'M', matter, 'D', "gemDiamond"));
-
-		//Tome
-		if (ProjectEConfig.difficulty.craftableTome)
-		{
-			GameRegistry.addRecipe(new ItemStack(tome), "HML", "KBK", "LMH", 'L', new ItemStack(covalence, 1, 0), 'M', new ItemStack(covalence, 1, 1), 'H', new ItemStack(covalence, 1, 2), 'B', Items.BOOK, 'K', new ItemStack(kleinStars, 1, 5));
-		}
-
-		//Manual
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 0));
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 1));
-		//GameRegistry.addShapelessRecipe(new ItemStack(manual, 1, 0), Items.BOOK, new ItemStack(covalence, 1, 2));
-
-		//TransmutationTablet
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(transmutationTablet), "DSD", "STS", "DSD", 'D', new ItemStack(matterBlock, 1, 0), 'S', "stone", 'T', transmuteStone));
-
-		//Mercurial Eye
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(mercEye), "OBO", "BRB", "BDB", 'O', "obsidian", 'B', Blocks.BRICK_BLOCK, 'R', new ItemStack(matter, 1, 1), 'D', "gemDiamond"));
-
-		//Shapeless Recipes
-		//Philos Stone exchanges
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.ENDER_PEARL), philosStone, "ingotIron", "ingotIron", "ingotIron", "ingotIron"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.IRON_INGOT, 8), philosStone, "ingotGold"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.GOLD_INGOT), philosStone, "ingotIron", "ingotIron", "ingotIron", "ingotIron", "ingotIron", "ingotIron", "ingotIron", "ingotIron"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.DIAMOND), philosStone, "ingotGold", "ingotGold", "ingotGold", "ingotGold"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.GOLD_INGOT, 4), philosStone, "gemDiamond"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.EMERALD), philosStone, "gemDiamond", "gemDiamond"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.DIAMOND, 2), philosStone, "gemEmerald"));
-
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
 		{
 			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
 			ItemStack output = new ItemStack(kleinStars, 1, i);
-			GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
+			// GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
 		}
 
-		//Other items
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.LAVA_BUCKET), volcanite, Items.BUCKET, "dustRedstone"));
+		// GameRegistry.addRecipe(new RecipesCovalenceRepair());
+		// RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
+		// RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
+		// RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
-
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.GRASS), new ItemStack(arcana, 1, OreDictionary.WILDCARD_VALUE), "dirt"));
-
-		// Taken from OreDictionary class
-		String[] dyes =
-		{
-			"Black",
-			"Red",
-			"Green",
-			"Brown",
-			"Blue",
-			"Purple",
-			"Cyan",
-			"LightGray",
-			"Gray",
-			"Pink",
-			"Lime",
-			"Yellow",
-			"LightBlue",
-			"Magenta",
-			"Orange",
-			"White"
-		};
-
-		for (int i = 0; i < 16; i++)
-		{
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(alchBag, 1, i), new ItemStack(alchBag, 1, OreDictionary.WILDCARD_VALUE), "dye" + dyes[15 - i]));
-		}
-
-		GameRegistry.addRecipe(new RecipesCovalenceRepair());
-		RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
-		RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
-
-*/
 		//Fuel Values
 		GameRegistry.registerFuelHandler(new FuelHandler());
 	}

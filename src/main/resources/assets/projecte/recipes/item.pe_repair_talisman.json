@@ -9,10 +9,23 @@
     "HML"
   ],
   "key": {
-    "P": { "item": "#PAPER" },
-    "S": { "item": "#STRING" },
-    "L": { "item": "projecte:item.pe_covalence_dust", "data": 0 },
-    "M": { "item": "projecte:item.pe_covalence_dust", "data": 1 },
-    "H": { "item": "projecte:item.pe_covalence_dust", "data": 2 }
+    "P": {
+      "item": "#PAPER"
+    },
+    "S": {
+      "item": "#STRING"
+    },
+    "L": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 0
+    },
+    "M": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 1
+    },
+    "H": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    }
   }
 }

@@ -3,9 +3,9 @@
     "item": "projecte:item.pe_rm_shovel"
   },
   "pattern": [
-    " R ",
-    " S ",
-    " M "
+    "R",
+    "S",
+    "M"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {

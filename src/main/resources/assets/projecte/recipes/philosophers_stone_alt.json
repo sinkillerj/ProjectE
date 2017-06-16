@@ -10,8 +10,14 @@
     "GRG"
   ],
   "key": {
-    "R": { "item": "#REDSTONE" },
-    "G": { "item": "#GLOWSTONE" },
-    "D": { "item": "#DIAMOND" }
+    "R": {
+      "item": "#REDSTONE"
+    },
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "D": {
+      "item": "#DIAMOND"
+    }
   }
 }

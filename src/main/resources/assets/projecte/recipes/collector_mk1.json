@@ -9,9 +9,17 @@
     "GFG"
   ],
   "key": {
-    "G": { "item": "#GLOWSTONE" },
-    "F": { "item": "minecraft:furnace" },
-    "D": { "item": "#DIAMOND" },
-    "T": { "item": "#GLASS" }
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "D": {
+      "item": "#DIAMOND"
+    },
+    "T": {
+      "item": "#GLASS"
+    }
   }
 }

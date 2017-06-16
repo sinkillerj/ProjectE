@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:grass"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_arcana_ring",
+      "data": 32767
+    },
+    {
+      "item": "#DIRT"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

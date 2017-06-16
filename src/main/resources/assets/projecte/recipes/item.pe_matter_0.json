@@ -10,7 +10,12 @@
     "AAA"
   ],
   "key": {
-    "A": { "item": "projecte:item.pe_fuel", "data": 2 },
-    "D": { "item": "#DIAMOND_BLOCK" }
+    "A": {
+      "item": "projecte:item.pe_fuel",
+      "data": 2
+    },
+    "D": {
+      "item": "#DIAMOND_BLOCK"
+    }
   }
 }
