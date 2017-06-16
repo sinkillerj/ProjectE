@@ -116,6 +116,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -412,12 +414,21 @@ public class ObjHandler
 		registerObj(i, name);
 	}
 
+	private static NonNullList<Ingredient> toIngredients(ItemStack... stacks) {
+		NonNullList<Ingredient> ingr = NonNullList.create();
+		for (ItemStack stack : stacks) {
+			ingr.add(Ingredient.fromStacks(stack));
+		}
+		return ingr;
+	}
+
 	/**
 	 * Philosopher's stone smelting recipes, EE3 style
 	 */
 	@SuppressWarnings("unchecked")
 	public static void registerPhiloStoneSmelting()
 	{
+
 		for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
 			if (entry.getKey().isEmpty() || entry.getValue().isEmpty())
@@ -429,10 +440,11 @@ public class ObjHandler
 			ItemStack output = entry.getValue().copy();
 			output.setCount(output.getCount() * 7);
 
-			// GameRegistry.addRecipe(new RecipeShapelessHidden(output, philosStone, input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)));
-
+			String inputName = input.getItem().getRegistryName().toString().replace(':', '_')+ "_" + input.getItemDamage();
+			ResourceLocation recipeName = new ResourceLocation(PECore.MODID, "philstone_smelt_" + inputName);
+			GameRegistry.register(new RecipeShapelessHidden("", output, toIngredients(new ItemStack(philosStone), input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE))), recipeName);
 		}
-		RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
+		// RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}
 
 	public static class FuelHandler implements IFuelHandler
