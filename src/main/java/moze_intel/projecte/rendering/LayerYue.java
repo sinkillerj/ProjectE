@@ -32,6 +32,11 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	@Override
 	public void doRenderLayer(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
+		if (player.isInvisible())
+		{
+			return;
+		}
+
 		if(SIN_UUID.equals(player.getUniqueID())
 				|| CLAR_UUID.equals(player.getUniqueID())
 				|| PECore.DEV_ENVIRONMENT)
