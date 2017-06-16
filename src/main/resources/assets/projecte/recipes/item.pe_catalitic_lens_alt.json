@@ -4,7 +4,7 @@
   },
   "pattern": [
     "MMM",
-    "DMH",
+    "HMD",
     "MMM"
   ],
   "type": "minecraft:crafting_shaped",

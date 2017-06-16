@@ -1,0 +1,12 @@
+{
+  "result": {
+    "item": "projecte:item.pe_covalence_dust",
+    "count": 40,
+    "data": 2
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    { "item": "#DIAMOND" },
+    { "item": "minecraft:coal", "data": 0 }
+  ]
+}

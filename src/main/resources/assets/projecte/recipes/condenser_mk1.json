@@ -3,7 +3,6 @@
     "item": "projecte:condenser_mk1"
   },
   "type": "forge:ore_shaped",
-  "group": "projecte:philosophers_stone",
   "pattern": [
     "ODO",
     "DCD",

@@ -3,7 +3,6 @@
     "item": "projecte:alchemical_chest"
   },
   "type": "forge:ore_shaped",
-  "group": "projecte:philosophers_stone",
   "pattern": [
     "LMH",
     "SDS",

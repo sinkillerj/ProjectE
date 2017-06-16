@@ -1,5 +1,19 @@
 [
   {
+    "name": "COBBLE",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    }
+  },
+  {
+    "name": "GLASS",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlassColorless"
+    }
+  },
+  {
     "name": "OBSIDIAN",
     "ingredient": {
       "type": "forge:ore_dict",

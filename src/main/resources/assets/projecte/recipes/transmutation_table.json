@@ -3,7 +3,6 @@
     "item": "projecte:transmutation_table"
   },
   "type": "forge:ore_shaped",
-  "group": "projecte:philosophers_stone",
   "pattern": [
     "OSO",
     "SPS",

@@ -1,0 +1,12 @@
+{
+  "result": {
+    "item": "projecte:item.pe_covalence_dust",
+    "count": 40,
+    "data": 1
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    { "item": "#IRON" },
+    { "item": "#REDSTONE" }
+  ]
+}
