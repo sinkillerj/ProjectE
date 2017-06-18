@@ -63,7 +63,7 @@ public class PECore
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
-	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+	public static boolean DEV_ENVIRONMENT;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	@Instance(MODID)
@@ -88,6 +88,8 @@ public class PECore
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+
 		CONFIG_DIR = new File(event.getModConfigurationDirectory(), MODNAME);
 		
 		if (!CONFIG_DIR.exists())
