@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:matter_block",
+      "data": 1
+    },
+    "title": {
+      "translate": "advancements.pe_rm_block"
+    },
+    "description": {
+      "translate": "advancements.pe_rm_block.desc"
+    }
+  },
+  "parent": "projecte:red_matter",
+  "criteria": {
+    "rm_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:matter_block",
+            "data": 1
+          }
+        ]
+      }
+    }
+  }
+}

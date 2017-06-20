@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:relay_mk1"
+    },
+    "title": {
+      "translate": "advancements.pe_relay"
+    },
+    "description": {
+      "translate": "advancements.pe_relay.desc"
+    }
+  },
+  "parent": "projecte:collector",
+  "criteria": {
+    "relay": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:relay_mk1"
+          }
+        ]
+      }
+    }
+  }
+}
