@@ -45,16 +45,21 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy implements IProxy
 {
 	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received
@@ -84,8 +89,8 @@ public class ClientProxy implements IProxy
 		ClientKeyHelper.registerMCBindings();
 	}
 
-	@Override
-	public void registerModels()
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent evt)
 	{
 		// Blocks with special needs
 		ModelLoader.setCustomStateMapper(
@@ -189,10 +194,10 @@ public class ClientProxy implements IProxy
 		registerBlock(ObjHandler.collectorMK3);
 		registerBlock(ObjHandler.condenser);
 		registerBlock(ObjHandler.condenserMk2);
-		registerBlock(ObjHandler.confuseTorch);
+		registerBlock(ObjHandler.interdictionTorch);
 		registerBlock(ObjHandler.dmFurnaceOff);
 		registerBlock(ObjHandler.dmPedestal);
-		registerBlock(ObjHandler.energyCollector);
+		registerBlock(ObjHandler.collectorMK1);
 		registerBlock(ObjHandler.novaCatalyst);
 		registerBlock(ObjHandler.novaCataclysm);
 		registerBlock(ObjHandler.relay);
@@ -202,31 +207,31 @@ public class ClientProxy implements IProxy
 		registerBlock(ObjHandler.transmuteStone);
 	}
 
-	private void registerBlock(Block b)
+	private static void registerBlock(Block b)
 	{
 		String name = ForgeRegistries.BLOCKS.getKey(b).toString();
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation(name, "inventory"));
 	}
 
-	private void registerItem(Item i)
+	private static void registerItem(Item i)
 	{
 		registerItem(i, 0);
 	}
 
-	private void registerItem(Item i, int meta)
+	private static void registerItem(Item i, int meta)
 	{
 		String name = ForgeRegistries.ITEMS.getKey(i).toString();
 		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(name, "inventory"));
 	}
 
-	private void registerCovalenceDust()
+	private static void registerCovalenceDust()
 	{
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 0, new ModelResourceLocation(PECore.MODID + ":" + "covalence_low", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 1, new ModelResourceLocation(PECore.MODID + ":" + "covalence_medium", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 2, new ModelResourceLocation(PECore.MODID + ":" + "covalence_high", "inventory"));
 	}
 
-	private void registerBags()
+	private static void registerBags()
 	{
 		for (EnumDyeColor e : EnumDyeColor.values())
 		{
@@ -234,7 +239,7 @@ public class ClientProxy implements IProxy
 		}
 	}
 
-	private void registerFuels()
+	private static void registerFuels()
 	{
 		for (EnumFuelType e : EnumFuelType.values())
 		{
@@ -246,7 +251,7 @@ public class ClientProxy implements IProxy
 		}
 	}
 
-	private void registerMatter()
+	private static void registerMatter()
 	{
 		for (EnumMatterType m : EnumMatterType.values())
 		{
@@ -258,7 +263,7 @@ public class ClientProxy implements IProxy
 		}
 	}
 
-	private void registerKlein()
+	private static void registerKlein()
 	{
 		for (KleinStar.EnumKleinTier e : KleinStar.EnumKleinTier.values())
 		{
@@ -266,7 +271,7 @@ public class ClientProxy implements IProxy
 		}
 	}
 
-	private void registerPowerStones()
+	private static void registerPowerStones()
 	{
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_on", "inventory"));
@@ -281,7 +286,7 @@ public class ClientProxy implements IProxy
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "life_stone_on", "inventory"));
 	}
 
-	private void registerPowerItems()
+	private static void registerPowerItems()
 	{
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation(PECore.MODID + ":" + "bhb_off", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation(PECore.MODID + ":" + "bhb_on", "inventory"));
@@ -349,12 +354,6 @@ public class ClientProxy implements IProxy
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 	{
 		return manager -> new RenderSnowball<>(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
-	}
-
-	@Override
-	public void registerClientOnlyEvents() 
-	{
-		MinecraftForge.EVENT_BUS.register(new TransmutationRenderingEvent());
 	}
 
 	@Override

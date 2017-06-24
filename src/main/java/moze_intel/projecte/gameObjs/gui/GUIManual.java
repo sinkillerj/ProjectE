@@ -85,6 +85,7 @@ public class GUIManual extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
+		drawDefaultBackground();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);

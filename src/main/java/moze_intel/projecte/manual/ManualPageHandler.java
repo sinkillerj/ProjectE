@@ -63,14 +63,14 @@ public class ManualPageHandler
         //Blocks
         addBlock(ObjHandler.alchChest, PageCategory.BLOCK);
         addImagePage("img_alchchest", new ResourceLocation(PECore.MODID, "textures/gui/alchchest.png"), PageCategory.BLOCK);
-        addBlock(ObjHandler.confuseTorch, PageCategory.BLOCK);
+        addBlock(ObjHandler.interdictionTorch, PageCategory.BLOCK);
         addBlock(ObjHandler.transmuteStone, PageCategory.BLOCK);
         addBlock(ObjHandler.condenser, PageCategory.BLOCK);
         addBlock(ObjHandler.condenserMk2, PageCategory.BLOCK);
         addBlock(ObjHandler.rmFurnaceOff, PageCategory.BLOCK);
         addBlock(ObjHandler.dmFurnaceOff, PageCategory.BLOCK);
         addBlock(ObjHandler.dmPedestal, PageCategory.BLOCK);
-        addBlock(ObjHandler.energyCollector, PageCategory.BLOCK);
+        addBlock(ObjHandler.collectorMK1, PageCategory.BLOCK);
         addBlock(ObjHandler.collectorMK2, PageCategory.BLOCK);
         addBlock(ObjHandler.collectorMK3, PageCategory.BLOCK);
         addBlock(ObjHandler.relay, PageCategory.BLOCK);

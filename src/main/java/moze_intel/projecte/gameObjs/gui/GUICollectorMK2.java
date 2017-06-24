@@ -24,7 +24,15 @@ public class GUICollectorMK2 extends GuiContainer
 		this.xSize = 200;
 		this.ySize = 165;
 	}
-	
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{

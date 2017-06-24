@@ -31,6 +31,7 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,18 +39,18 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class TransmutationRenderingEvent 
 {
-	private final Minecraft mc = Minecraft.getMinecraft();
-	private final List<AxisAlignedBB> renderList = Lists.newArrayList();
-	private double playerX;
-	private double playerY;
-	private double playerZ;
-	private IBlockState transmutationResult;
+	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final List<AxisAlignedBB> renderList = Lists.newArrayList();
+	private static double playerX;
+	private static double playerY;
+	private static double playerZ;
+	private static IBlockState transmutationResult;
 
 	@SubscribeEvent
-	public void preDrawHud(RenderGameOverlayEvent.Pre event)
+	public static void preDrawHud(RenderGameOverlayEvent.Pre event)
 	{
 		if (event.getType() == ElementType.CROSSHAIRS)
 		{
@@ -80,7 +81,7 @@ public class TransmutationRenderingEvent
 	}
 	
 	@SubscribeEvent
-	public void onOverlay(DrawBlockHighlightEvent event)
+	public static void onOverlay(DrawBlockHighlightEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		World world = player.getEntityWorld();
@@ -126,7 +127,7 @@ public class TransmutationRenderingEvent
 		}
 	}
 	
-	private void drawAll()
+	private static void drawAll()
 	{
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -190,14 +191,14 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableBlend();
 	}
 	
-	private void addBlockToRenderList(World world, BlockPos pos)
+	private static void addBlockToRenderList(World world, BlockPos pos)
 	{
 		AxisAlignedBB box = world.getBlockState(pos).getSelectedBoundingBox(world, pos).grow(0.02);
 		box = box.offset(-playerX, -playerY, -playerZ);
 		renderList.add(box);
 	}
 
-	private float getPulseProportion()
+	private static float getPulseProportion()
 	{
 		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}

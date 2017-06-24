@@ -96,7 +96,7 @@ public class ToolTipEvent
 			String unit = I18n.format("pe.emc.name");
 			String rate = I18n.format("pe.emc.rate");
 
-			if (currentBlock == ObjHandler.energyCollector)
+			if (currentBlock == ObjHandler.collectorMK1)
 			{
 				event.getToolTip().add(TextFormatting.DARK_PURPLE
 						+ String.format(I18n.format("pe.emc.maxgenrate_tooltip")

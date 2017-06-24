@@ -32,6 +32,14 @@ public class GUITransmutation extends GuiContainer
 		this.xSize = 228;
 		this.ySize = 196;
 	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
 	
 	@Override
 	public void initGui() 

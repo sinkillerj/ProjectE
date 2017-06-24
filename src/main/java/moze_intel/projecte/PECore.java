@@ -109,12 +109,8 @@ public class PECore
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		proxy.registerKeyBinds();
-		SoundHandler.init();
 		ObjHandler.register();
-		ObjHandler.addRecipes();
 
-		proxy.registerClientOnlyEvents();
-		proxy.registerModels();
 		proxy.registerRenderers();
 
 	}
@@ -129,7 +125,6 @@ public class PECore
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.init();
 		proxy.initializeManual();
 		

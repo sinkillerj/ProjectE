@@ -1,10 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.blocks.Condenser;
@@ -18,9 +14,7 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
-import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -109,41 +103,34 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.RecipeSorter.Category;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Map.Entry;
 
+@Mod.EventBusSubscriber
 public class ObjHandler
 {
 	public static final CreativeTabs cTab = new CreativeTab();
 	public static final Block alchChest = new AlchemicalChest();
-	public static final Block confuseTorch = new InterdictionTorch();
+	public static final Block interdictionTorch = new InterdictionTorch();
 	public static final Block transmuteStone = new TransmutationStone();
 	public static final Block condenser = new Condenser();
 	public static final Block condenserMk2 = new CondenserMK2();
@@ -154,7 +141,7 @@ public class ObjHandler
 	public static final Block dmPedestal = new Pedestal();
 	public static final Block matterBlock = new MatterBlock();
 	public static final Block fuelBlock = new FuelBlock();
-	public static final Block energyCollector = new Collector(1);
+	public static final Block collectorMK1 = new Collector(1);
 	public static final Block collectorMK2 = new Collector(2);
 	public static final Block collectorMK3 = new Collector(3);
 	public static final Block relay = new Relay(1);
@@ -242,115 +229,138 @@ public class ObjHandler
 	public static final Item transmutationTablet = new TransmutationTablet();
 	public static final Item manual = new PEManual();
 
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> evt)
+	{
+		IForgeRegistry<Block> r = evt.getRegistry();
+		registerObj(r, alchChest, "alchemical_chest");
+		registerObj(r, collectorMK1, "collector_mk1");
+		registerObj(r, collectorMK2, "collector_mk2");
+		registerObj(r, collectorMK3, "collector_mk3");
+		registerObj(r, condenser, "condenser_mk1");
+		registerObj(r, condenserMk2, "condenser_mk2");
+		registerObj(r, dmFurnaceOff, "dm_furnace");
+		registerObj(r, dmFurnaceOn, "dm_furnace_lit");
+		registerObj(r, dmPedestal, "dm_pedestal");
+		registerObj(r, fuelBlock, "fuel_block");
+		registerObj(r, interdictionTorch, "interdiction_torch");
+		registerObj(r, matterBlock, "matter_block");
+		registerObj(r, novaCatalyst, "nova_catalyst");
+		registerObj(r, novaCataclysm, "nova_cataclysm");
+		registerObj(r, relay, "relay_mk1");
+		registerObj(r, relayMK2, "relay_mk2");
+		registerObj(r, relayMK3, "relay_mk3");
+		registerObj(r, rmFurnaceOff, "rm_furnace");
+		registerObj(r, rmFurnaceOn, "rm_furnace_lit");
+		registerObj(r, transmuteStone, "transmutation_table");
+	}
+
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> evt)
+	{
+		IForgeRegistry<Item> r = evt.getRegistry();
+		registerObj(r, new ItemAlchemyChestBlock(alchChest), alchChest.getRegistryName());
+		registerObj(r, new ItemCollectorBlock(collectorMK1), collectorMK1.getRegistryName());
+		registerObj(r, new ItemCollectorBlock(collectorMK2), collectorMK2.getRegistryName());
+		registerObj(r, new ItemCollectorBlock(collectorMK3), collectorMK3.getRegistryName());
+		registerObj(r, new ItemCondenserBlock(condenser), condenser.getRegistryName());
+		registerObj(r, new ItemBlock(condenserMk2), condenserMk2.getRegistryName());
+		registerObj(r, new ItemDMFurnaceBlock(dmFurnaceOff), dmFurnaceOff.getRegistryName());
+		registerObj(r, new ItemBlock(dmPedestal), dmPedestal.getRegistryName());
+		registerObj(r, new ItemFuelBlock(fuelBlock), fuelBlock.getRegistryName());
+		registerObj(r, new ItemBlock(interdictionTorch), interdictionTorch.getRegistryName());
+		registerObj(r, new ItemMatterBlock(matterBlock), matterBlock.getRegistryName());
+		registerObj(r, new ItemBlock(novaCatalyst), novaCatalyst.getRegistryName());
+		registerObj(r, new ItemBlock(novaCataclysm), novaCataclysm.getRegistryName());
+		registerObj(r, new ItemRelayBlock(relay), relay.getRegistryName());
+		registerObj(r, new ItemRelayBlock(relayMK2), relayMK2.getRegistryName());
+		registerObj(r, new ItemRelayBlock(relayMK3), relayMK3.getRegistryName());
+		registerObj(r, new ItemRMFurnaceBlock(rmFurnaceOff), rmFurnaceOff.getRegistryName());
+		registerObj(r, new ItemTransmutationBlock(transmuteStone), transmuteStone.getRegistryName());
+
+		registerObj(r, philosStone, philosStone.getUnlocalizedName());
+		registerObj(r, alchBag, alchBag.getUnlocalizedName());
+		registerObj(r, repairTalisman, repairTalisman.getUnlocalizedName());
+		registerObj(r, kleinStars, kleinStars.getUnlocalizedName());
+		registerObj(r, fuels, fuels.getUnlocalizedName());
+		registerObj(r, covalence, covalence.getUnlocalizedName());
+		registerObj(r, matter, matter.getUnlocalizedName());
+
+		registerObj(r, dmPick, dmPick.getUnlocalizedName());
+		registerObj(r, dmAxe, dmAxe.getUnlocalizedName());
+		registerObj(r, dmShovel, dmShovel.getUnlocalizedName());
+		registerObj(r, dmSword, dmSword.getUnlocalizedName());
+		registerObj(r, dmHoe, dmHoe.getUnlocalizedName());
+		registerObj(r, dmShears, dmShears.getUnlocalizedName());
+		registerObj(r, dmHammer, dmHammer.getUnlocalizedName());
+
+		registerObj(r, rmPick, rmPick.getUnlocalizedName());
+		registerObj(r, rmAxe, rmAxe.getUnlocalizedName());
+		registerObj(r, rmShovel, rmShovel.getUnlocalizedName());
+		registerObj(r, rmSword, rmSword.getUnlocalizedName());
+		registerObj(r, rmHoe, rmHoe.getUnlocalizedName());
+		registerObj(r, rmShears, rmShears.getUnlocalizedName());
+		registerObj(r, rmHammer, rmHammer.getUnlocalizedName());
+		registerObj(r, rmKatar, rmKatar.getUnlocalizedName());
+		registerObj(r, rmStar, rmStar.getUnlocalizedName());
+
+		registerObj(r, dmHelmet, dmHelmet.getUnlocalizedName());
+		registerObj(r, dmChest, dmChest.getUnlocalizedName());
+		registerObj(r, dmLegs, dmLegs.getUnlocalizedName());
+		registerObj(r, dmFeet, dmFeet.getUnlocalizedName());
+
+		registerObj(r, rmHelmet, rmHelmet.getUnlocalizedName());
+		registerObj(r, rmChest, rmChest.getUnlocalizedName());
+		registerObj(r, rmLegs, rmLegs.getUnlocalizedName());
+		registerObj(r, rmFeet, rmFeet.getUnlocalizedName());
+
+		registerObj(r, gemHelmet, gemHelmet.getUnlocalizedName());
+		registerObj(r, gemChest, gemChest.getUnlocalizedName());
+		registerObj(r, gemLegs, gemLegs.getUnlocalizedName());
+		registerObj(r, gemFeet, gemFeet.getUnlocalizedName());
+
+		registerObj(r, ironBand, ironBand.getUnlocalizedName());
+		registerObj(r, blackHole, blackHole.getUnlocalizedName());
+		registerObj(r, angelSmite, angelSmite.getUnlocalizedName());
+		registerObj(r, harvestGod, harvestGod.getUnlocalizedName());
+		registerObj(r, ignition, ignition.getUnlocalizedName());
+		registerObj(r, zero, zero.getUnlocalizedName());
+		registerObj(r, swrg, swrg.getUnlocalizedName());
+		registerObj(r, timeWatch, timeWatch.getUnlocalizedName());
+		registerObj(r, eternalDensity, eternalDensity.getUnlocalizedName());
+		registerObj(r, dRod1, dRod1.getUnlocalizedName());
+		registerObj(r, dRod2, dRod2.getUnlocalizedName());
+		registerObj(r, dRod3, dRod3.getUnlocalizedName());
+		registerObj(r, mercEye, mercEye.getUnlocalizedName());
+		registerObj(r, voidRing, voidRing.getUnlocalizedName());
+		registerObj(r, arcana, arcana.getUnlocalizedName());
+
+		registerObj(r, bodyStone, bodyStone.getUnlocalizedName());
+		registerObj(r, soulStone, soulStone.getUnlocalizedName());
+		registerObj(r, mindStone, mindStone.getUnlocalizedName());
+		registerObj(r, lifeStone, lifeStone.getUnlocalizedName());
+
+		registerObj(r, everTide, everTide.getUnlocalizedName());
+		registerObj(r, volcanite, volcanite.getUnlocalizedName());
+
+		registerObj(r, waterOrb, waterOrb.getUnlocalizedName());
+		registerObj(r, lavaOrb, lavaOrb.getUnlocalizedName());
+		registerObj(r, mobRandomizer, mobRandomizer.getUnlocalizedName());
+		registerObj(r, lensExplosive, lensExplosive.getUnlocalizedName());
+		registerObj(r, fireProjectile, fireProjectile.getUnlocalizedName());
+		registerObj(r, windProjectile, windProjectile.getUnlocalizedName());
+
+		registerObj(r, dCatalyst, dCatalyst.getUnlocalizedName());
+		registerObj(r, hyperLens, hyperLens.getUnlocalizedName());
+		registerObj(r, cataliticLens, cataliticLens.getUnlocalizedName());
+
+		registerObj(r, tome, tome.getUnlocalizedName());
+		registerObj(r, transmutationTablet, transmutationTablet.getUnlocalizedName());
+		registerObj(r, manual, manual.getUnlocalizedName());
+	}
+
 	public static void register()
 	{
-		// Blocks without special ItemBlock
-		registerBlockWithItem(confuseTorch, "interdiction_torch");
-		registerBlockWithItem(condenserMk2, "condenser_mk2");
-		registerBlockWithItem(dmPedestal, "dm_pedestal");
-		registerBlockWithItem(novaCatalyst, "nova_catalyst");
-		registerBlockWithItem(novaCataclysm, "nova_cataclysm");
-
-		// Blocks without any item form
-		registerObj(rmFurnaceOn, "rm_furnace_lit");
-		registerObj(dmFurnaceOn, "dm_furnace_lit");
-
-		// Blocks with ItemBlock
-		registerBlockWithItem(alchChest, new ItemAlchemyChestBlock(alchChest), "alchemical_chest");
-		registerBlockWithItem(transmuteStone, new ItemTransmutationBlock(transmuteStone), "transmutation_table");
-		registerBlockWithItem(condenser, new ItemCondenserBlock(condenser), "condenser_mk1");
-		registerBlockWithItem(rmFurnaceOff, new ItemRMFurnaceBlock(rmFurnaceOff), "rm_furnace");
-		registerBlockWithItem(dmFurnaceOff, new ItemDMFurnaceBlock(dmFurnaceOff), "dm_furnace");
-		registerBlockWithItem(matterBlock, new ItemMatterBlock(matterBlock), "matter_block");
-		registerBlockWithItem(fuelBlock, new ItemFuelBlock(fuelBlock), "fuel_block");
-		registerBlockWithItem(energyCollector, new ItemCollectorBlock(energyCollector), "collector_mk1");
-		registerBlockWithItem(collectorMK2, new ItemCollectorBlock(collectorMK2), "collector_mk2");
-		registerBlockWithItem(collectorMK3, new ItemCollectorBlock(collectorMK3), "collector_mk3");
-		registerBlockWithItem(relay, new ItemRelayBlock(relay), "relay_mk1");
-		registerBlockWithItem(relayMK2, new ItemRelayBlock(relayMK2), "relay_mk2");
-		registerBlockWithItem(relayMK3, new ItemRelayBlock(relayMK3), "relay_mk3");
-
-		//Items
-		registerObj(philosStone, philosStone.getUnlocalizedName());
-		registerObj(alchBag, alchBag.getUnlocalizedName());
-		registerObj(repairTalisman, repairTalisman.getUnlocalizedName());
-		registerObj(kleinStars, kleinStars.getUnlocalizedName());
-		registerObj(fuels, fuels.getUnlocalizedName());
-		registerObj(covalence, covalence.getUnlocalizedName());
-		registerObj(matter, matter.getUnlocalizedName());
-
-		registerObj(dmPick, dmPick.getUnlocalizedName());
-		registerObj(dmAxe, dmAxe.getUnlocalizedName());
-		registerObj(dmShovel, dmShovel.getUnlocalizedName());
-		registerObj(dmSword, dmSword.getUnlocalizedName());
-		registerObj(dmHoe, dmHoe.getUnlocalizedName());
-		registerObj(dmShears, dmShears.getUnlocalizedName());
-		registerObj(dmHammer, dmHammer.getUnlocalizedName());
-
-		registerObj(rmPick, rmPick.getUnlocalizedName());
-		registerObj(rmAxe, rmAxe.getUnlocalizedName());
-		registerObj(rmShovel, rmShovel.getUnlocalizedName());
-		registerObj(rmSword, rmSword.getUnlocalizedName());
-		registerObj(rmHoe, rmHoe.getUnlocalizedName());
-		registerObj(rmShears, rmShears.getUnlocalizedName());
-		registerObj(rmHammer, rmHammer.getUnlocalizedName());
-		registerObj(rmKatar, rmKatar.getUnlocalizedName());
-		registerObj(rmStar, rmStar.getUnlocalizedName());
-
-		registerObj(dmHelmet, dmHelmet.getUnlocalizedName());
-		registerObj(dmChest, dmChest.getUnlocalizedName());
-		registerObj(dmLegs, dmLegs.getUnlocalizedName());
-		registerObj(dmFeet, dmFeet.getUnlocalizedName());
-
-		registerObj(rmHelmet, rmHelmet.getUnlocalizedName());
-		registerObj(rmChest, rmChest.getUnlocalizedName());
-		registerObj(rmLegs, rmLegs.getUnlocalizedName());
-		registerObj(rmFeet, rmFeet.getUnlocalizedName());
-
-		registerObj(gemHelmet, gemHelmet.getUnlocalizedName());
-		registerObj(gemChest, gemChest.getUnlocalizedName());
-		registerObj(gemLegs, gemLegs.getUnlocalizedName());
-		registerObj(gemFeet, gemFeet.getUnlocalizedName());
-
-		registerObj(ironBand, ironBand.getUnlocalizedName());
-		registerObj(blackHole, blackHole.getUnlocalizedName());
-		registerObj(angelSmite, angelSmite.getUnlocalizedName());
-		registerObj(harvestGod, harvestGod.getUnlocalizedName());
-		registerObj(ignition, ignition.getUnlocalizedName());
-		registerObj(zero, zero.getUnlocalizedName());
-		registerObj(swrg, swrg.getUnlocalizedName());
-		registerObj(timeWatch, timeWatch.getUnlocalizedName());
-		registerObj(eternalDensity, eternalDensity.getUnlocalizedName());
-		registerObj(dRod1, dRod1.getUnlocalizedName());
-		registerObj(dRod2, dRod2.getUnlocalizedName());
-		registerObj(dRod3, dRod3.getUnlocalizedName());
-		registerObj(mercEye, mercEye.getUnlocalizedName());
-		registerObj(voidRing, voidRing.getUnlocalizedName());
-		registerObj(arcana, arcana.getUnlocalizedName());
-
-		registerObj(bodyStone, bodyStone.getUnlocalizedName());
-		registerObj(soulStone, soulStone.getUnlocalizedName());
-		registerObj(mindStone, mindStone.getUnlocalizedName());
-		registerObj(lifeStone, lifeStone.getUnlocalizedName());
-
-		registerObj(everTide, everTide.getUnlocalizedName());
-		registerObj(volcanite, volcanite.getUnlocalizedName());
-
-		registerObj(waterOrb, waterOrb.getUnlocalizedName());
-		registerObj(lavaOrb, lavaOrb.getUnlocalizedName());
-		registerObj(mobRandomizer, mobRandomizer.getUnlocalizedName());
-		registerObj(lensExplosive, lensExplosive.getUnlocalizedName());
-		registerObj(fireProjectile, fireProjectile.getUnlocalizedName());
-		registerObj(windProjectile, windProjectile.getUnlocalizedName());
-
-		registerObj(dCatalyst, dCatalyst.getUnlocalizedName());
-		registerObj(hyperLens, hyperLens.getUnlocalizedName());
-		registerObj(cataliticLens, cataliticLens.getUnlocalizedName());
-
-		registerObj(tome, tome.getUnlocalizedName());
-		registerObj(transmutationTablet, transmutationTablet.getUnlocalizedName());
-		registerObj(manual, manual.getUnlocalizedName());
-
 		//Tile Entities
 		GameRegistry.registerTileEntityWithAlternatives(AlchChestTile.class, "AlchChestTile", "Alchemical Chest Tile");
 		GameRegistry.registerTileEntityWithAlternatives(InterdictionTile.class, "InterdictionTile", "Interdiction Torch Tile");
@@ -376,9 +386,12 @@ public class ObjHandler
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "homing_arrow"), EntityHomingArrow.class, "HomingArrow", 8, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "fire_projectile"), EntityFireProjectile.class, "FireProjectile", 9, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "swrg_projectile"), EntitySWRGProjectile.class, "LightningProjectile", 10, PECore.instance, 256, 10, true);
+
+		GameRegistry.registerFuelHandler(new FuelHandler());
 	}
 
-	public static void addRecipes()
+	@SubscribeEvent
+	public static void addRecipes(RegistryEvent.Register<IRecipe> evt)
 	{
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
@@ -393,25 +406,17 @@ public class ObjHandler
 		// RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
 		// RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
-		//Fuel Values
-		GameRegistry.registerFuelHandler(new FuelHandler());
+		registerPhiloStoneSmelting(evt.getRegistry());
 	}
 	
-	private static void registerObj(IForgeRegistryEntry<?> o, String name)
+	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, String name)
 	{
-		GameRegistry.register(o, new ResourceLocation(PECore.MODID, name));
+		registerObj(registry, o, new ResourceLocation(PECore.MODID, name));
 	}
 
-	private static void registerBlockWithItem(Block b, String name)
+	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)
 	{
-		registerObj(b, name);
-		registerObj(new ItemBlock(b), name);
-	}
-
-	private static void registerBlockWithItem(Block b, Item i, String name)
-	{
-		registerObj(b, name);
-		registerObj(i, name);
+		registry.register(o.setRegistryName(name));
 	}
 
 	private static NonNullList<Ingredient> toIngredients(ItemStack... stacks) {
@@ -422,13 +427,8 @@ public class ObjHandler
 		return ingr;
 	}
 
-	/**
-	 * Philosopher's stone smelting recipes, EE3 style
-	 */
-	@SuppressWarnings("unchecked")
-	public static void registerPhiloStoneSmelting()
+	private static void registerPhiloStoneSmelting(IForgeRegistry<IRecipe> registry)
 	{
-
 		for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
 			if (entry.getKey().isEmpty() || entry.getValue().isEmpty())
@@ -442,7 +442,9 @@ public class ObjHandler
 
 			String inputName = input.getItem().getRegistryName().toString().replace(':', '_')+ "_" + input.getItemDamage();
 			ResourceLocation recipeName = new ResourceLocation(PECore.MODID, "philstone_smelt_" + inputName);
-			GameRegistry.register(new RecipeShapelessHidden("", output, toIngredients(new ItemStack(philosStone), input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE))), recipeName);
+			registry.register(new RecipeShapelessHidden("", output,
+									toIngredients(new ItemStack(philosStone), input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)))
+								.setRegistryName(recipeName));
 		}
 		// RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}

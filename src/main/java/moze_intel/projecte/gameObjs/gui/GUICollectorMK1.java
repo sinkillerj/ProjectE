@@ -24,6 +24,14 @@ public class GUICollectorMK1 extends GuiContainer
 	}
 
 	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		this.fontRenderer.drawString(Integer.toString(container.emc), 60, 32, 4210752);
