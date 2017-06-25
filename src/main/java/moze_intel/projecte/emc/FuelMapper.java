@@ -8,12 +8,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public final class FuelMapper 
 {
-	private static final List<SimpleStack> FUEL_MAP = Lists.newArrayList();
+	private static final List<SimpleStack> FUEL_MAP = new ArrayList<>();
 	
 	public static void loadMap()
 	{

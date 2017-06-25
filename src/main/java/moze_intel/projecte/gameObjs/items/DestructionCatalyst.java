@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DestructionCatalyst extends ItemCharge
@@ -47,7 +48,7 @@ public class DestructionCatalyst extends ItemCharge
 
 		AxisAlignedBB box = WorldHelper.getDeepBox(coords, facing, --numRows);
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{

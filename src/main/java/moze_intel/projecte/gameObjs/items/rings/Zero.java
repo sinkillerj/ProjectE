@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
@@ -152,7 +153,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.zeroPedCooldown != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal2"));

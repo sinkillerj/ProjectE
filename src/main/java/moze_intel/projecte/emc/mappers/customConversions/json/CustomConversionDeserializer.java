@@ -15,6 +15,7 @@ import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CustomConversionDeserializer implements JsonDeserializer<CustomConversion>
@@ -42,7 +43,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 				}
 				foundIngredients = true;
 				if (element.isJsonArray()) {
-					Map<NormalizedSimpleStack, Integer> outMap = Maps.newHashMap();
+					Map<NormalizedSimpleStack, Integer> outMap = new HashMap<>();
 					JsonArray array = element.getAsJsonArray();
 					for (JsonElement e: array) {
 						NormalizedSimpleStack v = context.deserialize(new JsonPrimitive(e.getAsString()), NormalizedSimpleStack.class);

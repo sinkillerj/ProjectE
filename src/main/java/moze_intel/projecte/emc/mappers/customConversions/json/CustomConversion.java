@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.mappers.customConversions.json;
 import com.google.common.collect.Maps;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CustomConversion
@@ -16,7 +17,7 @@ public class CustomConversion
 		CustomConversion conversion = new CustomConversion();
 		conversion.count = count;
 		conversion.output = output;
-		conversion.ingredients = Maps.newHashMap();
+		conversion.ingredients = new HashMap<>();
 		for (Map.Entry<NormalizedSimpleStack, Integer> entry: ingredients.entrySet()) {
 			conversion.ingredients.put(entry.getKey(), entry.getValue());
 		}

@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -63,7 +64,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 
 		PlayerHelper.swingItem(player, hand);
-		List<Integer> emcValues = Lists.newArrayList();
+		List<Integer> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;
 

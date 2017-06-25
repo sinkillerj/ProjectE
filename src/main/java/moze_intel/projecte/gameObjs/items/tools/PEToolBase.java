@@ -43,6 +43,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -111,7 +112,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
@@ -282,7 +283,7 @@ public abstract class PEToolBase extends ItemMode
 
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
@@ -322,7 +323,7 @@ public abstract class PEToolBase extends ItemMode
 		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, this.getCharge(stack))
 				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
@@ -448,7 +449,7 @@ public abstract class PEToolBase extends ItemMode
 			AxisAlignedBB bBox = player.getEntityBoundingBox().expand(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
 
-			List<ItemStack> drops = Lists.newArrayList();
+			List<ItemStack> drops = new ArrayList<>();
 
 			for (Entity ent : list)
 			{
@@ -518,7 +519,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
@@ -547,7 +548,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 		int offset = this.getCharge(stack) + 3;
 		AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 		World world = player.getEntityWorld();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))

@@ -25,6 +25,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class GUIManual extends GuiScreen
 	public static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
 	public static final Multimap<IndexPage, IndexLinkButton> indexLinks = ArrayListMultimap.create(); // IndexPage -> IndexLinkButtons
 	private static final ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
-	public List<String> bodyTexts = Lists.newArrayList();
+	public List<String> bodyTexts = new ArrayList<>();
 	private int currentSpread;
 	private int k;
 

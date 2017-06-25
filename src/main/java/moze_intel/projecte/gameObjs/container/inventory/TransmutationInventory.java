@@ -20,6 +20,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,7 +40,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public final List<ItemStack> knowledge = Lists.newArrayList();
+	public final List<ItemStack> knowledge = new ArrayList<>();
 	
 	public TransmutationInventory(EntityPlayer player)
 	{

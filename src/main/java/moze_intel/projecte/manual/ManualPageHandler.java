@@ -19,17 +19,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ManualPageHandler
 {
-    public static final List<IndexPage> indexPages = Lists.newArrayList();
-    public static final List<AbstractPage> pages = Lists.newArrayList();
-    public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
-    public static final List<Pair<AbstractPage, AbstractPage>> spreads = Lists.newArrayList();
+    public static final List<IndexPage> indexPages = new ArrayList<>();
+    public static final List<AbstractPage> pages = new ArrayList<>();
+    public static final Map<PageCategory, List<AbstractPage>> categoryMap = new EnumMap<>(PageCategory.class);
+    public static final List<Pair<AbstractPage, AbstractPage>> spreads = new ArrayList<>();
 
     public static void init()
     {
@@ -163,7 +165,7 @@ public class ManualPageHandler
 
     private static void generateDummyIndexPages()
     {
-        List<IndexPage> toAdd = Lists.newArrayList();
+        List<IndexPage> toAdd = new ArrayList<>();
         int numIndexPages = Math.round(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
         PECore.debugLog("{}", (float) ManualPageHandler.pages.size() / GUIManual.ENTRIES_PER_PAGE);
         for (int i = 0; i < numIndexPages; i++)

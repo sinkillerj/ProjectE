@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
 	private final Set<Class> canNotMap = Sets.newHashSet();
-	private final Map<Class, Integer> recipeCount = Maps.newHashMap();
+	private final Map<Class, Integer> recipeCount = new HashMap<>();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
@@ -221,8 +222,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable<Ingredient> recipeItems = recipe.getIngredients();
-			ArrayList<Iterable<ItemStack>> variableInputs = Lists.newArrayList();
-			ArrayList<ItemStack> fixedInputs = Lists.newArrayList();
+			ArrayList<Iterable<ItemStack>> variableInputs = new ArrayList<>();
+			ArrayList<ItemStack> fixedInputs = new ArrayList<>();
 			for (Ingredient recipeItem : recipeItems) {
 				List<ItemStack> recipeItemOptions = new LinkedList<>();
 				ItemStack[] recipeItemCollection = recipeItem.getMatchingStacks();

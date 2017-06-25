@@ -20,12 +20,13 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
-	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
+	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = new ArrayList<>();
 
 	private static void addMelting(String odName, String fluidName, int amount) {
 		addMelting(NSSOreDictionary.create(odName), fluidName, amount);

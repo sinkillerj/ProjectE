@@ -8,6 +8,8 @@ import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +24,9 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 		this.inner = inner;
 	}
 
-	final Map<NSSItem, V> setValueBeforeMap = Maps.newHashMap();
-	final Map<NSSItem, V> setValueAfterMap = Maps.newHashMap();
-	final List<CustomConversion> setValueConversionList = Lists.newArrayList();
+	final Map<NSSItem, V> setValueBeforeMap = new HashMap<>();
+	final Map<NSSItem, V> setValueAfterMap = new HashMap<>();
+	final List<CustomConversion> setValueConversionList = new ArrayList<>();
 	private boolean isWildCard(NormalizedSimpleStack nss) {
 		return nss instanceof NSSItem && ((NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE;
 	}

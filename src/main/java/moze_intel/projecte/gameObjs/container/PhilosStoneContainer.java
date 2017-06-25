@@ -49,7 +49,7 @@ public class PhilosStoneContainer extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inv)
 	{
-		this.func_192389_a(player.world, this.player, this.craftMatrix, this.craftResult);
+		this.slotChangedCraftingGrid(player.world, this.player, this.craftMatrix, this.craftResult);
 	}
 	
 	@Override

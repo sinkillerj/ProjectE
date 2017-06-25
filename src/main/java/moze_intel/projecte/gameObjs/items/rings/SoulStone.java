@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
@@ -157,7 +158,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.soulPedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.soul.pedestal1"));

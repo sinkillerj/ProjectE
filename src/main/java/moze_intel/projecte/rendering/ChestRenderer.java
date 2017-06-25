@@ -22,7 +22,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer<AlchChestTile>
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage, float unused)
 	{
 		EnumFacing direction = null;
 		if (chestTile.getWorld() != null && !chestTile.isInvalid())

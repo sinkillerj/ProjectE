@@ -9,6 +9,7 @@ import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Map;
 public class CustomConversionFile
 {
 	public String comment;
-	public final Map<String, ConversionGroup> groups = Maps.newHashMap();
+	public final Map<String, ConversionGroup> groups = new HashMap<>();
 	public final FixedValues values = new FixedValues();
 
 	public void write(File file) throws IOException

@@ -37,13 +37,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class TransmutationRenderingEvent 
 {
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final List<AxisAlignedBB> renderList = Lists.newArrayList();
+	private static final List<AxisAlignedBB> renderList = new ArrayList<>();
 	private static double playerX;
 	private static double playerY;
 	private static double playerZ;

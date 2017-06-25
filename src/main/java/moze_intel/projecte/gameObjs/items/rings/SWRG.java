@@ -35,6 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
@@ -266,7 +267,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.swrgPedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal1"));

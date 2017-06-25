@@ -39,7 +39,7 @@ public final class EMCHelper
 		}
 
 		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
+		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 

@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 	}
 
 	private Map<NormalizedSimpleStack, Integer> parseSetValueMap(JsonObject o, JsonDeserializationContext context) {
-		Map<NormalizedSimpleStack, Integer> out = Maps.newHashMap();
+		Map<NormalizedSimpleStack, Integer> out = new HashMap<>();
 		for (Map.Entry<String, JsonElement> entry: o.entrySet()) {
 			JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();
 			if (primitive.isNumber()) {

@@ -22,7 +22,7 @@ public class CondenserMK2Renderer extends TileEntitySpecialRenderer<CondenserMK2
 	private final ModelChest model = new ModelChest();
 
 	@Override
-	public void renderTileEntityAt(@Nonnull CondenserMK2Tile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unknown)
+	public void render(@Nonnull CondenserMK2Tile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unknown)
 	{
 		EnumFacing direction = null;
 		if (condenser.getWorld() != null && !condenser.isInvalid())

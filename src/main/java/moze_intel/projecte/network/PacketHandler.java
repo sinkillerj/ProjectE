@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class PacketHandler
@@ -54,10 +55,10 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = Lists.newArrayList();
+		ArrayList<Integer[]> list = new ArrayList<>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+		for (Map.Entry<SimpleStack, Integer> entry : new LinkedHashMap<>(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
 		{
 			SimpleStack stack = entry.getKey();
 
@@ -78,7 +79,6 @@ public final class PacketHandler
 				counter++;
 			}
 		}
-
 		if (list.size() > 0)
 		{
 			PacketHandler.sendTo(new SyncEmcPKT(-1, list), player);
@@ -92,10 +92,10 @@ public final class PacketHandler
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = Lists.newArrayList();
+		ArrayList<Integer[]> list = new ArrayList<>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+		for (Map.Entry<SimpleStack, Integer> entry : new LinkedHashMap<>(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
 		{
 			SimpleStack stack = entry.getKey();
 

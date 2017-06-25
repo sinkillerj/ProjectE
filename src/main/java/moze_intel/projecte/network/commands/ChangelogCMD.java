@@ -7,11 +7,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChangelogCMD extends ProjectEBaseCMD
 {
-	public static final List<String> changelog = Lists.newArrayList();
+	public static final List<String> changelog = new ArrayList<>();
 	
 	@Nonnull
 	@Override

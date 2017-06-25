@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadCheckUUID extends Thread
@@ -36,7 +37,7 @@ public class ThreadCheckUUID extends Thread
 				throw new IOException("No data from github UUID list!");
 			}
 
-			List<String> uuids = Lists.newArrayList();
+			List<String> uuids = new ArrayList<>();
 					
 			while ((line = reader.readLine()) != null)
 			{

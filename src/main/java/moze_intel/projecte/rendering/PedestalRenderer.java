@@ -15,7 +15,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
 {
 
     @Override
-    public void renderTileEntityAt(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+    public void render(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage, float unused)
     {
         if (!te.isInvalid())
         {

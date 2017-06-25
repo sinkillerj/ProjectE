@@ -6,6 +6,7 @@ import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,10 +52,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 	@Override
 	public Map<T, V> generateValues() {
-		Map<T, V> values = Maps.newHashMap();
-		Map<T, V> newValueFor = Maps.newHashMap();
-		Map<T, V> nextValueFor = Maps.newHashMap();
-		Map<T,Object> reasonForChange = Maps.newHashMap();
+		Map<T, V> values = new HashMap<>();
+		Map<T, V> newValueFor = new HashMap<>();
+		Map<T, V> nextValueFor = new HashMap<>();
+		Map<T,Object> reasonForChange = new HashMap<>();
 
 
 		for (Map.Entry<T,V> entry: fixValueBeforeInherit.entrySet()) {

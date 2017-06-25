@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadCheckUpdate extends Thread
@@ -54,7 +55,7 @@ public class ThreadCheckUpdate extends Thread
 			}
 			
 			String latestVersion;
-			List<String> changes = Lists.newArrayList();
+			List<String> changes = new ArrayList<>();
 			
 			latestVersion = line.substring(11);
 			latestVersion = latestVersion.trim();

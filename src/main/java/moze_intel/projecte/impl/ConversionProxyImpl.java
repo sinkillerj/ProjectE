@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.ClassUtils;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class ConversionProxyImpl implements IConversionProxy
 
 	public static final ConversionProxyImpl instance = new ConversionProxyImpl();
 
-	final Map<Object, NormalizedSimpleStack> fakes = Maps.newHashMap();
+	final Map<Object, NormalizedSimpleStack> fakes = new HashMap<>();
 
 	@Override
 	public void addConversion(int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients) {
@@ -48,7 +49,7 @@ public class ConversionProxyImpl implements IConversionProxy
 		conversionsFromMod.add(new APIConversion(amount, nssOut, ImmutableMap.copyOf(ingredientMap.getMap())));
 	}
 
-	public final Map<String, List<APIConversion>> storedConversions = Maps.newHashMap();
+	public final Map<String, List<APIConversion>> storedConversions = new HashMap<>();
 
 	public NormalizedSimpleStack objectToNSS(Object object)
 	{

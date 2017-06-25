@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -110,7 +111,7 @@ public class NovaExplosion extends Explosion
 
 		Iterator<BlockPos> iterator;
 		BlockPos blockpos;
-		List<ItemStack> allDrops = Lists.newArrayList();
+		List<ItemStack> allDrops = new ArrayList<>();
 
 		iterator = getAffectedBlockPositions().iterator();
 

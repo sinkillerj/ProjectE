@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
@@ -188,7 +189,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	
 	private List<StackWithSlot> getAllSeeds(NonNullList<ItemStack> inv)
 	{
-		List<StackWithSlot> result = Lists.newArrayList();
+		List<StackWithSlot> result = new ArrayList<>();
 		
 		for (int i = 0; i < inv.size(); i++)
 		{
@@ -278,7 +279,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.harvestPedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal1"));

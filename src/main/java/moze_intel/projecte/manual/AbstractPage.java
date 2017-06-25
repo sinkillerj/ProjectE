@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -16,7 +17,7 @@ public abstract class AbstractPage
 {
     protected final PageCategory category;
     protected AbstractPage parent = null;
-    protected final List<AbstractPage> subPages = Lists.newArrayList();
+    protected final List<AbstractPage> subPages = new ArrayList<>();
     private boolean indexed = true;
 
     protected AbstractPage(PageCategory category)

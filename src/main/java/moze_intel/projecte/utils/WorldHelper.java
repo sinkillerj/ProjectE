@@ -65,6 +65,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.items.IItemHandler;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
@@ -343,7 +344,7 @@ public final class WorldHelper
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)
 	{
-		List<TileEntity> list = Lists.newArrayList();
+		List<TileEntity> list = new ArrayList<>();
 
 		for (BlockPos pos : getPositionsFromBox(bBox))
 		{

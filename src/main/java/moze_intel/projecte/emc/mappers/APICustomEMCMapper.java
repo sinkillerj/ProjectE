@@ -27,8 +27,8 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	private APICustomEMCMapper() {}
 
 	//Need a special Map for Items and Blocks because the ItemID-mapping might change, so we need to store modid:unlocalizedName instead of the NormalizedSimpleStack which only holds itemid and metadata
-	private final Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = Maps.newHashMap();
-	private final Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
+	private final Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = new HashMap<>();
+	private final Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = new HashMap<>();
 
 	public void registerCustomEMC(ItemStack stack, int emcValue) {
 		if (stack.isEmpty()) return;
@@ -39,7 +39,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (customEMCforMod.containsKey(modId)) {
 			modMap = customEMCforMod.get(modId);
 		} else {
-			modMap = Maps.newHashMap();
+			modMap = new HashMap<>();
 			customEMCforMod.put(modId, modMap);
 		}
 		modMap.put(NSSItem.create(stack), emcValue);
@@ -55,7 +55,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		if (customNonItemEMCforMod.containsKey(modId)) {
 			modMap = customNonItemEMCforMod.get(modId);
 		} else {
-			modMap = Maps.newHashMap();
+			modMap = new HashMap<>();
 			customNonItemEMCforMod.put(modId, modMap);
 		}
 		modMap.put(stack, emcValue);

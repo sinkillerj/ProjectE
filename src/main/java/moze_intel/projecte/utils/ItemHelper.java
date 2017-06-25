@@ -132,7 +132,7 @@ public final class ItemHelper
 	 */
 	public static List<ItemStack> getODItems(String oreName)
 	{
-		List<ItemStack> result = Lists.newArrayList();
+		List<ItemStack> result = new ArrayList<>();
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
@@ -143,7 +143,7 @@ public final class ItemHelper
 
 			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
-				List<ItemStack> list = Lists.newArrayList();
+				List<ItemStack> list = new ArrayList<>();
 
 				ItemStack copy = stack.copy();
 				copy.setItemDamage(0);
@@ -340,7 +340,7 @@ public final class ItemHelper
 	{
 		if (stack.getItem() instanceof ItemBlock)
 		{
-			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getMetadata());
+			return ((ItemBlock) stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
 		}
 		else
 		{

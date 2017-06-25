@@ -119,9 +119,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Map.Entry;
 
@@ -362,19 +362,19 @@ public class ObjHandler
 	public static void register()
 	{
 		//Tile Entities
-		GameRegistry.registerTileEntityWithAlternatives(AlchChestTile.class, "AlchChestTile", "Alchemical Chest Tile");
-		GameRegistry.registerTileEntityWithAlternatives(InterdictionTile.class, "InterdictionTile", "Interdiction Torch Tile");
-		GameRegistry.registerTileEntityWithAlternatives(CondenserTile.class, "CondenserTile", "Condenser Tile");
-		GameRegistry.registerTileEntityWithAlternatives(CondenserMK2Tile.class, "CondenserMK2Tile", "Condenser MK2 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(RMFurnaceTile.class, "RMFurnaceTile", "RM Furnace Tile");
-		GameRegistry.registerTileEntityWithAlternatives(DMFurnaceTile.class, "DMFurnaceTile", "DM Furnace Tile");
-		GameRegistry.registerTileEntityWithAlternatives(CollectorMK1Tile.class, "CollectorMK1Tile", "Energy Collector MK1 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(CollectorMK2Tile.class, "CollectorMK2Tile", "Energy Collector MK2 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(CollectorMK3Tile.class, "CollectorMK3Tile", "Energy Collector MK3 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(RelayMK1Tile.class, "RelayMK1Tile", "AM Relay MK1 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(RelayMK2Tile.class, "RelayMK2Tile", "AM Relay MK2 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(RelayMK3Tile.class, "RelayMK3Tile", "AM Relay MK3 Tile");
-		GameRegistry.registerTileEntityWithAlternatives(DMPedestalTile.class, "DMPedestalTile", "DM Pedestal Tile");
+		GameRegistry.registerTileEntity(AlchChestTile.class, "AlchChestTile");
+		GameRegistry.registerTileEntity(InterdictionTile.class, "InterdictionTile");
+		GameRegistry.registerTileEntity(CondenserTile.class, "CondenserTile");
+		GameRegistry.registerTileEntity(CondenserMK2Tile.class, "CondenserMK2Tile");
+		GameRegistry.registerTileEntity(RMFurnaceTile.class, "RMFurnaceTile");
+		GameRegistry.registerTileEntity(DMFurnaceTile.class, "DMFurnaceTile");
+		GameRegistry.registerTileEntity(CollectorMK1Tile.class, "CollectorMK1Tile");
+		GameRegistry.registerTileEntity(CollectorMK2Tile.class, "CollectorMK2Tile");
+		GameRegistry.registerTileEntity(CollectorMK3Tile.class, "CollectorMK3Tile");
+		GameRegistry.registerTileEntity(RelayMK1Tile.class, "RelayMK1Tile");
+		GameRegistry.registerTileEntity(RelayMK2Tile.class, "RelayMK2Tile");
+		GameRegistry.registerTileEntity(RelayMK3Tile.class, "RelayMK3Tile");
+		GameRegistry.registerTileEntity(DMPedestalTile.class, "DMPedestalTile");
 
 		//Entities
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "water_projectile"), EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);

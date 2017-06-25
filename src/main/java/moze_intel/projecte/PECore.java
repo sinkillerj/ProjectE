@@ -1,6 +1,5 @@
 package moze_intel.projecte;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import moze_intel.projecte.config.CustomEMCParser;
@@ -22,14 +21,9 @@ import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
-import moze_intel.projecte.utils.SoundHandler;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -37,19 +31,17 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +64,7 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
 
-	public static final List<String> uuids = Lists.newArrayList();
+	public static final List<String> uuids = new ArrayList<>();
 
 	public static void debugLog(String msg, Object... args)
 	{
@@ -179,62 +171,6 @@ public class PECore
 		for (FMLInterModComms.IMCMessage msg : event.getMessages())
 		{
 			IMCHandler.handleIMC(msg);
-		}
-	}
-
-	@Mod.EventHandler
-	public void remap(FMLMissingMappingsEvent event) {
-		for (FMLMissingMappingsEvent.MissingMapping mapping : event.get())
-		{
-			try
-			{
-				String subName = mapping.name.split(":")[1];
-				if (mapping.type == GameRegistry.Type.ITEM)
-				{
-					Item remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, "item.pe_" + subName.substring(5))); // strip "item." off of subName
-					if (remappedItem != null)
-					{
-						// legacy remap (adding pe_ prefix)
-						mapping.remap(remappedItem);
-					}
-					else
-					{
-						// Space strip remap - ItemBlocks
-						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-						remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, newSubName));
-
-						if (remappedItem != null)
-						{
-							mapping.remap(remappedItem);
-							LOGGER.info("Remapped ProjectE ItemBlock from {} to {}", mapping.name, PECore.MODID + ":" + newSubName);
-						}
-						else
-						{
-							LOGGER.fatal("Failed to remap ProjectE ItemBlock: {}", mapping.name);
-						}
-					}
-				}
-				if (mapping.type == GameRegistry.Type.BLOCK)
-				{
-					// Space strip remap - Blocks
-					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-					Block remappedBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(PECore.MODID, newSubName));
-
-					if (remappedBlock != null)
-					{
-						mapping.remap(remappedBlock);
-						LOGGER.info("Remapped ProjectE Block from {} to {}", mapping.name, PECore.MODID + ":" + newSubName);
-					}
-					else
-					{
-						LOGGER.fatal("Failed to remap PE Block: {}", mapping.name);
-					}
-				}
-			} catch (Throwable t)
-			{
-				// Should never happen
-				throw Throwables.propagate(t);
-			}
 		}
 	}
 }

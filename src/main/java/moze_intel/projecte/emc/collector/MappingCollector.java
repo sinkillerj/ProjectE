@@ -6,6 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +32,12 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		debugFormat(s);
 	}
 
-	protected final Map<T, Conversion> overwriteConversion = Maps.newHashMap();
-	protected final Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
-	private final Map<T, List<Conversion>> usedIn = Maps.newHashMap();
-	protected final Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
-	protected final Map<T, V> fixValueAfterInherit = Maps.newHashMap();
-	private final Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
+	protected final Map<T, Conversion> overwriteConversion = new HashMap<>();
+	protected final Map<T, List<Conversion>> conversionsFor = new HashMap<>();
+	private final Map<T, List<Conversion>> usedIn = new HashMap<>();
+	protected final Map<T, V> fixValueBeforeInherit = new HashMap<>();
+	protected final Map<T, V> fixValueAfterInherit = new HashMap<>();
+	private final Map<T, Integer> noDependencyConversionCount = new HashMap<>();
 
 	private List<Conversion> getConversionsFor(T something) {
 		return conversionsFor.computeIfAbsent(something, t -> new LinkedList<>());

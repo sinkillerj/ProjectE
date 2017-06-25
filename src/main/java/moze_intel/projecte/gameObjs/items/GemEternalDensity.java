@@ -126,7 +126,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, Lists.newArrayList());
+			setItems(gem, new ArrayList<>());
 			hasChanged = true;
 		}
 
@@ -225,7 +225,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	private static List<ItemStack> getItems(ItemStack stack)
 	{
-		List<ItemStack> list = Lists.newArrayList();
+		List<ItemStack> list = new ArrayList<>();
 		NBTTagList tList = stack.getTagCompound().getTagList("Consumed", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < tList.tagCount(); i++)
@@ -282,7 +282,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	
 	private static List<ItemStack> getWhitelist(ItemStack stack)
 	{
-		List<ItemStack> result = Lists.newArrayList();
+		List<ItemStack> result = new ArrayList<>();
 		NBTTagList list = stack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		
 		for (int i = 0; i < list.tagCount(); i++)

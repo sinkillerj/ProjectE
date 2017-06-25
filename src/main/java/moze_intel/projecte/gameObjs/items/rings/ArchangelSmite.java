@@ -36,6 +36,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger
@@ -151,7 +152,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.archangelPedCooldown != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangelPedCooldown)));
