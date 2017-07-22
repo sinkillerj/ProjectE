@@ -130,7 +130,7 @@ public final class PlayerHelper
 
 		for (EnumFacing e : EnumFacing.VALUES)
 		{
-			if (!player.canPlayerEdit(pos, e, null))
+			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
 			{
 				return false;
 			}
