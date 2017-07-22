@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new VanillaOreRecipeMapper(), new PECustomRecipeMapper());
-	private final Set<Class> canNotMap = Sets.newHashSet();
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper());
+	private final Set<Class> canNotMap = new HashSet<>();
 	private final Map<Class, Integer> recipeCount = new HashMap<>();
 
 	@Override
@@ -174,56 +175,19 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public String getDescription() {
-			return "Maps `IRecipe` crafting recipes that extend `ShapedRecipes` or `ShapelessRecipes`";
+			return "Maps `IRecipe` crafting recipes that extend `ShapedRecipes` or `ShapelessRecipes`, and their oredict equivalents";
 		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes;
-		}
-
-		@Override
-		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Ingredient> recipeItems = null;
-			if (canHandle(recipe)) {
-				recipeItems = recipe.getIngredients();
-			}
-			List<ItemStack> inputs = new LinkedList<>();
-			for (Ingredient o : recipeItems) {
-				ItemStack[] stacks = o.getMatchingStacks();
-
-				if (stacks.length > 0) {
-					// todo 1.12 vanilla recipes can now have multiple options for one spot, adjust?
-					inputs.add(stacks[0]);
-				}
-			}
-			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
-		}
-
-	}
-
-	private static class VanillaOreRecipeMapper implements IRecipeMapper {
-
-		@Override
-		public String getName() {
-			return "VanillaOreRecipeMapper";
-		}
-
-		@Override
-		public String getDescription() {
-			return "Maps `IRecipe` crafting recipes that extend `ShapedOreRecipe` or `ShapelessOreRecipe`. This includes CraftingRecipes that use OreDictionary ingredients.";
-		}
-
-		@Override
-		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof  ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
+			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
 		}
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			Iterable<Ingredient> recipeItems = recipe.getIngredients();
-			ArrayList<Iterable<ItemStack>> variableInputs = new ArrayList<>();
-			ArrayList<ItemStack> fixedInputs = new ArrayList<>();
+			List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
+			List<ItemStack> fixedInputs = new ArrayList<>();
 			for (Ingredient recipeItem : recipeItems) {
 				List<ItemStack> recipeItemOptions = new LinkedList<>();
 				ItemStack[] recipeItemCollection = recipeItem.getMatchingStacks();

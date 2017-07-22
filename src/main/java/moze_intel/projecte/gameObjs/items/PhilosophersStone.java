@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -123,7 +124,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, EntityPlayer player, EnumFacing sideHit, int mode, int charge)
 	{
-		Set<BlockPos> ret = Sets.newHashSet();
+		Set<BlockPos> ret = new HashSet<>();
 		IBlockState targeted = world.getBlockState(pos);
 		Iterable<BlockPos> iterable = null;
 

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
 		Map<String, Integer> priorityMap = new HashMap<>();
-		Set<String> modIdSet = Sets.newHashSet();
+		Set<String> modIdSet = new HashSet<>();
 		modIdSet.addAll(customEMCforMod.keySet());
 		modIdSet.addAll(customNonItemEMCforMod.keySet());
 

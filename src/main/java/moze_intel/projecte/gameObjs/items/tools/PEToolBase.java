@@ -44,6 +44,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,14 +56,12 @@ public abstract class PEToolBase extends ItemMode
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
 	protected String peToolMaterial;
-	protected final Set<Material> harvestMaterials;
-	protected final Set<String> toolClasses;
+	protected final Set<Material> harvestMaterials = new HashSet<>();
+	protected final Set<String> toolClasses = new HashSet<>();
 
 	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
 	{
 		super(unlocalName, numCharge, modeDescrp);
-		harvestMaterials = Sets.newHashSet();
-		toolClasses = Sets.newHashSet();
 	}
 
 	@Override

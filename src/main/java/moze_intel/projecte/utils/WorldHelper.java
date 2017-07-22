@@ -67,6 +67,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,9 +97,9 @@ public final class WorldHelper
 			EntityZombieVillager.class
 	);
 
-	private static final Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> interdictionBlacklist = new HashSet<>();
 
-	private static final Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> swrgBlacklist = new HashSet<>();
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{

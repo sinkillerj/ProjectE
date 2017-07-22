@@ -207,18 +207,6 @@ public final class ItemHelper
 		return OreDictionary.getOreName(oreIds[0]);
 	}
 
-	public static ItemStack getStackFromString(String internal, int metaData)
-	{
-		Item item = Item.REGISTRY.getObject(new ResourceLocation(internal));
-
-		if (item == null)
-		{
-			return null;
-		}
-
-		return new ItemStack(item, 1, metaData);
-	}
-
 	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
