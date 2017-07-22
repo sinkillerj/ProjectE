@@ -46,7 +46,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		recipeloop: for (IRecipe recipe : CraftingManager.REGISTRY) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (recipeOutput == null) continue;
+			if (recipeOutput.isEmpty()) continue;
 			NormalizedSimpleStack recipeOutputNorm = NSSItem.create(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
