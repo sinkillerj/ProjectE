@@ -68,7 +68,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
 			} else
 			{
-				placeLava(world, player, pos.offset(sideHit));
+				placeLava(player, pos.offset(sideHit), hand);
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
@@ -76,9 +76,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		return EnumActionResult.SUCCESS;
 	}
 
-	private void placeLava(World world, EntityPlayer player, BlockPos pos)
+	private void placeLava(EntityPlayer player, BlockPos pos, EnumHand hand)
 	{
-		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_LAVA.getDefaultState());
+		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_LAVA.getDefaultState(), hand);
 	}
 
 	@Override

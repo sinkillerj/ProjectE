@@ -92,7 +92,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				else
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					placeWater(world, player, pos.offset(sideHit));
+					placeWater(world, player, pos.offset(sideHit), hand);
 				}
 			}
 		}
@@ -125,7 +125,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		};
 	}
 
-	private void placeWater(World world, EntityPlayer player, BlockPos pos)
+	private void placeWater(World world, EntityPlayer player, BlockPos pos, EnumHand hand)
 	{
 		Material material = world.getBlockState(pos).getMaterial();
 
@@ -145,7 +145,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState(), hand);
 		}
 
 	}

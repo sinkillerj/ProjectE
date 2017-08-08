@@ -78,7 +78,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
-				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
+				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result, hand);
 				if (world.rand.nextInt(8) == 0)
 				{
 					((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0, new int[0]);

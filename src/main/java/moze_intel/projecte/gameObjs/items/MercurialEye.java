@@ -190,7 +190,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                 {
                     if (kleinEmc < reqEmc)
                         break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                     {
                         removeKleinEMC(stack, reqEmc);
                         kleinEmc -= reqEmc;
@@ -207,7 +207,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                     if (emc > reqEmc)
                     {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                         {
                             int difference = emc - reqEmc;
                             kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
@@ -220,7 +220,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                         if (kleinEmc >= difference)
                         {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                             {
                                 kleinEmc -= difference;
                                 removeKleinEMC(stack, difference);
@@ -229,7 +229,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                     }
                     else
                     {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
+                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand);
                     }
                 }
 

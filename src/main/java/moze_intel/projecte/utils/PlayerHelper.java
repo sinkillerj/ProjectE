@@ -36,11 +36,16 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	{
+		return checkedPlaceBlock(player, pos, state, EnumHand.MAIN_HAND);
+	}
+
 	/**
 	 * Tries placing a block and fires an event for it.
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
 	{
 		if (!hasEditPermission(player, pos))
 		{
@@ -49,7 +54,7 @@ public final class PlayerHelper
 		World world = player.getEntityWorld();
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player);
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player, EnumHand.MAIN_HAND);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{
@@ -65,7 +70,12 @@ public final class PlayerHelper
 
 	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
-		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
+		return checkedReplaceBlock(player, pos, state, EnumHand.MAIN_HAND);
+	}
+
+	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
+	{
+		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state, hand);
 	}
 
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
