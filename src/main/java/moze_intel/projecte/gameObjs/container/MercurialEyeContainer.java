@@ -52,10 +52,9 @@ public class MercurialEyeContainer extends Container
 			return ItemStack.EMPTY;
 		}
 
-		if (slot == 1 && inventory.getStackInSlot(slot) != null)
+		if (slot == 1 && !inventory.getStackInSlot(slot).isEmpty())
 		{
-			inventory.setStackInSlot(1, null);
-			return null;
+			inventory.setStackInSlot(1, ItemStack.EMPTY);
 		}
 		
 		return super.slotClick(slot, button, flag, player);
