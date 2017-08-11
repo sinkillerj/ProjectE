@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
@@ -68,7 +67,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				for (Map.Entry<T, V> entry : newValueFor.entrySet()) {
 					if (canOverride(entry.getKey(),entry.getValue()) && updateMapWithMinimum(values, entry.getKey(), entry.getValue())) {
 						//The new Value is now set in 'values'
-						debugFormat("Set Value for %s to %s because %s", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
+						debugFormat("Set Value for {} to {} because {}", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
 						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
 						for (Conversion conversion : getUsesFor(entry.getKey())) {
 							if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
@@ -125,7 +124,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 							if (logFoundExploits)
 								PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} value of result: {} setValueFromConversion: {}", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output));
 						} else if (canOverride(entry.getKey(), ZERO)) {
-							debugFormat("Setting %s to 0 because result (%s) > cost (%s): %s", entry.getKey(), resultValueSingle, conversionValue, conversion);
+							debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", entry.getKey(), resultValueSingle, conversionValue, conversion);
 							newValueFor.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
@@ -137,7 +136,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					//we could not find any valid conversion
 					if (values.containsKey(entry.getKey()) && !values.get(entry.getKey()).equals(ZERO) && canOverride(entry.getKey(), ZERO) && !hasSmaller(values, entry.getKey(), ZERO)) {
 						//but the value for the conversion output is > 0, so we set it to 0.
-						debugFormat("Removing Value for %s because it does not have any nonzero-conversions anymore.", entry.getKey());
+						debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", entry.getKey());
 						newValueFor.put(entry.getKey(), ZERO);
 						reasonForChange.put(entry.getKey(), "all conversions dead");
 					}

@@ -69,7 +69,7 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 		for (Map.Entry<NSSItem, V> entry: setValueBeforeMap.entrySet()) {
 			for (Integer meta: NSSItem.getUsedMetadata(entry.getKey())) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
-				MappingCollector.debugFormat("Inserting Wildcard SetValueBefore %s:%d to %s", entry.getKey().itemName, meta, entry.getValue());
+				MappingCollector.debugFormat("Inserting Wildcard SetValueBefore {}:{} to {}", entry.getKey().itemName, meta, entry.getValue());
 				inner.setValueBefore(NSSItem.create(entry.getKey().itemName, meta), entry.getValue());
 			}
 		}
@@ -78,14 +78,14 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 			for (Integer meta: NSSItem.getUsedMetadata(entry.getKey())) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
 				inner.setValueAfter(NSSItem.create(entry.getKey().itemName, meta), entry.getValue());
-				MappingCollector.debugFormat("Inserting Wildcard SetValueAfter: %s:%d to %s", entry.getKey().itemName, meta, entry.getValue());
+				MappingCollector.debugFormat("Inserting Wildcard SetValueAfter: {}:{} to {}", entry.getKey().itemName, meta, entry.getValue());
 			}
 		}
 
 		for (CustomConversion conversion: setValueConversionList) {
 			for (Integer meta: NSSItem.getUsedMetadata(conversion.output)) {
 				if (meta == OreDictionary.WILDCARD_VALUE) continue;
-				MappingCollector.debugFormat("Inserting Wildcard SetValueFromConversion %s:%d to %s", conversion.output, meta, conversion);
+				MappingCollector.debugFormat("Inserting Wildcard SetValueFromConversion {}:{} to {}", conversion.output, meta, conversion);
 				inner.setValueFromConversion(conversion.count, NSSItem.create(((NSSItem) conversion.output).itemName, meta), conversion.ingredients);
 			}
 		}
