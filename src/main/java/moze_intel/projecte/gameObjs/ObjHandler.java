@@ -14,7 +14,9 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
+import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -398,10 +400,13 @@ public class ObjHandler
 		{
 			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
 			ItemStack output = new ItemStack(kleinStars, 1, i);
-			// GameRegistry.addRecipe(new RecipeShapelessHidden(output, input, input, input, input));
+			RecipeShapelessHidden recipe = new RecipeShapelessHidden(PECore.MODID + ":klein", output, toIngredients(input, input, input, input));
+			recipe.setRegistryName(PECore.MODID, String.format("klein_%d_to_%d", i - 1, i));
+			evt.getRegistry().register(recipe);
 		}
 
-		// GameRegistry.addRecipe(new RecipesCovalenceRepair());
+		evt.getRegistry().register(new RecipesCovalenceRepair().setRegistryName(PECore.MODID, "covalence_repair"));
+
 		// RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
 		// RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
 		// RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
