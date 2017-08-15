@@ -10,13 +10,13 @@
   ],
   "key": {
     "S": {
-      "item": "#GLASS"
+      "item": "#BLOCKGLASSCOLORLESS"
     },
     "O": {
       "item": "#OBSIDIAN"
     },
     "D": {
-      "item": "#DIAMOND_BLOCK"
+      "item": "#BLOCKDIAMOND"
     }
   }
 }

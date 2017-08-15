@@ -11,7 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "S": {
-      "item": "#SAPLING"
+      "item": "#TREESAPLING"
     },
     "D": {
       "item": "projecte:item.pe_matter",

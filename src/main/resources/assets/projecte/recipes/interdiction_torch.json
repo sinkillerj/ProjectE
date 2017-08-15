@@ -13,10 +13,10 @@
       "item": "minecraft:redstone_torch"
     },
     "G": {
-      "item": "#GLOWSTONE"
+      "item": "#DUSTGLOWSTONE"
     },
     "D": {
-      "item": "#DIAMOND"
+      "item": "#GEMDIAMOND"
     },
     "P": {
       "item": "projecte:item.pe_philosophers_stone"

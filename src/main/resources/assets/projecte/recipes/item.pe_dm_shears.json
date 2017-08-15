@@ -9,7 +9,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "D": {
-      "item": "#DIAMOND"
+      "item": "#GEMDIAMOND"
     },
     "M": {
       "item": "projecte:item.pe_matter",

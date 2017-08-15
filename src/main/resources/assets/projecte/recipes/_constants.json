@@ -1,6 +1,6 @@
 [
   {
-    "name": "STICK",
+    "name": "STICKWOOD",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "stickWood"
@@ -14,7 +14,7 @@
     }
   },
   {
-    "name": "SAPLING",
+    "name": "TREESAPLING",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "treeSapling"
@@ -28,14 +28,14 @@
     }
   },
   {
-    "name": "COBBLE",
+    "name": "COBBLESTONE",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "cobblestone"
     }
   },
   {
-    "name": "GLASS",
+    "name": "BLOCKGLASSCOLORLESS",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "blockGlassColorless"
@@ -56,21 +56,21 @@
     }
   },
   {
-    "name": "IRON",
+    "name": "INGOTIRON",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     }
   },
   {
-    "name": "GOLD",
+    "name": "INGOTGOLD",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "ingotGold"
     }
   },
   {
-    "name": "CHEST",
+    "name": "CHESTWOOD",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "chestWood"
@@ -91,7 +91,7 @@
     }
   },
   {
-    "name": "REDSTONE",
+    "name": "DUSTREDSTONE",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "dustRedstone"
@@ -101,32 +101,39 @@
     "name": "GLOWSTONE",
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "glowstone"
+    }
+  },
+  {
+    "name": "DUSTGLOWSTONE",
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "dustGlowstone"
     }
   },
   {
-    "name": "LAPIS",
+    "name": "GEMLAPIS",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "gemLapis"
     }
   },
   {
-    "name": "DIAMOND",
+    "name": "GEMDIAMOND",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "gemDiamond"
     }
   },
   {
-    "name": "EMERALD",
+    "name": "GEMEMERALD",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "gemEmerald"
     }
   },
   {
-    "name": "DIAMOND_BLOCK",
+    "name": "BLOCKDIAMOND",
     "ingredient": {
       "type": "forge:ore_dict",
       "ore": "blockDiamond"

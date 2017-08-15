@@ -7,16 +7,16 @@
       "item": "projecte:item.pe_philosophers_stone"
     },
     {
-      "item": "#GOLD"
+      "item": "#INGOTGOLD"
     },
     {
-      "item": "#GOLD"
+      "item": "#INGOTGOLD"
     },
     {
-      "item": "#GOLD"
+      "item": "#INGOTGOLD"
     },
     {
-      "item": "#GOLD"
+      "item": "#INGOTGOLD"
     }
   ],
   "type": "forge:ore_shapeless"

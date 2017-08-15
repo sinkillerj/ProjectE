@@ -7,7 +7,7 @@
   "type": "forge:ore_shapeless",
   "ingredients": [
     {
-      "item": "#DIAMOND"
+      "item": "#GEMDIAMOND"
     },
     {
       "item": "minecraft:coal",

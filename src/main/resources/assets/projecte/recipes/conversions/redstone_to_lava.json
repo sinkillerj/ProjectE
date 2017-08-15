@@ -10,7 +10,7 @@
       "item": "minecraft:bucket"
     },
     {
-      "item": "#REDSTONE"
+      "item": "#DUSTREDSTONE"
     }
   ],
   "type": "forge:ore_shapeless"

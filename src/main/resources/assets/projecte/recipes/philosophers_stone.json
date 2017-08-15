@@ -11,13 +11,13 @@
   ],
   "key": {
     "R": {
-      "item": "#REDSTONE"
+      "item": "#DUSTREDSTONE"
     },
     "G": {
-      "item": "#GLOWSTONE"
+      "item": "#DUSTGLOWSTONE"
     },
     "D": {
-      "item": "#DIAMOND"
+      "item": "#GEMDIAMOND"
     }
   }
 }

@@ -25,13 +25,13 @@
       "item": "#STONE"
     },
     "I": {
-      "item": "#IRON"
+      "item": "#INGOTIRON"
     },
     "C": {
-      "item": "#CHEST"
+      "item": "#CHESTWOOD"
     },
     "D": {
-      "item": "#DIAMOND"
+      "item": "#GEMDIAMOND"
     }
   }
 }

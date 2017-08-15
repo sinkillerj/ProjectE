@@ -7,28 +7,28 @@
   "type": "forge:ore_shapeless",
   "ingredients": [
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
-      "item": "#COBBLE"
+      "item": "#COBBLESTONE"
     },
     {
       "item": "minecraft:coal",

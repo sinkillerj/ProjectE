@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "S": {
-      "item": "#STICK"
+      "item": "#STICKWOOD"
     },
     "D": {
       "item": "projecte:item.pe_covalence_dust",
