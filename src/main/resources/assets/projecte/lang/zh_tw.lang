@@ -364,7 +364,7 @@ pe.nei.worldtransmute=世界轉換
 pe.nei.philo=賢者之石熔煉
 
 pe.manual.index=索引
-pe.manual.index_button=ToC
+#
 
 # ItemPages bodies
 #
