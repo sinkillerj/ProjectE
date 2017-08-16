@@ -156,7 +156,7 @@ pe.bhb.pedestal2=導出至相鄰的儲存空間
 pe.body.pedestal1=回復附近玩家的飽食度
 pe.body.pedestal2=每 %s半格飽食度
 
-pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+#
 
 pe.command.changelog.uptodate=ProjectE已過舊。 
 pe.command.clearknowledge.error=無法清除知識： %s
@@ -267,7 +267,7 @@ pe.mind.pedestal1=吸取附近經驗值球至精神之石
 pe.misc.every_tick=每tick
 pe.misc.seconds=秒
 pe.misc.storedxp_tooltip=已儲存經驗值：
-pe.misc.wrenched_block=Wrenched block!
+#
 
 pe.morningstar.mode1=標準
 pe.morningstar.mode2=３倍高射程
