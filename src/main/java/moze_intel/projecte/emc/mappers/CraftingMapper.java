@@ -195,10 +195,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					fixedInputs.add(recipeItemCollection[0].copy());
 					continue;
 				}
-				for (ItemStack option : recipeItemCollection) {
-					recipeItemOptions.add(option.copy());
+				if (recipeItem != Ingredient.EMPTY) {
+					for (ItemStack option : recipeItemCollection) {
+						recipeItemOptions.add(option.copy());
+					}
+					variableInputs.add(recipeItemOptions);
 				}
-				variableInputs.add(recipeItemOptions);
 			}
 			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
@@ -223,16 +225,15 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 
 		@Override
 		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Ingredient> recipeItems = null;
-			if (recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden) {
-				recipeItems = recipe.getIngredients();
-			}
+			Iterable<Ingredient> recipeItems = recipe.getIngredients();
 			List<ItemStack> inputs = new LinkedList<>();
 			for (Ingredient o : recipeItems) {
-				if (o.getMatchingStacks().length == 1) {
-					inputs.add(o.getMatchingStacks()[0]);
-				} else {
-					PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
+				if (o != Ingredient.EMPTY) {
+					if (o.getMatchingStacks().length == 1) {
+						inputs.add(o.getMatchingStacks()[0]);
+					} else {
+						PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
+					}
 				}
 			}
 			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
