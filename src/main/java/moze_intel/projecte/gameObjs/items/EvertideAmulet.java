@@ -22,6 +22,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -55,10 +57,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0);
+
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
@@ -153,42 +158,42 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) 
+		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
 		{
 			return;
 		}
 		
-		EntityPlayer player = (EntityPlayer) entity;
+		EntityLivingBase living = (EntityLivingBase) entity;
 
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
+		int x = (int) Math.floor(living.posX);
+		int y = (int) (living.posY - living.getYOffset());
+		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
 		if ((world.getBlockState(pos.down()).getBlock() == Blocks.WATER || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
 		{
-			if (!player.isSneaking())
+			if (!living.isSneaking())
 			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
+				living.motionY = 0.0D;
+				living.fallDistance = 0.0F;
+				living.onGround = true;
 			}
-				
-			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+
+			if (!world.isRemote && !living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
 		}
 		else if (!world.isRemote)
 		{
-			if (player.isInWater())
+			if (living.isInWater())
 			{
-				player.setAir(300);
+				living.setAir(300);
 			}
-				
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+
+			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}

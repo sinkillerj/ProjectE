@@ -21,13 +21,12 @@ public final class ReflectionHelper
 {
 	private static final String[] arrowInGroundNames = {"inGround", "field_70254_i"};
 	private static final String[] entityFireImmuneNames = {"isImmuneToFire", "field_70178_ae"};
-	private static final String[] playerCapaWalkSpeedNames = {"walkSpeed", "field_75097_g"};
 	private static final String[] explosionSizeNames = {"size", "field_77280_f"};
 	private static final String[] updateScorePointsNames = { "updateScorePoints", "func_184849_a" };
 
 	private static final MethodHandle
 		arrowInGround_getter, explosionSize_getter, explosionSize_setter,
-		fireImmunity_setter, walkSpeed_setter,
+		fireImmunity_setter,
 		updateScorePoints;
 
 	static {
@@ -47,10 +46,6 @@ public final class ReflectionHelper
 			f = net.minecraftforge.fml.relauncher.ReflectionHelper.findField(Explosion.class, explosionSizeNames);
 			f.setAccessible(true);
 			explosionSize_setter = MethodHandles.publicLookup().unreflectSetter(f);
-
-			f = net.minecraftforge.fml.relauncher.ReflectionHelper.findField(PlayerCapabilities.class, playerCapaWalkSpeedNames);
-			f.setAccessible(true);
-			walkSpeed_setter = MethodHandles.publicLookup().unreflectSetter(f);
 
 			Method m = net.minecraftforge.fml.relauncher.ReflectionHelper.findMethod(EntityPlayerMP.class, updateScorePointsNames[0], updateScorePointsNames[1], IScoreCriteria.class, int.class);
 			m.setAccessible(true);
@@ -90,13 +85,6 @@ public final class ReflectionHelper
 	{
 		try {
 			explosionSize_setter.invokeExact(instance, size);
-		} catch (Throwable ignored) {}
-	}
-
-	protected static void setPlayerCapabilityWalkspeed(PlayerCapabilities instance, float value)
-	{
-		try {
-			walkSpeed_setter.invokeExact(instance, value);
 		} catch (Throwable ignored) {}
 	}
 

@@ -160,11 +160,6 @@ public final class PlayerHelper
 		ReflectionHelper.setEntityFireImmunity(player, value);
 	}
 
-	public static void setPlayerWalkSpeed(EntityPlayer player, float value)
-	{
-		ReflectionHelper.setPlayerCapabilityWalkspeed(player.capabilities, value);
-	}
-
 	public static void swingItem(EntityPlayer player, EnumHand hand)
 	{
 		if (player.getEntityWorld() instanceof WorldServer)

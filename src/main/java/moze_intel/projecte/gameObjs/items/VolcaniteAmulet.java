@@ -19,6 +19,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -46,6 +48,8 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector
 {
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0);
+
 	public VolcaniteAmulet()
 	{
 		this.setUnlocalizedName("volcanite_amulet");
@@ -84,34 +88,42 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
-		
-		EntityPlayer player = (EntityPlayer) entity;
+		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
+		{
+			return;
+		}
 
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
+		EntityLivingBase living = (EntityLivingBase) entity;
+
+		int x = (int) Math.floor(living.posX);
+		int y = (int) (living.posY - living.getYOffset());
+		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.LAVA || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && world.isAirBlock(pos))
 		{
-			if (!player.isSneaking())
+			if (!living.isSneaking())
 			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
+				living.motionY = 0.0D;
+				living.fallDistance = 0.0F;
+				living.onGround = true;
 			}
 
-			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+			if (!world.isRemote && !living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
 		}
-		else if (!player.getEntityWorld().isRemote)
+		else if (!world.isRemote)
 		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			if (living.isInWater())
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				living.setAir(300);
+			}
+
+			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+			{
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -147,39 +159,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent)
 	{
-		if (!(ent instanceof EntityPlayer)) 
-		{
-			return;
-		}
-		
-		EntityPlayer player = (EntityPlayer) ent;
-
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
-		BlockPos pos = new BlockPos(x, y, z);
-
-		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
-		{
-			if (!player.isSneaking())
-			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
-			}
-
-			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
-			}
-		}
-		else if (!player.getEntityWorld().isRemote)
-		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
-			}
-		}
+		this.onUpdate(stack, ent.getEntityWorld(), ent, 0, false);
 	}
 
 	@Override
