@@ -126,54 +126,54 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			boolean lookingDown = look.y >= -1 && look.y <= -WALL_MODE;
 			boolean lookingUp   = look.y <=  1 && look.y >=  WALL_MODE;
 
-			boolean lookingAlongZ = facing.getAxis() == EnumFacing.Axis.Z;
+			boolean lookingAlongZ = player.getHorizontalFacing().getAxis() == EnumFacing.Axis.Z;
 
 			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
 			switch (facing) {
 				case UP:
 					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
-						box = box.expand(charge, 0, charge);
+						box = box.expand(charge * 2, 0, charge * 2).offset(-charge, 0, -charge);
 						dY = 1;
 					}
 					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
+						box = box.expand(charge * 2, charge * 2, 0).offset(-charge, 1, 0);
 					else
-						box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
+						box = box.expand(0, charge * 2, charge * 2).offset(0, 1, -charge);
 
 					break;
 
 				case DOWN:
 					if (lookingUp || mode == TRANSMUTATION_MODE)
 					{
-						box = box.expand(charge, 0, charge);
+						box = box.expand(charge * 2, 0, charge * 2).offset(-charge, 0, -charge);
 						dY = -1;
 
 					}
 					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
+						box = box.expand(charge *2, charge * 2, 0).offset(-charge, -1 - charge*2, 0);
 					else
-						box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+						box = box.expand(0, charge * 2, charge * 2).offset(0, -1 - charge*2, -charge);
 
 					break;
 
 				case EAST:
-					box = box.expand(0, charge, charge);
+					box = box.expand(0, charge * 2, charge * 2).offset(0, -charge, -charge);
 					dX = 1;
 					break;
 
 				case WEST:
-					box = box.expand(0, charge, charge);
+					box = box.expand(0, charge * 2, charge * 2).offset(0, -charge, -charge);
 					dX = -1;
 					break;
 
 				case SOUTH:
-					box = box.expand(charge, charge, 0);
+					box = box.expand(charge * 2, charge * 2, 0).offset(-charge, -charge, 0);
 					dZ = 1;
 					break;
 
 				case NORTH:
-					box = box.expand(charge, charge, 0);
+					box = box.expand(charge * 2, charge * 2, 0).offset(-charge, -charge, 0);
 					dZ = -1;
 					break;
 			}
