@@ -47,6 +47,75 @@
           }
         }
       ]
+    },
+    "concrete_powder_to_block": {
+      "comment": "Propagate concrete powder values to concrete blocks",
+      "conversions": [
+        {
+          "output": "minecraft:concrete|0",
+          "ingredients": [ "minecraft:concrete_powder|0" ]
+        },
+        {
+          "output": "minecraft:concrete|1",
+          "ingredients": [ "minecraft:concrete_powder|1" ]
+        },
+        {
+          "output": "minecraft:concrete|2",
+          "ingredients": [ "minecraft:concrete_powder|2" ]
+        },
+        {
+          "output": "minecraft:concrete|3",
+          "ingredients": [ "minecraft:concrete_powder|3" ]
+        },
+        {
+          "output": "minecraft:concrete|4",
+          "ingredients": [ "minecraft:concrete_powder|4" ]
+        },
+        {
+          "output": "minecraft:concrete|5",
+          "ingredients": [ "minecraft:concrete_powder|5" ]
+        },
+        {
+          "output": "minecraft:concrete|6",
+          "ingredients": [ "minecraft:concrete_powder|6" ]
+        },
+        {
+          "output": "minecraft:concrete|7",
+          "ingredients": [ "minecraft:concrete_powder|7" ]
+        },
+        {
+          "output": "minecraft:concrete|8",
+          "ingredients": [ "minecraft:concrete_powder|8" ]
+        },
+        {
+          "output": "minecraft:concrete|9",
+          "ingredients": [ "minecraft:concrete_powder|9" ]
+        },
+        {
+          "output": "minecraft:concrete|10",
+          "ingredients": [ "minecraft:concrete_powder|10" ]
+        },
+        {
+          "output": "minecraft:concrete|11",
+          "ingredients": [ "minecraft:concrete_powder|11" ]
+        },
+        {
+          "output": "minecraft:concrete|12",
+          "ingredients": [ "minecraft:concrete_powder|12" ]
+        },
+        {
+          "output": "minecraft:concrete|13",
+          "ingredients": [ "minecraft:concrete_powder|13" ]
+        },
+        {
+          "output": "minecraft:concrete|14",
+          "ingredients": [ "minecraft:concrete_powder|14" ]
+        },
+        {
+          "output": "minecraft:concrete|15",
+          "ingredients": [ "minecraft:concrete_powder|15" ]
+        }
+      ]
     }
   },
   "values": {
