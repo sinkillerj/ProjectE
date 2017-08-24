@@ -8,6 +8,7 @@ import moze_intel.projecte.emc.generators.IValueGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends MappingCollector<T, V, A> implements IValueGenerator<T, V>
 {
@@ -99,7 +100,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				}
 			}
 			//Iterate over all Conversions for a single conversion output
-			for (Map.Entry<T, List<Conversion>> entry : conversionsFor.entrySet()) {
+			for (Map.Entry<T, Set<Conversion>> entry : conversionsFor.entrySet()) {
 				V minConversionValue = null;
 				//For all Conversions. All these have the same output.
 				for (Conversion conversion : entry.getValue()) {

@@ -8,10 +8,12 @@ import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T, V, A>  {
@@ -33,18 +35,18 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	}
 
 	protected final Map<T, Conversion> overwriteConversion = new HashMap<>();
-	protected final Map<T, List<Conversion>> conversionsFor = new HashMap<>();
-	private final Map<T, List<Conversion>> usedIn = new HashMap<>();
+	protected final Map<T, Set<Conversion>> conversionsFor = new HashMap<>();
+	private final Map<T, Set<Conversion>> usedIn = new HashMap<>();
 	protected final Map<T, V> fixValueBeforeInherit = new HashMap<>();
 	protected final Map<T, V> fixValueAfterInherit = new HashMap<>();
 	private final Map<T, Integer> noDependencyConversionCount = new HashMap<>();
 
-	private List<Conversion> getConversionsFor(T something) {
-		return conversionsFor.computeIfAbsent(something, t -> new LinkedList<>());
+	private Set<Conversion> getConversionsFor(T something) {
+		return conversionsFor.computeIfAbsent(something, t -> new LinkedHashSet<>());
 	}
 
-	protected List<Conversion> getUsesFor(T something) {
-		return usedIn.computeIfAbsent(something, t -> new LinkedList<>());
+	protected Set<Conversion> getUsesFor(T something) {
+		return usedIn.computeIfAbsent(something, t -> new LinkedHashSet<>());
 	}
 
 	private int getNoDependencyConversionCountFor(T something) {
@@ -59,7 +61,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 
 	private void addConversionToIngredientUsages(Conversion conversion) {
 		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
-			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
+			Set<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
 			if (ingredient.getValue() == null)
 				throw new IllegalArgumentException("ingredient amount value has to be != null");
 			usesForIngredient.add(conversion);
@@ -166,6 +168,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 			return Objects.equals(output, other.output)
 					&& Objects.equals(value, other.value)
 					&& Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(output, value, ingredientsWithAmount);
 		}
 	}
 
