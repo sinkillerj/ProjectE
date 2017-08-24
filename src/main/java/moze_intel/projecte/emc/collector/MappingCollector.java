@@ -78,9 +78,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 			throw new IllegalArgumentException("outnumber has to be > 0!");
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount, arithmeticForConversion, arithmetic.getZero());
-		if (getConversionsFor(output).contains(conversion)) return;
-		getConversionsFor(output).add(conversion);
-		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
+		if (!getConversionsFor(output).add(conversion)) {
+			return;
+		}
+		if (ingredientsWithAmount.isEmpty())
+			increaseNoDependencyConversionCountFor(output);
 		addConversionToIngredientUsages(conversion);
 	}
 
