@@ -75,6 +75,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		if (!provider.hasKnowledge(stack))
 		{
 			learnFlag = 300;
+			unlearnFlag = 0;
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
@@ -107,6 +108,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		if (provider.hasKnowledge(stack))
 		{
 			unlearnFlag = 300;
+			learnFlag = 0;
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
