@@ -384,7 +384,7 @@ public abstract class PEToolBase extends ItemMode
 
 		byte charge = getCharge(stack);
 		float factor = 2.5F * charge;
-		AxisAlignedBB aabb = player.getEntityBoundingBox().expand(factor, factor, factor);
+		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(factor);
 		List<Entity> toAttack = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, aabb);
 		DamageSource src = DamageSource.causePlayerDamage(player);
 		src.setDamageBypassesArmor();
@@ -445,7 +445,7 @@ public abstract class PEToolBase extends ItemMode
 
 			int offset = ((int) Math.pow(2, 2 + charge));
 
-			AxisAlignedBB bBox = player.getEntityBoundingBox().expand(offset, offset / 2, offset);
+			AxisAlignedBB bBox = player.getEntityBoundingBox().grow(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
 
 			List<ItemStack> drops = new ArrayList<>();
@@ -546,7 +546,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 		int offset = this.getCharge(stack) + 3;
-		AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
+		AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
 		List<ItemStack> drops = new ArrayList<>();
 		World world = player.getEntityWorld();
 

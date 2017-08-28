@@ -54,7 +54,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		if (stack.getItemDamage() > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getEntityBoundingBox().expand(5.0, 5.0, 5.0), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getEntityBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (player.getEntityWorld().isRemote)

@@ -100,7 +100,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(7, 7, 7);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		
 		for (EntityItem item : itemList)
@@ -242,7 +242,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (stack.getItemDamage() == 1)
 		{
-			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
+			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().grow(5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

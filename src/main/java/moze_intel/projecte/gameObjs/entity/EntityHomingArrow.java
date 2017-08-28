@@ -115,7 +115,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private void findNewTarget()
 	{
-		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
+		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().grow(8, 8, 8));
 
 		if (!candidates.isEmpty())
 		{

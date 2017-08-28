@@ -95,7 +95,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			switch(stack.getItemDamage())
 			{
 				case 0:
-					WorldHelper.freezeInBoundingBox(world, player.getEntityBoundingBox().expand(5, 5, 5), player, true);
+					WorldHelper.freezeInBoundingBox(world, player.getEntityBoundingBox().grow(5), player, true);
 					break;
 				case 1:
 					WorldHelper.igniteNearby(world, player);
@@ -104,7 +104,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 					break;
 				case 3:
-					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().expand(5, 5, 5), player.posX, player.posY, player.posZ, true);
+					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getEntityBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
 					break;
 			}
 		}

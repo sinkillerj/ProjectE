@@ -65,7 +65,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		if (!world.isRemote)
 		{
 			int offset = 3 + this.getCharge(stack);
-			AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
+			AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
