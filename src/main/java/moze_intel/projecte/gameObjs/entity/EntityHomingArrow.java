@@ -48,6 +48,14 @@ public class EntityHomingArrow extends EntityTippedArrow
 	}
 
 	@Override
+	protected void arrowHit(@Nonnull EntityLivingBase living)
+	{
+		super.arrowHit(living);
+		// Strip damage vulnerability
+		living.hurtResistantTime = 0;
+	}
+
+	@Override
 	public void onUpdate()
 	{
 		boolean inGround = WorldHelper.isArrowInGround(this);
