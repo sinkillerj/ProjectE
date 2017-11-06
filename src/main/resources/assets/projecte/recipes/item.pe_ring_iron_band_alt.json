@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "projecte:item.pe_ring_iron_band"
+  },
+  "pattern": [
+    "III",
+    "ILI",
+    "III"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "#INGOTIRON"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  }
+}
