@@ -287,7 +287,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 		else
 		{
-			outputs.setStackInSlot(slot, null);
+			outputs.setStackInSlot(slot, ItemStack.EMPTY);
 		}
 	}
 
