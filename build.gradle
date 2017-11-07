@@ -34,6 +34,13 @@ minecraft {
     useDepAts = true
 }
 
+jar {
+    classifier = 'universal'
+    manifest {
+        attributes 'FMLAT': 'pe_at.cfg'
+    }
+}
+
 repositories {
 	maven { //MinecraftForge
 		name "MinecraftForge Maven"

@@ -1,14 +1,11 @@
 package moze_intel.projecte.events;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.ReflectionHelperClient;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -34,7 +31,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -73,7 +69,7 @@ public class TransmutationRenderingEvent
 					RenderHelper.enableStandardItemLighting();
 
 					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(transmutationResult);
-					ReflectionHelperClient.renderBakedModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
+					Minecraft.getMinecraft().getRenderItem().renderItemModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
 
 					RenderHelper.disableStandardItemLighting();
 				}

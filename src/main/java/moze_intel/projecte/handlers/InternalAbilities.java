@@ -99,14 +99,14 @@ public final class InternalAbilities
 		{
 			if (player.isImmuneToFire())
 			{
-				PlayerHelper.setPlayerFireImmunity(player, false);
+				player.isImmuneToFire = false;
 			}
 		}
 		else
 		{
 			if (!player.isImmuneToFire())
 			{
-				PlayerHelper.setPlayerFireImmunity(player, true);
+				player.isImmuneToFire = true;
 			}
 		}
 

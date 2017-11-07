@@ -58,15 +58,14 @@ public class EntityHomingArrow extends EntityTippedArrow
 	@Override
 	public void onUpdate()
 	{
-		boolean inGround = WorldHelper.isArrowInGround(this);
 		if (!world.isRemote && this.ticksExisted > 3)
 		{
-			if (hasTarget() && (!getTarget().isEntityAlive() || inGround))
+			if (hasTarget() && (!getTarget().isEntityAlive() || this.inGround))
 			{
 				dataManager.set(DW_TARGET_ID, NO_TARGET);
 			}
 
-			if (!hasTarget() && !inGround && newTargetCooldown <= 0)
+			if (!hasTarget() && !this.inGround && newTargetCooldown <= 0)
 			{
 				findNewTarget();
 			} else
@@ -75,7 +74,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 			}
 		}
 
-		if (ticksExisted > 3 && hasTarget() && !WorldHelper.isArrowInGround(this))
+		if (ticksExisted > 3 && hasTarget() && !this.inGround)
 		{
 			this.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
 			this.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);

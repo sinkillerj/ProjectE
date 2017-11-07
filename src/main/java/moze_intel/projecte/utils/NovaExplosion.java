@@ -34,7 +34,7 @@ public class NovaExplosion extends Explosion
 	@Override
 	public void doExplosionA()
 	{
-		float initialSize = ReflectionHelper.getExplosionSize(this);
+		float initialSize = this.size;
 
 		HashSet<BlockPos> hashset = Sets.newHashSet();
 		int j;
@@ -86,14 +86,14 @@ public class NovaExplosion extends Explosion
 		}
 
 		this.getAffectedBlockPositions().addAll(hashset);
-		ReflectionHelper.setExplosionSize(this, initialSize);
-		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.emptyList(), ReflectionHelper.getExplosionSize(this));
+		this.size = initialSize;
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.emptyList(), this.size);
 	}
 	
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		float cachedExplosionSize = ReflectionHelper.getExplosionSize(this);
+		float cachedExplosionSize = this.size;
 		double x = getPosition().x;
 		double y = getPosition().y;
 		double z = getPosition().z;

@@ -529,11 +529,6 @@ public final class WorldHelper
 		}
 	}
 
-	public static boolean isArrowInGround(EntityArrow arrow)
-	{
-		return ReflectionHelper.getArrowInGround(arrow);
-	}
-
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */

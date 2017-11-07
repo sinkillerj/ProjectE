@@ -13,6 +13,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.scoreboard.IScoreCriteria;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -155,11 +157,6 @@ public final class PlayerHelper
 		PacketHandler.sendTo(new CooldownResetPKT(), (EntityPlayerMP) player);
 	}
 
-	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
-	{
-		ReflectionHelper.setEntityFireImmunity(player, value);
-	}
-
 	public static void swingItem(EntityPlayer player, EnumHand hand)
 	{
 		if (player.getEntityWorld() instanceof WorldServer)
@@ -187,6 +184,11 @@ public final class PlayerHelper
 
 	public static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int value)
 	{
-		ReflectionHelper.updateScore(player, objective, value);
+		// [VanillaCopy] EntityPlayerMP.updateScorePoints
+		for (ScoreObjective scoreobjective : player.getWorldScoreboard().getObjectivesFromCriteria(objective))
+		{
+			Score score = player.getWorldScoreboard().getOrCreateScore(player.getName(), scoreobjective);
+			score.setScorePoints(value);
+		}
 	}
 }
