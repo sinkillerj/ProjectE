@@ -152,7 +152,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
 
-		ItemStack lockCopy = null;
+		ItemStack lockCopy = ItemStack.EMPTY;
 
 		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
@@ -239,7 +239,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		int matterCounter = 0;
 		int fuelCounter = 0;
 
-		if (lockCopy != null)
+		if (!lockCopy.isEmpty())
 		{
 			if (FuelMapper.isStackFuel(lockCopy))
 			{
