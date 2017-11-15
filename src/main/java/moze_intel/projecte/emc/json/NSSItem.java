@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.json;
 
-import com.google.common.collect.ImmutableSet;
 import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -8,13 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class NSSItem implements NormalizedSimpleStack {
-	static final Map<String, Set<Integer>> idWithUsedMetaData = new HashMap<>();
+	static final Set<String> seenIds = new HashSet<>();
 
 	public final String itemName;
 	public final int damage;
@@ -59,23 +56,8 @@ public class NSSItem implements NormalizedSimpleStack {
 			PECore.LOGGER.fatal("Could not create NSSItem: {}", e.getMessage());
 			return null;
 		}
-		Set<Integer> usedMetadata;
-		if (!idWithUsedMetaData.containsKey(normStack.itemName)) {
-			usedMetadata = new HashSet<>();
-			idWithUsedMetaData.put(normStack.itemName, usedMetadata);
-		} else {
-			usedMetadata = idWithUsedMetaData.get(normStack.itemName);
-		}
-		usedMetadata.add(normStack.damage);
+		seenIds.add(itemName);
 		return normStack;
-	}
-
-	public static Set<Integer> getUsedMetadata(NormalizedSimpleStack nss) {
-		if (nss instanceof NSSItem) {
-			return idWithUsedMetaData.getOrDefault(((NSSItem) nss).itemName, ImmutableSet.of());
-		} else {
-			throw new IllegalArgumentException("Can only get Metadata for Items!");
-		}
 	}
 
 	@Override
