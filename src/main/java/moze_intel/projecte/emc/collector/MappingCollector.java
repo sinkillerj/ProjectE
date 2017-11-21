@@ -39,7 +39,6 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	private final Map<T, Set<Conversion>> usedIn = new HashMap<>();
 	protected final Map<T, V> fixValueBeforeInherit = new HashMap<>();
 	protected final Map<T, V> fixValueAfterInherit = new HashMap<>();
-	private final Map<T, Integer> noDependencyConversionCount = new HashMap<>();
 
 	private Set<Conversion> getConversionsFor(T something) {
 		return conversionsFor.computeIfAbsent(something, t -> new LinkedHashSet<>());
@@ -47,16 +46,6 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 
 	protected Set<Conversion> getUsesFor(T something) {
 		return usedIn.computeIfAbsent(something, t -> new LinkedHashSet<>());
-	}
-
-	private int getNoDependencyConversionCountFor(T something) {
-		Integer count = noDependencyConversionCount.get(something);
-		if (count == null) return 0;
-		else return count;
-	}
-
-	private void increaseNoDependencyConversionCountFor(T something) {
-		noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
 	}
 
 	private void addConversionToIngredientUsages(Conversion conversion) {
@@ -81,8 +70,6 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		if (!getConversionsFor(output).add(conversion)) {
 			return;
 		}
-		if (ingredientsWithAmount.isEmpty())
-			increaseNoDependencyConversionCountFor(output);
 		addConversionToIngredientUsages(conversion);
 	}
 
@@ -125,9 +112,6 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		addConversionToIngredientUsages(conversion);
 		overwriteConversion.put(something, conversion);
 	}
-
-
-	abstract public Map<T, V> generateValues();
 
 	protected class Conversion {
 		public final T output;
