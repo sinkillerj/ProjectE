@@ -1,3 +1,8 @@
+###Version 1.10.2-PE1.3.1
+* NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
+* FIXED: Transmutation GUI accepting items with no EMC value
+* CHANGE: Condenser and furnace interaction sides now more closely resemble their old targets
+
 ###Version 1.10.2-PE1.3.0
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.10
 * NEW: Covalence Loss. The long requested Inequivalent Exchange. Adjusting this config changes how much EMC is received when burning a item.
