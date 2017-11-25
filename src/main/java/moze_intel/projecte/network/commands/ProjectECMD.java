@@ -17,9 +17,8 @@ import java.util.Locale;
 
 public class ProjectECMD extends ProjectEBaseCMD
 {
-	private static final List<String> commands = Lists.newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
+	private static final List<String> commands = Lists.newArrayList("clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
-	private final ChangelogCMD changelogcmd = new ChangelogCMD();
 	private final ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
 	private final SetEmcCMD setemccmd = new SetEmcCMD();
 	private final RemoveEmcCMD removeemccmd = new RemoveEmcCMD();
@@ -131,18 +130,6 @@ public class ProjectECMD extends ProjectEBaseCMD
 				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
 			}
 		}
-		else if ("changelog".equals(subName))
-		{
-			if (changelogcmd.checkPermission(server, sender))
-			{
-				changelogcmd.execute(server, sender, relayparams);
-			}
-			else
-			{
-				sendError(sender, new TextComponentTranslation("commands.generic.permission"));
-			}
-		}
-
 	}
 
 

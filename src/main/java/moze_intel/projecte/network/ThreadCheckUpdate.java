@@ -1,141 +1,58 @@
 package moze_intel.projecte.network;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.network.commands.ChangelogCMD;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
-import org.apache.commons.io.IOUtils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 public class ThreadCheckUpdate extends Thread
 {
-	private static boolean hasRunServer = false;
-	private static boolean hasRunClient = false;
-	private static final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogMC112.txt";
+	private static volatile boolean hasRun = false;
 	private static final String curseURL = "https://minecraft.curseforge.com/projects/projecte/files";
-	private final boolean isServerSide;
 	
-	public ThreadCheckUpdate(boolean isServer) 
+	public ThreadCheckUpdate()
 	{
-		this.isServerSide = isServer;
-		this.setName("ProjectE Update Checker " + (isServer ? "Server" : "Client"));
+		this.setName("ProjectE Update Checker Notifier");
 	}
 	
 	@Override
 	public void run()
 	{
-		HttpURLConnection connection = null;
-		BufferedReader reader = null; 
-		
-		try
+		hasRun = true;
+		ModContainer container = Loader.instance().getIndexedModList().get(PECore.MODID);
+		ForgeVersion.CheckResult result = null;
+
+		do {
+			ForgeVersion.CheckResult res = ForgeVersion.getResult(container);
+			if (res.status != ForgeVersion.Status.PENDING)
+			{
+				result = res;
+			}
+		} while (result == null);
+
+		if (result.status == ForgeVersion.Status.UP_TO_DATE)
 		{
-			connection = (HttpURLConnection) new URL(changelogURL).openConnection();
-
-			connection.connect();
-			
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			
-			String line = reader.readLine();
-			
-			if (line == null)
-			{
-				PECore.LOGGER.fatal("Update check failed!");
-				throw new IOException("No data from github changelog!");
-			}
-			
-			String latestVersion;
-			List<String> changes = new ArrayList<>();
-			
-			latestVersion = line.substring(11);
-			latestVersion = latestVersion.trim();
-					
-			while ((line = reader.readLine()) != null)
-			{
-				if (line.startsWith("###Version"))
-				{
-					break;
-				}
-						
-				if (!line.isEmpty())
-				{
-					line = line.substring(1).trim();
-					changes.add(line);
-				}
-			}
-			
-			if (!PECore.VERSION.equals(latestVersion))
-			{
-				PECore.LOGGER.info("Mod is outdated! Check {} to get the latest version ({}).", curseURL, latestVersion);
-				
-				for (String s : changes)
-				{
-					PECore.LOGGER.info(s);
-				}
-				
-				if (isServerSide)
-				{
-					ChangelogCMD.changelog.addAll(changes);
-				}
-				else
-				{
-					Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.available", latestVersion)));
-					Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.getit")));
-
-					ITextComponent link = new TextComponentString(curseURL);
-					link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-					Minecraft.getMinecraft().player.sendMessage(link);
-
-					Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.changelog")));
-				}
-			}
-			else
-			{
-				PECore.LOGGER.info("Mod is updated.");
-			}
-		}
-		catch(Exception e)
+			PECore.LOGGER.info("Mod is updated.");
+		} else if (result.status == ForgeVersion.Status.OUTDATED)
 		{
-			PECore.LOGGER.fatal("Caught exception in Update Checker thread!");
-			e.printStackTrace();
-		}
-		finally
-		{
-			IOUtils.closeQuietly(reader);
+			PECore.LOGGER.info("Mod is outdated! Check {} to get the latest version ({}).", curseURL, result.target);
 
-			if (connection != null)
-			{
-				connection.disconnect();
-			}
-			
-			if (isServerSide)
-			{
-				hasRunServer = true;
-			}
-			else
-			{
-				hasRunClient = true;
-			}
+			Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.available", result.target)));
+			Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.getit")));
+
+			ITextComponent link = new TextComponentString(curseURL);
+			link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+			Minecraft.getMinecraft().player.sendMessage(link);
 		}
 	}
-	
-	public static boolean hasRunServer()
+
+	public static boolean hasRun()
 	{
-		return hasRunServer;
-	}
-	
-	public static boolean hasRunClient()
-	{
-		return hasRunClient;
+		return hasRun;
 	}
 }

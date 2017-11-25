@@ -344,7 +344,6 @@ pe.transmutation.unlearned7=e
 pe.transmutation.unlearned8=d
 
 pe.update.available=New ProjectE update available! Version: %s
-pe.update.changelog=Use /projecte changelog for change log!
 pe.update.getit=Get it here!
 
 pe.volcanite.tooltip1=Press %s to fire a lava projectile

@@ -19,9 +19,9 @@ public class CheckUpdatePKT implements IMessage
 		@Override
 		public IMessage onMessage(CheckUpdatePKT message, MessageContext ctx)
 		{
-			if (!ThreadCheckUpdate.hasRunClient())
+			if (!ThreadCheckUpdate.hasRun())
 			{
-				new ThreadCheckUpdate(false).start();
+				new ThreadCheckUpdate().start();
 			}
 
 			return null;

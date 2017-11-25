@@ -1,6 +1,5 @@
 package moze_intel.projecte.network;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 
 import java.io.BufferedReader;
@@ -14,8 +13,7 @@ public class ThreadCheckUUID extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private static final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/haUUID.txt";
-	private static final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private static final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.12.x/haUUID.txt";
 	private final boolean isServerSide;
 	
 	public ThreadCheckUUID(boolean isServer) 
