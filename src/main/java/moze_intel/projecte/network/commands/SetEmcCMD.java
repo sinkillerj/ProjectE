@@ -2,8 +2,7 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
@@ -11,13 +10,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 
-public class SetEmcCMD extends ProjectEBaseCMD
+public class SetEmcCMD extends CommandBase
 {
 	@Nonnull
 	@Override
 	public String getName()
 	{
-		return "projecte_setEMC";
+		return "setEMC";
 	}
 
 	@Nonnull
@@ -38,8 +37,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 	{
 		if (params.length < 1)
 		{
-			sendError(sender, new TextComponentTranslation("pe.command.set.usage"));
-			return;
+			throw new WrongUsageException(getUsage(sender));
 		}
 
 		String name;
@@ -56,8 +54,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem.isEmpty())
 			{
-				sendError(sender, new TextComponentTranslation("pe.command.set.usage"));
-				return;
+				throw new WrongUsageException(getUsage(sender));
 			}
 
 			name = heldItem.getItem().getRegistryName().toString();
@@ -66,7 +63,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 			if (emc < 0)
 			{
-				sendError(sender, new TextComponentTranslation("pe.command.set.invalidemc", params[0]));
+				throw new NumberInvalidException("pe.command.set.invalidemc", params[0]);
 			}
 		}
 		else
@@ -83,16 +80,14 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 					if (meta < 0)
 					{
-						sendError(sender, new TextComponentTranslation("pe.command.set.invalidmeta", params[1]));
-						return;
+						throw new CommandException("pe.command.set.invalidmeta", params[1]);
 					}
 
 					emc = MathUtils.parseInteger(params[2]);
 
 					if (emc < 0)
 					{
-						sendError(sender, new TextComponentTranslation("pe.command.set.invalidemc", params[0]));
-						return;
+						throw new CommandException("pe.command.set.invalidemc", params[2]);
 					}
 				}
 				else
@@ -101,8 +96,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 					if (emc < 0)
 					{
-						sendError(sender, new TextComponentTranslation("pe.command.set.invalidemc", params[0]));
-						return;
+						throw new NumberInvalidException("pe.command.set.invalidemc", params[1]);
 					}
 				}
 			}
@@ -112,8 +106,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 				if (emc < 0)
 				{
-					sendError(sender, new TextComponentTranslation("pe.command.set.invalidemc", params[0]));
-					return;
+					throw new NumberInvalidException("pe.command.set.invalidemc", params[1]);
 				}
 			}
 		}
@@ -125,7 +118,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 		}
 		else
 		{
-			sendError(sender, new TextComponentTranslation("pe.command.set.invaliditem", name));
+			throw new CommandException("pe.command.set.invaliditem", name);
 		}
 	}
 }

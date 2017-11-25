@@ -2,8 +2,10 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
@@ -11,13 +13,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 
-public class RemoveEmcCMD extends ProjectEBaseCMD
+public class RemoveEmcCMD extends CommandBase
 {
 	@Nonnull
 	@Override
 	public String getName()
 	{
-		return "projecte_removeEMC";
+		return "removeEMC";
 	}
 
 	@Nonnull
@@ -49,8 +51,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 			if (heldItem.isEmpty())
 			{
-				sendError(sender, new TextComponentTranslation("pe.command.remove.usage"));
-				return;
+				throw new WrongUsageException(getUsage(sender));
 			}
 
 			name = heldItem.getItem().getRegistryName().toString();
@@ -66,8 +67,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 				if (meta < 0)
 				{
-					sendError(sender, new TextComponentTranslation("pe.command.remove.invalidmeta", params[1]));
-					return;
+					throw new CommandException("pe.command.remove.invalidmeta", params[1]);
 				}
 			}
 		}
@@ -79,7 +79,7 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 		}
 		else
 		{
-			sendError(sender, new TextComponentTranslation("pe.command.remove.invaliditem", name));
+			throw new CommandException("pe.command.remove.invaliditem", name);
 		}
 	}
 }
