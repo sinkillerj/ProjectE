@@ -1,12 +1,14 @@
 package moze_intel.projecte;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.fixes.CapInventoryWalker;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.*;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
@@ -24,7 +26,11 @@ import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.util.datafix.walkers.ItemStackDataLists;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -104,7 +110,6 @@ public class PECore
 		ObjHandler.register();
 
 		proxy.registerRenderers();
-
 	}
 	
 	@EventHandler
@@ -112,8 +117,26 @@ public class PECore
 	{
 		proxy.registerLayerRenderers();
 		AchievementHandler.init();
+
+		CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+
+		// These two do not have extra layer of indirection so can use the vanilla walker
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(AlchChestTile.class, "Items"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(DMPedestalTile.class, "Items"));
+
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(CollectorMK1Tile.class, CollectorMK2Tile.class, CollectorMK3Tile.class),
+				"Input", "AuxSlots"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(CondenserTile.class, "Input", "LockSlot"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(CondenserMK2Tile.class, "Input", "LockSlot", "Output"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(DMFurnaceTile.class, RMFurnaceTile.class),
+				"Input", "Output", "Fuel"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(RelayMK1Tile.class, RelayMK2Tile.class, RelayMK3Tile.class),
+				"Input", "Output"));
 	}
-	
+
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
