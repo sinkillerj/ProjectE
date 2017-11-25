@@ -1,0 +1,10 @@
+{
+    "homepage": "https://minecraft.curseforge.com/projects/projecte/",
+    "1.12": {
+        "1.12-PE1.1.0": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+    },
+    "promos": {
+        "1.12-latest": "1.12-PE1.1.0",
+        "1.12-recommended": "1.12-PE1.1.0"
+    }
+}

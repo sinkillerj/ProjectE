@@ -1,3 +1,6 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 buildscript {
     repositories {
         mavenCentral()
@@ -104,9 +107,25 @@ task devJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'dev'
     version = "${project.version}"
+
+    println(defaultTasks)
+}
+
+task updateJSON(dependsOn: 'reobfJar') {
+    def updateJsonFile = file('update.json')
+    def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+
+    updateJson."${minecraft_version}"."${project.version}" = "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+
+    // Update promos
+    updateJson.promos."${minecraft_version}-latest" = "${project.version}"
+    updateJson.promos."${minecraft_version}-recommended" = "${project.version}"
+
+    updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
 }
 
 artifacts {
     archives devJar
 }
 
+defaultTasks 'clean', 'build', 'updateJSON'
