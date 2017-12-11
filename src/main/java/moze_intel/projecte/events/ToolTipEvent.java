@@ -1,6 +1,7 @@
 package moze_intel.projecte.events;
 
 import com.google.common.math.LongMath;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -21,7 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
 public class ToolTipEvent 
 {
 	@SubscribeEvent

@@ -127,7 +127,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Map.Entry;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class ObjHandler
 {
 	public static final CreativeTabs cTab = new CreativeTab();

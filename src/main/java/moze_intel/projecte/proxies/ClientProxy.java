@@ -59,7 +59,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
 public class ClientProxy implements IProxy
 {
 	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received

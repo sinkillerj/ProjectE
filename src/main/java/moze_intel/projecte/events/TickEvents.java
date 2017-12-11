@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.item.IAlchBagItem;
@@ -21,7 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.EnumSet;
 import java.util.Set;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents
 {
 	@SubscribeEvent

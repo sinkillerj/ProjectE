@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
@@ -36,7 +37,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
 public class TransmutationRenderingEvent 
 {
 	private static final Minecraft mc = Minecraft.getMinecraft();
