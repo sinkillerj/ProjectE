@@ -209,7 +209,12 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
-		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof AlchChestTile))
+		{
+			return;
+		}
+		AlchChestTile tile = (AlchChestTile) te;
 		if (stack.getItemDamage() == 1)
 		{
 			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,

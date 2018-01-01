@@ -267,7 +267,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertidePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			TileEntity te = world.getTileEntity(pos);
+			if (!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+
+			DMPedestalTile tile = ((DMPedestalTile) te);
 
 			if (tile.getActivityCooldown() == 0)
 			{

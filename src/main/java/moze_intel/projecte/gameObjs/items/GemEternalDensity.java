@@ -24,6 +24,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -386,9 +387,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	{
 		if (!world.isRemote && stack.getItemDamage() == 1)
 		{
-			AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-			condense(stack, tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
-			tile.markDirty();
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof AlchChestTile)
+			{
+				AlchChestTile tile = (AlchChestTile) te;
+				condense(stack, tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
+				tile.markDirty();
+			}
 		}
 	}
 

@@ -85,15 +85,23 @@ public class Relay extends BlockDirection
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		RelayMK1Tile relay = ((RelayMK1Tile) world.getTileEntity(pos));
-		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof RelayMK1Tile)
+		{
+			RelayMK1Tile relay = ((RelayMK1Tile) te);
+			return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
+		}
+		return 0;
 	}
 
 	@Override
 	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		WorldHelper.dropInventory(te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), world, pos);
+		if (te != null)
+		{
+			WorldHelper.dropInventory(te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), world, pos);
+		}
 		super.breakBlock(world, pos, state);
 	}
 

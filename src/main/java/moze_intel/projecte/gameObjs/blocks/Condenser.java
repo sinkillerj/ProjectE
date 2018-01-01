@@ -44,7 +44,12 @@ public class Condenser extends AlchemicalChest
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		IItemHandler inv = world.getTileEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		return ItemHandlerHelper.calcRedstoneFromInventory(inv);
+		TileEntity te = world.getTileEntity(pos);
+		if (te != null)
+		{
+			IItemHandler inv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			return ItemHandlerHelper.calcRedstoneFromInventory(inv);
+		}
+		return 0;
 	}
 }

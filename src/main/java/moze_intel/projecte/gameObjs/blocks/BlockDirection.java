@@ -61,10 +61,12 @@ public abstract class BlockDirection extends Block
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
-		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		WorldHelper.dropInventory(inv, world, pos);
+		if (tile != null)
+		{
+			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			WorldHelper.dropInventory(inv, world, pos);
+		}
 
-		world.notifyNeighborsOfStateChange(pos, state.getBlock(), false);
 		super.breakBlock(world, pos, state);
 	}
 	

@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -158,6 +159,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	{
 		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repairPedCooldown != -1)
 		{
+			TileEntity te = world.getTileEntity(pos);
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
@@ -193,13 +195,17 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return;
 		}
 
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof AlchChestTile))
+		{
+			return;
+		}
+		AlchChestTile tile = ((AlchChestTile) te);
+
 		if (!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
-
-		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-
 		byte coolDown = stack.getTagCompound().getByte("Cooldown");
 
 		if (coolDown > 0)

@@ -346,14 +346,18 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch)
 		{
-			AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(pos)).getEffectBounds();
-			if (ProjectEConfig.effects.timePedBonus > 0) {
-				speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
-				speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
-			}
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof DMPedestalTile)
+			{
+				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
+				if (ProjectEConfig.effects.timePedBonus > 0) {
+					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
+					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
+				}
 
-			if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
-				slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
+				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
+					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
+				}
 			}
 		}
 	}
