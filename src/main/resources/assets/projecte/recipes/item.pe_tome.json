@@ -1,4 +1,9 @@
 {
+  "conditions": [
+    {
+      "type": "projecte:tome_enabled"
+    }
+  ],
   "result": {
     "item": "projecte:item.pe_tome"
   },
