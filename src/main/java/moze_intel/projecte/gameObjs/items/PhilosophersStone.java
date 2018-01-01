@@ -63,7 +63,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		RayTraceResult rtr = getHitBlock(player);
 
-		if (rtr.getBlockPos() != null && !rtr.getBlockPos().equals(pos))
+		if (rtr != null && rtr.getBlockPos() != null && !rtr.getBlockPos().equals(pos))
 		{
 			pos = rtr.getBlockPos();
 			sideHit = rtr.sideHit;
