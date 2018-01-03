@@ -1,0 +1,20 @@
+1.13 TODOS
+- Custom Conversions:
+    - Read from datapack instead of config
+    - Allow defaults to be overrided from datapacks
+    - Merge jsons from different datapacks (option to replace)
+    - Remove meta from "<id>|<meta>" NSS specifier
+    - Add "TAG|<tag>" NSS specifier
+    - Remove wildcard mapper
+    - Cleanup format
+        - Remove "o", "i", "c" shortcut keys, they just clutter up parsing logic and don't make jsons that much shorter
+        - Remove repeated ingredient specifier format, force map all the time (?)
+- Flattening:
+    - Items:
+        - alchbags/klein stars/fuels/covalence dust/matter: split
+        - single toggle rings with meta: move to NBT
+    - Blocks:
+        - rm/dm furnace: combine lit/unlit
+        - dm pedestal: update copying from blocknote (redstone to blockstate prop?)
+        - matterblocks/fuelblocks: split
+
