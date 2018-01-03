@@ -54,7 +54,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
-		addPropertyOverride(new ResourceLocation(PECore.MODID, "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean("Active") ? 1 : 0);
+		addPropertyOverride(new ResourceLocation(PECore.MODID, "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean(TAG_ACTIVE) ? 1 : 0);
 		setHasSubtypes(true);
 	}
 
@@ -73,7 +73,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
 	{
 		return getMode(oldStack) != getMode(newStack)
-				|| (oldStack.hasTagCompound() && newStack.hasTagCompound()) && (oldStack.getTagCompound().getBoolean("Active") != newStack.getTagCompound().getBoolean("Active"));
+				|| (oldStack.hasTagCompound() && newStack.hasTagCompound()) && (oldStack.getTagCompound().getBoolean(TAG_ACTIVE) != newStack.getTagCompound().getBoolean(TAG_ACTIVE));
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)
 	{
-		if(ItemHelper.getOrCreateCompound(stack).getBoolean("Active"))
+		if(ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			switch(stack.getItemDamage())
 			{
@@ -163,7 +163,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if(stack.hasTagCompound())
 		{
-			if(!stack.getTagCompound().getBoolean("Active"))
+			if(!stack.getTagCompound().getBoolean(TAG_ACTIVE))
 			{
 				list.add(TextFormatting.RED + I18n.format("pe.arcana.inactive"));
 			}
@@ -182,7 +182,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		{
 			NBTTagCompound compound = ItemHelper.getOrCreateCompound(player.getHeldItem(hand));
 
-			compound.setBoolean("Active", !compound.getBoolean("Active"));
+			compound.setBoolean(TAG_ACTIVE, !compound.getBoolean(TAG_ACTIVE));
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));

@@ -12,6 +12,9 @@ import javax.annotation.Nonnull;
 
 public class ItemPE extends Item
 {
+	public static final String TAG_ACTIVE = "Active";
+	public static final String TAG_MODE = "Mode";
+
 	public ItemPE()
 	{
 		this.setCreativeTab(ObjHandler.cTab);

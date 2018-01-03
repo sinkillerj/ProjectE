@@ -173,7 +173,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte("Mode");
+		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
 	}
 
 	@Override
@@ -185,11 +185,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			ItemHelper.getOrCreateCompound(stack).setByte("Mode", ((byte) 0));
+			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) 0));
 		}
 		else
 		{
-			ItemHelper.getOrCreateCompound(stack).setByte("Mode", ((byte) (getMode(stack) + 1)));
+			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
 		}
 
 		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
