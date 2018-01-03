@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
@@ -127,12 +128,12 @@ public final class ItemHelper
 	}
 
 	/**
-	 * Get a List of itemstacks from an OD name.<br>
-	 * It also makes sure that no items with damage 32767 are included, to prevent errors.
+	 * Get a List of itemstacks from an OD name, exploding any wildcard values into their subvariants
+	 * TODO 1.13 tags
 	 */
 	public static List<ItemStack> getODItems(String oreName)
 	{
-		List<ItemStack> result = new ArrayList<>();
+		NonNullList<ItemStack> result = NonNullList.create();
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
@@ -143,44 +144,7 @@ public final class ItemHelper
 
 			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
-				List<ItemStack> list = new ArrayList<>();
-
-				ItemStack copy = stack.copy();
-				copy.setItemDamage(0);
-
-				list.add(copy.copy());
-
-				String startName = copy.getUnlocalizedName();
-
-				for (int i = 1; i <= 128; i++)
-				{
-					try
-					{
-						copy.setItemDamage(i);
-
-						if (copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName))
-						{
-							result.addAll(list);
-							break;
-						}
-					}
-					catch (Exception e)
-					{
-						PECore.LOGGER.fatal("Couldn't retrieve OD items for: {}", oreName);
-						e.printStackTrace();
-
-						result.addAll(list);
-						break;
-					}
-
-					list.add(copy.copy());
-
-					if (i == 128)
-					{
-						copy.setItemDamage(0);
-						result.add(copy);
-					}
-				}
+				stack.getItem().getSubItems(CreativeTabs.SEARCH, result);
 			}
 			else
 			{
