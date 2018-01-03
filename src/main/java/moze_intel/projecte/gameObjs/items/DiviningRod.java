@@ -45,15 +45,6 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		modes = modeDesc;
 	}
 	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
 	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
@@ -182,7 +173,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Mode") : 0;
+		return ItemHelper.getOrCreateCompound(stack).getByte("Mode");
 	}
 
 	@Override
@@ -194,11 +185,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			stack.getTagCompound().setByte("Mode", ((byte) 0));
+			ItemHelper.getOrCreateCompound(stack).setByte("Mode", ((byte) 0));
 		}
 		else
 		{
-			stack.getTagCompound().setByte("Mode", ((byte) (getMode(stack) + 1)));
+			ItemHelper.getOrCreateCompound(stack).setByte("Mode", ((byte) (getMode(stack) + 1)));
 		}
 
 		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));

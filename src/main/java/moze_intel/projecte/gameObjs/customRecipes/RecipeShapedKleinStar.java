@@ -40,7 +40,6 @@ public class RecipeShapedKleinStar extends ShapedRecipes
 
 			if (storedEMC != 0 && recipeOutput.getItem() == ObjHandler.kleinStars)
 			{
-				recipeOutput.setTagCompound(new NBTTagCompound());
 				KleinStar.setEmc(recipeOutput, storedEMC);
 			}
 		}

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -150,12 +151,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return stack.getTagCompound().getInteger("StoredXP");
+		return ItemHelper.getOrCreateCompound(stack).getInteger("StoredXP");
 	}
 
 	private void setStoredXP(ItemStack stack, int XP)
 	{
-		stack.getTagCompound().setInteger("StoredXP", XP);
+		ItemHelper.getOrCreateCompound(stack).setInteger("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 
@@ -214,11 +215,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
 	{
-		if (!mindStone.hasTagCompound())
-		{
-			mindStone.setTagCompound(new NBTTagCompound());
-		}
-
 		long l = getStoredXP(mindStone);
 		if (l + orb.xpValue > Integer.MAX_VALUE)
 		{

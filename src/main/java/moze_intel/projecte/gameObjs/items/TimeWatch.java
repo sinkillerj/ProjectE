@@ -8,6 +8,7 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -71,11 +72,6 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 			{
 				player.sendMessage(new TextComponentTranslation("pe.timewatch.disabled"));
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
-			}
-
-			if (!stack.hasTagCompound())
-			{
-				stack.setTagCompound(new NBTTagCompound());
 			}
 
 			byte current = getTimeBoost(stack);
@@ -254,12 +250,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
 	private byte getTimeBoost(ItemStack stack)
 	{
-		return stack.getTagCompound().getByte("TimeMode");
+		return ItemHelper.getOrCreateCompound(stack).getByte("TimeMode");
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		stack.getTagCompound().setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
+		ItemHelper.getOrCreateCompound(stack).setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)

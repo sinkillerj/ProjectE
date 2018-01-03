@@ -12,6 +12,7 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
@@ -90,7 +91,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)
 	{
-		if(stack.getTagCompound().getBoolean("Active"))
+		if(ItemHelper.getOrCreateCompound(stack).getBoolean("Active"))
 		{
 			switch(stack.getItemDamage())
 			{
@@ -113,8 +114,6 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		
 		if(world.isRemote || slot > 8 || !(entity instanceof EntityPlayerMP)) return;
 		
 		tick(stack, world, (EntityPlayerMP)entity);
@@ -131,8 +130,6 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase entity)
 	{
-		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		
 		if(entity.getEntityWorld().isRemote || !(entity instanceof EntityPlayerMP)) return;
 		
 		tick(stack, entity.getEntityWorld(), (EntityPlayerMP)entity);
@@ -183,8 +180,8 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if(!world.isRemote)
 		{
-			NBTTagCompound compound = player.getHeldItem(hand).getTagCompound();
-			
+			NBTTagCompound compound = ItemHelper.getOrCreateCompound(player.getHeldItem(hand));
+
 			compound.setBoolean("Active", !compound.getBoolean("Active"));
 		}
 		

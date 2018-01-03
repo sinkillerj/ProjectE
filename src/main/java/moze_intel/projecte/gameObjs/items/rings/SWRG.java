@@ -65,11 +65,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 		EntityPlayerMP playerMP = (EntityPlayerMP) player;
 
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
 			if (stack.getItemDamage() > 0)

@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -47,18 +48,9 @@ public class ItemCharge extends ItemPE implements IItemCharge
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
-	@Override
 	public byte getCharge(@Nonnull ItemStack stack)
 	{
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Charge") : 0;
+		return ItemHelper.getOrCreateCompound(stack).getByte("Charge");
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -153,6 +154,16 @@ public final class ItemHelper
 		}
 
 		return result;
+	}
+
+	public static NBTTagCompound getOrCreateCompound(ItemStack stack)
+	{
+		if (!stack.hasTagCompound())
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+
+		return stack.getTagCompound();
 	}
 
 	public static String getOreDictionaryName(ItemStack stack)

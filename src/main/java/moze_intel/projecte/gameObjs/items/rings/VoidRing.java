@@ -6,6 +6,7 @@ import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +37,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	{
 		super.onUpdate(stack, world, entity, slot, isHeld);
 		ObjHandler.blackHole.onUpdate(stack, world, entity, slot, isHeld);
-		if (!stack.getTagCompound().hasKey("teleportCooldown"))
+		if (!ItemHelper.getOrCreateCompound(stack).hasKey("teleportCooldown"))
 		{
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
 		}
@@ -61,7 +62,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		if (stack.getTagCompound().getByte("teleportCooldown") > 0 )
+		if (ItemHelper.getOrCreateCompound(stack).getByte("teleportCooldown") > 0 )
 		{
 			return false;
 		}

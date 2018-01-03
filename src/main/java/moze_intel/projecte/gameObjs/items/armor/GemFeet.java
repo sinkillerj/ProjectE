@@ -5,6 +5,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -44,14 +45,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     public void toggleStepAssist(ItemStack boots, EntityPlayer player)
     {
-        if (!boots.hasTagCompound())
-        {
-            boots.setTagCompound(new NBTTagCompound());
-        }
-
         boolean value;
 
-        if (boots.getTagCompound().hasKey("StepAssist"))
+        if (ItemHelper.getOrCreateCompound(boots).hasKey("StepAssist"))
         {
             boots.getTagCompound().setBoolean("StepAssist", !boots.getTagCompound().getBoolean("StepAssist"));
             value = boots.getTagCompound().getBoolean("StepAssist");

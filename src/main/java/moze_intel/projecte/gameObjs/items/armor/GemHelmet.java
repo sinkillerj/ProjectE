@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -46,14 +47,9 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static void toggleNightVision(ItemStack helm, EntityPlayer player)
     {
-        if (!helm.hasTagCompound())
-        {
-            helm.setTagCompound(new NBTTagCompound());
-        }
-
         boolean value;
 
-        if (helm.getTagCompound().hasKey("NightVision"))
+        if (ItemHelper.getOrCreateCompound(helm).hasKey("NightVision"))
         {
             helm.getTagCompound().setBoolean("NightVision", !helm.getTagCompound().getBoolean("NightVision"));
             value = helm.getTagCompound().getBoolean("NightVision");

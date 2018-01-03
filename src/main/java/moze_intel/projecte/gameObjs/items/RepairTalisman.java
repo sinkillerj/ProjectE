@@ -50,11 +50,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if (world.isRemote || !(entity instanceof EntityPlayer))
 		{
 			return;
@@ -202,11 +197,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 		AlchChestTile tile = ((AlchChestTile) te);
 
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		byte coolDown = stack.getTagCompound().getByte("Cooldown");
+		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
 
 		if (coolDown > 0)
 		{
@@ -253,12 +244,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return false;
 		}
 
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		byte coolDown = stack.getTagCompound().getByte("Cooldown");
+		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
 
 		if (coolDown > 0)
 		{

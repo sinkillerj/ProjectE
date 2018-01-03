@@ -22,15 +22,6 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
 
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)

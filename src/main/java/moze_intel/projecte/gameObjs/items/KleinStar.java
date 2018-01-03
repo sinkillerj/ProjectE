@@ -65,15 +65,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
 	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack)

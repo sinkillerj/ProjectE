@@ -32,22 +32,12 @@ public class ItemPE extends Item
 
 	public static double getEmc(ItemStack stack)
 	{
-		if (stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		return stack.getTagCompound().getDouble("StoredEMC");
+		return ItemHelper.getOrCreateCompound(stack).getDouble("StoredEMC");
 	}
 	
 	public static void setEmc(ItemStack stack, double amount)
 	{
-		if (stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setDouble("StoredEMC", amount);
+		ItemHelper.getOrCreateCompound(stack).setDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmcToStack(ItemStack stack, double amount)
