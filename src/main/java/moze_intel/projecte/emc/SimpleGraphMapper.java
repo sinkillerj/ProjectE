@@ -53,19 +53,24 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	@Override
 	public Map<T, V> generateValues() {
 		Map<T, V> values = new HashMap<>();
-		Map<T, V> newValueFor = new HashMap<>();
-		Map<T, V> nextValueFor = new HashMap<>();
+
+		// All values that changed in previous iteration, so everything depending on it needs to be updated
+		Map<T, V> changedValues = new HashMap<>();
 		Map<T,Object> reasonForChange = new HashMap<>();
 
 
 		for (Map.Entry<T,V> entry: fixValueBeforeInherit.entrySet()) {
-			newValueFor.put(entry.getKey(),entry.getValue());
+			changedValues.put(entry.getKey(),entry.getValue());
 			reasonForChange.put(entry.getKey(), "fixValueBefore");
 		}
-		while (!newValueFor.isEmpty()) {
-			while (!newValueFor.isEmpty()) {
+
+		while (!changedValues.isEmpty()) {
+			while (!changedValues.isEmpty()) {
+				// Changes that happened when processing current changes
+				Map<T, V> nextChangedValues = new HashMap<>();
+
 				debugPrintln("Loop");
-				for (Map.Entry<T, V> entry : newValueFor.entrySet()) {
+				for (Map.Entry<T, V> entry : changedValues.entrySet()) {
 					if (canOverride(entry.getKey(),entry.getValue()) && updateMapWithMinimum(values, entry.getKey(), entry.getValue())) {
 						//The new Value is now set in 'values'
 						debugFormat("Set Value for {} to {} because {}", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
@@ -81,7 +86,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 								//We could calculate a valid value for the conversion
 								if (!hasSmallerOrEqual(values, conversion.output, conversionValue)) {
 									//And there is no smaller value for that conversion output yet
-									if (updateMapWithMinimum(nextValueFor, conversion.output, conversionValue)) {
+									if (updateMapWithMinimum(nextChangedValues, conversion.output, conversionValue)) {
 										//So we mark that new value to set it in the next iteration.
 										reasonForChange.put(conversion.output, entry.getKey());
 									}
@@ -91,13 +96,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					}
 				}
 
-				//Swap nextValueFor into newValueFor and clear newValueFor
-				{
-					newValueFor.clear();
-					Map<T, V> tmp = nextValueFor;
-					nextValueFor = newValueFor;
-					newValueFor = tmp;
-				}
+				changedValues = nextChangedValues;
 			}
 			//Iterate over all Conversions for a single conversion output
 			for (Map.Entry<T, Set<Conversion>> entry : conversionsFor.entrySet()) {
@@ -106,30 +105,30 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				for (Conversion conversion : entry.getValue()) {
 					//entry.getKey() == conversion.output
 					//How much do the ingredients cost:
-					V conversionValue = valueForConversion(values, conversion);
+					V ingredientValue = valueForConversion(values, conversion);
 					//What would the output cost be, if that conversion would be used
-					V conversionValueSingle = conversion.arithmeticForConversion.div(conversionValue, conversion.outnumber);
+					V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
 					//What is the actual emc value for the conversion output
-					V resultValueSingle = values.containsKey(entry.getKey()) ? values.get(entry.getKey()) : ZERO;
+					V resultValueActual = values.getOrDefault(entry.getKey(), ZERO);
 
 					//Find the smallest EMC value for the conversion.output
-					if (conversionValueSingle.compareTo(ZERO) > 0 || conversion.arithmeticForConversion.isFree(conversionValueSingle)) {
-						if (minConversionValue == null || minConversionValue.compareTo(conversionValueSingle) > 0) {
-							minConversionValue = conversionValueSingle;
+					if (resultValueConversion.compareTo(ZERO) > 0 || conversion.arithmeticForConversion.isFree(resultValueConversion)) {
+						if (minConversionValue == null || minConversionValue.compareTo(resultValueConversion) > 0) {
+							minConversionValue = resultValueConversion;
 						}
 					}
 					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
 					//This is a Loophole. We remove it by setting the value to 0.
-					if (ZERO.compareTo(conversionValue) < 0 && conversionValueSingle.compareTo(resultValueSingle) < 0) {
+					if (ZERO.compareTo(ingredientValue) < 0 && resultValueConversion.compareTo(resultValueActual) < 0) {
 						if (overwriteConversion.containsKey(conversion.output) && overwriteConversion.get(conversion.output) != conversion) {
 							if (logFoundExploits)
-								PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} value of result: {} setValueFromConversion: {}", conversion, conversionValue, resultValueSingle, overwriteConversion.get(conversion.output));
+								PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} value of result: {} setValueFromConversion: {}", conversion, ingredientValue, resultValueActual, overwriteConversion.get(conversion.output));
 						} else if (canOverride(entry.getKey(), ZERO)) {
-							debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", entry.getKey(), resultValueSingle, conversionValue, conversion);
-							newValueFor.put(conversion.output, ZERO);
+							debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", entry.getKey(), resultValueActual, ingredientValue, conversion);
+							changedValues.put(conversion.output, ZERO);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
-							PECore.LOGGER.warn("EMC Exploit: ingredients ({}) cost {} but output value is {}", conversion, conversionValue, resultValueSingle);
+							PECore.LOGGER.warn("EMC Exploit: ingredients ({}) cost {} but output value is {}", conversion, ingredientValue, resultValueActual);
 						}
 					}
 				}
@@ -138,7 +137,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					if (values.containsKey(entry.getKey()) && !values.get(entry.getKey()).equals(ZERO) && canOverride(entry.getKey(), ZERO) && !hasSmaller(values, entry.getKey(), ZERO)) {
 						//but the value for the conversion output is > 0, so we set it to 0.
 						debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", entry.getKey());
-						newValueFor.put(entry.getKey(), ZERO);
+						changedValues.put(entry.getKey(), ZERO);
 						reasonForChange.put(entry.getKey(), "all conversions dead");
 					}
 				}
