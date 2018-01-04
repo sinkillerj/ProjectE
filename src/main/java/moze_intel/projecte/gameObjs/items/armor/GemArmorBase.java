@@ -17,16 +17,12 @@ import javax.annotation.Nonnull;
 
 public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {
-	private final EntityEquipmentSlot armorPiece;
-
 	public GemArmorBase(EntityEquipmentSlot armorType)
 	{
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("pe_gem_armor_" + armorType.getIndex());
-		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
-		this.armorPiece = armorType;
 	}
 
 	public static boolean hasAnyPiece(EntityPlayer player)
@@ -56,7 +52,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorPiece;
+		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorType;
 		if (source.isExplosion())
 		{
 			return new ArmorProperties(1, 1.0D, 750);
@@ -78,7 +74,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	@Override
 	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
 	{
-		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorPiece;
+		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorType;
 		return (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET) ? 4 : 6;
 	}
 
@@ -89,7 +85,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		char index = this.armorPiece == EntityEquipmentSlot.LEGS ? '2' : '1';
+		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/gem_" + index + ".png";
 	}
 }

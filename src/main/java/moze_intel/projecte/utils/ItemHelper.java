@@ -282,7 +282,7 @@ public final class ItemHelper
 
 	public static boolean isDamageable(ItemStack stack)
 	{
-		return !stack.getHasSubtypes() && stack.getMaxDamage() != 0;
+		return !stack.getHasSubtypes() && stack.isItemStackDamageable();
 	}
 
 	public static boolean isOre(IBlockState state)

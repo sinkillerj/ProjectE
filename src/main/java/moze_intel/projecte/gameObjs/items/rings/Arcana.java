@@ -66,6 +66,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			{
 				ItemStack stack = new ItemStack(this);
 				ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, i);
+				list.add(stack);
 			}
 		}
 	}

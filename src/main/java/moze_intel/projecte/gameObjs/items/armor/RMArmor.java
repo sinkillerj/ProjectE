@@ -21,21 +21,18 @@ import javax.annotation.Nonnull;
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
 {
-	private final EntityEquipmentSlot armorPiece;
 	public RMArmor(EntityEquipmentSlot armorType)
 	{
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("pe_rm_armor_" + armorType.getIndex());
-		this.setHasSubtypes(false);
 		this.setMaxDamage(0);
-		this.armorPiece = armorType;
 	}
 	
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorPiece;
+		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorType;
 		if (source.isExplosion())
 		{
 			return new ArmorProperties(1, 1.0D, 500);
@@ -57,7 +54,7 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Override
 	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
 	{
-		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorPiece;
+		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorType;
 		return (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET) ? 4 : 6;
 	}
 
@@ -68,7 +65,7 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		char index = this.armorPiece == EntityEquipmentSlot.LEGS ? '2' : '1';
+		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/redmatter_"+index+".png";
 	}
 
@@ -76,13 +73,13 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
 	{
-		return ((RMArmor) itemstack.getItem()).armorPiece == EntityEquipmentSlot.HEAD;
+		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
 	}
 
 	@Override
 	@Optional.Method(modid = "Thaumcraft")
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
 	{
-		return ((RMArmor) itemstack.getItem()).armorPiece == EntityEquipmentSlot.HEAD;
+		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
 	}
 }
