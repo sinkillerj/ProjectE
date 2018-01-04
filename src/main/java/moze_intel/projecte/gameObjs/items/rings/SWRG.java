@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
@@ -52,7 +53,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private void tick(ItemStack stack, EntityPlayer player)
 	{
-		if (stack.getItemDamage() > 1)
+		if (ItemHelper.getOrCreateCompound(stack).getInteger(TAG_MODE) > 1)
 		{
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getEntityBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
@@ -67,7 +68,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getItemDamage() > 0)
+			if (stack.getTagCompound().getInteger(TAG_MODE) > 0)
 			{
 				changeMode(stack, 0);
 			}
@@ -89,14 +90,14 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getItemDamage() == 0 ? 1 : 3);
+				changeMode(stack, stack.getTagCompound().getInteger(TAG_MODE) == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getItemDamage() == 1 ? 0 : 2);
+				changeMode(stack, stack.getTagCompound().getInteger(TAG_MODE) == 1 ? 0 : 2);
 			}
 		}
 
@@ -107,11 +108,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			toRemove = 0.32F;
 		}
 
-		if (stack.getItemDamage() == 2)
+		if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
 		{
 			toRemove = 0.32F;
 		}
-		else if (stack.getItemDamage() == 3)
+		else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
 		{
 			toRemove = 0.64F;
 		}
@@ -123,7 +124,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private boolean isFlyingEnabled(ItemStack stack)
 	{
-		return stack.getItemDamage() == 1 || stack.getItemDamage() == 3;
+		return stack.getTagCompound().getInteger(TAG_MODE) == 1 || stack.getTagCompound().getInteger(TAG_MODE)== 3;
 	}
 
 	@Override
@@ -145,7 +146,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		{
 			int newMode = 0;
 			
-			switch (stack.getItemDamage())
+			switch (ItemHelper.getOrCreateCompound(stack).getInteger(TAG_MODE))
 			{
 				case 0:
 					newMode = 2;
@@ -175,7 +176,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	 */
 	public void changeMode(ItemStack stack, int mode)
 	{
-		stack.setItemDamage(mode);
+		ItemHelper.getOrCreateCompound(stack).setInteger(TAG_MODE, mode);
 	}
 
 	@Override
@@ -190,7 +191,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	{
 		return false;
 	}
-	
+
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)

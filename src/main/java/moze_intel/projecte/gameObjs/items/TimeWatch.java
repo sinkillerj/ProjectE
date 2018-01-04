@@ -59,6 +59,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	{
 		super("time_watch", (byte)2);
 		this.setNoRepair();
+		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 
 	@Nonnull
@@ -126,7 +127,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
             }
 		}
 
-		if (world.isRemote || stack.getItemDamage() == 0)
+		if (world.isRemote || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			return;
 		}
@@ -267,20 +268,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return (byte) stack.getItemDamage();
+		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		if (stack.getItemDamage() == 0)
-		{
-			stack.setItemDamage(1);
-		}
-		else 
-		{
-			stack.setItemDamage(0);
-		}
+		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 

@@ -49,13 +49,11 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 {
 	public Arcana()
 	{
-		super();
 		setUnlocalizedName("arcana_ring");
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
-		addPropertyOverride(new ResourceLocation(PECore.MODID, "on"), (stack, worldIn, entityIn) -> stack.getTagCompound() != null && stack.getTagCompound().getBoolean(TAG_ACTIVE) ? 1 : 0);
-		setHasSubtypes(true);
+		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -64,28 +62,25 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if (isInCreativeTab(cTab))
 		{
-			for (int i = 0; i < 4; ++i)
-				list.add(new ItemStack(this, 1, i));
+			for (byte i = 0; i < 4; ++i)
+			{
+				ItemStack stack = new ItemStack(this);
+				ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, i);
+			}
 		}
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
-	{
-		return getMode(oldStack) != getMode(newStack)
-				|| (oldStack.hasTagCompound() && newStack.hasTagCompound()) && (oldStack.getTagCompound().getBoolean(TAG_ACTIVE) != newStack.getTagCompound().getBoolean(TAG_ACTIVE));
 	}
 
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return (byte)stack.getItemDamage();
+		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		stack.setItemDamage((stack.getItemDamage() + 1) % 4);
+		byte newMode = (byte) ((ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE) + 1) % 4);
+		stack.getTagCompound().setByte(TAG_MODE, newMode);
 		return true;
 	}
 	
@@ -93,7 +88,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if(ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
-			switch(stack.getItemDamage())
+			switch(stack.getTagCompound().getByte(TAG_MODE))
 			{
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getEntityBoundingBox().grow(5), player, true);
@@ -169,7 +164,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 			}
 			else
 			{
-				list.add(I18n.format("pe.arcana.mode") + TextFormatting.AQUA + I18n.format("pe.arcana.mode." + stack.getItemDamage()));
+				list.add(I18n.format("pe.arcana.mode") + TextFormatting.AQUA + I18n.format("pe.arcana.mode." + stack.getTagCompound().getByte(TAG_MODE)));
 			}
 		}
 	}
@@ -195,7 +190,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		
 		if(world.isRemote) return true;
 		
-		switch(stack.getItemDamage())
+		switch(ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE))
 		{
 			case 1: // ignition
 				switch(player.getHorizontalFacing())
@@ -239,7 +234,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		
 		if(world.isRemote) return false;
 		
-		switch(stack.getItemDamage())
+		switch(ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE))
 		{
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);

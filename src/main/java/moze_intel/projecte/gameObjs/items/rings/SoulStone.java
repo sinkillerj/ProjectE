@@ -8,6 +8,7 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -15,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -49,11 +51,11 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getItemDamage() != 0)
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.setItemDamage(0);
+				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -72,21 +74,8 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		if (stack.getItemDamage() == 0)
-		{
-			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
-			{
-				//NOOP (used to be sounds)
-			}
-			else
-			{
-				stack.setItemDamage(1);
-			}
-		}
-		else
-		{
-			stack.setItemDamage(0);
-		}
+		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 	

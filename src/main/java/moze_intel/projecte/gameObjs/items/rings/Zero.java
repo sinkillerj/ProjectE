@@ -9,6 +9,7 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemCharge;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
@@ -16,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -41,6 +43,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		super("zero_ring", (byte)4);
 		this.setContainerItem(this);
 		this.setNoRepair();
+		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	
 	@Override
@@ -48,7 +51,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	{
 		super.onUpdate(stack, world, entity, par4, par5);
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || par4 > 8 || stack.getItemDamage() == 0)
+		if (world.isRemote || !(entity instanceof EntityPlayer) || par4 > 8 || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			return;
 		}
@@ -77,13 +80,14 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return (byte) stack.getItemDamage();
+		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
+		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 	

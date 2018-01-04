@@ -52,6 +52,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	{
 		this.setUnlocalizedName("gem_density");
 		this.setMaxStackSize(1);
+		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	
 	@Override
@@ -70,7 +71,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	 */
 	private static boolean condense(ItemStack gem, IItemHandler inv)
 	{
-		if (gem.getItemDamage() == 0 || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
+		if (!ItemHelper.getOrCreateCompound(gem).getBoolean(TAG_ACTIVE) || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC)
 		{
 			return false;
 		}
@@ -138,7 +139,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		{
 			if (player.isSneaking())
 			{
-				if (stack.getItemDamage() == 1)
+				if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 				{
 					List<ItemStack> items = getItems(stack);
 					
@@ -149,12 +150,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
-					
-					stack.setItemDamage(0);
+
+					stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 				}
 				else
 				{
-					stack.setItemDamage(1);
+					stack.getTagCompound().setBoolean(TAG_ACTIVE, true);
 				}
 			}
 			else
@@ -381,7 +382,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
-		if (!world.isRemote && stack.getItemDamage() == 1)
+		if (!world.isRemote && ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile)

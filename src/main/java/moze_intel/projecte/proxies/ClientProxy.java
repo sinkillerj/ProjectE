@@ -7,7 +7,6 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumFuelType;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
-import moze_intel.projecte.events.TransmutationRenderingEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
 import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
@@ -20,6 +19,7 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
@@ -36,6 +36,7 @@ import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -45,9 +46,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -124,11 +125,21 @@ public class ClientProxy implements IProxy
 		registerFuels();
 		registerMatter();
 		registerKlein();
-		registerPowerStones();
 		registerPowerItems();
 
 		// Normal items that have no variants / meta values. The json models are named "item.pe_<name>" because we register items with unlocal name.
 		// Which was a dumb decision made by somebody way back when. Oh well.
+		registerItem(ObjHandler.bodyStone);
+		registerItem(ObjHandler.soulStone);
+		registerItem(ObjHandler.mindStone);
+		registerItem(ObjHandler.lifeStone);
+		registerItem(ObjHandler.blackHole);
+		registerItem(ObjHandler.harvestGod);
+		registerItem(ObjHandler.eternalDensity);
+		registerItem(ObjHandler.timeWatch);
+		registerItem(ObjHandler.ignition);
+		registerItem(ObjHandler.zero);
+		registerItem(ObjHandler.voidRing);
 		registerItem(ObjHandler.waterOrb);
 		registerItem(ObjHandler.lavaOrb);
 		registerItem(ObjHandler.mobRandomizer);
@@ -246,7 +257,6 @@ public class ClientProxy implements IProxy
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + e.getName(), "inventory"));
 
 			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.fuelBlock).toString();
-			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.fuelBlock), new ModelResourceLocation(name, "fueltype=" + e.getName()));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.fuelBlock), e.ordinal(), new ModelResourceLocation(name, "fueltype=" + e.getName()));
 		}
 	}
@@ -258,7 +268,6 @@ public class ClientProxy implements IProxy
 			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + m.getName(), "inventory"));
 
 			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.matterBlock).toString();
-			ModelLoader.registerItemVariants(Item.getItemFromBlock(ObjHandler.matterBlock), new ModelResourceLocation(name, "tier=" + m.getName()));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.matterBlock), m.ordinal(), new ModelResourceLocation(name, "tier=" + m.getName()));
 		}
 	}
@@ -271,53 +280,43 @@ public class ClientProxy implements IProxy
 		}
 	}
 
-	private static void registerPowerStones()
-	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.bodyStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "body_stone_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "soul_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.soulStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "soul_stone_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "mind_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.mindStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "mind_stone_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 0, new ModelResourceLocation(PECore.MODID + ":" + "life_stone_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.lifeStone, 1, new ModelResourceLocation(PECore.MODID + ":" + "life_stone_on", "inventory"));
-	}
-
 	private static void registerPowerItems()
 	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 0, new ModelResourceLocation(PECore.MODID + ":" + "bhb_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.blackHole, 1, new ModelResourceLocation(PECore.MODID + ":" + "bhb_on", "inventory"));
+		ModelResourceLocation off = new ModelResourceLocation(PECore.MODID + ":swrg_off", "inventory");
+		ModelResourceLocation fly = new ModelResourceLocation(PECore.MODID + ":swrg_fly", "inventory");
+		ModelResourceLocation repel = new ModelResourceLocation(PECore.MODID + ":swrg_repel", "inventory");
+		ModelResourceLocation both = new ModelResourceLocation(PECore.MODID + ":swrg_both", "inventory");
+		ModelLoader.registerItemVariants(ObjHandler.swrg, off, fly, repel, both);
+		ModelLoader.setCustomMeshDefinition(ObjHandler.swrg, stack -> {
+			if (stack.hasTagCompound()) {
+				switch (stack.getTagCompound().getInteger(ItemPE.TAG_MODE)) {
+					default:
+					case 0: return off;
+					case 1: return fly;
+					case 2: return repel;
+					case 3: return both;
+				}
+			}
+			return off;
+		});
 
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 0, new ModelResourceLocation(PECore.MODID + ":" + "harvgod_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.harvestGod, 1, new ModelResourceLocation(PECore.MODID + ":" + "harvgod_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 0, new ModelResourceLocation(PECore.MODID + ":" + "goed_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.eternalDensity, 1, new ModelResourceLocation(PECore.MODID + ":" + "goed_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 0, new ModelResourceLocation(PECore.MODID + ":" + "timewatch_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.timeWatch, 1, new ModelResourceLocation(PECore.MODID + ":" + "timewatch_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 0, new ModelResourceLocation(PECore.MODID + ":" + "ignition_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.ignition, 1, new ModelResourceLocation(PECore.MODID + ":" + "ignition_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 0, new ModelResourceLocation(PECore.MODID + ":" + "zero_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.zero, 1, new ModelResourceLocation(PECore.MODID + ":" + "zero_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 0, new ModelResourceLocation(PECore.MODID + ":" + "swrg_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 1, new ModelResourceLocation(PECore.MODID + ":" + "swrg_fly", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 2, new ModelResourceLocation(PECore.MODID + ":" + "swrg_repel", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.swrg, 3, new ModelResourceLocation(PECore.MODID + ":" + "swrg_both", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 0, new ModelResourceLocation(PECore.MODID + ":" + "voidring_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.voidRing, 1, new ModelResourceLocation(PECore.MODID + ":" + "voidring_on", "inventory"));
-
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 0, new ModelResourceLocation(PECore.MODID + ":" + "arcana_zero_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 1, new ModelResourceLocation(PECore.MODID + ":" + "arcana_ignition_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 2, new ModelResourceLocation(PECore.MODID + ":" + "arcana_harv_off", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.arcana, 3, new ModelResourceLocation(PECore.MODID + ":" + "arcana_swrg_off", "inventory"));
+		ModelResourceLocation zero = new ModelResourceLocation(PECore.MODID + ":" + "arcana_zero_off", "inventory");
+		ModelResourceLocation ignition = new ModelResourceLocation(PECore.MODID + ":" + "arcana_ignition_off", "inventory");
+		ModelResourceLocation harv = new ModelResourceLocation(PECore.MODID + ":" + "arcana_harv_off", "inventory");
+		ModelResourceLocation swrg = new ModelResourceLocation(PECore.MODID + ":" + "arcana_swrg_off", "inventory");
+		ModelLoader.registerItemVariants(ObjHandler.arcana, zero, ignition, harv, swrg);
+		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, stack -> {
+			if (stack.hasTagCompound()) {
+				switch (stack.getTagCompound().getByte(ItemPE.TAG_MODE)) {
+					default:
+					case 0: return zero;
+					case 1: return ignition;
+					case 2: return harv;
+					case 3: return swrg;
+				}
+			}
+			return zero;
+		});
 	}
 
 	@Override
