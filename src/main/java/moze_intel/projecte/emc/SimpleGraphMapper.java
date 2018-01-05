@@ -1,12 +1,16 @@
 package moze_intel.projecte.emc;
 
+import info.leadinglight.jdot.Edge;
+import info.leadinglight.jdot.Graph;
+import info.leadinglight.jdot.Node;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,11 +57,14 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	@Override
 	public Map<T, V> generateValues() {
 		Map<T, V> values = new HashMap<>();
+		// T -> the Conversion that is giving it its current value
+		Map<T, Conversion> conversionTracker = new HashMap<>();
 
 		// All values that changed in previous iteration, so everything depending on it needs to be updated
 		Map<T, V> changedValues = new HashMap<>();
+		// Conversions for changedValues
+		Map<T, Conversion> changedValueConversions = new HashMap<>();
 		Map<T,Object> reasonForChange = new HashMap<>();
-
 
 		for (Map.Entry<T,V> entry: fixValueBeforeInherit.entrySet()) {
 			changedValues.put(entry.getKey(),entry.getValue());
@@ -68,10 +75,12 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 			while (!changedValues.isEmpty()) {
 				// Changes that happened when processing current changes
 				Map<T, V> nextChangedValues = new HashMap<>();
+				Map<T, Conversion> nextChangedValueConversions = new HashMap<>();
 
 				debugPrintln("Loop");
 				for (Map.Entry<T, V> entry : changedValues.entrySet()) {
 					if (canOverride(entry.getKey(),entry.getValue()) && updateMapWithMinimum(values, entry.getKey(), entry.getValue())) {
+						conversionTracker.put(entry.getKey(), changedValueConversions.get(entry.getKey()));
 						//The new Value is now set in 'values'
 						debugFormat("Set Value for {} to {} because {}", entry.getKey(), entry.getValue(), reasonForChange.get(entry.getKey()));
 						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
@@ -89,6 +98,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 									if (updateMapWithMinimum(nextChangedValues, conversion.output, conversionValue)) {
 										//So we mark that new value to set it in the next iteration.
 										reasonForChange.put(conversion.output, entry.getKey());
+										nextChangedValueConversions.put(conversion.output, conversion);
 									}
 								}
 							}
@@ -97,6 +107,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				}
 
 				changedValues = nextChangedValues;
+				changedValueConversions = nextChangedValueConversions;
 			}
 			//Iterate over all Conversions for a single conversion output
 			for (Map.Entry<T, Set<Conversion>> entry : conversionsFor.entrySet()) {
@@ -126,6 +137,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 						} else if (canOverride(entry.getKey(), ZERO)) {
 							debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", entry.getKey(), resultValueActual, ingredientValue, conversion);
 							changedValues.put(conversion.output, ZERO);
+							changedValueConversions.remove(conversion.output);
 							reasonForChange.put(conversion.output, "exploit recipe");
 						} else if (logFoundExploits) {
 							PECore.LOGGER.warn("EMC Exploit: ingredients ({}) cost {} but output value is {}", conversion, ingredientValue, resultValueActual);
@@ -138,6 +150,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 						//but the value for the conversion output is > 0, so we set it to 0.
 						debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", entry.getKey());
 						changedValues.put(entry.getKey(), ZERO);
+						changedValueConversions.remove(entry.getKey());
 						reasonForChange.put(entry.getKey(), "all conversions dead");
 					}
 				}
@@ -146,9 +159,31 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		debugPrintln("");
 		for (Map.Entry<T, V> fixedValueAfterInherit : fixValueAfterInherit.entrySet()) {
 			values.put(fixedValueAfterInherit.getKey(), fixedValueAfterInherit.getValue());
+			conversionTracker.remove(fixedValueAfterInherit.getKey());
 		}
 		//Remove all 'free' items from the output-values
 		values.entrySet().removeIf(something -> arithmetic.isFree(something.getValue()));
+
+		Graph g = new Graph("EMC");
+		for (T t : values.keySet()) {
+			g.addNode(new Node(t.toString()));
+		}
+
+		// For each output, add a node
+		for (Map.Entry<T, Conversion> e : conversionTracker.entrySet()) {
+			T result = e.getKey();
+			Conversion c = e.getValue();
+
+			if (c != null) {
+				// Link the node to its ingredients
+				for (Map.Entry<T, Integer> ingr : c.ingredientsWithAmount.entrySet()) {
+					Edge edge = new Edge().addNode(result.toString()).addNode(ingr.getKey().toString()).setWeight(ingr.getValue());
+					g.addEdge(edge);
+				}
+			}
+		}
+		PECore.LOGGER.info(g.toDot());
+
 		return values;
 	}
 

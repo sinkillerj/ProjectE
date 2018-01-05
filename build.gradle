@@ -75,6 +75,7 @@ dependencies {
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"*/
 
     compile fileTree(dir: 'libs', include: '*.jar')
+    compile "info.leadinglight:jdot:1.0"
 }
 
 compileJava {
