@@ -1,3 +1,6 @@
+###Version 1.12-PE9.9.9
+* NOTICE: Please update to a newer build for proper update check functionality
+
 ###Version 1.12-PE1.1.0
 * NOTICE: When reporting issues on the tracker please be sure to tag them as 1.12
 * NEW: Concrete now has a default value
