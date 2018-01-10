@@ -22,9 +22,8 @@ http://minecraft.curseforge.com/mc-mods/projecte/files
 We accept donations via Patreon, visit the team members section to learn more.
 
 # Join the Conversation
-IRC Client: \#ProjectE on irc.esper.net
 
-Webchat: http://webchat.esper.net/?nick=&channels=ProjectE
+Discord: https://discordapp.com/invite/uTbDkT4
 
 #Current Team Members
 SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
