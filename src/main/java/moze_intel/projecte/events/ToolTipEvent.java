@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import com.google.common.math.LongMath;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -9,7 +10,10 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -31,6 +35,7 @@ public class ToolTipEvent
 		ItemStack current = event.getItemStack();
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
+		EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
 
 		if (ProjectEConfig.misc.pedestalToolTips
 			&& currentItem instanceof IPedestalItem)
@@ -84,7 +89,13 @@ public class ToolTipEvent
 					{
 						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
 					}
+				}
 
+				if (GuiScreen.isShiftKeyDown()
+						&& clientPlayer != null
+						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(current))
+				{
+					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.has_knowledge"));
 				}
 			}
 		}
