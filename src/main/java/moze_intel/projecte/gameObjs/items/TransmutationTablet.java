@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

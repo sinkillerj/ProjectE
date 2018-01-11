@@ -92,7 +92,7 @@ public final class ItemHelper
 					if (ItemHandlerHelper.canItemStacksStack(s, s1))
 					{
 						s.grow(s1.getCount());
-						s1.setCount(0);
+						list.set(j, ItemStack.EMPTY);
 					}
 				}
 			}

@@ -13,7 +13,6 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.network.packets.SyncCovalencePKT;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -98,7 +97,7 @@ public class PlayerEvents
 
 		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
 		knowledge.sync(player);
-		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
+		PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 

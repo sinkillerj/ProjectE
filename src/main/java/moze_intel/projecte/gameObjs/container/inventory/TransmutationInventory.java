@@ -1,10 +1,8 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -302,7 +300,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 	
@@ -317,7 +315,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 

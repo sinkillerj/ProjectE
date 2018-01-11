@@ -6,7 +6,6 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;

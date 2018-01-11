@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import baubles.api.BaublesApi;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.scoreboard.IScoreCriteria;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteriaReadOnly;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -38,6 +40,8 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
+	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly(PECore.MODID + ":emc_score");
+
 	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
 		return checkedPlaceBlock(player, pos, state, EnumHand.MAIN_HAND);

@@ -18,11 +18,9 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
-import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.IProxy;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.launchwrapper.Launch;
@@ -117,7 +115,6 @@ public class PECore
 	public void load(FMLInitializationEvent event)
 	{
 		proxy.registerLayerRenderers();
-		AchievementHandler.init();
 
 		CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
 
