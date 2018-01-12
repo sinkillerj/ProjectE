@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +24,7 @@ public class SlotLock extends SlotItemHandler
 	@Override
 	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return SlotPredicates.RELAY_INV.test(stack);
 	}
 	
 	@Override
@@ -53,7 +54,9 @@ public class SlotLock extends SlotItemHandler
 			}
 		}
 		
-		inv.handleKnowledge(stack.copy());
+		if (EMCHelper.doesItemHaveEmc(stack)) {
+			inv.handleKnowledge(stack.copy());
+		}
 	}
 	
 	@Nonnull
