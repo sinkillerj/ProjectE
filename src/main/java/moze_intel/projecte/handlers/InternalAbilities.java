@@ -112,9 +112,9 @@ public final class InternalAbilities
 
 		if (!shouldPlayerStep())
 		{
-			if (player.stepHeight > 0.5F)
+			if (player.stepHeight > 0.6F)
 			{
-				PlayerHelper.updateClientServerStepHeight(player, 0.5F);
+				PlayerHelper.updateClientServerStepHeight(player, 0.6F);
 			}
 		}
 		else
@@ -130,7 +130,7 @@ public final class InternalAbilities
 	{
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(player, player.capabilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.5F);
+		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.6F);
 	}
 
 	private boolean shouldPlayerFly()
