@@ -7,6 +7,7 @@ import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.fixes.CapInventoryWalker;
+import moze_intel.projecte.fixes.TENameFix;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.*;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -28,6 +29,7 @@ import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -58,6 +60,7 @@ public class PECore
 	public static final String DEPS = "required-after:forge@[13.20.0.2253,);after:baubles@[1.3.3,);after:jei@[4.6.0,)";
 	public static final String UPDATE_JSON = "https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.12.x/update.json";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
+	public static final int DATA_VERSION = 1;
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
 	public static boolean DEV_ENVIRONMENT;
@@ -117,7 +120,12 @@ public class PECore
 		proxy.registerLayerRenderers();
 
 		CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+		ModFixs modFixer = fixer.init(MODID, DATA_VERSION);
 
+		// Fixers
+		modFixer.registerFix(FixTypes.BLOCK_ENTITY, new TENameFix());
+
+		// Walkers
 		// These two do not have extra layer of indirection so can use the vanilla walker
 		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(AlchChestTile.class, "Items"));
 		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(DMPedestalTile.class, "Items"));

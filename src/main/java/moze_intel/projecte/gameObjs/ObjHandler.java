@@ -364,19 +364,19 @@ public class ObjHandler
 	public static void register()
 	{
 		//Tile Entities
-		GameRegistry.registerTileEntity(AlchChestTile.class, "AlchChestTile");
-		GameRegistry.registerTileEntity(InterdictionTile.class, "InterdictionTile");
-		GameRegistry.registerTileEntity(CondenserTile.class, "CondenserTile");
-		GameRegistry.registerTileEntity(CondenserMK2Tile.class, "CondenserMK2Tile");
-		GameRegistry.registerTileEntity(RMFurnaceTile.class, "RMFurnaceTile");
-		GameRegistry.registerTileEntity(DMFurnaceTile.class, "DMFurnaceTile");
-		GameRegistry.registerTileEntity(CollectorMK1Tile.class, "CollectorMK1Tile");
-		GameRegistry.registerTileEntity(CollectorMK2Tile.class, "CollectorMK2Tile");
-		GameRegistry.registerTileEntity(CollectorMK3Tile.class, "CollectorMK3Tile");
-		GameRegistry.registerTileEntity(RelayMK1Tile.class, "RelayMK1Tile");
-		GameRegistry.registerTileEntity(RelayMK2Tile.class, "RelayMK2Tile");
-		GameRegistry.registerTileEntity(RelayMK3Tile.class, "RelayMK3Tile");
-		GameRegistry.registerTileEntity(DMPedestalTile.class, "DMPedestalTile");
+		GameRegistry.registerTileEntity(AlchChestTile.class, PECore.MODID + ":alchemical_chest");
+		GameRegistry.registerTileEntity(InterdictionTile.class, PECore.MODID + ":interdiction_torch");
+		GameRegistry.registerTileEntity(CondenserTile.class, PECore.MODID + ":condenser");
+		GameRegistry.registerTileEntity(CondenserMK2Tile.class, PECore.MODID + ":condenser_mk2");
+		GameRegistry.registerTileEntity(RMFurnaceTile.class, PECore.MODID + ":rm_furnace");
+		GameRegistry.registerTileEntity(DMFurnaceTile.class, PECore.MODID + ":dm_furnace");
+		GameRegistry.registerTileEntity(CollectorMK1Tile.class, PECore.MODID + ":collector_mk1");
+		GameRegistry.registerTileEntity(CollectorMK2Tile.class, PECore.MODID + ":collector_mk2");
+		GameRegistry.registerTileEntity(CollectorMK3Tile.class, PECore.MODID + ":collector_mk3");
+		GameRegistry.registerTileEntity(RelayMK1Tile.class, PECore.MODID + ":relay_mk1");
+		GameRegistry.registerTileEntity(RelayMK2Tile.class, PECore.MODID + ":relay_mk2");
+		GameRegistry.registerTileEntity(RelayMK3Tile.class, PECore.MODID + ":relay_mk3");
+		GameRegistry.registerTileEntity(DMPedestalTile.class, PECore.MODID + ":dm_pedestal");
 
 		//Entities
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "water_projectile"), EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);
