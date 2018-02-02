@@ -116,6 +116,18 @@
           "ingredients": [ "minecraft:concrete_powder|15" ]
         }
       ]
+    },
+    "notch_apple": {
+      "comment": "Give Notch apple a value based on its old recipe",
+      "conversions": [
+        {
+          "output": "minecraft:golden_apple|1",
+          "ingredients": {
+            "minecraft:apple|0": 1,
+            "minecraft:gold_block|0": 8
+          }
+        }
+      ]
     }
   },
   "values": {
@@ -210,7 +222,6 @@
       "minecraft:dragon_egg|0": 262144,
       "minecraft:potion|0": 0,
 
-      "minecraft:stick|0": 4,
       "minecraft:saddle|0": 192,
       "minecraft:name_tag|0": 192,
       "minecraft:record_11|0": 2048,
@@ -226,8 +237,6 @@
       "minecraft:record_wait|0": 2048,
       "minecraft:record_ward|0": 2048,
 
-      "minecraft:iron_ingot|0": 256,
-      "minecraft:gold_ingot|0": 2048,
       "minecraft:diamond|0": 8192,
       "minecraft:flint|0": 4,
       "minecraft:coal|0": 128,
