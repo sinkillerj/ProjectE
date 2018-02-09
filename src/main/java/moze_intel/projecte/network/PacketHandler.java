@@ -58,7 +58,7 @@ public final class PacketHandler
 		ArrayList<Integer[]> list = new ArrayList<>();
 		int counter = 0;
 
-		for (Map.Entry<SimpleStack, Integer> entry : new LinkedHashMap<>(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
 
