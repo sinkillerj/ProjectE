@@ -41,7 +41,9 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		{
 			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
 		}
-		stack.getTagCompound().setByte("teleportCooldown", ((byte) (stack.getTagCompound().getByte("teleportCooldown") - 1)));
+		if(stack.getTagCompound().getByte("teleportCooldown") > 0) {
+			stack.getTagCompound().setByte("teleportCooldown", ((byte) (stack.getTagCompound().getByte("teleportCooldown") - 1)));
+		}
 	}
 
 
