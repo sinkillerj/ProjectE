@@ -19,6 +19,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public final class AlchBagImpl
         }
 
         @Override
-        public void sync(@Nonnull EnumDyeColor color, @Nonnull EntityPlayerMP player)
+        public void sync(@Nullable EnumDyeColor color, @Nonnull EntityPlayerMP player)
         {
             PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
         }
