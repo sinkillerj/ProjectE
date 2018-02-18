@@ -4,7 +4,6 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
@@ -218,16 +217,17 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		else if (hasChargeableItem)
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+			IItemEmc item = (IItemEmc) inventory[0].getItem();
 			
-			double starEmc = ItemPE.getEmc(inventory[0]);
-			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(inventory[0]);
+			double itemEmc = item.getStoredEmc(inventory[0]);
+			double maxItemEmc = item.getMaximumEmc(inventory[0]);
 			
-			if ((starEmc + toSend) > maxStarEmc)
+			if ((itemEmc + toSend) > maxItemEmc)
 			{
-				toSend = maxStarEmc - starEmc;
+				toSend = maxItemEmc - itemEmc;
 			}
 			
-			ItemPE.addEmcToStack(inventory[0], toSend);
+			item.addEmc(inventory[0], toSend);
 			this.removeEMC(toSend);
 		}
 		else if (hasFuel)
