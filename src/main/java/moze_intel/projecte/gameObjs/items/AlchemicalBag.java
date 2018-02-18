@@ -3,6 +3,8 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
+import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
@@ -96,9 +98,15 @@ public class AlchemicalBag extends ItemPE
 			{
 				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
 						.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
-				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
-						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-				return stack;
+				for (int i = 0; i < inv.getSlots(); i++) {
+					ItemStack ring = inv.getStackInSlot(i);
+
+					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {
+						if (ItemHelper.getOrCreateCompound(ring).getBoolean(TAG_ACTIVE)) {
+							return stack;
+						}
+					}
+				}
 			}
 		}
 
