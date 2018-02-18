@@ -22,7 +22,7 @@ public class SlotLock extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return stack != null && (stack.getItem() instanceof IItemEmc || EMCHelper.doesItemHaveEmc(stack));
 	}
 	
 	@Override
@@ -51,7 +51,10 @@ public class SlotLock extends Slot
 				itemEmc.extractEmc(stack, itemEmc.getStoredEmc(stack));
 			}
 			
-			inv.handleKnowledge(stack.copy());
+			if (EMCHelper.doesItemHaveEmc(stack))
+            {
+                inv.handleKnowledge(stack.copy());
+            }
 			return;
 		}
 		

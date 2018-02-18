@@ -268,6 +268,10 @@ public final class EMCHelper
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
 			return stack.stackTagCompound.getDouble("StoredEMC");
 		}
+		else if (stack.getItem() instanceof IItemEmc)
+		{
+		    return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+		}
 		return 0;
 	}
 }

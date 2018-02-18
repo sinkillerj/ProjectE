@@ -20,7 +20,7 @@ public class SlotInput extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
 	{
-		return !this.getHasStack() && EMCHelper.doesItemHaveEmc(stack);
+		return !this.getHasStack() && stack != null && (stack.getItem() instanceof IItemEmc || EMCHelper.doesItemHaveEmc(stack));
 	}
 	
 	@Override
@@ -52,7 +52,10 @@ public class SlotInput extends Slot
 		
 		if (stack.getItem() != ObjHandler.tome)
 		{
-			inv.handleKnowledge(stack.copy());
+		    if (EMCHelper.doesItemHaveEmc(stack))
+		    {
+		        inv.handleKnowledge(stack.copy());
+		    }
 		}
 		else
 		{
