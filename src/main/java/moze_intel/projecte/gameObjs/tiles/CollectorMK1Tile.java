@@ -4,7 +4,6 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -185,16 +184,17 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		else if (hasChargeableItem)
 		{
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+			IItemEmc item = (IItemEmc) getUpgrading().getItem();
 			
-			double starEmc = ItemPE.getEmc(getUpgrading());
-			int maxStarEmc = EMCHelper.getKleinStarMaxEmc(getUpgrading());
+			double itemEmc = item.getStoredEmc(getUpgrading());
+			double maxItemEmc = item.getMaximumEmc(getUpgrading());
 			
-			if ((starEmc + toSend) > maxStarEmc)
+			if ((itemEmc + toSend) > maxItemEmc)
 			{
-				toSend = maxStarEmc - starEmc;
+			    toSend = maxItemEmc - itemEmc;
 			}
 			
-			ItemPE.addEmcToStack(getUpgrading(), toSend);
+			item.addEmc(getUpgrading(), toSend);
 			this.removeEMC(toSend);
 		}
 		else if (hasFuel)
