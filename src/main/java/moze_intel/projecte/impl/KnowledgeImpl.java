@@ -2,12 +2,14 @@ package moze_intel.projecte.impl;
 
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -15,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -46,17 +49,31 @@ public final class KnowledgeImpl {
                     instance.deserializeNBT((NBTTagCompound) nbt);
                 }
             }
-        }, DefaultImpl::new);
+        }, () -> new DefaultImpl(null));
     }
 
     private static class DefaultImpl implements IKnowledgeProvider
     {
 
+        @Nullable
+        private final EntityPlayer player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
         private double emc = 0;
         private boolean fullKnowledge = false;
 
+        private DefaultImpl(EntityPlayer player) {
+            this.player = player;
+        }
+
+        private void fireChangedEvent()
+        {
+            if (player != null && !player.worldObj.isRemote)
+            {
+                    MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+            }
+        }
+            
         @Override
         public boolean hasFullKnowledge()
         {
@@ -66,7 +83,12 @@ public final class KnowledgeImpl {
         @Override
         public void setFullKnowledge(boolean fullKnowledge)
         {
+            boolean changed = this.fullKnowledge != fullKnowledge;
             this.fullKnowledge = fullKnowledge;
+            if (changed)
+            {
+                fireChangedEvent();
+            }
         }
 
         @Override
@@ -74,6 +96,7 @@ public final class KnowledgeImpl {
         {
             knowledge.clear();
             fullKnowledge = false;
+            fireChangedEvent();
         }
 
         @Override
@@ -112,12 +135,14 @@ public final class KnowledgeImpl {
                     knowledge.add(stack);
                 }
                 fullKnowledge = true;
+                fireChangedEvent();
                 return true;
             }
 
             if (!hasKnowledge(stack))
             {
                 knowledge.add(stack);
+                fireChangedEvent();
                 return true;
             }
 
@@ -150,6 +175,10 @@ public final class KnowledgeImpl {
                 }
             }
 
+            if (removed)
+            {
+                fireChangedEvent();
+            }
             return removed;
         }
 
@@ -256,7 +285,12 @@ public final class KnowledgeImpl {
 
         public static final ResourceLocation NAME = new ResourceLocation("projecte", "knowledge");
 
-        private final DefaultImpl knowledge = new DefaultImpl();
+        private final DefaultImpl knowledge;
+
+        public Provider(EntityPlayer player)
+        {
+            knowledge = new DefaultImpl(player);
+        }
 
         @Override
         public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

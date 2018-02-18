@@ -79,7 +79,7 @@ public class PlayerEvents
 		if (evt.getObject() instanceof EntityPlayer)
 		{
 			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
-			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider());
+			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider((EntityPlayer) evt.getObject()));
 
 			if (evt.getObject() instanceof EntityPlayerMP)
 			{
