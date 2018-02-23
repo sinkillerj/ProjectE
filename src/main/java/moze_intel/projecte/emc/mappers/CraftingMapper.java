@@ -49,50 +49,35 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 					continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
-					Iterable<CraftingIngredients> craftingIngredientIterable = recipeMapper.getIngredientsFor(recipe);
-					if (craftingIngredientIterable != null) {
-						for (CraftingIngredients variation : craftingIngredientIterable) {
-							IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
-							for (ItemStack stack : variation.fixedIngredients) {
-								if (stack.isEmpty()) continue;
-								if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-									ingredientMap.addIngredient(NSSItem.create(stack), 1);
-								} else {
-									try
-									{
-										if (stack.getItem().hasContainerItem(stack))
-										{
-											ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
-										}
-										ingredientMap.addIngredient(NSSItem.create(stack), 1);
-									} catch (Exception e) {
-										PECore.LOGGER.fatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: {}, Ingredient: {}", recipe.getClass().getName(), stack.toString());
-										e.printStackTrace();
-										continue nextRecipe;
-									}
+					for (CraftingIngredients variation : recipeMapper.getIngredientsFor(recipe)) {
+						IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
+						for (ItemStack stack : variation.fixedIngredients) {
+							if (stack.isEmpty()) continue;
+							try {
+								if (stack.getItemDamage() != OreDictionary.WILDCARD_VALUE && stack.getItem().hasContainerItem(stack)) {
+									ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
 								}
-							}
-							for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
-								NormalizedSimpleStack normalizedSimpleStack = NSSFake.create(multiIngredient.toString());
-								ingredientMap.addIngredient(normalizedSimpleStack, 1);
-								for (ItemStack stack : multiIngredient) {
-									if (stack.isEmpty()) continue;
-									IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
-									if (stack.getItem().hasContainerItem(stack)) {
-										groupIngredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
-									}
-									groupIngredientMap.addIngredient(NSSItem.create(stack), 1);
-									mapper.addConversion(1, normalizedSimpleStack, groupIngredientMap.getMap());
-								}
-							}
-							if (recipeOutput.getCount() > 0) {
-								mapper.addConversion(recipeOutput.getCount(), recipeOutputNorm, ingredientMap.getMap());
-							} else {
-								PECore.LOGGER.warn("Ignoring Recipe because outnumber <= 0: {} -> {}", ingredientMap.getMap().toString(), recipeOutput);
+								ingredientMap.addIngredient(NSSItem.create(stack), 1);
+							} catch (Exception e) {
+								PECore.LOGGER.fatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: {}, Ingredient: {}", recipe.getClass().getName(), stack.toString());
+								e.printStackTrace();
+								continue nextRecipe;
 							}
 						}
-					} else {
-						PECore.LOGGER.warn("RecipeMapper {} failed to map Recipe {}", recipeMapper, recipe);
+						for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
+							NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
+							ingredientMap.addIngredient(dummy, 1);
+							for (ItemStack stack : multiIngredient) {
+								if (stack.isEmpty()) continue;
+								IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
+								if (stack.getItem().hasContainerItem(stack)) {
+									groupIngredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
+								}
+								groupIngredientMap.addIngredient(NSSItem.create(stack), 1);
+								mapper.addConversion(1, dummy, groupIngredientMap.getMap());
+							}
+						}
+						mapper.addConversion(recipeOutput.getCount(), recipeOutputNorm, ingredientMap.getMap());
 					}
 					break;
 				}
@@ -111,9 +96,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 			}
 		}
 
-		PECore.LOGGER.info("CraftingMapper Statistics:");
+		PECore.LOGGER.debug("CraftingMapper Statistics:");
 		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
-			PECore.LOGGER.info("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
+			PECore.LOGGER.debug("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
 		}
 	}
 
@@ -137,7 +122,23 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		String getDescription();
 		boolean canHandle(IRecipe recipe);
 
-		Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe);
+		default Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
+			List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
+			List<ItemStack> fixedInputs = new ArrayList<>();
+			for (Ingredient recipeItem : recipe.getIngredients()) {
+				ItemStack[] matches = recipeItem.getMatchingStacks();
+				if (matches.length == 1) {
+					fixedInputs.add(matches[0].copy());
+				} else if (matches.length > 0) {
+					List<ItemStack> recipeItemOptions = new LinkedList<>();
+					for (ItemStack option : matches) {
+						recipeItemOptions.add(option.copy());
+					}
+					variableInputs.add(recipeItemOptions);
+				}
+			}
+			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
+		}
 	}
 
 	private static class CraftingIngredients {
@@ -165,28 +166,6 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		public boolean canHandle(IRecipe recipe) {
 			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
 		}
-
-		@Override
-		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Ingredient> recipeItems = recipe.getIngredients();
-			List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
-			List<ItemStack> fixedInputs = new ArrayList<>();
-			for (Ingredient recipeItem : recipeItems) {
-				List<ItemStack> recipeItemOptions = new LinkedList<>();
-				ItemStack[] recipeItemCollection = recipeItem.getMatchingStacks();
-				if (recipeItemCollection.length == 1) {
-					fixedInputs.add(recipeItemCollection[0].copy());
-					continue;
-				}
-				if (recipeItem != Ingredient.EMPTY) {
-					for (ItemStack option : recipeItemCollection) {
-						recipeItemOptions.add(option.copy());
-					}
-					variableInputs.add(recipeItemOptions);
-				}
-			}
-			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
-		}
 	}
 
 	private static class PECustomRecipeMapper implements IRecipeMapper {
@@ -205,22 +184,5 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer
 		public boolean canHandle(IRecipe recipe) {
 			return recipe instanceof RecipeShapedKleinStar || recipe instanceof RecipeShapelessHidden;
 		}
-
-		@Override
-		public Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			Iterable<Ingredient> recipeItems = recipe.getIngredients();
-			List<ItemStack> inputs = new LinkedList<>();
-			for (Ingredient o : recipeItems) {
-				if (o != Ingredient.EMPTY) {
-					if (o.getMatchingStacks().length == 1) {
-						inputs.add(o.getMatchingStacks()[0]);
-					} else {
-						PECore.LOGGER.warn("Illegal Ingredient in Crafting Recipe: {}", o);
-					}
-				}
-			}
-			return Collections.singletonList(new CraftingIngredients(inputs, new LinkedList<>()));
-		}
-
 	}
 }

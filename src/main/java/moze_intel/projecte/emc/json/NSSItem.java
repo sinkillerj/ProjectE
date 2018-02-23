@@ -83,12 +83,6 @@ public class NSSItem implements NormalizedSimpleStack {
 
 	@Override
 	public String toString() {
-		Item obj = Item.REGISTRY.getObject(new ResourceLocation(itemName));
-
-		if (obj != null) {
-			return String.format("%s(%s:%s)", itemName, Item.REGISTRY.getIDForObject(obj), damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
-		}
-
-		return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+		return String.format("%s:%s", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
 	}
 }
