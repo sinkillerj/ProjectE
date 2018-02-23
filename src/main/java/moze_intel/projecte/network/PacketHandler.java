@@ -1,7 +1,5 @@
 package moze_intel.projecte.network;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
@@ -11,21 +9,19 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class PacketHandler
 {
-	private static final int MAX_PKT_SIZE = 256;
 	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel(PECore.MODID);
-	
+
 	public static void register()
 	{
 		int disc = 0;
@@ -53,79 +49,41 @@ public final class PacketHandler
 		}
 	}
 
+	public static void sendNonLocal(IMessage msg, EntityPlayerMP player)
+	{
+		if (player.mcServer.isDedicatedServer() || !player.getName().equals(player.mcServer.getServerOwner()))
+		{
+			HANDLER.sendTo(msg, player);
+		}
+	}
+
 	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
 	{
-		ArrayList<Integer[]> list = new ArrayList<>();
-		int counter = 0;
-
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
-		{
-			SimpleStack stack = entry.getKey();
-
-			if (stack == null)
-			{
-				continue;
-			}
-
-			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
-
-			Integer[] data = new Integer[] {id, stack.damage, entry.getValue()};
-			list.add(data);
-
-			if (list.size() >= MAX_PKT_SIZE)
-			{
-				PacketHandler.sendTo(new SyncEmcPKT(counter, list), player);
-				list.clear();
-				counter++;
-			}
-		}
-		if (list.size() > 0)
-		{
-			PacketHandler.sendTo(new SyncEmcPKT(-1, list), player);
-			list.clear();
-			counter++;
-		}
-
-		PECore.LOGGER.info("Sent EMC data packets to: {}", player.getName());
-		PECore.debugLog("Total packets: {}", counter);
+		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
 	}
 
 	public static void sendFragmentedEmcPacketToAll()
 	{
-		ArrayList<Integer[]> list = new ArrayList<>();
-		int counter = 0;
+		SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
+		for (EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+		{
+			sendNonLocal(pkt, player);
+		}
+	}
 
-		for (Map.Entry<SimpleStack, Integer> entry : new LinkedHashMap<>(EMCMapper.emc).entrySet()) // Copy constructor to prevent race condition CME in SP
+	private static int[][] serializeEmcData()
+	{
+		int[][] ret = new int[EMCMapper.emc.size()][];
+		int i = 0;
+		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
-
-			if (stack == null)
-			{
-				continue;
-			}
-
 			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
-
-			Integer[] data = new Integer[] {id, stack.damage, entry.getValue()};
-			list.add(data);
-
-			if (list.size() >= MAX_PKT_SIZE)
-			{
-				PacketHandler.sendToAll(new SyncEmcPKT(counter, list));
-				list.clear();
-				counter++;
-			}
+			ret[i] = new int[] { id, stack.damage, entry.getValue() };
+			i++;
 		}
-
-		if (list.size() > 0)
-		{
-			PacketHandler.sendToAll(new SyncEmcPKT(-1, list));
-			list.clear();
-			counter++;
-		}
-
-		PECore.LOGGER.info("Sent EMC data packets to all players.");
-		PECore.debugLog("Total packets per player: {}", counter);
+		PECore.debugLog("EMC data size: {} bytes", ret.length * 3 * 4);
+		return ret;
 	}
 
 	/**

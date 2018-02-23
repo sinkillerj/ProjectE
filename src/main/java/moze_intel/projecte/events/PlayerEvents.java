@@ -91,13 +91,7 @@ public class PlayerEvents
 	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
-		if (!player.mcServer.isDedicatedServer() && player.getName().equals(player.mcServer.getServerOwner()))
-		{
-			PECore.debugLog("Not syncing to {} since they are the SP host", player.getName());
-		} else
-		{
-			PacketHandler.sendFragmentedEmcPacket(player);
-		}
+		PacketHandler.sendFragmentedEmcPacket(player);
 
 		PacketHandler.sendTo(new CheckUpdatePKT(), player);
 
