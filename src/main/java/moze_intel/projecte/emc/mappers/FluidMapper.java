@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSFake;
@@ -108,6 +109,13 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
 			emapper.addConversion(pair.getValue().amount, NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+		}
+
+		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps
+		mapper.addConversion(1, NSSItem.create(Items.WATER_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.WATER), 1000));
+		mapper.addConversion(1, NSSItem.create(Items.LAVA_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.LAVA), 1000));
+		if (milkFluid != null) {
+			mapper.addConversion(1, NSSItem.create(Items.MILK_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(milkFluid), 1000));
 		}
 	}
 
