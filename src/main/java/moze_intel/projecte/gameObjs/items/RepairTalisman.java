@@ -169,7 +169,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile.getActivityCooldown() == 0)
+			if (tile != null && tile.getActivityCooldown() == 0)
 			{
 				world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds()).forEach(this::repairAllItems);
 				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
