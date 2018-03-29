@@ -176,7 +176,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			}
 			else
 			{
-				tile.decrementActivityCooldown();
+				if(tile != null)
+				{
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
