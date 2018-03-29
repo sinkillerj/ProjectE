@@ -207,7 +207,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile.getActivityCooldown() == 0)
+			if (tile != null && tile.getActivityCooldown() == 0)
 			{
 				world.getWorldInfo().setRainTime(0);
 				world.getWorldInfo().setThunderTime(0);
@@ -218,7 +218,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			}
 			else
 			{
-				tile.decrementActivityCooldown();
+				if(tile != null){
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
