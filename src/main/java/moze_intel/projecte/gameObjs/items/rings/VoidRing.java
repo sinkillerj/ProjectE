@@ -47,7 +47,9 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
+		if(((IPedestalItem) ObjHandler.blackHole) != null){
+			((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
+		}
 	}
 
 	@Nonnull
