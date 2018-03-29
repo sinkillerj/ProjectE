@@ -261,7 +261,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 
-			if (tile.getActivityCooldown() == 0)
+			if (tile != null && tile.getActivityCooldown() == 0)
 			{
 				int i = (300 + world.rand.nextInt(600)) * 20;
 				world.getWorldInfo().setRainTime(i);
@@ -271,8 +271,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				tile.setActivityCooldown(ProjectEConfig.evertidePedCooldown);
 			}
 			else
-			{
-				tile.decrementActivityCooldown();
+			{	
+				if(tile != null){
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
