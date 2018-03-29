@@ -218,7 +218,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 			}
 			else
 			{
-				tile.decrementActivityCooldown();
+				if(tile != null){
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
