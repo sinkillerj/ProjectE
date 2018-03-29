@@ -45,7 +45,10 @@ public class Pedestal extends Block
     private void dropItem(World world, BlockPos pos)
     {
         DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
-        ItemStack stack = tile.getInventory().getStackInSlot(0);
+	ItemStack stack = null;
+	if(tile != null){
+        	stack = tile.getInventory().getStackInSlot(0);
+	}
         if (stack != null)
         {
             WorldHelper.spawnEntityItem(world, stack, pos.getX(), pos.getY() + 0.8, pos.getZ());
@@ -77,7 +80,11 @@ public class Pedestal extends Block
         if (!world.isRemote)
         {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-            ItemStack item = tile.getInventory().getStackInSlot(0);
+	    ItemStack item = null;
+	    if(tile != null)
+	    {
+            	item = tile.getInventory().getStackInSlot(0);
+	    }
 
             if (stack == null
                     && item != null
@@ -109,7 +116,7 @@ public class Pedestal extends Block
         {
             DMPedestalTile ped = ((DMPedestalTile) te);
 
-            if (ped.previousRedstoneState != flag)
+            if (ped != null && ped.previousRedstoneState != flag)
             {
                 if (flag && ped.getInventory().getStackInSlot(0) != null
                         && ped.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
