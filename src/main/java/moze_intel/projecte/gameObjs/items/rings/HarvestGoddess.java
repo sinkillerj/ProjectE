@@ -260,14 +260,17 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		if (!world.isRemote && ProjectEConfig.harvestPedCooldown != -1)
 		{
 			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
-			if (tile.getActivityCooldown() == 0)
+			if (tile != null && tile.getActivityCooldown() == 0)
 			{
 				WorldHelper.growNearbyRandomly(true, world, pos, null);
 				tile.setActivityCooldown(ProjectEConfig.harvestPedCooldown);
 			}
 			else
-			{
-				tile.decrementActivityCooldown();
+			{	
+				if(tile != null)
+				{
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
