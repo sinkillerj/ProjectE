@@ -134,7 +134,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 		if (!world.isRemote && ProjectEConfig.bodyPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile.getActivityCooldown() == 0)
+			if (tile != null && tile.getActivityCooldown() == 0)
 			{
 				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 
@@ -151,7 +151,10 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				tile.decrementActivityCooldown();
+				if(tile != null)
+				{
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
