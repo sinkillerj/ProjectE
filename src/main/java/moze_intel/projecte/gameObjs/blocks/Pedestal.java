@@ -92,7 +92,7 @@ public class Pedestal extends Block
             {
                 tile.setActive(!tile.getActive());
                 world.notifyBlockUpdate(pos, state, state, 8);
-            } else if (stack != null && item == null)
+            } else if (tile != null && stack != null && item == null) // If tile is null, item should also be null, but I'm not taking chances.
             {
                 tile.getInventory().setStackInSlot(0, stack.splitStack(1));
                 if (stack.stackSize <= 0)
