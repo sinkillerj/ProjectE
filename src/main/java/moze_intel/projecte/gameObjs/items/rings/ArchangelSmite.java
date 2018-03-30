@@ -120,7 +120,11 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile != null && tile.getActivityCooldown() == 0)
+			if(tile == null)
+			{
+				return;
+			}
+			if (tile.getActivityCooldown() == 0)
 			{
 				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
 				{
@@ -141,10 +145,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 			}
 			else
 			{	
-				if(tile != null)
-				{
-					tile.decrementActivityCooldown();
-				}
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
