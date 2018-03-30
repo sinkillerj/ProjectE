@@ -126,7 +126,11 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 		if (!world.isRemote && ProjectEConfig.zeroPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile != null && tile.getActivityCooldown() == 0) {
+			if(tile == null)
+			{
+				return;
+			}
+			if (tile.getActivityCooldown() == 0) {
 				AxisAlignedBB aabb = tile.getEffectBounds();
 				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
@@ -141,10 +145,7 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			}
 			else
 			{	
-				if(tile != null)
-				{
-					tile.decrementActivityCooldown();
-				}
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
