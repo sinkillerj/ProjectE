@@ -157,7 +157,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		if (!world.isRemote && ProjectEConfig.ignitePedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile != null && tile.getActivityCooldown() == 0)
+			if(tile == null)
+			{
+				return;
+			}
+			if (tile.getActivityCooldown() == 0)
 			{
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
@@ -170,10 +174,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			}
 			else
 			{
-				if(tile != null)
-				{
-					tile.decrementActivityCooldown();
-				}
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
