@@ -241,7 +241,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		if (!world.isRemote && ProjectEConfig.swrgPedCooldown != -1)
 		{
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-			if (tile != null && tile.getActivityCooldown() <= 0)
+			if(tile == null)
+			{
+				return;
+			}
+			if (tile.getActivityCooldown() <= 0)
 			{
 				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
 				for (EntityLiving living : list)
@@ -256,10 +260,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			}
 			else
 			{	
-				if(tile != null)
-				{
-					tile.decrementActivityCooldown();
-				}
+				tile.decrementActivityCooldown();
 			}
 		}
 	}
