@@ -10,6 +10,7 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -501,6 +502,15 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
+	private static boolean isSameOre(IBlockState target, IBlockState world)
+	{
+		if (target.getBlock() instanceof BlockRedstoneOre)
+		{
+			return world.getBlock() instanceof BlockRedstoneOre;
+		}
+		return target == world;
+	}
+
 	/**
 	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
 	 */
@@ -523,7 +533,7 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
 			IBlockState state = player.getEntityWorld().getBlockState(pos);
-			if (state == target)
+			if (isSameOre(target, state))
 			{
 				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state, drops, 0);
 			}
