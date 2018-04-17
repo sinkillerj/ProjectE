@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -16,14 +17,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class ItemMode extends ItemCharge implements IModeChanger
+public abstract class ItemMode extends ItemPE implements IModeChanger, IItemCharge
 {
 	private final byte numModes;
+	private final int numCharge;
 	private final String[] modes;
 	
-	public ItemMode(String unlocalName, byte numCharge, String[] modeDescrp)
+	public ItemMode(String unlocalName, int numCharge, String[] modeDescrp)
 	{
-		super(unlocalName, numCharge);
+		this.numCharge = numCharge;
+		this.setUnlocalizedName(unlocalName);
+		this.setMaxStackSize(1);
 		this.numModes = (byte) modeDescrp.length;
 		this.modes = modeDescrp;
 	}
@@ -67,6 +71,24 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		{
 			list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + I18n.format(getUnlocalizedMode(stack)));
 		}
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / numCharge;
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return numCharge;
 	}
 }
 

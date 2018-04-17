@@ -142,7 +142,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

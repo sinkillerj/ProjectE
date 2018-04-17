@@ -116,7 +116,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
 			int reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
-			byte charge = getCharge(stack);
+			int charge = getCharge(stack);
 			byte mode = this.getMode(stack);
 
 			Vec3d look = player.getLookVec();
@@ -235,7 +235,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
             }
 
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
 		}
 
 		return EnumActionResult.SUCCESS;

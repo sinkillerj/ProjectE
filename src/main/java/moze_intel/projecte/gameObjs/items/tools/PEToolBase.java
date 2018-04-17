@@ -106,7 +106,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost, EnumHand hand)
 	{
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
@@ -172,7 +172,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sidehit, int emcCost)
 	{
-		byte charge = this.getCharge(stack);
+		int charge = this.getCharge(stack);
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
@@ -361,7 +361,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
+		int charge = this.getCharge(stack);
 		float totalDmg = baseDmg;
 
 		if (charge > 0)
@@ -383,7 +383,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		float factor = 2.5F * charge;
 		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(factor);
 		List<Entity> toAttack = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, aabb);
@@ -442,7 +442,7 @@ public abstract class PEToolBase extends ItemMode
 		World world = player.getEntityWorld();
 		if (!world.isRemote)
 		{
-			byte charge = this.getCharge(stack);
+			int charge = this.getCharge(stack);
 
 			int offset = ((int) Math.pow(2, 2 + charge));
 

@@ -4,10 +4,11 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
@@ -36,11 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
+public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
 {
 	public Zero() 
 	{
-		super("zero_ring", (byte)4);
+		this.setUnlocalizedName("zero_ring");
+		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 		this.setNoRepair();
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
@@ -170,5 +172,23 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zeroPedCooldown)));
 		}
 		return list;
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return 4;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

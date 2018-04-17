@@ -5,6 +5,7 @@ import moze_intel.projecte.PECore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -266,20 +267,6 @@ public final class ItemHelper
 		};
 	}
 
-	public static boolean invContainsItem(IItemHandler inv, ItemStack toSearch)
-	{
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
-
-			if (!stack.isEmpty() && basicAreStacksEqual(stack, toSearch))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static boolean isDamageable(ItemStack stack)
 	{
 		return !stack.getHasSubtypes() && stack.isItemStackDamageable();
@@ -291,7 +278,7 @@ public final class ItemHelper
 		{
 			return true;
 		}
-		if (Item.getItemFromBlock(state.getBlock()) == null)
+		if (Item.getItemFromBlock(state.getBlock()) == Items.AIR)
 		{
 			return false;
 		}

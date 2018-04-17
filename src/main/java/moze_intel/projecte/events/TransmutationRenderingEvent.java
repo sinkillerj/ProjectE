@@ -107,7 +107,7 @@ public class TransmutationRenderingEvent
 
 			if (transmutationResult != null)
 			{
-				byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
+				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))

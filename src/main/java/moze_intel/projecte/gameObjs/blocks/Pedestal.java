@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -55,8 +56,10 @@ public class Pedestal extends Block
             ItemStack stack = tile.getInventory().getStackInSlot(0);
             if (!stack.isEmpty())
             {
-                WorldHelper.spawnEntityItem(world, stack, pos.getX(), pos.getY() + 0.8, pos.getZ());
                 tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+                EntityItem ent = new EntityItem(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
+                ent.setItem(stack);
+                world.spawnEntity(ent);
             }
         }
     }

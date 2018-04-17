@@ -4,6 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem
+public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
 {
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
 			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
@@ -57,7 +58,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	
 	public TimeWatch() 
 	{
-		super("time_watch", (byte)2);
+		this.setUnlocalizedName("time_watch");
+		this.setMaxStackSize(1);
 		this.setNoRepair();
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
@@ -372,5 +374,23 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 	public static void blacklist(Class<? extends TileEntity> clazz)
 	{
 		internalBlacklist.add(clazz.getName());
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return 2;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

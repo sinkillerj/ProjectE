@@ -2,7 +2,6 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
@@ -47,9 +46,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -61,10 +57,8 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.items.IItemHandler;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -132,7 +126,9 @@ public final class WorldHelper
 
 		for (ItemStack drop : drops)
 		{
-			spawnEntityItem(world, drop, x, y, z);
+			EntityItem ent = new EntityItem(world, x, y, z);
+			ent.setItem(drop);
+			world.spawnEntity(ent);
 		}
 	}
 
@@ -158,12 +154,12 @@ public final class WorldHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack.isEmpty())
+			if (!stack.isEmpty())
 			{
-				continue;
+				EntityItem ent = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ());
+				ent.setItem(stack);
+				world.spawnEntity(ent);
 			}
-
-			spawnEntityItem(world, stack, pos);
 		}
 	}
 
@@ -565,22 +561,5 @@ public final class WorldHelper
 				}
 			}
 		}
-	}
-
-	public static void spawnEntityItem(World world, ItemStack stack, BlockPos pos)
-	{
-		spawnEntityItem(world, stack, pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	public static void spawnEntityItem(World world, ItemStack stack, double x, double y, double z)
-	{
-		float f = world.rand.nextFloat() * 0.8F + 0.1F;
-		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-		float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
-		EntityItem entityitem = new EntityItem(world, x + f, y + f1, z + f2, stack.copy());
-		entityitem.motionX = world.rand.nextGaussian() * 0.05;
-		entityitem.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
-		entityitem.motionZ = world.rand.nextGaussian() * 0.05;
-		world.spawnEntity(entityitem);
 	}
 }

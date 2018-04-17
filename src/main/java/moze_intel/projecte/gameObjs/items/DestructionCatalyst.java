@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
@@ -22,18 +23,13 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DestructionCatalyst extends ItemCharge
+public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
 	public DestructionCatalyst() 
 	{
-		super("destruction_catalyst", (byte)3);
+		this.setUnlocalizedName("destruction_catalyst");
+		this.setMaxStackSize(1);
 		this.setNoRepair();
-	}
-
-	// Only for Catalitic Lens
-	protected DestructionCatalyst(String name, byte numCharges)
-	{
-		super(name, numCharges);
 	}
 
 	@Nonnull
@@ -96,7 +92,7 @@ public class DestructionCatalyst extends ItemCharge
 
 	private int calculateDepthFromCharge(ItemStack stack)
 	{
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		if (charge <= 0)
 		{
 			return 1;
@@ -107,5 +103,23 @@ public class DestructionCatalyst extends ItemCharge
 
 		}
 		return (int) Math.pow(2, 1 + charge);
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return 3;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

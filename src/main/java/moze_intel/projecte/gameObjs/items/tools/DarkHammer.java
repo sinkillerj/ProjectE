@@ -81,7 +81,7 @@ public class DarkHammer extends PEToolBase
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		float damage = HAMMER_BASE_ATTACK + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
