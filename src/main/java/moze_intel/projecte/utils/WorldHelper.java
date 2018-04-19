@@ -431,7 +431,7 @@ public final class WorldHelper
 				{
 					if (crop instanceof BlockFlower)
 					{
-						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 						{
 							world.destroyBlock(currentPos, true);
 						}
