@@ -11,28 +11,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityEndermite;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityDonkey;
 import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.entity.passive.EntityMule;
 import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
@@ -78,7 +67,9 @@ public final class WorldHelper
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
-			EntityWolf.class, EntityHorse.class, EntityRabbit.class
+			EntityWolf.class, EntityHorse.class, EntityRabbit.class,
+			EntityDonkey.class, EntityMule.class, EntityPolarBear.class,
+			EntityLlama.class, EntityParrot.class
 	);
 
 	@SuppressWarnings("unchecked")
@@ -88,7 +79,8 @@ public final class WorldHelper
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
 			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class,
 			EntityStray.class, EntityWitherSkeleton.class, EntitySkeletonHorse.class, EntityZombieHorse.class,
-			EntityZombieVillager.class
+			EntityZombieVillager.class, EntityHusk.class, EntityGuardian.class,
+			EntityEvoker.class, EntityVex.class, EntityVindicator.class, EntityShulker.class
 	);
 
 	private static final Set<Class<? extends Entity>> interdictionBlacklist = new HashSet<>();
