@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Loader;
@@ -27,13 +28,25 @@ public class ThreadCheckUpdate extends Thread
 		ModContainer container = Loader.instance().getIndexedModList().get(PECore.MODID);
 		ForgeVersion.CheckResult result = null;
 
+		int tries = 0;
 		do {
 			ForgeVersion.CheckResult res = ForgeVersion.getResult(container);
 			if (res.status != ForgeVersion.Status.PENDING)
 			{
 				result = res;
 			}
-		} while (result == null);
+			try
+			{
+				Thread.sleep(1000L);
+			} catch (InterruptedException ignored) {}
+			tries++;
+		} while (result == null && tries < 10);
+
+		if (result == null)
+		{
+			PECore.LOGGER.info("Update check failed.");
+			return;
+		}
 
 		if (result.status == ForgeVersion.Status.UP_TO_DATE)
 		{
@@ -41,13 +54,16 @@ public class ThreadCheckUpdate extends Thread
 		} else if (result.status == ForgeVersion.Status.OUTDATED)
 		{
 			PECore.LOGGER.info("Mod is outdated! Check {} to get the latest version ({}).", curseURL, result.target);
+			final ForgeVersion.CheckResult res = result;
 
-			Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.available", result.target)));
-			Minecraft.getMinecraft().player.sendMessage(new TextComponentString(I18n.format("pe.update.getit")));
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation("pe.update.available", res.target));
+				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation("pe.update.getit"));
 
-			ITextComponent link = new TextComponentString(curseURL);
-			link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-			Minecraft.getMinecraft().player.sendMessage(link);
+				ITextComponent link = new TextComponentString(curseURL);
+				link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+				Minecraft.getMinecraft().player.sendMessage(link);
+			});
 		}
 	}
 
