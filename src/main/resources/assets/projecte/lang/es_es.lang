@@ -1,0 +1,409 @@
+﻿item.pe_philosophers_stone.name=Piedra Filosofal
+item.pe_alchemical_bag.name=Bolsa Alquímica
+item.pe_repair_talisman.name=Reparar talismán
+item.pe_klein_star_1.name=Estrella Klein (Mono)
+item.pe_klein_star_2.name=Estrella Klein (Di)
+item.pe_klein_star_3.name=Estrella Klein (Tri)
+item.pe_klein_star_4.name=Estrella Klein (Tetra)
+item.pe_klein_star_5.name=Estrella Klein (Penta)
+item.pe_klein_star_6.name=Estrella Klein (Omega)
+item.pe_fuel_alchemical_coal.name=Carbón Alquímico
+item.pe_fuel_mobius.name=Combustible Mobius
+item.pe_fuel_aeternalis.name=Combustible Aeternalis
+item.pe_covalence_dust_low.name=Polvo de Baja covalencia
+item.pe_covalence_dust_medium.name=Polvo de Media covalencia
+item.pe_covalence_dust_high.name=Polvo de Alta covalencia
+item.pe_matter_dark.name=Materia Oscura
+item.pe_matter_red.name=Materia Roja
+item.pe_ring_iron_band.name=Anillo de Hierro
+item.pe_black_hole.name=Anillo Agujero Negro
+item.pe_harvest_god.name=Anillo Diosa de la Cosecha
+item.pe_archangel_smite.name=Golpe de Arcángel
+item.pe_ignition.name=Anillo de Ignición
+item.pe_body_stone.name=Piedra Corporal
+item.pe_soul_stone.name=Piedra del Alma
+item.pe_mind_stone.name=Piedra Mental
+item.pe_life_stone.name=Piedra de la Vida
+item.pe_evertide_amulet.name=Amuleto Evertide
+item.pe_volcanite_amulet.name=Amuleto Volcanite 
+item.pe_swrg.name=Anillo Vendaval del Lobo Rápido
+item.pe_mercurial_eye.name=Ojo Mercurial
+item.pe_time_watch.name=Reloj del Flujo Temporal
+item.pe_gem_density.name=Gema de la Densidad Eterna
+item.pe_divining_rod_1.name=Palo de Adivinación (Bajo)
+item.pe_divining_rod_2.name=Palo de Adivinación (Medio)
+item.pe_divining_rod_3.name=Palo de Adivinación (Alto)
+item.pe_destruction_catalyst.name=Catalizador de Destrucción
+item.pe_hyperkinetic_lens.name=Lente Hipercinética
+item.pe_catalitic_lens.name=Lente Catalítica
+item.pe_lens_explosive.name=Lente Explosiva
+item.pe_water_orb.name=Orbe de Agua
+item.pe_lava_orb.name=Orbe de Lava
+item.pe_randomizer.name=Orbe Aleatorizador
+item.pe_loot_ball.name=Bola de Botín
+item.pe_dm_pick.name=Pico de Materia Oscura
+item.pe_dm_axe.name=Hacha de Materia Oscura
+item.pe_dm_shovel.name=Pala de Materia Oscura
+item.pe_dm_sword.name=Espada de Materia Oscura
+item.pe_dm_hoe.name=Azada de Materia Oscura
+item.pe_dm_shears.name=Tijeras de Materia Oscura
+item.pe_dm_hammer.name=Martillo de Materia Oscura
+item.pe_rm_pick.name=Pico de Materia Roja
+item.pe_rm_axe.name=Hacha de Materia Roja
+item.pe_rm_shovel.name=Pala de Materia Roja
+item.pe_rm_sword.name=Espada de Materia Roja
+item.pe_rm_hoe.name=Azada de Materia Roja
+item.pe_rm_shears.name=Tijeras de Materia Roja
+item.pe_rm_hammer.name=Martillo de Materia Roja
+item.pe_rm_katar.name=Red Katar
+item.pe_rm_morning_star.name=Red Morningstar
+item.pe_dm_armor_0.name=Botas de Materia Oscura
+item.pe_dm_armor_1.name=Grebas de Materia Oscura
+item.pe_dm_armor_2.name=Peto de Materia Oscura
+item.pe_dm_armor_3.name=Yelmo de Materia Oscura
+item.pe_rm_armor_0.name=Botas de Materia Oscura
+item.pe_rm_armor_1.name=Grebas de Materia Roja
+item.pe_rm_armor_2.name=Peto de Materia Roja
+item.pe_rm_armor_3.name=Yelmo de Materia Roja
+item.pe_gem_armor_0.name=Botas Gem
+item.pe_gem_armor_1.name=Grebas Gem
+item.pe_gem_armor_2.name=Peto Gem
+item.pe_gem_armor_3.name=Yelmo Gem
+item.pe_arcana_ring.name=Ring of Arcana
+item.pe_void_ring.name=Void Ring
+item.pe_zero_ring.name=Zero Ring
+item.pe_tome.name=Tome of Knowledge
+item.pe_transmutation_tablet.name=Tabla de Transmutación
+item.pe_manual.name=Book of the Alchemist [WIP]
+
+pe.manual.tooltip1=Vol. 2
+
+tile.pe_alchemy_chest.name=Cofre Alquímico
+tile.pe_interdiction_torch.name=Antorcha de Interdicción
+tile.pe_transmutation_stone.name=Tabla de Transmutación
+tile.pe_condenser.name=Condensador de Energía
+tile.pe_condenser_mk2.name=Condensador de Energía MK2
+tile.pe_rm_furnace.name=Horno de Materia Roja
+tile.pe_dm_furnace.name=Horno de Materia Oscura
+tile.pe_rm_block.name=Bloque de Materia Roja
+tile.pe_dm_block.name=Bloque de Materia Oscura
+tile.pe_collector_MK1.name=Colector de Energía MK1
+tile.pe_collector_MK2.name=Colector de Energía MK2
+tile.pe_collector_MK3.name=Colector de Energía MK3
+tile.pe_relay_MK1.name=Relé Anti-Materia MK1
+tile.pe_relay_MK2.name=Relé Anti-Materia MK2
+tile.pe_relay_MK3.name=Relé Anti-Materia MK3
+tile.pe_nova_catalyst.name=Nova Catalyst
+tile.pe_nova_cataclysm.name=Nova Cataclysm
+tile.pe_fuel_block_0.name=Bloque de Carbón Alquímico
+tile.pe_fuel_block_1.name=Bloque de Combustible Mobius
+tile.pe_fuel_block_2.name=Bloque de Combustible Aeternalis
+tile.pe_dmPedestal.name=Pedestal de Materia Oscura
+
+itemGroup.projecte=ProjectE
+projecte.desc=¿Comercio Corresponsal?
+
+advancements.pe_phil_stone=¡El mejor amigo de un alquimista!
+advancements.pe_phil_stone.desc=¡Comencemos! Elabora una piedra filosofal
+advancements.pe_alch_chest=Actualización de almacenamiento!
+advancements.pe_alch_chest.desc=Una "pequeña" actualización de cofre.
+advancements.pe_alch_bag=Almacenamiento de bolsillo!
+advancements.pe_alch_bag.desc=Todas las maravillas de un cofre alquímico, en tu bolsillo.
+advancements.pe_transmutation=Transmutar esto en eso!
+advancements.pe_transmutation.desc=El comienzo (y el final) de todo.
+advancements.pe_condenser=Condense el mundo!
+advancements.pe_condenser.desc=¡MÁS DIAMANTES!
+advancements.pe_collector=¡El poder del sol!
+advancements.pe_collector.desc=Ahora comienza la diversión.
+advancements.pe_relay=¡Poder de las Flores!
+advancements.pe_relay.desc=Vinculación de los colectores para obtener aún más poder.
+advancements.pe_portable_transmutation=Transmutación sobre la marcha!
+advancements.pe_portable_transmutation.desc=Y luego pensaste que las cosas no podrían mejorar.
+advancements.pe_dark_matter=Todo lo que importa.
+advancements.pe_dark_matter.desc=Eso luce ... raro ...
+advancements.pe_red_matter=¡Mejor aún, Materia!
+advancements.pe_red_matter.desc=El continuo espacio-tiempo puede estar roto.
+advancements.pe_dm_block=Un bloque que importa!
+advancements.pe_dm_block.desc=Rellenar el asunto juntos. Porque esa es una buena idea.
+advancements.pe_rm_block=Rojo y brillante!
+advancements.pe_rm_block.desc=¡Ahora estás llegando a algún lado!
+advancements.pe_dm_furnace=¡Materia caliente!
+advancements.pe_dm_furnace.desc=Un horno es incluso mejor cuando está hecho de materia oscura.
+advancements.pe_rm_furnace=¡Aún más caliente!
+advancements.pe_rm_furnace.desc=Wow, eso es rápido.
+advancements.pe_dm_pick=Usando la materia en la materia
+advancements.pe_dm_pick.desc=¿Porque, porque no?
+advancements.pe_rm_pick=¿Esto es seguro?
+advancements.pe_rm_pick.desc=Probablemente no.
+advancements.pe_klein=Baterías EMC
+advancements.pe_klein.desc=Almacenamiento de EMC para un día lluvioso.
+advancements.pe_klein_big=Baterías EMC GRANDES
+advancements.pe_klein_big.desc=Sosteniendo el universo en tu bolsillo.
+
+pe.arcana.mode=Modo: 
+pe.arcana.mode.0=Cero
+pe.arcana.mode.1=Ignición
+pe.arcana.mode.2=Cosecha
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Invactivo
+
+pe.archangel.pedestal1=Dispara flechas a los mobs cercanos
+pe.archangel.pedestal2=Dispara cada %s
+
+pe.bhb.pedestal1=Recoje artículos cercanos
+pe.bhb.pedestal2=Desechos en inventarios adyecentes
+
+pe.body.pedestal1=Restaura el hambre de los jugadores cercanos
+pe.body.pedestal2=media pata cada %s
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
+pe.command.changelog.uptodate=ProjectE está actualizado.
+pe.command.clearknowledge.error=No se pudo borrar el conocimiento por: %s
+pe.command.clearknowledge.notify=Su conocimiento de transmutación fue borrado un %s!
+pe.command.clearknowledge.playernotfound=No se pudo encontrar el jugador llamado: %s
+pe.command.clearknowledge.success=Conocimiento borrado para: %s
+pe.command.clearknowledge.usage=/projecte clearKnowledge [player selector]
+
+pe.command.reload.started=Al volver a cargar los valores de EMC, se espera lag.
+pe.command.reload.success=Recarga de EMC completa. Envío de datos actualizados a los clientes.
+pe.command.reload.notice=Reinicie o use "/projecte reloadEMC"  cuando se hayan completado todos los cambios.
+
+pe.command.remove.invaliditem=Error: ¡No se encontró el elemento "%s"!
+pe.command.remove.invalidmeta=Error: ¡El valor meta "%s" no es válido!
+pe.command.remove.success=Se eliminó el valor EMC en %s.
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.reset.invalidmeta=Error: ¡El valor meta "%s" no es válido!
+pe.command.reset.nochange=¡El valor EMC para %s:%s no fue modificado!
+pe.command.reset.success=Se reinició el valor EMC en %s.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.set.invalidemc=Error: ¡El valor de EMC "%s" no es válido!
+pe.command.set.invaliditem=Error: ¡El objeto "%s" no fue encontrado!
+pe.command.set.invalidmeta=Error: ¡El valor meta "%s" no es válido!
+pe.command.set.success=Establezca el valor de EMC de %s para %s!
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)
+
+pe.darkpick.mode1=Estándar
+pe.darkpick.mode2=3x Alto
+pe.darkpick.mode3=3x Amplio
+pe.darkpick.mode4=3x Largo
+
+pe.divining.avgemc=El valor promedio de EMC para %s bloques: %s
+pe.divining.maxemc=Máximo EMC: %s
+pe.divining.secondmax=Segundo Máximo EMC: %s
+pe.divining.thirdmax=Tercer Máximo EMC: %s
+
+pe.dmfurnace.shortname=Horno MO
+pe.rmfurnace.shortname=Horno MR
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Tasa de Generación Máxima:
+pe.emc.maxoutrate_tooltip=Velocidad Máxima de Salida:
+pe.emc.maxstorage_tooltip=Almacenamiento Máximo:
+pe.emc.name=EMC
+pe.emc.rate=EMC/s
+pe.emc.stackemc_tooltip_prefix=Pila EMC:
+pe.emc.storedemc_tooltip=Almacenado EMC:
+pe.emc.too_much=DEMASIADO
+pe.emc.has_knowledge=Transmutable
+
+pe.evertide.tooltip1=Presione %s para disparar un proyectil de agua
+pe.evertide.tooltip2=Actúa como un cubo de agua infinito
+pe.evertide.tooltip3=Haga clic derecho para llenar tanques y calderos
+pe.evertide.tooltip4=¡Todas las operaciones son completamente gratis!
+pe.evertide.pedestal1=Crea tormentas de lluvia/nieve
+pe.evertide.pedestal2=Intenta empezar lluvia cada %s
+
+pe.gem.disabled=DESHABILITADO
+pe.gem.enabled=HABILITADO
+
+pe.gem.activate=Capacidades Ofensivas de la Germ Amor ACTIVADAS
+pe.gem.deactivate=Capacidades Ofensivas de la Germ Amor DESACTIVADAS
+
+pe.gem.helm.lorename=Yelmo Abyss
+pe.gem.chest.lorename=Peto Infernal
+pe.gem.legs.lorename=Grebas Gravity
+pe.gem.feet.lorename=Botas Hurricane
+
+pe.gem.nightvision_tooltip=Visión Nocturna:
+pe.gem.nightvision.prompt=Presione %s + %s para alternar la visión nocturna
+pe.gem.stepassist_tooltip=Asistente paso a paso:
+pe.gem.stepassist.prompt=Presione %s para alternar el asistente paso a paso
+
+pe.gemdensity.blacklist=Blacklist
+pe.gemdensity.mode_switch=Establecer objetivo para
+pe.gemdensity.tooltip1=Condensa artículos en movimiento
+pe.gemdensity.tooltip2=Objetivo actual: %s
+pe.gemdensity.tooltip3=Presiona %s para cambiar de objetivo
+pe.gemdensity.tooltip4=Haga clic derecho para configurar la Blacklist/Whitelist
+pe.gemdensity.tooltip5=Shift + Clic Derecho para alternar
+pe.gemdensity.whitelist=Whitelist
+
+pe.harvestgod.pedestal1=Acelera el crecimiento de cultivos cercanos
+pe.harvestgod.pedestal2=Cosecha en tierras cercanas
+pe.harvestgod.pedestal3=Se activa cada %s
+
+pe.ignition.pedestal1=Mobs cercanos arden
+pe.ignition.pedestal2=Se activa cada %s
+
+pe.item.mode=Modo
+pe.item.mode_switch=Cambiando al Modo %s 
+
+pe.katar.mode1=Mata a hostiles
+pe.katar.mode2=Mata todo
+
+pe.key.armor_toggle=Efectos de la armadura
+pe.key.charge=Cargar
+pe.key.extra_function=Función extra
+pe.key.fire_projectile=Proyectil de fuego
+pe.key.mode=Cambiar Modo
+
+pe.life.pedestal1=Restaura el hambre y la salud
+pe.life.pedestal2=Medio corazón y pata cada %s
+
+pe.mind.pedestal1=Recoje la XP en la piedra de la mente
+
+pe.misc.every_tick=cada tic
+pe.misc.seconds=segundos
+pe.misc.storedxp_tooltip=XP Almacenada:
+pe.misc.wrenched_block=Bloque enganchado!
+
+pe.morningstar.mode1=Estándar
+pe.morningstar.mode2=3x Alto
+pe.morningstar.mode3=3x Amplio
+pe.morningstar.mode4=3x Largo
+
+pe.pedestal.item_disabled=La Función del Pedestal ha sido Desactivada!
+pe.pedestal.on_pedestal=En el pedestal:
+pe.pedestal.shortname=Pedestal MO 
+pe.pedestal.tooltip1=Haga Clic Derecho para insertar un elemento, Haga Clic Izquierdo para eliminarlo.
+pe.pedestal.tooltip2=Haga clic derecho con la mano vacía para activar!
+
+pe.philstone.mode1=Cubo
+pe.philstone.mode2=Panel
+pe.philstone.mode3=Línea
+pe.philstone.tooltip1=Presione %s para abrir una inferfaz de crafting
+
+pe.redpick.mode1=Estándar
+pe.redpick.mode2=3x Alto
+pe.redpick.mode3=3x Amplio
+pe.redpick.mode4=3x Largo
+
+pe.redsword.mode1=Mata a hostiles
+pe.redsword.mode2=Mata todo
+
+pe.relay.mk1=Relé MKI
+pe.relay.mk2=Relé MKII
+pe.relay.mk3=Relé MKIII
+
+pe.repairtalisman.pedestal1=Repara los artículos de los jugadores cercanos
+pe.repairtalisman.pedestal2=Restaura 1 de durabilidad cada %s
+
+pe.server.high_alchemist=El Gran Alquimista
+pe.server.has_joined=se ha unido al Servidor
+
+pe.soul.pedestal1=Cura a los jugadores cercanos
+pe.soul.pedestal2=Medio corazón cada %s
+
+pe.swrg.pedestal1=Dispara rayos a los mobs cercanos
+pe.swrg.pedestal2=Se activa cada %s
+
+pe.timewatch.disabled=Artículo deshabilitado por el administrador del servidor
+pe.timewatch.ff=Avance rápido
+pe.timewatch.mode=Modo de Control del Tiempo: %s
+pe.timewatch.mode_switch=Modo de Control del Tiempo establecido en: %s
+pe.timewatch.off=Desactivado
+pe.timewatch.rw=Rebobinar
+pe.timewatch.tooltip1=Conviértete en el amo del tiempo
+pe.timewatch.tooltip2=Haga Clic Derecho para cambiar el modo
+pe.timewatch.pedestal1=Otorga %d tics de bonificación a los bloques cercanos cada tic
+pe.timewatch.pedestal2=Cada tic, los mobs cercanos se mueven %.3f veces la velocidad
+
+pe.tome.tooltip1=Se desbloquea todo el conocimiento de transmutación cuando se aprenda
+
+pe.transmutation.already_using=¡Alguien ya está usando esta tabla de transmutación!
+pe.transmutation.transmute=Transmutación
+pe.transmutation.learned0=L
+pe.transmutation.learned1=e
+pe.transmutation.learned2=a
+pe.transmutation.learned3=r
+pe.transmutation.learned4=n
+pe.transmutation.learned5=e
+pe.transmutation.learned6=d
+pe.transmutation.learned7=!
+
+pe.transmutation.unlearned0=U
+pe.transmutation.unlearned1=n
+pe.transmutation.unlearned2=l
+pe.transmutation.unlearned3=e
+pe.transmutation.unlearned4=a
+pe.transmutation.unlearned5=r
+pe.transmutation.unlearned6=n
+pe.transmutation.unlearned7=e
+pe.transmutation.unlearned8=d
+
+pe.update.available=¡Nueva actualización ProjectE disponible! Versión: %s
+pe.update.getit=Actualiza aquí
+
+pe.volcanite.tooltip1=Presione %s para disparar un proyectil de lava
+pe.volcanite.tooltip2=Actúa como un cubo de lava infinitamente lleno
+pe.volcanite.tooltip3=Haga clic derecho para llenar tanques
+pe.volcanite.tooltip4=¡Todas las operaciones cuestan 32 EMC!
+pe.volcanite.pedestal1=Previene las tormentas de lluvia/nieve
+pe.volcanite.pedestal2=Intenta detener el clima cada %s
+
+pe.zero.pedestal1=Extingue entidades
+pe.zero.pedestal2=Congela el entorno
+pe.zero.pedestal3=Se activa cada %s
+
+pe.debug.metainvalid.name=Conjunto de metadatos no válido
+
+pe.nei.worldtransmute=Transmutación Mundial
+pe.nei.philo=Fundición de piedra filosofal
+
+pe.manual.index=Index
+pe.manual.index_button=ToC
+
+# ItemPages bodies
+pe.manual.pe_alchemical_bag=Un alquimista practicante como usted no tiene tiempo para recoger y colocar constantemente Cofres Alquímicos para su almacenamiento. Al rociar Polvo de Covalencia de alta potencia sobre un Cofre Alquímico y envolverlo en tela, uno puede encoger el cofre hasta el tamaño de una bolsa. La bolsa tiene toda la capacidad del cofre. Curiosamente, las bolsas parecen estar ligadas a alguna red metafísica, ya que todas las bolsas del mismo color parecen contener los mismos artículos, independientemente de si la bolsa era tuya o la de tu vecino. La Bolsa Alquímica también parece activar objetos mágicos de la misma manera que el cofre.
+
+pe.manual.pe_philosophers_stone=Durante siglos se han difundido leyendas sobre la Piedra Filosofal y sus poderes. La transmutación sin círculos, la inmortalidad, todas las riquezas que uno podría desear, y más se dice que están dentro del poder de los poseedores. Si bien puede perderse para siempre, los alquimistas modernos han descubierto el secreto para sintetizar un reemplazo adecuado para algunos de los poderes más básicos. Sin embargo, ten cuidado, ya que aquellos que han tenido éxito en su creación a menudo tienen una nueva apariencia en sus ojos, trayendo consigo historias de fuego y demonios.
+
+pe.manual.pe_repair_talisman=El polvo de Covalencia puede ser una cura para el desgaste de la herramienta, sin embargo, frotarlo manualmente sobre los puntos y las abolladuras puede ser tedioso rápidamente. Ingrese el talismán de reparación, envolviendo los tres colores de Covalence Dust en un paquete apretado que se puede distribuir gradualmente sobre las herramientas en su bolsa, lo que le permite atender a sus ovejas y realizar otras tareas de suma importancia.
+
+pe.manual.pe_fuel_block_2=Al igual que otros combustibles sólidos, Aeternalis se puede comprimir en forma de bloque. Elegante y eficiente.
+
+pe.manual.pe_alchemy_chest=No es ningún secreto que a los alquimistas les gustan las cosas brillantes, el deseo de un oro infinito está presente en cualquier lugar, pero las soluciones de almacenamiento normales no cumplen con estas demandas. Ingresa al Cofre Alquímico que puede almacenar 104 pilas de artículos, a cambio de un brillante y un poco de Polvo de Covalencia, puedes almacenar objetos brillantes prácticamente infinitos.
+
+pe.manual.pe_fuel_block_0=Al igual que otros combustibles sólidos, El Carbón Alquímico se puede comprimir en forma de bloque. Úselo como un combustible eficiente, o Materia Roja de un hombre pobre para la decoración.
+
+pe.manual.pe_relay_MK1=Los Relés son su ventanilla única para proporcionar EMC a Condensadores y otros dispositivos alquímicos, simplemente colóquelo al costado de uno y listo. EMC puede ser provisto por materias primas, o por un Colector adjunto. ToDo merge pages.
+
+pe.manual.pe_dm_block=La Materia Prima Oscura y Roja se puede convertir en bloques, no solo se puede usar como decoración de clase alta en esta forma, sino también como material clave para una serie de dispositivos alquímicos. ToDo merge pages.
+
+pe.manual.pe_dm_furnace=Los Hornos de Materia son potentes dispositivos alquímicos que pueden ser alimentados por una fuente de EMC, como un Relé o un Colector. Son bien conocidos por su eficiencia debido tanto a su velocidad como a su capacidad para enviar automáticamente a un cofre cercano. ToDo merge pages.
+
+pe.manual.pe_collector_MK1 = Los Colectores son algunos de los dispositivos alquímicos más controvertidos debido a su capacidad de generar EMC utilizando nada más que una fuente de luz. Esta EMC se puede transferir a un dispositivo conectado, como un Relé o Condensador, o puede ser utilizada por el propio colector para cargar un elemento alquímico, como una Estrella Klein. También se puede usar un Colector para transformar materiales de combustible crudo en otros más potentes. ToDo fusionar páginas.
+
+pe.manual.pe_condenser=Las tablas de transmutación son excelentes para convertir una cosa en otra, sin embargo, el proceso es manual y no apto para la automatización. Los Condensadores son la solución a este problema, simplemente establece un elemento como el objetivo y todo lo que se vierte en él se transmutará en el objetivo. El objetivo también se puede crear a partir de EMC provisto por un dispositivo adjunto, como un Relé o un Colector.
+
+pe.manual.pe_condenser_mk2=El Condensador de Energía MK2 tiene todas las características del MK1, pero divide el inventario para tener una entrada y salida separadas.
+
+pe.manual.pe_interdiction_torch=La Antorcha de Interdicción es más que una alternativa elegante al carbón y las ramitas, cualquier mafia que se acerque a ella será rechazada, como dijo una vez un sabio ... ¡NINGUNO PODRÁ PASAR!
+
+Al igual que otros combustibles sólidos, El Combustible Mobius se puede comprimir en forma de bloque. Úselo como un combustible eficiente, o Materia Roja de un hombre pobre para la decoración.
+
+pe.manual.pe_nova_cataclysm=All the fun of the Nova Catalyst, but with double the boom!
+
+pe.manual.pe_nova_catalyst=El Nova Catalyst es un poderoso explosivo químico, causa bastante boom con el beneficio adicional de preservar los bloques cercanos para su recolección.
+
+pe.manual.pe_transmutation_stone=La tabla de transmutación permite al alquimista estudiar la composición de los materiales y descomponer otros para crear más. ¡Entra la suciedad, salen los diamantes!
+
+# TextPages headers and bodies
+pe.manual.introduction = Al abrir este libro, ha dado los primeros pasos en su viaje para convertirse en Alquimista Superior. Tal vez estés cansado de realizar las mismas tareas grindy una y otra vez, o simplemente deseas más poder para ... propósitos, o te gustaría que la utilidad y el arte de la magia estén a tu disposición. En cualquier caso, la alquimia seguramente se ajustará a tus necesidades. Antes de que puedas comenzar, sin embargo, es importante comprender el pasado ... El arte de la alquimia se conoce desde la antigüedad. Fue descubierto por un hombre conocido como x3n0ph0b3 y refinado a través de múltiples iteraciones. Después de la jubilación de x3n0ph0b3, un nuevo aprendiz, Pahimar, emprendió el desarrollo del arte, pero muchos alquimistas se disgustaron con sus nuevos métodos, una guerra estalló entre los dos lados con extraños cantos audibles similares a "tramposos perezosos" y "EE2 OP! !!!!! " llenando el aire. Los seguidores de x3n0 pensaron que todo estaba perdido hasta que un vagabundeo con el nombre de MozeIntel los condujo a la clandestinidad, él había estudiado y reproducido el trabajo de x3n0, así el viejo arte siguió vivo. Eventualmente, por razones desconocidas (razones que extrañamente describió como "IRL"), Moze se retiró, dejando su trabajo a un entusiasta aprendiz, SinkillerJ. Sin pasó a traer paz a los dos lados permitiéndoles convivir, pero también formar un consejo de alquimistas dedicados a la preservación del arte antiguo: Williewillus - Lord of Refactors, Blubberbub - Alchemical Value Archivist, Lilylicious - Lady of Little Big Things; Nosotros, el consejo de alquimistas, ahora impartimos sobre usted nuestro más amplio conocimiento de las artes alquímicas, y le damos la bienvenida, joven alquimista, al mundo de ProjectE.
+pe.manual.introduction.header=Introducción
+
+# ImagePage headers
+pe.manual.img_alchchest.header=alchchest.png
