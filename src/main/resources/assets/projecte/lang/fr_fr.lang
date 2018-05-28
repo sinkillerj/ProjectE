@@ -101,25 +101,26 @@ tile.pe_fuel_block_2.name=Bloc de combustible Aeternalis
 tile.pe_dmPedestal.name=Piédestal en matière noire
 
 itemGroup.projecte=ProjectE
+projecte.desc=Commerce Correspondant?
 
 advancements.pe_phil_stone=Le meilleur ami des alchimistes!
 advancements.pe_phil_stone.desc=Disons que les choses ont commencées! Fabrique une pierre philosophale
 advancements.pe_alch_chest=Amélioration du stockage!
 advancements.pe_alch_chest.desc=Une "petite" amélioration du coffre.
-advancements.pe_alch_bag=Amélioration de poche!
+advancements.pe_alch_bag=Stockage de poche!
 advancements.pe_alch_bag.desc=Toutes la magie d'un coffre alchimique, dans ta poche.
 advancements.pe_transmutation=Transmuste ceci en cela!
 advancements.pe_transmutation.desc=Le commencement (et la fin) de tout.
-advancements.pe_condenser=Condenser le monde!
+advancements.pe_condenser=Condensez le monde!
 advancements.pe_condenser.desc=PLUS DE DIAMANT!
-advancements.pe_collector=Le pouvoir du soleil!
+advancements.pe_collector=La puissance du soleil!
 advancements.pe_collector.desc=Maintenant ont va s'amuser.
 advancements.pe_relay=Puissance des fleurs!
 advancements.pe_relay.desc=Relie les collecteurs entrent eux pour plus de puissance.
 advancements.pe_portable_transmutation=Transmustation sur le pouce!
 advancements.pe_portable_transmutation.desc=Et maintenant tu sait que les choses ne pouvait être meilleur.
 advancements.pe_dark_matter=Toutes cette matière.
-advancements.pe_dark_matter.desc=Sa à l'air... bizarre....
+advancements.pe_dark_matter.desc=Ça à l'air... bizarre....
 advancements.pe_red_matter=Encore plus de matières!
 advancements.pe_red_matter.desc=L'espace-temps à été brisé.
 advancements.pe_dm_block=Une bloc de matière!
@@ -128,7 +129,7 @@ advancements.pe_rm_block=Rouge et brillant!
 advancements.pe_rm_block.desc=Maintenant tu va quelque part!
 advancements.pe_dm_furnace=Matière chaude!
 advancements.pe_dm_furnace.desc=Un four c'est mieux quand c'est fait avec de la matière noire.
-advancements.pe_rm_furnace=Matière très chaude!
+advancements.pe_rm_furnace=Matière encore plus chaude!
 advancements.pe_rm_furnace.desc=Waw, cette chose est rapide.
 advancements.pe_dm_pick=Utiliser de la matière sur de la matière
 advancements.pe_dm_pick.desc=Parceque pourquoi pas?
@@ -146,7 +147,7 @@ pe.arcana.mode.2=Récolte
 pe.arcana.mode.3=SWRG
 pe.arcana.inactive=Inactive!
 
-pe.archangel.pedestal1=Lance des flèches sur les monstres à proximité
+pe.archangel.pedestal1=Tire des flèches sur les monstres à proximité
 pe.archangel.pedestal2=Tirs toutes les %s
 
 pe.bhb.pedestal1=Aspire les items à proximité
@@ -162,10 +163,10 @@ pe.command.clearknowledge.error=Impossible d'effacer les connaissances pour: %s
 pe.command.clearknowledge.notify=Vos connaissances de transmutation ont été éffacées par %s!
 pe.command.clearknowledge.playernotfound=Impossible de trouver le nom du joueur: %s
 pe.command.clearknowledge.success=Connaissances éffacées pour: %s
-pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (no params to target self)
+pe.command.clearknowledge.usage=/projecte clearKnowledge [nom du joueur]
 
-pe.command.reload.started=Rechargement des EMC enregistrés...
-pe.command.reload.success=Voila! Envoie des données à jour au client.
+pe.command.reload.started=Rechargement de la valeur des EMC, latence possible.
+pe.command.reload.success=Voilà! Envoie des données à jour au client.
 pe.command.reload.notice=Redémarrer ou utiliser "/projecte reloadEMC" quand tout les changements sont complets.
 
 pe.command.remove.invaliditem=Error: L'item "%s" n'a pas été trouvé!
@@ -174,14 +175,14 @@ pe.command.remove.success=La valeur EMC de %s a été retirée.
 pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (no params for held item)
 
 pe.command.reset.invalidmeta=Error: La valeur meta de "%s" n'est pas valide!
-pe.command.reset.nochange=La valeur EMC de %s:%s n'à pas été modifiée!
+pe.command.reset.nochange=La valeur EMC de %s:%s n'a pas été modifiée!
 pe.command.reset.success=Mise à zero de la valeur EMC de %s.
 pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (no params for held item)
 
 pe.command.set.invalidemc=Error: La valeur EMC de "%s" n'est pas valide!
 pe.command.set.invaliditem=Error: L'item "%s" n'à pas été trouvé!
 pe.command.set.invalidmeta=Error: La valeur meta de "%s" n'est pas valide!
-pe.command.set.success=Les EMC passe de %s à %s!
+pe.command.set.success=L'EMC passe de %s à %s!
 pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)
 
 pe.darkpick.mode1=Standard
@@ -206,6 +207,7 @@ pe.emc.rate=EMC/s
 pe.emc.stackemc_tooltip_prefix=Stack d'EMC:
 pe.emc.storedemc_tooltip=EMC stockés:
 pe.emc.too_much=BEAUCOUP TROP
+pe.emc.has_knowledge=Transmutable
 
 pe.evertide.tooltip1=Appuyez sur %s pour tirer un projectile d'eau
 pe.evertide.tooltip2=Agit comme un seau d'eau infinie
@@ -217,12 +219,12 @@ pe.evertide.pedestal2=Tentatives de démarrage de pluie chaque %s
 pe.gem.disabled=DESACTIVER
 pe.gem.enabled=ACTIVER
 
-pe.gem.activate=Activé les capacités offensives de l'armure de gem
-pe.gem.deactivate=Desactivé les capacités offensives de l'armure de gem
+pe.gem.activate=Activation des capacités offensives de l'armure de gemmes
+pe.gem.deactivate=Desactivation des capacités offensives de l'armure de gemmes
 
 pe.gem.helm.lorename=Casque Abyssal
-pe.gem.chest.lorename=Armure de l'enfer
-pe.gem.legs.lorename=Jambières de gravité
+pe.gem.chest.lorename=Armure Infernale
+pe.gem.legs.lorename=Jambières de Gravité
 pe.gem.feet.lorename=Bottes de l'ouragan
 
 pe.gem.nightvision_tooltip=Vision nocturne:
@@ -259,7 +261,7 @@ pe.key.fire_projectile=Projectiles enflammés
 pe.key.mode=Changer de mode
 
 pe.life.pedestal1=Restaure la faim et la vie
-pe.life.pedestal2=La moitié d'un cœur et d'un jambon chaque %s
+pe.life.pedestal2=La moitié d'un cœur et d'un gigot chaque %s
 
 pe.mind.pedestal1=Aspire les orbes d'XP à proximité dans la pierre d'esprit
 
@@ -275,9 +277,9 @@ pe.morningstar.mode4=3x TirLong
 
 pe.pedestal.item_disabled=Les fonctions du piédestal ont été désactivée!
 pe.pedestal.on_pedestal=Sur le piédestal:
-pe.pedestal.shortname=MR Piédestal
-pe.pedestal.tooltip1=Maj + clic droit pour ouvrir l'interface
-pe.pedestal.tooltip2=Clic droit pour activer!
+pe.pedestal.shortname=Piédestal MN
+pe.pedestal.tooltip1=Clic droit pour insèrer un objet, clique gauche pour le retirer.
+pe.pedestal.tooltip2=Clic droit avec une main vide pour activer!
 
 pe.philstone.mode1=Cube
 pe.philstone.mode2=Plat
@@ -297,9 +299,9 @@ pe.relay.mk2=Relais MKII
 pe.relay.mk3=Relais MKIII
 
 pe.repairtalisman.pedestal1=Répares les items des joueurs à proximité
-pe.repairtalisman.pedestal2=Restaure 1 durabilité chaque %s
+pe.repairtalisman.pedestal2=Restaure 1 de durabilité chaque %s
 
-pe.server.high_alchemist=Le Full Metal Alchimiste
+pe.server.high_alchemist=Le Grand Alchimiste
 pe.server.has_joined=a rejoint le serveur
 
 pe.soul.pedestal1=Soigne les joueurs proches
@@ -343,7 +345,6 @@ pe.transmutation.unlearned7=i
 pe.transmutation.unlearned8=s
 
 pe.update.available=Nouvelle version de ProjectE disponible! Version: %s
-pe.update.changelog=Utilise /projecte changelog pour les changements!
 pe.update.getit=Obtenez le ici!
 
 pe.volcanite.tooltip1=Appuyez sur %s pour tirer un projectile de lave
@@ -359,7 +360,7 @@ pe.zero.pedestal3=Active chaque %s
 
 pe.debug.metainvalid.name=Ensemble de métadonnées non valide
 
-pe.nei.worldtransmute=Monde de la transmutation
+pe.nei.worldtransmute=Transmutation du monde
 pe.nei.philo=Pierre philosophale en fusion
 
 pe.manual.index=Index
