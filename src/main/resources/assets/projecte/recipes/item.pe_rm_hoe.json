@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_hoe"
+  },
+  "pattern": [
+    "RR",
+    " H",
+    " M"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "H": {
+      "item": "projecte:item.pe_dm_hoe"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

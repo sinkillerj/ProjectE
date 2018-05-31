@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.generators;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.math.Fraction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +22,7 @@ public class FractionToIntGenerator<T> implements IValueGenerator<T, Integer>
 	public Map<T, Integer> generateValues()
 	{
 		Map<T, Fraction> innerResult = inner.generateValues();
-		Map<T, Integer> myResult = Maps.newHashMap();
+		Map<T, Integer> myResult = new HashMap<>();
 		for (Map.Entry<T, Fraction> entry: innerResult.entrySet())
 		{
 			Fraction value = entry.getValue();

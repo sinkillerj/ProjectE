@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_transmutation_tablet"
+  },
+  "pattern": [
+    "DSD",
+    "STS",
+    "DSD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#STONE"
+    },
+    "D": {
+      "item": "projecte:matter_block",
+      "data": 0
+    },
+    "T": {
+      "item": "projecte:transmutation_table"
+    }
+  }
+}

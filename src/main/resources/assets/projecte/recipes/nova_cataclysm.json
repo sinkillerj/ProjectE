@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "projecte:nova_cataclysm",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "projecte:nova_catalyst"
+    },
+    {
+      "item": "projecte:item.pe_fuel",
+      "data": 2
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

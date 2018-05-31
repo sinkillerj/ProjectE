@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_hyperkinetic_lens"
+  },
+  "pattern": [
+    "DDD",
+    "MNM",
+    "DDD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "N": {
+      "item": "projecte:nova_catalyst"
+    }
+  }
+}

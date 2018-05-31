@@ -10,19 +10,17 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -30,6 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,18 +45,9 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		modes = modeDesc;
 	}
 	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (world.isRemote)
 		{
@@ -65,11 +55,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 
 		PlayerHelper.swingItem(player, hand);
-		List<Integer> emcValues = Lists.newArrayList();
+		List<Integer> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;
 
-		byte mode = getMode(stack);
+		byte mode = getMode(player.getHeldItem(hand));
 		int depth = getDepthFromMode(mode);
 		AxisAlignedBB box = WorldHelper.getDeepBox(pos, facing, depth);
 
@@ -99,7 +89,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 				for (Entry<ItemStack, ItemStack> entry : map.entrySet())
 				{
-					if (entry == null || entry.getKey() == null)
+					if (entry == null || entry.getKey().isEmpty())
 					{
 						continue;
 					}
@@ -145,7 +135,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			maxValues[i] = 1;
 		}
 
-		Collections.sort(emcValues, Comparator.reverseOrder());
+		emcValues.sort(Comparator.reverseOrder());
 
 		int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 
@@ -154,17 +144,17 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			maxValues[i] = emcValues.get(i);
 		}
 
-		player.addChatComponentMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+		player.sendMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3)
 		{
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
 		}
 
 		if (this == ObjHandler.dRod3)
 		{
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
-			player.addChatComponentMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
+			player.sendMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
 		}
 
 		return EnumActionResult.SUCCESS;
@@ -183,7 +173,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Mode") : 0;
+		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
 	}
 
 	@Override
@@ -195,21 +185,21 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			stack.getTagCompound().setByte("Mode", ((byte) 0));
+			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) 0));
 		}
 		else
 		{
-			stack.getTagCompound().setByte("Mode", ((byte) (getMode(stack) + 1)));
+			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
 		}
 
-		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
 
 		return true;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
 	{
 		list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + modes[getMode(stack)]);
 	}

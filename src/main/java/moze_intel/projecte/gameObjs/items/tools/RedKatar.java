@@ -66,8 +66,9 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (world.isRemote)
 		{
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -109,7 +110,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.katarDeathAura, 0, hand);
+			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}
@@ -141,12 +142,12 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
-		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, 0));
 		return multimap;
 	}
 

@@ -1,20 +1,18 @@
 package moze_intel.projecte.events;
 
-import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.ReflectionHelperClient;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -31,25 +29,26 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
 public class TransmutationRenderingEvent 
 {
-	private final Minecraft mc = Minecraft.getMinecraft();
-	private final List<AxisAlignedBB> renderList = Lists.newArrayList();
-	private double playerX;
-	private double playerY;
-	private double playerZ;
-	private IBlockState transmutationResult;
+	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final List<AxisAlignedBB> renderList = new ArrayList<>();
+	private static double playerX;
+	private static double playerY;
+	private static double playerZ;
+	private static IBlockState transmutationResult;
 
 	@SubscribeEvent
-	public void preDrawHud(RenderGameOverlayEvent.Pre event)
+	public static void preDrawHud(RenderGameOverlayEvent.Pre event)
 	{
 		if (event.getType() == ElementType.CROSSHAIRS)
 		{
@@ -59,7 +58,7 @@ public class TransmutationRenderingEvent
 				{
 					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
 					mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-					VertexBuffer wr = Tessellator.getInstance().getBuffer();
+					BufferBuilder wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
 					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
 					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
@@ -71,7 +70,7 @@ public class TransmutationRenderingEvent
 					RenderHelper.enableStandardItemLighting();
 
 					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(transmutationResult);
-					ReflectionHelperClient.renderBakedModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
+					Minecraft.getMinecraft().getRenderItem().renderItemModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
 
 					RenderHelper.disableStandardItemLighting();
 				}
@@ -80,16 +79,16 @@ public class TransmutationRenderingEvent
 	}
 	
 	@SubscribeEvent
-	public void onOverlay(DrawBlockHighlightEvent event)
+	public static void onOverlay(DrawBlockHighlightEvent event)
 	{
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer player = Minecraft.getMinecraft().player;
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 
-		if (stack == null)
+		if (stack.isEmpty())
 			stack = player.getHeldItem(EnumHand.OFF_HAND);
 		
-		if (stack == null || stack.getItem() != ObjHandler.philosStone)
+		if (stack.isEmpty() || stack.getItem() != ObjHandler.philosStone)
 		{
 			transmutationResult = null;
 			return;
@@ -108,7 +107,7 @@ public class TransmutationRenderingEvent
 
 			if (transmutationResult != null)
 			{
-				byte charge = ((ItemMode) stack.getItem()).getCharge(stack);
+				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
@@ -126,7 +125,7 @@ public class TransmutationRenderingEvent
 		}
 	}
 	
-	private void drawAll()
+	private static void drawAll()
 	{
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -135,10 +134,10 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableLighting();
 		GlStateManager.depthMask(false);
 
-		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.misc.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tess = Tessellator.getInstance();
-		VertexBuffer wr = tess.getBuffer();
+		BufferBuilder wr = tess.getBuffer();
 
 		wr.begin(7, DefaultVertexFormats.POSITION);
 
@@ -190,14 +189,14 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableBlend();
 	}
 	
-	private void addBlockToRenderList(World world, BlockPos pos)
+	private static void addBlockToRenderList(World world, BlockPos pos)
 	{
-		AxisAlignedBB box = world.getBlockState(pos).getSelectedBoundingBox(world, pos).expandXyz(0.02);
+		AxisAlignedBB box = world.getBlockState(pos).getSelectedBoundingBox(world, pos).grow(0.02);
 		box = box.offset(-playerX, -playerY, -playerZ);
 		renderList.add(box);
 	}
 
-	private float getPulseProportion()
+	private static float getPulseProportion()
 	{
 		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}

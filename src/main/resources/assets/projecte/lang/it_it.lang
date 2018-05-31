@@ -1,0 +1,357 @@
+item.pe_philosophers_stone.name=Pietra Filosofale
+item.pe_alchemical_bag.name=Zaino Alchemico
+item.pe_repair_talisman.name=Talismano della Riparazione
+item.pe_klein_star_1.name=Stella Klein Ein
+item.pe_klein_star_2.name=Stella Klein Zwei
+item.pe_klein_star_3.name=Stella Klein Drei
+item.pe_klein_star_4.name=Stella Klein Vier
+item.pe_klein_star_5.name=Stella Klein Sphere
+item.pe_klein_star_6.name=Stella Klein Omega
+item.pe_fuel_alchemical_coal.name=Carbone Alchemico
+item.pe_fuel_mobius.name=Combustibile Mobius
+item.pe_fuel_aeternalis.name=Combustibile Aeternalis
+item.pe_covalence_dust_low.name=Polvere Covalence Bassa
+item.pe_covalence_dust_medium.name=Polvere Covalence Media
+item.pe_covalence_dust_high.name=Polvere Covalence Alta
+item.pe_matter_dark.name=Materia Oscura
+item.pe_matter_red.name=Materia Rossa
+item.pe_ring_iron_band.name=Banda di ferro
+item.pe_black_hole.name=Banda del Buco Nero
+item.pe_harvest_god.name=Banda della dea del raccolto
+item.pe_archangel_smite.name=Archangel's Smite [WIP]
+item.pe_ignition.name=Anello d'Ignizione
+item.pe_body_stone.name=Pietra del Corpo
+item.pe_soul_stone.name=Pietra dell'Anima
+item.pe_mind_stone.name=Pietra della Mente
+item.pe_life_stone.name=Pietra della Vita
+item.pe_evertide_amulet.name=Amuleto di Evertide
+item.pe_volcanite_amulet.name=Amuleto di Volcanite
+item.pe_swrg.name=Swiftwolf's Rending Gale
+item.pe_mercurial_eye.name=Mercurial Eye
+item.pe_time_watch.name=Orologio del Tempo che Scorre
+item.pe_gem_density.name=Gemma dell'Eterna Densità
+item.pe_divining_rod_1.name=Verga della Divinazione (Bassa)
+item.pe_divining_rod_2.name=Verga della Divinazione (Media)
+item.pe_divining_rod_3.name=Verga della Divinazione (Alta)
+item.pe_destruction_catalyst.name=Catalizzatore della Distruzione
+item.pe_hyperkinetic_lens.name=Lente Ipercinetica
+item.pe_catalitic_lens.name=Lente Catalitica
+item.pe_lens_explosive.name=Lente Esplosiva
+item.pe_water_orb.name=Sfera d'Acqua
+item.pe_lava_orb.name=Sfera di Lava
+item.pe_randomizer.name=Sfera Randomizzante
+item.pe_loot_ball.name=Palla del Bottino
+item.pe_dm_pick.name=Piccone di Materia Oscura
+item.pe_dm_axe.name=Ascia di Materia Oscura
+item.pe_dm_shovel.name=Pala di Materia Oscura
+item.pe_dm_sword.name=Spada di Materia Oscura
+item.pe_dm_hoe.name=Zappa di Materia Oscura
+item.pe_dm_shears.name=Cesoie di Materia Oscura
+item.pe_dm_hammer.name=Martello di Materia Oscura
+item.pe_rm_pick.name=Piccone di Materia Rossa
+item.pe_rm_axe.name=Ascia di Materia Rossa
+item.pe_rm_shovel.name=Pala di Materia Rossa
+item.pe_rm_sword.name=Spada di Materia Rossa
+item.pe_rm_hoe.name=Zappa di Materia Rossa
+item.pe_rm_shears.name=Cesoie di Materia Rossa
+item.pe_rm_hammer.name=Martello di Materia Rossa
+item.pe_rm_katar.name=Katar di Materia Rossa
+item.pe_rm_morning_star.name=Morningstar di Materia Rossa
+item.pe_dm_armor_0.name=Stivali di Materia Oscura
+item.pe_dm_armor_1.name=Pantaloni di Materia Oscura
+item.pe_dm_armor_2.name=Corpetto di Materia Oscura
+item.pe_dm_armor_3.name=Elmetto di Materia Oscura
+item.pe_rm_armor_0.name=Stivali di Materia Rossa
+item.pe_rm_armor_1.name=Pantaloni di Materia Rossa
+item.pe_rm_armor_2.name=Corpetto di Materia Rossa
+item.pe_rm_armor_3.name=Elmetto di Materia Rossa
+item.pe_gem_armor_0.name=Stivali di Gemma
+item.pe_gem_armor_1.name=Pantaloni di Gemma
+item.pe_gem_armor_2.name=Corpetto di Gemma
+item.pe_gem_armor_3.name=Elmetto di Gemma
+item.pe_arcana_ring.name=Anello di Arcana
+item.pe_void_ring.name=Anello Vuoto
+item.pe_zero_ring.name=Anello Zero
+item.pe_tome.name=Tomo della Conoscenza
+item.pe_transmutation_tablet.name=Tablet della Trasmutazione
+
+tile.pe_alchemy_chest.name=Cassa Alchemica
+tile.pe_interdiction_torch.name=Torcia dell'Interdizione
+tile.pe_transmutation_stone.name=Tavolo della Trasmutazione
+tile.pe_condenser.name=Condensatore di Energia
+tile.pe_condenser_mk2.name=Condensatore di Energia MK2
+tile.pe_rm_furnace.name=Fornace di Materia Rossa
+tile.pe_dm_furnace.name=Fornace di Materia Oscura
+tile.pe_rm_block.name=Blocco di Materia Rossa
+tile.pe_dm_block.name=Blocco di Materia Oscura
+tile.pe_collector_MK1.name=Collettore di Energia MK1
+tile.pe_collector_MK2.name=Collettore di Energia MK2
+tile.pe_collector_MK3.name=Collettore di Energia MK3
+tile.pe_relay_MK1.name=Trasmettitore Anti-Materia MK1
+tile.pe_relay_MK2.name=Trasmettitore Anti-Materia MK2
+tile.pe_relay_MK3.name=Trasmettitore Anti-Materia MK3
+tile.pe_nova_catalyst.name=Catalizzatore Nova
+tile.pe_nova_cataclysm.name=Cataclisma Nova
+tile.pe_fuel_block_0.name=Blocco di Carbone Alchemico
+tile.pe_fuel_block_1.name=Blocco di Combustibile Mobius
+tile.pe_fuel_block_2.name=Blocco Combustibile Aeternalis
+tile.pe_dmPedestal.name=Piedistallo di Materia Oscura
+
+itemGroup.projecte=ProjectE
+
+advancements.pe_phil_stone=Il migliore amico di un alchimista!
+advancements.pe_phil_stone.desc=Iniziamo a fare le cose! Crafta una Pietra Filosofale
+advancements.pe_alch_chest=Aggiornamento dell'immagazzinamento!
+advancements.pe_alch_chest.desc=Un "piccolo" aggiornamento per la Cassa!
+advancements.pe_alch_bag=Immagazzinamento tascabile!
+advancements.pe_alch_bag.desc=Tutte le meraviglie di una cassa alchemica, in tasca.
+advancements.pe_transmutation=Trasmuta questo in quello!
+advancements.pe_transmutation.desc=L'inizio (e la fine) di tutto.
+advancements.pe_condenser=Condensa il mondo!
+advancements.pe_condenser.desc=Più DIAMANTI!
+advancements.pe_collector=Il potere del sole!
+advancements.pe_collector.desc=Ora il divertimento inizia.
+advancements.pe_relay=Potenza dei fiori!
+advancements.pe_relay.desc=Collegamento dei Collettori insieme per ancora più potere.
+advancements.pe_portable_transmutation=Trasmutazione in movimento!
+advancements.pe_portable_transmutation.desc=E allora hai pensato che le cose non potrebbero andare meglio.
+advancements.pe_dark_matter=Tutto ciò che è Materia.
+advancements.pe_dark_matter.desc=Sembra ... strano ....
+advancements.pe_red_matter=Una Materia ancora migliore!
+advancements.pe_red_matter.desc=Il continuo spaziotempo potrebbe essersi rotto.
+advancements.pe_dm_block=Un blocco di Materia!
+advancements.pe_dm_block.desc=Ammassare Materia insieme... Perché sì, è una buona idea.
+advancements.pe_rm_block=Rosso e lucente!
+advancements.pe_rm_block.desc=Ora stai andando da qualche parte!
+advancements.pe_dm_furnace=Materia scottante!
+advancements.pe_dm_furnace.desc=Una fornace è ancora meglio quando è a base di Materia Oscura.
+advancements.pe_rm_furnace=Ancora Materia più scottante!
+advancements.pe_rm_furnace.desc=Wow, quella cosa è veloce.
+advancements.pe_dm_pick=Utilizzando Materia su Materia
+advancements.pe_dm_pick.desc=Perché no?
+advancements.pe_rm_pick=Questa cosa è sicura?
+advancements.pe_rm_pick.desc=Probabilmente no.
+advancements.pe_klein=Batterie di EMC
+advancements.pe_klein.desc=Immagazzinare EMC per un giorno di pioggia.
+advancements.pe_klein_big=GRANDI batterie di EMC
+advancements.pe_klein_big.desc=Tieni l'universo in tasca.
+
+pe.arcana.mode=Modalità: 
+pe.arcana.mode.0=Zero
+pe.arcana.mode.1=Ignizione
+pe.arcana.mode.2=Raccolto
+pe.arcana.mode.3=SWRG
+pe.arcana.inactive=Inattivo!
+
+pe.archangel.pedestal1=Lancia frecce ai mob vicini
+pe.archangel.pedestal2=Scatta ogni %s
+
+pe.bhb.pedestal1=Risucchia i drop vicini
+pe.bhb.pedestal2=Deposita negli inventari adiacenti
+
+pe.body.pedestal1=Ripristina la fame dei giocatori vicini
+pe.body.pedestal2=Un punto fame ogni %s
+
+pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>
+
+pe.command.changelog.uptodate=La mod ProjectE è aggiornata.
+pe.command.clearknowledge.error=Impossibile cancellare la conoscenza per: %s
+pe.command.clearknowledge.notify=Le vostre conoscenze della trasmutazione vengono cancellate da %s!
+pe.command.clearknowledge.playernotfound=Impossibile trovare il giocatore: %s
+pe.command.clearknowledge.success=Cancellata la conoscenza per: %s
+pe.command.clearknowledge.usage=/projecte clearKnowledge [username] (no params to target self)
+
+pe.command.reload.started=Ricaricando le registrazioni di EMC...
+pe.command.reload.success=Fatto! Invio dei dati aggiornati al client.
+pe.command.reload.notice=Riavvia o usa "/projecte reloadEMC" quando tutte le modifiche sono complete.
+
+pe.command.remove.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
+pe.command.remove.invalidmeta=Errore: Il valore meta "%s" non è valido!
+pe.command.remove.success=Rimosso valore EMC per %s.
+pe.command.remove.usage=/projecte removeEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.reset.invalidmeta=Errore: Il valore meta "%s" non è valido!
+pe.command.reset.nochange=Il valore EMC per %s:%s non è stato modificato!
+pe.command.reset.success=Resettato valore EMC per %s.
+pe.command.reset.usage=/projecte resetEMC <unlocalized | oredict name> [meta] (no params for held item)
+
+pe.command.set.invalidemc=Errore: Il valore EMC "%s" non è valido!
+pe.command.set.invaliditem=Errore: L'oggetto "%s" non è stato trovato!
+pe.command.set.invalidmeta=Errore: Il valore meta "%s" non è valido!
+pe.command.set.success=Impostato ll valore EMC di %s a %s!
+pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)
+
+pe.darkpick.mode1=Standard
+pe.darkpick.mode2=3x Tallshot
+pe.darkpick.mode3=3x Wideshot
+pe.darkpick.mode4=3x Longshot
+
+pe.divining.avgemc=Media EMC per %s blocchi: %s
+pe.divining.maxemc=Massima EMC: %s
+pe.divining.secondmax=Seconda Massima EMC: %s
+pe.divining.thirdmax=Terza Massima EMC: %s
+
+pe.dmfurnace.shortname=Fornace di Materia Oscura
+pe.rmfurnace.shortname=Fornace di Materia Rossa
+
+pe.emc.emc_tooltip_prefix=EMC:
+pe.emc.maxgenrate_tooltip=Massima velocità di generazione:
+pe.emc.maxoutrate_tooltip=Massima velocità di output:
+pe.emc.maxstorage_tooltip=Massimo immagazzinamento:
+pe.emc.name=EMC
+pe.emc.rate=EMC/s
+pe.emc.stackemc_tooltip_prefix=Stack EMC:
+pe.emc.storedemc_tooltip=EMC Immagazzinata:
+pe.emc.too_much=TROPPA
+
+pe.evertide.tooltip1=Premi %s to lanciare un proiettile di acqua
+pe.evertide.tooltip2=Agisce come un secchio d'acqua infinita
+pe.evertide.tooltip3=Tasto destro del mouse per riempire tanks e calderoni
+pe.evertide.tooltip4=Tutte le operazioni sono completamente gratuite!
+pe.evertide.pedestal1=Crea tempeste di  pioggia/neve
+pe.evertide.pedestal2=Tentativo di avviare la pioggia ogni %s
+
+pe.gem.disabled=DISABILITATO
+pe.gem.enabled=ABILITATO
+
+pe.gem.activate=Attivate le Abilità Offensive dell'Armatura di Gemma
+pe.gem.deactivate=Disattivate le Abilità Offensive dell'Armatura di Gemma
+
+pe.gem.helm.lorename=Elmetto dell'Abisso
+pe.gem.chest.lorename=Corpetto Infernale
+pe.gem.legs.lorename=Pantaloni della Gravità
+pe.gem.feet.lorename=Stivali dell'Uragano
+
+pe.gem.nightvision_tooltip=Visione Notturna:
+pe.gem.nightvision.prompt=Premi %s + %s per attivare la Visione Notturna
+pe.gem.stepassist_tooltip=Passo Assistito:
+pe.gem.stepassist.prompt=Premi %s per attivare il Passo Assistito
+
+pe.gemdensity.blacklist=Blacklist
+pe.gemdensity.mode_switch=Impostato obbiettivo su
+pe.gemdensity.tooltip1=Condensa gli oggetti nell'inventario/raccolti
+pe.gemdensity.tooltip2=Obbiettivo corrente: %s
+pe.gemdensity.tooltip3=Premi %s per cambiare obbiettivo
+pe.gemdensity.tooltip4=Tasto destro per impostare la blacklist/whitelist
+pe.gemdensity.tooltip5=Shift + tasto destro del mause per attivare
+pe.gemdensity.whitelist=Whitelist
+
+pe.harvestgod.pedestal1=Accelera la crescita delle colture vicine
+pe.harvestgod.pedestal2=Raccoglie le colture cresciute vicine
+pe.harvestgod.pedestal3=Si attiva ogni %s
+
+pe.ignition.pedestal1=I mob nelle vicinanze bruciano
+pe.ignition.pedestal2=Si attiva ogni %s
+
+pe.item.mode=Modalità
+pe.item.mode_switch=Passato alla modalità %s
+
+pe.katar.mode1=Elimina Ostili
+pe.katar.mode2=Elimina Tutti
+
+pe.key.armor_toggle=Effetti dell'Armatura
+pe.key.charge=Carica
+pe.key.extra_function=Funzioni Extra
+pe.key.fire_projectile=Proiettile di Fuoco
+pe.key.mode=Modalità Carica
+
+pe.life.pedestal1=Ripristina sia la fame e sia i cuori
+pe.life.pedestal2=Mezzo cuore e un punto fame ogni %s
+
+pe.mind.pedestal1=Risucchia le sfere di XP vicine nella Pietra della Mente
+
+pe.misc.every_tick=ogni tick
+pe.misc.seconds=secondi
+pe.misc.storedxp_tooltip=XP immagazzinata:
+pe.misc.wrenched_block=Blocco wrenchato!
+
+pe.morningstar.mode1=Standard
+pe.morningstar.mode2=3x Tallshot
+pe.morningstar.mode3=3x Wideshot
+pe.morningstar.mode4=3x Longshot
+
+pe.pedestal.item_disabled=La funzione del piedistallo è stata disattivata!
+pe.pedestal.on_pedestal=Sul Piedistallo:
+pe.pedestal.shortname=Piedistallo di Materia Oscura
+pe.pedestal.tooltip1=Shift + tasto destro del mause per aprire la GUI
+pe.pedestal.tooltip2=Tasto destro del mause per attivare!
+
+pe.philstone.mode1=Cubo
+pe.philstone.mode2=Pannello
+pe.philstone.mode3=Linea
+pe.philstone.tooltip1=Premi %s per aprire un tavolo da lavoro
+
+pe.redpick.mode1=Standard
+pe.redpick.mode2=3x Tallshot
+pe.redpick.mode3=3x Wideshot
+pe.redpick.mode4=3x Longshot
+
+pe.redsword.mode1=Elimina mob ostili
+pe.redsword.mode2=Elimina tutti
+
+pe.relay.mk1=Trasmettitore MK1
+pe.relay.mk2=Trasmettitore MK2
+pe.relay.mk3=Trasmettitore MK3
+
+pe.repairtalisman.pedestal1=Ripara gli oggetti negli inventari dei giocatori vicini
+pe.repairtalisman.pedestal2=Ripara 1 punto durabilità ogni %s
+
+pe.server.high_alchemist=Un grande alchimista
+pe.server.has_joined=è entrato nel gioco
+
+pe.soul.pedestal1=Cura i giocatori vicini
+pe.soul.pedestal2=Mezzo cuore ogni %s
+
+pe.swrg.pedestal1=Lancia fulmini ai mob vicini
+pe.swrg.pedestal2=Si attiva ogni %s
+
+pe.timewatch.disabled=Oggetto disabilitato da un Operatore
+pe.timewatch.ff=Avanti-Veloce
+pe.timewatch.mode=Modalità Controllo del tempo: %s
+pe.timewatch.mode_switch=Modalità di controllo del tempo impostata su: %s
+pe.timewatch.off=Spento
+pe.timewatch.rw=Riavvolgimento
+pe.timewatch.tooltip1=Diventa il padrone del tempo
+pe.timewatch.tooltip2=Tasto destro del mause per cambiare la modalità
+pe.timewatch.pedestal1=Da %d di bonus tick ai blocchi vicini ogni tick
+pe.timewatch.pedestal2=Ogni tick, i mob nelle vicinanze si muovono %.3f più velocemente
+
+pe.tome.tooltip1=Sblocca tutte le conoscenze della trasmutazione quando viene imparato
+
+pe.transmutation.already_using=Qualcuno sta già utilizzando questo tavolo della trasmutazione!
+pe.transmutation.transmute=Trasmutazione
+pe.transmutation.learned0=I
+pe.transmutation.learned1=m
+pe.transmutation.learned2=p
+pe.transmutation.learned3=a
+pe.transmutation.learned4=r
+pe.transmutation.learned5=a
+pe.transmutation.learned6=t
+pe.transmutation.learned7=o
+
+pe.transmutation.unlearned0=E
+pe.transmutation.unlearned1=l
+pe.transmutation.unlearned2=i
+pe.transmutation.unlearned3=m
+pe.transmutation.unlearned4=i
+pe.transmutation.unlearned5=n
+pe.transmutation.unlearned6=a
+pe.transmutation.unlearned7=t
+pe.transmutation.unlearned8=0
+
+pe.update.available=Un aggiornamento della mod ProjectE è disponibile! Versione: %s
+pe.update.changelog=Usa /projecte changelog per il change log!
+pe.update.getit=Ottienila qui!
+
+pe.volcanite.tooltip1=Premi %s per lanciare un proiettile di lava
+pe.volcanite.tooltip2=Funziona come un secchio di lava infinito
+pe.volcanite.tooltip3=Tasto destro per riempire un tank
+pe.volcanite.tooltip4=Tutte le operazione costano 32 EMC!
+pe.volcanite.pedestal1=Previene tempeste di pioggia/neve
+pe.volcanite.pedestal2=Tentativo di fermare il tempo atmosferico ogni %s
+
+pe.zero.pedestal1=Estingue le entità
+pe.zero.pedestal2=Congela nei dintorni
+pe.zero.pedestal3=Si attiva ogni %s
+
+pe.debug.metainvalid.name=Metadata inserito invalido

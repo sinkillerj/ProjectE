@@ -2,9 +2,10 @@ package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.utils.MathUtils;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
@@ -12,18 +13,18 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 
-public class RemoveEmcCMD extends ProjectEBaseCMD
+public class RemoveEmcCMD extends CommandBase
 {
 	@Nonnull
 	@Override
-	public String getCommandName() 
+	public String getName()
 	{
-		return "projecte_removeEMC";
+		return "removeEMC";
 	}
 
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "pe.command.remove.usage";
 	}
@@ -43,15 +44,14 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 		if (params.length == 0)
 		{
 			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
 				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
 			}
 
-			if (heldItem == null)
+			if (heldItem.isEmpty())
 			{
-				sendError(sender, new TextComponentTranslation("pe.command.remove.usage"));
-				return;
+				throw new WrongUsageException(getUsage(sender));
 			}
 
 			name = heldItem.getItem().getRegistryName().toString();
@@ -67,20 +67,19 @@ public class RemoveEmcCMD extends ProjectEBaseCMD
 
 				if (meta < 0)
 				{
-					sendError(sender, new TextComponentTranslation("pe.command.remove.invalidmeta", params[1]));
-					return;
+					throw new CommandException("pe.command.remove.invalidmeta", params[1]);
 				}
 			}
 		}
 
 		if (CustomEMCParser.addToFile(name, meta, 0))
 		{
-			sender.addChatMessage(new TextComponentTranslation("pe.command.remove.success", name));
-			sender.addChatMessage(new TextComponentTranslation("pe.command.reload.notice"));
+			sender.sendMessage(new TextComponentTranslation("pe.command.remove.success", name));
+			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
 		}
 		else
 		{
-			sendError(sender, new TextComponentTranslation("pe.command.remove.invaliditem", name));
+			throw new CommandException("pe.command.remove.invaliditem", name);
 		}
 	}
 }

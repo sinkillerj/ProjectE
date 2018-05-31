@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "projecte:item.pe_matter",
+    "data": 0
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "AAA",
+    "ADA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "projecte:item.pe_fuel",
+      "data": 2
+    },
+    "D": {
+      "item": "#BLOCKDIAMOND"
+    }
+  }
+}

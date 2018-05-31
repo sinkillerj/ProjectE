@@ -45,7 +45,8 @@ public class AlchBagContainer extends Container
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -53,7 +54,7 @@ public class AlchBagContainer extends Container
 		
 		if (slot == null || !slot.getHasStack()) 
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -62,32 +63,32 @@ public class AlchBagContainer extends Container
 		if (slotIndex < 104)
 		{
 			if (!this.mergeItemStack(stack, 104, this.inventorySlots.size(), true))
-				return null;
+				return ItemStack.EMPTY;
 			slot.onSlotChanged();
 		}
 		else if (!this.mergeItemStack(stack, 0, 104, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 		
-		slot.onPickupFromSlot(player, newStack);
-		return newStack;
+		return slot.onTake(player, newStack);
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot == blocked)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		return super.slotClick(slot, button, flag, player);

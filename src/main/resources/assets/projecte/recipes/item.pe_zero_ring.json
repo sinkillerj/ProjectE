@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "projecte:item.pe_zero_ring"
+  },
+  "pattern": [
+    "SBS",
+    "MIM",
+    "SBS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:snowball"
+    },
+    "S": {
+      "item": "minecraft:snow"
+    },
+    "I": {
+      "item": "projecte:item.pe_ring_iron_band"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

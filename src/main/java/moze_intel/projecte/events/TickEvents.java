@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.item.IAlchBagItem;
@@ -21,7 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.EnumSet;
 import java.util.Set;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents
 {
 	@SubscribeEvent
@@ -39,7 +40,7 @@ public class TickEvents
 				for (int i = 0; i < inv.getSlots(); i++)
 				{
 					ItemStack current = inv.getStackInSlot(i);
-					if (current != null && current.getItem() instanceof IAlchBagItem
+					if (!current.isEmpty() && current.getItem() instanceof IAlchBagItem
 							&& ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, event.player, current))
 					{
 						colorsChanged.add(color);
@@ -73,7 +74,7 @@ public class TickEvents
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			if (stack != null && stack.getItem() == ObjHandler.alchBag)
+			if (!stack.isEmpty() && stack.getItem() == ObjHandler.alchBag)
 			{
 				bagsPresent.add(EnumDyeColor.byMetadata(stack.getItemDamage()));
 			}

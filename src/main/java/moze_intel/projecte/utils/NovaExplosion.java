@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +34,7 @@ public class NovaExplosion extends Explosion
 	@Override
 	public void doExplosionA()
 	{
-		float initialSize = ReflectionHelper.getExplosionSize(this);
+		float initialSize = this.size;
 
 		HashSet<BlockPos> hashset = Sets.newHashSet();
 		int j;
@@ -55,9 +56,9 @@ public class NovaExplosion extends Explosion
 						d1 /= d3;
 						d2 /= d3;
 						float f = initialSize * (0.7F + this.worldObj.rand.nextFloat() * 0.6F);
-						double d4 = this.getPosition().xCoord;
-						double d6 = this.getPosition().yCoord;
-						double d8 = this.getPosition().zCoord;
+						double d4 = this.getPosition().x;
+						double d6 = this.getPosition().y;
+						double d8 = this.getPosition().z;
 
 						for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
@@ -70,7 +71,7 @@ public class NovaExplosion extends Explosion
 								f -= (f2 + 0.3F) * 0.3F;
 							}
 
-							if (f > 0.0F && (this.getExplosivePlacedBy() == null || this.getExplosivePlacedBy().verifyExplosion(this, this.worldObj, blockpos, iblockstate, f)))
+							if (f > 0.0F && (this.getExplosivePlacedBy() == null || this.getExplosivePlacedBy().canExplosionDestroyBlock(this, this.worldObj, blockpos, iblockstate, f)))
 							{
 								hashset.add(blockpos);
 							}
@@ -85,17 +86,17 @@ public class NovaExplosion extends Explosion
 		}
 
 		this.getAffectedBlockPositions().addAll(hashset);
-		ReflectionHelper.setExplosionSize(this, initialSize);
-		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.emptyList(), ReflectionHelper.getExplosionSize(this));
+		this.size = initialSize;
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, Collections.emptyList(), this.size);
 	}
 	
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		float cachedExplosionSize = ReflectionHelper.getExplosionSize(this);
-		double x = getPosition().xCoord;
-		double y = getPosition().yCoord;
-		double z = getPosition().zCoord;
+		float cachedExplosionSize = this.size;
+		double x = getPosition().x;
+		double y = getPosition().y;
+		double z = getPosition().z;
 
 		this.worldObj.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
@@ -110,7 +111,7 @@ public class NovaExplosion extends Explosion
 
 		Iterator<BlockPos> iterator;
 		BlockPos blockpos;
-		List<ItemStack> allDrops = Lists.newArrayList();
+		List<ItemStack> allDrops = new ArrayList<>();
 
 		iterator = getAffectedBlockPositions().iterator();
 
@@ -128,7 +129,7 @@ public class NovaExplosion extends Explosion
                 double d3 = d0 - x;
                 double d4 = d1 - y;
                 double d5 = d2 - z;
-                double d6 = (double) MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
+                double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
                 d3 /= d6;
                 d4 /= d6;
                 d5 /= d6;

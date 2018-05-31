@@ -18,7 +18,7 @@ public class SearchUpdatePKT implements IMessage
 	public SearchUpdatePKT(int slot, ItemStack itemStack)
 	{
 		this.slot = slot;
-		this.itemStack = itemStack != null ? itemStack.copy() : null;
+		this.itemStack = itemStack.copy();
 	}
 
 	@Override
@@ -40,12 +40,12 @@ public class SearchUpdatePKT implements IMessage
 		@Override
 		public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
 		{
-			ctx.getServerHandler().playerEntity.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					if (ctx.getServerHandler().playerEntity.openContainer instanceof TransmutationContainer)
+					if (ctx.getServerHandler().player.openContainer instanceof TransmutationContainer)
 					{
-						TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().playerEntity.openContainer);
+						TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().player.openContainer);
 						container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
 					}
 				}

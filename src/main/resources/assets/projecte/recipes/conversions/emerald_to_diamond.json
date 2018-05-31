@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:diamond",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#GEMEMERALD"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

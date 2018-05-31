@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:item.pe_alchemical_bag"
+    },
+    "title": {
+      "translate": "advancements.pe_alch_bag"
+    },
+    "description": {
+      "translate": "advancements.pe_alch_bag.desc"
+    }
+  },
+  "parent": "projecte:alchemical_chest",
+  "criteria": {
+    "bag": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:item.pe_alchemical_bag"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,11 +1,12 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
-import moze_intel.projecte.utils.ComparatorHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +37,7 @@ public class Collector extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		int x = pos.getX();
 		int y = pos.getY();
@@ -64,7 +65,6 @@ public class Collector extends BlockDirection
 		return true;
 	}
 
-	@Nonnull
 	@Override
 	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		switch (tier) {
@@ -88,7 +88,26 @@ public class Collector extends BlockDirection
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		return ComparatorHelper.getForCollector(world, pos);
+		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
+		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
+		if (!charging.isEmpty())
+		{
+			if (charging.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) charging.getItem());
+				double max = itemEmc.getMaximumEmc(charging);
+				double current = itemEmc.getStoredEmc(charging);
+				return MathUtils.scaleToRedstone(current, max);
+			} else
+			{
+				double needed = tile.getEmcToNextGoal();
+				double current = tile.getStoredEmc();
+				return MathUtils.scaleToRedstone(current, needed);
+			}
+		} else
+		{
+			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaximumEmc());
+		}
 	}
 
 	@Override
@@ -100,12 +119,15 @@ public class Collector extends BlockDirection
 	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		TileEntity ent = world.getTileEntity(pos);
-		IItemHandler handler = ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-		for (int i = 0; i < handler.getSlots(); i++)
+		if (ent != null)
 		{
-			if (i != CollectorMK1Tile.LOCK_SLOT && handler.getStackInSlot(i) != null)
+			IItemHandler handler = ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+			for (int i = 0; i < handler.getSlots(); i++)
 			{
-				InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+				if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty())
+				{
+					InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+				}
 			}
 		}
 		super.breakBlock(world, pos, state);

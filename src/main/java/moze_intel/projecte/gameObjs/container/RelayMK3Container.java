@@ -9,6 +9,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class RelayMK3Container extends RelayMK1Container
 {
 	public RelayMK3Container(InventoryPlayer invPlayer, RelayMK3Tile relay)
@@ -43,7 +45,8 @@ public class RelayMK3Container extends RelayMK1Container
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 26 + i * 18, 171));
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -51,7 +54,7 @@ public class RelayMK3Container extends RelayMK1Container
 
 		if (slot == null || !slot.getHasStack())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack stack = slot.getStack();
@@ -60,23 +63,22 @@ public class RelayMK3Container extends RelayMK1Container
 		if (slotIndex < 22)
 		{
 			if (!this.mergeItemStack(stack, 22, this.inventorySlots.size(), true))
-				return null;
+				return ItemStack.EMPTY;
 			slot.onSlotChanged();
 		}
 		else if (!this.mergeItemStack(stack, 0, 21, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 
-		slot.onPickupFromSlot(player, newStack);
-		return newStack;
+		return slot.onTake(player, newStack);
 	}
 }

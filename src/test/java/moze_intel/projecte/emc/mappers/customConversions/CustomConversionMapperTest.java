@@ -2,6 +2,8 @@ package moze_intel.projecte.emc.mappers.customConversions;
 
 import static org.junit.Assert.*;
 
+import moze_intel.projecte.emc.json.NSSFake;
+import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
@@ -49,9 +51,9 @@ public class CustomConversionMapperTest
 				"{'groups': {" +
 						"	'groupa': {" +
 						"		'conversions':[" +
-						"			{'output':'outA', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}," +
-						"			{'output':'outB', 'ingr':['ing1', 'ing2', 'ing3']}," +
-						"			{'output':'outC', 'count':3, 'ingr':['ing1', 'ing1', 'ing1']}" +
+						"			{'output':'outA|0', 'ingr':{'ing1|0': 1, 'ing2|0': 2, 'ing3|0': 3}}," +
+						"			{'output':'outB|1', 'ingr':['ing1|0', 'ing2|0', 'ing3|0']}," +
+						"			{'output':'outC|2', 'count':3, 'ingr':['ing1|0', 'ing1|0', 'ing1|0']}" +
 						"		]" +
 						"	}" +
 						"}" +
@@ -67,28 +69,28 @@ public class CustomConversionMapperTest
 		List<CustomConversion> conversions = group.conversions;
 		{
 			CustomConversion conversion = conversions.get(0);
-			assertEquals("outA", conversion.output);
+			assertEquals(NSSItem.create("outA", 0), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-			assertEquals(1, (int)conversion.ingredients.get("ing1"));
-			assertEquals(2, (int)conversion.ingredients.get("ing2"));
-			assertEquals(3, (int)conversion.ingredients.get("ing3"));
+			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
+			assertEquals(2, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
+			assertEquals(3, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
 		}
 		{
 			CustomConversion conversion = conversions.get(1);
-			assertEquals("outB", conversion.output);
+			assertEquals(NSSItem.create("outB", 1), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-			assertEquals(1, (int)conversion.ingredients.get("ing1"));
-			assertEquals(1, (int)conversion.ingredients.get("ing2"));
-			assertEquals(1, (int)conversion.ingredients.get("ing3"));
+			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
+			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
+			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
 		}
 		{
 			CustomConversion conversion = conversions.get(2);
-			assertEquals("outC", conversion.output);
+			assertEquals(NSSItem.create("outC", 2), conversion.output);
 			assertEquals(3, conversion.count);
 			assertEquals(1, conversion.ingredients.size());
-			assertEquals(3, (int) conversion.ingredients.get("ing1"));
+			assertEquals(3, (int) conversion.ingredients.get(NSSItem.create("ing1", 0)));
 
 		}
 	}
@@ -99,19 +101,19 @@ public class CustomConversionMapperTest
 		String simpleFile =
 				"{'values': {" +
 						"	'before': {" +
-						"		'a': 1, 'b': 2, 'c': 'free'" +
+						"		'a|0': 1, 'b|0': 2, 'c|0': 'free'" +
 						"	}," +
 						"	'after': {" +
-						"		'd': 3" +
+						"		'd|0': 3" +
 						"	}" +
 						"}" +
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
-		assertEquals(1, (int) f.values.setValueBefore.get("a"));
-		assertEquals(2, (int) f.values.setValueBefore.get("b"));
-		assertEquals(Integer.MIN_VALUE, (int) f.values.setValueBefore.get("c"));
-		assertEquals(3, (int) f.values.setValueAfter.get("d"));
+		assertEquals(1, (int) f.values.setValueBefore.get(NSSItem.create("a", 0)));
+		assertEquals(2, (int) f.values.setValueBefore.get(NSSItem.create("b", 0)));
+		assertEquals(Integer.MIN_VALUE, (int) f.values.setValueBefore.get(NSSItem.create("c", 0)));
+		assertEquals(3, (int) f.values.setValueAfter.get(NSSItem.create("d", 0)));
 
 	}
 
@@ -121,7 +123,7 @@ public class CustomConversionMapperTest
 		String simpleFile =
 				"{'values': {" +
 						"	'conversion': [" +
-						"		{'output':'outA', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}" +
+						"		{'output':'outA|0', 'ingr':{'ing1|0': 1, 'ing2|0': 2, 'ing3|0': 3}}" +
 						"	]" +
 						"}" +
 						"}";
@@ -130,11 +132,38 @@ public class CustomConversionMapperTest
 		assertNotNull(f.values.conversion);
 		assertEquals(1, f.values.conversion.size());
 		CustomConversion conversion = f.values.conversion.get(0);
-		assertEquals("outA", conversion.output);
+		assertEquals(NSSItem.create("outA", 0), conversion.output);
 		assertEquals(1, conversion.count);
 		assertEquals(3, conversion.ingredients.size());
-		assertEquals(1, (int)conversion.ingredients.get("ing1"));
-		assertEquals(2, (int)conversion.ingredients.get("ing2"));
-		assertEquals(3, (int)conversion.ingredients.get("ing3"));
+		assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
+		assertEquals(2, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
+		assertEquals(3, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
+	}
+
+	@Test
+	public void testNonInteferingFakes() {
+		String file1 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingr': ['FAKE|BAR'] }] }  }";
+
+		NSSFake.setCurrentNamespace("file1");
+		CustomConversionFile f1 = CustomConversionMapper.parseJson(new StringReader(file1));
+		CustomConversionFile f2 = CustomConversionMapper.parseJson(new StringReader(file1));
+		NSSFake.setCurrentNamespace("file2");
+		CustomConversionFile f3 = CustomConversionMapper.parseJson(new StringReader(file1));
+
+		assertNotNull(f1);
+		assertNotNull(f2);
+		assertNotNull(f3);
+
+		CustomConversion conversion1 = f1.values.conversion.get(0);
+		CustomConversion conversion2 = f2.values.conversion.get(0);
+		CustomConversion conversion3 = f3.values.conversion.get(0);
+
+		assertNotNull(conversion1);
+		assertNotNull(conversion2);
+		assertNotNull(conversion3);
+
+		assertEquals(conversion1.output, conversion2.output);
+		assertNotEquals(conversion1.output, conversion3.output);
+		assertNotEquals(conversion2.output, conversion3.output);
 	}
 }

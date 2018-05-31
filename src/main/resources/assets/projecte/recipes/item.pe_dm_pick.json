@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:item.pe_dm_pick"
+  },
+  "pattern": [
+    "MMM",
+    " D ",
+    " D "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

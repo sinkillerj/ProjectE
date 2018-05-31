@@ -92,7 +92,7 @@ public class EntityWaterProjectile extends PEProjectile
 		if (mop.typeOfHit == Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
-			if (worldObj.isAirBlock(pos))
+			if (world.isAirBlock(pos))
 			{
 				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.FLOWING_WATER.getDefaultState());
 			}

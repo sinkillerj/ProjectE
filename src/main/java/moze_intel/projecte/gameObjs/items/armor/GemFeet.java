@@ -5,8 +5,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,14 +45,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     public void toggleStepAssist(ItemStack boots, EntityPlayer player)
     {
-        if (!boots.hasTagCompound())
-        {
-            boots.setTagCompound(new NBTTagCompound());
-        }
-
         boolean value;
 
-        if (boots.getTagCompound().hasKey("StepAssist"))
+        if (ItemHelper.getOrCreateCompound(boots).hasKey("StepAssist"))
         {
             boots.getTagCompound().setBoolean("StepAssist", !boots.getTagCompound().getBoolean("StepAssist"));
             value = boots.getTagCompound().getBoolean("StepAssist");
@@ -63,7 +60,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
+        player.sendMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
                 .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
     }
 
@@ -106,7 +103,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
+    public void addInformation(ItemStack stack, World world, List<String> tooltips, ITooltipFlag flags)
     {
         tooltips.add(I18n.format("pe.gem.feet.lorename"));
         tooltips.add(I18n.format("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
@@ -128,7 +125,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         if (slot != EntityEquipmentSlot.FEET) return super.getAttributeModifiers(slot, stack);
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
+        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
         return multimap;
     }
 

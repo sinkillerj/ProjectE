@@ -114,6 +114,7 @@ public class RelayMK1Container extends Container
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -121,7 +122,7 @@ public class RelayMK1Container extends Container
 
 		if (slot == null || !slot.getHasStack())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack stack = slot.getStack();
@@ -130,24 +131,23 @@ public class RelayMK1Container extends Container
 		if (slotIndex < 8)
 		{
 			if (!this.mergeItemStack(stack, 8, this.inventorySlots.size(), true))
-				return null;
+				return ItemStack.EMPTY;
 			slot.onSlotChanged();
 		}
 		else if (!this.mergeItemStack(stack, 0, 7, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 
-		slot.onPickupFromSlot(player, newStack);
-		return newStack;
+		return slot.onTake(player, newStack);
 	}
 
 	@Override

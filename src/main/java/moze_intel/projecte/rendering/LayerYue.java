@@ -2,10 +2,10 @@ package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -21,6 +21,9 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
 
+	private static final ResourceLocation HEART_LOC = new ResourceLocation(PECore.MODID, "textures/models/heartcircle.png");
+	private static final ResourceLocation YUE_LOC = new ResourceLocation(PECore.MODID, "textures/models/yuecircle.png");
+
 	public LayerYue(RenderPlayer renderer)
 	{
 		this.render = renderer;
@@ -29,6 +32,11 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	@Override
 	public void doRenderLayer(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
+		if (player.isInvisible())
+		{
+			return;
+		}
+
 		if(SIN_UUID.equals(player.getUniqueID())
 				|| CLAR_UUID.equals(player.getUniqueID())
 				|| PECore.DEV_ENVIRONMENT)
@@ -47,14 +55,14 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
 			if (CLAR_UUID.equals(player.getUniqueID()))
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
+				Minecraft.getMinecraft().renderEngine.bindTexture(HEART_LOC);
 			} else
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
+				Minecraft.getMinecraft().renderEngine.bindTexture(YUE_LOC);
 			}
 
 			Tessellator tess = Tessellator.getInstance();
-			VertexBuffer r = tess.getBuffer();
+			BufferBuilder r = tess.getBuffer();
 			r.begin(7, DefaultVertexFormats.POSITION_TEX);
 			r.pos(0, 0, 0).tex(0, 0).endVertex();
 			r.pos(0, 0, 1).tex(0, 1).endVertex();
@@ -63,6 +71,7 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			tess.draw();
 
 			GlStateManager.enableLighting();
+			GlStateManager.color(1F, 1F, 1F);
 			GlStateManager.popMatrix();
 		}
 	}

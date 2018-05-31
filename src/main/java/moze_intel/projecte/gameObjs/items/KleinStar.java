@@ -2,23 +2,19 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class KleinStar extends ItemPE implements IItemEmc
 {
@@ -53,41 +49,16 @@ public class KleinStar extends ItemPE implements IItemEmc
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
 		{
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
-	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			if (stack.getItemDamage() == 5)
-			{
-				player.addStat(AchievementHandler.KLEIN_MASTER, 1);
-			}
-			else
-			{
-				player.addStat(AchievementHandler.KLEIN_BASIC, 1);
-			}
-		}
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 	
 	@Nonnull
@@ -101,13 +72,17 @@ public class KleinStar extends ItemPE implements IItemEmc
 
 		return super.getUnlocalizedName()+ "_" + (stack.getItemDamage() + 1);
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
-		for (int i = 0; i < 6; ++i)
+		if (isInCreativeTab(cTab))
 		{
-			list.add(new ItemStack(item, 1, i));
+			for (int i = 0; i < 6; ++i)
+			{
+				list.add(new ItemStack(this, 1, i));
+			}
 		}
 	}
 

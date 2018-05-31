@@ -63,7 +63,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		}
 
 
-		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this), Predicates.instanceOf(IEmcAcceptor.class));
+		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
 
 		double emcPer = emc / tiles.size();
 		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())

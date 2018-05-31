@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:item.pe_divining_rod_1"
+  },
+  "pattern": [
+    "DDD",
+    "DSD",
+    "DDD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#STICKWOOD"
+    },
+    "D": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 0
+    }
+  }
+}

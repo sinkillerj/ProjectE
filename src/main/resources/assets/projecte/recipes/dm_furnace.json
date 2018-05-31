@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:dm_furnace"
+  },
+  "pattern": [
+    "DDD",
+    "DFD",
+    "DDD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:matter_block",
+      "data": 0
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  }
+}

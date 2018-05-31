@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    "title": {
+      "translate": "advancements.pe_phil_stone"
+    },
+    "description": {
+      "translate": "advancements.pe_phil_stone.desc"
+    }
+  },
+  "parent": "projecte:root",
+  "criteria": {
+    "philosophers_stone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:item.pe_philosophers_stone"
+          }
+        ]
+      }
+    }
+  }
+}

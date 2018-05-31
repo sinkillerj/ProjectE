@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:transmutation_table"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "OSO",
+    "SPS",
+    "OSO"
+  ],
+  "key": {
+    "S": {
+      "item": "#STONE"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "P": {
+      "item": "projecte:item.pe_philosophers_stone"
+    }
+  }
+}

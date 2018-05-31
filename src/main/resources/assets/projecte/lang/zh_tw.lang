@@ -1,0 +1,412 @@
+item.pe_philosophers_stone.name=賢者之石
+item.pe_alchemical_bag.name=煉金袋
+item.pe_repair_talisman.name=修復護符
+item.pe_klein_star_1.name=克萊茵之星 Ein
+item.pe_klein_star_2.name=克萊茵之星 Zwei
+item.pe_klein_star_3.name=克萊茵之星 Drei
+item.pe_klein_star_4.name=克萊茵之星 Vier
+item.pe_klein_star_5.name=克萊茵之星 Sphere
+item.pe_klein_star_6.name=克萊茵之星 Ω
+item.pe_fuel_alchemical_coal.name=煉金煤炭
+item.pe_fuel_mobius.name=莫比烏斯燃料
+item.pe_fuel_aeternalis.name=永恆燃料
+item.pe_covalence_dust_low.name=低階共價粉
+item.pe_covalence_dust_medium.name=中階共價粉
+item.pe_covalence_dust_high.name=高階共價粉
+item.pe_matter_dark.name=暗物質
+item.pe_matter_red.name=紅物質
+item.pe_ring_iron_band.name=鐵戒指
+item.pe_black_hole.name=黑洞戒指
+item.pe_harvest_god.name=豐收女神戒指
+item.pe_archangel_smite.name=大天使之擊
+item.pe_ignition.name=點火戒指
+item.pe_body_stone.name=肉體之石
+item.pe_soul_stone.name=靈魂之石
+item.pe_mind_stone.name=精神之石
+item.pe_life_stone.name=生命之石
+item.pe_evertide_amulet.name=永恆潮汐護符
+item.pe_volcanite_amulet.name=火山岩護符
+item.pe_swrg.name=迅狼的破風戒指
+item.pe_mercurial_eye.name=墨丘利之眼
+item.pe_time_watch.name=時間流動懷錶
+item.pe_gem_density.name=永恆密度寶石
+item.pe_divining_rod_1.name=低階占卜杖
+item.pe_divining_rod_2.name=中階占卜杖
+item.pe_divining_rod_3.name=高階占卜杖
+item.pe_destruction_catalyst.name=解構催化劑
+item.pe_hyperkinetic_lens.name=超動能晶體
+item.pe_catalitic_lens.name=催化晶體
+item.pe_lens_explosive.name=爆破晶體
+item.pe_water_orb.name=水球
+item.pe_lava_orb.name=熔岩球
+item.pe_randomizer.name=隨機球
+item.pe_loot_ball.name=掉落物球
+item.pe_dm_pick.name=暗物質鎬
+item.pe_dm_axe.name=暗物質斧
+item.pe_dm_shovel.name=暗物質鏟
+item.pe_dm_sword.name=暗物質劍
+item.pe_dm_hoe.name=暗物質鋤
+item.pe_dm_shears.name=暗物質剪刀
+item.pe_dm_hammer.name=暗物質錘
+item.pe_rm_pick.name=紅物質鎬
+item.pe_rm_axe.name=紅物質斧
+item.pe_rm_shovel.name=紅物質鏟
+item.pe_rm_sword.name=紅物質劍
+item.pe_rm_hoe.name=紅物質鋤
+item.pe_rm_shears.name=紅物質剪刀
+item.pe_rm_hammer.name=紅物質錘
+item.pe_rm_katar.name=赤色拳刃
+item.pe_rm_morning_star.name=赤色晨星錘
+item.pe_dm_armor_0.name=暗物質靴子
+item.pe_dm_armor_1.name=暗物質護腿
+item.pe_dm_armor_2.name=暗物質胸甲
+item.pe_dm_armor_3.name=暗物質頭盔
+item.pe_rm_armor_0.name=紅物質靴子
+item.pe_rm_armor_1.name=紅物質護腿
+item.pe_rm_armor_2.name=紅物質胸甲
+item.pe_rm_armor_3.name=紅物質頭盔
+item.pe_gem_armor_0.name=寶石靴子
+item.pe_gem_armor_1.name=寶石護腿
+item.pe_gem_armor_2.name=寶石胸甲
+item.pe_gem_armor_3.name=寶石頭盔
+item.pe_arcana_ring.name=阿爾克那之戒
+item.pe_void_ring.name=虛無戒指
+item.pe_zero_ring.name=零度戒指
+item.pe_tome.name=知識之書
+item.pe_transmutation_tablet.name=轉換平板
+item.pe_manual.name=煉金術之書[WIP]
+
+#
+
+tile.pe_alchemy_chest.name=煉金箱子
+tile.pe_interdiction_torch.name=禁止火把
+tile.pe_transmutation_stone.name=轉換桌
+tile.pe_condenser.name=能量聚集器
+tile.pe_condenser_mk2.name=能量聚集器 MKⅡ
+tile.pe_rm_furnace.name=紅物質爐
+tile.pe_dm_furnace.name=暗物質爐
+tile.pe_rm_block.name=紅物質磚
+tile.pe_dm_block.name=暗物質磚
+tile.pe_collector_MK1.name=能量收集器 MKⅠ
+tile.pe_collector_MK2.name=能量收集器 MKⅡ
+tile.pe_collector_MK3.name=能量收集器 MKⅢ
+tile.pe_relay_MK1.name=反物質中繼器 MKⅠ
+tile.pe_relay_MK2.name=反物質中繼器 MKⅡ
+tile.pe_relay_MK3.name=反物質中繼器 MKⅢ
+tile.pe_nova_catalyst.name=催化新星
+tile.pe_nova_cataclysm.name=劇變新星
+tile.pe_fuel_block_0.name=煉金煤炭磚
+tile.pe_fuel_block_1.name=莫比烏斯燃料磚
+tile.pe_fuel_block_2.name=永恆燃料磚
+tile.pe_dmPedestal.name=暗物質臺座
+
+itemGroup.projecte=計畫 -等價交換２-
+projecte.desc=對應物交易？
+
+advancements.pe_phil_stone=煉金術師最好的夥伴！
+advancements.pe_phil_stone.desc=讓我們開始吧！ 合成出一個賢者之石。
+advancements.pe_alch_chest=儲存升級！
+advancements.pe_alch_chest.desc=一個「小的」儲物箱升級。
+advancements.pe_alch_bag=口袋儲存！
+#
+advancements.pe_transmutation=把這個轉換成那個！
+advancements.pe_transmutation.desc=萬物的開始與結束。
+advancements.pe_condenser=壓縮世界！
+advancements.pe_condenser.desc=更多鑽石！
+advancements.pe_collector=太陽的力量！
+advancements.pe_collector.desc=現在開始有趣了。
+advancements.pe_relay=能量花！
+advancements.pe_relay.desc=把收集器連在一起來獲得更多能量。
+#
+#
+#
+advancements.pe_dark_matter.desc=它看起來…很詭異…。
+#
+#
+#
+#
+advancements.pe_rm_block=又紅又亮！
+#
+#
+#
+#
+advancements.pe_rm_furnace.desc=WOW，那東西可真快。
+#
+#
+advancements.pe_rm_pick=這東西安全嗎？
+advancements.pe_rm_pick.desc=大概不會。
+advancements.pe_klein=ＥＭＣ電池
+advancements.pe_klein.desc=儲存ＥＭＣ以備不時之需。
+advancements.pe_klein_big=大型ＥＭＣ電池
+advancements.pe_klein_big.desc=把宇宙放進你的口袋。
+
+pe.arcana.mode=模式：
+pe.arcana.mode.0=零度
+pe.arcana.mode.1=點火
+pe.arcana.mode.2=豐收
+pe.arcana.mode.3=破風
+pe.arcana.inactive=停用！
+
+pe.archangel.pedestal1=發射箭矢至附近生物
+pe.archangel.pedestal2=每 %s觸發一次
+
+pe.bhb.pedestal1=吸取附近的掉落物
+pe.bhb.pedestal2=導出至相鄰的儲存空間
+
+pe.body.pedestal1=回復附近玩家的飽食度
+pe.body.pedestal2=每 %s半格飽食度
+
+#
+
+pe.command.changelog.uptodate=ProjectE已過舊。 
+pe.command.clearknowledge.error=無法清除知識： %s
+pe.command.clearknowledge.notify=你的轉換知識已被 %s清除！
+pe.command.clearknowledge.playernotfound=找不到玩家名稱： %s
+pe.command.clearknowledge.success=清除知識： %s
+pe.command.clearknowledge.usage=/projecte clearKnowledge [用戶名] (無參數至目標本身)
+
+pe.command.reload.started=重新讀取EMC值， 有Lag的可能。
+pe.command.reload.success=EMC讀取完成。 傳送更新資料至客戶端。
+pe.command.reload.notice=當所有變更完成時， 重啟遊戲或使用 "/projecte reloadEMC" 。
+
+pe.command.remove.invaliditem=錯誤： 物品 "%s" 沒有被找到！
+pe.command.remove.invalidmeta=錯誤： meta值 "%s" 無效！
+pe.command.remove.success=移除 %s EMC值。
+pe.command.remove.usage=/projecte removeEMC <非在地化 | 礦物辭典 名稱> [meta] (無參數給拿在手上的物品)
+
+pe.command.reset.invalidmeta=錯誤： meta值 "%s" 無效！
+pe.command.reset.nochange=%s:%s 的EMC值尚未修改！
+pe.command.reset.success=Reset EMC value for %s.
+pe.command.reset.usage=/projecte resetEMC <非在地化 | 礦物辭典 名稱> [meta] (無參數給拿在手上的物品)
+
+pe.command.set.invalidemc=錯誤： EMC值 "%s" 無效！
+pe.command.set.invaliditem=錯誤： 物品 "%s" 沒有被找到！
+pe.command.set.invalidmeta=錯誤： meta值 "%s" 無效！
+pe.command.set.success=設定EMC值給 %s 為 %s！
+pe.command.set.usage=/projecte setEMC [非在地化 | 礦物辭典 名稱] [meta] [EMC值]， /projecte setEMC [EMC值] (給拿在手上的物品)
+
+pe.darkpick.mode1=標準
+pe.darkpick.mode2=３倍高射程
+pe.darkpick.mode3=３倍寬射程
+pe.darkpick.mode4=３倍長射程
+
+pe.divining.avgemc=%s方塊中平均EMC： %s
+pe.divining.maxemc=最大EMC： %s
+pe.divining.secondmax=第二大EMC： %s
+pe.divining.thirdmax=第三大EMC： %s
+
+pe.dmfurnace.shortname=暗物質爐
+pe.rmfurnace.shortname=紅物質爐
+
+pe.emc.emc_tooltip_prefix=EMC：
+pe.emc.maxgenrate_tooltip=最大生產量：
+pe.emc.maxoutrate_tooltip=最大輸出量：
+pe.emc.maxstorage_tooltip=最大儲存量：
+pe.emc.name=EMC
+pe.emc.rate=EMC/秒(s)
+pe.emc.stackemc_tooltip_prefix=疊加EMC：
+pe.emc.storedemc_tooltip=已儲存EMC:
+pe.emc.too_much=太多了
+
+pe.evertide.tooltip1=按下 %s 以發射水源彈
+pe.evertide.tooltip2=充當無限水桶
+pe.evertide.tooltip3=點擊右鍵以填充儲存槽及鍋釜
+pe.evertide.tooltip4=所有動作不消耗EMC！
+pe.evertide.pedestal1=創造暴 雨/雪
+pe.evertide.pedestal2=每 %s嘗試開始下雨
+
+pe.gem.disabled=禁用
+pe.gem.enabled=啟用
+
+pe.gem.activate=啟動寶石護甲進攻功能
+pe.gem.deactivate=關閉寶石護甲進攻功能
+
+pe.gem.helm.lorename=深淵頭盔
+pe.gem.chest.lorename=地獄護甲
+pe.gem.legs.lorename=重力護腿
+pe.gem.feet.lorename=颶風靴子
+
+pe.gem.nightvision_tooltip=夜視：
+pe.gem.nightvision.prompt=按下 %s + %s 以切換夜視
+pe.gem.stepassist_tooltip=行走輔助：
+pe.gem.stepassist.prompt=按下 %s 以切換行走輔助
+
+pe.gemdensity.blacklist=黑名單
+pe.gemdensity.mode_switch=設定目標物為
+pe.gemdensity.tooltip1=在旅途中聚集物品
+pe.gemdensity.tooltip2=目前目標物： %s
+pe.gemdensity.tooltip3=按下 %s 以切換目標物
+pe.gemdensity.tooltip4=點擊右鍵以設定黑名單/白名單
+pe.gemdensity.tooltip5=Shift + 右鍵以切換
+pe.gemdensity.whitelist=白名單
+
+pe.harvestgod.pedestal1=加快附近作物生長
+pe.harvestgod.pedestal2=採收附近成熟作物
+pe.harvestgod.pedestal3=每 %s啟動一次
+
+pe.ignition.pedestal1=燃燒附近生物
+pe.ignition.pedestal2=每 %s啟動一次
+
+pe.item.mode=模式
+pe.item.mode_switch=切換至 %s 模式
+
+pe.katar.mode1=殺死敵對生物
+pe.katar.mode2=殺死所有生物
+
+pe.key.armor_toggle=護甲效果
+pe.key.charge=充能
+pe.key.extra_function=額外功能
+pe.key.fire_projectile=發射
+pe.key.mode=更換模式
+
+pe.life.pedestal1=回復飽食度及血量
+pe.life.pedestal2=每 %s半顆心以及飽食度
+
+pe.mind.pedestal1=吸取附近經驗值球至精神之石
+
+pe.misc.every_tick=每tick
+pe.misc.seconds=秒
+pe.misc.storedxp_tooltip=已儲存經驗值：
+#
+
+pe.morningstar.mode1=標準
+pe.morningstar.mode2=３倍高射程
+pe.morningstar.mode3=３倍寬射程
+pe.morningstar.mode4=３倍長射程
+
+pe.pedestal.item_disabled=臺座功能已禁用！
+pe.pedestal.on_pedestal=在臺座上：
+pe.pedestal.shortname=暗物質臺座
+pe.pedestal.tooltip1=點擊右鍵放上物品， 點擊左鍵移除物品。
+pe.pedestal.tooltip2=空手點擊右鍵以啟動！
+
+pe.philstone.mode1=方塊
+pe.philstone.mode2=平面
+pe.philstone.mode3=線性
+pe.philstone.tooltip1=按下 %s 開啟合成介面
+
+pe.redpick.mode1=標準
+pe.redpick.mode2=３倍高射程
+pe.redpick.mode3=３倍寬射程
+pe.redpick.mode4=３倍長射程
+
+pe.redsword.mode1=殺死敵對生物
+pe.redsword.mode2=殺死所有生物
+
+pe.relay.mk1=中繼器 MKⅠ
+pe.relay.mk2=中繼器 MKⅡ
+pe.relay.mk3=中繼器 MKⅢ
+
+pe.repairtalisman.pedestal1=修復附近玩家物品
+pe.repairtalisman.pedestal2=每 %s回復 1 耐久度
+
+pe.server.high_alchemist=高級煉金術師
+pe.server.has_joined=已加入伺服器
+
+pe.soul.pedestal1=治癒附近玩家
+pe.soul.pedestal2=每 %s半顆心
+
+pe.swrg.pedestal1=發射閃電至附近生物
+pe.swrg.pedestal2=每 %s啟動一次
+
+pe.timewatch.disabled=物品已被伺服器管理員禁用
+pe.timewatch.ff=快轉
+pe.timewatch.mode=時間控制模式： %s
+pe.timewatch.mode_switch=時間控制模式設定至： %s
+pe.timewatch.off=關閉
+pe.timewatch.rw=倒轉
+pe.timewatch.tooltip1=成為時間的主人
+pe.timewatch.tooltip2=點擊右鍵以改變模式
+pe.timewatch.pedestal1=每tick給予附近的方塊 %d 額外tick
+pe.timewatch.pedestal2=每tick， 附近生物移動 %.3f 倍速
+
+pe.tome.tooltip1=學習後解鎖所有轉換知識
+
+pe.transmutation.already_using=有人正在使用這個轉換桌！
+pe.transmutation.transmute=轉換
+pe.transmutation.learned0=已
+pe.transmutation.learned1= 
+pe.transmutation.learned2=學
+pe.transmutation.learned3= 
+pe.transmutation.learned4=習 
+pe.transmutation.learned5= 
+pe.transmutation.learned6=！
+pe.transmutation.learned7= 
+
+pe.transmutation.unlearned0=已
+pe.transmutation.unlearned1= 
+pe.transmutation.unlearned2=解
+pe.transmutation.unlearned3= 
+pe.transmutation.unlearned4=除
+pe.transmutation.unlearned5= 
+pe.transmutation.unlearned6=學
+pe.transmutation.unlearned7= 
+pe.transmutation.unlearned8=習
+
+pe.update.available=最新的ProjectE更新以可使用！ 版本：%s
+pe.update.changelog=使用 /projecte changelog 以變更日誌！
+pe.update.getit=點此取得！
+
+pe.volcanite.tooltip1=按下 %s 以發射熔岩彈
+pe.volcanite.tooltip2=充當無限充滿的熔岩桶
+pe.volcanite.tooltip3=右鍵以填充儲存槽
+pe.volcanite.tooltip4=所有動作消耗 32 EMC！
+pe.volcanite.pedestal1=防止暴 雨/雪
+pe.volcanite.pedestal2=每 %s嘗試停止天氣
+
+pe.zero.pedestal1=將實體滅火
+pe.zero.pedestal2=冷凍周圍環境
+pe.zero.pedestal3=每 %s啟動一次
+
+pe.debug.metainvalid.name=metadata設定無效
+
+pe.nei.worldtransmute=世界轉換
+pe.nei.philo=賢者之石熔煉
+
+pe.manual.index=索引
+#
+
+# ItemPages bodies
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+# TextPages headers and bodies
+#
+pe.manual.introduction.header=介紹
+
+# ImagePage headers
+#
+
+pe.subtitle.pecharge=蓄力
+pe.subtitle.peuncharge=消力

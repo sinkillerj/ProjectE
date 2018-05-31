@@ -3,7 +3,8 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
+import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,7 +23,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class AlchemicalBag extends ItemPE
 {
@@ -47,14 +48,14 @@ public class AlchemicalBag extends ItemPE
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
 			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Nonnull
@@ -72,30 +73,23 @@ public class AlchemicalBag extends ItemPE
 		String color = " (" + I18n.translateToLocal(unlocalizedColors[i]) + ")";
 		return name + color;
 	}
-	
+
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
+		if (isInCreativeTab(cTab))
 		{
-			player.addStat(AchievementHandler.ALCH_BAG, 1);
+			for (int i = 0; i < 16; ++i)
+				list.add(new ItemStack(this, 1, i));
 		}
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(@Nonnull Item item, CreativeTabs cTab, List<ItemStack> list)
-	{
-		for (int i = 0; i < 16; ++i)
-			list.add(new ItemStack(item, 1, i));
-	}
 
-	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, ItemStack[] inventory)
+	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
@@ -104,12 +98,18 @@ public class AlchemicalBag extends ItemPE
 			{
 				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
 						.getBag(EnumDyeColor.byMetadata(stack.getItemDamage()));
-				if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
-						|| ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-				return stack;
+				for (int i = 0; i < inv.getSlots(); i++) {
+					ItemStack ring = inv.getStackInSlot(i);
+
+					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {
+						if (ItemHelper.getOrCreateCompound(ring).getBoolean(TAG_ACTIVE)) {
+							return stack;
+						}
+					}
+				}
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

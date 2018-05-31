@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "projecte:dm_pedestal"
+  },
+  "pattern": [
+    "RDR",
+    "RDR",
+    "DDD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "D": {
+      "item": "projecte:matter_block",
+      "data": 0
+    }
+  }
+}

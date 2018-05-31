@@ -44,7 +44,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
 	public BlackHoleBand()
@@ -55,7 +55,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		BlockPos fluidPos = pos.offset(facing);
 		IBlockState state = world.getBlockState(fluidPos);
@@ -81,31 +81,31 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			changeMode(player, stack, hand);
+			changeMode(player, player.getHeldItem(hand), hand);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (stack.getItemDamage() != 1 || !(entity instanceof EntityPlayer))
+		if (!ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AxisAlignedBB bBox = player.getEntityBoundingBox().expand(7, 7, 7);
+		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		
 		for (EntityItem item : itemList)
 		{
-			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getEntityItem()))
+			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem()))
 			{
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
@@ -113,36 +113,36 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.RING;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
@@ -181,16 +181,16 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				inv = new InvWrapper((IInventory) e.getValue());
 			}
 
-			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getEntityItem(), false);
+			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 
-			if (result == null)
+			if (result.isEmpty())
 			{
 				item.setDead();
 				return;
 			}
 			else
 			{
-				item.setEntityItemStack(result);
+				item.setItem(result);
 			}
 		}
 	}
@@ -209,8 +209,13 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
 	{
-		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-		if (stack.getItemDamage() == 1)
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof AlchChestTile))
+		{
+			return;
+		}
+		AlchChestTile tile = (AlchChestTile) te;
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
 					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
@@ -223,10 +228,10 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.getEntityWorld().isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getEntityItem(), false);
-					if (result != null)
+					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getItem(), false);
+					if (!result.isEmpty())
 					{
-						e.setEntityItemStack(result);
+						e.setItem(result);
 					}
 					else
 					{
@@ -240,9 +245,9 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		if (stack.getItemDamage() == 1)
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
-			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(5, 5, 5)))
+			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().grow(5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

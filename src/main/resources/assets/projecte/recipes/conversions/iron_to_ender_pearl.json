@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "minecraft:ender_pearl"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#INGOTIRON"
+    },
+    {
+      "item": "#INGOTIRON"
+    },
+    {
+      "item": "#INGOTIRON"
+    },
+    {
+      "item": "#INGOTIRON"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

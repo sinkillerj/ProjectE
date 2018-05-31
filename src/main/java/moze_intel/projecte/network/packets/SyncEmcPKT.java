@@ -1,11 +1,11 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -17,27 +17,24 @@ import java.util.List;
 
 public class SyncEmcPKT implements IMessage
 {
-	private int packetNum;
-	private Object[] data;
+	private int[][] data;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(int packetNum, List<Integer[]> arrayList)
+	public SyncEmcPKT(int[][] data)
 	{
-		this.packetNum = packetNum;
-		data = arrayList.toArray();
+		this.data = data;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		packetNum = ByteBufUtils.readVarInt(buf, 5);
-		int size = buf.readShort();
-		data = new Object[size];
+		int size = ByteBufUtils.readVarInt(buf, 5);
+		data = new int[size][];
 
 		for (int i = 0; i < size; i++)
 		{
-			Integer[] array = new Integer[4];
+			int[] array = new int[3];
 
 			for (int j = 0; j < 3; j++)
 			{
@@ -51,13 +48,10 @@ public class SyncEmcPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		ByteBufUtils.writeVarInt(buf, packetNum, 5);
-		buf.writeShort(data.length);
+		ByteBufUtils.writeVarInt(buf, data.length, 5);
 
-		for (Object obj : data)
+		for (int[] array : data)
 		{
-			Integer[] array = (Integer[]) obj;
-
 			for (int i = 0; i < 3; i++)
 			{
 				ByteBufUtils.writeVarInt(buf, array[i], 5);
@@ -73,17 +67,11 @@ public class SyncEmcPKT implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					if (pkt.packetNum == 0)
+					PECore.LOGGER.info("Receiving EMC data from server.");
+					EMCMapper.emc.clear();
+
+					for (int[] array : pkt.data)
 					{
-						PELogger.logInfo("Receiving EMC data from server.");
-
-						EMCMapper.emc.clear();
-					}
-
-					for (Object obj : pkt.data)
-					{
-						Integer[] array = (Integer[]) obj;
-
 						Item i = Item.REGISTRY.getObjectById(array[0]);
 
 						SimpleStack stack = new SimpleStack(i.getRegistryName(), array[1]);
@@ -94,13 +82,8 @@ public class SyncEmcPKT implements IMessage
 						}
 					}
 
-					if (pkt.packetNum == -1)
-					{
-						PELogger.logInfo("Received all packets!");
-
-						Transmutation.cacheFullKnowledge();
-						FuelMapper.loadMap();
-					}
+					Transmutation.cacheFullKnowledge();
+					FuelMapper.loadMap();
 				}
 			});
 

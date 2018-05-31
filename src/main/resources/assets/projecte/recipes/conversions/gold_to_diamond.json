@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "minecraft:diamond"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#INGOTGOLD"
+    },
+    {
+      "item": "#INGOTGOLD"
+    },
+    {
+      "item": "#INGOTGOLD"
+    },
+    {
+      "item": "#INGOTGOLD"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

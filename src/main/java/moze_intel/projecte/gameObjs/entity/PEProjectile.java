@@ -36,7 +36,10 @@ public abstract class PEProjectile extends EntityThrowable
         {
             apply(mop);
         }
-        this.setDead();
+        if (!world.isRemote)
+        {
+            this.setDead();
+        }
     }
 
     @Override
@@ -51,6 +54,6 @@ public abstract class PEProjectile extends EntityThrowable
     {
         EntityPlayer player = ((EntityPlayer) getThrower());
         ItemStack found = PlayerHelper.findFirstItem(player, consumeFrom);
-        return found != null && ItemPE.consumeFuel(player, found, amount, true);
+        return !found.isEmpty() && ItemPE.consumeFuel(player, found, amount, true);
     }
 }

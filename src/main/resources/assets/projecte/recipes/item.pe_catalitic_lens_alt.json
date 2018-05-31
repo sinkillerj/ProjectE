@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_catalitic_lens"
+  },
+  "pattern": [
+    "MMM",
+    "HMD",
+    "MMM"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "group": "projecte:item.pe_catalitic_lens",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_destruction_catalyst"
+    },
+    "H": {
+      "item": "projecte:item.pe_hyperkinetic_lens"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:item.pe_transmutation_tablet"
+    },
+    "title": {
+      "translate": "advancements.pe_portable_transmutation"
+    },
+    "description": {
+      "translate": "advancements.pe_portable_transmutation.desc"
+    }
+  },
+  "parent": "projecte:transmutation_table",
+  "criteria": {
+    "trans_tablet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:item.pe_transmutation_tablet"
+          }
+        ]
+      }
+    }
+  }
+}

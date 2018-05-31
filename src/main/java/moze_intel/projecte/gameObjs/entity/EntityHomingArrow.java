@@ -48,17 +48,24 @@ public class EntityHomingArrow extends EntityTippedArrow
 	}
 
 	@Override
+	protected void arrowHit(@Nonnull EntityLivingBase living)
+	{
+		super.arrowHit(living);
+		// Strip damage vulnerability
+		living.hurtResistantTime = 0;
+	}
+
+	@Override
 	public void onUpdate()
 	{
-		boolean inGround = WorldHelper.isArrowInGround(this);
-		if (!worldObj.isRemote && this.ticksExisted > 3)
+		if (!world.isRemote && this.ticksExisted > 3)
 		{
-			if (hasTarget() && (!getTarget().isEntityAlive() || inGround))
+			if (hasTarget() && (!getTarget().isEntityAlive() || this.inGround))
 			{
 				dataManager.set(DW_TARGET_ID, NO_TARGET);
 			}
 
-			if (!hasTarget() && !inGround && newTargetCooldown <= 0)
+			if (!hasTarget() && !this.inGround && newTargetCooldown <= 0)
 			{
 				findNewTarget();
 			} else
@@ -67,7 +74,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 			}
 		}
 
-		if (ticksExisted > 3 && hasTarget() && !WorldHelper.isArrowInGround(this))
+		if (ticksExisted > 3 && hasTarget() && !this.inGround)
 		{
 			this.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
 			this.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
@@ -115,11 +122,11 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private void findNewTarget()
 	{
-		List<EntityLiving> candidates = worldObj.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand(8, 8, 8));
+		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().grow(8, 8, 8));
 
 		if (!candidates.isEmpty())
 		{
-			Collections.sort(candidates, Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
+			candidates.sort(Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
 			dataManager.set(DW_TARGET_ID, candidates.get(0).getEntityId());
 		}
 
@@ -128,7 +135,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private EntityLiving getTarget()
 	{
-		return ((EntityLiving) worldObj.getEntityByID(dataManager.get(DW_TARGET_ID)));
+		return ((EntityLiving) world.getEntityByID(dataManager.get(DW_TARGET_ID)));
 	}
 
 	private boolean hasTarget()

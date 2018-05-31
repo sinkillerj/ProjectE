@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.PESounds;
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
@@ -15,21 +16,22 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class HyperkineticLens extends ItemCharge implements IProjectileShooter
+public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge
 {
 	public HyperkineticLens() 
 	{
-		super("hyperkinetic_lens", (byte)3);
+		this.setUnlocalizedName("hyperkinetic_lens");
+		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
-		if (world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		ItemStack stack = player.getHeldItem(hand);
 		
-		if (shootProjectile(player, stack, hand))
+		if (!world.isRemote && shootProjectile(player, stack, hand))
 		{
 			PlayerHelper.swingItem(player, hand);
 		}
@@ -51,7 +53,25 @@ public class HyperkineticLens extends ItemCharge implements IProjectileShooter
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(world, player, this.getCharge(stack));
 		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.spawnEntityInWorld(ent);
+		world.spawnEntity(ent);
 		return true;
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return 3;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

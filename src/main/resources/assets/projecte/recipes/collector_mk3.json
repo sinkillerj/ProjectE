@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:collector_mk3"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "GRG",
+    "GCG",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "C": {
+      "item": "projecte:collector_mk2"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    }
+  }
+}

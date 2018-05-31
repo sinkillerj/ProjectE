@@ -8,8 +8,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +24,9 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 		JsonObject o = json.getAsJsonObject();
 		for(Map.Entry<String, JsonElement> entry: o.entrySet()) {
 			if (entry.getKey().equals("before")) {
-				fixed.setValueBefore = parseSetValueMap(entry.getValue().getAsJsonObject());
+				fixed.setValueBefore = parseSetValueMap(entry.getValue().getAsJsonObject(), context);
 			} else if (entry.getKey().equals("after")) {
-				fixed.setValueAfter = parseSetValueMap(entry.getValue().getAsJsonObject());
+				fixed.setValueAfter = parseSetValueMap(entry.getValue().getAsJsonObject(), context);
 			} else if (entry.getKey().equals("conversion")) {
 				fixed.conversion = context.deserialize(entry.getValue().getAsJsonArray(), new TypeToken<List<CustomConversion>>(){}.getType());
 			} else {
@@ -34,16 +36,16 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 		return fixed;
 	}
 
-	private Map<String, Integer> parseSetValueMap(JsonObject o) {
-		Map<String, Integer> out = Maps.newHashMap();
+	private Map<NormalizedSimpleStack, Integer> parseSetValueMap(JsonObject o, JsonDeserializationContext context) {
+		Map<NormalizedSimpleStack, Integer> out = new HashMap<>();
 		for (Map.Entry<String, JsonElement> entry: o.entrySet()) {
 			JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();
 			if (primitive.isNumber()) {
-				out.put(entry.getKey(),  primitive.getAsInt());
+				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class),  primitive.getAsInt());
 				continue;
 			} else if (primitive.isString()) {
 				if (primitive.getAsString().toLowerCase().equals("free")) {
-					out.put(entry.getKey(), Integer.MIN_VALUE); //TODO Get Value for 'free' from arithmetic?
+					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Integer.MIN_VALUE); //TODO Get Value for 'free' from arithmetic?
 					continue;
 				}
 			}

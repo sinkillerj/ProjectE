@@ -32,25 +32,15 @@ public class GraphMapperTest {
 	@Before
 	public void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
-		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
+		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(new HiddenFractionArithmetic());
 		valueGenerator = new FractionToIntGenerator<>(mapper);
 		mappingCollector = new IntToFractionCollector<>(mapper);
 	}
 
 	@Rule
 	public Timeout timeout = new Timeout(3000);
-	public IValueGenerator<String, Integer> valueGenerator;
-	public IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
-
-	@org.junit.Test
-	public void testGetOrCreateList() throws Exception {
-		Map<String, List<Integer>> map = new HashMap<>();
-		List<Integer> l1 = MappingCollector.getOrCreateList(map, "abc");
-		assertNotNull(l1);
-		assertTrue(map.containsKey("abc"));
-		List<Integer> l2 = MappingCollector.getOrCreateList(map, "abc");
-		assertSame(l1, l2);
-	}
+	private IValueGenerator<String, Integer> valueGenerator;
+	private IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
 
 	@org.junit.Test
 	public void testGenerateValuesSimple() throws Exception {
@@ -84,7 +74,7 @@ public class GraphMapperTest {
 		mappingCollector.setValueBefore("a1", 1);
 		//2 Recipes for c4
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
-		mappingCollector.addConversion(1, "c4", new LinkedList<String>());
+		mappingCollector.addConversion(1, "c4", new LinkedList<>());
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -169,7 +159,7 @@ public class GraphMapperTest {
 	public void testGenerateValuesSimpleWoodToWorkBench() throws Exception
 	{
 		mappingCollector.setValueBefore("planks", 1);
-		mappingCollector.addConversion(4, "planks", Arrays.asList("wood"));
+		mappingCollector.addConversion(4, "planks", Collections.singletonList("wood"));
 		mappingCollector.addConversion(1, "workbench", Arrays.asList("planks", "planks", "planks", "planks"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -183,11 +173,11 @@ public class GraphMapperTest {
 		for (char i : "ABCD".toCharArray())
 		{
 			mappingCollector.setValueBefore("wood" + i, 32);
-			mappingCollector.addConversion(4, "planks" + i, Arrays.asList("wood" + i));
+			mappingCollector.addConversion(4, "planks" + i, Collections.singletonList("wood" + i));
 		}
 
 		for (char i : "ABCD".toCharArray()) {
-			mappingCollector.addConversion(4, "planks" + i, Arrays.asList("wood"));
+			mappingCollector.addConversion(4, "planks" + i, Collections.singletonList("wood"));
 		}
 
 		for (char i : "ABCD".toCharArray())
@@ -213,8 +203,8 @@ public class GraphMapperTest {
 	public void testGenerateValuesDeepConversions() throws Exception
 	{
 		mappingCollector.setValueBefore("a1", 1);
-		mappingCollector.addConversion(1, "b1", Arrays.asList("a1"));
-		mappingCollector.addConversion(1, "c1", Arrays.asList("b1"));
+		mappingCollector.addConversion(1, "b1", Collections.singletonList("a1"));
+		mappingCollector.addConversion(1, "c1", Collections.singletonList("b1"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "a1"));
@@ -244,7 +234,7 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a1", 1);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
-		mappingCollector.addConversion(1, "b2", Arrays.asList("invalid1"));
+		mappingCollector.addConversion(1, "b2", Collections.singletonList("invalid1"));
 		mappingCollector.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
 
 
@@ -260,7 +250,7 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a1", 1);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
-		mappingCollector.addConversion(1, "b2", Arrays.asList("invalid"));
+		mappingCollector.addConversion(1, "b2", Collections.singletonList("invalid"));
 
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -273,9 +263,9 @@ public class GraphMapperTest {
 	public void testGenerateValuesCycleRecipe() throws Exception
 	{
 		mappingCollector.setValueBefore("a1", 1);
-		mappingCollector.addConversion(1, "cycle-1", Arrays.asList("a1"));
-		mappingCollector.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
-		mappingCollector.addConversion(1, "cycle-1", Arrays.asList("cycle-2"));
+		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
+		mappingCollector.addConversion(1, "cycle-2", Collections.singletonList("cycle-1"));
+		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("cycle-2"));
 
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -288,12 +278,12 @@ public class GraphMapperTest {
 	public void testGenerateValuesBigCycleRecipe() throws Exception
 	{
 		mappingCollector.setValueBefore("a1", 1);
-		mappingCollector.addConversion(1, "cycle-1", Arrays.asList("a1"));
-		mappingCollector.addConversion(1, "cycle-2", Arrays.asList("cycle-1"));
-		mappingCollector.addConversion(1, "cycle-3", Arrays.asList("cycle-2"));
-		mappingCollector.addConversion(1, "cycle-4", Arrays.asList("cycle-3"));
-		mappingCollector.addConversion(1, "cycle-5", Arrays.asList("cycle-4"));
-		mappingCollector.addConversion(1, "cycle-1", Arrays.asList("cycle-5"));
+		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
+		mappingCollector.addConversion(1, "cycle-2", Collections.singletonList("cycle-1"));
+		mappingCollector.addConversion(1, "cycle-3", Collections.singletonList("cycle-2"));
+		mappingCollector.addConversion(1, "cycle-4", Collections.singletonList("cycle-3"));
+		mappingCollector.addConversion(1, "cycle-5", Collections.singletonList("cycle-4"));
+		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("cycle-5"));
 
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -319,19 +309,19 @@ public class GraphMapperTest {
 		mappingCollector.setValueBefore(coal, 128);
 
 		mappingCollector.addConversion(1, aCoal, Arrays.asList(coal, coal, coal, coal));
-		mappingCollector.addConversion(4, aCoal, Arrays.asList(mFuel));
-		mappingCollector.addConversion(9, aCoal, Arrays.asList(aCoalBlock));
+		mappingCollector.addConversion(4, aCoal, Collections.singletonList(mFuel));
+		mappingCollector.addConversion(9, aCoal, Collections.singletonList(aCoalBlock));
 		repeat = aCoal;
 		mappingCollector.addConversion(1, aCoalBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
 
 		mappingCollector.addConversion(1, mFuel, Arrays.asList(aCoal, aCoal, aCoal, aCoal));
-		mappingCollector.addConversion(4, mFuel, Arrays.asList(aFuel));
-		mappingCollector.addConversion(9, mFuel, Arrays.asList(mFuelBlock));
+		mappingCollector.addConversion(4, mFuel, Collections.singletonList(aFuel));
+		mappingCollector.addConversion(9, mFuel, Collections.singletonList(mFuelBlock));
 		repeat = mFuel;
 		mappingCollector.addConversion(1, mFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
 
 		mappingCollector.addConversion(1, aFuel, Arrays.asList(mFuel, mFuel, mFuel, mFuel));
-		mappingCollector.addConversion(9, aFuel, Arrays.asList(aFuelBlock));
+		mappingCollector.addConversion(9, aFuel, Collections.singletonList(aFuelBlock));
 		repeat = aFuel;
 		mappingCollector.addConversion(1, aFuelBlock, Arrays.asList(repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat));
 
@@ -340,13 +330,13 @@ public class GraphMapperTest {
 		final String dMatterBlock = "darkMatterBlock";
 
 		mappingCollector.addConversion(1, dMatter, Arrays.asList(aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, aFuel, "diamondBlock"));
-		mappingCollector.addConversion(1, dMatter, Arrays.asList(dMatterBlock));
+		mappingCollector.addConversion(1, dMatter, Collections.singletonList(dMatterBlock));
 		mappingCollector.addConversion(4, dMatterBlock, Arrays.asList(dMatter, dMatter, dMatter, dMatter));
 
 		final String rMatter = "redMatter";
 		final String rMatterBlock = "redMatterBlock";
 		mappingCollector.addConversion(1, rMatter, Arrays.asList(aFuel, aFuel, aFuel, dMatter, dMatter, dMatter, aFuel, aFuel, aFuel));
-		mappingCollector.addConversion(1, rMatter, Arrays.asList(rMatterBlock));
+		mappingCollector.addConversion(1, rMatter, Collections.singletonList(rMatterBlock));
 		mappingCollector.addConversion(4, rMatterBlock, Arrays.asList(rMatter, rMatter, rMatter, rMatter));
 
 
@@ -457,11 +447,11 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
-		mappingCollector.addConversion(1, "exploitable", Arrays.asList("a1"));
-		mappingCollector.addConversion(2, "exploitable", Arrays.asList("exploitable"));
+		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
+		mappingCollector.addConversion(2, "exploitable", Collections.singletonList("exploitable"));
 
 		//Not-exploitable Cycle Recype
-		mappingCollector.addConversion(1, "notExploitable", Arrays.asList("a1"));
+		mappingCollector.addConversion(1, "notExploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -475,9 +465,9 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
-		mappingCollector.addConversion(1, "exploitable1", Arrays.asList("a1"));
-		mappingCollector.addConversion(2, "exploitable2", Arrays.asList("exploitable1"));
-		mappingCollector.addConversion(1, "exploitable1", Arrays.asList("exploitable2"));
+		mappingCollector.addConversion(1, "exploitable1", Collections.singletonList("a1"));
+		mappingCollector.addConversion(2, "exploitable2", Collections.singletonList("exploitable1"));
+		mappingCollector.addConversion(1, "exploitable1", Collections.singletonList("exploitable2"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "a1"));
@@ -490,12 +480,12 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a1", 1);
 		//Exploitable Cycle Recype
-		mappingCollector.addConversion(1, "exploitable", Arrays.asList("a1"));
-		mappingCollector.addConversion(2, "exploitable", Arrays.asList("exploitable"));
-		mappingCollector.addConversion(1, "b", Arrays.asList("exploitable"));
+		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
+		mappingCollector.addConversion(2, "exploitable", Collections.singletonList("exploitable"));
+		mappingCollector.addConversion(1, "b", Collections.singletonList("exploitable"));
 
 		//Not-exploitable Cycle Recype
-		mappingCollector.addConversion(1, "notExploitable", Arrays.asList("a1"));
+		mappingCollector.addConversion(1, "notExploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
@@ -519,19 +509,19 @@ public class GraphMapperTest {
 		for (String logType : logTypes)
 		{
 			mappingCollector.setValueBefore(logType, 32);
-			mappingCollector.addConversion(1, "log*", Arrays.asList(logType));
+			mappingCollector.addConversion(1, "log*", Collections.singletonList(logType));
 		}
 		for (String log2Type : log2Types)
 		{
 			mappingCollector.setValueBefore(log2Type, 32);
-			mappingCollector.addConversion(1, "log2*", Arrays.asList(log2Type));
+			mappingCollector.addConversion(1, "log2*", Collections.singletonList(log2Type));
 		}
-		mappingCollector.addConversion(1, "coal1", Arrays.asList("log*"));
+		mappingCollector.addConversion(1, "coal1", Collections.singletonList("log*"));
 		for (String coalType : coalTypes) {
-			mappingCollector.addConversion(1, "coal*", Arrays.asList(coalType));
+			mappingCollector.addConversion(1, "coal*", Collections.singletonList(coalType));
 			mappingCollector.addConversion(3, "firecharge", Arrays.asList(coalType, "gunpowder", "blazepowder"));
 		}
-		mappingCollector.addConversion(1, "firecharge*", Arrays.asList("firecharge"));
+		mappingCollector.addConversion(1, "firecharge*", Collections.singletonList("firecharge"));
 		Map<String, Integer> m = new HashMap<>();
 		m.put("coal0", 9);
 		mappingCollector.addConversion(1, "coalblock", m);
@@ -556,9 +546,9 @@ public class GraphMapperTest {
 
 
 		//Smelting single coal ore
-		mappingCollector.addConversion(1, "coal0", Arrays.asList("coalore"));
+		mappingCollector.addConversion(1, "coal0", Collections.singletonList("coalore"));
 		//Coal Block
-		mappingCollector.addConversion(9, "coal0", Arrays.asList("coalblock"));
+		mappingCollector.addConversion(9, "coal0", Collections.singletonList("coalblock"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
 		for (String logType : logTypes) {
@@ -586,7 +576,7 @@ public class GraphMapperTest {
 					"antiblock_all", "dye" + dyes[i], "antiblock_all",
 					"antiblock_all", "antiblock_all", "antiblock_all"
 			));
-			mappingCollector.addConversion(1, "antiblock_all", Arrays.asList("antiblock" + dyes[i]));
+			mappingCollector.addConversion(1, "antiblock_all", Collections.singletonList("antiblock" + dyes[i]));
 		}
 
 		mappingCollector.setValueBefore(gDust, 384);
@@ -636,8 +626,8 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("freeWater", Integer.MIN_VALUE/* = 'Free' */);
 		mappingCollector.setValueBefore("waterBottle", 0);
-		mappingCollector.addConversion(1, "waterGroup", Arrays.asList("freeWater"));
-		mappingCollector.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
+		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("freeWater"));
+		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("waterBottle"));
 		mappingCollector.setValueBefore("a", 3);
 		mappingCollector.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
@@ -659,7 +649,7 @@ public class GraphMapperTest {
 		m.put("waterBucket", 1);
 		m.put("bucket", -1);
 		mappingCollector.addConversion(1, "waterGroup", m);
-		mappingCollector.addConversion(1, "waterGroup", Arrays.asList("waterBottle"));
+		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("waterBottle"));
 		mappingCollector.setValueBefore("a", 3);
 		mappingCollector.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
@@ -689,7 +679,7 @@ public class GraphMapperTest {
 	public void testOverflowWithAmount() throws Exception
 	{
 		mappingCollector.setValueBefore("a", Integer.MAX_VALUE / 2);
-		mappingCollector.addConversion(3, "a", Arrays.asList("something"));
+		mappingCollector.addConversion(3, "a", Collections.singletonList("something"));
 
 		Map<String, Integer> values = valueGenerator.generateValues();
 		assertEquals(Integer.MAX_VALUE/2, getValue(values, "a"));
@@ -700,7 +690,7 @@ public class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("a", 1);
 		mappingCollector.setValueFromConversion(1, "b", Arrays.asList("a", "a", "a"));
-		mappingCollector.addConversion(1, "b", Arrays.asList("a"));
+		mappingCollector.addConversion(1, "b", Collections.singletonList("a"));
 		mappingCollector.addConversion(1, "c", Arrays.asList("b", "b"));
 		Map<String, Integer> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "a"));

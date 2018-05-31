@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -34,9 +35,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
 	public RepairTalisman()
@@ -48,11 +50,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if (world.isRemote || !(entity instanceof EntityPlayer))
 		{
 			return;
@@ -76,14 +73,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 
-			if (invStack == null || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
+			if (invStack.isEmpty() || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable())
 			{
 				continue;
-			}
-
-			if (Loader.isModLoaded("chisel"))
-			{
-				if (chiselCheck(invStack)) continue;
 			}
 
 			if (invStack == player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) && player.isSwingInProgress)
@@ -98,16 +90,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			}
 		}
 
-		if (Loader.isModLoaded("Baubles")) baubleRepair(player);
+		if (Loader.isModLoaded("baubles")) baubleRepair(player);
 	}
 
-	@Optional.Method(modid = "chisel")
-	public boolean chiselCheck(ItemStack is)
-	{
-		return false; // todo return is.getItem() instanceof IChiselItem;
-	}
-
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void baubleRepair(EntityPlayer player)
 	{
 		IItemHandler bInv = BaublesApi.getBaublesHandler(player);
@@ -115,7 +101,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		for (int i = 0; i < bInv.getSlots(); i++)
 		{
 			ItemStack bInvStack = bInv.getStackInSlot(i);
-			if (bInvStack == null || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
+			if (bInvStack.isEmpty() || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
 			{
 				continue;
 			}
@@ -128,36 +114,36 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.BELT;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
@@ -166,13 +152,14 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.repairPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repairPedCooldown != -1)
 		{
+			TileEntity te = world.getTileEntity(pos);
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds()).forEach(this::repairAllItems);
-				tile.setActivityCooldown(ProjectEConfig.repairPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repairPedCooldown);
 			}
 			else
 			{
@@ -186,11 +173,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.repairPedCooldown != -1)
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.repairPedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.repairPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repairPedCooldown)));
 		}
 		return list;
 	}
@@ -203,14 +190,14 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return;
 		}
 
-		if (!stack.hasTagCompound())
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof AlchChestTile))
 		{
-			stack.setTagCompound(new NBTTagCompound());
+			return;
 		}
+		AlchChestTile tile = ((AlchChestTile) te);
 
-		AlchChestTile tile = ((AlchChestTile) world.getTileEntity(pos));
-
-		byte coolDown = stack.getTagCompound().getByte("Cooldown");
+		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
 
 		if (coolDown > 0)
 		{
@@ -225,7 +212,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 
-				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
+				if (invStack.isEmpty() || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}
@@ -257,12 +244,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return false;
 		}
 
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		byte coolDown = stack.getTagCompound().getByte("Cooldown");
+		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
 
 		if (coolDown > 0)
 		{
@@ -276,7 +258,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 
-				if (invStack == null || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
+				if (invStack.isEmpty() || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable())
 				{
 					continue;
 				}

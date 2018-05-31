@@ -5,7 +5,6 @@ import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -48,14 +47,15 @@ public class DarkPick extends PEToolBase
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if (world.isRemote)
 		{
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
-		if (ProjectEConfig.pickaxeAoeVeinMining)
+		if (ProjectEConfig.items.pickaxeAoeVeinMining)
 		{
 			mineOreVeinsInAOE(stack, player, hand);
 		}
@@ -95,25 +95,14 @@ public class DarkPick extends PEToolBase
 		return super.getStrVsBlock(stack, state);
 	}
 	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.DM_PICK, 1);
-		}
-	}
-
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
 	{
 		if (slot != EntityEquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
-		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.8, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.8, 0));
 		return multimap;
 	}
 }

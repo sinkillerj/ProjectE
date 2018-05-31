@@ -24,19 +24,21 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	private final IItemHandler automationInput;
 	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
 	{
+		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			return SlotPredicates.IITEMEMC.test(stack)
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
 
+		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if (stack != null && stack.getItem() instanceof IItemEmc)
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc item = ((IItemEmc) stack.getItem());
 				if (item.getStoredEmc(stack) >= item.getMaximumEmc(stack))
@@ -44,7 +46,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 					return super.extractItem(slot, amount, simulate);
 				} else
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 
@@ -64,8 +66,9 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		this.chargeRate = chargeRate;
 		input = new StackHandler(sizeInv)
 		{
+			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 			{
 				return SlotPredicates.RELAY_INV.test(stack)
 						? super.insertItem(slot, stack, simulate)
@@ -76,14 +79,13 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -118,7 +120,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	@Override
 	public void update()
 	{	
-		if (worldObj.isRemote) 
+		if (world.isRemote)
 		{
 			return;
 		}
@@ -128,7 +130,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		
 		ItemStack stack = getBurn();
 		
-		if (stack != null)
+		if (!stack.isEmpty())
 		{
 			if(stack.getItem() instanceof IItemEmc)
 			{
@@ -153,16 +155,14 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
 				{
 					this.addEMC(emcVal);
-					getBurn().stackSize--;
-					if (getBurn().stackSize == 0)
-						input.setStackInSlot(0, null);
+					getBurn().shrink(1);
 				}
 			}
 		}
 		
 		ItemStack chargeable = getCharging();
 		
-		if (chargeable != null && this.getStoredEmc() > 0 && chargeable.getItem() instanceof IItemEmc)
+		if (!chargeable.isEmpty() && this.getStoredEmc() > 0 && chargeable.getItem() instanceof IItemEmc)
 		{
 			chargeItem(chargeable);
 		}
@@ -204,7 +204,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 	public double getItemChargeProportion()
 	{
-		if (getCharging() != null && getCharging().getItem() instanceof IItemEmc)
+		if (!getCharging().isEmpty() && getCharging().getItem() instanceof IItemEmc)
 		{
 			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
 		}
@@ -214,7 +214,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 	public double getInputBurnProportion()
 	{
-		if (getBurn() == null)
+		if (getBurn().isEmpty())
 		{
 			return 0;
 		}
@@ -224,7 +224,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
 		}
 
-		return getBurn().stackSize / (double) getBurn().getMaxStackSize();
+		return getBurn().getCount() / (double) getBurn().getMaxStackSize();
 	}
 	
 	@Override
@@ -248,7 +248,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	@Override
 	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{
-		if (worldObj.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
+		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
 			return 0; // Do not accept from other relays - avoid infinite loop / thrashing
 		}

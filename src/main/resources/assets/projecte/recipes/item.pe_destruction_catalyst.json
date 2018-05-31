@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_destruction_catalyst"
+  },
+  "pattern": [
+    "NMN",
+    "MFM",
+    "NMN"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "minecraft:flint_and_steel",
+      "data": 32767
+    },
+    "M": {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    "N": {
+      "item": "projecte:nova_catalyst"
+    }
+  }
+}

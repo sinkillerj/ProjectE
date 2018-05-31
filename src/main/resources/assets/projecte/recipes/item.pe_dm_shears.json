@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "projecte:item.pe_dm_shears"
+  },
+  "pattern": [
+    " M",
+    "D "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

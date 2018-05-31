@@ -8,22 +8,22 @@ import java.util.Comparator;
 public final class Comparators
 {
 	public static final Comparator<ItemStack> ITEMSTACK_ASCENDING = (o1, o2) -> {
-        if ((o1 == null && o2 == null))
+        if ((o1.isEmpty() && o2.isEmpty()))
         {
             return 0;
         }
-        if (o1 == null)
+        if (o1.isEmpty())
         {
             return 1;
         }
-        if (o2 == null)
+        if (o2.isEmpty())
         {
             return -1;
         }
         if (ItemHelper.areItemStacksEqualIgnoreNBT(o1, o2))
         {
             // Same item id, same meta
-            return o1.stackSize - o2.stackSize;
+            return o1.getCount() - o2.getCount();
         }
         else // Different id or different meta
         {

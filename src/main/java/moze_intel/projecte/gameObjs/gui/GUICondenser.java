@@ -22,6 +22,14 @@ public class GUICondenser extends GuiContainer
 		this.xSize = 255;
 		this.ySize = 233;
 	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
@@ -42,6 +50,6 @@ public class GUICondenser extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		int toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
-		this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(toDisplay), 140, 10, 4210752);
+		this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(toDisplay), 140, 10, 4210752);
 	}
 }

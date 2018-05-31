@@ -35,7 +35,7 @@ public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
 		if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
 		{
 			f2 = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
-			f2 = MathHelper.clamp_float(f2, 0.0F, 1.0F);
+			f2 = MathHelper.clamp(f2, 0.0F, 1.0F);
 			f2 *= f2;
 			f2 *= f2;
 			float f3 = 1.0F + f2 * 0.3F;
@@ -45,7 +45,7 @@ public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
 		f2 = (1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
 		this.bindEntityTexture(entity);
 		GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-		blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCatalyst.getDefaultState(), entity.getBrightness(partialTicks));
+		blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCatalyst.getDefaultState(), entity.getBrightness());
 		GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
 		if (entity.getFuse() / 5 % 2 == 0)

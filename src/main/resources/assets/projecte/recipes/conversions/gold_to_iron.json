@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:iron_ingot",
+    "count": 8
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#INGOTGOLD"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

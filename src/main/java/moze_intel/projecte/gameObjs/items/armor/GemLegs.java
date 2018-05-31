@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import gnu.trove.map.hash.TIntLongHashMap;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class GemLegs extends GemArmorBase
@@ -30,9 +32,9 @@ public class GemLegs extends GemArmorBase
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag advanced)
     {
-        tooltips.add(I18n.format("pe.gem.legs.lorename"));
+        list.add(I18n.format("pe.gem.legs.lorename"));
     }
 
     private final TIntLongHashMap lastJumpTracker = new TIntLongHashMap();
@@ -71,7 +73,7 @@ public class GemLegs extends GemArmorBase
             if (!world.isRemote && player.motionY < -0.08)
             {
                 List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
-                        player.getEntityBoundingBox().addCoord(player.motionX, player.motionY, player.motionZ).expandXyz(2.0D),
+                        player.getEntityBoundingBox().offset(player.motionX, player.motionY, player.motionZ).grow(2.0D),
                         Predicates.instanceOf(EntityLivingBase.class));
 
                 for (Entity e : entities)

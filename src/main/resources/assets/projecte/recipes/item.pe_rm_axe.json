@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_rm_axe"
+  },
+  "pattern": [
+    "RR",
+    "RA",
+    " M"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "projecte:item.pe_dm_axe"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "M": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

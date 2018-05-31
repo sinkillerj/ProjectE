@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "projecte:item.pe_klein_star",
+    "data": 0
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "MMM",
+    "MDM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    "D": {
+      "item": "#GEMDIAMOND"
+    }
+  }
+}

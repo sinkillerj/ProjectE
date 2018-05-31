@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import baubles.api.BaublesApi;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
@@ -13,6 +14,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.scoreboard.IScoreCriteria;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteriaReadOnly;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -36,11 +40,18 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
+	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly(PECore.MODID + ":emc_score");
+
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	{
+		return checkedPlaceBlock(player, pos, state, EnumHand.MAIN_HAND);
+	}
+
 	/**
 	 * Tries placing a block and fires an event for it.
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
 	{
 		if (!hasEditPermission(player, pos))
 		{
@@ -49,7 +60,7 @@ public final class PlayerHelper
 		World world = player.getEntityWorld();
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player);
+		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player, EnumHand.MAIN_HAND);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{
@@ -65,24 +76,29 @@ public final class PlayerHelper
 
 	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
-		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
+		return checkedReplaceBlock(player, pos, state, EnumHand.MAIN_HAND);
+	}
+
+	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
+	{
+		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state, hand);
 	}
 
 	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
 		{
-			if (s != null && s.getItem() == consumeFrom)
+			if (!s.isEmpty() && s.getItem() == consumeFrom)
 			{
 				return s;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public static IItemHandler getBaubles(EntityPlayer player)
 	{
-		if (!Loader.isModLoaded("Baubles"))
+		if (!Loader.isModLoaded("baubles"))
 		{
 			return null;
 		} else
@@ -111,14 +127,14 @@ public final class PlayerHelper
 		Vec3d look = player.getLook(1.0F);
 		Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
 		Vec3d src = playerPos.addVector(0, player.getEyeHeight(), 0);
-		Vec3d dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+		Vec3d dest = src.addVector(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 
 	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
 	{
 		return hasEditPermission(player, pos)
-				&& !(ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) == -1);
+				&& ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
 	}
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
@@ -130,7 +146,7 @@ public final class PlayerHelper
 
 		for (EnumFacing e : EnumFacing.VALUES)
 		{
-			if (!player.canPlayerEdit(pos, e, null))
+			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
 			{
 				return false;
 			}
@@ -143,16 +159,6 @@ public final class PlayerHelper
 	{
 		player.resetCooldown();
 		PacketHandler.sendTo(new CooldownResetPKT(), (EntityPlayerMP) player);
-	}
-
-	public static void setPlayerFireImmunity(EntityPlayer player, boolean value)
-	{
-		ReflectionHelper.setEntityFireImmunity(player, value);
-	}
-
-	public static void setPlayerWalkSpeed(EntityPlayer player, float value)
-	{
-		ReflectionHelper.setPlayerCapabilityWalkspeed(player.capabilities, value);
 	}
 
 	public static void swingItem(EntityPlayer player, EnumHand hand)
@@ -182,6 +188,11 @@ public final class PlayerHelper
 
 	public static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int value)
 	{
-		ReflectionHelper.updateScore(player, objective, value);
+		// [VanillaCopy] EntityPlayerMP.updateScorePoints
+		for (ScoreObjective scoreobjective : player.getWorldScoreboard().getObjectivesFromCriteria(objective))
+		{
+			Score score = player.getWorldScoreboard().getOrCreateScore(player.getName(), scoreobjective);
+			score.setScorePoints(value);
+		}
 	}
 }

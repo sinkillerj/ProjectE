@@ -31,7 +31,7 @@ public class EntitySWRGProjectile extends PEProjectile
 	{
 		super.onUpdate();
 
-		if (!worldObj.isRemote && ticksExisted > 400)
+		if (!world.isRemote && ticksExisted > 400)
 		{
 			setDead();
 			return;
@@ -43,9 +43,9 @@ public class EntitySWRGProjectile extends PEProjectile
 		motionY *= inverse;
 		motionZ *= inverse;
 
-		if (!worldObj.isRemote && !isDead && posY > worldObj.getHeight() && worldObj.isRaining())
+		if (!world.isRemote && !isDead && posY > world.getHeight() && world.isRaining())
 		{
-			worldObj.getWorldInfo().setThundering(true);
+			world.getWorldInfo().setThundering(true);
 			setDead();
 		}
 	}
@@ -53,7 +53,7 @@ public class EntitySWRGProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if (worldObj.isRemote)
+		if (world.isRemote)
 		{
 			return;
 		}
@@ -68,15 +68,15 @@ public class EntitySWRGProjectile extends PEProjectile
 				{
 					BlockPos pos = mop.getBlockPos();
 
-					EntityLightningBolt lightning = new EntityLightningBolt(worldObj, pos.getX(), pos.getY(), pos.getZ(), false);
-					worldObj.addWeatherEffect(lightning);
+					EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), false);
+					world.addWeatherEffect(lightning);
 
-					if (worldObj.isThundering())
+					if (world.isThundering())
 					{
 						for (int i = 0; i < 3; i++)
 						{
-							EntityLightningBolt bonus = new EntityLightningBolt(worldObj, pos.getX() + worldObj.rand.nextGaussian(), pos.getY() + worldObj.rand.nextGaussian(), pos.getZ() + worldObj.rand.nextGaussian(), false);
-							worldObj.addWeatherEffect(bonus);
+							EntityLightningBolt bonus = new EntityLightningBolt(world, pos.getX() + world.rand.nextGaussian(), pos.getY() + world.rand.nextGaussian(), pos.getZ() + world.rand.nextGaussian(), false);
+							world.addWeatherEffect(bonus);
 						}
 					}
 				}

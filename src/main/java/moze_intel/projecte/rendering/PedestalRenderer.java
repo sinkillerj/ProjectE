@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -16,7 +15,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
 {
 
     @Override
-    public void renderTileEntityAt(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage, float unused)
     {
         if (!te.isInvalid())
         {
@@ -42,7 +41,7 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
                 GlStateManager.popMatrix();
             }
 
-            if (te.getInventory().getStackInSlot(0) != null)
+            if (!te.getInventory().getStackInSlot(0).isEmpty())
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x + 0.5, y + 0.7, z + 0.5);

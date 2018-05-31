@@ -1,5 +1,6 @@
 package moze_intel.projecte.impl;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.network.PacketHandler;
@@ -18,6 +19,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public final class AlchBagImpl
         }
 
         @Override
-        public void sync(@Nonnull EnumDyeColor color, @Nonnull EntityPlayerMP player)
+        public void sync(@Nullable EnumDyeColor color, @Nonnull EntityPlayerMP player)
         {
             PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
         }
@@ -105,18 +107,18 @@ public final class AlchBagImpl
     public static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
 
-        public static final ResourceLocation NAME = new ResourceLocation("projecte", "alch_bags");
+        public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "alch_bags");
 
         private final IAlchBagProvider cap = new DefaultImpl();
 
         @Override
-        public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
         {
             return capability == ProjectEAPI.ALCH_BAG_CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
         {
             if (capability == ProjectEAPI.ALCH_BAG_CAPABILITY)
             {

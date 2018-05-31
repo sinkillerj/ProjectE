@@ -1,13 +1,16 @@
 package moze_intel.projecte.impl;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -15,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -46,16 +50,29 @@ public final class KnowledgeImpl {
                     instance.deserializeNBT((NBTTagCompound) nbt);
                 }
             }
-        }, DefaultImpl::new);
+        }, () -> new DefaultImpl(null));
     }
 
     private static class DefaultImpl implements IKnowledgeProvider
     {
-
+        @Nullable
+        private final EntityPlayer player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
         private double emc = 0;
         private boolean fullKnowledge = false;
+
+        private DefaultImpl(EntityPlayer player) {
+            this.player = player;
+        }
+
+        private void fireChangedEvent()
+        {
+            if (player != null && !player.world.isRemote)
+            {
+                MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+            }
+        }
 
         @Override
         public boolean hasFullKnowledge()
@@ -66,7 +83,12 @@ public final class KnowledgeImpl {
         @Override
         public void setFullKnowledge(boolean fullKnowledge)
         {
+            boolean changed = this.fullKnowledge != fullKnowledge;
             this.fullKnowledge = fullKnowledge;
+            if (changed)
+            {
+                fireChangedEvent();
+            }
         }
 
         @Override
@@ -74,11 +96,12 @@ public final class KnowledgeImpl {
         {
             knowledge.clear();
             fullKnowledge = false;
+            fireChangedEvent();
         }
 
         @Override
-        public boolean hasKnowledge(@Nullable ItemStack stack) {
-            if (stack == null)
+        public boolean hasKnowledge(@Nonnull ItemStack stack) {
+            if (stack.isEmpty())
             {
                 return false;
             }
@@ -112,12 +135,14 @@ public final class KnowledgeImpl {
                     knowledge.add(stack);
                 }
                 fullKnowledge = true;
+                fireChangedEvent();
                 return true;
             }
 
             if (!hasKnowledge(stack))
             {
                 knowledge.add(stack);
+                fireChangedEvent();
                 return true;
             }
 
@@ -150,6 +175,10 @@ public final class KnowledgeImpl {
                 }
             }
 
+            if (removed)
+            {
+                fireChangedEvent();
+            }
             return removed;
         }
 
@@ -206,8 +235,8 @@ public final class KnowledgeImpl {
             NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.tagCount(); i++)
             {
-                ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-                if (item != null)
+                ItemStack item = new ItemStack(list.getCompoundTagAt(i));
+                if (!item.isEmpty())
                 {
                     knowledge.add(item);
                 }
@@ -218,7 +247,7 @@ public final class KnowledgeImpl {
 
             for (int i = 0; i < inputLocks.getSlots(); i++)
             {
-                inputLocks.setStackInSlot(i, null);
+                inputLocks.setStackInSlot(i, ItemStack.EMPTY);
             }
 
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND));
@@ -230,41 +259,38 @@ public final class KnowledgeImpl {
             ItemHelper.compactItemListNoStacksize(knowledge);
             for (ItemStack s : knowledge)
             {
-                if (s.stackSize > 1)
+                if (s.getCount() > 1)
                 {
-                    s.stackSize = 1;
+                    s.setCount(1);
                 }
             }
         }
 
         private void pruneStaleKnowledge()
         {
-            Iterator<ItemStack> iter = knowledge.iterator();
-            while (iter.hasNext())
-            {
-                if (!EMCHelper.doesItemHaveEmc(iter.next()))
-                {
-                    iter.remove();
-                }
-            }
+            knowledge.removeIf(stack -> !EMCHelper.doesItemHaveEmc(stack));
         }
 
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
+        public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
-        public static final ResourceLocation NAME = new ResourceLocation("projecte", "knowledge");
+        private final DefaultImpl knowledge;
 
-        private final DefaultImpl knowledge = new DefaultImpl();
+        public Provider(EntityPlayer player)
+        {
+            knowledge = new DefaultImpl(player);
+        }
 
         @Override
-        public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
             return capability == ProjectEAPI.KNOWLEDGE_CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
             if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
             {
                 return ProjectEAPI.KNOWLEDGE_CAPABILITY.cast(knowledge);

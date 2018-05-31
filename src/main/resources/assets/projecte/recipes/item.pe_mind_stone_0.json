@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_mind_stone",
+    "data": 0
+  },
+  "pattern": [
+    "BBB",
+    "RLR",
+    "BBB"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "L": {
+      "item": "#GEMLAPIS"
+    }
+  }
+}

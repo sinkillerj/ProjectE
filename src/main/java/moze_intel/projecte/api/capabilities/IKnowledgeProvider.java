@@ -9,7 +9,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
      * @param stack The stack to query
      * @return Whether the player has transmutation knowledge for this stack
      */
-    boolean hasKnowledge(@Nullable ItemStack stack);
+    boolean hasKnowledge(@Nonnull ItemStack stack);
 
     /**
      * @param stack The stack to add to knowledge

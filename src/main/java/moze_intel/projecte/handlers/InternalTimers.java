@@ -1,18 +1,20 @@
 package moze_intel.projecte.handlers;
 
+import moze_intel.projecte.PECore;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class InternalTimers
 {
     @CapabilityInject(InternalTimers.class)
     public static final Capability<InternalTimers> CAPABILITY = null;
-    public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_timers");
+    public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_timers");
 
     private final Timer repair = new Timer();
     private final Timer heal = new Timer();
@@ -95,13 +97,13 @@ public class InternalTimers
         private final InternalTimers capInstance = new InternalTimers();
 
         @Override
-        public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
         {
             return capability == CAPABILITY;
         }
 
         @Override
-        public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
         {
             if (capability == CAPABILITY)
                 return CAPABILITY.cast(capInstance);

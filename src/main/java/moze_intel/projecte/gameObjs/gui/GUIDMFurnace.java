@@ -24,6 +24,14 @@ public class GUIDMFurnace extends GuiContainer
 	}
 
 	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
 		GlStateManager.color(1, 1, 1, 1);
@@ -47,7 +55,7 @@ public class GUIDMFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRendererObj.drawString(I18n.format("pe.dmfurnace.shortname"), 57, 5, 4210752);
-		this.fontRendererObj.drawString(I18n.format("container.inventory"), 57, ySize - 96 + 2, 4210752);
+		this.fontRenderer.drawString(I18n.format("pe.dmfurnace.shortname"), 57, 5, 4210752);
+		this.fontRenderer.drawString(I18n.format("container.inventory"), 57, ySize - 96 + 2, 4210752);
 	}
 }

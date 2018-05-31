@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -38,7 +39,7 @@ public final class EMCHelper
 		}
 
 		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
+		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 
@@ -46,7 +47,7 @@ public final class EMCHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
@@ -67,7 +68,7 @@ public final class EMCHelper
 					int emc = getEmcValue(stack);
 					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
 
-					if (stack.stackSize >= toRemove)
+					if (stack.getCount() >= toRemove)
 					{
 						map.put(i, toRemove);
 						emcConsumed += emc * toRemove;
@@ -75,8 +76,8 @@ public final class EMCHelper
 					}
 					else
 					{
-						map.put(i, stack.stackSize);
-						emcConsumed += emc * stack.stackSize;
+						map.put(i, stack.getCount());
+						emcConsumed += emc * stack.getCount();
 
 						if (emcConsumed >= minFuel)
 						{
@@ -109,7 +110,7 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return false;
 		}
@@ -163,7 +164,7 @@ public final class EMCHelper
 	 */
 	public static int getEmcValue(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return 0;
 		}
@@ -255,23 +256,16 @@ public final class EMCHelper
 		return result;
 	}
 
-	public static int getEmcSellValue(Block block)
-	{
-		ItemStack stack = new ItemStack(block);
-
-		return EMCHelper.getEmcSellValue(stack);
-	}
-
-	public static int getEmcSellValue(Item item)
-	{
-		ItemStack stack = new ItemStack(item);
-
-		return EMCHelper.getEmcSellValue(stack);
-	}
-
 	public static int getEmcSellValue(ItemStack stack)
 	{
-		int emc = (int)Math.floor(EMCHelper.getEmcValue(stack) * EMCMapper.covalenceLoss);
+		double originalValue = EMCHelper.getEmcValue(stack);
+
+		if (originalValue == 0)
+		{
+			return 0;
+		}
+
+		int emc = MathHelper.floor(originalValue * EMCMapper.covalenceLoss);
 
 		if (emc < 1)
 		{
@@ -301,6 +295,8 @@ public final class EMCHelper
 	private static double getStoredEMCBonus(ItemStack stack) {
 		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
 			return stack.getTagCompound().getDouble("StoredEMC");
+		} else if (stack.getItem() instanceof IItemEmc) {
+			return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
 		}
 		return 0;
 	}

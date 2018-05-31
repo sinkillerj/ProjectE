@@ -3,13 +3,10 @@ package moze_intel.projecte.gameObjs.items.tools;
 import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.AchievementHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class RedPick extends DarkPick
 {
@@ -26,17 +23,6 @@ public class RedPick extends DarkPick
 		this.harvestMaterials.add(Material.ROCK);
 	}
 	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
-	{
-		super.onCreated(stack, world, player);
-		
-		if (!world.isRemote)
-		{
-			player.addStat(AchievementHandler.RM_PICK, 1);
-		}
-	}
-
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{

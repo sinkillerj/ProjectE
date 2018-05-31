@@ -31,6 +31,6 @@ public interface IAlchBagProvider extends INBTSerializable<NBTTagCompound>
      * @param color The bag color to sync. If null, syncs every color.
      * @param player The player to sync the bags to.
      */
-    void sync(@Nonnull EnumDyeColor color, @Nonnull EntityPlayerMP player);
+    void sync(EnumDyeColor color, @Nonnull EntityPlayerMP player);
 
 }

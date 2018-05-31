@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "projecte:matter_block",
+    "data": 0
+  },
+  "pattern": [
+    "DD",
+    "DD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "result": {
+    "item": "projecte:item.pe_covalence_dust",
+    "count": 40,
+    "data": 0
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "minecraft:coal",
+      "data": 1
+    }
+  ]
+}

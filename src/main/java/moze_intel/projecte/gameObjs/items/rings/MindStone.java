@@ -3,13 +3,17 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -44,7 +48,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (stack.getItemDamage() != 0) 
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			if (getXP(player) > 0)
 			{
@@ -57,9 +61,10 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float par8, float par9, float par10)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0)
+		ItemStack stack = player.getHeldItem(hand);
+		if (!world.isRemote && !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			
@@ -69,12 +74,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 			}
 		}
 		
-		return EnumActionResult.SUCCESS;
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flags)
 	{
 		if(stack.getTagCompound() != null)
 			tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
@@ -147,12 +152,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return stack.getTagCompound().getInteger("StoredXP");
+		return ItemHelper.getOrCreateCompound(stack).getInteger("StoredXP");
 	}
 
 	private void setStoredXP(ItemStack stack, int XP)
 	{
-		stack.getTagCompound().setInteger("StoredXP", XP);
+		ItemHelper.getOrCreateCompound(stack).setInteger("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 
@@ -170,8 +175,8 @@ public class MindStone extends RingToggle implements IPedestalItem
 	private int removeStoredXP(ItemStack stack, int XP) 
 	{
 		int currentXP = getStoredXP(stack);
-		int result = 0;
-		int returnResult = 0;
+		int result;
+		int returnResult;
 		
 		if (currentXP < XP)
 		{
@@ -191,7 +196,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+		TileEntity te = world.getTileEntity(pos);
+		if(!(te instanceof DMPedestalTile))
+		{
+			return;
+		}
+		DMPedestalTile tile = (DMPedestalTile) te;
 		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
 		for (EntityXPOrb orb : orbs)
 		{
@@ -206,11 +216,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
 	{
-		if (!mindStone.hasTagCompound())
-		{
-			mindStone.setTagCompound(new NBTTagCompound());
-		}
-
 		long l = getStoredXP(mindStone);
 		if (l + orb.xpValue > Integer.MAX_VALUE)
 		{

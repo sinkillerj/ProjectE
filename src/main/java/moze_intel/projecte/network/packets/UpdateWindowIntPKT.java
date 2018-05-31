@@ -49,7 +49,7 @@ public class UpdateWindowIntPKT implements IMessage
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                    EntityPlayer player = Minecraft.getMinecraft().player;
                     if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
                     {
                         player.openContainer.updateProgressBar(msg.propId, msg.propVal);

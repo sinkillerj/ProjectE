@@ -1,10 +1,8 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.utils.AchievementHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -20,6 +18,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,7 +38,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public final List<ItemStack> knowledge = Lists.newArrayList();
+	public final List<ItemStack> knowledge = new ArrayList<>();
 	
 	public TransmutationInventory(EntityPlayer player)
 	{
@@ -61,9 +60,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void handleKnowledge(ItemStack stack)
 	{
-		if (stack.stackSize > 1)
+		if (stack.getCount() > 1)
 		{
-			stack.stackSize = 1;
+			stack.setCount(1);
 		}
 		
 		if (ItemHelper.isDamageable(stack))
@@ -74,6 +73,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		if (!provider.hasKnowledge(stack))
 		{
 			learnFlag = 300;
+			unlearnFlag = 0;
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
@@ -93,9 +93,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void handleUnlearn(ItemStack stack)
 	{
-		if (stack.stackSize > 1)
+		if (stack.getCount() > 1)
 		{
-			stack.stackSize = 1;
+			stack.setCount(1);
 		}
 
 		if (ItemHelper.isDamageable(stack))
@@ -106,6 +106,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		if (provider.hasKnowledge(stack))
 		{
 			unlearnFlag = 300;
+			learnFlag = 0;
 
 			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
@@ -146,14 +147,14 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		for (int i = 0; i < outputs.getSlots(); i++)
 		{
-			outputs.setStackInSlot(i, null);
+			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
 
-		ItemStack lockCopy = null;
+		ItemStack lockCopy = ItemStack.EMPTY;
 
-		Collections.sort(knowledge, Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
+		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
-		if (inputLocks.getStackInSlot(LOCK_INDEX) != null)
+		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty())
 		{
 			lockCopy = ItemHelper.getNormalizedStack(inputLocks.getStackInSlot(LOCK_INDEX));
 
@@ -236,7 +237,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		int matterCounter = 0;
 		int fuelCounter = 0;
 
-		if (lockCopy != null)
+		if (!lockCopy.isEmpty())
 		{
 			if (FuelMapper.isStackFuel(lockCopy))
 			{
@@ -284,7 +285,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 		else
 		{
-			outputs.setStackInSlot(slot, null);
+			outputs.setStackInSlot(slot, ItemStack.EMPTY);
 		}
 	}
 
@@ -299,7 +300,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 	
@@ -314,7 +315,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(provider.getEmc()));
+			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 

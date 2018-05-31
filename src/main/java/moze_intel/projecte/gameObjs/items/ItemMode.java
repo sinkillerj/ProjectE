@@ -1,26 +1,33 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class ItemMode extends ItemCharge implements IModeChanger
+public abstract class ItemMode extends ItemPE implements IModeChanger, IItemCharge
 {
 	private final byte numModes;
+	private final int numCharge;
 	private final String[] modes;
 	
-	public ItemMode(String unlocalName, byte numCharge, String[] modeDescrp)
+	public ItemMode(String unlocalName, int numCharge, String[] modeDescrp)
 	{
-		super(unlocalName, numCharge);
+		this.numCharge = numCharge;
+		this.setUnlocalizedName(unlocalName);
+		this.setMaxStackSize(1);
 		this.numModes = (byte) modeDescrp.length;
 		this.modes = modeDescrp;
 	}
@@ -28,18 +35,18 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte("Mode") : 0;
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte(TAG_MODE) : 0;
 	}
 	
 	private String getUnlocalizedMode(ItemStack stack)
 	{
-		return modes[stack.getTagCompound().getByte("Mode")];
+		return modes[stack.getTagCompound().getByte(TAG_MODE)];
 	}
 	
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.getTagCompound().setByte("Mode", (newMode > numModes - 1 ? 0 : newMode));
+		stack.getTagCompound().setByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override
@@ -52,18 +59,36 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger
 		changeMode(stack);
 
 		TextComponentTranslation modeName = new TextComponentTranslation(modes[getMode(stack)]);
-		player.addChatComponentMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
+		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
 		return true;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag advanced)
 	{
 		if (stack.hasTagCompound() && this.numModes > 0)
 		{
 			list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + I18n.format(getUnlocalizedMode(stack)));
 		}
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1.0D - (double) getCharge(stack) / numCharge;
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return numCharge;
 	}
 }
 

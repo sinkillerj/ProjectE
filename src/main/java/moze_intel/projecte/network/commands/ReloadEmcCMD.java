@@ -3,24 +3,25 @@ package moze_intel.projecte.network.commands;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 
-public class ReloadEmcCMD extends ProjectEBaseCMD
+public class ReloadEmcCMD extends CommandBase
 {
 	@Nonnull
 	@Override
-	public String getCommandName() 
+	public String getName()
 	{
-		return "projecte_reloadEMC";
+		return "reloadEMC";
 	}
 	
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "/projecte reloadEMC";
 	}
@@ -28,13 +29,13 @@ public class ReloadEmcCMD extends ProjectEBaseCMD
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
-		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.started"));
+		sender.sendMessage(new TextComponentTranslation("pe.command.reload.started"));
 
 		EMCMapper.clearMaps();
 		CustomEMCParser.init();
 		EMCMapper.map();
 
-		sender.addChatMessage(new TextComponentTranslation("pe.command.reload.success"));
+		sender.sendMessage(new TextComponentTranslation("pe.command.reload.success"));
 
 		PacketHandler.sendFragmentedEmcPacketToAll();
 	}

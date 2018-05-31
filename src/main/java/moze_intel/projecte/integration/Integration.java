@@ -11,7 +11,7 @@ public class Integration
 
 	public static void modChecks()
 	{
-		mtweak = Loader.isModLoaded("MineTweaker3");
+		mtweak = Loader.isModLoaded("minetweaker3");
 	}
 
 	public static void init()

@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:dm_furnace"
+    },
+    "title": {
+      "translate": "advancements.pe_dm_furnace"
+    },
+    "description": {
+      "translate": "advancements.pe_dm_furnace.desc"
+    }
+  },
+  "parent": "projecte:dark_matter_block",
+  "criteria": {
+    "dm_furnace": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:dm_furnace"
+          }
+        ]
+      }
+    }
+  }
+}

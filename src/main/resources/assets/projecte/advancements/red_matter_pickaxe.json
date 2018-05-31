@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:item.pe_rm_pick"
+    },
+    "title": {
+      "translate": "advancements.pe_rm_pick"
+    },
+    "description": {
+      "translate": "advancements.pe_rm_pick.desc"
+    }
+  },
+  "parent": "projecte:dark_matter_pickaxe",
+  "criteria": {
+    "rm_pick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:item.pe_rm_pick"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:relay_mk1"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "OSO",
+    "ODO",
+    "OOO"
+  ],
+  "key": {
+    "S": {
+      "item": "#BLOCKGLASSCOLORLESS"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "D": {
+      "item": "#BLOCKDIAMOND"
+    }
+  }
+}

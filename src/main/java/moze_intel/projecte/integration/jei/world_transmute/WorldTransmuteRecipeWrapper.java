@@ -13,7 +13,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,33 +68,10 @@ public class WorldTransmuteRecipeWrapper implements IRecipeWrapper {
         ingredients.setOutputs(FluidStack.class, outFluids);
     }
 
-    @Nonnull
-    @Override
-    public List<ItemStack> getInputs() {
-        return ImmutableList.of();
-    }
-
-    @Nonnull
-    @Override
-    public List<ItemStack> getOutputs() {
-        return ImmutableList.of();
-    }
-
-    @Nonnull
-    @Override
-    public List<FluidStack> getFluidInputs() { return ImmutableList.of(); }
-
-    @Nonnull
-    @Override
-    public List<FluidStack> getFluidOutputs() { return ImmutableList.of(); }
-
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {}
 
-    @Override
-    public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight) {}
-
-    @Nullable
+    @Nonnull
     @Override
     public List<String> getTooltipStrings(int mouseX, int mouseY) { return ImmutableList.of(); }
 

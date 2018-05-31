@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_soul_stone",
+    "data": 0
+  },
+  "pattern": [
+    "GGG",
+    "RLR",
+    "GGG"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "G": {
+      "item": "#DUSTGLOWSTONE"
+    },
+    "L": {
+      "item": "#GEMLAPIS"
+    }
+  }
+}

@@ -28,7 +28,7 @@ public class NovaCataclysm extends BlockTNT
 			if (state.getValue(EXPLODE))
 			{
 				EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
-				world.spawnEntityInWorld(cataclysmPrimed);
+				world.spawnEntity(cataclysmPrimed);
 				cataclysmPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 			}
 		}
@@ -41,7 +41,7 @@ public class NovaCataclysm extends BlockTNT
 		{
 			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
 			cataclysmPrimed.setFuse(world.rand.nextInt(cataclysmPrimed.getFuse() / 4) + cataclysmPrimed.getFuse() / 8);
-			world.spawnEntityInWorld(cataclysmPrimed);
+			world.spawnEntity(cataclysmPrimed);
 		}
 	}
 }

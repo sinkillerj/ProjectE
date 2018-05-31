@@ -1,0 +1,5 @@
+{
+  "conditions": {
+    "tome_enabled": "moze_intel.projecte.config.TomeEnabledFactory"
+  }
+}

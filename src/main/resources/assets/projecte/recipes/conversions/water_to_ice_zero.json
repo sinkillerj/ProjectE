@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "minecraft:ice"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_zero_ring"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

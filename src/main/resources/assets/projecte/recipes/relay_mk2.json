@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:relay_mk2"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "ODO",
+    "OAO",
+    "OOO"
+  ],
+  "key": {
+    "A": {
+      "item": "projecte:relay_mk1"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    },
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

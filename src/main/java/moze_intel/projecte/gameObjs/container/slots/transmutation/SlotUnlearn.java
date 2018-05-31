@@ -6,6 +6,8 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotUnlearn extends SlotItemHandler
 {
 	private final TransmutationInventory inv;
@@ -17,15 +19,15 @@ public class SlotUnlearn extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
 		return !this.getHasStack() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
+	public void putStack(@Nonnull ItemStack stack)
 	{
-		if (stack != null)
+		if (!stack.isEmpty())
 		{
 			inv.handleUnlearn(stack.copy());
 		}

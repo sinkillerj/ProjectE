@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.minetweaker;
 
 import minetweaker.IUndoableAction;
@@ -124,7 +125,7 @@ public class KleinStar
 	private static class RemoveRecipeAction implements IUndoableAction
 	{
 		IRecipe recipe = null;
-		ItemStack remove;
+		final ItemStack remove;
 
 		public RemoveRecipeAction(IItemStack rem)
 		{
@@ -182,3 +183,4 @@ public class KleinStar
 	}
 
 }
+*/

@@ -12,11 +12,12 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class WorldTransmutations
 {
-	private static final List<Entry> ENTRIES = Lists.newArrayList();
+	private static final List<Entry> ENTRIES = new ArrayList<>();
 
 	static
 	{

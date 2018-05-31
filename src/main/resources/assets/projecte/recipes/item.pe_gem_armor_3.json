@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:item.pe_gem_armor_3"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_rm_armor_3"
+    },
+    {
+      "item": "projecte:item.pe_klein_star",
+      "data": 5
+    },
+    {
+      "item": "projecte:item.pe_evertide_amulet"
+    },
+    {
+      "item": "projecte:item.pe_soul_stone",
+      "data": 0
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

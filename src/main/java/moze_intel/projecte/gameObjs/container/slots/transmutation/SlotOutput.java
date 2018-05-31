@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotOutput extends SlotItemHandler
 {
 	private final TransmutationInventory inv;
@@ -15,17 +17,18 @@ public class SlotOutput extends SlotItemHandler
 		super(inv, par2, par3, par4);
 		this.inv = inv;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int amount)
 	{
 		ItemStack stack = getStack().copy();
-		stack.stackSize = amount;
+		stack.setCount(amount);
 		int emcValue = amount * EMCHelper.getEmcValue(stack);
 		if (emcValue > inv.provider.getEmc()) {
 			//Requesting more emc than available
-			//Can not return `null` here or NPE in Container! Container expects stacksize=0-Itemstack for 'nothing'
-			stack.stackSize = 0;
+			//Container expects stacksize=0-Itemstack for 'nothing'
+			stack.setCount(0);
 			return stack;
 		}
 		inv.removeEmc(emcValue);
@@ -35,10 +38,10 @@ public class SlotOutput extends SlotItemHandler
 	}
 	
 	@Override
-	public void putStack(ItemStack stack) {}
+	public void putStack(@Nonnull ItemStack stack) {}
 	
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
 		return false;
 	}

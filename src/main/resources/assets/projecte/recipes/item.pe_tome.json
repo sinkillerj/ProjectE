@@ -1,0 +1,37 @@
+{
+  "conditions": [
+    {
+      "type": "projecte:tome_enabled"
+    }
+  ],
+  "result": {
+    "item": "projecte:item.pe_tome"
+  },
+  "pattern": [
+    "HML",
+    "KBK",
+    "LMH"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "H": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    },
+    "K": {
+      "item": "projecte:item.pe_klein_star",
+      "data": 5
+    },
+    "L": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 0
+    },
+    "M": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 1
+    }
+  }
+}

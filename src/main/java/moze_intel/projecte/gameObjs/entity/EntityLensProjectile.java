@@ -13,20 +13,20 @@ import net.minecraft.world.WorldServer;
 
 public class EntityLensProjectile extends PEProjectile
 {
-	private byte charge;
+	private int charge;
 	
 	public EntityLensProjectile(World world) 
 	{
 		super(world);
 	}
 
-	public EntityLensProjectile(World world, EntityPlayer entity, byte charge)
+	public EntityLensProjectile(World world, EntityPlayer entity, int charge)
 	{
 		super(world, entity);
 		this.charge = charge;
 	}
 
-	public EntityLensProjectile(World world, double x, double y, double z, byte charge) 
+	public EntityLensProjectile(World world, double x, double y, double z, int charge)
 	{
 		super(world, x, y, z);
 		this.charge = charge;
@@ -51,7 +51,7 @@ public class EntityLensProjectile extends PEProjectile
 		if (this.isInWater())
 		{
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			((WorldServer) worldObj).spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ, 2, 0, 0, 0, 0, new int[0]);
+			((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ, 2, 0, 0, 0, 0, new int[0]);
 			this.setDead();
 		}
 	}
@@ -60,18 +60,18 @@ public class EntityLensProjectile extends PEProjectile
 	protected void apply(RayTraceResult mop)
 	{
 		if (this.getEntityWorld().isRemote) return;
-		WorldHelper.createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+		WorldHelper.createNovaExplosion(world, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 	}
 	
 	public void writeEntityToNBT(NBTTagCompound nbt)
 	{
 		super.writeEntityToNBT(nbt);
-		nbt.setByte("Charge", charge);
+		nbt.setInteger("Charge", charge);
 	}
 	
 	public void readEntityFromNBT(NBTTagCompound nbt)
 	{
 		super.readEntityFromNBT(nbt);
-		charge = nbt.getByte("Charge");
+		charge = nbt.getInteger("Charge");
 	}
 }

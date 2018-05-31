@@ -3,38 +3,27 @@ package moze_intel.projecte.gameObjs.customRecipes;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemFlintAndSteel;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemShears;
-import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesCovalenceRepair implements IRecipe
+public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
-	private ItemStack output;
+	private ItemStack output = ItemStack.EMPTY;
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		List<ItemStack> dust = new ArrayList<>();
-		ItemStack tool = null;
+		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
 		int dustEmc = 0;
 		int emcPerDurability = 0;
@@ -43,7 +32,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		{
 			ItemStack input = inv.getStackInSlot(i);
 			
-			if (input == null)
+			if (input.isEmpty())
 			{
 				continue;
 			}
@@ -67,7 +56,7 @@ public class RecipesCovalenceRepair implements IRecipe
 			}
 		}
 		
-		if (tool == null || !foundItem || dust.size() == 0)
+		if (tool.isEmpty() || !foundItem || dust.size() == 0)
 		{
 			return false;
 		}
@@ -84,6 +73,7 @@ public class RecipesCovalenceRepair implements IRecipe
 		return true;
 	}
 	
+	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
 	{
@@ -91,11 +81,11 @@ public class RecipesCovalenceRepair implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize() 
-	{
-		return 10;
+	public boolean canFit(int width, int height) {
+		return width > 1 || height > 1;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() 
 	{
@@ -104,7 +94,7 @@ public class RecipesCovalenceRepair implements IRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(@Nonnull InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

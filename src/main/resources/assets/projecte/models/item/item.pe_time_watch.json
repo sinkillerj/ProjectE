@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecte:items/rings/time_watch_off"
+  },
+  "overrides": [{
+    "predicate": {
+      "projecte:active": 1
+    },
+    "model": "projecte:item/item.pe_time_watch_on"
+  }]
+}

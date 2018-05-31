@@ -10,6 +10,7 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -42,6 +43,9 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,14 +57,12 @@ public abstract class PEToolBase extends ItemMode
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
 	protected String peToolMaterial;
-	protected final Set<Material> harvestMaterials;
-	protected final Set<String> toolClasses;
+	protected final Set<Material> harvestMaterials = new HashSet<>();
+	protected final Set<String> toolClasses = new HashSet<>();
 
 	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
 	{
 		super(unlocalName, numCharge, modeDescrp);
-		harvestMaterials = Sets.newHashSet();
-		toolClasses = Sets.newHashSet();
 	}
 
 	@Override
@@ -70,7 +72,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass)
+	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if (this.toolClasses.contains(toolClass))
 		{
@@ -104,13 +106,13 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost, EnumHand hand)
 	{
-		byte charge = getCharge(stack);
-		if (charge == 0 || world.isRemote || ProjectEConfig.disableAllRadiusMining)
+		int charge = getCharge(stack);
+		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
@@ -170,7 +172,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sidehit, int emcCost)
 	{
-		byte charge = this.getCharge(stack);
+		int charge = this.getCharge(stack);
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
@@ -257,7 +259,7 @@ public abstract class PEToolBase extends ItemMode
 		BlockPos hitPos = mop.getBlockPos();
 		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
-		if (!ProjectEConfig.disableAllRadiusMining) {
+		if (!ProjectEConfig.items.disableAllRadiusMining) {
 			switch (mode) {
 				case 1: // 3x Tallshot
 					box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
@@ -281,7 +283,7 @@ public abstract class PEToolBase extends ItemMode
 
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
@@ -290,8 +292,8 @@ public abstract class PEToolBase extends ItemMode
 
 			if (b != Blocks.AIR
 					&& state.getBlockHardness(world, digPos) != -1
-					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos)
-					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack)))
+					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
+					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos))
 			{
 				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
 				world.setBlockToAir(digPos);
@@ -306,7 +308,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost, EnumHand hand)
 	{
-		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.disableAllRadiusMining)
+		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -321,7 +323,7 @@ public abstract class PEToolBase extends ItemMode
 		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, this.getCharge(stack))
 				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
@@ -359,7 +361,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		byte charge = this.getCharge(stack);
+		int charge = this.getCharge(stack);
 		float totalDmg = baseDmg;
 
 		if (charge > 0)
@@ -381,9 +383,9 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		byte charge = getCharge(stack);
+		int charge = getCharge(stack);
 		float factor = 2.5F * charge;
-		AxisAlignedBB aabb = player.getEntityBoundingBox().expand(factor, factor, factor);
+		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(factor);
 		List<Entity> toAttack = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, aabb);
 		DamageSource src = DamageSource.causePlayerDamage(player);
 		src.setDamageBypassesArmor();
@@ -440,14 +442,14 @@ public abstract class PEToolBase extends ItemMode
 		World world = player.getEntityWorld();
 		if (!world.isRemote)
 		{
-			byte charge = this.getCharge(stack);
+			int charge = this.getCharge(stack);
 
 			int offset = ((int) Math.pow(2, 2 + charge));
 
-			AxisAlignedBB bBox = player.getEntityBoundingBox().expand(offset, offset / 2, offset);
+			AxisAlignedBB bBox = player.getEntityBoundingBox().grow(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
 
-			List<ItemStack> drops = Lists.newArrayList();
+			List<ItemStack> drops = new ArrayList<>();
 
 			for (Entity ent : list)
 			{
@@ -467,7 +469,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						for (ItemStack drop : entDrops)
 						{
-							drop.stackSize *= 2;
+							drop.grow(drop.getCount());
 						}
 
 						drops.addAll(entDrops);
@@ -475,7 +477,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 				if (Math.random() < 0.01)
 				{
-					Entity e = EntityList.createEntityByName(EntityList.getEntityString(ent), world);
+					Entity e = EntityList.createEntityByIDFromName(EntityList.getKey(ent), world);
 
 					if (e instanceof EntityLiving)
 					{
@@ -491,8 +493,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						((EntityAgeable) e).setGrowingAge(-24000);
 					}
-
-					world.spawnEntityInWorld(e);
+					world.spawnEntity(e);
 				}
 			}
 
@@ -501,12 +502,21 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
+	private static boolean isSameOre(IBlockState target, IBlockState world)
+	{
+		if (target.getBlock() instanceof BlockRedstoneOre)
+		{
+			return world.getBlock() instanceof BlockRedstoneOre;
+		}
+		return target == world;
+	}
+
 	/**
 	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
 	 */
 	protected void tryVeinMine(ItemStack stack, EntityPlayer player, RayTraceResult mop)
 	{
-		if (player.getEntityWorld().isRemote || ProjectEConfig.disableAllRadiusMining)
+		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -518,12 +528,12 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<>();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
 			IBlockState state = player.getEntityWorld().getBlockState(pos);
-			if (state == target)
+			if (isSameOre(target, state))
 			{
 				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state, drops, 0);
 			}
@@ -541,13 +551,13 @@ public abstract class PEToolBase extends ItemMode
 	 * Mines all ore veins in a Box around the player.
 	 */
 	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player, EnumHand hand) {
-		if (player.getEntityWorld().isRemote || ProjectEConfig.disableAllRadiusMining)
+		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
 		int offset = this.getCharge(stack) + 3;
-		AxisAlignedBB box = player.getEntityBoundingBox().expand(offset, offset, offset);
-		List<ItemStack> drops = Lists.newArrayList();
+		AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
+		List<ItemStack> drops = new ArrayList<>();
 		World world = player.getEntityWorld();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))

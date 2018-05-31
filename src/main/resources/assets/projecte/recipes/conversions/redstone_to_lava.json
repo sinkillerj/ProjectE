@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "minecraft:lava_bucket"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_volcanite_amulet"
+    },
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "#DUSTREDSTONE"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

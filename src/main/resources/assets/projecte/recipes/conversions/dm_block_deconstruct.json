@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "projecte:item.pe_matter",
+    "data": 0,
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "projecte:matter_block",
+      "data": 0
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

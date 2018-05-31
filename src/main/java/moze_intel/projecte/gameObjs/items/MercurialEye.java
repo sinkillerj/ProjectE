@@ -70,13 +70,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 
 			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 			{
 				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 			}
 
 			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
 					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
@@ -90,13 +90,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
+			ItemStack stack = player.getHeldItem(hand);
 			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-			if (inventory.getStackInSlot(0) == null || inventory.getStackInSlot(1) == null)
+			if (inventory.getStackInSlot(0).isEmpty()|| inventory.getStackInSlot(1).isEmpty())
 			{
 				return EnumActionResult.FAIL;
 			}
@@ -115,64 +116,64 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
 			int reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
-			byte charge = getCharge(stack);
+			int charge = getCharge(stack);
 			byte mode = this.getMode(stack);
 
 			Vec3d look = player.getLookVec();
 
 			int dX = 0, dY = 0, dZ = 0;
 
-			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
-			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
+			boolean lookingDown = look.y >= -1 && look.y <= -WALL_MODE;
+			boolean lookingUp   = look.y <=  1 && look.y >=  WALL_MODE;
 
-			boolean lookingAlongZ = facing.getAxis() == EnumFacing.Axis.Z;
+			boolean lookingAlongZ = player.getHorizontalFacing().getAxis() == EnumFacing.Axis.Z;
 
 			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
 			switch (facing) {
 				case UP:
 					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
-						box = box.expand(charge, 0, charge);
+						box = box.expand(charge * 2, 0, charge * 2).offset(-charge, 0, -charge);
 						dY = 1;
 					}
 					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
+						box = box.expand(charge * 2, charge * 2, 0).offset(-charge, 1, 0);
 					else
-						box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
+						box = box.expand(0, charge * 2, charge * 2).offset(0, 1, -charge);
 
 					break;
 
 				case DOWN:
 					if (lookingUp || mode == TRANSMUTATION_MODE)
 					{
-						box = box.expand(charge, 0, charge);
+						box = box.expand(charge * 2, 0, charge * 2).offset(-charge, 0, -charge);
 						dY = -1;
 
 					}
 					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
+						box = box.expand(charge *2, charge * 2, 0).offset(-charge, -1 - charge*2, 0);
 					else
-						box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+						box = box.expand(0, charge * 2, charge * 2).offset(0, -1 - charge*2, -charge);
 
 					break;
 
 				case EAST:
-					box = box.expand(0, charge, charge);
+					box = box.expand(0, charge * 2, charge * 2).offset(0, -charge, -charge);
 					dX = 1;
 					break;
 
 				case WEST:
-					box = box.expand(0, charge, charge);
+					box = box.expand(0, charge * 2, charge * 2).offset(0, -charge, -charge);
 					dX = -1;
 					break;
 
 				case SOUTH:
-					box = box.expand(charge, charge, 0);
+					box = box.expand(charge * 2, charge * 2, 0).offset(-charge, -charge, 0);
 					dZ = 1;
 					break;
 
 				case NORTH:
-					box = box.expand(charge, charge, 0);
+					box = box.expand(charge * 2, charge * 2, 0).offset(-charge, -charge, 0);
 					dZ = -1;
 					break;
 			}
@@ -189,7 +190,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                 {
                     if (kleinEmc < reqEmc)
                         break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                     {
                         removeKleinEMC(stack, reqEmc);
                         kleinEmc -= reqEmc;
@@ -206,10 +207,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                     if (emc > reqEmc)
                     {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                         {
                             int difference = emc - reqEmc;
-                            kleinEmc += MathHelper.clamp_double(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
+                            kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
                             addKleinEMC(stack, difference);
                         }
                     }
@@ -219,7 +220,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                         if (kleinEmc >= difference)
                         {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState))
+                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                             {
                                 kleinEmc -= difference;
                                 removeKleinEMC(stack, difference);
@@ -228,13 +229,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                     }
                     else
                     {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState);
+                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand);
                     }
                 }
 
             }
 
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
 		}
 
 		return EnumActionResult.SUCCESS;
@@ -246,7 +247,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		ItemStack stack = handler.getStackInSlot(0);
 
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 		{
 			((IItemEmc) stack.getItem()).addEmc(stack, amount);
 		}
@@ -258,7 +259,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		ItemStack stack = handler.getStackInSlot(0);
 
-		if (stack != null && stack.getItem() instanceof IItemEmc)
+		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 		{
 			((IItemEmc) stack.getItem()).extractEmc(stack, amount);
 		}

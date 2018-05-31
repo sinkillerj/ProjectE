@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
-import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -101,6 +100,7 @@ public class CondenserContainer extends Container
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -108,7 +108,7 @@ public class CondenserContainer extends Container
 		
 		if (slot == null || !slot.getHasStack())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		ItemStack stack = slot.getStack();
@@ -118,22 +118,21 @@ public class CondenserContainer extends Container
 		{
 			if (!this.mergeItemStack(stack, 92, 127, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else if (!EMCHelper.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 91, false))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		
 		else slot.onSlotChanged();
-		slot.onPickupFromSlot(player, stack);
-		return newStack;
+		return slot.onTake(player, stack);
 	}
 
 	@Override
@@ -149,18 +148,19 @@ public class CondenserContainer extends Container
 		tile.numPlayersUsing--;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot == 0 && tile.getLock().getStackInSlot(0) != null)
+		if (slot == 0 && !tile.getLock().getStackInSlot(0).isEmpty())
 		{
 			if (!player.getEntityWorld().isRemote)
 			{
-				tile.getLock().setStackInSlot(0, null);
+				tile.getLock().setStackInSlot(0, ItemStack.EMPTY);
 				this.detectAndSendChanges();
 			}
 
-			return null;
+			return ItemStack.EMPTY;
 		} else return super.slotClick(slot, button, flag, player);
 	}
 

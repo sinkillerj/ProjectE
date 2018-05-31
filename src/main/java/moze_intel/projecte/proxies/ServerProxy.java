@@ -6,15 +6,13 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ServerProxy implements IProxy
 {
-	public void registerKeyBinds() {} 
-	public void registerRenderers() {}
-	public void registerLayerRenderers() {}
-	public void registerClientOnlyEvents() {}
-	public void registerModels() {}
-	public void initializeManual() {}
-	public void clearClientKnowledge() {}
-	public IKnowledgeProvider getClientTransmutationProps() { return null; }
-	public IAlchBagProvider getClientBagProps() { return null; }
-	public EntityPlayer getClientPlayer() { return null; }
-	public boolean isJumpPressed() { return false; }
+	@Override public void registerKeyBinds() {}
+	@Override public void registerRenderers() {}
+	@Override public void registerLayerRenderers() {}
+	@Override public void initializeManual() {}
+	@Override public void clearClientKnowledge() {}
+	@Override public IKnowledgeProvider getClientTransmutationProps() { return null; }
+	@Override public IAlchBagProvider getClientBagProps() { return null; }
+	@Override public EntityPlayer getClientPlayer() { return null; }
+	@Override public boolean isJumpPressed() { return false; }
 }

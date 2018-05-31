@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -15,13 +16,14 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class InternalAbilities
 {
 	@CapabilityInject(InternalAbilities.class)
 	public static final Capability<InternalAbilities> CAPABILITY = null;
-	public static final ResourceLocation NAME = new ResourceLocation("projecte", "internal_abilities");
+	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_abilities");
 
 	private final EntityPlayerMP player;
 	private boolean swrgOverride = false;
@@ -36,7 +38,7 @@ public final class InternalAbilities
 	}
 
 	public void resetProjectileCooldown() {
-		projectileCooldown = ProjectEConfig.projectileCooldown;
+		projectileCooldown = ProjectEConfig.misc.projectileCooldown;
 	}
 
 	public int getProjectileCooldown() {
@@ -44,7 +46,7 @@ public final class InternalAbilities
 	}
 
 	public void resetGemCooldown() {
-		gemChestCooldown = ProjectEConfig.gemChestCooldown;
+		gemChestCooldown = ProjectEConfig.misc.gemChestCooldown;
 	}
 
 	public int getGemCooldown() {
@@ -97,22 +99,22 @@ public final class InternalAbilities
 		{
 			if (player.isImmuneToFire())
 			{
-				PlayerHelper.setPlayerFireImmunity(player, false);
+				player.isImmuneToFire = false;
 			}
 		}
 		else
 		{
 			if (!player.isImmuneToFire())
 			{
-				PlayerHelper.setPlayerFireImmunity(player, true);
+				player.isImmuneToFire = true;
 			}
 		}
 
 		if (!shouldPlayerStep())
 		{
-			if (player.stepHeight > 0.5F)
+			if (player.stepHeight > 0.6F)
 			{
-				PlayerHelper.updateClientServerStepHeight(player, 0.5F);
+				PlayerHelper.updateClientServerStepHeight(player, 0.6F);
 			}
 		}
 		else
@@ -128,7 +130,7 @@ public final class InternalAbilities
 	{
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(player, player.capabilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.5F);
+		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.6F);
 	}
 
 	private boolean shouldPlayerFly()
@@ -145,7 +147,7 @@ public final class InternalAbilities
 
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFlightProvider
 					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
@@ -157,7 +159,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFlightProvider
 					&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 			{
@@ -171,7 +173,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFlightProvider
 						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
 				{
@@ -193,7 +195,7 @@ public final class InternalAbilities
 
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFireProtector
 					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 			{
@@ -205,7 +207,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IFireProtector
 					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 			{
@@ -219,7 +221,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFireProtector
 						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 				{
@@ -235,7 +237,7 @@ public final class InternalAbilities
 	{
 		for (ItemStack stack : player.inventory.armorInventory)
 		{
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IStepAssister
 					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
@@ -247,7 +249,7 @@ public final class InternalAbilities
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (stack != null
+			if (!stack.isEmpty()
 					&& stack.getItem() instanceof IStepAssister
 					&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 			{
@@ -261,7 +263,7 @@ public final class InternalAbilities
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
 				ItemStack stack = baubles.getStackInSlot(i);
-				if (stack != null
+				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IStepAssister
 						&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
 				{
@@ -277,7 +279,7 @@ public final class InternalAbilities
 	{
 		for (int i = 0; i <= 8; i++)
 		{
-			if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg)
+			if (!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == ObjHandler.swrg)
 			{
 				return true;
 			}
@@ -288,7 +290,7 @@ public final class InternalAbilities
 		{
 			for (int i = 0; i < baubles.getSlots(); i++)
 			{
-				if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
 				{
 					return true;
 				}
@@ -317,13 +319,13 @@ public final class InternalAbilities
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
 		{
 			return capability == CAPABILITY;
 		}
 
 		@Override
-		public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 		{
 			if (capability == CAPABILITY)
 				return CAPABILITY.cast(capInstance);

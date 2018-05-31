@@ -1,6 +1,8 @@
 package moze_intel.projecte.events;
 
 import com.google.common.math.LongMath;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -8,7 +10,10 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -21,7 +26,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
 public class ToolTipEvent 
 {
 	@SubscribeEvent
@@ -30,8 +35,9 @@ public class ToolTipEvent
 		ItemStack current = event.getItemStack();
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
+		EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
 
-		if (ProjectEConfig.showPedestalTooltip
+		if (ProjectEConfig.misc.pedestalToolTips
 			&& currentItem instanceof IPedestalItem)
 		{
 			event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
@@ -46,7 +52,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.showODNames)
+		if (ProjectEConfig.misc.odToolTips)
 		{
 			for (int id : OreDictionary.getOreIDs(current))
 			{
@@ -57,7 +63,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.showEMCTooltip)
+		if (ProjectEConfig.misc.emcToolTips)
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
@@ -66,12 +72,12 @@ public class ToolTipEvent
 				event.getToolTip().add(TextFormatting.YELLOW +
 						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, 1));
 
-				if (current.stackSize > 1)
+				if (current.getCount() > 1)
 				{
 					long total;
 					try
 					{
-						total = LongMath.checkedMultiply(value, current.stackSize);
+						total = LongMath.checkedMultiply(value, current.getCount());
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
@@ -81,22 +87,28 @@ public class ToolTipEvent
 					}
 					else
 					{
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.stackSize) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.stackSize));
+						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
 					}
+				}
 
+				if (GuiScreen.isShiftKeyDown()
+						&& clientPlayer != null
+						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(current))
+				{
+					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.has_knowledge"));
 				}
 			}
 		}
 
-		if (ProjectEConfig.showStatTooltip)
+		if (ProjectEConfig.misc.statToolTips)
 		{
-			/**
+			/*
 			 * Collector ToolTips
 			 */
 			String unit = I18n.format("pe.emc.name");
 			String rate = I18n.format("pe.emc.rate");
 
-			if (currentBlock == ObjHandler.energyCollector)
+			if (currentBlock == ObjHandler.collectorMK1)
 			{
 				event.getToolTip().add(TextFormatting.DARK_PURPLE
 						+ String.format(I18n.format("pe.emc.maxgenrate_tooltip")
@@ -126,7 +138,7 @@ public class ToolTipEvent
 						+ TextFormatting.BLUE + " %d " + unit, Constants.COLLECTOR_MK3_MAX));
 			}
 
-			/**
+			/*
 			 * Relay ToolTips
 			 */
 			if (currentBlock == ObjHandler.relay)
@@ -164,7 +176,7 @@ public class ToolTipEvent
 		{
 			if (current.getItem() instanceof IItemEmc || current.getTagCompound().hasKey("StoredEMC"))
 			{
-				double value = 0;
+				double value;
 				if (current.getTagCompound().hasKey("StoredEMC"))
 				{
 					value = current.getTagCompound().getDouble("StoredEMC");

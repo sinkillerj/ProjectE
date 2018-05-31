@@ -6,6 +6,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory
@@ -25,7 +28,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     public WorldTransmuteRecipeCategory(IGuiHelper guiHelper)
     {
         background = guiHelper.createBlankDrawable(175, 48);
-        arrow = guiHelper.createDrawable(new ResourceLocation("projecte:textures/gui/arrow.png"), 0, 0, 32, 32);
+        arrow = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 32, 32);
         localizedName = I18n.format("pe.nei.worldtransmute");
     }
 
@@ -45,9 +48,22 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
 
     @Nonnull
     @Override
+    public String getModName() {
+        return PECore.MODNAME;
+    }
+
+    @Nonnull
+    @Override
     public IDrawable getBackground()
     {
         return background;
+    }
+
+    @Nullable
+    @Override
+    public IDrawable getIcon()
+    {
+        return null;
     }
 
     @Override
@@ -55,12 +71,6 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     {
         arrow.draw(minecraft, -30, 0);
     }
-
-    @Override
-    public void drawAnimations(@Nonnull Minecraft minecraft) {}
-
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {}
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients)
@@ -87,22 +97,28 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         }
 
         xPos = 128;
-        for (ItemStack s : ingredients.getOutputs(ItemStack.class))
+        for (List<ItemStack> stacks : ingredients.getOutputs(ItemStack.class))
         {
             recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
-            recipeLayout.getItemStacks().set(itemSlots, s);
+            recipeLayout.getItemStacks().set(itemSlots, stacks);
             itemSlots++;
             xPos += 16;
         }
 
         xPos = 128;
-        for (FluidStack s : ingredients.getOutputs(FluidStack.class))
+        for (List<FluidStack> stacks : ingredients.getOutputs(FluidStack.class))
         {
             recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, 1000, false, null);
-            recipeLayout.getFluidStacks().set(fluidSlots, s);
+            recipeLayout.getFluidStacks().set(fluidSlots, stacks);
             fluidSlots++;
             xPos += 16;
         }
 
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+        return Collections.emptyList();
     }
 }

@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -36,6 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger
@@ -52,7 +54,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			fireArrow(stack, player.worldObj, player, 4F);
+			fireArrow(stack, player.world, player, 4F);
 		}
 	}
 
@@ -66,7 +68,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	public void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
 	{
 		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY
-				&& evt.getItemStack() != null && evt.getItemStack().getItem() == this)
+				&& !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this)
 		{
 			fireVolley(evt.getItemStack(), evt.getEntityPlayer());
 		}
@@ -75,7 +77,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		if (!player.worldObj.isRemote)
+		if (!player.world.isRemote)
 		{
 			fireVolley(stack, player);
 		}
@@ -93,13 +95,13 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		if (!world.isRemote)
 		{
-			fireArrow(stack, world, player, 1F);
+			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	private void fireArrow(ItemStack ring, World world, EntityLivingBase shooter, float inaccuracy)
@@ -110,16 +112,22 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		{
 			arrow.setAim(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F));
-			world.spawnEntityInWorld(arrow);
+			world.spawnEntity(arrow);
 		}
 	}
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.archangelPedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			TileEntity te = world.getTileEntity(pos);
+			if (!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+
+			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
 				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
@@ -134,10 +142,10 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 						arrow.motionZ = 0;
 						arrow.motionY = 1;
 						arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
-						world.spawnEntityInWorld(arrow);
+						world.spawnEntity(arrow);
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.archangelPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.archangelPedCooldown);
 			}
 			else
 			{
@@ -151,10 +159,10 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.archangelPedCooldown != -1) {
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.archangelPedCooldown != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangelPedCooldown)));
 		}
 		return list;
 	}

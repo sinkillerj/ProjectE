@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:condenser_mk2"
+  },
+  "pattern": [
+    "RDR",
+    "DCD",
+    "RDR"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:matter_block",
+      "data": 1
+    },
+    "C": {
+      "item": "projecte:condenser_mk1"
+    },
+    "D": {
+      "item": "projecte:matter_block",
+      "data": 0
+    }
+  }
+}

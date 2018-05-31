@@ -24,14 +24,22 @@ public class GUICollectorMK1 extends GuiContainer
 	}
 
 	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(Integer.toString(container.emc), 60, 32, 4210752);
+		this.fontRenderer.drawString(Integer.toString(container.emc), 60, 32, 4210752);
 		
 		double kleinCharge = container.kleinEmc;
 
 		if (kleinCharge > 0)
-			this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 60, 44, 4210752);
+			this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 60, 44, 4210752);
 	}
 
 	@Override

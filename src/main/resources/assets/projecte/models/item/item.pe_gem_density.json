@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecte:items/dense_gem_off"
+  },
+  "overrides": [{
+    "predicate": {
+      "projecte:active": 1
+    },
+    "model": "projecte:item/item.pe_gem_density_on"
+  }]
+}

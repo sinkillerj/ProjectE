@@ -2,7 +2,6 @@ package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -42,7 +41,7 @@ public class SyncBagDataPKT implements IMessage
 				@Override
 				public void run() {
 					PECore.proxy.getClientBagProps().deserializeNBT(message.nbt);
-					PELogger.logDebug("** RECEIVED BAGS CLIENTSIDE **");
+					PECore.debugLog("** RECEIVED BAGS CLIENTSIDE **");
 				}
 			});
 

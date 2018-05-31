@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:item.pe_alchemical_bag",
+    "data": 7
+  },
+  "pattern": [
+    "CCC",
+    "WAW",
+    "WWW"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "projecte:alchemical_chest"
+    },
+    "C": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    },
+    "W": {
+      "item": "minecraft:wool",
+      "data": 7
+    }
+  }
+}

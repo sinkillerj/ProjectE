@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:item.pe_klein_star",
+      "data": 5
+    },
+    "title": {
+      "translate": "advancements.pe_klein_big"
+    },
+    "description": {
+      "translate": "advancements.pe_klein_big.desc"
+    }
+  },
+  "parent": "projecte:klein_star_ein",
+  "criteria": {
+    "klein_star": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:item.pe_klein_star",
+            "data": 5
+          }
+        ]
+      }
+    }
+  }
+}

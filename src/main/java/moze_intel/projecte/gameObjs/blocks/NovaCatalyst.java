@@ -28,7 +28,7 @@ public class NovaCatalyst extends BlockTNT
 			if (state.getValue(EXPLODE))
 			{
 				EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
-				world.spawnEntityInWorld(catalystPrimed);
+				world.spawnEntity(catalystPrimed);
 				catalystPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 			}
 		}
@@ -41,7 +41,7 @@ public class NovaCatalyst extends BlockTNT
 		{
 			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
 			catalystPrimed.setFuse(world.rand.nextInt(catalystPrimed.getFuse() / 4) + catalystPrimed.getFuse() / 8);
-			world.spawnEntityInWorld(catalystPrimed);
+			world.spawnEntity(catalystPrimed);
 		}
 	}
 }

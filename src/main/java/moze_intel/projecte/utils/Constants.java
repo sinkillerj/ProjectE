@@ -1,14 +1,11 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.text.DecimalFormat;
 
 public final class Constants 
 {
 	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
-	public static final float PLAYER_WALK_SPEED = 0.1F;
-	
+
 	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
 	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
@@ -16,7 +13,7 @@ public final class Constants
 	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
 	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 	
-	public static final int TILE_MAX_EMC = 1073741824;
+	public static final int TILE_MAX_EMC = Integer.MAX_VALUE;
 	
 	public static final int COLLECTOR_MK1_MAX = 10000;
 	public static final int COLLECTOR_MK2_MAX = 30000;
@@ -61,31 +58,4 @@ public final class Constants
 	public static final int MAX_VEIN_SIZE = 250;
 	
 	public static final int ENCH_EMC_BONUS = 5000;
-
-	public static final ImmutableMap<String, String> SPACE_STRIP_NAME_MAP;
-
-	static {
-		ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-		builder.put("Alchemical Chest", "alchemical_chest");
-		builder.put("Interdiction Torch", "interdiction_torch");
-		builder.put("Transmutation Stone", "transmutation_table");
-		builder.put("Condenser", "condenser_mk1");
-		builder.put("Condenser MK2", "condenser_mk2");
-		builder.put("RM Furnace", "rm_furnace");
-		builder.put("RM Furnace Lit", "rm_furnace_lit");
-		builder.put("DM Furnace", "dm_furnace");
-		builder.put("DM Furnace Lit", "dm_furnace_lit");
-		builder.put("DM Pedestal", "dm_pedestal");
-		builder.put("Matter Block", "matter_block");
-		builder.put("Fuel Block", "fuel_block");
-		builder.put("Collector MK1", "collector_mk1");
-		builder.put("Collector MK2", "collector_mk2");
-		builder.put("Collector MK3", "collector_mk3");
-		builder.put("Relay MK1", "relay_mk1");
-		builder.put("Realy MK2", "relay_mk2");
-		builder.put("Relay MK3", "relay_mk3");
-		builder.put("Nova Catalyst", "nova_catalyst");
-		builder.put("Nova Cataclysm", "nova_cataclysm");
-		SPACE_STRIP_NAME_MAP = builder.build();
-	}
 }

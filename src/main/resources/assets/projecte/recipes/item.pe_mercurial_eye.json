@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "projecte:item.pe_mercurial_eye"
+  },
+  "pattern": [
+    "OBO",
+    "BRB",
+    "BDB"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:brick_block"
+    },
+    "R": {
+      "item": "projecte:item.pe_matter",
+      "data": 1
+    },
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    }
+  }
+}

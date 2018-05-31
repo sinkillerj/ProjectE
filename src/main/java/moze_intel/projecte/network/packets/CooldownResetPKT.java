@@ -24,7 +24,7 @@ public class CooldownResetPKT implements IMessage {
 				@Override
 				public void run()
 				{
-					Minecraft.getMinecraft().thePlayer.resetCooldown();
+					Minecraft.getMinecraft().player.resetCooldown();
 				}
 			});
 			return null;

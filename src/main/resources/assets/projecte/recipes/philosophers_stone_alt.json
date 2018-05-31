@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_philosophers_stone"
+  },
+  "type": "forge:ore_shaped",
+  "group": "projecte:philosophers_stone",
+  "pattern": [
+    "GRG",
+    "RDR",
+    "GRG"
+  ],
+  "key": {
+    "R": {
+      "item": "#DUSTREDSTONE"
+    },
+    "G": {
+      "item": "#DUSTGLOWSTONE"
+    },
+    "D": {
+      "item": "#GEMDIAMOND"
+    }
+  }
+}

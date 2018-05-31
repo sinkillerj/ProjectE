@@ -22,7 +22,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer<AlchChestTile>
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void renderTileEntityAt(@Nonnull AlchChestTile chestTile, double x, double y, double z, float par8, int par9)
+	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage, float unused)
 	{
 		EnumFacing direction = null;
 		if (chestTile.getWorld() != null && !chestTile.isInvalid())
@@ -54,7 +54,7 @@ public class ChestRenderer extends TileEntitySpecialRenderer<AlchChestTile>
 
 		GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-		float adjustedLidAngle = chestTile.prevLidAngle + (chestTile.lidAngle - chestTile.prevLidAngle) * par8;
+		float adjustedLidAngle = chestTile.prevLidAngle + (chestTile.lidAngle - chestTile.prevLidAngle) * partialTicks;
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
 		model.chestLid.rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);

@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:collector_mk1"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "GTG",
+    "GDG",
+    "GFG"
+  ],
+  "key": {
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "D": {
+      "item": "#BLOCKDIAMOND"
+    },
+    "T": {
+      "item": "#BLOCKGLASSCOLORLESS"
+    }
+  }
+}

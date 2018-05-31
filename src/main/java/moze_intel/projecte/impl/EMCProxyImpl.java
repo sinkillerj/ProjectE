@@ -1,10 +1,10 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public class EMCProxyImpl implements IEMCProxy
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(stack, value);
-        PELogger.logInfo("Mod %s registered emc value %d for itemstack %s", Loader.instance().activeModContainer().getModId(), value, stack.toString());
+        PECore.LOGGER.info("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class EMCProxyImpl implements IEMCProxy
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(o, value);
-        PELogger.logInfo("Mod %s registered emc value %d for Object %s", Loader.instance().activeModContainer().getModId(), value, o);
+        PECore.LOGGER.info("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
     }
 
     @Override

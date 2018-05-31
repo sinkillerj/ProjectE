@@ -12,13 +12,18 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 {
 	public CataliticLens() 
 	{
-		super("catalitic_lens", (byte)7);
-		this.setNoRepair();
+		this.setUnlocalizedName("catalitic_lens");
 	}
 	
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		return ((IProjectileShooter) ObjHandler.hyperLens).shootProjectile(player, stack, hand);
+	}
+
+	@Override
+	public int getNumCharges(@Nonnull ItemStack stack)
+	{
+		return 7;
 	}
 }

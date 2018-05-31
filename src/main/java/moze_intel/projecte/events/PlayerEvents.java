@@ -13,8 +13,6 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.network.packets.SyncCovalencePKT;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +39,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class PlayerEvents
 {
 	// On death or return from end, copy the capability data
@@ -79,7 +77,7 @@ public class PlayerEvents
 		if (evt.getObject() instanceof EntityPlayer)
 		{
 			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
-			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider());
+			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider((EntityPlayer) evt.getObject()));
 
 			if (evt.getObject() instanceof EntityPlayerMP)
 			{
@@ -93,19 +91,19 @@ public class PlayerEvents
 	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
-
 		PacketHandler.sendFragmentedEmcPacket(player);
+
 		PacketHandler.sendTo(new CheckUpdatePKT(), player);
 
 		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
 		knowledge.sync(player);
-		PlayerHelper.updateScore(player, AchievementHandler.SCOREBOARD_EMC, MathHelper.floor_double(knowledge.getEmc()));
+		PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
 
-		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.covalenceLoss), player);
+		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.difficulty.covalenceLoss), player);
 
-		PELogger.logInfo("Sent knowledge and bag data to %s", player.getName());
+		PECore.LOGGER.info("Sent knowledge and bag data to {}", player.getName());
 	}
 
 	@SubscribeEvent
@@ -115,7 +113,7 @@ public class PlayerEvents
 			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.getEntity().getUniqueID());
-			PELogger.logDebug("Clearing offline data cache in preparation to load online data");
+			PECore.debugLog("Clearing offline data cache in preparation to load online data");
 		}
 	}
 
@@ -127,7 +125,7 @@ public class PlayerEvents
 			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
 			ITextComponent playername = new TextComponentString(" " + evt.player.getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
 			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(prior.appendSibling(playername).appendSibling(latter));
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
 		}
 	}
 
@@ -144,24 +142,24 @@ public class PlayerEvents
 
 		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
 
-		if (bag == null)
+		if (bag.isEmpty())
 		{
 			return;
 		}
 
 		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
 				.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
-		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getEntityItem(), false);
+		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 
-		if (remainder == null)
+		if (remainder.isEmpty())
 		{
 			event.getItem().setDead();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId()));
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId(), 1));
 		}
 		else
 		{
-			event.getItem().setEntityItemStack(remainder);
+			event.getItem().setItem(remainder);
 		}
 
 		event.setCanceled(true);

@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:gold_ingot",
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#GEMDIAMOND"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

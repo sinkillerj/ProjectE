@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "projecte:item.pe_life_stone",
+    "data": 0
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_body_stone",
+      "data": 0
+    },
+    {
+      "item": "projecte:item.pe_soul_stone",
+      "data": 0
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

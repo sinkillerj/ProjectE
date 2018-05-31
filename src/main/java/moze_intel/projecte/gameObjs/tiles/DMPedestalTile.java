@@ -10,7 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -38,12 +37,12 @@ public class DMPedestalTile extends TileEmc
 
 		if (getActive())
 		{
-			if (inventory.getStackInSlot(0) != null)
+			if (!inventory.getStackInSlot(0).isEmpty())
 			{
 				Item item = inventory.getStackInSlot(0).getItem();
 				if (item instanceof IPedestalItem)
 				{
-					((IPedestalItem) item).updateInPedestal(worldObj, getPos());
+					((IPedestalItem) item).updateInPedestal(world, getPos());
 				}
 				if (particleCooldown <= 0)
 				{
@@ -68,16 +67,16 @@ public class DMPedestalTile extends TileEmc
 		int y = pos.getY();
 		int z = pos.getZ();
 
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
+		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
 
-		Random rand = worldObj.rand;
+		Random rand = world.rand;
 		for (int i = 0; i < 3; ++i)
 		{
 			int j = rand.nextInt(2) * 2 - 1;
@@ -88,7 +87,7 @@ public class DMPedestalTile extends TileEmc
 			double d3 = (double)(rand.nextFloat() * (float)j);
 			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
 			double d5 = (double)(rand.nextFloat() * (float)k);
-			worldObj.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
+			world.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -157,27 +156,27 @@ public class DMPedestalTile extends TileEmc
 
 	public void setActive(boolean newState)
 	{
-		if (newState != this.getActive() && worldObj != null)
+		if (newState != this.getActive() && world != null)
 		{
 			if (newState)
 			{
-				worldObj.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
+				world.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
 				{
-					this.getWorld().spawnParticle(EnumParticleTypes.SPELL_WITCH, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().spawnParticle(EnumParticleTypes.SPELL_WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
+							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
 			}
 			else
 			{
-				worldObj.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i)
+				world.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
 				{
-					this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							getPos().getY() + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-							centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
+							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
 			}
@@ -186,14 +185,13 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
 	{
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
-	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

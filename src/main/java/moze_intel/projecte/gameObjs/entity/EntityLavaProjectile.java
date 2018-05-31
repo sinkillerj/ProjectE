@@ -91,7 +91,7 @@ public class EntityLavaProjectile extends PEProjectile
 				case ENTITY:
 					Entity ent = mop.entityHit;
 					ent.setFire(5);
-					ent.attackEntityFrom(DamageSource.inFire, 5);
+					ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
 			}
 		}
 	}

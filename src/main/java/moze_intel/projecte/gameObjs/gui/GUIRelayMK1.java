@@ -25,12 +25,20 @@ public class GUIRelayMK1 extends GuiContainer
 		this.ySize = 176;
 		this.container = (RelayMK1Container) inventorySlots;
 	}
-	
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(I18n.format("pe.relay.mk1"), 10, 6, 4210752);
-		this.fontRendererObj.drawString(Constants.EMC_FORMATTER.format(container.emc), 88, 24, 4210752);
+		this.fontRenderer.drawString(I18n.format("pe.relay.mk1"), 10, 6, 4210752);
+		this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(container.emc), 88, 24, 4210752);
 	}
 
 	@Override

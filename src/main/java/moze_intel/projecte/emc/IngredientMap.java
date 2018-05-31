@@ -6,21 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IngredientMap<T> {
-	private final HashMap<T, Integer> ingredientsWithAmount = Maps.newHashMap();
+	private final Map<T, Integer> ingredients = new HashMap<>();
 
-	public void addIngredient(T stackNorm, int amount) {
-		int count = amount;
-		if (ingredientsWithAmount.containsKey(stackNorm)) {
-			count += ingredientsWithAmount.get(stackNorm);
-		}
-		ingredientsWithAmount.put(stackNorm, count);
+	public void addIngredient(T thing, int amount) {
+		ingredients.merge(thing, amount, Integer::sum);
 	}
 
 	public Map<T, Integer> getMap() {
-		return Maps.newHashMap(ingredientsWithAmount);
+		return Maps.newHashMap(ingredients);
 	}
 
+	@Override
 	public String toString() {
-		return ingredientsWithAmount.toString();
+		return ingredients.toString();
 	}
 }

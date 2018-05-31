@@ -16,8 +16,11 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -38,11 +41,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector
 {
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0);
+
 	public VolcaniteAmulet()
 	{
 		this.setUnlocalizedName("volcanite_amulet");
@@ -52,11 +59,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote
 				&& PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos)
-				&& consumeFuel(player, stack, 32, true))
+				&& consumeFuel(player, player.getHeldItem(hand), 32, true))
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
@@ -65,7 +72,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
 			} else
 			{
-				placeLava(world, player, pos.offset(sideHit));
+				placeLava(player, pos.offset(sideHit), hand);
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
@@ -73,42 +80,50 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		return EnumActionResult.SUCCESS;
 	}
 
-	private void placeLava(World world, EntityPlayer player, BlockPos pos)
+	private void placeLava(EntityPlayer player, BlockPos pos, EnumHand hand)
 	{
-		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_LAVA.getDefaultState());
+		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_LAVA.getDefaultState(), hand);
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) return;
-		
-		EntityPlayer player = (EntityPlayer) entity;
+		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
+		{
+			return;
+		}
 
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
+		EntityLivingBase living = (EntityLivingBase) entity;
+
+		int x = (int) Math.floor(living.posX);
+		int y = (int) (living.posY - living.getYOffset());
+		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
+		if ((world.getBlockState(pos.down()).getBlock() == Blocks.LAVA || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && world.isAirBlock(pos))
 		{
-			if (!player.isSneaking())
+			if (!living.isSneaking())
 			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
+				living.motionY = 0.0D;
+				living.fallDistance = 0.0F;
+				living.onGround = true;
 			}
 
-			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+			if (!world.isRemote && !living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
 		}
-		else if (!player.getEntityWorld().isRemote)
+		else if (!world.isRemote)
 		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+			if (living.isInWater())
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				living.setAir(300);
+			}
+
+			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+			{
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -119,13 +134,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player.getEntityWorld(), player);
 		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.getEntityWorld().spawnEntityInWorld(ent);
+		player.getEntityWorld().spawnEntity(ent);
 		return true;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flags)
 	{
 		list.add(I18n.format("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		list.add(I18n.format("pe.volcanite.tooltip2"));
@@ -134,68 +149,36 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 	
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase ent)
 	{
-		if (!(ent instanceof EntityPlayer)) 
-		{
-			return;
-		}
-		
-		EntityPlayer player = (EntityPlayer) ent;
-
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
-		BlockPos pos = new BlockPos(x, y, z);
-
-		if ((player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.LAVA || player.getEntityWorld().getBlockState(pos.down()).getBlock() == Blocks.FLOWING_LAVA) && player.getEntityWorld().isAirBlock(pos))
-		{
-			if (!player.isSneaking())
-			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
-			}
-
-			if (!player.getEntityWorld().isRemote && player.capabilities.getWalkSpeed() < 0.25F)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
-			}
-		}
-		else if (!player.getEntityWorld().isRemote)
-		{
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
-			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
-			}
-		}
+		this.onUpdate(stack, ent.getEntityWorld(), ent, 0, false);
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
@@ -204,9 +187,15 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			TileEntity te = world.getTileEntity(pos);
+			if(!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+
+			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
 				world.getWorldInfo().setRainTime(0);
@@ -214,7 +203,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
 
-				tile.setActivityCooldown(ProjectEConfig.volcanitePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanitePedCooldown);
 			}
 			else
 			{
@@ -228,11 +217,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.volcanitePedCooldown != -1)
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanitePedCooldown)));
 		}
 		return list;
 	}

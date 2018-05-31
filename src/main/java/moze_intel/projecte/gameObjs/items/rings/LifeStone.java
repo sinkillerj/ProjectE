@@ -8,6 +8,7 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -15,6 +16,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -25,9 +28,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 {
 	public LifeStone()
@@ -49,11 +53,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getItemDamage() != 0)
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			if (!consumeFuel(player, stack, 2*64, false))
 			{
-				stack.setItemDamage(0);
+				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -80,55 +84,42 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		if (stack.getItemDamage() == 0)
-		{
-			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
-			{
-				//NOOP (used to be sounds)
-			}
-			else
-			{
-				stack.setItemDamage(1);
-			}
-		}
-		else
-		{
-			stack.setItemDamage(0);
-		}
+		NBTTagCompound tag  = ItemHelper.getOrCreateCompound(stack);
+		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 	
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canEquip(ItemStack stack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
@@ -137,9 +128,14 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.lifePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.lifePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			TileEntity te = world.getTileEntity(pos);
+			if(!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
 				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
@@ -158,7 +154,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.lifePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.lifePedCooldown);
 			}
 			else
 			{
@@ -172,11 +168,11 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.lifePedCooldown != -1)
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.lifePedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.lifePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.lifePedCooldown)));
 		}
 		return list;
 	}

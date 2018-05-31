@@ -19,8 +19,11 @@ import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -44,6 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,11 +55,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0);
+
 	public EvertideAmulet()
 	{
 		this.setUnlocalizedName("evertide_amulet");
@@ -66,32 +74,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Nonnull
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
-	{
-		return new ICapabilityProvider() {
-			private final IFluidHandler handler = new InfiniteFluidHandler();
-
-			@Override
-			public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-				return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
-			}
-
-			@Override
-			public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-				if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-				{
-					return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
-				} else
-				{
-					return null;
-				}
-			}
-		};
-	}
-
-	@Nonnull
-	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
 	{
 		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
 		{
@@ -114,7 +97,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				else
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					placeWater(world, player, pos.offset(sideHit));
+					placeWater(world, player, pos.offset(sideHit), hand);
 				}
 			}
 		}
@@ -122,7 +105,32 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		return EnumActionResult.SUCCESS;
 	}
 
-	private void placeWater(World world, EntityPlayer player, BlockPos pos)
+	@Nonnull
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
+	{
+		return new ICapabilityProvider() {
+			private final IFluidHandlerItem handler = new InfiniteFluidHandler(stack);
+
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+				return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
+			}
+
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				{
+					return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.cast(handler);
+				} else
+				{
+					return null;
+				}
+			}
+		};
+	}
+
+	private void placeWater(World world, EntityPlayer player, BlockPos pos, EnumHand hand)
 	{
 		Material material = world.getBlockState(pos).getMaterial();
 
@@ -142,7 +150,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState(), hand);
 		}
 
 	}
@@ -150,42 +158,42 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer)) 
+		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
 		{
 			return;
 		}
 		
-		EntityPlayer player = (EntityPlayer) entity;
+		EntityLivingBase living = (EntityLivingBase) entity;
 
-		int x = (int) Math.floor(player.posX);
-		int y = (int) (player.posY - player.getYOffset());
-		int z = (int) Math.floor(player.posZ);
+		int x = (int) Math.floor(living.posX);
+		int y = (int) (living.posY - living.getYOffset());
+		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
 		if ((world.getBlockState(pos.down()).getBlock() == Blocks.WATER || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
 		{
-			if (!player.isSneaking())
+			if (!living.isSneaking())
 			{
-				player.motionY = 0.0D;
-				player.fallDistance = 0.0F;
-				player.onGround = true;
+				living.motionY = 0.0D;
+				living.fallDistance = 0.0F;
+				living.onGround = true;
 			}
-				
-			if (!world.isRemote && player.capabilities.getWalkSpeed() < 0.25F)
+
+			if (!world.isRemote && !living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, 0.25F);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
 		}
 		else if (!world.isRemote)
 		{
-			if (player.isInWater())
+			if (living.isInWater())
 			{
-				player.setAir(300);
+				living.setAir(300);
 			}
-				
-			if (player.capabilities.getWalkSpeed() != Constants.PLAYER_WALK_SPEED)
+
+			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				PlayerHelper.setPlayerWalkSpeed(player, Constants.PLAYER_WALK_SPEED);
+				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -200,7 +208,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
 			ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-			world.spawnEntityInWorld(ent);
+			world.spawnEntity(ent);
 			return true;
 		}
 
@@ -209,7 +217,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4)
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
 	{
 		list.add(I18n.format("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
@@ -219,36 +227,36 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 	
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
 	{
 		return BaubleType.AMULET;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "Baubles")
+	@Optional.Method(modid = "baubles")
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
@@ -257,9 +265,15 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.evertidePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertidePedCooldown != -1)
 		{
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			TileEntity te = world.getTileEntity(pos);
+			if (!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+
+			DMPedestalTile tile = ((DMPedestalTile) te);
 
 			if (tile.getActivityCooldown() == 0)
 			{
@@ -268,7 +282,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				world.getWorldInfo().setThunderTime(i);
 				world.getWorldInfo().setRaining(true);
 
-				tile.setActivityCooldown(ProjectEConfig.evertidePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertidePedCooldown);
 			}
 			else
 			{
@@ -282,18 +296,23 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.evertidePedCooldown != -1)
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.evertidePedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.evertide.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertidePedCooldown)));
 		}
 		return list;
 	}
 
-	private static class InfiniteFluidHandler implements IFluidHandler
+	private static class InfiniteFluidHandler implements IFluidHandlerItem
 	{
+		private final ItemStack container;
+
+		InfiniteFluidHandler(ItemStack stack) {
+			container = stack;
+		}
 
 		private final FluidTankProperties props =
 				new FluidTankProperties(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME), Fluid.BUCKET_VOLUME);
@@ -322,6 +341,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		@Override
 		public FluidStack drain(int maxDrain, boolean doDrain) {
 			return new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack getContainer() {
+			return container;
 		}
 	}
 

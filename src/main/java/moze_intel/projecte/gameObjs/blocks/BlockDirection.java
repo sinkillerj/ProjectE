@@ -51,7 +51,7 @@ public abstract class BlockDirection extends Block
 
 	@Nonnull
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+	public IBlockState getStateForPlacement(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @Nonnull EntityLivingBase placer, EnumHand hand)
 	{
 		return getStateFromMeta(meta).withProperty(PEStateProps.FACING, placer.getHorizontalFacing().getOpposite());
 	}
@@ -61,10 +61,12 @@ public abstract class BlockDirection extends Block
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
-		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		WorldHelper.dropInventory(inv, world, pos);
+		if (tile != null)
+		{
+			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			WorldHelper.dropInventory(inv, world, pos);
+		}
 
-		world.notifyNeighborsOfStateChange(pos, state.getBlock());
 		super.breakBlock(world, pos, state);
 	}
 	
@@ -78,13 +80,13 @@ public abstract class BlockDirection extends Block
 		
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		
-		if (stack != null && stack.getItem() == ObjHandler.philosStone)
+		if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone)
 		{
 			setFacingMeta(world, pos, player);
 		}
 	}
 
-	protected void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
+	private void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
 		world.setBlockState(pos, world.getBlockState(pos).withProperty(PEStateProps.FACING, player.getHorizontalFacing().getOpposite()));
 	}

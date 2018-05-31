@@ -3,11 +3,13 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,14 +47,9 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static void toggleNightVision(ItemStack helm, EntityPlayer player)
     {
-        if (!helm.hasTagCompound())
-        {
-            helm.setTagCompound(new NBTTagCompound());
-        }
-
         boolean value;
 
-        if (helm.getTagCompound().hasKey("NightVision"))
+        if (ItemHelper.getOrCreateCompound(helm).hasKey("NightVision"))
         {
             helm.getTagCompound().setBoolean("NightVision", !helm.getTagCompound().getBoolean("NightVision"));
             value = helm.getTagCompound().getBoolean("NightVision");
@@ -65,13 +62,13 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.addChatMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
+        player.sendMessage(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ")
                 .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltips, boolean unused)
+    public void addInformation(ItemStack stack, World world, List<String> tooltips, ITooltipFlag flags)
     {
         tooltips.add(I18n.format("pe.gem.helm.lorename"));
 
@@ -147,7 +144,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public void doZap(EntityPlayer player)
     {
-        if (ProjectEConfig.offensiveAbilities)
+        if (ProjectEConfig.difficulty.offensiveAbilities)
         {
             BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)

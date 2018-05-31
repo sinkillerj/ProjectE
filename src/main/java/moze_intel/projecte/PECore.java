@@ -1,13 +1,15 @@
 package moze_intel.projecte;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.fixes.CapInventoryWalker;
+import moze_intel.projecte.fixes.TENameFix;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.*;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
@@ -17,52 +19,57 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
-import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ProjectECMD;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.IProxy;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.SoundHandler;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.util.datafix.walkers.ItemStackDataLists;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = PECore.DEPS)
+@Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.12,]", dependencies = PECore.DEPS, updateJSON = PECore.UPDATE_JSON)
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class PECore
 {
-	public static final String MODID = "ProjectE";
+	public static final String MODID = "projecte";
 	public static final String MODNAME = "ProjectE";
 	public static final String VERSION = "@VERSION@";
-	public static final String DEPS = "required-after:Forge@[12.18.2.2097,);after:Baubles@[1.3.3,);after:JEI@[3.12.0,)";
-	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[ProjectE]");
+	public static final String DEPS = "required-after:forge@[13.20.0.2253,);after:baubles@[1.3.3,);after:jei@[4.6.0,)";
+	public static final String UPDATE_JSON = "https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.12.x/update.json";
+	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
+	public static final int DATA_VERSION = 1;
 	public static File CONFIG_DIR;
 	public static File PREGENERATED_EMC_FILE;
-	public static final boolean DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+	public static boolean DEV_ENVIRONMENT;
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	@Instance(MODID)
 	public static PECore instance;
@@ -70,12 +77,25 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
 
-	public static final List<String> uuids = Lists.newArrayList();
-	
+	public static final List<String> uuids = new ArrayList<>();
+
+	public static void debugLog(String msg, Object... args)
+	{
+		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging)
+		{
+			LOGGER.info(msg, args);
+		} else
+		{
+			LOGGER.debug(msg, args);
+		}
+	}
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CONFIG_DIR = new File(event.getModConfigurationDirectory(), "ProjectE");
+		DEV_ENVIRONMENT = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+
+		CONFIG_DIR = new File(event.getModConfigurationDirectory(), MODNAME);
 		
 		if (!CONFIG_DIR.exists())
 		{
@@ -83,7 +103,6 @@ public class PECore
 		}
 
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
-		ProjectEConfig.init(new File(CONFIG_DIR, "ProjectE.cfg"));
 
 		PacketHandler.register();
 
@@ -94,28 +113,44 @@ public class PECore
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		SoundHandler.init();
+		proxy.registerKeyBinds();
 		ObjHandler.register();
-		ObjHandler.addRecipes();
 
-		proxy.registerClientOnlyEvents();
-		proxy.registerModels();
 		proxy.registerRenderers();
-
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
 		proxy.registerLayerRenderers();
-		proxy.registerKeyBinds();
-		AchievementHandler.init();
+
+		CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+		ModFixs modFixer = fixer.init(MODID, DATA_VERSION);
+
+		// Fixers
+		modFixer.registerFix(FixTypes.BLOCK_ENTITY, new TENameFix());
+
+		// Walkers
+		// These two do not have extra layer of indirection so can use the vanilla walker
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(AlchChestTile.class, "Items"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(DMPedestalTile.class, "Items"));
+
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(CollectorMK1Tile.class, CollectorMK2Tile.class, CollectorMK3Tile.class),
+				"Input", "AuxSlots"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(CondenserTile.class, "Input", "LockSlot"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(CondenserMK2Tile.class, "Input", "LockSlot", "Output"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(DMFurnaceTile.class, RMFurnaceTile.class),
+				"Input", "Output", "Fuel"));
+		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
+				ImmutableSet.of(RelayMK1Tile.class, RelayMK2Tile.class, RelayMK3Tile.class),
+				"Input", "Output"));
 	}
-	
+
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		ObjHandler.registerPhiloStoneSmelting();
 		NBTWhitelistParser.init();
 		proxy.initializeManual();
 		
@@ -127,11 +162,6 @@ public class PECore
 	{
 		event.registerServerCommand(new ProjectECMD());
 
-		if (!ThreadCheckUpdate.hasRunServer())
-		{
-			new ThreadCheckUpdate(true).start();
-		}
-
 		if (!ThreadCheckUUID.hasRunServer())
 		{
 			new ThreadCheckUUID(true).start();
@@ -141,18 +171,11 @@ public class PECore
 
 		CustomEMCParser.init();
 
-		PELogger.logInfo("Starting server-side EMC mapping.");
+		LOGGER.info("Starting server-side EMC mapping.");
 
 		EMCMapper.map();
 
-		PELogger.logInfo("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-		
-		File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
-		
-		if (!dir.exists())
-		{
-			dir.mkdirs(); 
-		}
+		LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 	}
 
 	@Mod.EventHandler
@@ -165,10 +188,10 @@ public class PECore
 	public void serverQuit(FMLServerStoppedEvent event)
 	{
 		Transmutation.clearCache();
-		PELogger.logDebug("Cleared cached tome knowledge");
+		LOGGER.debug("Cleared cached tome knowledge");
 
 		EMCMapper.clearMaps();
-		PELogger.logInfo("Completed server-stop actions.");
+		LOGGER.info("Completed server-stop actions.");
 	}
 
 	@Mod.EventHandler
@@ -180,59 +203,12 @@ public class PECore
 		}
 	}
 
-	@Mod.EventHandler
-	public void remap(FMLMissingMappingsEvent event) {
-		for (FMLMissingMappingsEvent.MissingMapping mapping : event.get())
+	@SubscribeEvent
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
+	{
+		if (event.getModID().equals(MODID))
 		{
-			try
-			{
-				String subName = mapping.name.split(":")[1];
-				if (mapping.type == GameRegistry.Type.ITEM)
-				{
-					Item remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, "item.pe_" + subName.substring(5))); // strip "item." off of subName
-					if (remappedItem != null)
-					{
-						// legacy remap (adding pe_ prefix)
-						mapping.remap(remappedItem);
-					}
-					else
-					{
-						// Space strip remap - ItemBlocks
-						String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-						remappedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(PECore.MODID, newSubName));
-
-						if (remappedItem != null)
-						{
-							mapping.remap(remappedItem);
-							PELogger.logInfo(String.format("Remapped ProjectE ItemBlock from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
-						}
-						else
-						{
-							PELogger.logFatal("Failed to remap ProjectE ItemBlock: " + mapping.name);
-						}
-					}
-				}
-				if (mapping.type == GameRegistry.Type.BLOCK)
-				{
-					// Space strip remap - Blocks
-					String newSubName = Constants.SPACE_STRIP_NAME_MAP.get(subName);
-					Block remappedBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(PECore.MODID, newSubName));
-
-					if (remappedBlock != null)
-					{
-						mapping.remap(remappedBlock);
-						PELogger.logInfo(String.format("Remapped ProjectE Block from %s to %s", mapping.name, PECore.MODID + ":" + newSubName));
-					}
-					else
-					{
-						PELogger.logFatal("Failed to remap PE Block: " + mapping.name);
-					}
-				}
-			} catch (Throwable t)
-			{
-				// Should never happen
-				throw Throwables.propagate(t);
-			}
+			ConfigManager.sync(MODID, Config.Type.INSTANCE);
 		}
 	}
 }

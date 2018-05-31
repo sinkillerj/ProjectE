@@ -1,6 +1,6 @@
 [
 {
-  "modid": "ProjectE",
+  "modid": "projecte",
   "name": "ProjectE",
   "description": "A complete rewrite of EE2 for modern Minecraft versions.",
   "version": "${version}",

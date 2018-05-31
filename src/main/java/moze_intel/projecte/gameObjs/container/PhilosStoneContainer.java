@@ -17,13 +17,15 @@ import javax.annotation.Nonnull;
 public class PhilosStoneContainer extends Container
 {
 	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-	private final IInventory craftResult = new InventoryCraftResult();
+	private final InventoryCraftResult craftResult = new InventoryCraftResult();
 	private final World worldObj;
+	private final EntityPlayer player;
 	
 	public PhilosStoneContainer(InventoryPlayer invPlayer) 
 	{
-		this.worldObj = invPlayer.player.getEntityWorld();
-		
+		this.player = invPlayer.player;
+		this.worldObj = player.getEntityWorld();
+
 		//CraftingResult
 		this.addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
 		
@@ -47,7 +49,7 @@ public class PhilosStoneContainer extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inv)
 	{
-		craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+		this.slotChangedCraftingGrid(player.world, this.player, this.craftMatrix, this.craftResult);
 	}
 	
 	@Override
@@ -61,7 +63,7 @@ public class PhilosStoneContainer extends Container
 			{
 				ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
 
-				if (itemstack != null)
+				if (!itemstack.isEmpty())
 				{
 					player.dropItem(itemstack, false);
 				}
@@ -74,11 +76,12 @@ public class PhilosStoneContainer extends Container
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
 	{
-		ItemStack itemstack = null;
+		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack())
@@ -90,7 +93,7 @@ public class PhilosStoneContainer extends Container
 			{
 				if (!this.mergeItemStack(itemstack1, 10, 46, true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				slot.onSlotChange(itemstack1, itemstack);
@@ -99,36 +102,36 @@ public class PhilosStoneContainer extends Container
 			{
 				if (!this.mergeItemStack(itemstack1, 37, 46, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if (index >= 37 && index < 46)
 			{
 				if (!this.mergeItemStack(itemstack1, 10, 37, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if (!this.mergeItemStack(itemstack1, 10, 46, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			if (itemstack1.stackSize == 0)
+			if (itemstack1.isEmpty())
 			{
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 			}
 			else
 			{
 				slot.onSlotChanged();
 			}
 
-			if (itemstack1.stackSize == itemstack.stackSize)
+			if (itemstack1.getCount() == itemstack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			slot.onPickupFromSlot(player, itemstack1);
+			itemstack = slot.onTake(player, itemstack1);
 		}
 		
 		return itemstack;

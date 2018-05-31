@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -19,7 +20,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class MatterBlock extends Block
 {
@@ -54,7 +54,7 @@ public class MatterBlock extends Block
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		EnumMatterType type = world.getBlockState(pos).getValue(PEStateProps.TIER_PROP);
 
-		if (stack != null)
+		if (!stack.isEmpty())
 		{
 			if (type == EnumMatterType.RED_MATTER)
 			{
@@ -97,11 +97,11 @@ public class MatterBlock extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(@Nonnull Item matterBlock, CreativeTabs cTab, List<ItemStack> list)
+	public void getSubBlocks(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
 		for (int i = 0; i <= 1; i++)
 		{
-			list.add(new ItemStack(matterBlock , 1, i));
+			list.add(new ItemStack(this, 1, i));
 		}
 	}
 

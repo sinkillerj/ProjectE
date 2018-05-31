@@ -1,18 +1,25 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,10 +64,10 @@ public final class ItemHelper
 		List<ItemStack> temp = new ArrayList<>();
 		for (int i = 0; i < inventory.getSlots(); i++)
 		{
-			if (inventory.getStackInSlot(i) != null)
+			if (!inventory.getStackInSlot(i).isEmpty())
 			{
 				temp.add(inventory.getStackInSlot(i));
-				inventory.setStackInSlot(i, null);
+				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
 
@@ -78,28 +85,28 @@ public final class ItemHelper
 		for (int i = 0; i < list.size(); i++)
 		{
 			ItemStack s = list.get(i);
-			if (s != null)
+			if (!s.isEmpty())
 			{
 				for (int j = i + 1; j < list.size(); j++)
 				{
 					ItemStack s1 = list.get(j);
 					if (ItemHandlerHelper.canItemStacksStack(s, s1))
 					{
-						s.stackSize += s1.stackSize;
-						list.set(j, null);
+						s.grow(s1.getCount());
+						list.set(j, ItemStack.EMPTY);
 					}
 				}
 			}
 		}
 
-		list.removeIf(Objects::isNull);
+		list.removeIf(ItemStack::isEmpty);
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
 	}
 
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
 		for (ItemStack stack : list) {
-			if (stack == null) {
+			if (stack.isEmpty()) {
 				continue;
 			}
 
@@ -118,65 +125,28 @@ public final class ItemHelper
 	public static ItemStack getNormalizedStack(ItemStack stack)
 	{
 		ItemStack result = stack.copy();
-		result.stackSize = 1;
+		result.setCount(1);
 		return result;
 	}
 
 	/**
-	 * Get a List of itemstacks from an OD name.<br>
-	 * It also makes sure that no items with damage 32767 are included, to prevent errors.
+	 * Get a List of itemstacks from an OD name, exploding any wildcard values into their subvariants
+	 * TODO 1.13 tags
 	 */
 	public static List<ItemStack> getODItems(String oreName)
 	{
-		List<ItemStack> result = Lists.newArrayList();
+		NonNullList<ItemStack> result = NonNullList.create();
 
 		for (ItemStack stack : OreDictionary.getOres(oreName))
 		{
-			if (stack == null)
+			if (stack.isEmpty())
 			{
 				continue;
 			}
 
 			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
-				List<ItemStack> list = Lists.newArrayList();
-
-				ItemStack copy = stack.copy();
-				copy.setItemDamage(0);
-
-				list.add(copy.copy());
-
-				String startName = copy.getUnlocalizedName();
-
-				for (int i = 1; i <= 128; i++)
-				{
-					try
-					{
-						copy.setItemDamage(i);
-
-						if (copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName))
-						{
-							result.addAll(list);
-							break;
-						}
-					}
-					catch (Exception e)
-					{
-						PELogger.logFatal("Couldn't retrieve OD items for: " + oreName);
-						PELogger.logFatal("Caused by: " + e.toString());
-
-						result.addAll(list);
-						break;
-					}
-
-					list.add(copy.copy());
-
-					if (i == 128)
-					{
-						copy.setItemDamage(0);
-						result.add(copy);
-					}
-				}
+				stack.getItem().getSubItems(CreativeTabs.SEARCH, result);
 			}
 			else
 			{
@@ -187,9 +157,19 @@ public final class ItemHelper
 		return result;
 	}
 
+	public static NBTTagCompound getOrCreateCompound(ItemStack stack)
+	{
+		if (!stack.hasTagCompound())
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+
+		return stack.getTagCompound();
+	}
+
 	public static String getOreDictionaryName(ItemStack stack)
 	{
-		if (stack == null || stack.getItem() == null)
+		if (stack.isEmpty())
 		{
 			return "Unknown";
 		}
@@ -203,16 +183,16 @@ public final class ItemHelper
 		return OreDictionary.getOreName(oreIds[0]);
 	}
 
-	public static boolean hasSpace(ItemStack[] inv, ItemStack stack)
+	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
 		{
-			if (invStack == null)
+			if (invStack.isEmpty())
 			{
 				return true;
 			}
 
-			if (areItemStacksEqual(stack, invStack) && invStack.stackSize < invStack.getMaxStackSize())
+			if (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize())
 			{
 				return true;
 			}
@@ -254,47 +234,42 @@ public final class ItemHelper
 		return new IItemHandlerModifiable()
 		{
 			@Override
-			public void setStackInSlot(int slot, ItemStack stack) {}
+			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {}
 
 			@Override
 			public int getSlots() {
 				return list.size();
 			}
 
+			@Nonnull
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				return list.get(slot);
 			}
 
+			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 				return stack;
 			}
 
+			@Nonnull
 			@Override
 			public ItemStack extractItem(int slot, int amount, boolean simulate) {
-				return null;
+				return ItemStack.EMPTY;
+			}
+
+			@Override
+			public int getSlotLimit(int slot)
+			{
+				return getStackInSlot(slot).getMaxStackSize();
 			}
 		};
 	}
 
-	public static boolean invContainsItem(IItemHandler inv, ItemStack toSearch)
-	{
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
-
-			if (stack != null && basicAreStacksEqual(stack, toSearch))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static boolean isDamageable(ItemStack stack)
 	{
-		return !stack.getHasSubtypes() && stack.getMaxDamage() != 0;
+		return !stack.getHasSubtypes() && stack.isItemStackDamageable();
 	}
 
 	public static boolean isOre(IBlockState state)
@@ -303,7 +278,7 @@ public final class ItemHelper
 		{
 			return true;
 		}
-		if (Item.getItemFromBlock(state.getBlock()) == null)
+		if (Item.getItemFromBlock(state.getBlock()) == Items.AIR)
 		{
 			return false;
 		}
@@ -315,7 +290,7 @@ public final class ItemHelper
 	{
 		if (stack.getItem() instanceof ItemBlock)
 		{
-			return ((ItemBlock) stack.getItem()).block.getStateFromMeta(stack.getMetadata());
+			return ((ItemBlock) stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
 		}
 		else
 		{

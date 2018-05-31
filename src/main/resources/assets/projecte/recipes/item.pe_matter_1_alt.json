@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "projecte:item.pe_matter",
+    "data": 1
+  },
+  "pattern": [
+    "ADA",
+    "ADA",
+    "ADA"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "group": "projecte:item.pe_matter_1",
+  "key": {
+    "A": {
+      "item": "projecte:item.pe_fuel",
+      "data": 2
+    },
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    }
+  }
+}

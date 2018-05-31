@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "projecte:item.pe_fuel",
+    "data": 2
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    },
+    {
+      "item": "projecte:item.pe_fuel",
+      "data": 1
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

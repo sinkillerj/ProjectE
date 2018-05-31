@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "projecte:rm_furnace"
+    },
+    "title": {
+      "translate": "advancements.pe_rm_furnace"
+    },
+    "description": {
+      "translate": "advancements.pe_rm_furnace.desc"
+    }
+  },
+  "parent": "projecte:red_matter_block",
+  "criteria": {
+    "rm_furnace": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:rm_furnace"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,17 +1,25 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
 public class ItemPE extends Item
 {
+	public static final String TAG_ACTIVE = "Active";
+	public static final String TAG_MODE = "Mode";
+	protected static final ResourceLocation ACTIVE_NAME = new ResourceLocation(PECore.MODID, "active");
+	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTagCompound() && stack.getTagCompound().getBoolean(TAG_ACTIVE) ? 1F : 0F;
+
 	public ItemPE()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
@@ -25,29 +33,30 @@ public class ItemPE extends Item
 	}
 
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChange)
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		return !ItemHelper.basicAreStacksEqual(oldStack, newStack);
+		if (oldStack.getItem() != newStack.getItem())
+			return true;
+
+		boolean diffActive = oldStack.hasTagCompound() && newStack.hasTagCompound()
+				&& oldStack.getTagCompound().hasKey(TAG_ACTIVE) && newStack.getTagCompound().hasKey(TAG_ACTIVE)
+				&& !oldStack.getTagCompound().getTag(TAG_ACTIVE).equals(newStack.getTagCompound().getTag(TAG_ACTIVE));
+
+		boolean diffMode = oldStack.hasTagCompound() && newStack.hasTagCompound()
+				&& oldStack.getTagCompound().hasKey(TAG_MODE) && newStack.getTagCompound().hasKey(TAG_MODE)
+				&& !oldStack.getTagCompound().getTag(TAG_MODE).equals(newStack.getTagCompound().getTag(TAG_MODE));
+
+		return diffActive || diffMode;
 	}
 
 	public static double getEmc(ItemStack stack)
 	{
-		if (stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		return stack.getTagCompound().getDouble("StoredEMC");
+		return ItemHelper.getOrCreateCompound(stack).getDouble("StoredEMC");
 	}
 	
 	public static void setEmc(ItemStack stack, double amount)
 	{
-		if (stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setDouble("StoredEMC", amount);
+		ItemHelper.getOrCreateCompound(stack).setDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmcToStack(ItemStack stack, double amount)

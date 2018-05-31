@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "minecraft:emerald"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:item.pe_philosophers_stone"
+    },
+    {
+      "item": "#GEMDIAMOND"
+    },
+    {
+      "item": "#GEMDIAMOND"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

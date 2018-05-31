@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -28,7 +29,7 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -57,6 +58,6 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 
 	private void explode()
 	{
-		WorldHelper.createNovaExplosion(worldObj, this, posX, posY, posZ, 48.0F);
+		WorldHelper.createNovaExplosion(world, this, posX, posY, posZ, 48.0F);
 	}
 }

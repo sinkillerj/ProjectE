@@ -42,24 +42,25 @@ public class MercurialEyeContainer extends Container
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if (slot == 1 && inventory.getStackInSlot(slot) != null)
+		if (slot == 1 && !inventory.getStackInSlot(slot).isEmpty())
 		{
-			inventory.setStackInSlot(1, null);
-			return null;
+			inventory.setStackInSlot(1, ItemStack.EMPTY);
 		}
 		
 		return super.slotClick(slot, button, flag, player);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
@@ -67,7 +68,7 @@ public class MercurialEyeContainer extends Container
 
 		if (slot == null || !slot.getHasStack())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack stack = slot.getStack();
@@ -76,35 +77,34 @@ public class MercurialEyeContainer extends Container
 		if (slotIndex < 2) // Moving to player inventory
 		{
 			if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), true))
-				return null;
+				return ItemStack.EMPTY;
 			slot.onSlotChanged();
 		}
 		else // Moving from player inventory
 		{
-			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack() == null)
+			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack().isEmpty())
 			{ // Is a valid klein star and the slot is empty?
 				inventorySlots.get(0).putStack(stack.splitStack(1));
 			}
-			else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack() == null)
+			else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack().isEmpty())
 			{ // Is a valid target block and the slot is empty?
 				inventorySlots.get(1).putStack(stack.splitStack(1));
 			}
 			else // Is neither, ignore
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 		}
-		if (stack.stackSize == 0)
+		if (stack.isEmpty())
 		{
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		}
 		else
 		{
 			slot.onSlotChanged();
 		}
 
-		slot.onPickupFromSlot(player, newStack);
-		return newStack;
+		return slot.onTake(player, newStack);
 	}
 }

@@ -1,10 +1,10 @@
 package moze_intel.projecte.playerData;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ public final class Transmutation
 
 	public static void cacheFullKnowledge()
 	{
+		clearCache();
 		for (SimpleStack stack : EMCMapper.emc.keySet())
 		{
 			if (!stack.isValid())
@@ -31,7 +32,7 @@ public final class Transmutation
 			try
 			{
 				ItemStack s = stack.toItemStack();
-				s.stackSize = 1;
+				s.setCount(1);
 
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))
@@ -41,7 +42,8 @@ public final class Transmutation
 			}
 			catch (Exception e)
 			{
-				PELogger.logInfo("Failed to cache knowledge for " + stack + ": " + e.toString());
+				PECore.LOGGER.warn("Failed to cache knowledge for {}", stack);
+				e.printStackTrace();
 			}
 		}
 	}

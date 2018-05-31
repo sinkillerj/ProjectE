@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:interdiction_torch"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "RDR",
+    "DPD",
+    "GGG"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_torch"
+    },
+    "G": {
+      "item": "#DUSTGLOWSTONE"
+    },
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "P": {
+      "item": "projecte:item.pe_philosophers_stone"
+    }
+  }
+}

@@ -69,8 +69,8 @@ public class EntityMobRandomizer extends PEProjectile
 		{
 			ent.setDead();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
-			randomized.onInitialSpawn(worldObj.getDifficultyForLocation(new BlockPos(randomized)), null);
-			this.getEntityWorld().spawnEntityInWorld(randomized);
+			randomized.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(randomized)), null);
+			this.getEntityWorld().spawnEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}
 	}

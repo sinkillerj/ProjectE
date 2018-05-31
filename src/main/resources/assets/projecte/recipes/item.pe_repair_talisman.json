@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "projecte:item.pe_repair_talisman"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LMH",
+    "SPS",
+    "HML"
+  ],
+  "key": {
+    "P": {
+      "item": "#PAPER"
+    },
+    "S": {
+      "item": "#STRING"
+    },
+    "L": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 0
+    },
+    "M": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 1
+    },
+    "H": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    }
+  }
+}

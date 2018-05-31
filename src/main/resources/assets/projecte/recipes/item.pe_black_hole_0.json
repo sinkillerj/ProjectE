@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "projecte:item.pe_black_hole",
+    "data": 0
+  },
+  "pattern": [
+    "SSS",
+    "DID",
+    "SSS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#STRING"
+    },
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "I": {
+      "item": "projecte:item.pe_ring_iron_band"
+    }
+  }
+}

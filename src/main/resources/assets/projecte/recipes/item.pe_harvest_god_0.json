@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "projecte:item.pe_harvest_god",
+    "data": 0
+  },
+  "pattern": [
+    "SFS",
+    "DID",
+    "SFS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#TREESAPLING"
+    },
+    "D": {
+      "item": "projecte:item.pe_matter",
+      "data": 0
+    },
+    "F": {
+      "item": "minecraft:red_flower",
+      "data": 0
+    },
+    "I": {
+      "item": "projecte:item.pe_ring_iron_band"
+    }
+  }
+}

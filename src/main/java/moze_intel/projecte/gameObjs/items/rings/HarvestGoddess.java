@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -15,9 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -26,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
@@ -48,13 +53,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (stack.getItemDamage() != 0)
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			double storedEmc = getEmc(stack);
 			
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
-				stack.setItemDamage(0);
+				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -70,9 +75,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
 	{
-		if (world.isRemote || !player.canPlayerEdit(pos, facing, stack))
+		if (world.isRemote || !player.canPlayerEdit(pos, facing, player.getHeldItem(hand)))
 		{
 			return EnumActionResult.FAIL;
 		}
@@ -88,7 +93,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
 
-			if (boneMeal != null && useBoneMeal(world, pos))
+			if (!boneMeal.isEmpty() && useBoneMeal(world, pos))
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();
@@ -168,9 +173,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					player.inventory.decrStackSize(s.slot, 1);
 					player.inventoryContainer.detectAndSendChanges();
 
-					s.stack.stackSize--;
+					s.stack.shrink(1);
 
-					if (s.stack.stackSize <= 0)
+					if (s.stack.isEmpty())
 					{
 						seeds.remove(i);
 					}
@@ -185,15 +190,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private List<StackWithSlot> getAllSeeds(ItemStack[] inv) 
+	private List<StackWithSlot> getAllSeeds(NonNullList<ItemStack> inv)
 	{
-		List<StackWithSlot> result = Lists.newArrayList();
+		List<StackWithSlot> result = new ArrayList<>();
 		
-		for (int i = 0; i < inv.length; i++)
+		for (int i = 0; i < inv.size(); i++)
 		{
-			ItemStack stack = inv[i];
+			ItemStack stack = inv.get(i);
 			
-			if (stack != null)
+			if (!stack.isEmpty())
 			{
 				if (stack.getItem() instanceof IPlantable)
 				{
@@ -213,15 +218,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(ItemStack[] inv, Item item, int meta, int minAmount)
+	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int meta, int minAmount)
 	{
 		Object[] obj = new Object[2];
 		
-		for (int i = 0; i < inv.length;i++)
+		for (int i = 0; i < inv.size(); i++)
 		{
-			ItemStack stack = inv[i];
+			ItemStack stack = inv.get(i);
 			
-			if (stack != null && stack.stackSize >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
+			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
 			{
 				obj[0] = i;
 				obj[1] = stack;
@@ -235,35 +240,27 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		if (stack.getItemDamage() == 0)
-		{
-			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, true))
-			{
-				//NOOP (used to be sounds)
-			}
-			else
-			{
-				stack.setItemDamage(1);
-			}
-		}
-		else
-		{
-			stack.setItemDamage(0);
-		}
-
+		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.harvestPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvestPedCooldown != -1)
 		{
-			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
+			TileEntity te = world.getTileEntity(pos);
+			if(!(te instanceof DMPedestalTile))
+			{
+				return;
+			}
+
+			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
 				WorldHelper.growNearbyRandomly(true, world, pos, null);
-				tile.setActivityCooldown(ProjectEConfig.harvestPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.harvestPedCooldown);
 			}
 			else
 			{
@@ -277,13 +274,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public List<String> getPedestalDescription()
 	{
-		List<String> list = Lists.newArrayList();
-		if (ProjectEConfig.harvestPedCooldown != -1)
+		List<String> list = new ArrayList<>();
+		if (ProjectEConfig.pedestalCooldown.harvestPedCooldown != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal2"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
+					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvestPedCooldown)));
 		}
 		return list;
 	}

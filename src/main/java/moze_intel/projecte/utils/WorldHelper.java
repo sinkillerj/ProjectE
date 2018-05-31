@@ -2,7 +2,7 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
@@ -11,41 +11,30 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityEndermite;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.monster.SkeletonType;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityDonkey;
 import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.entity.passive.EntityMule;
 import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.HorseType;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -57,11 +46,11 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.items.IItemHandler;
 
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -78,7 +67,9 @@ public final class WorldHelper
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
-			EntityWolf.class, EntityHorse.class, EntityRabbit.class
+			EntityWolf.class, EntityHorse.class, EntityRabbit.class,
+			EntityDonkey.class, EntityMule.class, EntityPolarBear.class,
+			EntityLlama.class, EntityParrot.class
 	);
 
 	@SuppressWarnings("unchecked")
@@ -86,12 +77,15 @@ public final class WorldHelper
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
-			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class
+			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class,
+			EntityStray.class, EntityWitherSkeleton.class, EntitySkeletonHorse.class, EntityZombieHorse.class,
+			EntityZombieVillager.class, EntityHusk.class, EntityGuardian.class,
+			EntityEvoker.class, EntityVex.class, EntityVindicator.class, EntityShulker.class
 	);
 
-	private static final Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> interdictionBlacklist = new HashSet<>();
 
-	private static final Set<Class<? extends Entity>> swrgBlacklist = Sets.newHashSet();
+	private static final Set<Class<? extends Entity>> swrgBlacklist = new HashSet<>();
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{
@@ -124,7 +118,9 @@ public final class WorldHelper
 
 		for (ItemStack drop : drops)
 		{
-			spawnEntityItem(world, drop, x, y, z);
+			EntityItem ent = new EntityItem(world, x, y, z);
+			ent.setItem(drop);
+			world.spawnEntity(ent);
 		}
 	}
 
@@ -150,12 +146,12 @@ public final class WorldHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack == null)
+			if (!stack.isEmpty())
 			{
-				continue;
+				EntityItem ent = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ());
+				ent.setItem(stack);
+				world.spawnEntity(ent);
 			}
-
-			spawnEntityItem(world, stack, pos);
 		}
 	}
 
@@ -292,7 +288,7 @@ public final class WorldHelper
 		}
 		catch (Exception e)
 		{
-			PELogger.logFatal("Could not create new entity instance for: "+c.getCanonicalName());
+			PECore.LOGGER.fatal("Could not create new entity instance for: {}", c.getCanonicalName());
 			e.printStackTrace();
 		}
 
@@ -337,7 +333,7 @@ public final class WorldHelper
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)
 	{
-		List<TileEntity> list = Lists.newArrayList();
+		List<TileEntity> list = new ArrayList<>();
 
 		for (BlockPos pos : getPositionsFromBox(bBox))
 		{
@@ -405,7 +401,7 @@ public final class WorldHelper
 				}
 				else if (world.rand.nextInt(chance) == 0)
 				{
-					if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
+					if (ProjectEConfig.items.harvBandGrass || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass"))
 					{
 						growable.grow(world, world.rand, currentPos, state);
 					}
@@ -427,7 +423,7 @@ public final class WorldHelper
 				{
 					if (crop instanceof BlockFlower)
 					{
-						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 						{
 							world.destroyBlock(currentPos, true);
 						}
@@ -521,11 +517,6 @@ public final class WorldHelper
 		}
 	}
 
-	public static boolean isArrowInGround(EntityArrow arrow)
-	{
-		return ReflectionHelper.getArrowInGround(arrow);
-	}
-
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
@@ -539,7 +530,7 @@ public final class WorldHelper
 					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
-					if (!isSWRG && ProjectEConfig.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
+					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
 						continue;
 					}
@@ -553,31 +544,14 @@ public final class WorldHelper
 						Vec3d t = new Vec3d(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
 
-						Vec3d r = new Vec3d(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
+						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
 
-						ent.motionX += r.xCoord / 1.5D / distance;
-						ent.motionY += r.yCoord / 1.5D / distance;
-						ent.motionZ += r.zCoord / 1.5D / distance;
+						ent.motionX += r.x / 1.5D / distance;
+						ent.motionY += r.y / 1.5D / distance;
+						ent.motionZ += r.z / 1.5D / distance;
 					}
 				}
 			}
 		}
-	}
-
-	public static void spawnEntityItem(World world, ItemStack stack, BlockPos pos)
-	{
-		spawnEntityItem(world, stack, pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	public static void spawnEntityItem(World world, ItemStack stack, double x, double y, double z)
-	{
-		float f = world.rand.nextFloat() * 0.8F + 0.1F;
-		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-		float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
-		EntityItem entityitem = new EntityItem(world, x + f, y + f1, z + f2, stack.copy());
-		entityitem.motionX = world.rand.nextGaussian() * 0.05;
-		entityitem.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
-		entityitem.motionZ = world.rand.nextGaussian() * 0.05;
-		world.spawnEntityInWorld(entityitem);
 	}
 }

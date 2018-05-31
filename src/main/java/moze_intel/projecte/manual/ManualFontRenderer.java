@@ -86,7 +86,7 @@ public class ManualFontRenderer extends FontRenderer
                 case 32:
                     i1 = l;
                 default:
-                    k += Minecraft.getMinecraft().fontRendererObj.getCharWidth(c0); // Need to call it on the real fontrenderer due to state stuff >.>
+                    k += Minecraft.getMinecraft().fontRenderer.getCharWidth(c0); // Need to call it on the real fontrenderer due to state stuff >.>
 
                     if (flag)
                     {

@@ -5,7 +5,7 @@
   },
   "overrides": [{
     "predicate": {
-      "projecte:on": 1
+      "projecte:active": 1
     },
     "model": "projecte:item/arcana_zero_on"
   }]

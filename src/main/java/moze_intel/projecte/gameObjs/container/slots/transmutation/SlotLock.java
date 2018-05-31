@@ -2,11 +2,14 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class SlotLock extends SlotItemHandler
 {
@@ -19,15 +22,15 @@ public class SlotLock extends SlotItemHandler
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
+	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
-		return EMCHelper.doesItemHaveEmc(stack);
+		return SlotPredicates.RELAY_INV.test(stack);
 	}
 	
 	@Override
-	public void putStack(ItemStack stack)
+	public void putStack(@Nonnull ItemStack stack)
 	{
-		if (stack == null)
+		if (stack.isEmpty())
 		{
 			return;
 		}
@@ -51,15 +54,18 @@ public class SlotLock extends SlotItemHandler
 			}
 		}
 		
-		inv.handleKnowledge(stack.copy());
+		if (EMCHelper.doesItemHaveEmc(stack)) {
+			inv.handleKnowledge(stack.copy());
+		}
 	}
 	
+	@Nonnull
 	@Override
-	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
+	public ItemStack onTake(EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
-		
+		stack = super.onTake(player, stack);
 		inv.updateClientTargets();
+		return stack;
 	}
 	
 	@Override
