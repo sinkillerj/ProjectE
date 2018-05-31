@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import invtweaks.api.container.ChestContainer;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -42,7 +43,8 @@ public class AlchChestContainer extends Container
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.alchChest
+				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 
 	@Nonnull

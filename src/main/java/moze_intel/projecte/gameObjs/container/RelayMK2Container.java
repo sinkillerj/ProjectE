@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
@@ -80,5 +81,12 @@ public class RelayMK2Container extends RelayMK1Container
 		}
 
 		return slot.onTake(player, newStack);
+	}
+
+	@Override
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	{
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relayMK2
+				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }
