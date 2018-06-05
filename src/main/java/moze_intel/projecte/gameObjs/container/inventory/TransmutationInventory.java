@@ -126,8 +126,8 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(0));
-		int fuelEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(FUEL_START));
+		long matterEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(0));
+		long fuelEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(FUEL_START));
 		
 		if (Math.max(matterEmc, fuelEmc) > provider.getEmc())
 		{
@@ -163,7 +163,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 				lockCopy.setItemDamage(0);
 			}
 
-			int reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
+			long reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
 			
 			if (provider.getEmc() < reqEmc)
 			{

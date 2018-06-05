@@ -5,11 +5,11 @@ import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Map;
 
-public class IntToFractionCollector<T, A extends IValueArithmetic> extends AbstractMappingCollector<T, Integer, A>
+public class LongToDoubleCollector<T, A extends IValueArithmetic> extends AbstractMappingCollector<T, Long, A>
 {
-	private final IExtendedMappingCollector<T, Fraction, A> inner;
+	private final IExtendedMappingCollector<T, Double, A> inner;
 
-	public IntToFractionCollector(IExtendedMappingCollector<T, Fraction, A> inner) {
+	public LongToDoubleCollector(IExtendedMappingCollector<T, Double, A> inner) {
 		super(inner.getArithmetic());
 		this.inner = inner;
 	}
@@ -27,14 +27,14 @@ public class IntToFractionCollector<T, A extends IValueArithmetic> extends Abstr
 	}
 
 	@Override
-	public void setValueBefore(T something, Integer value)
+	public void setValueBefore(T something, Long value)
 	{
-		inner.setValueBefore(something, Fraction.getFraction(value, 1));
+		inner.setValueBefore(something, (double) value);
 	}
 
 	@Override
-	public void setValueAfter(T something, Integer value)
+	public void setValueAfter(T something, Long value)
 	{
-		inner.setValueAfter(something, Fraction.getFraction(value, 1));
+		inner.setValueAfter(something, (double) value);
 	}
 }

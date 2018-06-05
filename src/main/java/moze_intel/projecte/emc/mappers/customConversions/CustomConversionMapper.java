@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Integer>
+public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long>
 {
 	private static final String EXAMPLE_FILENAME = "example";
 	private static final ImmutableList<String> defaultFilenames = ImmutableList.of("defaults", "ODdefaults", "metals");
@@ -67,7 +67,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config)
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config)
 	{
 		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory() || customConversionFolder.mkdir()) {
@@ -92,7 +92,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		}
 	}
 
-	private static void readFile(File f, Configuration config, IMappingCollector<NormalizedSimpleStack, Integer> mapper, boolean allowDefaults)
+	private static void readFile(File f, Configuration config, IMappingCollector<NormalizedSimpleStack, Long> mapper, boolean allowDefaults)
 	{
 		if (f.isFile() && f.canRead() && f.getName().toLowerCase().endsWith(".json")) {
 			String name = f.getName().substring(0, f.getName().length() - ".json".length());
@@ -119,11 +119,11 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		return new File(PECore.CONFIG_DIR, "customConversions");
 	}
 
-	private static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	private static void addMappingsFromFile(Reader json, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
 		addMappingsFromFile(parseJson(json), mapper);
 	}
 
-	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Integer> mapper) {
+	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
 		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
@@ -143,7 +143,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		try
 		{
 			if (file.values.setValueBefore != null) {
-                for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueBefore.entrySet())
+                for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueBefore.entrySet())
                 {
                     NormalizedSimpleStack something = entry.getKey();
                     mapper.setValueBefore(something, entry.getValue());
@@ -159,7 +159,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
             }
 			if (file.values.setValueAfter != null)
             {
-                for (Map.Entry<NormalizedSimpleStack, Integer> entry : file.values.setValueAfter.entrySet())
+                for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueAfter.entrySet())
                 {
                     NormalizedSimpleStack something = entry.getKey();
                     mapper.setValueAfter(something, entry.getValue());

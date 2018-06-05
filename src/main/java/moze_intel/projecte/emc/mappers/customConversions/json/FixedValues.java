@@ -13,8 +13,8 @@ import java.util.Map;
 public class FixedValues
 {
 	@SerializedName("before")
-	public Map<NormalizedSimpleStack, Integer> setValueBefore = new HashMap<>();
+	public Map<NormalizedSimpleStack, Long> setValueBefore = new HashMap<>();
 	@SerializedName("after")
-	public Map<NormalizedSimpleStack, Integer> setValueAfter = new HashMap<>();
+	public Map<NormalizedSimpleStack, Long> setValueAfter = new HashMap<>();
 	public List<CustomConversion> conversion = new ArrayList<>();
 }

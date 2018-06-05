@@ -114,7 +114,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 
 			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
-			int reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
+			long reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
 			int charge = getCharge(stack);
 			byte mode = this.getMode(stack);
@@ -203,20 +203,20 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                         continue;
                     }
 
-                    int emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
+                    long emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
 
                     if (emc > reqEmc)
                     {
                         if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
                         {
-                            int difference = emc - reqEmc;
+                            long difference = emc - reqEmc;
                             kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
                             addKleinEMC(stack, difference);
                         }
                     }
                     else if (emc < reqEmc)
                     {
-                        int difference = reqEmc - emc;
+                        long difference = reqEmc - emc;
 
                         if (kleinEmc >= difference)
                         {
@@ -241,7 +241,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return EnumActionResult.SUCCESS;
 	}
 
-	private void addKleinEMC(ItemStack eye, int amount)
+	private void addKleinEMC(ItemStack eye, long amount)
 	{
 		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
@@ -253,7 +253,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 	}
 
-	private void removeKleinEMC(ItemStack eye, int amount)
+	private void removeKleinEMC(ItemStack eye, long amount)
 	{
 		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 

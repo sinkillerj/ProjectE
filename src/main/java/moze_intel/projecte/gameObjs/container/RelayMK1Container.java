@@ -61,9 +61,9 @@ public class RelayMK1Container extends Container
 	public void addListener(IContainerListener listener)
 	{
 		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, (int) tile.getStoredEmc());
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) (tile.getItemChargeProportion() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getInputBurnProportion() * 8000));
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, (long) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, (int) (tile.getItemChargeProportion() * 8000));
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 2, (int) (tile.getInputBurnProportion() * 8000));
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class RelayMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 0, ((int) tile.getStoredEmc()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 0, ((long) tile.getStoredEmc()));
 			}
 
 			emc = ((int) tile.getStoredEmc());
@@ -85,7 +85,7 @@ public class RelayMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 1, (int) (tile.getItemChargeProportion() * 8000));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 1, (int) (tile.getItemChargeProportion() * 8000));
 			}
 
 			kleinChargeProgress = tile.getItemChargeProportion();
@@ -95,7 +95,7 @@ public class RelayMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getInputBurnProportion() * 8000));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 2, (int) (tile.getInputBurnProportion() * 8000));
 			}
 
 			inputBurnProgress = tile.getInputBurnProportion();

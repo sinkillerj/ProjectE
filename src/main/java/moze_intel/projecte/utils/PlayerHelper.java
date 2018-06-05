@@ -134,7 +134,7 @@ public final class PlayerHelper
 	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
 	{
 		return hasEditPermission(player, pos)
-				&& ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
+				&& !(ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) == -1);
 	}
 
 	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)

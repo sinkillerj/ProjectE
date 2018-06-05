@@ -35,17 +35,17 @@ public final class PacketHandler
 		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, disc++, Side.SERVER);
-		HANDLER.registerMessage(UpdateWindowIntPKT.Handler.class, UpdateWindowIntPKT.class, disc++, Side.CLIENT);
+		HANDLER.registerMessage(UpdateWindowLongPKT.Handler.class, UpdateWindowLongPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(CooldownResetPKT.Handler.class, CooldownResetPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(LeftClickArchangelPKT.Handler.class, LeftClickArchangelPKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(SyncCovalencePKT.Handler.class, SyncCovalencePKT.class, disc++, Side.CLIENT);
 	}
 
-	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)
+	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal)
 	{
 		if (listener instanceof EntityPlayerMP)
 		{
-			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (EntityPlayerMP) listener);
+			sendTo(new UpdateWindowLongPKT((short) container.windowId, (short) propId, propVal), (EntityPlayerMP) listener);
 		}
 	}
 
@@ -71,15 +71,15 @@ public final class PacketHandler
 		}
 	}
 
-	private static int[][] serializeEmcData()
+	private static long[][] serializeEmcData()
 	{
-		int[][] ret = new int[EMCMapper.emc.size()][];
+		long[][] ret = new long[EMCMapper.emc.size()][];
 		int i = 0;
-		for (Map.Entry<SimpleStack, Integer> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<SimpleStack, Long> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
 			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
-			ret[i] = new int[] { id, stack.damage, entry.getValue() };
+			ret[i] = new long[] { id, stack.damage, entry.getValue() };
 			i++;
 		}
 		PECore.debugLog("EMC data size: {} bytes", ret.length * 3 * 4);

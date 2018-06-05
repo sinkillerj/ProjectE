@@ -21,7 +21,7 @@ public class NovaCataclysm extends BlockTNT
 	}
 	
 	@Override
-	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityLivingBase entity)
+	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, EntityLivingBase entity)
 	{
 		if (!world.isRemote)
 		{

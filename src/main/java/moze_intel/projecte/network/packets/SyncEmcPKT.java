@@ -17,11 +17,11 @@ import java.util.List;
 
 public class SyncEmcPKT implements IMessage
 {
-	private int[][] data;
+	private long[][] data;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(int[][] data)
+	public SyncEmcPKT(long[][] data)
 	{
 		this.data = data;
 	}
@@ -30,11 +30,11 @@ public class SyncEmcPKT implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		int size = ByteBufUtils.readVarInt(buf, 5);
-		data = new int[size][];
+		data = new long[size][];
 
 		for (int i = 0; i < size; i++)
 		{
-			int[] array = new int[3];
+			long[] array = new long[3];
 
 			for (int j = 0; j < 3; j++)
 			{
@@ -50,11 +50,11 @@ public class SyncEmcPKT implements IMessage
 	{
 		ByteBufUtils.writeVarInt(buf, data.length, 5);
 
-		for (int[] array : data)
+		for (long[] array : data)
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				ByteBufUtils.writeVarInt(buf, array[i], 5);
+				ByteBufUtils.writeVarInt(buf, (int) array[i], 5); //TODO BUGGY
 			}
 		}
 	}
@@ -70,11 +70,11 @@ public class SyncEmcPKT implements IMessage
 					PECore.LOGGER.info("Receiving EMC data from server.");
 					EMCMapper.emc.clear();
 
-					for (int[] array : pkt.data)
+					for (long[] array : pkt.data)
 					{
-						Item i = Item.REGISTRY.getObjectById(array[0]);
+						Item i = Item.REGISTRY.getObjectById((int) array[0]);
 
-						SimpleStack stack = new SimpleStack(i.getRegistryName(), array[1]);
+						SimpleStack stack = new SimpleStack(i.getRegistryName(), (int) array[1]);
 
 						if (stack.isValid())
 						{

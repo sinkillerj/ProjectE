@@ -59,7 +59,7 @@ public class CondenserMK2Container extends CondenserContainer
 			return ItemStack.EMPTY;
 		}
 
-		Slot slot = this.getSlot(slotIndex);
+;		Slot slot = this.getSlot(slotIndex);
 
 		if (slot == null || !slot.getHasStack())
 		{

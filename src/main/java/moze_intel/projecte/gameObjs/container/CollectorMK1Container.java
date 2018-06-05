@@ -69,11 +69,11 @@ public class CollectorMK1Container extends Container
 	public void addListener(IContainerListener listener)
 	{
 		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.getSunLevel());
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) tile.getStoredEmc());
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) (tile.getItemCharge() * 8000));
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.getSunLevel());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, (long) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 4, (int) (tile.getItemCharge() * 8000));
 	}
 
 	@Nonnull
@@ -99,7 +99,7 @@ public class CollectorMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 0, tile.getSunLevel());
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 0, tile.getSunLevel());
 			}
 
 			sunLevel = tile.getSunLevel();
@@ -109,7 +109,7 @@ public class CollectorMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 1, ((int) tile.getStoredEmc()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 1, ((long) tile.getStoredEmc()));
 			}
 
 			emc = ((int) tile.getStoredEmc());
@@ -119,7 +119,7 @@ public class CollectorMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getItemChargeProportion() * 8000));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 2, (int) (tile.getItemChargeProportion() * 8000));
 			}
 
 			kleinChargeProgress = tile.getItemChargeProportion();
@@ -129,7 +129,7 @@ public class CollectorMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 3, (int) (tile.getFuelProgress() * 8000));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 3, (int) (tile.getFuelProgress() * 8000));
 			}
 
 			fuelProgress = tile.getFuelProgress();
@@ -139,7 +139,7 @@ public class CollectorMK1Container extends Container
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 4, (int) (tile.getItemCharge()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 4, (int) (tile.getItemCharge()));
 			}
 
 			kleinEmc = ((int) tile.getItemCharge());

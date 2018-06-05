@@ -21,7 +21,7 @@ public class InterdictionTorch extends BlockTorch
 	{
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setUnlocalizedName("pe_interdiction_torch");
-		this.setLightLevel(0.9F);
+		this.setLightLevel(1.1F);
 		this.setTickRandomly(true);
 	}
 
@@ -59,4 +59,6 @@ public class InterdictionTorch extends BlockTorch
 			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D);
 		}
 	}
+
+
 }

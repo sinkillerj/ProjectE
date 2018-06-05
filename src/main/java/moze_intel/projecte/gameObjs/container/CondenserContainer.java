@@ -24,8 +24,8 @@ import javax.annotation.Nonnull;
 public class CondenserContainer extends Container
 {	
 	final CondenserTile tile;
-	public int displayEmc;
-	public int requiredEmc;
+	public long displayEmc;
+	public long requiredEmc;
 	
 	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
 	{
@@ -60,8 +60,8 @@ public class CondenserContainer extends Container
 	public void addListener(IContainerListener listener)
 	{
 		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.displayEmc);
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, tile.requiredEmc);
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.displayEmc);
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, tile.requiredEmc);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class CondenserContainer extends Container
 		{
 			for (IContainerListener listener : listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.displayEmc);
+				PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.displayEmc);
 			}
 
 			displayEmc = tile.displayEmc;
@@ -83,7 +83,7 @@ public class CondenserContainer extends Container
 		{
 			for (IContainerListener listener : listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(listener, this, 1, tile.requiredEmc);
+				PacketHandler.sendProgressBarUpdateLong(listener, this, 1, tile.requiredEmc);
 			}
 
 			requiredEmc = tile.requiredEmc;
@@ -94,10 +94,21 @@ public class CondenserContainer extends Container
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int data)
 	{
-		switch(id)
+		/*switch(id)
 		{
 			case 0: displayEmc = data; break;
 			case 1: requiredEmc = data; break;
+		}*/
+		if (id % 10 == 0){
+			if (id == 0){
+				displayEmc = 0;
+			}
+			displayEmc += data;
+		} else if (id % 10 == 1){
+			if (id == 1){
+				requiredEmc = 0;
+			}
+			requiredEmc += data;
 		}
 	}
 
@@ -178,6 +189,6 @@ public class CondenserContainer extends Container
 			return Constants.MAX_CONDENSER_PROGRESS;
 		}
 
-		return (displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc;
+		return (int) ((displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc);
 	}
 }
