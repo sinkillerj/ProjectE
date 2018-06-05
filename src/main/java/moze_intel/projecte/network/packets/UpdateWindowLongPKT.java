@@ -9,16 +9,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 // Version of SPacketWindowProperty that does not truncate the `value` arg to a short
-public class UpdateWindowIntPKT implements IMessage
+public class UpdateWindowLongPKT implements IMessage
 {
 
     private short windowId;
     private short propId;
-    private int propVal;
+    private long propVal;
 
-    public UpdateWindowIntPKT() {}
+    public UpdateWindowLongPKT() {}
 
-    public UpdateWindowIntPKT(short windowId, short propId, int propVal)
+    public UpdateWindowLongPKT(short windowId, short propId, long propVal)
     {
         this.windowId = windowId;
         this.propId = propId;
@@ -30,7 +30,7 @@ public class UpdateWindowIntPKT implements IMessage
     {
         windowId = buf.readUnsignedByte();
         propId = buf.readShort();
-        propVal = ByteBufUtils.readVarInt(buf, 5);
+        propVal = buf.readLong();
     }
 
     @Override
@@ -38,21 +38,34 @@ public class UpdateWindowIntPKT implements IMessage
     {
         buf.writeByte(windowId);
         buf.writeShort(propId);
-        ByteBufUtils.writeVarInt(buf, propVal, 5);
+        buf.writeLong(propVal);
     }
 
-    public static class Handler implements IMessageHandler<UpdateWindowIntPKT, IMessage>
+    public static class Handler implements IMessageHandler<UpdateWindowLongPKT, IMessage>
     {
         @Override
-        public IMessage onMessage(final UpdateWindowIntPKT msg, MessageContext ctx)
+        public IMessage onMessage(final UpdateWindowLongPKT msg, MessageContext ctx)
         {
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayer player = Minecraft.getMinecraft().player;
-                    if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
-                    {
-                        player.openContainer.updateProgressBar(msg.propId, msg.propVal);
+                    if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
+                        long val = msg.propVal;
+                        int counter = 0;
+                        if (val != 0) {
+                            while (val > 0) {
+                                int num = Integer.MAX_VALUE;
+                                if (val < Integer.MAX_VALUE) {
+                                    num = (int) val;
+                                }
+                                player.openContainer.updateProgressBar(10 * counter + msg.propId, num);
+                                val -= num;
+                                counter++;
+                            }
+                        } else {
+                            player.openContainer.updateProgressBar(msg.propId, 0);
+                        }
                     }
                 }
             });

@@ -55,7 +55,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 
 		PlayerHelper.swingItem(player, hand);
-		List<Integer> emcValues = new ArrayList<>();
+		List<Long> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;
 
@@ -81,7 +81,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			}
 
 			ItemStack blockStack = drops.get(0);
-			int blockEmc = EMCHelper.getEmcValue(blockStack);
+			long blockEmc = EMCHelper.getEmcValue(blockStack);
 
 			if (blockEmc == 0)
 			{
@@ -96,7 +96,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 					if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 					{
-						int currentValue = EMCHelper.getEmcValue(entry.getValue());
+						long currentValue = EMCHelper.getEmcValue(entry.getValue());
 
 						if (currentValue != 0)
 						{
@@ -128,7 +128,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			return EnumActionResult.FAIL;
 		}
 
-		int[] maxValues = new int[3];
+		long[] maxValues = new long[3];
 
 		for (int i = 0; i < 3; i++)
 		{

@@ -150,7 +150,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			}
 			else
 			{
-				int emcVal = EMCHelper.getEmcSellValue(stack);
+				long emcVal = EMCHelper.getEmcSellValue(stack);
 				
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
 				{

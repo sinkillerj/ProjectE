@@ -67,7 +67,7 @@ public class ToolTipEvent
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
-				int value = EMCHelper.getEmcValue(current);
+				long value = EMCHelper.getEmcValue(current);
 
 				event.getToolTip().add(TextFormatting.YELLOW +
 						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, 1));
@@ -81,7 +81,7 @@ public class ToolTipEvent
 					} catch (ArithmeticException e) {
 						total = Long.MAX_VALUE;
 					}
-					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
+					if (total < 0 || total <= value || total > Constants.TILE_MAX_EMC)
 					{
 						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
 					}

@@ -36,16 +36,16 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 		return fixed;
 	}
 
-	private Map<NormalizedSimpleStack, Integer> parseSetValueMap(JsonObject o, JsonDeserializationContext context) {
-		Map<NormalizedSimpleStack, Integer> out = new HashMap<>();
+	private Map<NormalizedSimpleStack, Long> parseSetValueMap(JsonObject o, JsonDeserializationContext context) {
+		Map<NormalizedSimpleStack, Long> out = new HashMap<>();
 		for (Map.Entry<String, JsonElement> entry: o.entrySet()) {
 			JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();
 			if (primitive.isNumber()) {
-				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class),  primitive.getAsInt());
+				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class),  primitive.getAsLong());
 				continue;
 			} else if (primitive.isString()) {
 				if (primitive.getAsString().toLowerCase().equals("free")) {
-					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Integer.MIN_VALUE); //TODO Get Value for 'free' from arithmetic?
+					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Long.MIN_VALUE); //TODO Get Value for 'free' from arithmetic?
 					continue;
 				}
 			}

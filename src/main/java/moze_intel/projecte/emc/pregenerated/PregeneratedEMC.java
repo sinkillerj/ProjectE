@@ -20,10 +20,10 @@ public class PregeneratedEMC
 			.registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE)
 			.enableComplexMapKeySerialization().setPrettyPrinting().create();
 
-	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Integer> map)
+	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Long> map)
 	{
 		try {
-			Map<NormalizedSimpleStack, Integer> m = read(f);
+			Map<NormalizedSimpleStack, Long> m = read(f);
 			map.clear();
 			map.putAll(m);
 			return true;
@@ -32,18 +32,18 @@ public class PregeneratedEMC
 		}
 	}
 
-	private static Map<NormalizedSimpleStack, Integer> read(File file) throws IOException
+	private static Map<NormalizedSimpleStack, Long> read(File file) throws IOException
 	{
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
+		Type type = new TypeToken<Map<NormalizedSimpleStack, Long>>() {}.getType();
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
-			Map<NormalizedSimpleStack, Integer> map = gson.fromJson(reader, type);
+			Map<NormalizedSimpleStack, Long> map = gson.fromJson(reader, type);
 			map.remove(null);
 			return map;
 		}
 	}
 
-	public static void write(File file, Map<NormalizedSimpleStack, Integer> map) throws IOException
+	public static void write(File file, Map<NormalizedSimpleStack, Long> map) throws IOException
 	{
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file)))

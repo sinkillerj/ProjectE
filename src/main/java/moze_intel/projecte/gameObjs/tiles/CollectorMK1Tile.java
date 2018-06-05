@@ -207,7 +207,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 			ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
 			
-			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
+			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
@@ -290,7 +290,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			return 0;
 		}
 
-		int reqEmc;
+		long reqEmc;
 
 		if (!getLock().isEmpty())
 		{
