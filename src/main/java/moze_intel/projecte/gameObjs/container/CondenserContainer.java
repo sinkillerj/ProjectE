@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -15,6 +16,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
@@ -154,7 +156,7 @@ public class CondenserContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot == 0 && !tile.getLock().getStackInSlot(0).isEmpty())
+		if (slot == 0 && (!tile.getLock().getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack()))))
 		{
 			if (!player.getEntityWorld().isRemote)
 			{
