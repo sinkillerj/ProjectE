@@ -34,7 +34,7 @@ public class GUICollectorMK1 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRenderer.drawString(Integer.toString(container.emc), 60, 32, 4210752);
+		this.fontRenderer.drawString(Long.toString(container.emc), 60, 32, 4210752);
 		
 		double kleinCharge = container.kleinEmc;
 
