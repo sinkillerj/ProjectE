@@ -35,10 +35,19 @@ public final class PacketHandler
 		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, disc++, Side.SERVER);
+		HANDLER.registerMessage(UpdateWindowIntPKT.Handler.class, UpdateWindowIntPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(UpdateWindowLongPKT.Handler.class, UpdateWindowLongPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(CooldownResetPKT.Handler.class, CooldownResetPKT.class, disc++, Side.CLIENT);
 		HANDLER.registerMessage(LeftClickArchangelPKT.Handler.class, LeftClickArchangelPKT.class, disc++, Side.SERVER);
 		HANDLER.registerMessage(SyncCovalencePKT.Handler.class, SyncCovalencePKT.class, disc++, Side.CLIENT);
+	}
+
+	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)
+	{
+		if (listener instanceof EntityPlayerMP)
+		{
+			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (EntityPlayerMP) listener);
+		}
 	}
 
 	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal)
