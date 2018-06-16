@@ -186,7 +186,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 					continue;
 				}
 				//value = value + amount * ingredientcost
-				V ingredientValue = conversion.arithmeticForConversion.mul(entry.getValue().intValue(),values.get(entry.getKey()));
+				V ingredientValue = conversion.arithmeticForConversion.mul(entry.getValue(),values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
 					if (!conversion.arithmeticForConversion.isFree(ingredientValue)) {
 						value = conversion.arithmeticForConversion.add(value, ingredientValue);

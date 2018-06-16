@@ -1,7 +1,5 @@
 package moze_intel.projecte.emc.arithmetics;
 
-import org.apache.commons.lang3.math.Fraction;
-
 /**
  * Created by Voyager on 04.05.2018.
  */
@@ -13,7 +11,7 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
 
     @Override
     public Double getZero() {
-        return 0d;
+        return 0D;
     }
 
     @Override
@@ -25,14 +23,14 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
     }
 
     @Override
-    public Double mul(int a, Double b) {
+    public Double mul(long a, Double b) {
         if (this.isFree(b)) return getFree();
 
         return b * a;
     }
 
     @Override
-    public Double div(Double a, int b) {
+    public Double div(Double a, long b) {
         if (this.isFree(a)) return getFree();
         double result = a / b;
         if (result >= 0 && result < 1)
@@ -44,11 +42,11 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
 
     @Override
     public Double getFree() {
-        return Double.MIN_VALUE;
+        return -Double.MAX_VALUE;
     }
 
     @Override
     public boolean isFree(Double value) {
-        return value == getFree();
+        return value == -Double.MAX_VALUE;
     }
 }
