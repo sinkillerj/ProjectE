@@ -21,7 +21,7 @@ public class NovaCatalyst extends BlockTNT
 	}
 	
 	@Override
-	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, EntityLivingBase entity)
+	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityLivingBase entity)
 	{
 		if (!world.isRemote)
 		{

@@ -33,7 +33,7 @@ public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMap
 	}
 
 	@Override
-		public void addConversion(int outnumber, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredientsWithAmount, A arithmeticForConversion)
+	public void addConversion(int outnumber, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> ingredientsWithAmount, A arithmeticForConversion)
 	{
 		inner.addConversion(outnumber, output, ingredientsWithAmount, arithmeticForConversion);
 		if (output == null || ingredientsWithAmount.containsKey(null)) return;

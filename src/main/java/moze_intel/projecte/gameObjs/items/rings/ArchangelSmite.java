@@ -132,7 +132,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 			{
 				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
 				{
-					for (int i = 0; i < 20; i++)
+					for (int i = 0; i < 3; i++)
 					{
 						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((WorldServer) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.posX = tile.centeredX;
