@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -94,5 +95,12 @@ public class CollectorMK2Container extends CollectorMK1Container
 		}
 		
 		return slot.onTake(player, stack);
+	}
+
+	@Override
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	{
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK2
+				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

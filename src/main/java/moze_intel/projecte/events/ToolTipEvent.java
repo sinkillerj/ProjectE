@@ -33,6 +33,10 @@ public class ToolTipEvent
 	public static void tTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack current = event.getItemStack();
+		if (current.isEmpty())
+		{
+			return;
+		}
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 		EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
