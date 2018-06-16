@@ -82,16 +82,16 @@ public class ToolTipEvent
 					try
 					{
 						total = LongMath.checkedMultiply(value, current.getCount());
+						if (total < 0 || total <= value)
+						{
+							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
+						}
+						else
+						{
+							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
+						}
 					} catch (ArithmeticException e) {
-						total = Long.MAX_VALUE;
-					}
-					if (total < 0 || total <= value || total > Constants.TILE_MAX_EMC)
-					{
 						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
-					}
-					else
-					{
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
 					}
 				}
 
