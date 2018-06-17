@@ -38,7 +38,13 @@ public class SyncEmcPKT implements IMessage
 
 			for (int j = 0; j < 3; j++)
 			{
-				array[j] = ByteBufUtils.readVarInt(buf, 5);
+				int val = ByteBufUtils.readVarInt(buf, 5);
+				if (j == 2) { //EMC it is stored in this position and the next one
+					//Pack the two ints representing the bits of the EMC long back into a long to retrieve the true value
+					array[j] = (long) val << 32 | ByteBufUtils.readVarInt(buf, 5) & 0xffffffffL;
+				} else {
+					array[j] = val;
+				}
 			}
 
 			data[i] = array;
@@ -54,7 +60,16 @@ public class SyncEmcPKT implements IMessage
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				ByteBufUtils.writeVarInt(buf, (int) array[i], 5); //TODO BUGGY
+				if (i == 2) { //EMC
+					//Unpack the EMC long value as if it was two ints stored in a long
+					//This allows writing them to ByteBuf.
+					//When we are retrieving them using fromByte we will repack them so we know the actual value
+					long val = array[i];
+					ByteBufUtils.writeVarInt(buf, (int) (val >> 32), 5);
+					ByteBufUtils.writeVarInt(buf, (int) val, 5);
+				} else {
+					ByteBufUtils.writeVarInt(buf, (int) array[i], 5);
+				}
 			}
 		}
 	}
