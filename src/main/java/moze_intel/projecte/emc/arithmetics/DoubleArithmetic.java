@@ -19,6 +19,9 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
         if (isFree(a)) return b;
         if (isFree(b)) return a;
 
+        if (a > 0 && b > 0 && a.longValue() + b.longValue() < 0) {
+            return 0D;
+        }
         return a + b;
     }
 
