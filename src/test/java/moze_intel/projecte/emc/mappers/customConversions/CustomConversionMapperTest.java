@@ -111,9 +111,9 @@ public class CustomConversionMapperTest
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
 		assertEquals(1, f.values.setValueBefore.get(NSSItem.create("a", 0)).longValue());
-		assertEquals(2, (int) f.values.setValueBefore.get(NSSItem.create("b", 0)).longValue());
+		assertEquals(2, f.values.setValueBefore.get(NSSItem.create("b", 0)).longValue());
 		assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(NSSItem.create("c", 0)).longValue());
-		assertEquals(3, (int) f.values.setValueAfter.get(NSSItem.create("d", 0)).longValue());
+		assertEquals(3, f.values.setValueAfter.get(NSSItem.create("d", 0)).longValue());
 
 	}
 

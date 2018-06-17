@@ -38,8 +38,8 @@ public class OreDictionaryMapper implements IEMCMapper<NormalizedSimpleStack, Lo
 							continue;
 						}
 
-						mapper.setValueBefore(NSSItem.create(stack), 0l);
-						mapper.setValueAfter(NSSItem.create(stack), 0l);
+						mapper.setValueBefore(NSSItem.create(stack), 0L);
+						mapper.setValueAfter(NSSItem.create(stack), 0L);
 					}
 				}
 			}

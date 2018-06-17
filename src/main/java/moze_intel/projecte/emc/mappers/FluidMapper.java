@@ -95,7 +95,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NSSFake.create("fakeMilkFluid");
-		mapper.setValueBefore(fakeMilkFluid, 16l);
+		mapper.setValueBefore(fakeMilkFluid, 16L);
 		mapper.addConversion(1, NSSItem.create(Items.MILK_BUCKET), Arrays.asList(NSSItem.create(Items.BUCKET), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
