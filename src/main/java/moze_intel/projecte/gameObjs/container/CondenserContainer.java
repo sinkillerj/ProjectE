@@ -189,6 +189,6 @@ public class CondenserContainer extends LongContainer
 			return Constants.MAX_CONDENSER_PROGRESS;
 		}
 
-		return (int) (Constants.MAX_CONDENSER_PROGRESS * (displayEmc / requiredEmc));
+		return (int) (Constants.MAX_CONDENSER_PROGRESS * ((double) displayEmc / requiredEmc));
 	}
 }
