@@ -152,10 +152,10 @@ public class HiddenFractionSpecificTest
 
 	}
 
-	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
+	private static <T, V extends Number> long getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
-		return val.intValue();
+		return val.longValue();
 	}
 
 }

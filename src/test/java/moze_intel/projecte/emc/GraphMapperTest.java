@@ -670,8 +670,8 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "c", Arrays.asList("a", "b"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(Integer.MAX_VALUE / 2 + 1, getValue(values, "a"));
-		assertEquals(Integer.MAX_VALUE/2+1, getValue(values, "b"));
+		assertEquals(Long.MAX_VALUE / 2 + 1, getValue(values, "a"));
+		assertEquals(Long.MAX_VALUE/2+1, getValue(values, "b"));
 		assertEquals(0, getValue(values, "c"));
 	}
 
@@ -682,7 +682,7 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(3, "a", Collections.singletonList("something"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(Integer.MAX_VALUE/2, getValue(values, "a"));
+		assertEquals(Long.MAX_VALUE/2, getValue(values, "a"));
 	}
 
 	@org.junit.Test
@@ -699,9 +699,9 @@ public class GraphMapperTest {
 
 	}
 
-	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
+	private static <T, V extends Number> long getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
-		return val.intValue();
+		return val.longValue();
 	}
 }
