@@ -1,14 +1,14 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.gameObjs.container.LongContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-// Version of SPacketWindowProperty that does not truncate the `value` arg to a short
+// Version of SPacketWindowProperty that does not truncate the `value` arg to an int
 public class UpdateWindowLongPKT implements IMessage
 {
 
@@ -51,20 +51,14 @@ public class UpdateWindowLongPKT implements IMessage
                 public void run() {
                     EntityPlayer player = Minecraft.getMinecraft().player;
                     if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
-                        long val = msg.propVal;
-                        int counter = 0;
-                        if (val != 0) {
-                            while (val > 0) {
-                                int num = Integer.MAX_VALUE;
-                                if (val < Integer.MAX_VALUE) {
-                                    num = (int) val;
-                                }
-                                player.openContainer.updateProgressBar(10 * counter + msg.propId, num);
-                                val -= num;
-                                counter++;
-                            }
-                        } else {
-                            player.openContainer.updateProgressBar(msg.propId, 0);
+                        //It should always be a LongContainer if it is this type of packet, if not fallback to normal update
+                        if (player.openContainer instanceof LongContainer)
+                        {
+                            ((LongContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
+                        }
+                        else
+                        {
+                            player.openContainer.updateProgressBar(msg.propId, (int) msg.propVal);
                         }
                     }
                 }

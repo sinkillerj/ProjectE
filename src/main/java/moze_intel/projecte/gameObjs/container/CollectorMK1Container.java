@@ -20,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class CollectorMK1Container extends Container
+public class CollectorMK1Container extends LongContainer
 {
 	final CollectorMK1Tile tile;
 	public int sunLevel = 0;
@@ -158,6 +158,17 @@ public class CollectorMK1Container extends Container
 			case 2: kleinChargeProgress = data / 8000.0; break;
 			case 3: fuelProgress = data / 8000.0; break;
 			case 4: kleinEmc = data; break;
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBarLong(int id, long data)
+	{
+		switch (id)
+		{
+			case 1: emc = data; break;
+			default: updateProgressBar(id, (int) data);
 		}
 	}
 

@@ -17,7 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class RelayMK1Container extends Container 
+public class RelayMK1Container extends LongContainer
 {
 	final RelayMK1Tile tile;
 	public double kleinChargeProgress = 0;
@@ -112,6 +112,17 @@ public class RelayMK1Container extends Container
 			case 0: emc = data; break;
 			case 1: kleinChargeProgress = data / 8000.0; break;
 			case 2: inputBurnProgress = data / 8000.0; break;
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBarLong(int id, long data)
+	{
+		switch (id)
+		{
+			case 0: emc = data; break;
+			default: updateProgressBar(id, (int) data);
 		}
 	}
 

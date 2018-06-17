@@ -21,7 +21,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class CondenserContainer extends Container
+public class CondenserContainer extends LongContainer
 {	
 	final CondenserTile tile;
 	public long displayEmc;
@@ -94,21 +94,21 @@ public class CondenserContainer extends Container
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int data)
 	{
-		/*switch(id)
+		switch(id)
 		{
 			case 0: displayEmc = data; break;
 			case 1: requiredEmc = data; break;
-		}*/
-		if (id % 10 == 0){
-			if (id == 0){
-				displayEmc = 0;
-			}
-			displayEmc += data;
-		} else if (id % 10 == 1){
-			if (id == 1){
-				requiredEmc = 0;
-			}
-			requiredEmc += data;
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBarLong(int id, long data)
+	{
+		switch(id)
+		{
+			case 0: displayEmc = data; break;
+			case 1: requiredEmc = data; break;
 		}
 	}
 
@@ -189,6 +189,6 @@ public class CondenserContainer extends Container
 			return Constants.MAX_CONDENSER_PROGRESS;
 		}
 
-		return (int) ((displayEmc * Constants.MAX_CONDENSER_PROGRESS) / requiredEmc);
+		return (int) (Constants.MAX_CONDENSER_PROGRESS * (displayEmc / requiredEmc));
 	}
 }
