@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import javax.annotation.Nonnull;
 
 /**
- * This event is fired when a player is attempting to place an item in the condenser.
+ * This event is fired on both the server and client when a player is attempting to place an item in the condenser.
  * This event is cancelable
  * This event is fired on MinecraftForge#EVENT_BUS
  */

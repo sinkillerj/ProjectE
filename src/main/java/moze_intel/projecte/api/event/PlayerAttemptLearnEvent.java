@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import javax.annotation.Nonnull;
 
 /**
- * This event is fired when a player is attempting to learn a new item
+ * This event is fired on both the server and client when a player is attempting to learn a new item
  * This event is cancelable
  * This event is fired on MinecraftForge#EVENT_BUS
  */
