@@ -12,7 +12,6 @@ import moze_intel.projecte.emc.generators.DoubleToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,9 +35,9 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void slabRecipe()
 	{
-		mappingCollector.setValueBefore("s", 1l);
-		mappingCollector.setValueBefore("redstone", 64l);
-		mappingCollector.setValueBefore("glass", 1l);
+		mappingCollector.setValueBefore("s", 1L);
+		mappingCollector.setValueBefore("redstone", 64L);
+		mappingCollector.setValueBefore("glass", 1L);
 		mappingCollector.addConversion(6, "slab", Arrays.asList("s", "s", "s"));
 		mappingCollector.addConversion(1, "doubleslab", Arrays.asList("slab", "slab"));
 		mappingCollector.addConversion(1, "transferpipe", Arrays.asList("slab", "slab", "slab", "glass", "redstone", "glass", "slab", "slab", "slab"));
@@ -55,8 +54,8 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void nuggetExploits()
 	{
-		mappingCollector.setValueBefore("ingot", 2048l);
-		mappingCollector.setValueBefore("melon", 16l);
+		mappingCollector.setValueBefore("ingot", 2048L);
+		mappingCollector.setValueBefore("melon", 16L);
 		mappingCollector.addConversion(9, "nugget", Collections.singletonList("ingot"));
 		mappingCollector.addConversion(1, "goldmelon", Arrays.asList(
 				"nugget", "nugget", "nugget",
@@ -75,8 +74,8 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void moltenEnderpearl()
 	{
-		mappingCollector.setValueBefore("enderpearl", 1024l);
-		mappingCollector.setValueBefore("bucket", 768l);
+		mappingCollector.setValueBefore("enderpearl", 1024L);
+		mappingCollector.setValueBefore("bucket", 768L);
 
 		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
 		mappingCollector.addConversion(250*1000, "moltenEnder", Collections.singletonList("enderpearl"));
@@ -94,8 +93,8 @@ public class HiddenFractionSpecificTest
 	public void moltenEnderpearlWithConversionArithmetic()
 	{
 		DoubleArithmetic fullFractionArithmetic = new DoubleArithmetic();
-		mappingCollector.setValueBefore("enderpearl", 1024l);
-		mappingCollector.setValueBefore("bucket", 768l);
+		mappingCollector.setValueBefore("enderpearl", 1024L);
+		mappingCollector.setValueBefore("bucket", 768L);
 
 		//Conversion using milibuckets with a "don't round anything down"-arithmetic
 		mappingCollector.addConversion(250, "moltenEnder", Collections.singletonList("enderpearl"), fullFractionArithmetic);
@@ -118,7 +117,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void reliquaryVials()
 	{
-		mappingCollector.setValueBefore("glass", 1l);
+		mappingCollector.setValueBefore("glass", 1L);
 
 		mappingCollector.addConversion(16, "pane", ImmutableMap.of("glass", 6));
 		mappingCollector.addConversion(5, "vial", ImmutableMap.of("pane", 5));
@@ -138,7 +137,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void propagation()
 	{
-		mappingCollector.setValueBefore("a", 1l);
+		mappingCollector.setValueBefore("a", 1L);
 
 		mappingCollector.addConversion(2, "ahalf", ImmutableMap.of("a", 1));
 		mappingCollector.addConversion(1, "ahalf2", ImmutableMap.of("ahalf", 1));
