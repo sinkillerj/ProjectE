@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
+import moze_intel.projecte.emc.arithmetics.HiddenDoubleArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.LongToDoubleCollector;
@@ -27,7 +28,7 @@ public class HiddenFractionSpecificTest
 	@Before
 	public void setup()
 	{
-		SimpleGraphMapper<String, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper<>(new DoubleArithmetic());
+		SimpleGraphMapper<String, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper<>(new HiddenDoubleArithmetic());
 		valueGenerator = new DoubleToLongGenerator<>(mapper);
 		mappingCollector = new LongToDoubleCollector<>(mapper);
 	}

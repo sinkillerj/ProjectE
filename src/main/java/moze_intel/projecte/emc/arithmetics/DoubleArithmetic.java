@@ -32,12 +32,7 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
     @Override
     public Double div(Double a, long b) {
         if (this.isFree(a)) return getFree();
-        double result = a / b;
-        if (result >= 0 && result < 1)
-        {
-            return result;
-        }
-        return (double) ((long) result);
+        return a / b;
     }
 
     @Override
