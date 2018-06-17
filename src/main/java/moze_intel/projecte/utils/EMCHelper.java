@@ -205,12 +205,19 @@ public final class EMCHelper
 				}
 
 				result /= stack.getMaxDamage();
+				boolean positive = result > 0;
 				result += getEnchantEmcBonus(stack);
 
+				//If it was positive and then became negative that means it overflowed
+				if (positive && result < 0) {
+					return emc;
+				}
+
+				positive = result > 0;
 				result += getStoredEMCBonus(stack);
 
-				if (result > Constants.TILE_MAX_EMC)
-				{
+				//If it was positive and then became negative that means it overflowed
+				if (positive && result < 0) {
 					return emc;
 				}
 
