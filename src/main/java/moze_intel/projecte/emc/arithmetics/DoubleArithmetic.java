@@ -40,11 +40,11 @@ public class DoubleArithmetic implements IValueArithmetic<Double> {
 
     @Override
     public Double getFree() {
-        return -Double.MAX_VALUE;
+        return (double) Long.MIN_VALUE;
     }
 
     @Override
     public boolean isFree(Double value) {
-        return value == -Double.MAX_VALUE;
+        return value == Long.MIN_VALUE;
     }
 }
