@@ -115,19 +115,21 @@ processResources
 }
 
 shadowJar {
-    // Only shadow fluent-hc
+    // Only shadow apache commons-math3
     dependencies {
-        include(dependency('org.apache.commons:commons-math3:.*'))
+        include dependency('org.apache.commons:commons-math3:.*')
     }
 
-    // Relocate fluent-hc to prevent conflicts with other mods that include it
+    // Relocate apache commons-math3 to prevent conflicts with other mods that include it
     relocate 'org.apache.commons.math3', 'moze_intel.projecte.repack.org.apache.commons.math3'
 
-    classifier '' // Replace the default JAR
+    classifier = 'universal' // Replace the default JAR
 }
 
 reobf {
-    shadowJar {} // Reobfuscate the shadowed JAR
+    shadowJar {
+        // Reobfuscate the shadowed JAR
+    }
 }
 
 // Dev jar (deobfuscated)

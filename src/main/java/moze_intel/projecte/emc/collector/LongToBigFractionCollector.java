@@ -1,8 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.AbstractMappingCollector;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.util.Map;
