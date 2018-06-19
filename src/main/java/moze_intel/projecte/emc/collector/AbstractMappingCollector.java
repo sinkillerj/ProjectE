@@ -9,7 +9,7 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 {
 	private final A defaultArithmetic;
 
-	AbstractMappingCollector(A defaultArithmetic) {
+	protected AbstractMappingCollector(A defaultArithmetic) {
 		this.defaultArithmetic = defaultArithmetic;
 	}
 

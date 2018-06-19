@@ -3,13 +3,13 @@ package moze_intel.projecte.emc;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.arithmetics.HiddenDoubleArithmetic;
+import moze_intel.projecte.emc.arithmetics.BigFractionToLongGenerator;
+import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.arithmetics.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.LongToDoubleCollector;
 import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
-import moze_intel.projecte.emc.generators.DoubleToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
@@ -29,7 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.math.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,9 +57,9 @@ public final class EMCMapper
 				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
-		SimpleGraphMapper<NormalizedSimpleStack, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper<>(new HiddenDoubleArithmetic());
-		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new DoubleToLongGenerator<>(mapper);
-		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<Double>> mappingCollector = new LongToDoubleCollector<>(mapper);
+		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 		mappingCollector = new WildcardSetValueFixCollector<>(mappingCollector);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));

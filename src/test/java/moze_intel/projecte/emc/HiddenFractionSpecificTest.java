@@ -1,17 +1,10 @@
 package moze_intel.projecte.emc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
-import moze_intel.projecte.emc.arithmetics.HiddenDoubleArithmetic;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.LongToDoubleCollector;
-import moze_intel.projecte.emc.generators.DoubleToLongGenerator;
-import moze_intel.projecte.emc.generators.IValueGenerator;
-
 import com.google.common.collect.ImmutableMap;
+import moze_intel.projecte.emc.arithmetics.*;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.generators.IValueGenerator;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,17 +12,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 public class HiddenFractionSpecificTest
 {
 	private IValueGenerator<String, Long> valueGenerator;
-	private IExtendedMappingCollector<String, Long, IValueArithmetic<Double>> mappingCollector;
+	private IExtendedMappingCollector<String, Long, IValueArithmetic<BigFraction>> mappingCollector;
 
 	@Before
 	public void setup()
 	{
-		SimpleGraphMapper<String, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper<>(new HiddenDoubleArithmetic());
-		valueGenerator = new DoubleToLongGenerator<>(mapper);
-		mappingCollector = new LongToDoubleCollector<>(mapper);
+		SimpleGraphMapper<String, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		valueGenerator = new BigFractionToLongGenerator<>(mapper);
+		mappingCollector = new LongToBigFractionCollector<>(mapper);
 	}
 
 	@Test
@@ -92,7 +88,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void moltenEnderpearlWithConversionArithmetic()
 	{
-		DoubleArithmetic fullFractionArithmetic = new DoubleArithmetic();
+		FullBigFractionArithmetic fullFractionArithmetic = new FullBigFractionArithmetic();
 		mappingCollector.setValueBefore("enderpearl", 1024L);
 		mappingCollector.setValueBefore("bucket", 768L);
 

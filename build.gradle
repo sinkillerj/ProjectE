@@ -18,6 +18,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.github.johnrengelman.shadow" version "1.2.4"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceCompatibility = 1.8
@@ -80,6 +84,8 @@ dependencies {
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"*/
 
+    compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
+
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
@@ -106,6 +112,22 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+shadowJar {
+    // Only shadow fluent-hc
+    dependencies {
+        include(dependency('org.apache.commons:commons-math3:.*'))
+    }
+
+    // Relocate fluent-hc to prevent conflicts with other mods that include it
+    relocate 'org.apache.commons.math3', 'moze_intel.projecte.repack.org.apache.commons.math3'
+
+    classifier '' // Replace the default JAR
+}
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
 }
 
 // Dev jar (deobfuscated)

@@ -1,16 +1,15 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
+import moze_intel.projecte.emc.arithmetics.FullBigFractionArithmetic;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSOreDictionary;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -105,7 +104,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
 		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
-		DoubleArithmetic fluidArithmetic = new DoubleArithmetic();
+		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
 			emapper.addConversion(pair.getValue().amount, NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);

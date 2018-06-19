@@ -1,19 +1,19 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
+import moze_intel.projecte.emc.arithmetics.BigFractionToLongGenerator;
+import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.arithmetics.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.LongToDoubleCollector;
-import moze_intel.projecte.emc.generators.DoubleToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
-
+import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 //@RunWith(value = Parameterized.class)
 public class GraphMapperTest {
@@ -30,15 +30,15 @@ public class GraphMapperTest {
 	@Before
 	public void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
-		SimpleGraphMapper<String, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper<>(new DoubleArithmetic());
-		valueGenerator = new DoubleToLongGenerator<>(mapper);
-		mappingCollector = new LongToDoubleCollector<>(mapper);
+		SimpleGraphMapper<String, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		valueGenerator = new BigFractionToLongGenerator<>(mapper);
+		mappingCollector = new LongToBigFractionCollector<>(mapper);
 	}
 
 	@Rule
 	public Timeout timeout = new Timeout(3000);
 	private IValueGenerator<String, Long> valueGenerator;
-	private IExtendedMappingCollector<String, Long, IValueArithmetic<Double>> mappingCollector;
+	private IExtendedMappingCollector<String, Long, IValueArithmetic<BigFraction>> mappingCollector;
 
 	@org.junit.Test
 	public void testGenerateValuesSimple() throws Exception {
