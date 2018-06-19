@@ -6,7 +6,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.arithmetics.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.arithmetics.LongToBigFractionCollector;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
