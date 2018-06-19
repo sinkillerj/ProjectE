@@ -13,15 +13,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.util.List;
-
 public class SyncEmcPKT implements IMessage
 {
-	private long[][] data;
+	private EmcPKTInfo[] data;
 
 	public SyncEmcPKT() {}
 
-	public SyncEmcPKT(long[][] data)
+	public SyncEmcPKT(EmcPKTInfo[] data)
 	{
 		this.data = data;
 	}
@@ -30,24 +28,11 @@ public class SyncEmcPKT implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		int size = ByteBufUtils.readVarInt(buf, 5);
-		data = new long[size][];
+		data = new EmcPKTInfo[size];
 
 		for (int i = 0; i < size; i++)
 		{
-			long[] array = new long[3];
-
-			for (int j = 0; j < 3; j++)
-			{
-				int val = ByteBufUtils.readVarInt(buf, 5);
-				if (j == 2) { //EMC it is stored in this position and the next one
-					//Pack the two ints representing the bits of the EMC long back into a long to retrieve the true value
-					array[j] = (long) val << 32 | ByteBufUtils.readVarInt(buf, 5) & 0xffffffffL;
-				} else {
-					array[j] = val;
-				}
-			}
-
-			data[i] = array;
+			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), ByteBufUtils.readVarInt(buf, 5), buf.readLong());
 		}
 	}
 
@@ -56,21 +41,11 @@ public class SyncEmcPKT implements IMessage
 	{
 		ByteBufUtils.writeVarInt(buf, data.length, 5);
 
-		for (long[] array : data)
+		for (EmcPKTInfo info : data)
 		{
-			for (int i = 0; i < 3; i++)
-			{
-				if (i == 2) { //EMC
-					//Unpack the EMC long value as if it was two ints stored in a long
-					//This allows writing them to ByteBuf.
-					//When we are retrieving them using fromByte we will repack them so we know the actual value
-					long val = array[i];
-					ByteBufUtils.writeVarInt(buf, (int) (val >> 32), 5);
-					ByteBufUtils.writeVarInt(buf, (int) val, 5);
-				} else {
-					ByteBufUtils.writeVarInt(buf, (int) array[i], 5);
-				}
-			}
+			ByteBufUtils.writeVarInt(buf, info.getId(), 5);
+			ByteBufUtils.writeVarInt(buf, info.getDamage(), 5);
+			buf.writeLong(info.getEmc());
 		}
 	}
 
@@ -85,15 +60,15 @@ public class SyncEmcPKT implements IMessage
 					PECore.LOGGER.info("Receiving EMC data from server.");
 					EMCMapper.emc.clear();
 
-					for (long[] array : pkt.data)
+					for (EmcPKTInfo info : pkt.data)
 					{
-						Item i = Item.REGISTRY.getObjectById((int) array[0]);
+						Item i = Item.REGISTRY.getObjectById(info.getId());
 
-						SimpleStack stack = new SimpleStack(i.getRegistryName(), (int) array[1]);
+						SimpleStack stack = new SimpleStack(i.getRegistryName(), info.getDamage());
 
 						if (stack.isValid())
 						{
-							EMCMapper.emc.put(stack, array[2]);
+							EMCMapper.emc.put(stack, info.getEmc());
 						}
 					}
 
@@ -103,6 +78,29 @@ public class SyncEmcPKT implements IMessage
 			});
 
 			return null;
+		}
+	}
+
+	public static class EmcPKTInfo {
+		private int id, damage;
+		private long emc;
+
+		public EmcPKTInfo(int id, int damage, long emc) {
+			this.id = id;
+			this.damage = damage;
+			this.emc = emc;
+		}
+
+		public int getDamage() {
+			return damage;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public long getEmc() {
+			return emc;
 		}
 	}
 }

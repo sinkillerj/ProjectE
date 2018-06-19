@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.*;
+import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -80,18 +81,18 @@ public final class PacketHandler
 		}
 	}
 
-	private static long[][] serializeEmcData()
+	private static EmcPKTInfo[] serializeEmcData()
 	{
-		long[][] ret = new long[EMCMapper.emc.size()][];
+		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMapper.emc.size()];
 		int i = 0;
 		for (Map.Entry<SimpleStack, Long> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
 			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
-			ret[i] = new long[] { id, stack.damage, entry.getValue() };
+			ret[i] = new EmcPKTInfo(id, stack.damage, entry.getValue());
 			i++;
 		}
-		PECore.debugLog("EMC data size: {} bytes", ret.length * 3 * 4);
+		PECore.debugLog("EMC data size: {} bytes", ret.length * (2 * 4 + 8));
 		return ret;
 	}
 
