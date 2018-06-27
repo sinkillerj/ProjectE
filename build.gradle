@@ -76,9 +76,9 @@ dependencies {
 
     deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
-    /*deobfCompile "MineTweaker3:MineTweaker3-API:3.0.11.26"
-    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
-    deobfCompile "MineTweaker3:ZenScript:3.0.11.26"*/
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.9.481"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-4.1.9.481"
+    deobfCompile "CraftTweaker2:ZenScript:1.12-4.1.9.481"
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
