@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -25,7 +26,7 @@ import javax.annotation.Nonnull;
 
 public class CondenserContainer extends LongContainer
 {	
-	final CondenserTile tile;
+	protected final CondenserTile tile;
 	public long displayEmc;
 	public long requiredEmc;
 	
@@ -36,7 +37,7 @@ public class CondenserContainer extends LongContainer
 		initSlots(invPlayer);
 	}
 
-	void initSlots(InventoryPlayer invPlayer)
+	protected void initSlots(InventoryPlayer invPlayer)
 	{
 		this.addSlotToContainer(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
@@ -152,7 +153,7 @@ public class CondenserContainer extends LongContainer
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.condenser
+		return player.world.getBlockState(tile.getPos()).getBlock() instanceof Condenser
 			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	

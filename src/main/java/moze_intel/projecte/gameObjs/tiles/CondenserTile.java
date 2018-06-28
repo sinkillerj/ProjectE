@@ -243,7 +243,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			world.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
+			world.addBlockEvent(pos, getBlockType(), 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
