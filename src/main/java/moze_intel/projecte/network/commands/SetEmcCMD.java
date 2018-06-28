@@ -42,7 +42,7 @@ public class SetEmcCMD extends CommandBase
 
 		String name;
 		int meta;
-		int emc;
+		long emc;
 
 		if (params.length == 1)
 		{
@@ -59,7 +59,7 @@ public class SetEmcCMD extends CommandBase
 
 			name = heldItem.getItem().getRegistryName().toString();
 			meta = heldItem.getItemDamage();
-			emc = MathUtils.parseInteger(params[0]);
+			emc = Long.parseLong(params[0]);
 
 			if (emc < 0)
 			{

@@ -10,9 +10,9 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.util.Map;
 
-public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		Map<ItemStack, ItemStack> smelting = FurnaceRecipes.instance().getSmeltingList();
 		for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
 			ItemStack input = entry.getKey();

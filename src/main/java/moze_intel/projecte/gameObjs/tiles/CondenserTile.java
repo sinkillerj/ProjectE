@@ -27,11 +27,11 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
-	public int displayEmc;
+	public long displayEmc;
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
-	public int requiredEmc;
+	public long requiredEmc;
 
 	public ItemStackHandler getLock()
 	{
@@ -113,7 +113,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		checkLockAndUpdate();
 
-		displayEmc = (int) this.getStoredEmc();
+		displayEmc = (long) this.getStoredEmc();
 
 		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0)
 		{
@@ -133,7 +133,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		if (EMCHelper.doesItemHaveEmc(lock.getStackInSlot(0)))
 		{
-			int lockEmc = EMCHelper.getEmcValue(lock.getStackInSlot(0));
+			long lockEmc = EMCHelper.getEmcValue(lock.getStackInSlot(0));
 
 			if (requiredEmc != lockEmc)
 			{

@@ -65,8 +65,8 @@ public final class EMCHelper
 			{
 				if(FuelMapper.isStackFuel(stack))
 				{
-					int emc = getEmcValue(stack);
-					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
+					long emc = getEmcValue(stack);
+					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (double) emc));
 
 					if (stack.getCount() >= toRemove)
 					{
@@ -135,7 +135,7 @@ public final class EMCHelper
 		return item != null && doesItemHaveEmc(new ItemStack(item));
 	}
 
-	public static int getEmcValue(Block block)
+	public static long getEmcValue(Block block)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(block));
 
@@ -147,7 +147,7 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEmcValue(Item item)
+	public static long getEmcValue(Item item)
 	{
 		SimpleStack stack = new SimpleStack(new ItemStack(item));
 
@@ -162,7 +162,7 @@ public final class EMCHelper
 	/**
 	 * Does not consider stack size
 	 */
-	public static int getEmcValue(ItemStack stack)
+	public static long getEmcValue(ItemStack stack)
 	{
 		if (stack.isEmpty())
 		{
@@ -183,7 +183,7 @@ public final class EMCHelper
 
 			if (EMCMapper.mapContains(iStack))
 			{
-				int emc = EMCMapper.getEmcValue(iStack);
+				long emc = EMCMapper.getEmcValue(iStack);
 
 				// maxDmg + 1 because vanilla lets you use the tool one more time
 				// when item damage == max damage (shows as Durability: 0 / max)
@@ -205,12 +205,19 @@ public final class EMCHelper
 				}
 
 				result /= stack.getMaxDamage();
+				boolean positive = result > 0;
 				result += getEnchantEmcBonus(stack);
 
+				//If it was positive and then became negative that means it overflowed
+				if (positive && result < 0) {
+					return emc;
+				}
+
+				positive = result > 0;
 				result += getStoredEMCBonus(stack);
 
-				if (result > Integer.MAX_VALUE)
-				{
+				//If it was positive and then became negative that means it overflowed
+				if (positive && result < 0) {
 					return emc;
 				}
 
@@ -219,14 +226,14 @@ public final class EMCHelper
 					return 1;
 				}
 
-				return (int) result;
+				return result;
 			}
 		}
 		else
 		{
 			if (EMCMapper.mapContains(iStack))
 			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (int)getStoredEMCBonus(stack);
+				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
 			}
 		}
 
@@ -256,7 +263,7 @@ public final class EMCHelper
 		return result;
 	}
 
-	public static int getEmcSellValue(ItemStack stack)
+	public static long getEmcSellValue(ItemStack stack)
 	{
 		double originalValue = EMCHelper.getEmcValue(stack);
 
@@ -265,7 +272,7 @@ public final class EMCHelper
 			return 0;
 		}
 
-		int emc = MathHelper.floor(originalValue * EMCMapper.covalenceLoss);
+		long emc = (long) Math.floor(originalValue * EMCMapper.covalenceLoss);
 
 		if (emc < 1)
 		{
@@ -282,7 +289,7 @@ public final class EMCHelper
 			return " ";
 		}
 
-		int emc = EMCHelper.getEmcSellValue(stack);
+		long emc = EMCHelper.getEmcSellValue(stack);
 
 		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
 	}

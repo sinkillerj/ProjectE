@@ -40,9 +40,9 @@ public final class CustomEMCParser
 	{
 		@SerializedName("item")
 		public final NormalizedSimpleStack nss;
-		public final int emc;
+		public final long emc;
 
-		private CustomEMCEntry(NormalizedSimpleStack nss, int emc)
+		private CustomEMCEntry(NormalizedSimpleStack nss, long emc)
 		{
 			this.nss = nss;
 			this.emc = emc;
@@ -58,9 +58,10 @@ public final class CustomEMCParser
 		}
 
 		@Override
-		public int hashCode()
-		{
-			return nss.hashCode() ^ 31 * emc;
+		public int hashCode() {
+			int result = nss != null ? nss.hashCode() : 0;
+			result = 31 * result + (int) (emc ^ (emc >>> 32));
+			return result;
 		}
 	}
 
@@ -108,7 +109,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static boolean addToFile(String toAdd, int meta, int emc)
+	public static boolean addToFile(String toAdd, int meta, long emc)
 	{
 		NormalizedSimpleStack nss = getNss(toAdd, meta);
 		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);

@@ -61,21 +61,21 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
-    public int getValue(@Nonnull Block block)
+    public long getValue(@Nonnull Block block)
     {
         Preconditions.checkNotNull(block);
         return EMCHelper.getEmcValue(block);
     }
 
     @Override
-    public int getValue(@Nonnull Item item)
+    public long getValue(@Nonnull Item item)
     {
         Preconditions.checkNotNull(item);        
         return EMCHelper.getEmcValue(item);
     }
 
     @Override
-    public int getValue(@Nonnull ItemStack stack)
+    public long getValue(@Nonnull ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
         return EMCHelper.getEmcValue(stack);

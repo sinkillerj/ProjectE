@@ -24,7 +24,7 @@ public class SlotOutput extends SlotItemHandler
 	{
 		ItemStack stack = getStack().copy();
 		stack.setCount(amount);
-		int emcValue = amount * EMCHelper.getEmcValue(stack);
+		long emcValue = amount * EMCHelper.getEmcValue(stack);
 		if (emcValue > inv.provider.getEmc()) {
 			//Requesting more emc than available
 			//Container expects stacksize=0-Itemstack for 'nothing'

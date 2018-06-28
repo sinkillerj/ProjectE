@@ -6,9 +6,9 @@ import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraftforge.common.config.Configuration;
 
-public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
 			PECore.LOGGER.info("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
 			mapper.setValueBefore(entry.nss, entry.emc);

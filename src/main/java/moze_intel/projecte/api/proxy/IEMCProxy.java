@@ -66,7 +66,7 @@ public interface IEMCProxy
      * @param block The block we want to query
      * @return The block's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull Block block);
+    long getValue(@Nonnull Block block);
 
     /**
      * Queries the EMC value for the provided item
@@ -75,7 +75,7 @@ public interface IEMCProxy
      * @param item The item we want to query
      * @return The item's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull Item item);
+    long getValue(@Nonnull Item item);
 
     /**
      * Queries the EMC value for the provided stack
@@ -85,5 +85,5 @@ public interface IEMCProxy
      * @param stack The stack we want to query
      * @return The stack's EMC value, or 0 if there is none
      */
-    int getValue(@Nonnull ItemStack stack);
+    long getValue(@Nonnull ItemStack stack);
 }

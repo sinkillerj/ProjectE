@@ -1,18 +1,11 @@
 package moze_intel.projecte.emc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
-import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IntToFractionCollector;
-import moze_intel.projecte.emc.generators.FractionToIntGenerator;
-import moze_intel.projecte.emc.generators.IValueGenerator;
-
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.math.Fraction;
+import moze_intel.projecte.emc.arithmetics.*;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
+import moze_intel.projecte.emc.generators.IValueGenerator;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,29 +13,32 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 public class HiddenFractionSpecificTest
 {
-	private IValueGenerator<String, Integer> valueGenerator;
-	private IExtendedMappingCollector<String, Integer, IValueArithmetic<Fraction>> mappingCollector;
+	private IValueGenerator<String, Long> valueGenerator;
+	private IExtendedMappingCollector<String, Long, IValueArithmetic<BigFraction>> mappingCollector;
 
 	@Before
 	public void setup()
 	{
-		SimpleGraphMapper<String, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(new HiddenFractionArithmetic());
-		valueGenerator = new FractionToIntGenerator<>(mapper);
-		mappingCollector = new IntToFractionCollector<>(mapper);
+		SimpleGraphMapper<String, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		valueGenerator = new BigFractionToLongGenerator<>(mapper);
+		mappingCollector = new LongToBigFractionCollector<>(mapper);
 	}
 
 	@Test
 	public void slabRecipe()
 	{
-		mappingCollector.setValueBefore("s", 1);
-		mappingCollector.setValueBefore("redstone", 64);
-		mappingCollector.setValueBefore("glass", 1);
+		mappingCollector.setValueBefore("s", 1L);
+		mappingCollector.setValueBefore("redstone", 64L);
+		mappingCollector.setValueBefore("glass", 1L);
 		mappingCollector.addConversion(6, "slab", Arrays.asList("s", "s", "s"));
 		mappingCollector.addConversion(1, "doubleslab", Arrays.asList("slab", "slab"));
 		mappingCollector.addConversion(1, "transferpipe", Arrays.asList("slab", "slab", "slab", "glass", "redstone", "glass", "slab", "slab", "slab"));
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "s"));
 		assertEquals(64, getValue(values, "redstone"));
 		assertEquals(1, getValue(values, "glass"));
@@ -55,8 +51,8 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void nuggetExploits()
 	{
-		mappingCollector.setValueBefore("ingot", 2048);
-		mappingCollector.setValueBefore("melon", 16);
+		mappingCollector.setValueBefore("ingot", 2048L);
+		mappingCollector.setValueBefore("melon", 16L);
 		mappingCollector.addConversion(9, "nugget", Collections.singletonList("ingot"));
 		mappingCollector.addConversion(1, "goldmelon", Arrays.asList(
 				"nugget", "nugget", "nugget",
@@ -65,7 +61,7 @@ public class HiddenFractionSpecificTest
 		));
 
 
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(2048, getValue(values, "ingot"));
 		assertEquals(16, getValue(values, "melon"));
 		assertEquals(227, getValue(values, "nugget"));
@@ -75,14 +71,14 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void moltenEnderpearl()
 	{
-		mappingCollector.setValueBefore("enderpearl", 1024);
-		mappingCollector.setValueBefore("bucket", 768);
+		mappingCollector.setValueBefore("enderpearl", 1024L);
+		mappingCollector.setValueBefore("bucket", 768L);
 
 		//Conversion using mili-milibuckets to make the 'emc per milibucket' smaller than 1
 		mappingCollector.addConversion(250*1000, "moltenEnder", Collections.singletonList("enderpearl"));
 		mappingCollector.addConversion(1, "moltenEnderBucket", ImmutableMap.of("moltenEnder", 1000 * 1000, "bucket", 1));
 
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(1024, getValue(values, "enderpearl"));
 		assertEquals(0, getValue(values, "moltenEnder"));
 		assertEquals(768, getValue(values, "bucket"));
@@ -93,9 +89,9 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void moltenEnderpearlWithConversionArithmetic()
 	{
-		FullFractionArithmetic fullFractionArithmetic = new FullFractionArithmetic();
-		mappingCollector.setValueBefore("enderpearl", 1024);
-		mappingCollector.setValueBefore("bucket", 768);
+		FullBigFractionArithmetic fullFractionArithmetic = new FullBigFractionArithmetic();
+		mappingCollector.setValueBefore("enderpearl", 1024L);
+		mappingCollector.setValueBefore("bucket", 768L);
 
 		//Conversion using milibuckets with a "don't round anything down"-arithmetic
 		mappingCollector.addConversion(250, "moltenEnder", Collections.singletonList("enderpearl"), fullFractionArithmetic);
@@ -105,7 +101,7 @@ public class HiddenFractionSpecificTest
 		mappingCollector.addConversion(250, "moltenEnder2", Collections.singletonList("enderpearl"));
 		mappingCollector.addConversion(1, "moltenEnderBucket2", ImmutableMap.of("moltenEnder2", 1000, "bucket", 1));
 
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(1024, getValue(values, "enderpearl"));
 		assertEquals(768, getValue(values, "bucket"));
 		assertEquals(4*1024+768, getValue(values, "moltenEnderBucket"));
@@ -118,7 +114,7 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void reliquaryVials()
 	{
-		mappingCollector.setValueBefore("glass", 1);
+		mappingCollector.setValueBefore("glass", 1L);
 
 		mappingCollector.addConversion(16, "pane", ImmutableMap.of("glass", 6));
 		mappingCollector.addConversion(5, "vial", ImmutableMap.of("pane", 5));
@@ -127,7 +123,7 @@ public class HiddenFractionSpecificTest
 		mappingCollector.addConversion(3, "testItem1", ImmutableMap.of("pane", 8));
 		mappingCollector.addConversion(3, "testItem2", ImmutableMap.of("vial", 8));
 
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "glass"));
 		assertEquals(0, getValue(values, "pane"));
 		assertEquals(0, getValue(values, "vial"));
@@ -138,13 +134,13 @@ public class HiddenFractionSpecificTest
 	@Test
 	public void propagation()
 	{
-		mappingCollector.setValueBefore("a", 1);
+		mappingCollector.setValueBefore("a", 1L);
 
 		mappingCollector.addConversion(2, "ahalf", ImmutableMap.of("a", 1));
 		mappingCollector.addConversion(1, "ahalf2", ImmutableMap.of("ahalf", 1));
 		mappingCollector.addConversion(1, "2ahalf2", ImmutableMap.of("ahalf2", 2));
 
-		Map<String, Integer> values = valueGenerator.generateValues();
+		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(1, getValue(values, "a"));
 		assertEquals(0, getValue(values, "ahalf"));
 		assertEquals(0, getValue(values, "ahalf2"));
@@ -152,10 +148,10 @@ public class HiddenFractionSpecificTest
 
 	}
 
-	private static <T, V extends Number> int getValue(Map<T, V> map, T key) {
+	private static <T, V extends Number> long getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
 		if (val == null) return 0;
-		return val.intValue();
+		return val.longValue();
 	}
 
 }

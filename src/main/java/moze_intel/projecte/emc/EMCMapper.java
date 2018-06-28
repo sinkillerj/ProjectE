@@ -1,16 +1,15 @@
 package moze_intel.projecte.emc;
 
-import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
+import moze_intel.projecte.emc.arithmetics.BigFractionToLongGenerator;
+import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IntToFractionCollector;
 import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
-import moze_intel.projecte.emc.generators.FractionToIntGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
@@ -30,26 +29,25 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.math.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static final Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
+	public static final Map<SimpleStack, Long> emc = new LinkedHashMap<>();
 
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
+		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
 				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
@@ -59,9 +57,9 @@ public final class EMCMapper
 				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
-		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper<>(new HiddenFractionArithmetic());
-		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator<>(mapper);
-		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector<>(mapper);
+		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 		mappingCollector = new WildcardSetValueFixCollector<>(mappingCollector);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
@@ -74,7 +72,7 @@ public final class EMCMapper
 		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
 						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
-		Map<NormalizedSimpleStack, Integer> graphMapperValues;
+		Map<NormalizedSimpleStack, Long> graphMapperValues;
 		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = new HashMap<>()))
 		{
 			PECore.LOGGER.info(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
@@ -90,7 +88,7 @@ public final class EMCMapper
 			));
 
 			PECore.LOGGER.info("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)
+			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers)
 			{
 				try
 				{
@@ -135,7 +133,7 @@ public final class EMCMapper
 		}
 
 
-		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
+		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem)entry.getKey();
 			Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
 			if (obj != null)
@@ -151,7 +149,7 @@ public final class EMCMapper
 		FuelMapper.loadMap();
 	}
 
-	private static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
+	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
 		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem)
 										|| ((NSSItem) e.getKey()).damage == OreDictionary.WILDCARD_VALUE
 										|| e.getValue() <= 0);
@@ -162,7 +160,7 @@ public final class EMCMapper
 		return emc.containsKey(key);
 	}
 
-	public static int getEmcValue(SimpleStack stack)
+	public static long getEmcValue(SimpleStack stack)
 	{
 		return emc.get(stack);
 	}

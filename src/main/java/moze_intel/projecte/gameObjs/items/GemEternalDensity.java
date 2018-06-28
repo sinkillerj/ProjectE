@@ -106,7 +106,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 		}
 		
-		int value = EMCHelper.getEmcValue(target);
+		long value = EMCHelper.getEmcValue(target);
 
 		if (!EMCHelper.doesItemHaveEmc(target))
 		{

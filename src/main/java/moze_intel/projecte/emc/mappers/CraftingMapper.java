@@ -29,14 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper());
 	private final Set<Class> canNotMap = new HashSet<>();
 	private final Map<Class, Integer> recipeCount = new HashMap<>();
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, final Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final Configuration config) {
 		recipeCount.clear();
 		canNotMap.clear();
 		nextRecipe: for (IRecipe recipe : CraftingManager.REGISTRY) {

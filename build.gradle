@@ -18,6 +18,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.github.johnrengelman.shadow" version "1.2.4"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceCompatibility = 1.8
@@ -80,6 +84,8 @@ dependencies {
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.11.26"
     deobfCompile "MineTweaker3:ZenScript:3.0.11.26"*/
 
+    compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
+
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
@@ -105,6 +111,45 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+shadowJar {
+    // Only shadow apache commons-math3
+    dependencies {
+        include dependency('org.apache.commons:commons-math3:.*')
+    }
+    exclude('org/apache/commons/math3/analysis/**')
+    exclude('org/apache/commons/math3/complex/**')
+    exclude('org/apache/commons/math3/dfp/**')
+    exclude('org/apache/commons/math3/distribution/**')
+    exclude('org/apache/commons/math3/filter/**')
+    exclude('org/apache/commons/math3/fitting/**')
+    exclude('org/apache/commons/math3/genetics/**')
+    exclude('org/apache/commons/math3/geometry/**')
+    exclude('org/apache/commons/math3/linear/**')
+    exclude('org/apache/commons/math3/ml/**')
+    exclude('org/apache/commons/math3/ode/**')
+    exclude('org/apache/commons/math3/optim/**')
+    exclude('org/apache/commons/math3/optimization/**')
+    exclude('org/apache/commons/math3/primes/**')
+    exclude('org/apache/commons/math3/random/**')
+    exclude('org/apache/commons/math3/special/**')
+    exclude('org/apache/commons/math3/stat/**')
+    exclude('org/apache/commons/math3/transform/**')
+
+    exclude('assets/org/**')
+    exclude('META-INF/maven/**')
+
+    // Relocate apache commons-math3 to prevent conflicts with other mods that include it
+    relocate 'org.apache.commons.math3', 'moze_intel.projecte.shaded.org.apache.commons.math3'
+
+    classifier = 'universal' // Replace the default JAR
+}
+
+reobf {
+    shadowJar {
+        // Reobfuscate the shadowed JAR
     }
 }
 
