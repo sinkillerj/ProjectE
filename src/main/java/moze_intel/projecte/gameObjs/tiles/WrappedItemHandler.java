@@ -64,7 +64,7 @@ public class WrappedItemHandler implements IItemHandlerModifiable
         compose.setStackInSlot(slot, stack);
     }
 
-    enum WriteMode
+    public enum WriteMode
     {
         IN,
         OUT,
