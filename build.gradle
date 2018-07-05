@@ -71,7 +71,7 @@ repositories {
 
     maven {
         name 'jared'
-        url "http://blamejared.com/maven/"
+        url "http://maven.blamejared.com"
     }
 }
  
@@ -80,8 +80,7 @@ dependencies {
 
     deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.9.481"
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-4.1.9.481"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.9.481"
     deobfCompile "CraftTweaker2:ZenScript:1.12-4.1.9.481"
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"

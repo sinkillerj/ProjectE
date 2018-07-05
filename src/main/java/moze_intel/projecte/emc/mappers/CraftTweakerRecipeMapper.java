@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
-import crafttweaker.mc1120.recipes.MCRecipeShaped;
-import crafttweaker.mc1120.recipes.MCRecipeShapeless;
+import crafttweaker.api.recipes.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.versioning.VersionParser;
@@ -26,6 +25,6 @@ public class CraftTweakerRecipeMapper implements CraftingMapper.IRecipeMapper {
 
     @Override
     public boolean canHandle(IRecipe recipe) {
-        return ctCompat && (recipe instanceof MCRecipeShaped || recipe instanceof MCRecipeShapeless);
+        return ctCompat && (recipe instanceof ICraftingRecipe);
     }
 }
