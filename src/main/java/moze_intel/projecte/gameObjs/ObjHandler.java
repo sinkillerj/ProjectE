@@ -14,8 +14,8 @@ import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -122,9 +122,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -400,7 +403,7 @@ public class ObjHandler
 		{
 			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
 			ItemStack output = new ItemStack(kleinStars, 1, i);
-			RecipeShapelessHidden recipe = new RecipeShapelessHidden(PECore.MODID + ":klein", output, toIngredients(input, input, input, input));
+			RecipeShapelessKleinStar recipe = new RecipeShapelessKleinStar(PECore.MODID + ":klein", output, toIngredients(input, input, input, input));
 			recipe.setRegistryName(PECore.MODID, String.format("klein_%d_to_%d", i - 1, i));
 			evt.getRegistry().register(recipe);
 		}
