@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class WorldTransmutations
@@ -355,6 +356,16 @@ public final class WorldTransmutations
 			}
 
 			ingredients.setOutputs(ItemStack.class, outputList);
+		}
+
+		@Override
+		public java.util.List<String> getTooltipStrings(int mouseX, int mouseY) {
+
+			if(mouseX > 67 && mouseX < 107)
+				if(mouseY > 18 && mouseY < 38)
+					return Collections.singletonList("Click in world, shift click for second output");
+
+			return Collections.emptyList();
 		}
 	}
 }
