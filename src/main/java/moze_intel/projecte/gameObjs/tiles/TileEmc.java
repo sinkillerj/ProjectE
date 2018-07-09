@@ -26,7 +26,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		setMaximumEMC(Constants.TILE_MAX_EMC);
 	}
 	
-	public TileEmc(int maxAmount)
+	public TileEmc(long maxAmount)
 	{
 		setMaximumEMC(maxAmount);
 	}
@@ -54,7 +54,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	 *
 	 * @param emc The maximum combined emc to send to others
 	 */
-	protected void sendToAllAcceptors(double emc)
+	protected void sendToAllAcceptors(long emc)
 	{
 		if (!(this instanceof IEmcProvider))
 		{
@@ -65,20 +65,20 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
 
-		double emcPer = emc / tiles.size();
-		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())
-		{
-			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
-			{
-				continue;
+		if (!tiles.isEmpty()) {
+			long emcPer = emc / tiles.size();
+			for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet()) {
+				if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile) {
+					continue;
+				}
+				long provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+				long remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+				this.addEMC(remain);
 			}
-			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
-			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
-			this.addEMC(remain);
 		}
 	}
 
-	class StackHandler extends ItemStackHandler
+	public class StackHandler extends ItemStackHandler
 	{
 		StackHandler(int size)
 		{

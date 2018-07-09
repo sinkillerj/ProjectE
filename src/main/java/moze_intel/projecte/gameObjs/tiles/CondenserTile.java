@@ -113,7 +113,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		checkLockAndUpdate();
 
-		displayEmc = (long) this.getStoredEmc();
+		displayEmc = this.getStoredEmc();
 
 		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0)
 		{
@@ -296,11 +296,11 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public long acceptEMC(@Nonnull EnumFacing side, long toAccept)
 	{
 		if (isAcceptingEmc)
 		{
-			double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 			addEMC(toAdd);
 			return toAdd;
 		}

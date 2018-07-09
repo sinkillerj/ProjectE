@@ -10,6 +10,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -51,27 +52,19 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5) 
-	{
+	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5) {
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
-		
-		super.onUpdate(stack, world, entity, inventorySlot, par5);
-		EntityPlayerMP player = (EntityPlayerMP)entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
-		{
-			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
-			{
+		super.onUpdate(stack, world, entity, inventorySlot, par5);
+		EntityPlayerMP player = (EntityPlayerMP) entity;
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
 				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
-			}
-			else 
-			{
+			} else {
 				WorldHelper.igniteNearby(world, player);
-				removeEmc(stack, 0.32F);
+				removeEmc(stack, 6);
 			}
-		}
-		else 
-		{
+		} else {
 			WorldHelper.extinguishNearby(world, player);
 		}
 	}

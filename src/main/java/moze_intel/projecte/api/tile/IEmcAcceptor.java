@@ -20,5 +20,5 @@ public interface IEmcAcceptor extends IEmcStorage
 	 * @param toAccept The maximum amount to accept
 	 * @return The amount actually accepted
 	 */
-	double acceptEMC(@Nonnull EnumFacing side, double toAccept);
+	long acceptEMC(@Nonnull EnumFacing side, long toAccept);
 }

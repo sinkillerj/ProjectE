@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -52,24 +53,20 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		super.onUpdate(stack, world, entity, par4, par5);
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
-		{
-			double storedEmc = getEmc(stack);
-			
-			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
-			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
+
+			if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE)) {
+				long storedEmc = getEmc(stack);
+
+				if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
+					stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				} else {
+					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
+					removeEmc(stack, 6);
+				}
+			} else {
+				WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 			}
-			else
-			{
-				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
-				removeEmc(stack, 0.32F);
-			}
-		}
-		else
-		{
-			WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 		}
 	}
 

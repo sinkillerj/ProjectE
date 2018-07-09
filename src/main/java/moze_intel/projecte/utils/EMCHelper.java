@@ -31,7 +31,7 @@ public final class EMCHelper
 	 * Consumes EMC from fuel items or Klein Stars
 	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
 	 */
-	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
+	public static long consumePlayerFuel(EntityPlayer player, long minFuel)
 	{
 		if (player.capabilities.isCreativeMode)
 		{
@@ -66,7 +66,7 @@ public final class EMCHelper
 				if(FuelMapper.isStackFuel(stack))
 				{
 					long emc = getEmcValue(stack);
-					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (double) emc));
+					int toRemove = (int)Math.ceil((minFuel - emcConsumed) / emc);
 
 					if (stack.getCount() >= toRemove)
 					{
@@ -294,23 +294,23 @@ public final class EMCHelper
 		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
 	}
 
-	public static int getKleinStarMaxEmc(ItemStack stack)
+	public static long getKleinStarMaxEmc(ItemStack stack)
 	{
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
-	private static double getStoredEMCBonus(ItemStack stack) {
+	private static long getStoredEMCBonus(ItemStack stack) {
 		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
-			return stack.getTagCompound().getDouble("StoredEMC");
+			return stack.getTagCompound().getLong("StoredEMC");
 		} else if (stack.getItem() instanceof IItemEmc) {
 			return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
 		}
 		return 0;
 	}
 
-	public static int getEMCPerDurability(ItemStack stack){
+	public static long getEMCPerDurability(ItemStack stack){
 
-		int emc;
+		long emc;
 
 		if(stack == null)
 			return 0;
@@ -319,7 +319,7 @@ public final class EMCHelper
 		stackCopy.setItemDamage(0);
 
 		if(ItemHelper.isItemRepairable(stack)){
-			emc = (int)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+			emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

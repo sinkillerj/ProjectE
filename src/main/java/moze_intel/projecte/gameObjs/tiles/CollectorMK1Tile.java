@@ -53,10 +53,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
-	private final int emcGen;
+	private final long emcGen;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
-	private double storedFuelEmc;
+	private long storedFuelEmc;
+	private int emcTimer = 0;
+	private int relayBonusTimer = 0;
 
 	public CollectorMK1Tile()
 	{
@@ -171,76 +173,75 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	}
 	
-	private void updateEmc()
-	{
-		if (!this.hasMaxedEmc())
-		{
-			this.addEMC(getSunRelativeEmc(emcGen) / 20.0f);
+	private void updateEmc() {
+		if (emcTimer > 0) {
+			emcTimer--;
+		} else {
+			if (!this.hasMaxedEmc()) {
+				this.addEMC(getSunRelativeEmc(emcGen) / 4);
+			}
+			emcTimer = 5;
 		}
 
-		if (this.getStoredEmc() == 0)
-		{
+		if (this.getStoredEmc() == 0) {
 			return;
-		}
-		else if (hasChargeableItem)
-		{
-			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+		} else if (hasChargeableItem) {
+			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			IItemEmc item = (IItemEmc) getUpgrading().getItem();
-			
-			double itemEmc = item.getStoredEmc(getUpgrading());
-			double maxItemEmc = item.getMaximumEmc(getUpgrading());
-			
-			if ((itemEmc + toSend) > maxItemEmc)
-			{
+
+			long itemEmc = item.getStoredEmc(getUpgrading());
+			long maxItemEmc = item.getMaximumEmc(getUpgrading());
+
+			if ((itemEmc + toSend) > maxItemEmc) {
 				toSend = maxItemEmc - itemEmc;
 			}
-			
+
 			item.addEmc(getUpgrading(), toSend);
 			this.removeEMC(toSend);
-		}
-		else if (hasFuel)
-		{
-			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty())
-			{
+		} else if (hasFuel) {
+			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
 				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 			}
 
 			ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
-			
+
 			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
-			
-			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
-			{
+
+			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost) {
 				ItemStack upgrade = getUpgraded();
 
-				if (getUpgraded().isEmpty())
-				{
+				if (getUpgraded().isEmpty()) {
 					this.removeEMC(upgradeCost);
 					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 					getUpgrading().shrink(1);
-				}
-				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize())
-				{
+				} else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize()) {
 					this.removeEMC(upgradeCost);
 					getUpgraded().grow(1);
 					getUpgrading().shrink(1);
 				}
 			}
-		}
-		else
-		{
-			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+		} else {
+			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
-			this.sendRelayBonus();
 		}
+
+		if (relayBonusTimer > 0)
+		{
+			relayBonusTimer--;
+		}
+		else {
+			this.sendRelayBonus();
+			relayBonusTimer = 20;
+		}
+
 	}
 	
-	private float getSunRelativeEmc(int emc)
+	private long getSunRelativeEmc(long emc)
 	{
-		return (float) getSunLevel() * emc / 16;
+		return getSunLevel() * emc / 16;
 	}
 
-	public double getEmcToNextGoal()
+	public long getEmcToNextGoal()
 	{
 		if (!getLock().isEmpty())
 		{
@@ -252,7 +253,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	}
 
-	public double getItemCharge()
+	public long getItemCharge()
 	{
 		if (!getUpgrading().isEmpty() && getUpgrading().getItem() instanceof IItemEmc)
 		{
@@ -262,9 +263,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return -1;
 	}
 
-	public double getItemChargeProportion()
+	public long getItemChargeProportion()
 	{
-		double charge = getItemCharge();
+		long charge = getItemCharge();
 
 		if (getUpgrading().isEmpty() || charge <= 0 || !(getUpgrading().getItem() instanceof IItemEmc))
 		{
@@ -283,7 +284,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return world.getLight(getPos().up()) + 1;
 	}
 
-	public double getFuelProgress()
+	public long getFuelProgress()
 	{
 		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading()))
 		{
@@ -327,9 +328,11 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		storedFuelEmc = nbt.getDouble("FuelEMC");
+		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
+		emcTimer = nbt.getInteger("EMCTimer");
+		relayBonusTimer = nbt.getInteger("RelayBonusTimer");
 	}
 	
 	@Nonnull
@@ -337,9 +340,11 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setDouble("FuelEMC", storedFuelEmc);
+		nbt.setLong("FuelEMC", storedFuelEmc);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
+		nbt.setInteger("EMCTimer", emcTimer);
+		nbt.setInteger("RelayBonusTimer", relayBonusTimer);
 		return nbt;
 	}
 
@@ -352,23 +357,23 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 			if (tile instanceof RelayMK3Tile)
 			{
-				((RelayMK3Tile) tile).acceptEMC(dir, 0.5);
+				((RelayMK3Tile) tile).acceptEMC(dir, 10);
 			}
 			else if (tile instanceof RelayMK2Tile)
 			{
-				((RelayMK2Tile) tile).acceptEMC(dir, 0.15);
+				((RelayMK2Tile) tile).acceptEMC(dir, 3);
 			}
 			else if (tile instanceof RelayMK1Tile)
 			{
-				((RelayMK1Tile) tile).acceptEMC(dir, 0.05);
+				((RelayMK1Tile) tile).acceptEMC(dir, 1);
 			}
 		}
 	}
 
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public long provideEMC(@Nonnull EnumFacing side, long toExtract)
 	{
-		double toRemove = Math.min(currentEMC, toExtract);
+		long toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);
 		return toRemove;
 	}

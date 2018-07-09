@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
+import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -101,23 +102,21 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			}
 		}
 
-		float toRemove = 0;
+		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
+			long toRemove = 0;
 
-		if (playerMP.capabilities.isFlying)
-		{
-			toRemove = 0.32F;
-		}
+			if (playerMP.capabilities.isFlying) {
+				toRemove = 6;
+			}
 
-		if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
-		{
-			toRemove = 0.32F;
-		}
-		else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
-		{
-			toRemove = 0.64F;
-		}
+			if (stack.getTagCompound().getInteger(TAG_MODE) == 2) {
+				toRemove = 6;
+			} else if (stack.getTagCompound().getInteger(TAG_MODE) == 3) {
+				toRemove = 12;
+			}
 
-		removeEmc(stack, toRemove);
+			removeEmc(stack, toRemove);
+		}
 
 		playerMP.fallDistance = 0;
 	}

@@ -28,7 +28,7 @@ public class RecipeShapedKleinStar extends ShapedRecipes
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		if (super.matches(inv, world)) {
-			double storedEMC = 0;
+			long storedEMC = 0;
 			for (int i = 0; i < inv.getSizeInventory(); i++)
 			{
 				ItemStack stack = inv.getStackInSlot(i);

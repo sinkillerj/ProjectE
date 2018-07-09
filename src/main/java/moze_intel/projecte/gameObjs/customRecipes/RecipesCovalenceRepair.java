@@ -26,7 +26,7 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
 		int dustEmc = 0;
-		int emcPerDurability = 0;
+		long emcPerDurability = 0;
 		
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
@@ -69,7 +69,7 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 		}
 		
 		output = tool.copy();
-		output.setItemDamage(Math.max(tool.getItemDamage() - dustEmc / emcPerDurability, 0));
+		output.setItemDamage((int)Math.max(tool.getItemDamage() - dustEmc / emcPerDurability, 0));
 		return true;
 	}
 	

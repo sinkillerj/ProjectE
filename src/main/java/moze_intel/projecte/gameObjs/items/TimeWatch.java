@@ -135,7 +135,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 
 		EntityPlayer player = (EntityPlayer) entity;
-		double reqEmc = getEmcPerTick(this.getCharge(stack));
+		long reqEmc = getEmcPerTick(this.getCharge(stack));
 		
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
@@ -261,10 +261,10 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		ItemHelper.getOrCreateCompound(stack).setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
-	public double getEmcPerTick(int charge)
+	public long getEmcPerTick(int charge)
 	{
 		int actualCharge = charge + 1;
-		return (10.0D * actualCharge) / 20.0D;
+		return (10 * actualCharge) / 20;
 	}
 
 	@Override

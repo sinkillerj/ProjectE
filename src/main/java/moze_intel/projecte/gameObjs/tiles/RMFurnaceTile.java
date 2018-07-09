@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
-	private static final float EMC_CONSUMPTION = 1.6f;
+	private static final int EMC_CONSUMPTION = 2;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
@@ -368,12 +368,12 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public long acceptEMC(@Nonnull EnumFacing side, long toAccept)
 	{
 		if (this.getStoredEmc() < EMC_CONSUMPTION)
 		{
-			double needed = EMC_CONSUMPTION - this.getStoredEmc();
-			double accept = Math.min(needed, toAccept);
+			long needed = EMC_CONSUMPTION - this.getStoredEmc();
+			long accept = Math.min(needed, toAccept);
 			this.addEMC(accept);
 			return accept;
 		}

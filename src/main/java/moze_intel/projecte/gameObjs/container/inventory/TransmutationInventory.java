@@ -293,7 +293,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 	}
 
-	public void addEmc(double value)
+	public void addEmc(long value)
 	{
 		provider.setEmc(provider.getEmc() + value);
 		
@@ -308,7 +308,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 	}
 	
-	public void removeEmc(double value) 
+	public void removeEmc(long value)
 	{
 		provider.setEmc(provider.getEmc() - value);
 		
