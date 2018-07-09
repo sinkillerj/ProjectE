@@ -14,7 +14,9 @@ public interface IEMCProxy
      * Call this during any of the main loading phases (Preinit, Init, Postinit)
      * @param stack The stack we want to define EMC for
      * @param value The value to define. Values below 0 are changed to 0
+     * @deprecated since ProjectE 1.3.1B
      */
+    @Deprecated
     void registerCustomEMC(@Nonnull ItemStack stack, int value);
 
     /**
@@ -28,8 +30,32 @@ public interface IEMCProxy
      * @param o
      * @param value
      * @see IConversionProxy#addConversion(int, Object, Map)
+     * @deprecated since ProjectE 1.3.1B
      */
+    @Deprecated
     void registerCustomEMC(@Nonnull Object o, int value);
+
+    /**
+     * Registers a custom EMC value for this ItemStack
+     * Call this during any of the main loading phases (Preinit, Init, Postinit)
+     * @param stack The stack we want to define EMC for
+     * @param value The value to define. Values below 0 are changed to 0
+     */
+    void registerCustomEMC(@Nonnull ItemStack stack, long value);
+
+    /**
+     * Register a custom EMC value for emc calculation that is used in Recipes.
+     * You can use the following things for the {@code o}-Parameter:
+     * <ul>
+     *     <li>{@link ItemStack} - The Modname:unlocalizedName and Metadata will be used to identify this ItemStack (May contain a {@code Block} or {@code Item})</li>
+     *     <li>{@link String} - will be interpreted as an OreDictionary name.</li>
+     *     <li>{@link Object} - (No subclasses of {@code Object} - only {@code Object}!) can be used as a intermediate fake object for complex recipes.</li>
+     * </ul>
+     * @param o
+     * @param value
+     * @see IConversionProxy#addConversion(int, Object, Map)
+     */
+    void registerCustomEMC(@Nonnull Object o, long value);
     
     /**
      * Queries the EMC value registry if the given block has an EMC value
