@@ -1,8 +1,5 @@
 package moze_intel.projecte.emc;
 
-import com.google.common.collect.Lists;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.integration.jei.PEJeiPlugin;
@@ -44,7 +41,7 @@ public final class FuelMapper
 		
 		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
 
-		refreshJEI();
+		PEJeiPlugin.refreshJEI();
 	}
 	
 	private static void addToMap(ItemStack stack)
@@ -98,7 +95,7 @@ public final class FuelMapper
 		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
-	public static void refreshJEI(){
+	public static void refreshFuelsJEI(){
 
 		for(FuelUpgradeRecipe recipe : jeiRecipeList)
 			PEJeiPlugin.RUNTIME.getRecipeRegistry().removeRecipe(recipe, CollectorRecipeCategory.UID);

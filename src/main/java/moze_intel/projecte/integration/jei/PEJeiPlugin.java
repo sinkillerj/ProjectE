@@ -8,10 +8,13 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 
@@ -44,6 +47,11 @@ public class PEJeiPlugin implements IModPlugin
     public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime)
     {
         RUNTIME = jeiRuntime;
+    }
+
+    public static void refreshJEI(){
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        server.addScheduledTask(() -> FuelMapper.refreshFuelsJEI());
     }
 
 }
