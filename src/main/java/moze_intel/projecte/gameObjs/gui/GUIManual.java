@@ -41,7 +41,7 @@ public class GUIManual extends GuiScreen
 	public static final int BUTTON_HEIGHT = 13;
 	private static final int CHARACTER_HEIGHT = 9;
 	private static final int BUTTON_ID_OFFSET = 3; // Offset of button ID's due to the page turn and TOC buttons
-	private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation(PECore.MODID, "textures/gui/bookTexture.png");
+	private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation(PECore.MODID, "textures/gui/book_texture.png");
 	private static final ManualFontRenderer peFontRenderer = new ManualFontRenderer();
 	public static final int ENTRIES_PER_PAGE = TEXT_HEIGHT / CHARACTER_HEIGHT - 2; // Number of entries per index page
 	public static final Multimap<IndexPage, IndexLinkButton> indexLinks = ArrayListMultimap.create(); // IndexPage -> IndexLinkButtons
