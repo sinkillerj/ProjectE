@@ -26,7 +26,7 @@ public class EMCProxyImpl implements IEMCProxy
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(stack, value);
-        PECore.LOGGER.info("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
+        PECore.debugLog("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class EMCProxyImpl implements IEMCProxy
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(o, value);
-        PECore.LOGGER.info("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
+        PECore.debugLog("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
     }
 
     @Override

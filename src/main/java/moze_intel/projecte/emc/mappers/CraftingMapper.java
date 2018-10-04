@@ -84,7 +84,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			}
 			if (!handled) {
 				if (canNotMap.add(recipe.getClass())) {
-					PECore.LOGGER.warn("Can not map Crafting Recipes with Type: {}", recipe.getClass().getName());
+					PECore.debugLog("Can not map Crafting Recipes with Type: {}", recipe.getClass().getName());
 				}
 			} else {
 				int count = 0;
@@ -96,9 +96,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			}
 		}
 
-		PECore.LOGGER.debug("CraftingMapper Statistics:");
+		PECore.debugLog("CraftingMapper Statistics:");
 		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
-			PECore.LOGGER.debug("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
+			PECore.debugLog("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
 		}
 	}
 

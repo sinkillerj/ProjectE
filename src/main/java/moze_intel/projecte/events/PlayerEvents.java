@@ -103,7 +103,7 @@ public class PlayerEvents
 
 		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.difficulty.covalenceLoss), player);
 
-		PECore.LOGGER.info("Sent knowledge and bag data to {}", player.getName());
+		PECore.debugLog("Sent knowledge and bag data to {}", player.getName());
 	}
 
 	@SubscribeEvent

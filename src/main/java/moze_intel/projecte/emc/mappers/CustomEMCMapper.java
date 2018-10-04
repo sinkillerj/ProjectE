@@ -10,7 +10,7 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
-			PECore.LOGGER.info("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
+			PECore.debugLog("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
 			mapper.setValueBefore(entry.nss, entry.emc);
 		}
 	}

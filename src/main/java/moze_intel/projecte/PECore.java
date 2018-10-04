@@ -188,10 +188,7 @@ public class PECore
 	public void serverQuit(FMLServerStoppedEvent event)
 	{
 		Transmutation.clearCache();
-		LOGGER.debug("Cleared cached tome knowledge");
-
 		EMCMapper.clearMaps();
-		LOGGER.info("Completed server-stop actions.");
 	}
 
 	@Mod.EventHandler

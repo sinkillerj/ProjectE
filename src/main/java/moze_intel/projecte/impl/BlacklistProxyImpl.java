@@ -59,24 +59,24 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     protected void doBlacklistInterdiction(Class<? extends Entity> clazz, String modName)
     {
         WorldHelper.blacklistInterdiction(clazz);
-        PECore.LOGGER.info("Mod {} blacklisted {} for interdiction torch", modName, clazz.getCanonicalName());
+        PECore.debugLog("Mod {} blacklisted {} for interdiction torch", modName, clazz.getCanonicalName());
     }
 
     protected void doBlacklistSwiftwolf(Class<? extends Entity> clazz, String modName)
     {
         WorldHelper.blacklistSwrg(clazz);
-        PECore.LOGGER.info("Mod {} blacklisted {} for SWRG repel", modName, clazz.getCanonicalName());
+        PECore.debugLog("Mod {} blacklisted {} for SWRG repel", modName, clazz.getCanonicalName());
     }
 
     protected void doBlacklistTimewatch(Class<? extends TileEntity> clazz, String modName)
     {
         TimeWatch.blacklist(clazz);
-        PECore.LOGGER.info("Mod {} blacklisted {} for Time Watch acceleration", modName, clazz.getCanonicalName());
+        PECore.debugLog("Mod {} blacklisted {} for Time Watch acceleration", modName, clazz.getCanonicalName());
     }
 
     protected void doWhitelistNBT(ItemStack s, String modName)
     {
         NBTWhitelist.register(s);
-        PECore.LOGGER.info("Mod {} whitelisted {} for NBT duping", modName, s.toString());
+        PECore.debugLog("Mod {} whitelisted {} for NBT duping", modName, s.toString());
     }
 }

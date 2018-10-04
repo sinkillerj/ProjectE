@@ -43,7 +43,7 @@ public class TENameFix implements IFixableData
         String oldId = compound.getString("id");
         if (NAME_MAP.containsKey(oldId))
         {
-            PECore.LOGGER.info("Fixed TE from {} to {}", oldId, NAME_MAP.get(oldId));
+            PECore.debugLog("Fixed TE from {} to {}", oldId, NAME_MAP.get(oldId));
             compound.setString("id", NAME_MAP.get(oldId));
         }
         return compound;
