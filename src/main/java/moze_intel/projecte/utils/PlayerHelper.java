@@ -126,8 +126,8 @@ public final class PlayerHelper
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
 		Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
-		Vec3d src = playerPos.addVector(0, player.getEyeHeight(), 0);
-		Vec3d dest = src.addVector(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
+		Vec3d src = playerPos.add(0, player.getEyeHeight(), 0);
+		Vec3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 

@@ -22,7 +22,7 @@ public class FuelBlock extends Block
 	public FuelBlock() 
 	{
 		super(Material.ROCK);
-		this.setUnlocalizedName("pe_fuel_block");
+		this.setTranslationKey("pe_fuel_block");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setHardness(0.5f);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(PEStateProps.FUEL_PROP, EnumFuelType.ALCHEMICAL_COAL));

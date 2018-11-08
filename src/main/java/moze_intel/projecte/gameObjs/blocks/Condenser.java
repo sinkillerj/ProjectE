@@ -20,7 +20,7 @@ public class Condenser extends AlchemicalChest
 {
 	public Condenser() 
 	{
-		this.setUnlocalizedName("pe_condenser");
+		this.setTranslationKey("pe_condenser");
 	}
 	
 	@Nonnull

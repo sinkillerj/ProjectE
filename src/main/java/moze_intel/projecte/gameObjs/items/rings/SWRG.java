@@ -45,7 +45,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 {
 	public SWRG()
 	{
-		this.setUnlocalizedName("swrg");
+		this.setTranslationKey("swrg");
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);
 		this.setNoRepair();
@@ -282,7 +282,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand)
 	{
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.world, player, false);
-		projectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.world.spawnEntity(projectile);
 		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);
 		return true;

@@ -1,0 +1,11 @@
+{
+  "name": "Alchemical Bag",
+  "icon": "projecte:item.pe_alchemical_bag",
+  "category": "items",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Test"
+    }
+  ]
+}

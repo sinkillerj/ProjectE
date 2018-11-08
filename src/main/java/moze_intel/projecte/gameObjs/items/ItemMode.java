@@ -26,7 +26,7 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	public ItemMode(String unlocalName, int numCharge, String[] modeDescrp)
 	{
 		this.numCharge = numCharge;
-		this.setUnlocalizedName(unlocalName);
+		this.setTranslationKey(unlocalName);
 		this.setMaxStackSize(1);
 		this.numModes = (byte) modeDescrp.length;
 		this.modes = modeDescrp;

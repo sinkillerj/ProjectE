@@ -58,7 +58,7 @@ public class RecipeShapelessHidden extends net.minecraftforge.registries.IForgeR
 	}
 
 	@Override
-	public boolean isHidden()
+	public boolean isDynamic()
 	{
 		return true;
 	}

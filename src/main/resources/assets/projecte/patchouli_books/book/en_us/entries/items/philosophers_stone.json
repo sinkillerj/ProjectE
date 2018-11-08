@@ -1,0 +1,11 @@
+{
+  "name": "Philosopher's Stone",
+  "icon": "projecte:item.pe_philosophers_stone",
+  "category": "items",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Test"
+    }
+  ]
+}

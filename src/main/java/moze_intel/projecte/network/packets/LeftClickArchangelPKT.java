@@ -22,7 +22,7 @@ public class LeftClickArchangelPKT implements IMessage
 		@Override
 		public IMessage onMessage(LeftClickArchangelPKT message, MessageContext ctx)
 		{
-			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
 					EntityPlayer player = ctx.getServerHandler().player;

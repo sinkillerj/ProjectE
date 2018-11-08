@@ -18,7 +18,7 @@ public class CreativeTab extends CreativeTabs
 	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getTabIconItem()
+	public ItemStack createIcon()
 	{
 		return new ItemStack(ObjHandler.philosStone);
 	}
