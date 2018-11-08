@@ -39,7 +39,6 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.Matter;
 import moze_intel.projecte.gameObjs.items.MercurialEye;
-import moze_intel.projecte.gameObjs.items.PEManual;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.items.RepairTalisman;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
@@ -122,12 +121,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -232,7 +228,6 @@ public class ObjHandler
 	public static final Item fireProjectile = new Item().setTranslationKey("pe_fire_projectile");
 	public static final Item windProjectile = new Item().setTranslationKey("pe_wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet();
-	public static final Item manual = new PEManual();
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> evt)
@@ -361,7 +356,6 @@ public class ObjHandler
 
 		registerObj(r, tome, tome.getTranslationKey());
 		registerObj(r, transmutationTablet, transmutationTablet.getTranslationKey());
-		registerObj(r, manual, manual.getTranslationKey());
 	}
 
 	public static void register()

@@ -152,8 +152,7 @@ public class PECore
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		NBTWhitelistParser.init();
-		proxy.initializeManual();
-		
+
 		Integration.init();
 	}
 	
