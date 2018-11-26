@@ -103,6 +103,9 @@ public final class FuelMapper
 		jeiRecipeList.clear();
 
 		for(SimpleStack stack : FUEL_MAP){
+			if(EMCHelper.getEmcValue(stack.toItemStack()) > EMCHelper.getEmcValue(getFuelUpgrade(stack.toItemStack())) )
+				continue;
+
 			FuelUpgradeRecipe recipe = new FuelUpgradeRecipe(stack.toItemStack(), getFuelUpgrade(stack.toItemStack()));
 			jeiRecipeList.add(recipe);
 			PEJeiPlugin.RUNTIME.getRecipeRegistry().addRecipe(recipe, CollectorRecipeCategory.UID);

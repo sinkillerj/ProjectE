@@ -13,7 +13,7 @@ import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
@@ -50,8 +50,8 @@ public class PEJeiPlugin implements IModPlugin
     }
 
     public static void refreshJEI(){
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        server.addScheduledTask(() -> FuelMapper.refreshFuelsJEI());
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+            Minecraft.getMinecraft().addScheduledTask(() -> FuelMapper.refreshFuelsJEI());
     }
 
 }
