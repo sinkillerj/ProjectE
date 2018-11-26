@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
-	private final ItemStackHandler inputInventory = createInput();
+	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
 	private final IItemHandler automationInventory = createAutomationInventory();
 	private final ItemStackHandler lock = new StackHandler(1);
@@ -243,7 +243,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			world.addBlockEvent(pos, ObjHandler.condenser, 1, numPlayersUsing);
+			world.addBlockEvent(pos, getBlockType(), 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
