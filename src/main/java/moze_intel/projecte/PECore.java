@@ -17,6 +17,7 @@ import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
+import moze_intel.projecte.integration.jei.PEJeiPlugin;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.commands.ProjectECMD;
@@ -34,6 +35,7 @@ import net.minecraftforge.common.util.CompoundDataFixer;
 import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -206,6 +208,14 @@ public class PECore
 		if (event.getModID().equals(MODID))
 		{
 			ConfigManager.sync(MODID, Config.Type.INSTANCE);
+		}
+	}
+
+	public static void refreshJEI()
+	{
+		if (Loader.isModLoaded("jei"))
+		{
+			PEJeiPlugin.refresh();
 		}
 	}
 }

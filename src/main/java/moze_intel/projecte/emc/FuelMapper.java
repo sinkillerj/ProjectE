@@ -2,22 +2,19 @@ package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.integration.jei.PEJeiPlugin;
-import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
-import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public final class FuelMapper 
+public final class FuelMapper
 {
 	private static final List<SimpleStack> FUEL_MAP = new ArrayList<>();
-	private static List<FuelUpgradeRecipe> jeiRecipeList = new ArrayList<>();
 	
 	public static void loadMap()
 	{
@@ -41,7 +38,7 @@ public final class FuelMapper
 		
 		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
 
-		PEJeiPlugin.refreshJEI();
+		PECore.refreshJEI();
 	}
 	
 	private static void addToMap(ItemStack stack)
@@ -95,24 +92,11 @@ public final class FuelMapper
 		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
-	public static void refreshFuelsJEI(){
-
-		for(FuelUpgradeRecipe recipe : jeiRecipeList)
-			PEJeiPlugin.RUNTIME.getRecipeRegistry().removeRecipe(recipe, CollectorRecipeCategory.UID);
-
-		jeiRecipeList.clear();
-
-		for(SimpleStack stack : FUEL_MAP){
-			if(EMCHelper.getEmcValue(stack.toItemStack()) > EMCHelper.getEmcValue(getFuelUpgrade(stack.toItemStack())) )
-				continue;
-
-			FuelUpgradeRecipe recipe = new FuelUpgradeRecipe(stack.toItemStack(), getFuelUpgrade(stack.toItemStack()));
-			jeiRecipeList.add(recipe);
-			PEJeiPlugin.RUNTIME.getRecipeRegistry().addRecipe(recipe, CollectorRecipeCategory.UID);
-		}
-
-
-
+	/**
+	 * @return An immutable version of the Fuel Map
+	 */
+	public static List<SimpleStack> getFuelMap()
+	{
+		return Collections.unmodifiableList(FUEL_MAP);
 	}
-
 }
