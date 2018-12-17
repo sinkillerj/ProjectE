@@ -48,6 +48,7 @@ public class PEJeiPlugin implements IModPlugin
         registry.addRecipes(WorldTransmutations.getWorldTransmutations(), WorldTransmuteRecipeCategory.UID);
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(PhilosStoneContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
 
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone, 1), WorldTransmuteRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK1, 1), CollectorRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK2, 1), CollectorRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK3, 1), CollectorRecipeCategory.UID);
