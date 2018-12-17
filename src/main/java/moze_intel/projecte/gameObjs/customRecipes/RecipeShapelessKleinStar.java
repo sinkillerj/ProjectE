@@ -11,13 +11,14 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
 public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeWrapper {
 
 	private final ShapelessRecipes compose;
@@ -91,6 +92,7 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 	}
 
 	@Override
+	@Optional.Method(modid = "jei")
 	public void getIngredients(IIngredients ingredients) {
 		List<ItemStack> stacks = new ArrayList<>();
 
