@@ -20,7 +20,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 {
 	public HyperkineticLens() 
 	{
-		this.setUnlocalizedName("hyperkinetic_lens");
+		this.setTranslationKey("hyperkinetic_lens");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
@@ -52,7 +52,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(world, player, this.getCharge(stack));
-		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.spawnEntity(ent);
 		return true;
 	}

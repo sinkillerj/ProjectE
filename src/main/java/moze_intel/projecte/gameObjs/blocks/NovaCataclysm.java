@@ -16,7 +16,7 @@ public class NovaCataclysm extends BlockTNT
 {
 	public NovaCataclysm()
 	{
-		this.setUnlocalizedName("pe_nova_cataclysm");
+		this.setTranslationKey("pe_nova_cataclysm");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
@@ -35,7 +35,7 @@ public class NovaCataclysm extends BlockTNT
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
+	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if (!world.isRemote)
 		{

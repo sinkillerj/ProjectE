@@ -26,7 +26,7 @@ public class TransmutationStone extends Block
 	{
 		super(Material.ROCK);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setUnlocalizedName("pe_transmutation_stone");
+		this.setTranslationKey("pe_transmutation_stone");
 		this.setHardness(10.0f);
 	}
 

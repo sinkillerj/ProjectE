@@ -52,7 +52,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
 	public VolcaniteAmulet()
 	{
-		this.setUnlocalizedName("volcanite_amulet");
+		this.setTranslationKey("volcanite_amulet");
 		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 	}
@@ -133,7 +133,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player.getEntityWorld(), player);
-		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().spawnEntity(ent);
 		return true;
 	}

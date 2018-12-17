@@ -52,7 +52,7 @@ public abstract class AbstractPage
 
     public static AbstractPage createItemPage(ItemStack stack, PageCategory category)
     {
-        String body = I18n.format("pe.manual." + stack.getUnlocalizedName().substring(5));
+        String body = I18n.format("pe.manual." + stack.getTranslationKey().substring(5));
         List<List<String>> parts = Lists.partition(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new ItemPage(stack.copy(), category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++)

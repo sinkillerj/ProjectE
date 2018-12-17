@@ -82,7 +82,7 @@ public class DarkPick extends PEToolBase
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
 		if (block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER
@@ -92,7 +92,7 @@ public class DarkPick extends PEToolBase
 			return 1200000.0F;
 		}
 		
-		return super.getStrVsBlock(stack, state);
+		return super.getDestroySpeed(stack, state);
 	}
 	
 	@Nonnull

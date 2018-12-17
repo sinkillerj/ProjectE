@@ -28,7 +28,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
 	public DestructionCatalyst() 
 	{
-		this.setUnlocalizedName("destruction_catalyst");
+		this.setTranslationKey("destruction_catalyst");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}

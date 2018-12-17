@@ -62,7 +62,7 @@ public final class PacketHandler
 
 	public static void sendNonLocal(IMessage msg, EntityPlayerMP player)
 	{
-		if (player.mcServer.isDedicatedServer() || !player.getName().equals(player.mcServer.getServerOwner()))
+		if (player.server.isDedicatedServer() || !player.getName().equals(player.server.getServerOwner()))
 		{
 			HANDLER.sendTo(msg, player);
 		}

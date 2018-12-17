@@ -16,21 +16,21 @@ public class CovalenceDust extends ItemPE
 	
 	public CovalenceDust()
 	{
-		this.setUnlocalizedName("covalence_dust");
+		this.setTranslationKey("covalence_dust");
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}
 
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		if (stack.getItemDamage() > 2)
 		{
 			return "pe.debug.metainvalid";
 		}
 
-		return super.getUnlocalizedName()+ "_" + names[MathHelper.clamp(stack.getItemDamage(), 0, 2)];
+		return super.getTranslationKey()+ "_" + names[MathHelper.clamp(stack.getItemDamage(), 0, 2)];
 	}
 
 	@Override

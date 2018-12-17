@@ -32,9 +32,9 @@ group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-con
 archivesBaseName = "ProjectE"
 
 minecraft {
-    version = "${minecraft_version}-${forge_version}"
+    version = "1.12.2-${forge_version}"
     runDir = "run"
-    mappings = 'snapshot_20170624'
+    mappings = 'stable_39'
 	
     replace "@VERSION@", project.version
     replaceIn "PECore.java"

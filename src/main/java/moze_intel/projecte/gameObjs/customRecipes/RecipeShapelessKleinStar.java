@@ -81,7 +81,7 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 	}
 
 	@Override
-	public boolean isHidden() {
+	public boolean isDynamic() {
 		return true;
 	}
 

@@ -193,7 +193,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		if(world.isRemote) return false;
 		
 		EntityFireProjectile fire = new EntityFireProjectile(world, player);
-		fire.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.spawnEntity(fire);
 		
 		return true;

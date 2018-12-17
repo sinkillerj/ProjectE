@@ -66,7 +66,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	public EvertideAmulet()
 	{
-		this.setUnlocalizedName("evertide_amulet");
+		this.setTranslationKey("evertide_amulet");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 		this.setContainerItem(this);
@@ -207,7 +207,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
-			ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 			world.spawnEntity(ent);
 			return true;
 		}

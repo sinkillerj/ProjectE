@@ -26,7 +26,7 @@ public class Relay extends BlockDirection
 	public Relay(int tier) 
 	{
 		super(Material.ROCK);
-		this.setUnlocalizedName("pe_relay_MK" + Integer.toString(tier));
+		this.setTranslationKey("pe_relay_MK" + Integer.toString(tier));
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(10.0f);
 		this.tier = tier;
