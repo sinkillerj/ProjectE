@@ -16,7 +16,6 @@ import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
-import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.integration.jei.PEJeiPlugin;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -155,8 +154,6 @@ public class PECore
 	{
 		NBTWhitelistParser.init();
 		proxy.initializeManual();
-		
-		Integration.init();
 	}
 	
 	@Mod.EventHandler
