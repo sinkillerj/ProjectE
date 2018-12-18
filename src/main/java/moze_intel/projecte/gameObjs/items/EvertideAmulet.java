@@ -62,7 +62,7 @@ import java.util.UUID;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
 
 	public EvertideAmulet()
 	{
@@ -153,6 +153,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState(), hand);
 		}
 
+	}
+
+	@Override
+	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+	{
+		if (player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+		{
+			player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		}
+		return true;
 	}
 
 	@Override
