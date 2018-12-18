@@ -74,6 +74,7 @@ public class SyncEmcPKT implements IMessage
 
 					Transmutation.cacheFullKnowledge();
 					FuelMapper.loadMap();
+					PECore.refreshJEI();
 				}
 			});
 

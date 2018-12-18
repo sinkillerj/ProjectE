@@ -147,6 +147,7 @@ public final class EMCMapper
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
+		PECore.refreshJEI();
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
