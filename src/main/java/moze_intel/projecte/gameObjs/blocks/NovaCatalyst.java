@@ -16,7 +16,7 @@ public class NovaCatalyst extends BlockTNT
 {
 	public NovaCatalyst()
 	{
-		this.setUnlocalizedName("pe_nova_catalyst");
+		this.setTranslationKey("pe_nova_catalyst");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
@@ -35,7 +35,7 @@ public class NovaCatalyst extends BlockTNT
 	}
 	
 	@Override
-	public void onBlockDestroyedByExplosion(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
+	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if (!world.isRemote)
 		{

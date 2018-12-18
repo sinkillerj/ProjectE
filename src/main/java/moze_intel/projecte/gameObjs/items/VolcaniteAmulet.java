@@ -48,11 +48,11 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector
 {
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0).setSaved(false);
 
 	public VolcaniteAmulet()
 	{
-		this.setUnlocalizedName("volcanite_amulet");
+		this.setTranslationKey("volcanite_amulet");
 		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 	}
@@ -86,6 +86,16 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	}
 
 	@Override
+	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+	{
+		if (player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+		{
+			player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		}
+		return true;
+	}
+
+	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
@@ -116,11 +126,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		}
 		else if (!world.isRemote)
 		{
-			if (living.isInWater())
-			{
-				living.setAir(300);
-			}
-
 			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
 				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
@@ -133,7 +138,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	{
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player.getEntityWorld(), player);
-		ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().spawnEntity(ent);
 		return true;
 	}

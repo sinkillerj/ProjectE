@@ -130,7 +130,7 @@ public class RedStar extends PEToolBase
 	}
 	
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
 		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
@@ -138,7 +138,7 @@ public class RedStar extends PEToolBase
 			return 1200000.0F;
 		}
 		
-		return super.getStrVsBlock(stack, state) + 48.0F;
+		return super.getDestroySpeed(stack, state) + 48.0F;
 	}
 
 	@Nonnull

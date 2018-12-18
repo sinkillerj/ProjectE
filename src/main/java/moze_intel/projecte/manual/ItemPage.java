@@ -26,7 +26,7 @@ public class ItemPage extends AbstractPage
     @Override
     public String getHeaderText()
     {
-        return I18n.format(stack.getUnlocalizedName() + ".name");
+        return I18n.format(stack.getTranslationKey() + ".name");
     }
 
     @Override

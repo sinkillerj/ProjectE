@@ -37,8 +37,6 @@ public final class FuelMapper
 		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
 		
 		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
-
-		PECore.refreshJEI();
 	}
 	
 	private static void addToMap(ItemStack stack)

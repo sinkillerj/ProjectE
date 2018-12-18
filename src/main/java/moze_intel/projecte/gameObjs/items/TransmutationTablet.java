@@ -15,7 +15,7 @@ public class TransmutationTablet extends ItemPE
 {
 	public TransmutationTablet()
 	{
-		this.setUnlocalizedName("transmutation_tablet");
+		this.setTranslationKey("transmutation_tablet");
 		this.setMaxStackSize(1);
 	}
 	

@@ -40,7 +40,7 @@ public class AlchemicalBag extends ItemPE
 	
 	public AlchemicalBag()
 	{
-		this.setUnlocalizedName("alchemical_bag");
+		this.setTranslationKey("alchemical_bag");
 		this.hasSubtypes = true;
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);

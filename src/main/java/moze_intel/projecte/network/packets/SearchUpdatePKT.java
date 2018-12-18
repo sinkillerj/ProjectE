@@ -40,7 +40,7 @@ public class SearchUpdatePKT implements IMessage
 		@Override
 		public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
 		{
-			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
 					if (ctx.getServerHandler().player.openContainer instanceof TransmutationContainer)

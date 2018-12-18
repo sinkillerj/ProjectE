@@ -43,7 +43,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 {
 	public RepairTalisman()
 	{
-		this.setUnlocalizedName("repair_talisman");
+		this.setTranslationKey("repair_talisman");
 		this.setMaxStackSize(1);
 	}
 

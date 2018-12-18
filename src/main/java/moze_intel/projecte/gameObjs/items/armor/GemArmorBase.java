@@ -21,7 +21,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	{
 		super(ArmorMaterial.DIAMOND, 0, armorType);
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setUnlocalizedName("pe_gem_armor_" + armorType.getIndex());
+		this.setTranslationKey("pe_gem_armor_" + armorType.getIndex());
 		this.setMaxDamage(0);
 	}
 

@@ -29,7 +29,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 {
 	public VoidRing()
 	{
-		this.setUnlocalizedName("void_ring");
+		this.setTranslationKey("void_ring");
 	}
 
 	@Override
