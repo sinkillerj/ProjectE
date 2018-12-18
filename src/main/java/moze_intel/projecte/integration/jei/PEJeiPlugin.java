@@ -64,7 +64,7 @@ public class PEJeiPlugin implements IModPlugin
 
     public static void refresh()
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLCommonHandler.instance().getSide().isClient())
         {
             Minecraft.getMinecraft().addScheduledTask(() -> mappers.forEach(JEICompatMapper::refresh));
         }
