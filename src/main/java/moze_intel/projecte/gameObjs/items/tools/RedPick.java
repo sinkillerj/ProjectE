@@ -24,7 +24,7 @@ public class RedPick extends DarkPick
 	}
 	
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block b = state.getBlock();
 		if (b == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER
@@ -33,6 +33,6 @@ public class RedPick extends DarkPick
 		{
 			return 1200000.0F;
 		}
-		return super.getStrVsBlock(stack, state);
+		return super.getDestroySpeed(stack, state);
 	}
 }

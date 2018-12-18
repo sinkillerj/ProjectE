@@ -25,7 +25,7 @@ public class RedHammer extends DarkHammer
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER)
@@ -35,6 +35,6 @@ public class RedHammer extends DarkHammer
 			return 1200000.0F;
 		}
 
-		return super.getStrVsBlock(stack, state);
+		return super.getDestroySpeed(stack, state);
 	}
 }

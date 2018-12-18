@@ -17,7 +17,7 @@ public class ItemFuelBlock extends ItemBlock
 	
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		switch (stack.getItemDamage())
 		{

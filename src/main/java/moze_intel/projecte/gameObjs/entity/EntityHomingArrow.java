@@ -108,7 +108,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 			transform.transform(arrowMotion, adjustedLookVec);
 
 			// Tell mc to adjust our rotation accordingly
-			setThrowableHeading(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
+			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
 		}
 
 		super.onUpdate();
@@ -126,7 +126,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 		if (!candidates.isEmpty())
 		{
-			candidates.sort(Comparator.comparing(EntityHomingArrow.this::getDistanceSqToEntity, Double::compare));
+			candidates.sort(Comparator.comparing(EntityHomingArrow.this::getDistanceSq, Double::compare));
 			dataManager.set(DW_TARGET_ID, candidates.get(0).getEntityId());
 		}
 

@@ -58,7 +58,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	
 	public TimeWatch() 
 	{
-		this.setUnlocalizedName("time_watch");
+		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);

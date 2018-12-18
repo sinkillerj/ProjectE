@@ -50,7 +50,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 {
 	public GemEternalDensity()
 	{
-		this.setUnlocalizedName("gem_density");
+		this.setTranslationKey("gem_density");
 		this.setMaxStackSize(1);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}

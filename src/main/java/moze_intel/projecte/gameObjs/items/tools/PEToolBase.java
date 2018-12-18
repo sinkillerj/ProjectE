@@ -83,7 +83,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{

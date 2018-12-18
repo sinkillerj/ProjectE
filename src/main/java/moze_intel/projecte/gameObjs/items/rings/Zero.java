@@ -41,7 +41,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 {
 	public Zero() 
 	{
-		this.setUnlocalizedName("zero_ring");
+		this.setTranslationKey("zero_ring");
 		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 		this.setNoRepair();

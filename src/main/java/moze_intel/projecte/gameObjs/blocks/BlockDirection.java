@@ -46,7 +46,7 @@ public abstract class BlockDirection extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(PEStateProps.FACING, EnumFacing.getHorizontal(meta));
+		return this.getDefaultState().withProperty(PEStateProps.FACING, EnumFacing.byHorizontalIndex(meta));
 	}
 
 	@Nonnull
