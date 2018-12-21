@@ -10,14 +10,23 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ClearKnowledgeCMD extends CommandBase
 {
+
+    public static final List<String> defaultSelectors = Arrays.asList("@p", "@a", "@r", "@e", "@s");
+
 	@Nonnull
 	@Override
 	public String getName()
@@ -53,7 +62,20 @@ public class ClearKnowledgeCMD extends CommandBase
 		}
 	}
 
-	@Override
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        if (args.length == 1)
+        {
+            List<String> list = new ArrayList<>(Arrays.asList(server.getOnlinePlayerNames()));
+            list.addAll(defaultSelectors);
+            return list;
+        } else
+        {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
 	public int getRequiredPermissionLevel() 
 	{
 		return 4;
