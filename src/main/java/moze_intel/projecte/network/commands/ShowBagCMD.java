@@ -80,7 +80,7 @@ public class ShowBagCMD extends CommandBase {
 			return getListOfStringsMatchingLastWord(args, Arrays.asList(EnumDyeColor.values()));
 		} else if (args.length == 2)
 		{
-			return Arrays.asList(server.getOnlinePlayerNames());
+			return getListOfStringsMatchingLastWord(args, Arrays.asList(server.getOnlinePlayerNames()));
 		} else
 		{
 			return Collections.emptyList();

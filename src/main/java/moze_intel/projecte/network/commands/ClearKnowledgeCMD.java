@@ -7,7 +7,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +24,7 @@ import java.util.List;
 public class ClearKnowledgeCMD extends CommandBase
 {
 
-    public static final List<String> defaultSelectors = Arrays.asList("@p", "@a", "@r", "@e", "@s");
+    private static final List<String> DEFAULT_SELECTORS = Arrays.asList("@p", "@a", "@r", "@e", "@s");
 
 	@Nonnull
 	@Override
@@ -67,8 +66,8 @@ public class ClearKnowledgeCMD extends CommandBase
         if (args.length == 1)
         {
             List<String> list = new ArrayList<>(Arrays.asList(server.getOnlinePlayerNames()));
-            list.addAll(defaultSelectors);
-            return list;
+            list.addAll(DEFAULT_SELECTORS);
+            return getListOfStringsMatchingLastWord(args, list);
         } else
         {
             return Collections.emptyList();
