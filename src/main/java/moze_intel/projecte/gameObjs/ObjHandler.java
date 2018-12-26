@@ -367,19 +367,19 @@ public class ObjHandler
 	public static void register()
 	{
 		//Tile Entities
-		GameRegistry.registerTileEntity(AlchChestTile.class, PECore.MODID + ":alchemical_chest");
-		GameRegistry.registerTileEntity(InterdictionTile.class, PECore.MODID + ":interdiction_torch");
-		GameRegistry.registerTileEntity(CondenserTile.class, PECore.MODID + ":condenser");
-		GameRegistry.registerTileEntity(CondenserMK2Tile.class, PECore.MODID + ":condenser_mk2");
-		GameRegistry.registerTileEntity(RMFurnaceTile.class, PECore.MODID + ":rm_furnace");
-		GameRegistry.registerTileEntity(DMFurnaceTile.class, PECore.MODID + ":dm_furnace");
-		GameRegistry.registerTileEntity(CollectorMK1Tile.class, PECore.MODID + ":collector_mk1");
-		GameRegistry.registerTileEntity(CollectorMK2Tile.class, PECore.MODID + ":collector_mk2");
-		GameRegistry.registerTileEntity(CollectorMK3Tile.class, PECore.MODID + ":collector_mk3");
-		GameRegistry.registerTileEntity(RelayMK1Tile.class, PECore.MODID + ":relay_mk1");
-		GameRegistry.registerTileEntity(RelayMK2Tile.class, PECore.MODID + ":relay_mk2");
-		GameRegistry.registerTileEntity(RelayMK3Tile.class, PECore.MODID + ":relay_mk3");
-		GameRegistry.registerTileEntity(DMPedestalTile.class, PECore.MODID + ":dm_pedestal");
+		GameRegistry.registerTileEntity(AlchChestTile.class, new ResourceLocation(PECore.MODID, "alchemical_chest"));
+		GameRegistry.registerTileEntity(InterdictionTile.class, new ResourceLocation(PECore.MODID, "interdiction_torch"));
+		GameRegistry.registerTileEntity(CondenserTile.class, new ResourceLocation(PECore.MODID, "condenser"));
+		GameRegistry.registerTileEntity(CondenserMK2Tile.class, new ResourceLocation(PECore.MODID, "condenser_mk2"));
+		GameRegistry.registerTileEntity(RMFurnaceTile.class, new ResourceLocation(PECore.MODID, "rm_furnace"));
+		GameRegistry.registerTileEntity(DMFurnaceTile.class, new ResourceLocation(PECore.MODID, "dm_furnace"));
+		GameRegistry.registerTileEntity(CollectorMK1Tile.class, new ResourceLocation(PECore.MODID, "collector_mk1"));
+		GameRegistry.registerTileEntity(CollectorMK2Tile.class, new ResourceLocation(PECore.MODID, "collector_mk2"));
+		GameRegistry.registerTileEntity(CollectorMK3Tile.class, new ResourceLocation(PECore.MODID, "collector_mk3"));
+		GameRegistry.registerTileEntity(RelayMK1Tile.class, new ResourceLocation(PECore.MODID, "relay_mk1"));
+		GameRegistry.registerTileEntity(RelayMK2Tile.class, new ResourceLocation(PECore.MODID, "relay_mk2"));
+		GameRegistry.registerTileEntity(RelayMK3Tile.class, new ResourceLocation(PECore.MODID, "relay_mk3"));
+		GameRegistry.registerTileEntity(DMPedestalTile.class, new ResourceLocation(PECore.MODID, "dm_pedestal"));
 
 		//Entities
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "water_projectile"), EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);
@@ -391,8 +391,6 @@ public class ObjHandler
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "homing_arrow"), EntityHomingArrow.class, "HomingArrow", 8, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "fire_projectile"), EntityFireProjectile.class, "FireProjectile", 9, PECore.instance, 256, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "swrg_projectile"), EntitySWRGProjectile.class, "LightningProjectile", 10, PECore.instance, 256, 10, true);
-
-		GameRegistry.registerFuelHandler(new FuelHandler());
 	}
 
 	@SubscribeEvent
@@ -455,38 +453,5 @@ public class ObjHandler
 								.setRegistryName(recipeName));
 		}
 		// RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
-	}
-
-	public static class FuelHandler implements IFuelHandler
-	{
-		@Override
-		public int getBurnTime(ItemStack fuel)
-		{
-			if (fuel.getItem() == fuels)
-			{
-				switch (fuel.getItemDamage())
-				{
-					case 0:
-						return Constants.ALCH_BURN_TIME;
-					case 1:
-						return Constants.MOBIUS_BURN_TIME;
-					case 2:
-						return Constants.AETERNALIS_BURN_TIME;
-				}
-			} else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
-			{
-				switch (fuel.getItemDamage())
-				{
-					case 0:
-						return Constants.ALCH_BURN_TIME * 9;
-					case 1:
-						return Constants.MOBIUS_BURN_TIME * 9;
-					case 2:
-						return Constants.AETERNALIS_BURN_TIME * 9;
-				}
-			}
-
-			return 0;
-		}
 	}
 }

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,6 +42,21 @@ public class AlchemicalFuel extends ItemPE
 		{
 			for (int i = 0; i < 3; ++i)
 				list.add(new ItemStack(this, 1, i));
+		}
+	}
+
+	@Override
+	public int getItemBurnTime(ItemStack stack)
+	{
+		switch (stack.getItemDamage())
+		{
+			case 0:
+				return Constants.ALCH_BURN_TIME;
+			case 1:
+				return Constants.MOBIUS_BURN_TIME;
+			case 2:
+				return Constants.AETERNALIS_BURN_TIME;
+			default: return -1;
 		}
 	}
 }
