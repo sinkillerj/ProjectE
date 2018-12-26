@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +34,8 @@ public class RedSword extends DarkSword
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, getMode(stack) == 1, REDSWORD_BASE_ATTACK, 0, hand);
+			int mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
+			attackAOE(stack, player, mode == 1, REDSWORD_BASE_ATTACK, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}

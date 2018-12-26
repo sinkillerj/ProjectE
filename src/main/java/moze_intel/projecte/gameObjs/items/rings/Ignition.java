@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -58,11 +59,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
 		EntityPlayerMP player = (EntityPlayerMP)entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getCapability(PECore.MULTIMODE_CAP, null).changeMode(player, null);
 			}
 			else 
 			{
@@ -74,14 +75,6 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		{
 			WorldHelper.extinguishNearby(world, player);
 		}
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Nonnull

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -110,7 +111,8 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
-			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura, 0, hand);
+			int mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
+			attackAOE(stack, player, mode == 1, ProjectEConfig.difficulty.katarDeathAura, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}
@@ -142,7 +144,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IPedestalItem;
@@ -85,7 +86,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (!world.isRemote)
 		{
-			changeMode(player, player.getHeldItem(hand), hand);
+			player.getHeldItem(hand).getCapability(PECore.MULTIMODE_CAP, null).changeMode(player, hand);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
@@ -94,7 +95,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
 	{
-		if (!ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) || !(entity instanceof EntityPlayer))
+		if (!isActive(stack) || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -215,7 +216,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
 					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
@@ -245,7 +246,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().grow(5)))
 			{

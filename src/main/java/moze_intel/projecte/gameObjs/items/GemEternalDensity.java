@@ -2,13 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.impl.MultiModeProvider;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -32,6 +32,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble
 {
 	public GemEternalDensity()
 	{
@@ -305,27 +306,35 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte("Target");
-	}
+		IModeChanger capImpl = new IModeChanger() {
+			@Override
+			public byte getMode()
+			{
+				return ItemHelper.getOrCreateCompound(stack).getByte("Target");
+			}
 
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		byte oldMode = getMode(stack);
+			@Override
+			public boolean changeMode(@Nonnull EntityPlayer player, EnumHand hand)
+			{
+				byte oldMode = getMode();
 
-		if (oldMode == 4)
-		{
-			ItemHelper.getOrCreateCompound(stack).setByte("Target", (byte) 0);
-		}
-		else
-		{
-			ItemHelper.getOrCreateCompound(stack).setByte("Target", (byte) (oldMode + 1));
-		}
+				if (oldMode == 4)
+				{
+					ItemHelper.getOrCreateCompound(stack).setByte("Target", (byte) 0);
+				}
+				else
+				{
+					ItemHelper.getOrCreateCompound(stack).setByte("Target", (byte) (oldMode + 1));
+				}
 
-		player.sendMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
-		return true;
+				player.sendMessage(new TextComponentTranslation("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TextComponentTranslation(getTargetName(stack))));
+				return true;
+			}
+		};
+
+		return new MultiModeProvider(capImpl);
 	}
 	
 	@Override

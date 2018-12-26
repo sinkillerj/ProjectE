@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.ChargeableProvider;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockShulkerBox;
@@ -10,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -19,12 +22,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DestructionCatalyst extends ItemPE implements IItemCharge
+public class DestructionCatalyst extends ItemPE
 {
 	public DestructionCatalyst() 
 	{
@@ -93,9 +97,16 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 		return EnumActionResult.SUCCESS;
 	}
 
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound stackNbt)
+	{
+		IItemCharge capImpl = new ChargeableItem(stack, this instanceof CataliticLens ? 7 : 3);
+		return new ChargeableProvider(capImpl);
+	}
+
 	private int calculateDepthFromCharge(ItemStack stack)
 	{
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		if (charge <= 0)
 		{
 			return 1;
@@ -109,12 +120,6 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
-		return 3;
-	}
-
-	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		return true;
@@ -123,6 +128,8 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		int numCharge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getNumCharges();
+		return 1.0D - (double) charge / numCharge;
 	}
 }

@@ -20,10 +20,4 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	{
 		return ((IProjectileShooter) ObjHandler.hyperLens).shootProjectile(player, stack, hand);
 	}
-
-	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
-		return 7;
-	}
 }

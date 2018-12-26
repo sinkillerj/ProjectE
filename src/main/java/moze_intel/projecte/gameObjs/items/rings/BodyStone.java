@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -52,13 +53,13 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			double itemEmc = getEmc(stack);
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getCapability(PECore.MULTIMODE_CAP, null).changeMode(player, null);
 			}
 			else
 			{
@@ -72,14 +73,6 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 				}
 			}
 		}
-	}
-	
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Override

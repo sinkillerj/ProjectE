@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
@@ -83,7 +84,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

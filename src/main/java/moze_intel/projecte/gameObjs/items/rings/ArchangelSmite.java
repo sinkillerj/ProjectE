@@ -40,7 +40,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger
+public class ArchangelSmite extends RingToggle implements IPedestalItem
 {
 	public ArchangelSmite()
 	{
@@ -87,7 +87,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
-		if (!world.isRemote && getMode(stack) == 1 && entity instanceof EntityLivingBase)
+		if (!world.isRemote && isActive(stack) && entity instanceof EntityLivingBase)
 		{
 			fireArrow(stack, world, ((EntityLivingBase) entity), 1F);
 		}

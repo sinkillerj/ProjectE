@@ -3,7 +3,11 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.MultiModeString;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -35,11 +39,12 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class MercurialEye extends ItemMode implements IExtraFunction
+public class MercurialEye extends ItemPE implements IExtraFunction
 {
 	public MercurialEye()
 	{
-		super("mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
+		this.setTranslationKey("mercurial_eye");
+		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
 	
@@ -54,6 +59,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	{
 		return new ICapabilitySerializable<NBTTagCompound>() {
 			private final IItemHandler inv = new ItemStackHandler(2);
+			private final IItemCharge chargeImpl = new ChargeableItem(stack, 4);
+			private final IModeChanger modeImpl = new MultiModeString(stack, new String[] { "Normal", "Transmutation" });
 
 			@Override
 			public NBTTagCompound serializeNBT()
@@ -72,7 +79,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			@Override
 			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 			{
-				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+						|| capability == PECore.CHARGEABLE_CAP
+						|| capability == PECore.MULTIMODE_CAP;
 			}
 
 			@Override
@@ -80,8 +89,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
 					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
-				} else
-				{
+				} else if (capability == PECore.MULTIMODE_CAP) {
+					return PECore.MULTIMODE_CAP.cast(modeImpl);
+				} else if (capability == PECore.CHARGEABLE_CAP) {
+					return PECore.CHARGEABLE_CAP.cast(chargeImpl);
+				} else {
 					return null;
 				}
 			}
@@ -116,8 +128,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
 			long reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
-			int charge = getCharge(stack);
-			byte mode = this.getMode(stack);
+			int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+			byte mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
 
 			Vec3d look = player.getLookVec();
 
@@ -235,7 +247,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
             }
 
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
+			int numCharges = stack.getCapability(PECore.CHARGEABLE_CAP, null).getNumCharges();
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
 		}
 
 		return EnumActionResult.SUCCESS;

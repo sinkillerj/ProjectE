@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -81,7 +82,7 @@ public class DarkHammer extends PEToolBase
 			return super.getAttributeModifiers(slot, stack);
 		}
 
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		float damage = HAMMER_BASE_ATTACK + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);

@@ -6,6 +6,9 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.ChargeableMultiModeProvider;
+import moze_intel.projecte.impl.MultiModeString;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
@@ -17,6 +20,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -26,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -34,14 +39,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
+public class PhilosophersStone extends ItemPE implements IProjectileShooter, IExtraFunction
 {
 	public PhilosophersStone()
 	{
-		super("philosophers_stone", (byte)4, new String[] {
-				"pe.philstone.mode1",
-				"pe.philstone.mode2",
-				"pe.philstone.mode3"});
+		this.setTranslationKey("philosophers_stone");
+		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 		this.setNoRepair();
 	}
@@ -49,6 +52,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public RayTraceResult getHitBlock(EntityPlayer player)
 	{
 		return rayTrace(player.getEntityWorld(), player, player.isSneaking());
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound stackNbt)
+	{
+		String[] modes = { "pe.philstone.mode1", "pe.philstone.mode2", "pe.philstone.mode3" };
+		return new ChargeableMultiModeProvider(new ChargeableItem(stack, 4), new MultiModeString(stack, modes));
 	}
 
 	@Nonnull
@@ -72,8 +82,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (result != null)
 		{
-			int mode = this.getMode(player.getHeldItem(hand));
-			int charge = this.getCharge(player.getHeldItem(hand));
+			int mode = player.getHeldItem(hand).getCapability(PECore.MULTIMODE_CAP, null).getMode();
+			int charge = player.getHeldItem(hand).getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{

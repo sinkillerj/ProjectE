@@ -1,6 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -87,8 +88,8 @@ public class KeyPressPKT implements IMessage
                         {
                             case CHARGE:
                                 if (!stack.isEmpty()
-                                        && stack.getItem() instanceof IItemCharge
-                                        && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
+                                        && stack.hasCapability(PECore.CHARGEABLE_CAP, null)
+                                        && stack.getCapability(PECore.CHARGEABLE_CAP, null).changeCharge(player, hand))
                                 {
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
@@ -144,8 +145,8 @@ public class KeyPressPKT implements IMessage
                                 break;
                             case MODE:
                                 if (!stack.isEmpty()
-                                        && stack.getItem() instanceof IModeChanger
-                                        && ((IModeChanger) stack.getItem()).changeMode(player, stack, hand))
+                                        && stack.hasCapability(PECore.MULTIMODE_CAP, null)
+                                        && stack.getCapability(PECore.MULTIMODE_CAP, null).changeMode(player, hand))
                                 {
                                     return;
                                 }

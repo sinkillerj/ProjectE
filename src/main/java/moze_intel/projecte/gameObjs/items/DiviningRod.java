@@ -1,8 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.impl.MultiModeProvider;
+import moze_intel.projecte.impl.MultiModeString;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -24,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DiviningRod extends ItemPE implements IModeChanger
+public class DiviningRod extends ItemPE
 {
 	// Modes should be in the format depthx3x3
 	private final String[] modes;
@@ -59,7 +63,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		long totalEmc = 0;
 		int numBlocks = 0;
 
-		byte mode = getMode(player.getHeldItem(hand));
+		byte mode = player.getHeldItem(hand).getCapability(PECore.MULTIMODE_CAP, null).getMode();
 		int depth = getDepthFromMode(mode);
 		AxisAlignedBB box = WorldHelper.getDeepBox(pos, facing, depth);
 
@@ -171,36 +175,16 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound capNbt)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		if (modes.length == 1)
-		{
-			return false;
-		}
-		if (getMode(stack) == modes.length - 1)
-		{
-			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) 0));
-		}
-		else
-		{
-			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
-		}
-
-		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
-
-		return true;
+		return new MultiModeProvider(new MultiModeString(stack, modes));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + modes[getMode(stack)]);
+		int mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
+		list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + modes[mode]);
 	}
 }

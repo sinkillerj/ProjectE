@@ -2,6 +2,8 @@ package moze_intel.projecte;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
+import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -28,6 +30,8 @@ import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -56,6 +60,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.12,]", dependencies = PECore.DEPS, updateJSON = PECore.UPDATE_JSON)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -79,6 +84,12 @@ public class PECore
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
 
+	@CapabilityInject(IItemCharge.class)
+	public static Capability<IItemCharge> CHARGEABLE_CAP;
+
+	@CapabilityInject(IModeChanger.class)
+	public static Capability<IModeChanger> MULTIMODE_CAP;
+
 	public static final List<String> uuids = new ArrayList<>();
 
 	public static void debugLog(String msg, Object... args)
@@ -90,6 +101,12 @@ public class PECore
 		{
 			LOGGER.debug(msg, args);
 		}
+	}
+
+	private static <T> Callable<T> makeFakeFactory() {
+		return () -> {
+			throw new RuntimeException("This factory should never be called");
+		};
 	}
 
 	@EventHandler
@@ -110,8 +127,10 @@ public class PECore
 
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
-		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
-		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), makeFakeFactory());
+		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), makeFakeFactory());
+		CapabilityManager.INSTANCE.register(IItemCharge.class, new DummyIStorage<>(), makeFakeFactory());
+		CapabilityManager.INSTANCE.register(IModeChanger.class, new DummyIStorage<>(), makeFakeFactory());
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 

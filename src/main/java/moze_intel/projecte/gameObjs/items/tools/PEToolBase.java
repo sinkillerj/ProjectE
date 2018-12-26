@@ -2,9 +2,13 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.ChargeableMultiModeProvider;
+import moze_intel.projecte.impl.MultiModeString;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -40,6 +44,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -50,7 +55,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class PEToolBase extends ItemMode
+public abstract class PEToolBase extends ItemPE
 {
 	public static final float HAMMER_BASE_ATTACK = 13.0F;
 	public static final float DARKSWORD_BASE_ATTACK = 12.0F;
@@ -61,9 +66,21 @@ public abstract class PEToolBase extends ItemMode
 	protected final Set<Material> harvestMaterials = new HashSet<>();
 	protected final Set<String> toolClasses = new HashSet<>();
 
+	private final int numCharge;
+	private final String[] modes;
+
 	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
 	{
-		super(unlocalName, numCharge, modeDescrp);
+		setTranslationKey(unlocalName);
+		setMaxStackSize(1);
+		this.numCharge = numCharge;
+		this.modes = modeDescrp;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound stackNbt)
+	{
+		return new ChargeableMultiModeProvider(new ChargeableItem(stack, numCharge), new MultiModeString(stack, modes));
 	}
 
 	@Override
@@ -85,18 +102,19 @@ public abstract class PEToolBase extends ItemMode
 	@Override
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
 			if (canHarvestBlock(state, stack))
 			{
-				return 14.0f + (12.0f * this.getCharge(stack));
+				return 14.0f + (12.0f * charge);
 			}
 		}
 		else if ("rm_tools".equals(this.peToolMaterial))
 		{
 			if (canHarvestBlock(state, stack))
 			{
-				return 16.0f + (14.0f * this.getCharge(stack));
+				return 16.0f + (14.0f * charge);
 			}
 		}
 		return 1.0F;
@@ -107,7 +125,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost, EnumHand hand)
 	{
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
@@ -173,7 +191,7 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sidehit, int emcCost)
 	{
-		int charge = this.getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
@@ -242,7 +260,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		EntityPlayer player = (EntityPlayer) living;
-		byte mode = this.getMode(stack);
+		byte mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
 
 		if (mode == 0) // Standard
 		{
@@ -311,7 +329,8 @@ public abstract class PEToolBase extends ItemMode
 	 */
 	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, int emcCost, EnumHand hand)
 	{
-		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.items.disableAllRadiusMining)
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		if (world.isRemote || charge == 0 || ProjectEConfig.items.disableAllRadiusMining)
 		{
 			return;
 		}
@@ -323,8 +342,8 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, this.getCharge(stack))
-				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, charge)
+				: WorldHelper.getFlatYBox(mop.getBlockPos(), charge);
 
 		List<ItemStack> drops = new ArrayList<>();
 
@@ -366,7 +385,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
-		int charge = this.getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		float totalDmg = baseDmg;
 
 		if (charge > 0)
@@ -388,7 +407,7 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		int charge = getCharge(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 		float factor = 2.5F * charge;
 		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(factor);
 		List<Entity> toAttack = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, aabb);
@@ -447,7 +466,7 @@ public abstract class PEToolBase extends ItemMode
 		World world = player.getEntityWorld();
 		if (!world.isRemote)
 		{
-			int charge = this.getCharge(stack);
+			int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 
 			int offset = ((int) Math.pow(2, 2 + charge));
 
@@ -526,7 +545,8 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, charge);
 		IBlockState target = player.getEntityWorld().getBlockState(mop.getBlockPos());
 		if (target.getBlockHardness(player.getEntityWorld(), mop.getBlockPos()) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getBlockPos(), stack)))
 		{
@@ -560,7 +580,8 @@ public abstract class PEToolBase extends ItemMode
 		{
 			return;
 		}
-		int offset = this.getCharge(stack) + 3;
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		int offset = charge + 3;
 		AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
 		List<ItemStack> drops = new ArrayList<>();
 		World world = player.getEntityWorld();

@@ -2,13 +2,14 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.ChargeableMultiModeProvider;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -24,10 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -35,19 +33,21 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
+public class TimeWatch extends ItemPE implements IBauble, IPedestalItem
 {
 	// TODO 1.13 remove
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
@@ -104,28 +104,29 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 
 		byte timeControl = getTimeBoost(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 
 		if (world.getGameRules().getBoolean("doDaylightCycle")) {
 			if (timeControl == 1)
             {
-                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+                if (world.getWorldTime() + ((charge + 1) * 4) > Long.MAX_VALUE)
                 {
                     world.setWorldTime(Long.MAX_VALUE);
                 }
                 else
                 {
-                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+                    world.setWorldTime((world.getWorldTime() + ((charge + 1) * 4)));
                 }
             }
             else if (timeControl == 2)
             {
-                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+                if (world.getWorldTime() - ((charge + 1) * 4) < 0)
                 {
                     world.setWorldTime(0);
                 }
                 else
                 {
-                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+                    world.setWorldTime((world.getWorldTime() - ((charge + 1) * 4)));
                 }
             }
 		}
@@ -136,14 +137,13 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 
 		EntityPlayer player = (EntityPlayer) entity;
-		double reqEmc = getEmcPerTick(this.getCharge(stack));
+		double reqEmc = getEmcPerTick(charge);
 		
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
 		}
 		
-		int charge = this.getCharge(stack);
 		int bonusTicks;
 		float mobSlowdown;
 		
@@ -275,19 +275,26 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
-	}
+		IModeChanger modeImpl = new IModeChanger() {
+			@Override
+			public byte getMode()
+			{
+				return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
+			}
 
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
-	}
+			@Override
+			public boolean changeMode(@Nonnull EntityPlayer player, EnumHand hand)
+			{
+				NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+				tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+				return true;
+			}
+		};
 
+		return new ChargeableMultiModeProvider(new ChargeableItem(stack, 2), modeImpl);
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -384,12 +391,6 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
-		return 2;
-	}
-
-	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		return true;
@@ -398,6 +399,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		int numCharge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getNumCharges();
+		return 1.0D - (double) charge / numCharge;
 	}
 }

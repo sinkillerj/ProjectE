@@ -3,7 +3,6 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
@@ -107,8 +106,8 @@ public class TransmutationRenderingEvent
 
 			if (transmutationResult != null)
 			{
-				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
-				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
+				int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+				int mode = stack.getCapability(PECore.MULTIMODE_CAP, null).getMode();
 
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
 				{

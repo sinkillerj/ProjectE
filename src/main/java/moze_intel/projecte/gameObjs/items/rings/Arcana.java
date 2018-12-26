@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -12,6 +11,7 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.impl.MultiModeProvider;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -25,27 +25,23 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
+public class Arcana extends ItemPE implements IBauble, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
 	public Arcana()
 	{
@@ -72,17 +68,25 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
-	}
+		IModeChanger modeHandler = new IModeChanger() {
+			@Override
+			public byte getMode()
+			{
+				return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
+			}
 
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		byte newMode = (byte) ((ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE) + 1) % 4);
-		stack.getTagCompound().setByte(TAG_MODE, newMode);
-		return true;
+			@Override
+			public boolean changeMode(@Nonnull EntityPlayer player, @Nullable EnumHand hand)
+			{
+				byte newMode = (byte) ((ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE) + 1) % 4);
+				stack.getTagCompound().setByte(TAG_MODE, newMode);
+				return true;
+			}
+		};
+
+		return new MultiModeProvider(modeHandler);
 	}
 	
 	private void tick(ItemStack stack, World world, EntityPlayerMP player)

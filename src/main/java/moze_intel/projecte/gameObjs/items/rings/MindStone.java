@@ -48,7 +48,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			if (getXP(player) > 0)
 			{
@@ -64,7 +64,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)
+		if (!world.isRemote && !isActive(stack) && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			

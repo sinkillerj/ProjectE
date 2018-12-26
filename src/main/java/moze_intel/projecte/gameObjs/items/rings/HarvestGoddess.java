@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -53,13 +54,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (isActive(stack))
 		{
 			double storedEmc = getEmc(stack);
 			
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getCapability(PECore.MULTIMODE_CAP, null).changeMode(player, null);
 			}
 			else
 			{
@@ -235,14 +236,6 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		}
 		
 		return null;
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Override

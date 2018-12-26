@@ -2,14 +2,15 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.impl.ChargeableItem;
+import moze_intel.projecte.impl.ChargeableMultiModeProvider;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -20,24 +21,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
+public class Zero extends ItemPE implements IBauble, IPedestalItem
 {
 	public Zero() 
 	{
@@ -62,6 +62,26 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 		WorldHelper.freezeInBoundingBox(world, box, ((EntityPlayer) entity), true);
 	}
 
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
+	{
+		IModeChanger modeImpl = new IModeChanger() {
+			@Override
+			public byte getMode()
+			{
+				return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
+			}
+
+			@Override
+			public boolean changeMode(@Nonnull EntityPlayer player, EnumHand hand)
+			{
+				NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+				tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+				return true;
+			}
+		};
+		return new ChargeableMultiModeProvider(new ChargeableItem(stack, 4), modeImpl);
+	}
 
 	@Nonnull
 	@Override
@@ -70,27 +90,13 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
-			int offset = 3 + this.getCharge(stack);
+			int offset = 3 + stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
 			AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
-	}
-
-	@Override
-	public byte getMode(@Nonnull ItemStack stack)
-	{
-		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
-	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 	
 	@Override
@@ -175,12 +181,6 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
-		return 4;
-	}
-
-	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		return true;
@@ -189,6 +189,8 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
+		int charge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getCharge();
+		int numCharge = stack.getCapability(PECore.CHARGEABLE_CAP, null).getNumCharges();
+		return 1.0D - (double) charge / numCharge;
 	}
 }
