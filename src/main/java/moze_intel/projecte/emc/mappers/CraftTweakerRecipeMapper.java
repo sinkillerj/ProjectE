@@ -2,6 +2,7 @@ package moze_intel.projecte.emc.mappers;
 
 import crafttweaker.api.recipes.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.versioning.VersionParser;
 
@@ -10,7 +11,7 @@ public class CraftTweakerRecipeMapper implements CraftingMapper.IRecipeMapper {
 
     public CraftTweakerRecipeMapper() {
         //Check to make sure it is a version of CraftTweaker that uses the new Recipe System
-        ctCompat = Loader.isModLoaded("crafttweaker") && VersionParser.parseVersionReference("crafttweaker@[4.1.5,)").containsVersion(Loader.instance().getIndexedModList().get("crafttweaker").getProcessedVersion());
+        ctCompat = ModList.get().isLoaded("crafttweaker") && VersionParser.parseVersionReference("crafttweaker@[4.1.5,)").containsVersion(ModList.get().getModContainerById("crafttweaker").get().getModInfo().getVersion());
     }
 
     @Override

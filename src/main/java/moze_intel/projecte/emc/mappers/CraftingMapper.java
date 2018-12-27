@@ -12,7 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -164,7 +166,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipes || recipe instanceof ShapelessRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
+			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
 		}
 	}
 

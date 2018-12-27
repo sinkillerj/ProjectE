@@ -9,8 +9,8 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,7 +34,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	public void registerCustomEMC(ItemStack stack, long emcValue) {
 		if (stack.isEmpty()) return;
 		if (emcValue < 0) emcValue = 0;
-		ModContainer activeMod = Loader.instance().activeModContainer();
+		FMLModContainer activeMod = FMLModLoadingContext.get().getActiveContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
 		Map<NormalizedSimpleStack, Long> modMap;
 		if (customEMCforMod.containsKey(modId)) {
@@ -50,7 +50,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		NormalizedSimpleStack stack = ConversionProxyImpl.instance.objectToNSS(o);
 		if (stack == null) return;
 		if (emcValue < 0) emcValue = 0;
-		ModContainer activeMod = Loader.instance().activeModContainer();
+		FMLModContainer activeMod = FMLModLoadingContext.get().getActiveContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
 		Map<NormalizedSimpleStack, Long> modMap;
 		if (customNonItemEMCforMod.containsKey(modId)) {
