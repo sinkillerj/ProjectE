@@ -46,7 +46,7 @@ minecraft {
     mappings channel: 'stable', version: '43-1.13'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
-    accessTransformer = file('pe_at.cfg')
+    accessTransformer = file('src/main/resources/META-INF/pe_at.cfg')
 
     // default run configurations.
     // these can be tweaked, removed, or duplicated as needed.
