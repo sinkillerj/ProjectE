@@ -3,15 +3,14 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableBiMap;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Clientside key helper - because PEKeybind cannot touch client classes or it will crash dedicated servers
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClientKeyHelper
 {
     public static ImmutableBiMap<KeyBinding, PEKeybind> mcToPe;
@@ -35,21 +34,12 @@ public class ClientKeyHelper
      */
     public static String getKeyName(PEKeybind k)
     {
-        int keyCode = peToMc.get(k).getKeyCode();
-        if (keyCode > Keyboard.getKeyCount() || keyCode < 0)
-        {
-            return "INVALID KEY";
-        }
-        return Keyboard.getKeyName(keyCode);
+        return getKeyName(peToMc.get(k));
     }
 
     public static String getKeyName(KeyBinding k)
     {
-        int keyCode = k.getKeyCode();
-        if (keyCode > Keyboard.getKeyCount() || keyCode < 0)
-        {
-            return "INVALID KEY";
-        }
-        return Keyboard.getKeyName(keyCode);
+        // todo 1.13 recheck
+        return k.getTranslationKey();
     }
 }

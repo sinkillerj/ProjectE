@@ -4,61 +4,65 @@ import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.InterModComms;
 
 import java.util.Locale;
 
 // TODO 1.13 change to use te/entity ids instead of class names
 public class IMCHandler
 {
-    public static void handleIMC(FMLInterModComms.IMCMessage msg)
+    public static void handleIMC(InterModComms.IMCMessage msg)
     {
-        String messageKey = msg.key.toLowerCase(Locale.ROOT);
-        if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
-            blacklist(false, msg);
-        } else if ("swrgblacklist".equals(messageKey) && msg.isStringMessage()) {
-            blacklist(true, msg);
-        } else if ("nbtwhitelist".equals(messageKey) && msg.isItemStackMessage()) {
-            whitelistNBT(msg);
-        } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
-            blacklistWatch(msg);
+        String messageKey = msg.getMethod().toLowerCase(Locale.ROOT);
+        Object thing = msg.getMessageSupplier().get();
+        if ("interdictionblacklist".equals(messageKey) && thing instanceof String) {
+            blacklist(false, (String) thing);
+        } else if ("swrgblacklist".equals(messageKey) && thing instanceof String) {
+            blacklist(true, (String) thing);
+        } else if ("nbtwhitelist".equals(messageKey) && thing instanceof ItemStack) {
+            whitelistNBT((ItemStack) thing);
+        } else if ("timewatchblacklist".equals(messageKey) && thing instanceof String) {
+            blacklistWatch((String) thing);
         } else {
-            PECore.LOGGER.warn("Received unknown message \"{}\" from mod {}, ignoring.", messageKey, msg.getSender());
+            // TODO sender
+            PECore.LOGGER.warn("Received unknown message \"{}\" from mod {}, ignoring.", messageKey, "unknown");
         }
     }
 
-    private static void blacklist(boolean isSWRG, FMLInterModComms.IMCMessage msg)
+    private static void blacklist(boolean isSWRG, String msg)
     {
-        Class<? extends Entity> clazz = loadAndCheckSubclass(msg.getStringValue(), Entity.class);
+        Class<? extends Entity> clazz = loadAndCheckSubclass(msg, Entity.class);
         if (clazz != null)
         {
+            // TODO 1.13 sender
             if (isSWRG)
             {
-                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistSwiftwolf(clazz, msg.getSender());
+                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistSwiftwolf(clazz, "unknown");
             }
             else
             {
-                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistInterdiction(clazz, msg.getSender());
+                ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistInterdiction(clazz, "unknown");
             }
         }
 
     }
 
-    private static void blacklistWatch(FMLInterModComms.IMCMessage msg)
+    private static void blacklistWatch(String msg)
     {
-        Class<? extends TileEntity> clazz = loadAndCheckSubclass(msg.getStringValue(), TileEntity.class);
+        Class<? extends TileEntity> clazz = loadAndCheckSubclass(msg, TileEntity.class);
         if (clazz != null)
         {
-            ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistTimewatch(clazz, msg.getSender());
+            // TODO 1.13 sender
+            ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doBlacklistTimewatch(clazz, "unknown");
         }
     }
 
-    private static void whitelistNBT(FMLInterModComms.IMCMessage msg)
+    private static void whitelistNBT(ItemStack msg)
     {
-        ItemStack s = msg.getItemStackValue();
-        if (!s.isEmpty())
+        if (!msg.isEmpty())
         {
-            ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doWhitelistNBT(s, msg.getSender());
+            // TODO 1.13 move to tag
+            // ((BlacklistProxyImpl) BlacklistProxyImpl.instance).doWhitelistNBT(s, msg.getSender());
         }
     }
 
