@@ -9,7 +9,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -27,21 +26,21 @@ public class PhilosStoneContainer extends Container
 		this.worldObj = player.getEntityWorld();
 
 		//CraftingResult
-		this.addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
+		this.addSlot(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
 		
 		//Crafting grid
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				this.addSlotToContainer(new Slot(craftMatrix, j + i * 3, 30 + j * 18, 17 + i * 18));
+				this.addSlot(new Slot(craftMatrix, j + i * 3, 30 + j * 18, 17 + i * 18));
 
 		//Player inv
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
+			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 142));
 		
 		this.onCraftMatrixChanged(craftMatrix);
 	}

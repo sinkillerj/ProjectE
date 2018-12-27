@@ -79,19 +79,19 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 			}
 		}
 
-		writeToNBT(invItem.getTagCompound());
+		writeToNBT(invItem.getTag());
 	}
 
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		isInWhitelist = nbt.getBoolean("Whitelist");
-		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND));
+		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, nbt.getList("Items", Constants.NBT.TAG_COMPOUND));
 	}
 	
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		nbt.setBoolean("Whitelist", isInWhitelist);
-		nbt.setTag("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null));
+		nbt.putBoolean("Whitelist", isInWhitelist);
+		nbt.put("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null));
 	}
 	
 	public void changeMode()

@@ -17,6 +17,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +41,7 @@ public class CondenserContainer extends LongContainer
 
 	protected void initSlots(InventoryPlayer invPlayer)
 	{
-		this.addSlotToContainer(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
+		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
 		IItemHandler handler = tile.getInput();
 
@@ -47,16 +49,16 @@ public class CondenserContainer extends LongContainer
 		//Condenser Inventory
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 13; j++)
-				this.addSlotToContainer(new ValidatedSlot(handler, counter++, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
+				this.addSlot(new ValidatedSlot(handler, counter++, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
 
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 212));
+			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 212));
 	}
 
 	@Override
@@ -94,7 +96,7 @@ public class CondenserContainer extends LongContainer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void updateProgressBar(int id, int data)
 	{
 		switch(id)
@@ -105,7 +107,7 @@ public class CondenserContainer extends LongContainer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void updateProgressBarLong(int id, long data)
 	{
 		switch(id)

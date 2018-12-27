@@ -11,8 +11,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -36,25 +36,25 @@ public class RelayMK1Container extends LongContainer
 		IItemHandler output = tile.getOutput();
 
 		//Klein Star charge slot
-		this.addSlotToContainer(new ValidatedSlot(input, 0, 67, 43, SlotPredicates.RELAY_INV));
+		this.addSlot(new ValidatedSlot(input, 0, 67, 43, SlotPredicates.RELAY_INV));
 
 		int counter = input.getSlots() - 1;
 		//Main Relay inventory
 		for (int i = 0; i <= 1; i++)
 			for (int j = 0; j <= 2; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter--, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
+				this.addSlot(new ValidatedSlot(input, counter--, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Burning slot
-		this.addSlotToContainer(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
+		this.addSlot(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.IITEMEMC));
 
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 95 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 95 + i * 18));
 
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 153));
+			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 153));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class RelayMK1Container extends LongContainer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void updateProgressBar(int id, int data)
 	{
 		switch (id)
@@ -116,7 +116,7 @@ public class RelayMK1Container extends LongContainer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void updateProgressBarLong(int id, long data)
 	{
 		switch (id)

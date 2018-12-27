@@ -22,19 +22,19 @@ public class MercurialEyeContainer extends Container
 		inventory = mercEyeInv;
 
 		//Klein Star
-		this.addSlotToContainer(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.IITEMEMC));
+		this.addSlot(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.IITEMEMC));
 
 		//Target
-		this.addSlotToContainer(new SlotGhost(inventory, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
+		this.addSlot(new SlotGhost(inventory, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
 		
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 56 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 56 + i * 18));
 		
 		//Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 6 + i * 18, 114));
+			this.addSlot(new Slot(invPlayer, i, 6 + i * 18, 114));
 	}
 
 	@Override
@@ -84,11 +84,11 @@ public class MercurialEyeContainer extends Container
 		{
 			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack().isEmpty())
 			{ // Is a valid klein star and the slot is empty?
-				inventorySlots.get(0).putStack(stack.splitStack(1));
+				inventorySlots.get(0).putStack(stack.split(1));
 			}
 			else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack().isEmpty())
 			{ // Is a valid target block and the slot is empty?
-				inventorySlots.get(1).putStack(stack.splitStack(1));
+				inventorySlots.get(1).putStack(stack.split(1));
 			}
 			else // Is neither, ignore
 			{

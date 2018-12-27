@@ -28,28 +28,28 @@ public class CollectorMK3Container extends CollectorMK1Container
 		IItemHandler main = tile.getInput();
 
 		//Klein Star Slot
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
+		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
 
 		int counter = main.getSlots() - 1;
 		//Fuel Upgrade Slot
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+				this.addSlot(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Result
-		this.addSlotToContainer(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
+		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
 
 		//Upgrade Target
-		this.addSlotToContainer(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
+		this.addSlot(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
 
 		//Player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 30 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 30 + j * 18, 84 + i * 18));
 
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 30 + i * 18, 142));
+			this.addSlot(new Slot(invPlayer, i, 30 + i * 18, 142));
 	}
 
 	@Nonnull

@@ -69,9 +69,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 		
 		if (!provider.hasKnowledge(stack))
 		{
-			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			if (stack.hasTag() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
-				stack.setTagCompound(null);
+				stack.setTag(null);
 			}
 
 			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, stack))) //Only show the "learned" text if the knowledge was added
@@ -107,9 +107,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 			unlearnFlag = 300;
 			learnFlag = 0;
 
-			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			if (stack.hasTag() && !NBTWhitelist.shouldDupeWithNBT(stack))
 			{
-				stack.setTagCompound(null);
+				stack.setTag(null);
 			}
 
 			provider.removeKnowledge(stack);
@@ -168,9 +168,9 @@ public class TransmutationInventory extends CombinedInvWrapper
 				return;
 			}
 
-			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+			if (lockCopy.hasTag() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
-				lockCopy.setTagCompound(new NBTTagCompound());
+				lockCopy.setTag(new NBTTagCompound());
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();

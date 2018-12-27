@@ -29,38 +29,38 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		IItemHandler output = tile.getOutput();
 
 		//Fuel Slot
-		this.addSlotToContainer(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
+		this.addSlot(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
 
 		//Input(0)
-		this.addSlotToContainer(new ValidatedSlot(input, 0, 49, 17, SlotPredicates.SMELTABLE));
+		this.addSlot(new ValidatedSlot(input, 0, 49, 17, SlotPredicates.SMELTABLE));
 
 		int counter = input.getSlots() - 1;
 
 		//Input Storage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				this.addSlotToContainer(new ValidatedSlot(input, counter--, 13 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
+				this.addSlot(new ValidatedSlot(input, counter--, 13 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
 			}
 
 		counter = output.getSlots() - 1;
 
 		//Output
-		this.addSlotToContainer(new ValidatedSlot(output, counter--, 109, 35, s -> false));
+		this.addSlot(new ValidatedSlot(output, counter--, 109, 35, s -> false));
 
 		//OutputStorage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				this.addSlotToContainer(new ValidatedSlot(output, counter--, 131 + i * 18, 8 + j * 18, s -> false));
+				this.addSlot(new ValidatedSlot(output, counter--, 131 + i * 18, 8 + j * 18, s -> false));
 			}
 
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
+			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 142));
 	}
 
 	@Nonnull

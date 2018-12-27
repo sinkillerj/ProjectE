@@ -13,8 +13,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -39,36 +39,36 @@ public class RMFurnaceContainer extends Container
 		IItemHandler output = tile.getOutput();
 
 		//Fuel
-		this.addSlotToContainer(new ValidatedSlot(fuel, 0, 65, 53, SlotPredicates.FURNACE_FUEL));
+		this.addSlot(new ValidatedSlot(fuel, 0, 65, 53, SlotPredicates.FURNACE_FUEL));
 
 		//Input(0)
-		this.addSlotToContainer(new ValidatedSlot(input, 0, 65, 17, SlotPredicates.SMELTABLE));
+		this.addSlot(new ValidatedSlot(input, 0, 65, 17, SlotPredicates.SMELTABLE));
 
 		int counter = input.getSlots() - 1;
 
 		//Input storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter--, 11 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
+				this.addSlot(new ValidatedSlot(input, counter--, 11 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
 
 		counter = output.getSlots() - 1;
 
 		//Output(0)
-		this.addSlotToContainer(new ValidatedSlot(output, counter--, 125, 35, s -> false));
+		this.addSlot(new ValidatedSlot(output, counter--, 125, 35, s -> false));
 
 		//Output Storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(output, counter--, 147 + i * 18, 8 + j * 18, s -> false));
+				this.addSlot(new ValidatedSlot(output, counter--, 147 + i * 18, 8 + j * 18, s -> false));
 
 		//Player Inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 24 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 24 + j * 18, 84 + i * 18));
 
 		//Player HotBar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 24 + i * 18, 142));
+			this.addSlot(new Slot(invPlayer, i, 24 + i * 18, 142));
 	}
 
 	@Override
@@ -110,7 +110,8 @@ public class RMFurnaceContainer extends Container
 		lastItemBurnTime = tile.currentItemBurnTime;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void updateProgressBar(int par1, int par2)
 	{
 		if (par1 == 0)

@@ -26,25 +26,25 @@ public class RelayMK3Container extends RelayMK1Container
 		IItemHandler output = tile.getOutput();
 
 		//Burn slot
-		this.addSlotToContainer(new ValidatedSlot(input, 0, 104, 58, SlotPredicates.RELAY_INV));
+		this.addSlot(new ValidatedSlot(input, 0, 104, 58, SlotPredicates.RELAY_INV));
 
 		int counter = input.getSlots() - 1;
 		//Inventory Buffer
 		for (int i = 0; i <= 3; i++)
 			for (int j = 0; j <= 4; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
+				this.addSlot(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 
 		//Klein star charge
-		this.addSlotToContainer(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));
+		this.addSlot(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));
 
 		//Main player inventory
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 26 + j * 18, 113 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 26 + j * 18, 113 + i * 18));
 
 		//Player hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 26 + i * 18, 171));
+			this.addSlot(new Slot(invPlayer, i, 26 + i * 18, 171));
 	}
 
 	@Nonnull

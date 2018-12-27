@@ -24,7 +24,7 @@ public class CondenserMK2Container extends CondenserContainer
 	@Override
 	protected void initSlots(InventoryPlayer invPlayer)
 	{
-		this.addSlotToContainer(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
+		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -33,21 +33,21 @@ public class CondenserMK2Container extends CondenserContainer
 		//Inputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
+				this.addSlot(new ValidatedSlot(input, j + i * 6, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
 
 		//Outputs
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < 6; j++)
-				this.addSlotToContainer(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, s -> false));
+				this.addSlot(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, s -> false));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
+				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
 
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 212));
+			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 212));
 	}
 
 	@Nonnull
