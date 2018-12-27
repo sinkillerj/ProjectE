@@ -61,7 +61,7 @@ public class TransmutationOffline
             if (player.exists() && player.isFile()) {
                 try(FileInputStream in = new FileInputStream(player)) {
                     NBTTagCompound playerDat = CompressedStreamTools.readCompressed(in); // No need to create buffered stream, that call does it for us
-                    NBTTagCompound knowledgeProvider = playerDat.getCompoundTag("ForgeCaps").getCompoundTag(KnowledgeImpl.Provider.NAME.toString());
+                    NBTTagCompound knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
 
                     IKnowledgeProvider provider = ProjectEAPI.KNOWLEDGE_CAPABILITY.getDefaultInstance();
                     ProjectEAPI.KNOWLEDGE_CAPABILITY.readNBT(provider, null, knowledgeProvider);

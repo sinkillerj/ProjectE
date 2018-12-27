@@ -20,7 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,7 +59,7 @@ public final class NBTWhitelistParser
 
 			for (String s : itemNames)
 			{
-				Item i = Item.REGISTRY.getObject(new ResourceLocation(s));
+				Item i = Item.REGISTRY.get(new ResourceLocation(s));
 				if (i != null)
 				{
 					items.add(i);
@@ -125,14 +125,14 @@ public final class NBTWhitelistParser
 	{
 		List<Item> defaults = new ArrayList<>();
 
-		if (Loader.isModLoaded("tconstruct"))
+		if (ModList.get().isLoaded("tconstruct"))
 		{
-			defaults.add(Item.getByNameOrId("tconstruct:pickaxe"));
+			defaults.add(Item.REGISTRY.get(new ResourceLocation("tconstruct:pickaxe")));
 		}
 
-		if (Loader.isModLoaded("botania"))
+		if (ModList.get().isLoaded("botania"))
 		{
-			defaults.add(Item.getByNameOrId("botania:specialFlower"));
+			defaults.add(Item.REGISTRY.get(new ResourceLocation("botania:specialFlower")));
 		}
 
 		JsonObject obj = (JsonObject) GSON.toJsonTree(new NBTWhiteList(defaults));

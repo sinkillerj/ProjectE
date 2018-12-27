@@ -17,16 +17,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class ToolTipEvent 
 {
 	@SubscribeEvent
@@ -176,14 +176,14 @@ public class ToolTipEvent
 			}
 		}
 
-		if (current.hasTagCompound())
+		if (current.hasTag())
 		{
-			if (current.getItem() instanceof IItemEmc || current.getTagCompound().hasKey("StoredEMC"))
+			if (current.getItem() instanceof IItemEmc || current.getTag().contains("StoredEMC"))
 			{
 				double value;
-				if (current.getTagCompound().hasKey("StoredEMC"))
+				if (current.getTag().contains("StoredEMC"))
 				{
-					value = current.getTagCompound().getDouble("StoredEMC");
+					value = current.getTag().getDouble("StoredEMC");
 				} else
 				{
 					value = ((IItemEmc) current.getItem()).getStoredEmc(current);

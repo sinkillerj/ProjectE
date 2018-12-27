@@ -78,7 +78,7 @@ public final class InternalAbilities
 
 		if (!shouldPlayerFly() && hadFlightItem)
 		{
-			if (player.capabilities.allowFlying)
+			if (player.abilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, false);
 			}
@@ -87,7 +87,7 @@ public final class InternalAbilities
 		}
 		else if(shouldPlayerFly() && !hadFlightItem)
 		{
-			if (!player.capabilities.allowFlying)
+			if (!player.abilities.allowFlying)
 			{
 				PlayerHelper.updateClientServerFlight(player, true);
 			}
@@ -129,7 +129,7 @@ public final class InternalAbilities
 	public void onDimensionChange()
 	{
 		// Resend everything needed on clientside (all except fire resist)
-		PlayerHelper.updateClientServerFlight(player, player.capabilities.allowFlying);
+		PlayerHelper.updateClientServerFlight(player, player.abilities.allowFlying);
 		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.6F);
 	}
 
@@ -140,7 +140,7 @@ public final class InternalAbilities
 			disableSwrgFlightOverride();
 		}
 
-		if (player.capabilities.isCreativeMode || player.isSpectator() || swrgOverride)
+		if (player.abilities.isCreativeMode || player.isSpectator() || swrgOverride)
 		{
 			return true;
 		}
@@ -187,7 +187,7 @@ public final class InternalAbilities
 	
 	private boolean shouldPlayerResistFire()
 	{
-		if (player.capabilities.isCreativeMode)
+		if (player.abilities.isCreativeMode)
 		{
 			return true;
 		}

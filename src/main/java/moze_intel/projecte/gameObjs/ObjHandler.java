@@ -104,11 +104,11 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
@@ -135,7 +135,7 @@ import java.util.Map.Entry;
 @Mod.EventBusSubscriber(modid = PECore.MODID)
 public class ObjHandler
 {
-	public static final CreativeTabs cTab = new CreativeTab();
+	public static final ItemGroup cTab = new CreativeTab();
 	public static final Block alchChest = new AlchemicalChest();
 	public static final Block interdictionTorch = new InterdictionTorch();
 	public static final Block transmuteStone = new TransmutationStone();

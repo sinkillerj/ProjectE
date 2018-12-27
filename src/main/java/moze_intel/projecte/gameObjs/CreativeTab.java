@@ -1,14 +1,14 @@
 package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
-public class CreativeTab extends CreativeTabs
+public class CreativeTab extends ItemGroup
 {
 	public CreativeTab()
 	{
@@ -17,7 +17,7 @@ public class CreativeTab extends CreativeTabs
 
 	@Nonnull
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public ItemStack createIcon()
 	{
 		return new ItemStack(ObjHandler.philosStone);

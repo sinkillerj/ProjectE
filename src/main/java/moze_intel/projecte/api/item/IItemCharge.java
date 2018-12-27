@@ -24,12 +24,12 @@ public interface IItemCharge
 	 * @return The charge on the stack
 	 */
 	default int getCharge(@Nonnull ItemStack stack) {
-		if (!stack.hasTagCompound())
+		if (!stack.hasTag())
 		{
-			stack.setTagCompound(new NBTTagCompound());
+			stack.setTag(new NBTTagCompound());
 		}
 
-		return stack.getTagCompound().getInteger(KEY);
+		return stack.getTag().getInt(KEY);
 	}
 
 	/**
@@ -48,14 +48,14 @@ public interface IItemCharge
 			if (currentCharge > 0)
 			{
 				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-				stack.getTagCompound().setInteger(KEY, currentCharge - 1);
+				stack.getTag().putInt(KEY, currentCharge - 1);
 				return true;
 			}
 		}
 		else if (currentCharge < numCharges)
 		{
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / (float)numCharges) * currentCharge));
-			stack.getTagCompound().setInteger(KEY, currentCharge + 1);
+			stack.getTag().putInt(KEY, currentCharge + 1);
 			return true;
 		}
 

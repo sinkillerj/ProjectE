@@ -1,6 +1,6 @@
 package moze_intel.projecte.api.event;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * This event is fired after all EMC values are recalculated

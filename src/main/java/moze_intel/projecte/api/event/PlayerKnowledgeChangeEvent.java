@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.event;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;

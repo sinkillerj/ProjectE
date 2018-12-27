@@ -25,22 +25,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class TransmutationRenderingEvent 
 {
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 	private static final List<AxisAlignedBB> renderList = new ArrayList<>();
 	private static double playerX;
 	private static double playerY;
@@ -56,8 +56,8 @@ public class TransmutationRenderingEvent
 			{
 				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
 				{
-					TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
-					mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+					TextureAtlasSprite sprite = mc.getTextureMap().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
+					mc.textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 					BufferBuilder wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
 					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
@@ -69,8 +69,8 @@ public class TransmutationRenderingEvent
 				{
 					RenderHelper.enableStandardItemLighting();
 
-					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(transmutationResult);
-					Minecraft.getMinecraft().getRenderItem().renderItemModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
+					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
+					mc.getItemRenderer().renderItemModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
 
 					RenderHelper.disableStandardItemLighting();
 				}
@@ -81,7 +81,7 @@ public class TransmutationRenderingEvent
 	@SubscribeEvent
 	public static void onOverlay(DrawBlockHighlightEvent event)
 	{
-		EntityPlayer player = Minecraft.getMinecraft().player;
+		EntityPlayer player = mc.player;
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 
@@ -100,7 +100,7 @@ public class TransmutationRenderingEvent
 		
 		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		
-		if (mop != null && mop.typeOfHit == Type.BLOCK)
+		if (mop != null && mop.type == Type.BLOCK)
 		{
 			IBlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
@@ -134,7 +134,7 @@ public class TransmutationRenderingEvent
 		GlStateManager.disableLighting();
 		GlStateManager.depthMask(false);
 
-		GlStateManager.color(1.0f, 1.0f, 1.0f, ProjectEConfig.misc.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
+		GlStateManager.color4f(1.0f, 1.0f, 1.0f, ProjectEConfig.misc.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 		
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder wr = tess.getBuffer();

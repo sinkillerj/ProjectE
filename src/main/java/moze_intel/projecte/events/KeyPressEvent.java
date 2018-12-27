@@ -5,12 +5,12 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class KeyPressEvent
 {
 	@SubscribeEvent

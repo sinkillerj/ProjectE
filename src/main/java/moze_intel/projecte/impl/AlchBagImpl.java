@@ -7,7 +7,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +37,7 @@ public final class AlchBagImpl
             }
 
             @Override
-            public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side, NBTBase nbt) {
+            public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, EnumFacing side, INBTBase nbt) {
                 if (nbt instanceof NBTTagCompound)
                     instance.deserializeNBT(((NBTTagCompound) nbt));
             }
@@ -74,9 +74,9 @@ public final class AlchBagImpl
             {
                 if (inventories.containsKey(c))
                 {
-                    NBTBase inv = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
+                    INBTBase inv = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
                             .writeNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inventories.get(c), null);
-                    ret.setTag(c.getName(), inv);
+                    ret.put(c.getName(), inv);
                 }
             }
             return ret;
@@ -93,11 +93,11 @@ public final class AlchBagImpl
         {
             for (EnumDyeColor e : EnumDyeColor.values())
             {
-                if (nbt.hasKey(e.getName()))
+                if (nbt.contains(e.getName()))
                 {
                     IItemHandler inv = new ItemStackHandler(104);
                     CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
-                            .readNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv, null, nbt.getTag(e.getName()));
+                            .readNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv, null, nbt.get(e.getName()));
                     inventories.put(e, inv);
                 }
             }
