@@ -3,18 +3,20 @@ import groovy.json.JsonOutput
 
 buildscript {
     repositories {
+        mavenLocal()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
         mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    // This is only here while i'm activly developing FG, Remind me to remove when we publically release
+    configurations {
+        classpath.resolutionStrategy {
+            cacheDynamicVersionsFor 10, 'seconds'
+            cacheChangingModulesFor 0, 'seconds'
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
@@ -22,29 +24,48 @@ plugins {
     id "com.github.johnrengelman.shadow" version "1.2.4"
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+apply plugin: 'net.minecraftforge.gradle'
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
 
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ProjectE"
+archivesBaseName = "projecte"
 
-minecraft {
-    version = "${minecraft_version}-${forge_version}"
-    runDir = "run"
-    mappings = 'stable_39'
-	
-    replace "@VERSION@", project.version
-    replaceIn "PECore.java"
-    useDepAts = true
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
-jar {
-    classifier = 'universal'
-    manifest {
-        attributes 'FMLAT': 'pe_at.cfg'
+minecraft {
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings channel: 'stable', version: '43-1.13'
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    
+    accessTransformer = file('pe_at.cfg')
+
+    // default run configurations.
+    // these can be tweaked, removed, or duplicated as needed.
+    runConfig {
+        name= "Minecraft Client"
+        main= "net.minecraftforge.userdev.UserdevLauncher"
+        ideaModuleName = "${project.name}_main"
+        workingDirectory = project.file("run").canonicalPath
+        environment "target", "fmldevclient"
+        environment "assetDirectory", downloadAssets.output.absolutePath
+    }
+
+    runConfig {
+        name= "Minecraft Server"
+        main= "net.minecraftforge.userdev.UserdevLauncher"
+        ideaModuleName = "${project.name}_main"
+        workingDirectory = project.file("run").canonicalPath
+        environment "target", "fmldevserver"
+        environment "assetDirectory", downloadAssets.output.absolutePath
     }
 }
 
@@ -76,39 +97,38 @@ repositories {
 }
  
 dependencies {
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied. 
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.44-1.13-pre'
+
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
-    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.9.481"
+    //deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
+    //deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+    //deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.9.481"
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
 processResources
 {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", project.minecraft_version
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
+        include 'META_INF/mods.toml'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version, 'mcversion': project.minecraft_version
     }
         
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        exclude 'META_INF/mods.toml'
     }
 }
 
@@ -160,21 +180,21 @@ task devJar(type: Jar) {
     println(defaultTasks)
 }
 
-task updateJSON(dependsOn: 'reobfJar') {
-    def updateJsonFile = file('update.json')
-    def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+task updateJSON {
+	doLast {
+    	def updateJsonFile = file('update.json')
+    	def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
 
-    updateJson."${minecraft_version}"."${project.version}" = "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+    	updateJson."${minecraft_version}"."${project.version}" = "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
 
-    // Update promos
-    updateJson.promos."${minecraft_version}-latest" = "${project.version}"
-    updateJson.promos."${minecraft_version}-recommended" = "${project.version}"
+    	// Update promos
+    	updateJson.promos."${minecraft_version}-latest" = "${project.version}"
+    	updateJson.promos."${minecraft_version}-recommended" = "${project.version}"
 
-    updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
+    	updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
+	}
 }
 
 artifacts {
     archives devJar
 }
-
-defaultTasks 'clean', 'build', 'updateJSON'
