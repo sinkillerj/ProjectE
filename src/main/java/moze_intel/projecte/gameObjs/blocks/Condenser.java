@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -18,20 +19,21 @@ import javax.annotation.Nonnull;
 
 public class Condenser extends AlchemicalChest
 {
-	public Condenser() 
+	public Condenser(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("pe_condenser");
 	}
 	
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
+	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
 	{
 		return new CondenserTile();
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote) 
 		{

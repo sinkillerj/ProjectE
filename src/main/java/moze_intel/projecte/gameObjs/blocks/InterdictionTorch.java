@@ -8,17 +8,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+// todo 1.13 split wall/ground
 public class InterdictionTorch extends BlockTorch
 {
-	public InterdictionTorch()
+	public InterdictionTorch(Builder builder)
 	{
+		super(builder);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setTranslationKey("pe_interdiction_torch");
 		this.setLightLevel(0.9F);
@@ -33,14 +38,14 @@ public class InterdictionTorch extends BlockTorch
 
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
+	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
 	{
 		return new InterdictionTile();
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand)
+	@OnlyIn(Dist.CLIENT)
+	public void animateTick(IBlockState state, World world, BlockPos pos, Random rand)
 	{
 		EnumFacing enumfacing = state.getValue(FACING);
 		double d0 = (double)pos.getX() + 0.5D;

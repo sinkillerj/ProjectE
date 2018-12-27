@@ -14,28 +14,26 @@ import javax.annotation.Nonnull;
 
 public class NovaCatalyst extends BlockTNT
 {
-	public NovaCatalyst()
+	public NovaCatalyst(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("pe_nova_catalyst");
 		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
 	@Override
-	public void explode(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityLivingBase entity)
+	public void explode(World world, @Nonnull BlockPos pos)
 	{
 		if (!world.isRemote)
 		{
-			if (state.getValue(EXPLODE))
-			{
-				EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
-				world.spawnEntity(catalystPrimed);
-				catalystPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
-			}
+			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+			world.spawnEntity(catalystPrimed);
+			catalystPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 		}
 	}
 	
 	@Override
-	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
+	public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if (!world.isRemote)
 		{

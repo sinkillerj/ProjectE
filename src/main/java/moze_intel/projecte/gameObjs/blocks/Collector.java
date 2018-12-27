@@ -16,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -27,9 +27,9 @@ public class Collector extends BlockDirection
 {
 	private final int tier;
 	
-	public Collector(int tier) 
+	public Collector(int tier, Builder builder)
 	{
-		super(Material.GLASS);
+		super(builder /*Material.GLASS*/);
 		this.setTranslationKey("pe_collector_MK" + tier);
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(0.3f);
@@ -37,7 +37,7 @@ public class Collector extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		int x = pos.getX();
 		int y = pos.getY();
@@ -66,7 +66,7 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world) {
 		switch (tier) {
 			case 3:
 				return new CollectorMK3Tile();
@@ -110,13 +110,13 @@ public class Collector extends BlockDirection
 		}
 	}
 
-	@Override
+	/*@Override todo 1.13 reexamine (should reallow torch placing)
 	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
 		return true;
-	}
+	}*/
 
 	@Override
-	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
+	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
 		TileEntity ent = world.getTileEntity(pos);
 		if (ent != null)
@@ -130,6 +130,6 @@ public class Collector extends BlockDirection
 				}
 			}
 		}
-		super.breakBlock(world, pos, state);
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 }

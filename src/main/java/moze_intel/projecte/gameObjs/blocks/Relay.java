@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -23,9 +24,9 @@ public class Relay extends BlockDirection
 {
 	private final int tier;
 	
-	public Relay(int tier) 
+	public Relay(Builder builder, int tier)
 	{
-		super(Material.ROCK);
+		super(builder/*, Material.ROCK*/);
 		this.setTranslationKey("pe_relay_MK" + Integer.toString(tier));
 		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
 		this.setHardness(10.0f);
@@ -33,7 +34,7 @@ public class Relay extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
@@ -65,7 +66,7 @@ public class Relay extends BlockDirection
 
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
+	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
 	{
 		switch (tier)
 		{
@@ -95,14 +96,14 @@ public class Relay extends BlockDirection
 	}
 
 	@Override
-	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
+	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)
 		{
 			WorldHelper.dropInventory(te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), world, pos);
 		}
-		super.breakBlock(world, pos, state);
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
 }

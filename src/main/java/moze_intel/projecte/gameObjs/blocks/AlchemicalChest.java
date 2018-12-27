@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -26,12 +26,12 @@ public class AlchemicalChest extends BlockDirection
 
 	private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
 
-	public AlchemicalChest() 
+	public AlchemicalChest(Builder builder)
 	{
-		super(Material.ROCK);
+		super(builder/*Material.ROCK*/);
 		this.setTranslationKey("pe_alchemy_chest");
 		this.setHardness(10.0f);
-		this.setDefaultState(blockState.getBaseState().withProperty(PEStateProps.FACING, EnumFacing.NORTH));
+		this.setDefaultState(getStateContainer().getBaseState().with(PEStateProps.FACING, EnumFacing.NORTH));
 		this.setResistance(6000000.0F);
 	}
 
@@ -48,11 +48,11 @@ public class AlchemicalChest extends BlockDirection
 		return false;
 	}
 
-	@Override
+	/*@Override todo 1.13 recheck
 	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
-	}
+	}*/
 	
 	@Nonnull
 	@Override
@@ -62,9 +62,9 @@ public class AlchemicalChest extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote) 
+		if (!world.isRemote)
 		{
 			player.openGui(PECore.instance, Constants.ALCH_CHEST_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
@@ -80,7 +80,7 @@ public class AlchemicalChest extends BlockDirection
 
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull World var1, @Nonnull IBlockState state)
+	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
 	{
 		return new AlchChestTile();
 	}

@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -22,9 +21,9 @@ public class TransmutationStone extends Block
 {
 	private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.25, 1);
 
-	public TransmutationStone() 
+	public TransmutationStone(Builder builder)
 	{
-		super(Material.ROCK);
+		super(builder/*Material.ROCK*/);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setTranslationKey("pe_transmutation_stone");
 		this.setHardness(10.0f);
@@ -36,15 +35,8 @@ public class TransmutationStone extends Block
 		return AABB;
 	}
 	
-	@Nonnull
 	@Override
-	public Item getItemDropped(IBlockState state, Random random, int par2)
-	{
-		return Item.getItemFromBlock(ObjHandler.transmuteStone);
-	}
-	
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{

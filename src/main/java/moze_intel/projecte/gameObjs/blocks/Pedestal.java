@@ -18,8 +18,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -32,9 +37,9 @@ public class Pedestal extends Block
 
     private static final AxisAlignedBB AABB = new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 0.75, 0.8125);
 
-    public Pedestal()
+    public Pedestal(Builder builder)
     {
-        super(Material.ROCK);
+        super(builder /*Material.ROCK*/);
         this.setCreativeTab(ObjHandler.cTab);
         this.setHardness(1.0F);
         this.setTranslationKey("pe_dmPedestal");
@@ -65,25 +70,24 @@ public class Pedestal extends Block
     }
 
     @Override
-    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
+    public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
     {
         dropItem(world, pos);
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override
-    public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
+    public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player)
     {
         if (!world.isRemote)
         {
             dropItem(world, pos);
-            IBlockState state = world.getBlockState(pos);
             world.notifyBlockUpdate(pos, state, state, 8);
         }
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
@@ -105,7 +109,7 @@ public class Pedestal extends Block
                 world.notifyBlockUpdate(pos, state, state, 8);
             } else if (!stack.isEmpty() && item.isEmpty())
             {
-                tile.getInventory().setStackInSlot(0, stack.splitStack(1));
+                tile.getInventory().setStackInSlot(0, stack.split(1));
                 if (stack.getCount() <= 0)
                 {
                     player.setHeldItem(hand, ItemStack.EMPTY);
@@ -167,16 +171,16 @@ public class Pedestal extends Block
 
     @Nonnull
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world) {
         return new DMPedestalTile();
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flags)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flags)
     {
-        tooltip.add(I18n.format("pe.pedestal.tooltip1"));
-        tooltip.add(I18n.format("pe.pedestal.tooltip2"));
+        tooltip.add(new TextComponentTranslation("pe.pedestal.tooltip1"));
+        tooltip.add(new TextComponentTranslation("pe.pedestal.tooltip2"));
     }
 
 }

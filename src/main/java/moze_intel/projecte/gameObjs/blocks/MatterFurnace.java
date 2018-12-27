@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.state.PEStateProps;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
@@ -28,18 +29,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+// todo 1.13 finish (model after furnace)
 public class MatterFurnace extends BlockDirection
 {
-	private final boolean isActive;
-	private final boolean isHighTier;
-	private static boolean isUpdating;
+	private final EnumMatterType matterType;
 
-	public MatterFurnace(boolean active, boolean isRM) 
+	public MatterFurnace(Builder builder, EnumMatterType type)
 	{
-		super(Material.ROCK);
+		super(builder/*Material.ROCK*/);
 		this.setCreativeTab(ObjHandler.cTab);
-		isActive = active;
-		isHighTier = isRM;
 		this.setTranslationKey("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
 		this.setHardness(1000000F);
 		
@@ -64,11 +62,11 @@ public class MatterFurnace extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
-			if (isHighTier)
+			if (matterType == EnumMatterType.RED_MATTER)
 			{
 				player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
@@ -79,17 +77,6 @@ public class MatterFurnace extends BlockDirection
 		}
 		
 		return true;
-	}
-	
-	@Override
-	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
-	{
-		// isUpdating is true if this breakBlock is being called as a result of updateFurnaceBlockState
-		// It prevents items from dropping out of the furnace when switching on/off state
-		if (!isUpdating)
-		{
-			super.breakBlock(world, pos, state);
-		}
 	}
 	
 	public void updateFurnaceBlockState(boolean isActive, World world, BlockPos pos)
@@ -138,7 +125,7 @@ public class MatterFurnace extends BlockDirection
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand)
+	public void animateTick(IBlockState state, World world, BlockPos pos, Random rand)
 	{
 		if (isActive)
 		{

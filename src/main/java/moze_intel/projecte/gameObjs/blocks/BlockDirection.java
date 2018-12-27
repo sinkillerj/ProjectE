@@ -5,11 +5,12 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -23,41 +24,30 @@ import javax.annotation.Nonnull;
 public abstract class BlockDirection extends Block
 {
 
-	public BlockDirection(Material material)
+	public BlockDirection(Builder builder)
 	{
-		super(material);
-		this.setCreativeTab(ObjHandler.cTab);
+		super(builder);
+	}
+
+	@Override
+	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder)
+	{
+		builder.add(PEStateProps.FACING);
 	}
 
 	@Nonnull
 	@Override
-	public BlockStateContainer createBlockState()
+	public IBlockState getStateForPlacement(BlockItemUseContext ctx)
 	{
-		return new BlockStateContainer(this, PEStateProps.FACING);
+		if (ctx.getPlayer() != null)
+		{
+			return getDefaultState().with(PEStateProps.FACING, ctx.getPlayer().getHorizontalFacing().getOpposite());
+		}
+		return getDefaultState();
 	}
 
 	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return state.getValue(PEStateProps.FACING).getHorizontalIndex();
-	}
-
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return this.getDefaultState().withProperty(PEStateProps.FACING, EnumFacing.byHorizontalIndex(meta));
-	}
-
-	@Nonnull
-	@Override
-	public IBlockState getStateForPlacement(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @Nonnull EntityLivingBase placer, EnumHand hand)
-	{
-		return getStateFromMeta(meta).withProperty(PEStateProps.FACING, placer.getHorizontalFacing().getOpposite());
-	}
-
-	@Override
-	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
+	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
@@ -67,11 +57,11 @@ public abstract class BlockDirection extends Block
 			WorldHelper.dropInventory(inv, world, pos);
 		}
 
-		super.breakBlock(world, pos, state);
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 	
 	@Override
-	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
+	public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player)
 	{
 		if (world.isRemote)
 		{
@@ -88,7 +78,7 @@ public abstract class BlockDirection extends Block
 
 	private void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
-		world.setBlockState(pos, world.getBlockState(pos).withProperty(PEStateProps.FACING, player.getHorizontalFacing().getOpposite()));
+		world.setBlockState(pos, world.getBlockState(pos).with(PEStateProps.FACING, player.getHorizontalFacing().getOpposite()));
 	}
 
 }

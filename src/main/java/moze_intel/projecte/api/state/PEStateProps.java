@@ -11,8 +11,6 @@ public final class PEStateProps
 {
 
     public static final IProperty<EnumFacing> FACING = BlockHorizontal.HORIZONTAL_FACING;
-    public static final IProperty<EnumFuelType> FUEL_PROP = EnumProperty.create("fueltype", EnumFuelType.class);
-    public static final IProperty<EnumMatterType> TIER_PROP = EnumProperty.create("tier", EnumMatterType.class);
 
     private PEStateProps() {}
 
