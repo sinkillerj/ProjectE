@@ -159,12 +159,7 @@ public final class ItemHelper
 
 	public static NBTTagCompound getOrCreateCompound(ItemStack stack)
 	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		return stack.getTagCompound();
+		return stack.getOrCreateTag();
 	}
 
 	public static String getOreDictionaryName(ItemStack stack)
@@ -269,7 +264,7 @@ public final class ItemHelper
 
 	public static boolean isDamageable(ItemStack stack)
 	{
-		return !stack.getHasSubtypes() && stack.isItemStackDamageable();
+		return stack.isDamageable();
 	}
 
 	public static boolean isOre(IBlockState state)

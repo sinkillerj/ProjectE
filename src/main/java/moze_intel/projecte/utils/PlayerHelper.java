@@ -28,6 +28,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
@@ -40,7 +41,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
-	public final static IScoreCriteria SCOREBOARD_EMC = new ScoreCriteriaReadOnly(PECore.MODID + ":emc_score");
+	public final static IScoreCriteria SCOREBOARD_EMC = new IScoreCriteria(PECore.MODID + ":emc_score"); // todo 1.13 this is now writable by scoreboards since RO constructor is private
 
 	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
@@ -98,7 +99,7 @@ public final class PlayerHelper
 
 	public static IItemHandler getBaubles(EntityPlayer player)
 	{
-		if (!Loader.isModLoaded("baubles"))
+		if (!ModList.get().isLoaded("baubles"))
 		{
 			return null;
 		} else
@@ -111,7 +112,7 @@ public final class PlayerHelper
 	{
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
 		RayTraceResult mop = player.getEntityWorld().rayTraceBlocks(vecs.getLeft(), vecs.getRight());
-		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+		if (mop != null && mop.type == RayTraceResult.Type.BLOCK)
 		{
 			return mop.getBlockPos();
 		}
@@ -144,7 +145,7 @@ public final class PlayerHelper
 			return false;
 		}
 
-		for (EnumFacing e : EnumFacing.VALUES)
+		for (EnumFacing e : EnumFacing.BY_INDEX)
 		{
 			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
 			{
@@ -172,11 +173,11 @@ public final class PlayerHelper
 	public static void updateClientServerFlight(EntityPlayerMP player, boolean state)
 	{
 		PacketHandler.sendTo(new SetFlyPKT(state), player);
-		player.capabilities.allowFlying = state;
+		player.abilities.allowFlying = state;
 
 		if (!state)
 		{
-			player.capabilities.isFlying = false;
+			player.abilities.isFlying = false;
 		}
 	}
 
@@ -189,10 +190,6 @@ public final class PlayerHelper
 	public static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int value)
 	{
 		// [VanillaCopy] EntityPlayerMP.updateScorePoints
-		for (ScoreObjective scoreobjective : player.getWorldScoreboard().getObjectivesFromCriteria(objective))
-		{
-			Score score = player.getWorldScoreboard().getOrCreateScore(player.getName(), scoreobjective);
-			score.setScorePoints(value);
-		}
+		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), obj -> obj.setScorePoints(value));
 	}
 }

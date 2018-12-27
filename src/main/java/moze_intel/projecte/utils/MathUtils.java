@@ -1,8 +1,8 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
@@ -60,7 +60,7 @@ public final class MathUtils
 	/**
 	 * Converts ticks to seconds, and adds the string unit on. If result is 0, then "every tick" is appended
 	 */
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static String tickToSecFormatted(int ticks)
 	{
 		double result = tickToSec(ticks);

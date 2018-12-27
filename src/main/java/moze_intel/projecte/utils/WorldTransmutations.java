@@ -1,20 +1,15 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Lists;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.block.*;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -41,144 +36,41 @@ public final class WorldTransmutations
 		registerDefault(Blocks.ICE, Blocks.WATER, null);
 		registerDefault(Blocks.LAVA, Blocks.OBSIDIAN, null);
 		registerDefault(Blocks.OBSIDIAN, Blocks.LAVA, null);
-		register(Blocks.MELON_BLOCK.getDefaultState(), Blocks.PUMPKIN.getDefaultState().withProperty(BlockPumpkin.FACING, EnumFacing.SOUTH), null);
+		registerDefault(Blocks.MELON, Blocks.PUMPKIN, null);
+		registerDefault(Blocks.PUMPKIN, Blocks.MELON, null);
+		registerDefault(Blocks.GRANITE, Blocks.DIORITE, Blocks.ANDESITE);
+		registerDefault(Blocks.DIORITE, Blocks.ANDESITE, Blocks.GRANITE);
+		registerDefault(Blocks.ANDESITE, Blocks.GRANITE, Blocks.DIORITE);
 
-		for (EnumFacing e : EnumFacing.HORIZONTALS)
-		{
-			register(Blocks.PUMPKIN.getDefaultState().withProperty(BlockPumpkin.FACING, e), Blocks.MELON_BLOCK.getDefaultState(), null);
-		}
+		Block[] logs = { Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.SPRUCE_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG };
+		registerConsecutivePairs(logs);
 
-		for (IBlockState s : Blocks.LOG.getBlockState().getValidStates())
-		{
-			if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.OAK)
-			{
-				// Oak must loop backward to dark oak
-				register(s, s.cycleProperty(BlockOldLog.VARIANT),
-						Blocks.LOG2.getDefaultState()
-								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
-								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)));
-			} else if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.JUNGLE)
-			{
-				// Jungle must loop forward to acacia
-				register(s,
-						Blocks.LOG2.getDefaultState()
-								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
-								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)),
-						cyclePropertyBackwards(s, BlockOldLog.VARIANT));
-			} else
-			{
-				register(s, s.cycleProperty(BlockOldLog.VARIANT), cyclePropertyBackwards(s, BlockOldLog.VARIANT));
-			}
-		}
+		Block[] leaves = { Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES };
+		registerConsecutivePairs(leaves);
 
-		for (IBlockState s : Blocks.LEAVES.getBlockState().getValidStates())
-		{
-			if (s.getValue(BlockOldLeaf.VARIANT) == BlockPlanks.EnumType.OAK)
-			{
-				// Oak must loop backward to dark oak
-				register(s, s.cycleProperty(BlockOldLeaf.VARIANT),
-						Blocks.LEAVES2.getDefaultState()
-								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)
-								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockOldLeaf.CHECK_DECAY))
-								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)));
-			} else if (s.getValue(BlockOldLeaf.VARIANT) == BlockPlanks.EnumType.JUNGLE)
-			{
-				// Jungle must loop forward to acacia
-				register(s,
-						Blocks.LEAVES2.getDefaultState()
-								.withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)
-								.withProperty(BlockNewLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
-								.withProperty(BlockNewLeaf.DECAYABLE, s.getValue(BlockOldLeaf.DECAYABLE)),
-						cyclePropertyBackwards(s, BlockOldLeaf.VARIANT));
-			} else
-			{
-				register(s, s.cycleProperty(BlockOldLeaf.VARIANT), cyclePropertyBackwards(s, BlockOldLeaf.VARIANT));
-			}
-		}
+		Block[] saplings = { Blocks.OAK_SAPLING, Blocks.BIRCH_SAPLING, Blocks.SPRUCE_SAPLING, Blocks.JUNGLE_SAPLING, Blocks.ACACIA_SAPLING, Blocks.DARK_OAK_SAPLING };
+		registerConsecutivePairs(saplings);
 
-		for (IBlockState s : Blocks.LOG2.getBlockState().getValidStates())
-		{
-			if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.ACACIA)
-			{
-				// Acacia must loop backward to jungle
-				register(s, s.cycleProperty(BlockNewLog.VARIANT),
-						Blocks.LOG.getDefaultState()
-								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE)
-								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)));
-			} else if (s.getValue(BlockNewLog.VARIANT) == BlockPlanks.EnumType.DARK_OAK)
-			{
-				// Dark oak must loop forward to oak
-				register(s,
-						Blocks.LOG.getDefaultState()
-								.withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.OAK)
-								.withProperty(BlockOldLog.LOG_AXIS, s.getValue(BlockNewLog.LOG_AXIS)),
-						cyclePropertyBackwards(s, BlockNewLog.VARIANT));
-			} else
-			{
-				register(s, s.cycleProperty(BlockNewLog.VARIANT), cyclePropertyBackwards(s, BlockNewLog.VARIANT));
-			}
-		}
+		Block[] wools = {
+				Blocks.WHITE_WOOL, Blocks.ORANGE_WOOL, Blocks.MAGENTA_WOOL, Blocks.LIGHT_BLUE_WOOL, Blocks.YELLOW_WOOL,
+				Blocks.LIME_WOOL, Blocks.PINK_WOOL, Blocks.GRAY_WOOL, Blocks.LIGHT_GRAY_WOOL, Blocks.CYAN_WOOL, 
+				Blocks.PURPLE_WOOL, Blocks.BLUE_WOOL, Blocks.BROWN_WOOL, Blocks.GREEN_WOOL, Blocks.RED_WOOL, Blocks.BLACK_WOOL
+		};
+		registerConsecutivePairs(wools);
 
-		for (IBlockState s : Blocks.LEAVES2.getBlockState().getValidStates())
-		{
-			if (s.getValue(BlockNewLeaf.VARIANT) == BlockPlanks.EnumType.ACACIA)
-			{
-				// Acacia must loop backward to jungle
-				register(s, s.cycleProperty(BlockNewLeaf.VARIANT),
-						Blocks.LEAVES.getDefaultState()
-								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
-								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
-								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)));
-			} else if (s.getValue(BlockNewLeaf.VARIANT) == BlockPlanks.EnumType.DARK_OAK)
-			{
-				// Dark oak must loop forward to oak
-				register(s,
-						Blocks.LEAVES.getDefaultState()
-								.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)
-								.withProperty(BlockOldLeaf.CHECK_DECAY, s.getValue(BlockNewLeaf.CHECK_DECAY))
-								.withProperty(BlockOldLeaf.DECAYABLE, s.getValue(BlockNewLeaf.DECAYABLE)),
-						cyclePropertyBackwards(s, BlockNewLeaf.VARIANT));
-			} else
-			{
-				register(s, s.cycleProperty(BlockNewLeaf.VARIANT), cyclePropertyBackwards(s, BlockNewLeaf.VARIANT));
-			}
-		}
+		Block[] terracottas = {
+				Blocks.WHITE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, Blocks.YELLOW_TERRACOTTA,
+				Blocks.LIME_TERRACOTTA, Blocks.PINK_TERRACOTTA, Blocks.GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.CYAN_TERRACOTTA,
+				Blocks.PURPLE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, Blocks.BROWN_TERRACOTTA, Blocks.GREEN_TERRACOTTA, Blocks.RED_TERRACOTTA, Blocks.BLACK_TERRACOTTA
+		};
+		registerConsecutivePairs(terracottas);
 
-		for (BlockPlanks.EnumType e : BlockPlanks.EnumType.values())
-		{
-			IBlockState state = Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, e);
-			register(state, state.cycleProperty(BlockSapling.TYPE), cyclePropertyBackwards(state, BlockSapling.TYPE));
-		}
-
-		for (EnumDyeColor e : EnumDyeColor.values())
-		{
-			IBlockState state = Blocks.WOOL.getDefaultState().withProperty(BlockColored.COLOR, e);
-			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
-
-			state = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR, e);
-			register(state, state.cycleProperty(BlockColored.COLOR), cyclePropertyBackwards(state, BlockColored.COLOR));
-
-			state = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, e);
-			register(state, state.cycleProperty(BlockCarpet.COLOR), cyclePropertyBackwards(state, BlockCarpet.COLOR));
-		}
-
-		IBlockState granite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE);
-		IBlockState diorite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE);
-		IBlockState andesite = Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE);
-
-		register(granite, diorite, andesite);
-		register(diorite, andesite, granite);
-		register(andesite, granite, diorite);
-	}
-
-	private static IBlockState cyclePropertyBackwards(IBlockState state, IProperty<?> property)
-	{
-		IBlockState result = state;
-		for (int i = 0; i < property.getAllowedValues().size() - 1; i++)
-		{
-			result = result.cycleProperty(property);
-		}
-		return result;
+		Block[] carpets = {
+				Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET, Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET,
+				Blocks.LIME_CARPET, Blocks.PINK_CARPET, Blocks.GRAY_CARPET, Blocks.LIGHT_GRAY_CARPET, Blocks.CYAN_CARPET,
+				Blocks.PURPLE_CARPET, Blocks.BLUE_CARPET, Blocks.BROWN_CARPET, Blocks.GREEN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET
+		};
+		registerConsecutivePairs(carpets);
 	}
 
 	public static IBlockState getWorldTransmutation(World world, BlockPos pos, boolean isSneaking)
@@ -215,6 +107,17 @@ public final class WorldTransmutations
 		register(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
 	}
 
+	private static void registerConsecutivePairs(Block[] blocks)
+	{
+		for (int i = 0; i < blocks.length; i++)
+		{
+			Block prev = i == 0 ? blocks[blocks.length - 1] : blocks[i - 1];
+			Block cur = blocks[i];
+			Block next = i == blocks.length - 1 ? blocks[0] : blocks[i + 1];
+			registerDefault(cur, next, prev);
+		}
+	}
+
 	public static class Entry implements IRecipeWrapper
 	{
 		public final IBlockState input;
@@ -230,8 +133,8 @@ public final class WorldTransmutations
 		public void getIngredients(IIngredients ingredients) {
 
 
-			if((this.input.getProperties().containsKey(BlockHorizontal.FACING) && this.input.getValue(BlockHorizontal.FACING) != EnumFacing.NORTH) ||
-                    this.input.getProperties().containsKey(BlockLog.LOG_AXIS) && this.input.getValue(BlockLog.LOG_AXIS) != BlockLog.EnumAxis.NONE)
+			if((this.input.getProperties().containsKey(BlockHorizontal.FACING) && this.input.get(BlockHorizontal.FACING) != EnumFacing.NORTH) ||
+                    this.input.getProperties().containsKey(BlockLog.LOG_AXIS) && this.input.get(BlockLog.LOG_AXIS) != BlockLog.EnumAxis.NONE)
 				return;
 
 			List<ItemStack> outputList = new ArrayList<>();
@@ -254,98 +157,98 @@ public final class WorldTransmutations
 
 
 			if(this.input.getProperties().containsKey(BlockColored.COLOR)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockColored.COLOR).getMetadata()));
-				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockColored.COLOR).getMetadata()));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockColored.COLOR).getMetadata()));
+				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockColored.COLOR).getMetadata()));
 
 				if(this.outputs.getRight() != null)
-					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockColored.COLOR).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockColored.COLOR).getMetadata()));
 			}
 			else if(this.input.getProperties().containsKey(BlockStone.VARIANT)){
 
 
-					ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockStone.VARIANT).getMetadata()));
+					ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockStone.VARIANT).getMetadata()));
 
 					if(this.outputs.getLeft().getBlock() == Blocks.COBBLESTONE || this.outputs.getLeft().getBlock() == Blocks.GRASS)
 						outputList.add(new ItemStack(this.outputs.getLeft().getBlock()));
 					else
-						outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockStone.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockStone.VARIANT).getMetadata()));
 
 					if(this.outputs.getRight() != null){
 						if(this.outputs.getRight().getBlock() == Blocks.COBBLESTONE || this.outputs.getRight().getBlock() == Blocks.GRASS)
 							outputList.add(new ItemStack(this.outputs.getRight().getBlock()));
 						else
-							outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockStone.VARIANT).getMetadata()));
+							outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockStone.VARIANT).getMetadata()));
 					}
 
 
 
 			}
 			else if(this.input.getProperties().containsKey(BlockOldLog.VARIANT)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockOldLog.VARIANT).getMetadata()));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockOldLog.VARIANT).getMetadata()));
 
 				if(this.outputs.getLeft().getProperties().containsKey(BlockOldLog.VARIANT))
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLog.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockOldLog.VARIANT).getMetadata()));
 				else
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockNewLog.VARIANT).getMetadata() - 4));
 
 				if(this.outputs.getRight() != null){
 					if(this.outputs.getRight().getProperties().containsKey(BlockOldLog.VARIANT))
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLog.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockOldLog.VARIANT).getMetadata()));
 					else
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockNewLog.VARIANT).getMetadata() - 4));
 				}
 
 			}
 			else if(this.input.getProperties().containsKey(BlockNewLog.VARIANT)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockNewLog.VARIANT).getMetadata() - 4));
 
 				if(this.outputs.getLeft().getProperties().containsKey(BlockNewLog.VARIANT))
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockNewLog.VARIANT).getMetadata() - 4));
 				else
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLog.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockOldLog.VARIANT).getMetadata()));
 
 				if(this.outputs.getRight() != null){
 					if(this.outputs.getRight().getProperties().containsKey(BlockNewLog.VARIANT))
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockNewLog.VARIANT).getMetadata() - 4));
 					else
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLog.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockOldLog.VARIANT).getMetadata()));
 				}
 
 			}
 			else if(this.input.getProperties().containsKey(BlockOldLeaf.VARIANT)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockOldLeaf.VARIANT).getMetadata()));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockOldLeaf.VARIANT).getMetadata()));
 
 				if(this.outputs.getLeft().getProperties().containsKey(BlockOldLeaf.VARIANT))
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockOldLeaf.VARIANT).getMetadata()));
 				else
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockNewLeaf.VARIANT).getMetadata()));
 				if(this.outputs.getRight() != null)
 					if(this.outputs.getRight().getProperties().containsKey(BlockOldLeaf.VARIANT))
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockOldLeaf.VARIANT).getMetadata()));
 					else
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockNewLeaf.VARIANT).getMetadata()));
 			}
 			else if(this.input.getProperties().containsKey(BlockNewLeaf.VARIANT)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockNewLeaf.VARIANT).getMetadata()));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockNewLeaf.VARIANT).getMetadata()));
 
 				if(this.outputs.getLeft().getProperties().containsKey(BlockNewLeaf.VARIANT))
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockNewLeaf.VARIANT).getMetadata()));
 				else
-					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockOldLeaf.VARIANT).getMetadata()));
 				if(this.outputs.getRight() != null){
 					if(this.outputs.getRight().getProperties().containsKey(BlockNewLeaf.VARIANT))
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockNewLeaf.VARIANT).getMetadata()));
 					else
-						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockNewLeaf.VARIANT).getMetadata()));
 				}
 
 			}
 			else if(this.input.getProperties().containsKey(BlockSapling.TYPE)){
-				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockSapling.TYPE).getMetadata()));
-				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockSapling.TYPE).getMetadata()));
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.get(BlockSapling.TYPE).getMetadata()));
+				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().get(BlockSapling.TYPE).getMetadata()));
 
 				if(this.outputs.getRight() != null)
-					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockSapling.TYPE).getMetadata()));
+					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().get(BlockSapling.TYPE).getMetadata()));
 			}
 			else{
 				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock()));

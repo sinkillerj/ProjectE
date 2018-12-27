@@ -33,7 +33,7 @@ public final class EMCHelper
 	 */
 	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
 	{
-		if (player.capabilities.isCreativeMode)
+		if (player.abilities.isCreativeMode)
 		{
 			return minFuel;
 		}
@@ -187,7 +187,7 @@ public final class EMCHelper
 
 				// maxDmg + 1 because vanilla lets you use the tool one more time
 				// when item damage == max damage (shows as Durability: 0 / max)
-				int relDamage = (stack.getMaxDamage() + 1 - stack.getItemDamage());
+				int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
 
 				if (relDamage <= 0)
 				{
@@ -300,8 +300,8 @@ public final class EMCHelper
 	}
 
 	private static double getStoredEMCBonus(ItemStack stack) {
-		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
-			return stack.getTagCompound().getDouble("StoredEMC");
+		if (stack.getTag() != null && stack.getTag().contains("StoredEMC")) {
+			return stack.getTag().getDouble("StoredEMC");
 		} else if (stack.getItem() instanceof IItemEmc) {
 			return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
 		}
@@ -316,7 +316,7 @@ public final class EMCHelper
 			return 0;
 
 		ItemStack stackCopy = stack.copy();
-		stackCopy.setItemDamage(0);
+		stackCopy.setDamage(0);
 
 		if(ItemHelper.isItemRepairable(stack)){
 			emc = (int)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());

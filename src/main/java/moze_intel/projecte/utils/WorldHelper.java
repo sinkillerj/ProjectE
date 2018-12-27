@@ -38,6 +38,7 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -161,7 +162,7 @@ public final class WorldHelper
 		{
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
-				world.setBlockToAir(pos);
+				world.removeBlock(pos);
 			}
 		}
 	}
@@ -172,7 +173,7 @@ public final class WorldHelper
 		{
 			Block b = world.getBlockState(pos).getBlock();
 
-			if ((b == Blocks.WATER || b == Blocks.FLOWING_WATER) && (!random || world.rand.nextInt(128) == 0))
+			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0))
 			{
 				if (player != null)
 				{
@@ -191,11 +192,11 @@ public final class WorldHelper
 
 				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0))
 				{
-					newState = Blocks.SNOW_LAYER.getDefaultState();
-				} else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
+					newState = Blocks.SNOW.getDefaultState();
+				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(BlockSnowLayer.LAYERS) < 8
 							&& world.rand.nextInt(512) == 0)
 				{
-					newState = stateUp.withProperty(BlockSnow.LAYERS, stateUp.getValue(BlockSnow.LAYERS) + 1);
+					newState = stateUp.with(BlockSnowLayer.LAYERS, stateUp.get(BlockSnowLayer.LAYERS) + 1);
 				}
 
 				if (newState != null)
@@ -217,7 +218,7 @@ public final class WorldHelper
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
 
-		for (EnumFacing dir : EnumFacing.VALUES) {
+		for (EnumFacing dir : EnumFacing.BY_INDEX) {
 			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
 			if (candidate != null) {
 				ret.put(dir, candidate);
@@ -234,7 +235,9 @@ public final class WorldHelper
 			return Lists.newArrayList(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)));
 		}
 
-		return state.getBlock().getDrops(world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+		NonNullList<ItemStack> ret = NonNullList.create();
+		state.getBlock().getDrops(state, ret, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+		return ret;
 	}
 
 	/**
@@ -415,7 +418,7 @@ public final class WorldHelper
 				{
 					for (int i = 0; i < (harvest ? 8 : 4); i++)
 					{
-						crop.updateTick(world, currentPos, state, world.rand);
+						crop.randomTick(state, world, currentPos, world.rand);
 					}
 				}
 
@@ -428,7 +431,7 @@ public final class WorldHelper
 							world.destroyBlock(currentPos, true);
 						}
 					}
-					if (crop == Blocks.REEDS || crop == Blocks.CACTUS)
+					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS)
 					{
 						boolean shouldHarvest = true;
 
@@ -443,7 +446,7 @@ public final class WorldHelper
 
 						if (shouldHarvest)
 						{
-							for (int i = crop == Blocks.REEDS ? 1 : 0; i < 3; i++)
+							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++)
 							{
 								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
 								{
@@ -457,7 +460,7 @@ public final class WorldHelper
 					}
 					if (crop == Blocks.NETHER_WART)
 					{
-						int age = state.getValue(BlockNetherWart.AGE);
+						int age = state.get(BlockNetherWart.AGE);
 						if (age == 3)
 						{
 							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
@@ -489,13 +492,14 @@ public final class WorldHelper
 			IBlockState currentState = world.getBlockState(currentPos);
 			Block block = currentState.getBlock();
 
-			if (currentState == target || (target == Blocks.LIT_REDSTONE_ORE && block == Blocks.REDSTONE_ORE))
+			// todo 1.13 should probably turn into a block check not state check
+			if (currentState == target)
 			{
 				numMined++;
 				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
 				{
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
-					world.setBlockToAir(currentPos);
+					world.removeBlock(currentPos);
 					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 					if (numMined >= Constants.MAX_VEIN_SIZE) {
 						break;
