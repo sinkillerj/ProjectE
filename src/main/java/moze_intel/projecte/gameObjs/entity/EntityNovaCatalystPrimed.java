@@ -23,7 +23,7 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 
 	// Need exact override to do our own explosion
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
@@ -44,7 +44,7 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 		setFuse(getFuse() - 1);
 		if (this.getFuse() <= 0)
 		{
-			this.setDead();
+			this.remove();
 
 			if (!this.getEntityWorld().isRemote)
 				this.explode();

@@ -33,9 +33,9 @@ public class EntityLensProjectile extends PEProjectile
 	}
 	
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 		
 		if (this.getEntityWorld().isRemote)
 		{
@@ -44,7 +44,7 @@ public class EntityLensProjectile extends PEProjectile
 
 		if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 		{
-			this.setDead();
+			this.remove();
 			return;
 		}
 
@@ -52,7 +52,7 @@ public class EntityLensProjectile extends PEProjectile
 		{
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
 			((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX, posY, posZ, 2, 0, 0, 0, 0, new int[0]);
-			this.setDead();
+			this.remove();
 		}
 	}
 
@@ -62,16 +62,18 @@ public class EntityLensProjectile extends PEProjectile
 		if (this.getEntityWorld().isRemote) return;
 		WorldHelper.createNovaExplosion(world, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 	}
-	
-	public void writeEntityToNBT(NBTTagCompound nbt)
+
+	@Override
+	public void writeAdditional(NBTTagCompound nbt)
 	{
-		super.writeEntityToNBT(nbt);
-		nbt.setInteger("Charge", charge);
+		super.writeAdditional(nbt);
+		nbt.putInt("Charge", charge);
 	}
-	
-	public void readEntityFromNBT(NBTTagCompound nbt)
+
+	@Override
+	public void readAdditional(NBTTagCompound nbt)
 	{
-		super.readEntityFromNBT(nbt);
-		charge = nbt.getInteger("Charge");
+		super.readAdditional(nbt);
+		charge = nbt.getInt("Charge");
 	}
 }

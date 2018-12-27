@@ -34,15 +34,15 @@ public class EntityLavaProjectile extends PEProjectile
 	}
 		
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 		
 		if (!this.getEntityWorld().isRemote)
 		{
 			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
-				this.setDead();
+				this.remove();
 				return;
 			}
 
@@ -53,11 +53,11 @@ public class EntityLavaProjectile extends PEProjectile
                 {
                     Block block = this.getEntityWorld().getBlockState(pos).getBlock();
 
-                    if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
+                    if (block == Blocks.WATER)
                     {
                         if (PlayerHelper.hasBreakPermission(player, pos))
                         {
-                            this.getEntityWorld().setBlockToAir(pos);
+                            this.getEntityWorld().removeBlock(pos);
                             this.getEntityWorld().playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
                         }
                     }
@@ -68,7 +68,7 @@ public class EntityLavaProjectile extends PEProjectile
 			{
 				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(false);
-				this.setDead();
+				this.remove();
 			}
 		}
 	}
@@ -83,13 +83,13 @@ public class EntityLavaProjectile extends PEProjectile
 
 		if (tryConsumeEmc(((ItemPE) ObjHandler.volcanite), 32))
 		{
-			switch (mop.typeOfHit)
+			switch (mop.type)
 			{
 				case BLOCK:
-					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.FLOWING_LAVA.getDefaultState());
+					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.LAVA.getDefaultState());
 					break;
 				case ENTITY:
-					Entity ent = mop.entityHit;
+					Entity ent = mop.entity;
 					ent.setFire(5);
 					ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
 			}

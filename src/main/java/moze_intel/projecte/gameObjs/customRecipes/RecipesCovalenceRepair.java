@@ -1,12 +1,16 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -15,12 +19,13 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipesCovalenceRepair implements IRecipe
 {
+	public static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "covalence_repair");
 	private ItemStack output = ItemStack.EMPTY;
 
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
+	public boolean matches(@Nonnull IInventory inv, @Nonnull World world)
 	{
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
@@ -69,13 +74,13 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 		}
 		
 		output = tool.copy();
-		output.setItemDamage(Math.max(tool.getItemDamage() - dustEmc / emcPerDurability, 0));
+		output.setDamage(Math.max(tool.getDamage() - dustEmc / emcPerDurability, 0));
 		return true;
 	}
 	
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
+	public ItemStack getCraftingResult(@Nonnull IInventory var1)
 	{
 		return output.copy();
 	}
@@ -89,13 +94,25 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 	@Override
 	public ItemStack getRecipeOutput() 
 	{
-		return output;
+		return ItemStack.EMPTY;
 	}
 
-	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv)
+	public boolean isDynamic()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return true;
+	}
+
+	@Override
+	public ResourceLocation getId()
+	{
+		return ID;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		// todo 1.13
+		return null;
 	}
 }

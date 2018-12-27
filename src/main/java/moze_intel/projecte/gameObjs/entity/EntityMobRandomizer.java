@@ -23,15 +23,15 @@ public class EntityMobRandomizer extends PEProjectile
 	}
 	
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 		
 		if (!this.getEntityWorld().isRemote)
 		{
 			if (ticksExisted > 400 || this.isInWater() || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
-				this.setDead();
+				this.remove();
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class EntityMobRandomizer extends PEProjectile
 		{
 			if (this.isInWater())
 			{
-				this.setDead();
+				this.remove();
 				return;
 			}
 		}
@@ -57,19 +57,19 @@ public class EntityMobRandomizer extends PEProjectile
 			return;
 		}
 
-		if (!(mop.entityHit instanceof EntityLiving))
+		if (!(mop.entity instanceof EntityLiving))
 		{
 			return;
 		}
 
-		EntityLiving ent = ((EntityLiving) mop.entityHit);
+		EntityLiving ent = ((EntityLiving) mop.entity);
 		EntityLiving randomized = WorldHelper.getRandomEntity(this.getEntityWorld(), ent);
 		
 		if (randomized != null && EMCHelper.consumePlayerFuel(((EntityPlayer) getThrower()), 384) != -1)
 		{
-			ent.setDead();
+			ent.remove();
 			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
-			randomized.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(randomized)), null);
+			randomized.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(randomized)), null, null);
 			this.getEntityWorld().spawnEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}

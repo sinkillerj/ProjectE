@@ -41,9 +41,9 @@ public class EntityHomingArrow extends EntityTippedArrow
 	}
 
 	@Override
-	public void entityInit()
+	public void registerData()
 	{
-		super.entityInit();
+		super.registerData();
 		dataManager.register(DW_TARGET_ID, NO_TARGET); // Target entity id
 	}
 
@@ -56,11 +56,11 @@ public class EntityHomingArrow extends EntityTippedArrow
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		if (!world.isRemote && this.ticksExisted > 3)
 		{
-			if (hasTarget() && (!getTarget().isEntityAlive() || this.inGround))
+			if (hasTarget() && (!getTarget().isAlive() || this.inGround))
 			{
 				dataManager.set(DW_TARGET_ID, NO_TARGET);
 			}
@@ -111,7 +111,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
 		}
 
-		super.onUpdate();
+		super.tick();
 	}
 
 	@Nonnull
@@ -122,7 +122,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private void findNewTarget()
 	{
-		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().grow(8, 8, 8));
+		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getBoundingBox().grow(8, 8, 8));
 
 		if (!candidates.isEmpty())
 		{

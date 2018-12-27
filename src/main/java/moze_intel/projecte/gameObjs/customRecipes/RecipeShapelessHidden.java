@@ -1,11 +1,14 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -13,22 +16,24 @@ import javax.annotation.Nonnull;
 /**
  * Composes a ShapelessRecipes to hide it from JEI
  */
-public class RecipeShapelessHidden extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeShapelessHidden implements IRecipe
 {
-	private final ShapelessRecipes compose;
+	private final ResourceLocation id;
+	private final ShapelessRecipe compose;
 
-	public RecipeShapelessHidden(String group, ItemStack result, NonNullList<Ingredient> ingredients) {
-		this.compose = new ShapelessRecipes(group, result, ingredients);
+	public RecipeShapelessHidden(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients) {
+		this.id = id;
+		this.compose = new ShapelessRecipe(id, group, result, ingredients);
 	}
 
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
+	public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
 		return compose.matches(inv, worldIn);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
 		return compose.getCraftingResult(inv);
 	}
 
@@ -45,7 +50,7 @@ public class RecipeShapelessHidden extends net.minecraftforge.registries.IForgeR
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
 	{
 		return compose.getRemainingItems(inv);
 	}
@@ -68,5 +73,18 @@ public class RecipeShapelessHidden extends net.minecraftforge.registries.IForgeR
 	public String getGroup()
 	{
 		return compose.getGroup();
+	}
+
+	@Override
+	public ResourceLocation getId()
+	{
+		return compose.getId();
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		// todo 1.13
+		return null;
 	}
 }

@@ -31,15 +31,15 @@ public class EntityWaterProjectile extends PEProjectile
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 
 		if (!this.getEntityWorld().isRemote)
 		{
 			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this)))
 			{
-				this.setDead();
+				this.remove();
 				return;
 			}
 
@@ -69,14 +69,14 @@ public class EntityWaterProjectile extends PEProjectile
 
 			if (this.isInWater())
 			{
-				this.setDead();
+				this.remove();
 			}
 			
 			if (this.posY > 128)
 			{
 				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
-				this.setDead();
+				this.remove();
 			}
 		}
 	}
@@ -89,17 +89,17 @@ public class EntityWaterProjectile extends PEProjectile
 			return;
 		}
 
-		if (mop.typeOfHit == Type.BLOCK)
+		if (mop.type == Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 			if (world.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.FLOWING_WATER.getDefaultState());
+				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.WATER.getDefaultState());
 			}
 		}
-		else if (mop.typeOfHit == Type.ENTITY)
+		else if (mop.type == Type.ENTITY)
 		{
-			Entity ent = mop.entityHit;
+			Entity ent = mop.entity;
 
 			if (ent.isBurning())
 			{

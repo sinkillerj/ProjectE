@@ -4,12 +4,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -19,16 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
-public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeWrapper {
+public class RecipeShapelessKleinStar implements IRecipe, IRecipeWrapper {
+	private final ResourceLocation id;
+	private final ShapelessRecipe compose;
 
-	private final ShapelessRecipes compose;
-
-	public RecipeShapelessKleinStar(String group, ItemStack result, NonNullList<Ingredient> ingredients) {
-		this.compose = new ShapelessRecipes(group, result, ingredients);
+	public RecipeShapelessKleinStar(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients) {
+		this.id = id;
+		this.compose = new ShapelessRecipe(id, group, result, ingredients);
 	}
 
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
+	public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
 
 		if (compose.matches(inv, worldIn)) {
 			double storedEMC = 0;
@@ -53,7 +56,7 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
 		return compose.getCraftingResult(inv);
 	}
 
@@ -70,7 +73,7 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv) {
 		return compose.getRemainingItems(inv);
 	}
 

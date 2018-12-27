@@ -38,7 +38,7 @@ public abstract class PEProjectile extends EntityThrowable
         }
         if (!world.isRemote)
         {
-            this.setDead();
+            this.remove();
         }
     }
 

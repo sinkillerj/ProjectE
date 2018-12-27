@@ -27,13 +27,13 @@ public class EntitySWRGProjectile extends PEProjectile
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 
 		if (!world.isRemote && ticksExisted > 400)
 		{
-			setDead();
+			remove();
 			return;
 		}
 
@@ -43,10 +43,10 @@ public class EntitySWRGProjectile extends PEProjectile
 		motionY *= inverse;
 		motionZ *= inverse;
 
-		if (!world.isRemote && !isDead && posY > world.getHeight() && world.isRaining())
+		if (!world.isRemote && isAlive() && posY > world.getHeight() && world.isRaining())
 		{
 			world.getWorldInfo().setThundering(true);
-			setDead();
+			remove();
 		}
 	}
 
@@ -60,7 +60,7 @@ public class EntitySWRGProjectile extends PEProjectile
 
 		ItemPE consumeFrom = (ItemPE) (fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
 
-		switch (mop.typeOfHit)
+		switch (mop.type)
 		{
 			case BLOCK:
 			{
@@ -85,19 +85,19 @@ public class EntitySWRGProjectile extends PEProjectile
 			}
 			case ENTITY:
 			{
-				if (mop.entityHit instanceof EntityLivingBase && tryConsumeEmc(consumeFrom, 64))
+				if (mop.entity instanceof EntityLivingBase && tryConsumeEmc(consumeFrom, 64))
 				{
 					EntityPlayer player = (EntityPlayer) getThrower();
 
 					// Minor damage so we count as the attacker for launching the mob
-					mop.entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
+					mop.entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
 
 					// Fake onGround before knockBack so you can re-launch mobs that have already been launched
-					boolean oldOnGround = mop.entityHit.onGround;
-					mop.entityHit.onGround = true;
-					((EntityLivingBase) mop.entityHit).knockBack(null, 5F, -motionX * 0.25, -motionZ * 0.25);
-					mop.entityHit.onGround = oldOnGround;
-					mop.entityHit.motionY *= 3;
+					boolean oldOnGround = mop.entity.onGround;
+					mop.entity.onGround = true;
+					((EntityLivingBase) mop.entity).knockBack(null, 5F, -motionX * 0.25, -motionZ * 0.25);
+					mop.entity.onGround = oldOnGround;
+					mop.entity.motionY *= 3;
 				}
 
 				break;
@@ -106,16 +106,16 @@ public class EntitySWRGProjectile extends PEProjectile
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound compound)
+	public void readAdditional(NBTTagCompound compound)
 	{
-		super.readEntityFromNBT(compound);
+		super.readAdditional(compound);
 		fromArcana = compound.getBoolean("fromArcana");
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound compound)
+	public void writeAdditional(NBTTagCompound compound)
 	{
-		super.writeEntityToNBT(compound);
-		compound.setBoolean("fromArcana", fromArcana);
+		super.writeAdditional(compound);
+		compound.putBoolean("fromArcana", fromArcana);
 	}
 }

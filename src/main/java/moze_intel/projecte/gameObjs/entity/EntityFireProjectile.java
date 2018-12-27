@@ -29,14 +29,14 @@ public class EntityFireProjectile extends PEProjectile
 	@Override
 	protected void apply(RayTraceResult mop)
 	{
-		if(!world.isRemote && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+		if(!world.isRemote && mop.type == RayTraceResult.Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos();
 			Block block = world.getBlockState(pos).getBlock();
 			
 			if(block == Blocks.OBSIDIAN)
 			{
-				world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
+				world.setBlockState(pos, Blocks.LAVA.getDefaultState());
 			}
 			else if(block == Blocks.SAND)
 			{
