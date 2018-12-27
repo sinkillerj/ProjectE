@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
@@ -25,14 +26,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 
 public class RedStar extends PEToolBase
 {
-	public RedStar() 
+	public RedStar(Builder builder)
 	{
-		super("rm_morning_star", (byte) 4, new String[]{
+		super(builder, "rm_morning_star", (byte) 4, new String[]{
 				"pe.morningstar.mode1", "pe.morningstar.mode2",
 				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});
@@ -53,11 +55,11 @@ public class RedStar extends PEToolBase
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.VINE);
 
-		this.toolClasses.add("morning_star");
-		this.toolClasses.add("pickaxe");
-		this.toolClasses.add("chisel");
-		this.toolClasses.add("shovel");
-		this.toolClasses.add("axe");
+		this.toolClasses.add(ToolType.get("morning_star"));
+		this.toolClasses.add(ToolType.PICKAXE);
+		this.toolClasses.add(ToolType.get("chisel"));
+		this.toolClasses.add(ToolType.SHOVEL);
+		this.toolClasses.add(ToolType.AXE);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class RedStar extends PEToolBase
 			{
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
 			}
-			else if (mop.typeOfHit == Type.BLOCK)
+			else if (mop.type == Type.BLOCK)
 			{
 				IBlockState state = world.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
@@ -133,7 +135,7 @@ public class RedStar extends PEToolBase
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.dmFurnaceOn || block == ObjHandler.rmFurnaceOff || block == ObjHandler.rmFurnaceOn)
+		if (block instanceof MatterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.rmFurnaceOff)
 		{
 			return 1200000.0F;
 		}

@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class NovaCataclysmRenderer extends Render<EntityNovaCataclysmPrimed>
 {
 	public NovaCataclysmRenderer(RenderManager manager)

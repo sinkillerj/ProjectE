@@ -14,18 +14,19 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -40,15 +41,19 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	// Modes should be in the format depthx3x3
 	private final String[] modes;
 
-	public DiviningRod(String[] modeDesc)
+	public DiviningRod(Builder builder, String[] modeDesc)
 	{
+		super(builder);
 		modes = modeDesc;
 	}
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+
 		if (world.isRemote)
 		{
 			return EnumActionResult.SUCCESS;
@@ -59,9 +64,9 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		long totalEmc = 0;
 		int numBlocks = 0;
 
-		byte mode = getMode(player.getHeldItem(hand));
+		byte mode = getMode(ctx.getItem());
 		int depth = getDepthFromMode(mode);
-		AxisAlignedBB box = WorldHelper.getDeepBox(pos, facing, depth);
+		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth);
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
@@ -73,9 +78,10 @@ public class DiviningRod extends ItemPE implements IModeChanger
 				continue;
 			}
 
-			List<ItemStack> drops = block.getDrops(world, digPos, state, 0);
+			NonNullList<ItemStack> drops = NonNullList.create();
+			block.getDrops(state, drops, world, digPos, 0);
 
-			if (drops.size() == 0)
+			if (drops.isEmpty())
 			{
 				continue;
 			}
@@ -185,11 +191,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) 0));
+			ItemHelper.getOrCreateCompound(stack).putByte(TAG_MODE, ((byte) 0));
 		}
 		else
 		{
-			ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
+			ItemHelper.getOrCreateCompound(stack).putByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
 		}
 
 		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
@@ -198,9 +204,12 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + modes[getMode(stack)]);
+		list.add(new TextComponentTranslation("pe.item.mode")
+				.appendText(": ")
+				.appendSibling(new TextComponentString(modes[getMode(stack)])
+						.setStyle(new Style().setColor(TextFormatting.AQUA))));
 	}
 }

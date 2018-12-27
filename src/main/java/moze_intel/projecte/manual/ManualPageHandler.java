@@ -25,7 +25,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ManualPageHandler
 {
     public static final List<IndexPage> indexPages = new ArrayList<>();

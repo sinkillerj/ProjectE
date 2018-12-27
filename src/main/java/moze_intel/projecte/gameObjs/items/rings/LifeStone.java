@@ -57,7 +57,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 		{
 			if (!consumeFuel(player, stack, 2*64, false))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -164,7 +164,7 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

@@ -288,8 +288,8 @@ public class ClientProxy implements IProxy
 		ModelResourceLocation both = new ModelResourceLocation(PECore.MODID + ":swrg_both", "inventory");
 		ModelLoader.registerItemVariants(ObjHandler.swrg, off, fly, repel, both);
 		ModelLoader.setCustomMeshDefinition(ObjHandler.swrg, stack -> {
-			if (stack.hasTagCompound()) {
-				switch (stack.getTagCompound().getInteger(ItemPE.TAG_MODE)) {
+			if (stack.hasTag()) {
+				switch (stack.getTag().getInteger(ItemPE.TAG_MODE)) {
 					default:
 					case 0: return off;
 					case 1: return fly;
@@ -306,8 +306,8 @@ public class ClientProxy implements IProxy
 		ModelResourceLocation swrg = new ModelResourceLocation(PECore.MODID + ":" + "arcana_swrg_off", "inventory");
 		ModelLoader.registerItemVariants(ObjHandler.arcana, zero, ignition, harv, swrg);
 		ModelLoader.setCustomMeshDefinition(ObjHandler.arcana, stack -> {
-			if (stack.hasTagCompound()) {
-				switch (stack.getTagCompound().getByte(ItemPE.TAG_MODE)) {
+			if (stack.hasTag()) {
+				switch (stack.getTag().getByte(ItemPE.TAG_MODE)) {
 					default:
 					case 0: return zero;
 					case 1: return ignition;

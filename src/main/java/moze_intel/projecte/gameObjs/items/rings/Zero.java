@@ -161,7 +161,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

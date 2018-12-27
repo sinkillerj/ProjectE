@@ -68,7 +68,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getTagCompound().getInteger(TAG_MODE) > 0)
+			if (stack.getTag().getInteger(TAG_MODE) > 0)
 			{
 				changeMode(stack, 0);
 			}
@@ -90,14 +90,14 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTagCompound().getInteger(TAG_MODE) == 0 ? 1 : 3);
+				changeMode(stack, stack.getTag().getInteger(TAG_MODE) == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTagCompound().getInteger(TAG_MODE) == 1 ? 0 : 2);
+				changeMode(stack, stack.getTag().getInteger(TAG_MODE) == 1 ? 0 : 2);
 			}
 		}
 
@@ -108,11 +108,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			toRemove = 0.32F;
 		}
 
-		if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
+		if (stack.getTag().getInteger(TAG_MODE) == 2)
 		{
 			toRemove = 0.32F;
 		}
-		else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
+		else if (stack.getTag().getInteger(TAG_MODE) == 3)
 		{
 			toRemove = 0.64F;
 		}
@@ -124,7 +124,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private boolean isFlyingEnabled(ItemStack stack)
 	{
-		return stack.getTagCompound().getInteger(TAG_MODE) == 1 || stack.getTagCompound().getInteger(TAG_MODE)== 3;
+		return stack.getTag().getInteger(TAG_MODE) == 1 || stack.getTag().getInteger(TAG_MODE)== 3;
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

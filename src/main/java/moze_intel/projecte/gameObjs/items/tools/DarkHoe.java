@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -11,25 +12,25 @@ import javax.annotation.Nonnull;
 
 public class DarkHoe extends PEToolBase
 {
-	public DarkHoe() 
+	public DarkHoe(Builder builder)
 	{
-		super("dm_hoe", (byte)2, new String[]{});
+		super(builder, "dm_hoe", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.toolClasses.add("hoe");
 	}
 
 	// Only for RedHoe
-	protected DarkHoe(String name, byte numCharges, String[] modeDesc)
+	protected DarkHoe(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		tillAOE(player.getHeldItem(hand), player, world, pos, sideHit, 0);
+		tillAOE(ctx.getItem(), ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getFace(), 0);
 		return EnumActionResult.SUCCESS;
 	}
 }

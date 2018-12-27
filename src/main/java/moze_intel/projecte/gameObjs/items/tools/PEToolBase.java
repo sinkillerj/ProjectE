@@ -40,6 +40,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -59,21 +60,21 @@ public abstract class PEToolBase extends ItemMode
 	public static final float KATAR_BASE_ATTACK = 23.0F;
 	protected String peToolMaterial;
 	protected final Set<Material> harvestMaterials = new HashSet<>();
-	protected final Set<String> toolClasses = new HashSet<>();
+	protected final Set<ToolType> toolClasses = new HashSet<>();
 
-	public PEToolBase(String unlocalName, byte numCharge, String[] modeDescrp)
+	public PEToolBase(Builder builder, String unlocalName, byte numCharge, String[] modeDescrp)
 	{
-		super(unlocalName, numCharge, modeDescrp);
+		super(builder, unlocalName, numCharge, modeDescrp);
 	}
 
 	@Override
-	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull IBlockState state)
 	{
 		return harvestMaterials.contains(state.getMaterial());
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if (this.toolClasses.contains(toolClass))
 		{
@@ -87,14 +88,14 @@ public abstract class PEToolBase extends ItemMode
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state, stack))
+			if (canHarvestBlock(stack, state))
 			{
 				return 14.0f + (12.0f * this.getCharge(stack));
 			}
 		}
 		else if ("rm_tools".equals(this.peToolMaterial))
 		{
-			if (canHarvestBlock(state, stack))
+			if (canHarvestBlock(stack, state))
 			{
 				return 16.0f + (14.0f * this.getCharge(stack));
 			}
@@ -155,7 +156,7 @@ public abstract class PEToolBase extends ItemMode
 						&& consumeFuel(player, stack, emcCost, true))
 				{
 					drops.addAll(blockDrops);
-					world.setBlockToAir(pos);
+					world.removeBlock(pos);
 					if (world.rand.nextInt(5) == 0)
 					{
 						((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0, new int[0]);
@@ -251,7 +252,7 @@ public abstract class PEToolBase extends ItemMode
 
 		RayTraceResult mop = this.rayTrace(world, player, false);
 
-		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+		if (mop == null || mop.type != RayTraceResult.Type.BLOCK)
 		{
 			return;
 		}
@@ -293,13 +294,13 @@ public abstract class PEToolBase extends ItemMode
 
 			if (b != Blocks.AIR
 					&& state.getBlockHardness(world, digPos) != -1
-					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
+					&& (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos))
 			{
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof BlockShulkerBox))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
-				world.setBlockToAir(digPos);
+				world.removeBlock(digPos);
 			}
 		}
 
@@ -318,7 +319,7 @@ public abstract class PEToolBase extends ItemMode
 
 		RayTraceResult mop = this.rayTrace(world, player, false);
 
-		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+		if (mop == null || mop.type != RayTraceResult.Type.BLOCK)
 		{
 			return;
 		}
@@ -334,7 +335,7 @@ public abstract class PEToolBase extends ItemMode
 			Block b = state.getBlock();
 
 			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1
-					&& canHarvestBlock(state, stack)
+					&& canHarvestBlock(stack, state)
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
 					&& consumeFuel(player, stack, emcCost, true)
 					)
@@ -342,7 +343,7 @@ public abstract class PEToolBase extends ItemMode
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof BlockShulkerBox))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
-				world.setBlockToAir(pos);
+				world.removeBlock(pos);
 			}
 		}
 
@@ -390,7 +391,7 @@ public abstract class PEToolBase extends ItemMode
 
 		int charge = getCharge(stack);
 		float factor = 2.5F * charge;
-		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(factor);
+		AxisAlignedBB aabb = player.getBoundingBox().grow(factor);
 		List<Entity> toAttack = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, aabb);
 		DamageSource src = DamageSource.causePlayerDamage(player);
 		src.setDamageBypassesArmor();
@@ -434,7 +435,7 @@ public abstract class PEToolBase extends ItemMode
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
 
 				stack.damageItem(1, player);
-				player.addStat(StatList.getBlockStats(block), 1);
+				player.addStat(StatList.BLOCK_MINED.get(block), 1);
 			}
 		}
 	}
@@ -451,7 +452,7 @@ public abstract class PEToolBase extends ItemMode
 
 			int offset = ((int) Math.pow(2, 2 + charge));
 
-			AxisAlignedBB bBox = player.getEntityBoundingBox().grow(offset, offset / 2, offset);
+			AxisAlignedBB bBox = player.getBoundingBox().grow(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
 
 			List<ItemStack> drops = new ArrayList<>();
@@ -486,7 +487,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (e instanceof EntityLiving)
 					{
-						((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null);
+						((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null, null);
 					}
 
 					if (e instanceof EntitySheep)
@@ -528,7 +529,7 @@ public abstract class PEToolBase extends ItemMode
 
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
 		IBlockState target = player.getEntityWorld().getBlockState(mop.getBlockPos());
-		if (target.getBlockHardness(player.getEntityWorld(), mop.getBlockPos()) <= -1 || !(canHarvestBlock(target, stack) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getBlockPos(), stack)))
+		if (target.getBlockHardness(player.getEntityWorld(), mop.getBlockPos()) <= -1 || !(canHarvestBlock(stack, target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getBlockPos(), stack)))
 		{
 			return;
 		}
@@ -561,14 +562,14 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 		int offset = this.getCharge(stack) + 3;
-		AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
+		AxisAlignedBB box = player.getBoundingBox().grow(offset);
 		List<ItemStack> drops = new ArrayList<>();
 		World world = player.getEntityWorld();
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
 			IBlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
+			if (ItemHelper.isOre(state) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
 				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
 			}

@@ -39,10 +39,10 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		ObjHandler.blackHole.onUpdate(stack, world, entity, slot, isHeld);
 		if (!ItemHelper.getOrCreateCompound(stack).hasKey("teleportCooldown"))
 		{
-			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
+			stack.getTag().setByte("teleportCooldown", ((byte) 10));
 		}
-		if(stack.getTagCompound().getByte("teleportCooldown") > 0) {
-			stack.getTagCompound().setByte("teleportCooldown", ((byte) (stack.getTagCompound().getByte("teleportCooldown") - 1)));
+		if(stack.getTag().getByte("teleportCooldown") > 0) {
+			stack.getTag().setByte("teleportCooldown", ((byte) (stack.getTag().getByte("teleportCooldown") - 1)));
 		}
 	}
 
@@ -54,7 +54,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
@@ -86,7 +86,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
-			stack.getTagCompound().setByte("teleportCooldown", ((byte) 10));
+			stack.getTag().setByte("teleportCooldown", ((byte) 10));
 			return true;
 		}
 

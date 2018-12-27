@@ -7,17 +7,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ToolType;
 
 public class RedPick extends DarkPick
 {
-	public RedPick()
+	public RedPick(Builder builder)
 	{
-		super("rm_pick", (byte)3, new String[] {
+		super(builder, "rm_pick", (byte)3, new String[] {
 				"pe.redpick.mode1", "pe.redpick.mode2",
 				"pe.redpick.mode3", "pe.redpick.mode4"});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add("pickaxe");
+		this.toolClasses.add(ToolType.PICKAXE);
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);
@@ -27,9 +28,7 @@ public class RedPick extends DarkPick
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block b = state.getBlock();
-		if (b == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER
-				|| b == ObjHandler.rmFurnaceOff
-				|| b == ObjHandler.rmFurnaceOn)
+		if (b == ObjHandler.rmBlock || b == ObjHandler.rmFurnaceOff)
 		{
 			return 1200000.0F;
 		}

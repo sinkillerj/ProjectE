@@ -123,7 +123,7 @@ public class MatterFurnace extends BlockDirection
 		world.setBlockState(pos, state.withProperty(PEStateProps.FACING, entLiving.getHorizontalFacing().getOpposite()));
 	}
 	
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(IBlockState state, World world, BlockPos pos, Random rand)
 	{
@@ -159,7 +159,7 @@ public class MatterFurnace extends BlockDirection
 	}
 	
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{

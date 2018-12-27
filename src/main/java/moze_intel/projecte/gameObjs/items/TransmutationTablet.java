@@ -13,8 +13,9 @@ import javax.annotation.Nonnull;
 
 public class TransmutationTablet extends ItemPE
 {
-	public TransmutationTablet()
+	public TransmutationTablet(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("transmutation_tablet");
 		this.setMaxStackSize(1);
 	}

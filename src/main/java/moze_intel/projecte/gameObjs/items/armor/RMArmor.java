@@ -6,30 +6,31 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.items.IGoggles;
 import thaumcraft.api.items.IRevealer;
 
 import javax.annotation.Nonnull;
 
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
-public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles
+public class RMArmor extends ItemArmor implements IRevealer, IGoggles
 {
-	public RMArmor(EntityEquipmentSlot armorType)
+	public RMArmor(Builder builder, EntityEquipmentSlot armorType)
 	{
-		super(ArmorMaterial.DIAMOND, 0, armorType);
+		// todo 1.13 custom matreial?
+		super(ArmorMaterial.DIAMOND, armorType, builder);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setTranslationKey("pe_rm_armor_" + armorType.getIndex());
 		this.setMaxDamage(0);
 	}
 	
-	@Override
+	/*@Override todo 1.13
 	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
 		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorType;
@@ -59,10 +60,10 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
+	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}*/
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';

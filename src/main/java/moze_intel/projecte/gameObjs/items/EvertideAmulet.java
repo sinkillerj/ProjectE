@@ -29,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -37,8 +38,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
@@ -64,8 +69,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
 
-	public EvertideAmulet()
+	public EvertideAmulet(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("evertide_amulet");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
@@ -74,30 +80,33 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float f1, float f2, float f3)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos))
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+
+		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), ctx.getPos()))
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(ctx.getPos());
 
 			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit))
 			{
-				FluidHelper.tryFillTank(tile, FluidRegistry.WATER, sideHit, Fluid.BUCKET_VOLUME);
+				FluidHelper.tryFillTank(tile, FluidRegistry.WATER, ctx.getFace(), Fluid.BUCKET_VOLUME);
 			} else
 			{
-				IBlockState state = world.getBlockState(pos);
+				IBlockState state = world.getBlockState(ctx.getPos());
 				if (state.getBlock() == Blocks.CAULDRON)
 				{
-					int waterLevel = state.getValue(BlockCauldron.LEVEL);
+					int waterLevel = state.get(BlockCauldron.LEVEL);
 					if (waterLevel < 3)
 					{
-						((BlockCauldron) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+						((BlockCauldron) state.getBlock()).setWaterLevel(world, ctx.getPos(), state, waterLevel + 1);
 					}
 				}
 				else
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					placeWater(world, player, pos.offset(sideHit), hand);
+					placeWater(world, player, ctx.getPos().offset(ctx.getFace()), hand);
 				}
 			}
 		}
@@ -134,7 +143,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		Material material = world.getBlockState(pos).getMaterial();
 
-		if (world.provider.doesWaterVaporize())
+		if (world.dimension.doesWaterVaporize())
 		{
 			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
@@ -149,8 +158,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 			{
 				world.destroyBlock(pos, true);
 			}
-			world.setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.FLOWING_WATER.getDefaultState(), hand);
+			world.setBlockState(pos, Blocks.WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.WATER.getDefaultState(), hand);
 		}
 
 	}
@@ -158,15 +167,15 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Override
 	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
 	{
-		if (player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 		{
-			player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+			player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 		}
 		return true;
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
 		{
@@ -189,9 +198,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				living.onGround = true;
 			}
 
-			if (!world.isRemote && !living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
+				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
 		}
 		else if (!world.isRemote)
@@ -201,9 +210,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				living.setAir(300);
 			}
 
-			if (living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 			{
-				living.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -213,7 +222,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		World world = player.getEntityWorld();
 
-		if (!world.provider.doesWaterVaporize())
+		if (!world.dimension.doesWaterVaporize())
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
@@ -226,14 +235,14 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(new TextComponentTranslation("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
-		list.add(I18n.format("pe.evertide.tooltip2"));
-		list.add(I18n.format("pe.evertide.tooltip3"));
-		list.add(I18n.format("pe.evertide.tooltip4"));
+		list.add(new TextComponentTranslation("pe.evertide.tooltip2"));
+		list.add(new TextComponentTranslation("pe.evertide.tooltip3"));
+		list.add(new TextComponentTranslation("pe.evertide.tooltip4"));
 	}
 	
 	@Override
@@ -247,7 +256,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
+		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -302,7 +311,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

@@ -1,15 +1,16 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import net.minecraft.block.material.Material;
+import net.minecraftforge.common.ToolType;
 
 public class RedShovel extends DarkShovel
 {
-	public RedShovel() 
+	public RedShovel(Builder builder)
 	{
-		super("rm_shovel", (byte)3, new String[]{});
+		super(builder, "rm_shovel", (byte)3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add("shovel");
+		this.toolClasses.add(ToolType.SHOVEL);
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
 		this.harvestMaterials.add(Material.SAND);

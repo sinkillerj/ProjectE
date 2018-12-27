@@ -1,12 +1,14 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import net.minecraftforge.common.ToolType;
+
 public class RedHoe extends DarkHoe
 {
-	public RedHoe() 
+	public RedHoe(Builder builder)
 	{
-		super("rm_hoe", (byte)3, new String[]{});
+		super(builder, "rm_hoe", (byte)3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add("hoe");
+		this.toolClasses.add(ToolType.get("hoe"));
 	}
 }

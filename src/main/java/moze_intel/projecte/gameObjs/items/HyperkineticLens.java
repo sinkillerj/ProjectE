@@ -18,8 +18,9 @@ import javax.annotation.Nonnull;
 
 public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge
 {
-	public HyperkineticLens() 
+	public HyperkineticLens(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("hyperkinetic_lens");
 		this.setMaxStackSize(1);
 		this.setNoRepair();

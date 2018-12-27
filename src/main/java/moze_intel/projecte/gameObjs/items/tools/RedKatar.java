@@ -24,14 +24,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 
 public class RedKatar extends PEToolBase implements IExtraFunction
 {
-	public RedKatar() 
+	public RedKatar(Builder builder)
 	{
-		super("rm_katar", (byte)4, new String[] {
+		super(builder,"rm_katar", (byte)4, new String[] {
 				"pe.katar.mode1", "pe.katar.mode2",
 		});
 		this.setNoRepair();
@@ -43,10 +44,10 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		this.harvestMaterials.add(Material.LEAVES);
 		this.harvestMaterials.add(Material.VINE);
 
-		this.toolClasses.add("katar");
-		this.toolClasses.add("sword");
-		this.toolClasses.add("axe");
-		this.toolClasses.add("shears");
+		this.toolClasses.add(ToolType.get("katar"));
+		this.toolClasses.add(ToolType.get("sword"));
+		this.toolClasses.add(ToolType.AXE);
+		this.toolClasses.add(ToolType.get("SHEARS"));
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		RayTraceResult mop = this.rayTrace(world, player, false);
 		if (mop != null)
 		{
-			if (mop.typeOfHit == RayTraceResult.Type.BLOCK)
+			if (mop.type == RayTraceResult.Type.BLOCK)
 			{
 				IBlockState state = world.getBlockState(mop.getBlockPos());
 				Block blockHit = state.getBlock();
@@ -122,13 +123,13 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	public EnumAction getUseAction(ItemStack par1ItemStack)
 	{
 		return EnumAction.BLOCK;
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
+	public int getUseDuration(ItemStack par1ItemStack)
 	{
 		return 72000;
 	}

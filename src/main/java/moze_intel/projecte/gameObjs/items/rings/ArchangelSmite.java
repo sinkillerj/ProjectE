@@ -155,7 +155,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

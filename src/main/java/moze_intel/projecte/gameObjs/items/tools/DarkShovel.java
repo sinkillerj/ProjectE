@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class DarkShovel extends PEToolBase
 {
-	public DarkShovel() 
+	public DarkShovel(Builder builder)
 	{
-		super("dm_shovel", (byte)1, new String[]{});
+		super(builder, "dm_shovel", (byte)1, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.toolClasses.add("shovel");
@@ -32,9 +32,9 @@ public class DarkShovel extends PEToolBase
 	}
 
 	// Only for RedShovel
-	protected DarkShovel(String name, byte numCharges, String[] modeDesc)
+	protected DarkShovel(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 
 	@Nonnull
@@ -48,7 +48,7 @@ public class DarkShovel extends PEToolBase
 		}
 
 		RayTraceResult mop = this.rayTrace(world, player, false);
-		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK
+		if (mop != null && mop.type == RayTraceResult.Type.BLOCK
 				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.GRAVEL)
 		{
 			tryVeinMine(stack, player, mop);

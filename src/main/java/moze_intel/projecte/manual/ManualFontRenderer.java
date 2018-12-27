@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * A shim class that very slightly modifies the behavior of the default fontrenderer. The modifed area is indicated via comment.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ManualFontRenderer extends FontRenderer
 {
     public ManualFontRenderer()

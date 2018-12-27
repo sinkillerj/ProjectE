@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class DarkShears extends PEToolBase
 {
-	public DarkShears()
+	public DarkShears(Builder builder)
 	{
-		super("dm_shears", (byte)2, new String[]{});
+		super(builder, "dm_shears", (byte)2, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.toolClasses.add("shears");
@@ -32,16 +32,16 @@ public class DarkShears extends PEToolBase
 	}
 
 	// Only for RedShears
-	protected DarkShears(String name, byte numCharges, String[] modeDesc)
+	protected DarkShears(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase ent)
 	{
 		Block block = state.getBlock();
-		if (state.getMaterial() != Material.LEAVES && block != Blocks.WEB && block != Blocks.TALLGRASS && block != Blocks.VINE && block != Blocks.TRIPWIRE && !(block instanceof IShearable))
+		if (state.getMaterial() != Material.LEAVES && block != Blocks.COBWEB && block != Blocks.TALL_GRASS && block != Blocks.VINE && block != Blocks.TRIPWIRE && !(block instanceof IShearable))
 		{
 			return super.onBlockDestroyed(stack, world, state, pos, ent);
 		}

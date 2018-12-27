@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 public class DarkHammer extends PEToolBase
 {
-	public DarkHammer() 
+	public DarkHammer(Builder builder)
 	{
-		super("dm_hammer", (byte)2, new String[] {});
+		super(builder, "dm_hammer", (byte)2, new String[] {});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.harvestMaterials.add(Material.IRON);
@@ -37,9 +37,9 @@ public class DarkHammer extends PEToolBase
 	}
 
 	// Only for RedHammer
-	protected DarkHammer(String name, byte numCharges, String[] modeDesc)
+	protected DarkHammer(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 
 	@Override
@@ -62,9 +62,7 @@ public class DarkHammer extends PEToolBase
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER)
-				|| block == ObjHandler.dmFurnaceOff
-				|| block == ObjHandler.dmFurnaceOn)
+		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff)
 		{
 			return 1200000.0F;
 		}

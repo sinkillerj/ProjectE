@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -37,9 +38,9 @@ import javax.annotation.Nonnull;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
-	public MercurialEye()
+	public MercurialEye(Builder builder)
 	{
-		super("mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
+		super(builder, "mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
 		this.setNoRepair();
 	}
 	
@@ -59,14 +60,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			public NBTTagCompound serializeNBT()
 			{
 				NBTTagCompound ret = new NBTTagCompound();
-				ret.setTag("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null));
+				ret.put("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null));
 				return ret;
 			}
 
 			@Override
 			public void deserializeNBT(NBTTagCompound nbt)
 			{
-				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getTagList("Items", NBT.TAG_COMPOUND));
+				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getList("Items", NBT.TAG_COMPOUND));
 			}
 
 			@Override
@@ -90,11 +91,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		if (!world.isRemote)
+		if (!ctx.getWorld().isRemote)
 		{
-			ItemStack stack = player.getHeldItem(hand);
+			ItemStack stack = ctx.getItem();
 			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 			if (inventory.getStackInSlot(0).isEmpty()|| inventory.getStackInSlot(1).isEmpty())
@@ -119,17 +120,18 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			int charge = getCharge(stack);
 			byte mode = this.getMode(stack);
 
-			Vec3d look = player.getLookVec();
+			Vec3d look = ctx.getPlayer().getLookVec();
 
 			int dX = 0, dY = 0, dZ = 0;
 
 			boolean lookingDown = look.y >= -1 && look.y <= -WALL_MODE;
 			boolean lookingUp   = look.y <=  1 && look.y >=  WALL_MODE;
 
-			boolean lookingAlongZ = player.getHorizontalFacing().getAxis() == EnumFacing.Axis.Z;
+			boolean lookingAlongZ = ctx.getPlayer().getHorizontalFacing().getAxis() == EnumFacing.Axis.Z;
 
+			BlockPos pos = ctx.getPos();
 			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
-			switch (facing) {
+			switch (ctx.getFace()) {
 				case UP:
 					if (lookingDown || mode == TRANSMUTATION_MODE)
 					{
@@ -183,14 +185,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
             {
-                IBlockState oldState = world.getBlockState(currentPos);
+                IBlockState oldState = ctx.getWorld().getBlockState(currentPos);
                 Block oldBlock = oldState.getBlock();
 
                 if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
                 {
                     if (kleinEmc < reqEmc)
                         break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
+                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
                     {
                         removeKleinEMC(stack, reqEmc);
                         kleinEmc -= reqEmc;
@@ -198,7 +200,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                 }
                 else if (mode == TRANSMUTATION_MODE)
                 {
-                    if (oldState == newState || oldBlock == Blocks.AIR || world.getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
+                    if (oldState == newState || oldBlock == Blocks.AIR || ctx.getWorld().getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
                     {
                         continue;
                     }
@@ -207,7 +209,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                     if (emc > reqEmc)
                     {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
+                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
                         {
                             long difference = emc - reqEmc;
                             kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
@@ -220,7 +222,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                         if (kleinEmc >= difference)
                         {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand))
+                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
                             {
                                 kleinEmc -= difference;
                                 removeKleinEMC(stack, difference);
@@ -229,13 +231,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                     }
                     else
                     {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, newState, hand);
+                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand);
                     }
                 }
 
             }
 
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
+			ctx.getWorld().playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
 		}
 
 		return EnumActionResult.SUCCESS;

@@ -82,7 +82,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';

@@ -6,26 +6,27 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
-public class DMArmor extends ItemArmor implements ISpecialArmor
+public class DMArmor extends ItemArmor
 {
-	public DMArmor(EntityEquipmentSlot armorPiece)
+	public DMArmor(Builder builder, EntityEquipmentSlot armorPiece)
 	{
-		super(ArmorMaterial.DIAMOND, 0, armorPiece);
-		this.setCreativeTab(ObjHandler.cTab);
+		// TODO 1.13 custom material?
+		super(ArmorMaterial.DIAMOND, armorPiece, builder);
+		this.setItem(ObjHandler.cTab);
 		this.setTranslationKey("pe_dm_armor_" + armorPiece.getIndex());
 		this.setMaxDamage(0);
 	}
 	
-	@Override
+	/*@Override TODO 1.13
 	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
 		EntityEquipmentSlot type = ((DMArmor) armor.getItem()).armorType;
@@ -55,10 +56,10 @@ public class DMArmor extends ItemArmor implements ISpecialArmor
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
+	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}*/
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';

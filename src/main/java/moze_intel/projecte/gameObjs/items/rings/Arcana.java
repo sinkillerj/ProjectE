@@ -56,7 +56,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
 	{
@@ -81,7 +81,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		byte newMode = (byte) ((ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE) + 1) % 4);
-		stack.getTagCompound().setByte(TAG_MODE, newMode);
+		stack.getTag().setByte(TAG_MODE, newMode);
 		return true;
 	}
 	
@@ -89,7 +89,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	{
 		if(ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
-			switch(stack.getTagCompound().getByte(TAG_MODE))
+			switch(stack.getTag().getByte(TAG_MODE))
 			{
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getEntityBoundingBox().grow(5), player, true);
@@ -153,19 +153,19 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
 	{
-		if(stack.hasTagCompound())
+		if(stack.hasTag())
 		{
-			if(!stack.getTagCompound().getBoolean(TAG_ACTIVE))
+			if(!stack.getTag().getBoolean(TAG_ACTIVE))
 			{
 				list.add(TextFormatting.RED + I18n.format("pe.arcana.inactive"));
 			}
 			else
 			{
-				list.add(I18n.format("pe.arcana.mode") + TextFormatting.AQUA + I18n.format("pe.arcana.mode." + stack.getTagCompound().getByte(TAG_MODE)));
+				list.add(I18n.format("pe.arcana.mode") + TextFormatting.AQUA + I18n.format("pe.arcana.mode." + stack.getTag().getByte(TAG_MODE)));
 			}
 		}
 	}

@@ -31,14 +31,15 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -57,8 +58,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
 
-	public TimeWatch() 
+	public TimeWatch(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
@@ -89,9 +91,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
 	{
-		super.onUpdate(stack, world, entity, invSlot, isHeld);
+		super.inventoryTick(stack, world, entity, invSlot, isHeld);
 		
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
@@ -108,24 +110,24 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		if (world.getGameRules().getBoolean("doDaylightCycle")) {
 			if (timeControl == 1)
             {
-                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+                if (world.getDayTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
                 {
-                    world.setWorldTime(Long.MAX_VALUE);
+                    world.setDayTime(Long.MAX_VALUE);
                 }
                 else
                 {
-                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+                    world.setDayTime((world.getDayTime() + ((getCharge(stack) + 1) * 4)));
                 }
             }
             else if (timeControl == 2)
             {
-                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+                if (world.getDayTime() - ((getCharge(stack) + 1) * 4) < 0)
                 {
-                    world.setWorldTime(0);
+                    world.setDayTime(0);
                 }
                 else
                 {
-                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+                    world.setDayTime((world.getDayTime() - ((getCharge(stack) + 1) * 4)));
                 }
             }
 		}
@@ -163,7 +165,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			mobSlowdown = 0.12F;
 		}
 			
-		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(8);
+		AxisAlignedBB bBox = player.getBoundingBox().grow(8);
 
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);
@@ -205,11 +207,11 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		{
 			for (TileEntity tile : list)
 			{
-				if (!tile.isInvalid() && tile instanceof ITickable
+				if (!tile.isRemoved() && tile instanceof ITickable
 						&& !internalBlacklist.contains(tile.getClass().toString())
 						&& !blacklist.contains(TileEntity.getKey(tile.getClass()).toString()))
 				{
-					((ITickable) tile).update();
+					((ITickable) tile).tick();
 				}
 			}
 		}
@@ -236,7 +238,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 						&& !(block instanceof IGrowable)
 						&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					block.updateTick(world, pos, state, itemRand);
+					block.randomTick(state, world, pos, random);
 				}
 			}
 		}
@@ -265,7 +267,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		ItemHelper.getOrCreateCompound(stack).setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
+		ItemHelper.getOrCreateCompound(stack).putByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)
@@ -284,22 +286,21 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.timewatch.tooltip1"));
-		list.add(I18n.format("pe.timewatch.tooltip2"));
+		list.add(new TextComponentTranslation("pe.timewatch.tooltip1"));
+		list.add(new TextComponentTranslation("pe.timewatch.tooltip2"));
 
-		if (stack.hasTagCompound())
+		if (stack.hasTag())
 		{
-			list.add(I18n.format("pe.timewatch.mode",
-					I18n.format(getTimeName(stack))));
+			list.add(new TextComponentTranslation("pe.timewatch.mode").appendSibling(new TextComponentTranslation(getTimeName(stack))));
 		}
 	}
 
@@ -363,7 +364,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

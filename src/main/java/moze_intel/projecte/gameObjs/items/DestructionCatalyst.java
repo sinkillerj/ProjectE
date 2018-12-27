@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -26,8 +27,9 @@ import java.util.List;
 
 public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
-	public DestructionCatalyst() 
+	public DestructionCatalyst(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("destruction_catalyst");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
@@ -35,15 +37,18 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos coords, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+
 		if (world.isRemote) return EnumActionResult.SUCCESS;
 
 		ItemStack stack = player.getHeldItem(hand);
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
 
-		AxisAlignedBB box = WorldHelper.getDeepBox(coords, facing, --numRows);
+		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), --numRows);
 
 		List<ItemStack> drops = new ArrayList<>();
 
@@ -74,7 +79,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 					drops.addAll(list);
 				}
 
-				world.setBlockToAir(pos);
+				world.removeBlock(pos);
 
 				if (world.rand.nextInt(8) == 0)
 				{
@@ -86,7 +91,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 		PlayerHelper.swingItem(player, hand);
 		if (hasAction)
 		{
-			WorldHelper.createLootDrop(drops, world, coords);
+			WorldHelper.createLootDrop(drops, world, ctx.getPos());
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 			

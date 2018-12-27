@@ -5,20 +5,21 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 
 public class RedSword extends DarkSword
 {
-	public RedSword() 
+	public RedSword(Builder builder)
 	{
-		super("rm_sword", (byte)3, new String[]{
+		super(builder, "rm_sword", (byte)3, new String[]{
 				"pe.redsword.mode1",
 				"pe.redsword.mode2"
 		});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add("sword");
+		this.toolClasses.add(ToolType.get("sword"));
 	}
 
 	@Override

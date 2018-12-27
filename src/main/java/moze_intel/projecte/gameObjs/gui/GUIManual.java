@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GUIManual extends GuiScreen
 {
 	public static final int WINDOW_WIDTH = 256;
@@ -268,7 +268,7 @@ public class GUIManual extends GuiScreen
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private static class TocButton extends GuiButton
 	{
 		public TocButton(int ID, int xPos, int yPos, int bWidth, int bHeight, String text)
@@ -278,7 +278,7 @@ public class GUIManual extends GuiScreen
 
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private static class IndexLinkButton extends GuiButton
 	{
 		public IndexLinkButton(int par1, int par2, int par3, int par4, int par5, String par6)
@@ -297,7 +297,7 @@ public class GUIManual extends GuiScreen
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private static class PageTurnButton extends GuiButton
 	{
 		private static final int bWidth = 23;

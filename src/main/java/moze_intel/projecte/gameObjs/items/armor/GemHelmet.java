@@ -20,13 +20,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.items.IGoggles;
 import thaumcraft.api.items.IRevealer;
 
@@ -42,21 +43,21 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 
     public static boolean isNightVisionEnabled(ItemStack helm)
     {
-        return helm.hasTagCompound() && helm.getTagCompound().hasKey("NightVision") && helm.getTagCompound().getBoolean("NightVision");
+        return helm.hasTag() && helm.getTag().contains("NightVision") && helm.getTag().getBoolean("NightVision");
     }
 
     public static void toggleNightVision(ItemStack helm, EntityPlayer player)
     {
         boolean value;
 
-        if (ItemHelper.getOrCreateCompound(helm).hasKey("NightVision"))
+        if (ItemHelper.getOrCreateCompound(helm).contains("NightVision"))
         {
-            helm.getTagCompound().setBoolean("NightVision", !helm.getTagCompound().getBoolean("NightVision"));
-            value = helm.getTagCompound().getBoolean("NightVision");
+            helm.getTag().putBoolean("NightVision", !helm.getTag().getBoolean("NightVision"));
+            value = helm.getTag().getBoolean("NightVision");
         }
         else
         {
-            helm.getTagCompound().setBoolean("NightVision", false);
+            helm.getTag().putBoolean("NightVision", false);
             value = false;
         }
 
@@ -67,23 +68,23 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltips, ITooltipFlag flags)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags)
     {
-        tooltips.add(I18n.format("pe.gem.helm.lorename"));
+        tooltips.add(new TextComponentTranslation("pe.gem.helm.lorename"));
 
         tooltips.add(
-                I18n.format("pe.gem.nightvision.prompt", ClientKeyHelper.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
+                new TextComponentTranslation("pe.gem.nightvision.prompt", ClientKeyHelper.getKeyName(Minecraft.getInstance().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
         ));
 
-        TextFormatting e = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;
-        String s = isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(I18n.format("pe.gem.nightvision_tooltip") + " "
-                + e + I18n.format(s));
+        TextFormatting color = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;
+        TextComponentTranslation status = new TextComponentTranslation(isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
+        status.setStyle(new Style().setColor(color));
+        tooltips.add(new TextComponentTranslation("pe.gem.nightvision_tooltip").appendText(" ").appendSibling(status));
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
+    public void onArmorTick(ItemStack stack, World world, EntityPlayer player)
     {
         if (world.isRemote)
         {
@@ -93,7 +94,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
             BlockPos pos = new BlockPos(x, y, z);
             Block b = world.getBlockState(pos.down()).getBlock();
 
-            if ((b == Blocks.WATER || b == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
+            if (b == Blocks.WATER && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {

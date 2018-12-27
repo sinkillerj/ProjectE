@@ -178,7 +178,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		ItemStack lockCopy = lock.getStackInSlot(0).copy();
 
-		if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+		if (lockCopy.hasTag() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 		{
 			lockCopy.setTagCompound(new NBTTagCompound());
 		}

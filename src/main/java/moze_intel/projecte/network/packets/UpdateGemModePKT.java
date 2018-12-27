@@ -45,7 +45,7 @@ public class UpdateGemModePKT implements IMessage
 
 					if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
 					{
-						stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
+						stack.getTag().setBoolean("Whitelist", pkt.mode);
 					}
 				}
 			});

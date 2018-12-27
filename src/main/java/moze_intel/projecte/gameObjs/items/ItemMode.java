@@ -7,11 +7,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,8 +25,9 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	private final int numCharge;
 	private final String[] modes;
 	
-	public ItemMode(String unlocalName, int numCharge, String[] modeDescrp)
+	public ItemMode(Builder builder, String unlocalName, int numCharge, String[] modeDescrp)
 	{
+		super(builder);
 		this.numCharge = numCharge;
 		this.setTranslationKey(unlocalName);
 		this.setMaxStackSize(1);
@@ -35,18 +38,18 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte(TAG_MODE) : 0;
+		return stack.hasTag() ? stack.getTag().getByte(TAG_MODE) : 0;
 	}
 	
 	private String getUnlocalizedMode(ItemStack stack)
 	{
-		return modes[stack.getTagCompound().getByte(TAG_MODE)];
+		return modes[stack.getTag().getByte(TAG_MODE)];
 	}
 	
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.getTagCompound().setByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
+		stack.getTag().putByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override
@@ -64,12 +67,14 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag advanced)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced)
 	{
-		if (stack.hasTagCompound() && this.numModes > 0)
+		if (stack.hasTag() && this.numModes > 0)
 		{
-			list.add(I18n.format("pe.item.mode") + ": " + TextFormatting.AQUA + I18n.format(getUnlocalizedMode(stack)));
+			ITextComponent root = new TextComponentTranslation("pe.item.mode");
+			ITextComponent mode = new TextComponentTranslation(getUnlocalizedMode(stack)).setStyle(new Style().setColor(TextFormatting.AQUA));
+			list.add(root.appendText(": ").appendSibling(mode));
 		}
 	}
 

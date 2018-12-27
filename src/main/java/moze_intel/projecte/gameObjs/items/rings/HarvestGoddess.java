@@ -59,7 +59,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -270,7 +270,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

@@ -333,7 +333,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		return (furnaceCookTime + (isBurning() && canSmelt() ? 1 : 0)) * value / ticksBeforeSmelt;
 	}
 	
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public int getBurnTimeRemainingScaled(int value)
 	{
 		if (this.currentItemBurnTime == 0)

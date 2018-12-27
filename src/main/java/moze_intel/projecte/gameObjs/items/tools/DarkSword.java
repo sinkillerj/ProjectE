@@ -18,18 +18,18 @@ import javax.annotation.Nonnull;
 
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
-	public DarkSword() 
+	public DarkSword(Builder builder)
 	{
-		super("dm_sword", (byte)2, new String[] {});
+		super(builder, "dm_sword", (byte)2, new String[] {});
 		this.setNoRepair();
 		this.peToolMaterial = "dm_tools";
 		this.toolClasses.add("sword");
 	}
 
 	// Only for RedSword to use
-	protected DarkSword(String name, byte numcharges, String[] modeDesc)
+	protected DarkSword(Builder builder, String name, byte numcharges, String[] modeDesc)
 	{
-		super(name, numcharges, modeDesc);
+		super(builder, name, numcharges, modeDesc);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
-		if (state.getBlock() == Blocks.WEB)
+		if (state.getBlock() == Blocks.COBWEB)
 		{
 			return 15.0F;
 		}
@@ -56,7 +56,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	@Override
 	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
-		return state.getBlock() == Blocks.WEB;
+		return state.getBlock() == Blocks.COBWEB;
 	}
 
 	@Override

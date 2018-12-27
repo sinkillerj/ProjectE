@@ -77,11 +77,11 @@ public class MindStone extends RingToggle implements IPedestalItem
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flags)
 	{
-		if(stack.getTagCompound() != null)
+		if(stack.getTag() != null)
 			tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
 	}
 
@@ -230,7 +230,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

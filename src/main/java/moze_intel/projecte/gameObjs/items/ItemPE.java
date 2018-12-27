@@ -18,18 +18,11 @@ public class ItemPE extends Item
 	public static final String TAG_ACTIVE = "Active";
 	public static final String TAG_MODE = "Mode";
 	protected static final ResourceLocation ACTIVE_NAME = new ResourceLocation(PECore.MODID, "active");
-	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTagCompound() && stack.getTagCompound().getBoolean(TAG_ACTIVE) ? 1F : 0F;
+	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(TAG_ACTIVE) ? 1F : 0F;
 
-	public ItemPE()
+	public ItemPE(Builder builder)
 	{
-		this.setCreativeTab(ObjHandler.cTab);
-	}
-
-	@Nonnull
-	@Override
-	public Item setTranslationKey(@Nonnull String message)
-	{
-		return super.setTranslationKey("pe_" + message);
+		super(builder);
 	}
 
 	@Override
@@ -38,13 +31,13 @@ public class ItemPE extends Item
 		if (oldStack.getItem() != newStack.getItem())
 			return true;
 
-		boolean diffActive = oldStack.hasTagCompound() && newStack.hasTagCompound()
-				&& oldStack.getTagCompound().hasKey(TAG_ACTIVE) && newStack.getTagCompound().hasKey(TAG_ACTIVE)
-				&& !oldStack.getTagCompound().getTag(TAG_ACTIVE).equals(newStack.getTagCompound().getTag(TAG_ACTIVE));
+		boolean diffActive = oldStack.hasTag() && newStack.hasTag()
+				&& oldStack.getTag().contains(TAG_ACTIVE) && newStack.getTag().contains(TAG_ACTIVE)
+				&& !oldStack.getTag().get(TAG_ACTIVE).equals(newStack.getTag().get(TAG_ACTIVE));
 
-		boolean diffMode = oldStack.hasTagCompound() && newStack.hasTagCompound()
-				&& oldStack.getTagCompound().hasKey(TAG_MODE) && newStack.getTagCompound().hasKey(TAG_MODE)
-				&& !oldStack.getTagCompound().getTag(TAG_MODE).equals(newStack.getTagCompound().getTag(TAG_MODE));
+		boolean diffMode = oldStack.hasTag() && newStack.hasTag()
+				&& oldStack.getTag().contains(TAG_MODE) && newStack.getTag().contains(TAG_MODE)
+				&& !oldStack.getTag().get(TAG_MODE).equals(newStack.getTag().get(TAG_MODE));
 
 		return diffActive || diffMode;
 	}
@@ -56,7 +49,7 @@ public class ItemPE extends Item
 	
 	public static void setEmc(ItemStack stack, double amount)
 	{
-		ItemHelper.getOrCreateCompound(stack).setDouble("StoredEMC", amount);
+		ItemHelper.getOrCreateCompound(stack).putDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmcToStack(ItemStack stack, double amount)

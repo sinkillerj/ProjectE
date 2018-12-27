@@ -16,10 +16,9 @@ import javax.annotation.Nonnull;
 
 public class DarkAxe extends PEToolBase
 {
-	public DarkAxe()
+	public DarkAxe(Builder builder)
 	{
-		super("dm_axe", (byte)2, new String[]{});
-		this.setNoRepair();
+		super(builder, "dm_axe", (byte)2, new String[]{});
 		this.peToolMaterial = "dm_tools";
 		this.toolClasses.add("axe");
 		this.harvestMaterials.add(Material.WOOD);
@@ -28,9 +27,9 @@ public class DarkAxe extends PEToolBase
 	}
 
 	// Only for RedAxe
-	protected DarkAxe(String name, byte numCharges, String[] modeDesc)
+	protected DarkAxe(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 	
 	@Nonnull

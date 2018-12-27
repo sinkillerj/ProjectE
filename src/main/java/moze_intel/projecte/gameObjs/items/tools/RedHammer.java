@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 
 public class RedHammer extends DarkHammer
 {
-	public RedHammer() 
+	public RedHammer(Builder builder)
 	{
-		super("rm_hammer", (byte)3, new String[]{});
+		super(builder, "rm_hammer", (byte)3, new String[]{});
 		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.harvestMaterials.add(Material.IRON);
@@ -28,9 +28,7 @@ public class RedHammer extends DarkHammer
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if ((block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.RED_MATTER)
-				|| block == ObjHandler.rmFurnaceOff
-				|| block == ObjHandler.rmFurnaceOn)
+		if ((block == ObjHandler.rmBlock) || block == ObjHandler.rmFurnaceOff)
 		{
 			return 1200000.0F;
 		}

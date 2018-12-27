@@ -26,9 +26,9 @@ import javax.annotation.Nonnull;
 
 public class DarkPick extends PEToolBase
 {
-	public DarkPick()
+	public DarkPick(Builder builder)
 	{
-		super("dm_pick", (byte)2, new String[] {
+		super(builder, "dm_pick", (byte)2, new String[] {
 				"pe.darkpick.mode1", "pe.darkpick.mode2",
 				"pe.darkpick.mode3", "pe.darkpick.mode4"});
 		this.setNoRepair();
@@ -40,9 +40,9 @@ public class DarkPick extends PEToolBase
 	}
 
 	// Only for RedPick
-	protected DarkPick(String name, byte numCharges, String[] modeDesc)
+	protected DarkPick(Builder builder, String name, byte numCharges, String[] modeDesc)
 	{
-		super(name, numCharges, modeDesc);
+		super(builder, name, numCharges, modeDesc);
 	}
 
 	@Nonnull
@@ -62,7 +62,7 @@ public class DarkPick extends PEToolBase
 		else
 		{
 			RayTraceResult mop = this.rayTrace(world, player, false);
-			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+			if (mop != null && mop.type == RayTraceResult.Type.BLOCK)
 			{
 				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
 				{
@@ -85,9 +85,7 @@ public class DarkPick extends PEToolBase
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		Block block = state.getBlock();
-		if (block == ObjHandler.matterBlock && state.getValue(PEStateProps.TIER_PROP) == EnumMatterType.DARK_MATTER
-				|| block == ObjHandler.dmFurnaceOff
-				|| block == ObjHandler.dmFurnaceOn)
+		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnaceOff)
 		{
 			return 1200000.0F;
 		}

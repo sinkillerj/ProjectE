@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import com.google.common.base.Predicates;
-import gnu.trove.map.hash.TIntLongHashMap;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,15 +11,19 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GemLegs extends GemArmorBase
 {
@@ -31,31 +34,31 @@ public class GemLegs extends GemArmorBase
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag advanced)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        list.add(I18n.format("pe.gem.legs.lorename"));
+        list.add(new TextComponentTranslation("pe.gem.legs.lorename"));
     }
 
-    private final TIntLongHashMap lastJumpTracker = new TIntLongHashMap();
+    private final Map<Integer, Long> lastJumpTracker = new HashMap<>();
 
     @SubscribeEvent
     public void onJump(LivingEvent.LivingJumpEvent evt)
     {
         if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntityLiving().getEntityWorld().isRemote)
         {
-            lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().getEntityWorld().getTotalWorldTime());
+            lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().getEntityWorld().getGameTime());
         }
     }
 
     private boolean jumpedRecently(EntityPlayer player)
     {
         return lastJumpTracker.containsKey(player.getEntityId())
-            && player.getEntityWorld().getTotalWorldTime() - lastJumpTracker.get(player.getEntityId()) < 5;
+            && player.getEntityWorld().getGameTime() - lastJumpTracker.get(player.getEntityId()) < 5;
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
+    public void onArmorTick(ItemStack stack, World world, EntityPlayer player)
     {
         if (world.isRemote)
         {
@@ -73,7 +76,7 @@ public class GemLegs extends GemArmorBase
             if (!world.isRemote && player.motionY < -0.08)
             {
                 List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
-                        player.getEntityBoundingBox().offset(player.motionX, player.motionY, player.motionZ).grow(2.0D),
+                        player.getBoundingBox().offset(player.motionX, player.motionY, player.motionZ).grow(2.0D),
                         Predicates.instanceOf(EntityLivingBase.class));
 
                 for (Entity e : entities)

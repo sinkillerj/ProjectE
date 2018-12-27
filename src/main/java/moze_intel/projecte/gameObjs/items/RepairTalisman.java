@@ -27,6 +27,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,7 +51,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
 		if (world.isRemote || !(entity instanceof EntityPlayer))
 		{
@@ -84,13 +87,13 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
+			if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0)
 			{
-				invStack.setItemDamage(invStack.getItemDamage() - 1);
+				invStack.setDamage(invStack.getDamage() - 1);
 			}
 		}
 
-		if (Loader.isModLoaded("baubles")) baubleRepair(player);
+		if (ModList.get().isLoaded("baubles")) baubleRepair(player);
 	}
 
 	@Optional.Method(modid = "baubles")
@@ -106,9 +109,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (ItemHelper.isDamageable(bInvStack) && bInvStack.getItemDamage() > 0)
+			if (ItemHelper.isDamageable(bInvStack) && bInvStack.getDamage() > 0)
 			{
-				bInvStack.setItemDamage(bInvStack.getItemDamage() - 1);
+				bInvStack.setDamage(bInvStack.getDamage() - 1);
 			}
 		}
 	}
@@ -124,7 +127,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
+		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -169,7 +172,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{
@@ -201,7 +204,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 		if (coolDown > 0)
 		{
-			stack.getTagCompound().setByte("Cooldown", (byte) (coolDown - 1));
+			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
 		}
 		else
 		{
@@ -217,9 +220,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 					continue;
 				}
 
-				if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
+				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0)
 				{
-					invStack.setItemDamage(invStack.getItemDamage() - 1);
+					invStack.setDamage(invStack.getDamage() - 1);
 
 					if (!hasAction)
 					{
@@ -230,7 +233,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 			if (hasAction)
 			{
-				stack.getTagCompound().setByte("Cooldown", (byte) 19);
+				stack.getTag().putByte("Cooldown", (byte) 19);
 				tile.markDirty();
 			}
 		}
@@ -248,7 +251,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 		if (coolDown > 0)
 		{
-			stack.getTagCompound().setByte("Cooldown", (byte) (coolDown - 1));
+			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
 		}
 		else
 		{
@@ -263,9 +266,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 					continue;
 				}
 
-				if (ItemHelper.isDamageable(invStack) && invStack.getItemDamage() > 0)
+				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0)
 				{
-					invStack.setItemDamage(invStack.getItemDamage() - 1);
+					invStack.setDamage(invStack.getDamage() - 1);
 
 					if (!hasAction)
 					{
@@ -276,7 +279,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 			if (hasAction)
 			{
-				stack.getTagCompound().setByte("Cooldown", (byte) 19);
+				stack.getTag().putByte("Cooldown", (byte) 19);
 				return true;
 			}
 		}

@@ -17,6 +17,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -24,10 +25,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -36,9 +39,9 @@ import java.util.Set;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
-	public PhilosophersStone()
+	public PhilosophersStone(Builder builder)
 	{
-		super("philosophers_stone", (byte)4, new String[] {
+		super(builder, "philosophers_stone", (byte)4, new String[] {
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
@@ -53,8 +56,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float px, float py, float pz)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
+		BlockPos pos = ctx.getPos();
+		EnumFacing sideHit = ctx.getFace();
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+		ItemStack stack = ctx.getItem();
+
 		if (world.isRemote)
 		{
 			return EnumActionResult.SUCCESS;
@@ -72,8 +81,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (result != null)
 		{
-			int mode = this.getMode(player.getHeldItem(hand));
-			int charge = this.getCharge(player.getHeldItem(hand));
+			int mode = this.getMode(stack);
+			int charge = this.getCharge(stack);
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
@@ -115,10 +124,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flags)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+		list.add(new TextComponentTranslation("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
 	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, EntityPlayer player, EnumFacing sideHit, int mode, int charge)

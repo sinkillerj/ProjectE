@@ -5,17 +5,20 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class Tome extends ItemPE
 {
-	public Tome()
+	public Tome(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("tome");
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setMaxStackSize(1);
@@ -23,10 +26,10 @@ public class Tome extends ItemPE
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flags)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(I18n.format("pe.tome.tooltip1"));
+		list.add(new TextComponentTranslation("pe.tome.tooltip1"));
 	}
 }
 

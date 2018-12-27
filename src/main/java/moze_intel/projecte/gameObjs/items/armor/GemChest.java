@@ -13,9 +13,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,14 +30,14 @@ public class GemChest extends GemArmorBase implements IFireProtector
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltips, ITooltipFlag flags)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag flags)
     {
-        tooltips.add(I18n.format("pe.gem.chest.lorename"));
+        tooltips.add(new TextComponentTranslation("pe.gem.chest.lorename"));
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack chest)
+    public void onArmorTick(ItemStack chest, World world, EntityPlayer player)
     {
         if (world.isRemote)
         {
@@ -46,7 +48,7 @@ public class GemChest extends GemArmorBase implements IFireProtector
 
             Block b = world.getBlockState(pos.down()).getBlock();
 
-            if ((b == Blocks.LAVA || b == Blocks.FLOWING_LAVA) && world.isAirBlock(pos))
+            if (b == Blocks.LAVA && world.isAirBlock(pos))
             {
                 if (!player.isSneaking())
                 {

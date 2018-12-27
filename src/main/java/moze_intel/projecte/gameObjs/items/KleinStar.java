@@ -18,11 +18,12 @@ import javax.annotation.Nonnull;
 
 public class KleinStar extends ItemPE implements IItemEmc
 {
-	public KleinStar()
+	public final EnumKleinTier tier;
+	public KleinStar(Builder builder, EnumKleinTier tier)
 	{
-		this.setTranslationKey("klein_star");
+		super(builder);
+		this.tier = tier;
 		this.setMaxDamage(0);
-		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
@@ -30,7 +31,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return stack.hasTagCompound();
+		return stack.hasTag();
 	}
 	
 	@Override
@@ -61,31 +62,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 	
-	@Nonnull
-	@Override
-	public String getTranslationKey(ItemStack stack)
-	{
-		if (stack.getItemDamage() > 5)
-		{
-			return "pe.debug.metainvalid";
-		}
-
-		return super.getTranslationKey()+ "_" + (stack.getItemDamage() + 1);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(CreativeTabs cTab, NonNullList<ItemStack> list)
-	{
-		if (isInCreativeTab(cTab))
-		{
-			for (int i = 0; i < 6; ++i)
-			{
-				list.add(new ItemStack(this, 1, i));
-			}
-		}
-	}
-
 	public enum EnumKleinTier
 	{
 		EIN("ein"),

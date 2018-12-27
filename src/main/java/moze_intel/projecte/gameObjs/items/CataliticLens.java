@@ -10,9 +10,9 @@ import javax.annotation.Nonnull;
 
 public class CataliticLens extends DestructionCatalyst implements IProjectileShooter
 {
-	public CataliticLens() 
+	public CataliticLens(Builder builder)
 	{
-		this.setTranslationKey("catalitic_lens");
+		super(builder);
 	}
 	
 	@Override

@@ -58,7 +58,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -153,7 +153,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	}
 
 	@Nonnull
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<String> getPedestalDescription()
 	{

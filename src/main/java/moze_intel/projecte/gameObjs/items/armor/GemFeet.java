@@ -16,12 +16,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -39,7 +37,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     public static boolean isStepAssistEnabled(ItemStack boots)
     {
-        return !boots.hasTagCompound() || !boots.getTagCompound().hasKey("StepAssist") || boots.getTagCompound().getBoolean("StepAssist");
+        return !boots.hasTag() || !boots.getTag().contains("StepAssist") || boots.getTag().getBoolean("StepAssist");
 
     }
 
@@ -47,14 +45,14 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         boolean value;
 
-        if (ItemHelper.getOrCreateCompound(boots).hasKey("StepAssist"))
+        if (ItemHelper.getOrCreateCompound(boots).contains("StepAssist"))
         {
-            boots.getTagCompound().setBoolean("StepAssist", !boots.getTagCompound().getBoolean("StepAssist"));
-            value = boots.getTagCompound().getBoolean("StepAssist");
+            boots.getTag().putBoolean("StepAssist", !boots.getTag().getBoolean("StepAssist"));
+            value = boots.getTag().getBoolean("StepAssist");
         }
         else
         {
-            boots.getTagCompound().setBoolean("StepAssist", false);
+            boots.getTag().putBoolean("StepAssist", false);
             value = false;
         }
 
@@ -65,7 +63,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
+    public void onArmorTick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!world.isRemote)
         {
@@ -74,7 +72,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         }
         else
         {
-            if (!player.capabilities.isFlying && PECore.proxy.isJumpPressed())
+            if (!player.abilities.isFlying && PECore.proxy.isJumpPressed())
             {
                 player.motionY += 0.1;
             }
@@ -85,7 +83,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
                 {
                     player.motionY *= 0.90;
                 }
-                if (!player.capabilities.isFlying)
+                if (!player.abilities.isFlying)
                 {
                     if (player.moveForward < 0)
                     {
@@ -102,21 +100,21 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltips, ITooltipFlag flags)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags)
     {
-        tooltips.add(I18n.format("pe.gem.feet.lorename"));
-        tooltips.add(I18n.format("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+        tooltips.add(new TextComponentTranslation("pe.gem.feet.lorename"));
+        tooltips.add(new TextComponentTranslation("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-        TextFormatting e = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
-        String s = canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled";
-        tooltips.add(I18n.format("pe.gem.stepassist_tooltip") + " "
-                + e + I18n.format(s));
+        TextFormatting color = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
+        TextComponentTranslation status = new TextComponentTranslation(canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
+        status.setStyle(new Style().setColor(color));
+        tooltips.add(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ").appendSibling(status));
     }
 
     private boolean canStep(ItemStack stack)
     {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("StepAssist") && stack.getTagCompound().getBoolean("StepAssist");
+        return stack.getTag() != null && stack.getTag().contains("StepAssist") && stack.getTag().getBoolean("StepAssist");
     }
 
     @Nonnull
