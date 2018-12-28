@@ -188,7 +188,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 					continue;
 				}
 
-				if (ItemHelper.basicAreStacksEqual(lockCopy, stack))
+                if (lockCopy.getItem() == stack.getItem())
 				{
 					iter.remove();
 					continue;

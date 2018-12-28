@@ -25,7 +25,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -197,12 +196,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                 }
                 else if (mode == TRANSMUTATION_MODE)
                 {
-                    if (oldState == newState || oldBlock == Blocks.AIR || ctx.getWorld().getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(ItemHelper.stateToStack(oldState, 1)))
+					if (oldState == newState || oldBlock == Blocks.AIR || ctx.getWorld().getTileEntity(currentPos) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldState.getBlock(), 1)))
                     {
                         continue;
                     }
 
-                    long emc = EMCHelper.getEmcValue(ItemHelper.stateToStack(oldState, 1));
+					long emc = EMCHelper.getEmcValue(new ItemStack(oldState.getBlock(), 1));
 
                     if (emc > reqEmc)
                     {

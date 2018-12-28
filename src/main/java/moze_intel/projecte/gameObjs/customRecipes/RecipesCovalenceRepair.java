@@ -3,17 +3,12 @@ package moze_intel.projecte.gameObjs.customRecipes;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -41,8 +36,8 @@ public class RecipesCovalenceRepair implements IRecipe
 			{
 				continue;
 			}
-			
-			if (ItemHelper.isItemRepairable(input))
+
+			if (input.isDamageable() && input.getDamage() != 0)
 			{
 				if (!foundItem)
 				{

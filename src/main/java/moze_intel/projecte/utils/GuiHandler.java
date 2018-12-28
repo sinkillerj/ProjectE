@@ -36,6 +36,7 @@ import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK3;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
@@ -84,7 +85,7 @@ public class GuiHandler implements IGuiHandler
 					return new AlchChestContainer(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI: {
-				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
+				EnumDyeColor color = ((AlchemicalBag) player.getHeldItem(hand).getItem()).color;
 				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(color);
 				return new AlchBagContainer(player.inventory, hand, inventory);
 			}
@@ -156,7 +157,7 @@ public class GuiHandler implements IGuiHandler
 					return new GUIAlchChest(player.inventory, (AlchChestTile) tile);
 				break;
 			case Constants.ALCH_BAG_GUI: {
-				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
+				EnumDyeColor color = ((AlchemicalBag) player.getHeldItem(hand).getItem()).color;
 				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(color);
 				return new GUIAlchChest(player.inventory, hand, inventory);
 			}

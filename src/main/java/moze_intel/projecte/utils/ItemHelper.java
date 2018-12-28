@@ -1,19 +1,13 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Lists;
-import moze_intel.projecte.PECore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -22,7 +16,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary
@@ -36,27 +29,6 @@ public final class ItemHelper
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
 	{
 		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
-	}
-
-	public static boolean areItemStacksEqualIgnoreNBT(ItemStack stack1, ItemStack stack2)
-	{
-		if (stack1.getItem() != stack2.getItem())
-		{
-			return false;
-		}
-
-
-		if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-		{
-			return true;
-		}
-
-		return stack1.getItemDamage() == stack2.getItemDamage();
-	}
-
-	public static boolean basicAreStacksEqual(ItemStack stack1, ItemStack stack2)
-	{
-		return (stack1.getItem() == stack2.getItem()) && (stack1.getItemDamage() == stack2.getItemDamage());
 	}
 
 	public static void compactInventory(IItemHandlerModifiable inventory)
@@ -110,10 +82,8 @@ public final class ItemHelper
 				continue;
 			}
 
-			if (stack.getItem().equals(toSearch.getItem())) {
-				if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage()) {
-					return true;
-				}
+			if (stack.getItem() == toSearch.getItem()) {
+				return true;
 			}
 		}
 		return false;
@@ -196,28 +166,6 @@ public final class ItemHelper
 		return false;
 	}
 
-	public static boolean isItemRepairable(ItemStack stack)
-	{
-		if (stack.getHasSubtypes())
-		{
-			return false;
-		}
-
-		if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0)
-		{
-			return false;
-		}
-
-		Item item = stack.getItem();
-
-		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel || item instanceof ItemFishingRod || item instanceof ItemBow)
-		{
-			return true;
-		}
-
-		return (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor);
-	}
-
 	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy)
 	{
 		final List<ItemStack> list = new ArrayList<>(toCopy.getSlots());
@@ -269,15 +217,11 @@ public final class ItemHelper
 
 	public static boolean isOre(IBlockState state)
 	{
-		if (state.getBlock() == Blocks.LIT_REDSTONE_ORE)
-		{
-			return true;
-		}
 		if (Item.getItemFromBlock(state.getBlock()) == Items.AIR)
 		{
 			return false;
 		}
-		String oreDictName = getOreDictionaryName(stateToStack(state, 1));
+		String oreDictName = getOreDictionaryName(new ItemStack(state.getBlock(), 1));
 		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
 	}
 
@@ -285,21 +229,11 @@ public final class ItemHelper
 	{
 		if (stack.getItem() instanceof ItemBlock)
 		{
-			return ((ItemBlock) stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+			return ((ItemBlock) stack.getItem()).getBlock().getDefaultState();
 		}
 		else
 		{
 			return null;
 		}
-	}
-
-	public static ItemStack stateToStack(IBlockState state, int stackSize)
-	{
-		return new ItemStack(state.getBlock(), stackSize, state.getBlock().getMetaFromState(state));
-	}
-
-	public static ItemStack stateToDroppedStack(IBlockState state, int stackSize)
-	{
-		return new ItemStack(state.getBlock(), stackSize, state.getBlock().damageDropped(state));
 	}
 }

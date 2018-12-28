@@ -108,7 +108,6 @@ public class PECore
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		proxy.registerKeyBinds();
-		ObjHandler.register();
 
 		proxy.registerRenderers();
 	}

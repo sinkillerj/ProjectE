@@ -230,9 +230,10 @@ public final class WorldHelper
 
 	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
 	{
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.getBlock().canSilkHarvest(world, pos, state, player))
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.canSilkHarvest(world, pos, player))
 		{
-			return Lists.newArrayList(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)));
+			// todo 1.13 reflect getSilkTouchDrop?
+			return Lists.newArrayList(new ItemStack(state.getBlock()));
 		}
 
 		NonNullList<ItemStack> ret = NonNullList.create();

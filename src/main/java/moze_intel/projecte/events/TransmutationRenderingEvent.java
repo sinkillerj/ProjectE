@@ -5,7 +5,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -70,7 +69,7 @@ public class TransmutationRenderingEvent
 					RenderHelper.enableStandardItemLighting();
 
 					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
-					mc.getItemRenderer().renderItemModelIntoGUI(ItemHelper.stateToDroppedStack(transmutationResult, 1), 0, 0, model);
+					mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock(), 1), 0, 0, model);
 
 					RenderHelper.disableStandardItemLighting();
 				}

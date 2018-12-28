@@ -14,7 +14,7 @@ public final class NBTWhitelist
 	public static boolean register(ItemStack stack)
 	{
 		SimpleStack s = new SimpleStack(stack);
-		return s.isValid() && STACKS.add(s.withMeta(OreDictionary.WILDCARD_VALUE));
+		return s.isValid() && STACKS.add(s);
 	}
 
 	public static boolean shouldDupeWithNBT(ItemStack stack)

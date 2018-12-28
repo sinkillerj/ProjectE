@@ -225,7 +225,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 					getUpgrading().shrink(1);
 				}
-				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize())
+				else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize())
 				{
 					this.removeEMC(upgradeCost);
 					getUpgraded().grow(1);

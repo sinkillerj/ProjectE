@@ -1,12 +1,9 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Maps;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -14,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -318,8 +314,8 @@ public final class EMCHelper
 		ItemStack stackCopy = stack.copy();
 		stackCopy.setDamage(0);
 
-		if(ItemHelper.isItemRepairable(stack)){
-			emc = (int)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+		if(stack.isDamageable() && stack.getDamage() != 0){
+			emc = (int)Math.ceil((float) EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

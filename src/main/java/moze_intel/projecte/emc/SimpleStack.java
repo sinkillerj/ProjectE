@@ -10,12 +10,10 @@ import java.util.Objects;
 public class SimpleStack
 {
 	public final ResourceLocation id;
-	public final int damage;
 
 	public SimpleStack(ResourceLocation id, int damage)
 	{
 		this.id = id;
-		this.damage = damage;
 	}
 	
 	public SimpleStack(ItemStack stack)
@@ -23,18 +21,11 @@ public class SimpleStack
 		if (stack.isEmpty())
 		{
 			id = new ResourceLocation("minecraft", "air");
-			damage = 0;
 		}
 		else
 		{
 			id = stack.getItem().getRegistryName();
-			damage = stack.getItemDamage();
 		}
-	}
-
-	public SimpleStack withMeta(int meta)
-	{
-		return new SimpleStack(id, meta);
 	}
 
 	public boolean isValid()
@@ -44,14 +35,11 @@ public class SimpleStack
 
 	public ItemStack toItemStack()
 	{
-		if (isValid())
-		{
-			Item item = Item.REGISTRY.getObject(id);
+		Item item = Item.REGISTRY.get(id);
 
-			if (item != null)
-			{
-				return new ItemStack(item, 1, damage);
-			}
+		if (item != null)
+		{
+			return new ItemStack(item);
 		}
 
 		return ItemStack.EMPTY;
@@ -60,10 +48,7 @@ public class SimpleStack
 	@Override
 	public int hashCode() 
 	{
-		int hash = 31 * id.hashCode();
-		if (this.damage == OreDictionary.WILDCARD_VALUE)
-			hash = hash * 57 ^ this.damage;
-		return hash;
+		return id.hashCode();
 	}
 	
 	@Override
@@ -72,13 +57,7 @@ public class SimpleStack
 		if (obj instanceof SimpleStack)
 		{
 			SimpleStack other = (SimpleStack) obj;
-			 
-			if (this.damage == OreDictionary.WILDCARD_VALUE || other.damage == OreDictionary.WILDCARD_VALUE)
-			{
-				return Objects.equals(this.id, other.id);
-			}
-
-			return Objects.equals(this.id, other.id) && this.damage == other.damage;
+			return Objects.equals(this.id, other.id);
 		}
 		
 		return false;
@@ -87,13 +66,6 @@ public class SimpleStack
 	@Override
 	public String toString() 
 	{
-		Item obj = Item.REGISTRY.getObject(id);
-		
-		if (obj != null)
-		{
-			return id + " " + damage;
-		}
-		
-		return "id:" + id + " damage:" + damage;
+		return id.toString();
 	}
 }

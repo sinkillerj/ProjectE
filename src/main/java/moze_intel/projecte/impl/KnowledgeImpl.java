@@ -114,7 +114,7 @@ public final class KnowledgeImpl {
 
             for (ItemStack s : knowledge)
             {
-                if (ItemHelper.basicAreStacksEqual(s, stack))
+                if (s.getItem() == stack.getItem())
                 {
                     return true;
                 }

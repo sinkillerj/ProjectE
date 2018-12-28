@@ -20,24 +20,14 @@ public final class Comparators
         {
             return -1;
         }
-        if (ItemHelper.areItemStacksEqualIgnoreNBT(o1, o2))
+        if (o1.getItem() != o2.getItem())
         {
-            // Same item id, same meta
+            // Same item id
             return o1.getCount() - o2.getCount();
         }
-        else // Different id or different meta
+        else // Different id
         {
-            // Different id
-            if (o1.getItem() != o2.getItem())
-            {
-                return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
-            }
-            else
-            {
-                // Different meta
-                return o1.getItemDamage() - o2.getItemDamage();
-            }
-
+            return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
         }
     };
 }

@@ -232,7 +232,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
 		}
 
-		return ItemHelper.areItemStacksEqualIgnoreNBT(lock.getStackInSlot(0), stack);
+		return lock.getStackInSlot(0).getItem() != stack.getItem();
 	}
 
 	@Override
