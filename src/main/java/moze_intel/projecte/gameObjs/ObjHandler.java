@@ -119,6 +119,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -364,35 +366,72 @@ public class ObjHandler
 		registerObj(r, manual, manual.getTranslationKey());
 	}
 
+	@SubscribeEvent
+	public static void registerEntities(RegistryEvent.Register<EntityEntry> evt)
+	{
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityWaterProjectile.class)
+				.id(new ResourceLocation(PECore.MODID, "water_projectile"), 1)
+				.name("WaterProjectile")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityLavaProjectile.class)
+				.id(new ResourceLocation(PECore.MODID, "lava_projectile"), 2)
+				.name("LavaProjectile")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityMobRandomizer.class)
+				.id(new ResourceLocation(PECore.MODID, "mob_randomizer"), 4)
+				.name("MobRandomizer")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityLensProjectile.class)
+				.id(new ResourceLocation(PECore.MODID, "lens_projectile"), 5)
+				.name("LensProjectile")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityNovaCatalystPrimed.class)
+				.id(new ResourceLocation(PECore.MODID, "nova_catalyst_primed"), 6)
+				.name("NovaCatalystPrimed")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityNovaCataclysmPrimed.class)
+				.id(new ResourceLocation(PECore.MODID, "nova_cataclysm_primed"), 7)
+				.name("NovaCataclysmPrimed")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityHomingArrow.class)
+				.id(new ResourceLocation(PECore.MODID, "homing_arrow"), 8)
+				.name("HomingArrow")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntityFireProjectile.class)
+				.id(new ResourceLocation(PECore.MODID, "fire_projectile"), 9)
+				.name("FireProjectile")
+				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityEntryBuilder.create()
+				.entity(EntitySWRGProjectile.class)
+				.id(new ResourceLocation(PECore.MODID, "swrg_projectile"), 10)
+				.name("LightningProjectile")
+				.tracker(256, 10, true).build());
+	}
+
 	public static void register()
 	{
 		//Tile Entities
-		GameRegistry.registerTileEntity(AlchChestTile.class, PECore.MODID + ":alchemical_chest");
-		GameRegistry.registerTileEntity(InterdictionTile.class, PECore.MODID + ":interdiction_torch");
-		GameRegistry.registerTileEntity(CondenserTile.class, PECore.MODID + ":condenser");
-		GameRegistry.registerTileEntity(CondenserMK2Tile.class, PECore.MODID + ":condenser_mk2");
-		GameRegistry.registerTileEntity(RMFurnaceTile.class, PECore.MODID + ":rm_furnace");
-		GameRegistry.registerTileEntity(DMFurnaceTile.class, PECore.MODID + ":dm_furnace");
-		GameRegistry.registerTileEntity(CollectorMK1Tile.class, PECore.MODID + ":collector_mk1");
-		GameRegistry.registerTileEntity(CollectorMK2Tile.class, PECore.MODID + ":collector_mk2");
-		GameRegistry.registerTileEntity(CollectorMK3Tile.class, PECore.MODID + ":collector_mk3");
-		GameRegistry.registerTileEntity(RelayMK1Tile.class, PECore.MODID + ":relay_mk1");
-		GameRegistry.registerTileEntity(RelayMK2Tile.class, PECore.MODID + ":relay_mk2");
-		GameRegistry.registerTileEntity(RelayMK3Tile.class, PECore.MODID + ":relay_mk3");
-		GameRegistry.registerTileEntity(DMPedestalTile.class, PECore.MODID + ":dm_pedestal");
-
-		//Entities
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "water_projectile"), EntityWaterProjectile.class, "WaterProjectile", 1, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "lava_projectile"), EntityLavaProjectile.class, "LavaProjectile", 2, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "mob_randomizer"), EntityMobRandomizer.class, "MobRandomizer", 4, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "lens_projectile"), EntityLensProjectile.class, "LensProjectile", 5, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "nova_catalyst_primed"), EntityNovaCatalystPrimed.class, "NovaCatalystPrimed", 6, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "nova_cataclysm_primed"), EntityNovaCataclysmPrimed.class, "NovaCataclysmPrimed", 7, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "homing_arrow"), EntityHomingArrow.class, "HomingArrow", 8, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "fire_projectile"), EntityFireProjectile.class, "FireProjectile", 9, PECore.instance, 256, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(PECore.MODID, "swrg_projectile"), EntitySWRGProjectile.class, "LightningProjectile", 10, PECore.instance, 256, 10, true);
-
-		GameRegistry.registerFuelHandler(new FuelHandler());
+		GameRegistry.registerTileEntity(AlchChestTile.class, new ResourceLocation(PECore.MODID, "alchemical_chest"));
+		GameRegistry.registerTileEntity(InterdictionTile.class, new ResourceLocation(PECore.MODID, "interdiction_torch"));
+		GameRegistry.registerTileEntity(CondenserTile.class, new ResourceLocation(PECore.MODID, "condenser"));
+		GameRegistry.registerTileEntity(CondenserMK2Tile.class, new ResourceLocation(PECore.MODID, "condenser_mk2"));
+		GameRegistry.registerTileEntity(RMFurnaceTile.class, new ResourceLocation(PECore.MODID, "rm_furnace"));
+		GameRegistry.registerTileEntity(DMFurnaceTile.class, new ResourceLocation(PECore.MODID, "dm_furnace"));
+		GameRegistry.registerTileEntity(CollectorMK1Tile.class, new ResourceLocation(PECore.MODID, "collector_mk1"));
+		GameRegistry.registerTileEntity(CollectorMK2Tile.class, new ResourceLocation(PECore.MODID, "collector_mk2"));
+		GameRegistry.registerTileEntity(CollectorMK3Tile.class, new ResourceLocation(PECore.MODID, "collector_mk3"));
+		GameRegistry.registerTileEntity(RelayMK1Tile.class, new ResourceLocation(PECore.MODID, "relay_mk1"));
+		GameRegistry.registerTileEntity(RelayMK2Tile.class, new ResourceLocation(PECore.MODID, "relay_mk2"));
+		GameRegistry.registerTileEntity(RelayMK3Tile.class, new ResourceLocation(PECore.MODID, "relay_mk3"));
+		GameRegistry.registerTileEntity(DMPedestalTile.class, new ResourceLocation(PECore.MODID, "dm_pedestal"));
 	}
 
 	@SubscribeEvent
@@ -455,38 +494,5 @@ public class ObjHandler
 								.setRegistryName(recipeName));
 		}
 		// RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
-	}
-
-	public static class FuelHandler implements IFuelHandler
-	{
-		@Override
-		public int getBurnTime(ItemStack fuel)
-		{
-			if (fuel.getItem() == fuels)
-			{
-				switch (fuel.getItemDamage())
-				{
-					case 0:
-						return Constants.ALCH_BURN_TIME;
-					case 1:
-						return Constants.MOBIUS_BURN_TIME;
-					case 2:
-						return Constants.AETERNALIS_BURN_TIME;
-				}
-			} else if (fuel.getItem() == Item.getItemFromBlock(fuelBlock))
-			{
-				switch (fuel.getItemDamage())
-				{
-					case 0:
-						return Constants.ALCH_BURN_TIME * 9;
-					case 1:
-						return Constants.MOBIUS_BURN_TIME * 9;
-					case 2:
-						return Constants.AETERNALIS_BURN_TIME * 9;
-				}
-			}
-
-			return 0;
-		}
 	}
 }
