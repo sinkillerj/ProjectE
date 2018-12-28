@@ -32,7 +32,7 @@ public class SyncEmcPKT implements IMessage
 
 		for (int i = 0; i < size; i++)
 		{
-			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), ByteBufUtils.readVarInt(buf, 5), buf.readLong());
+			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), buf.readLong());
 		}
 	}
 
@@ -44,7 +44,6 @@ public class SyncEmcPKT implements IMessage
 		for (EmcPKTInfo info : data)
 		{
 			ByteBufUtils.writeVarInt(buf, info.getId(), 5);
-			ByteBufUtils.writeVarInt(buf, info.getDamage(), 5);
 			buf.writeLong(info.getEmc());
 		}
 	}
@@ -62,9 +61,9 @@ public class SyncEmcPKT implements IMessage
 
 					for (EmcPKTInfo info : pkt.data)
 					{
-						Item i = Item.REGISTRY.getObjectById(info.getId());
+						Item i = Item.REGISTRY.get(info.getId());
 
-						SimpleStack stack = new SimpleStack(i.getRegistryName(), info.getDamage());
+						SimpleStack stack = new SimpleStack(i.getRegistryName());
 
 						if (stack.isValid())
 						{
@@ -83,17 +82,12 @@ public class SyncEmcPKT implements IMessage
 	}
 
 	public static class EmcPKTInfo {
-		private int id, damage;
+		private int id;
 		private long emc;
 
-		public EmcPKTInfo(int id, int damage, long emc) {
+		public EmcPKTInfo(int id, long emc) {
 			this.id = id;
-			this.damage = damage;
 			this.emc = emc;
-		}
-
-		public int getDamage() {
-			return damage;
 		}
 
 		public int getId() {

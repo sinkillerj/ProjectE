@@ -8,11 +8,8 @@ import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -52,7 +49,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
         else
         {
             Preconditions.checkNotNull(playerUUID);
-            Preconditions.checkState(Loader.instance().hasReachedState(LoaderState.SERVER_STARTED), "Server must be running to query knowledge!");
+            Preconditions.checkNotNull(ServerLifecycleHooks.getCurrentServer(), "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null)
             {
@@ -67,7 +64,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
 
     private EntityPlayer findOnlinePlayer(UUID playerUUID)
     {
-        for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+        for (EntityPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             if (player.getUniqueID().equals(playerUUID))
             {

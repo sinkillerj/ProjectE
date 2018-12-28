@@ -10,12 +10,12 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Map;
 
@@ -76,7 +76,7 @@ public final class PacketHandler
 	public static void sendFragmentedEmcPacketToAll()
 	{
 		SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
-		for (EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+		for (EntityPlayerMP player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
 		{
 			sendNonLocal(pkt, player);
 		}
@@ -89,11 +89,11 @@ public final class PacketHandler
 		for (Map.Entry<SimpleStack, Long> entry : EMCMapper.emc.entrySet())
 		{
 			SimpleStack stack = entry.getKey();
-			int id = Item.REGISTRY.getIDForObject(Item.REGISTRY.getObject(stack.id));
-			ret[i] = new EmcPKTInfo(id, stack.damage, entry.getValue());
+			int id = Item.REGISTRY.getId(Item.REGISTRY.get(stack.id));
+			ret[i] = new EmcPKTInfo(id, entry.getValue());
 			i++;
 		}
-		PECore.debugLog("EMC data size: {} bytes", ret.length * (2 * 4 + 8));
+		PECore.debugLog("EMC data size: {} bytes", ret.length * (4 + 8));
 		return ret;
 	}
 

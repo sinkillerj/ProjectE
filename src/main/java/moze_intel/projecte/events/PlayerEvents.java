@@ -33,9 +33,9 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -125,7 +125,7 @@ public class PlayerEvents
 			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
 			ITextComponent playername = new TextComponentString(" " + evt.player.getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
 			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
 		}
 	}
 

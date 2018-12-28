@@ -17,7 +17,8 @@ import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeC
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -64,10 +65,7 @@ public class PEJeiPlugin implements IModPlugin
 
     public static void refresh()
     {
-        if (FMLCommonHandler.instance().getSide().isClient())
-        {
-            Minecraft.getMinecraft().addScheduledTask(() -> mappers.forEach(JEICompatMapper::refresh));
-        }
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> mappers.forEach(JEICompatMapper::refresh));
     }
 
 }

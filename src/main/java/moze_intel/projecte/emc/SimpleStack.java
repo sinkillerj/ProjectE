@@ -11,7 +11,7 @@ public class SimpleStack
 {
 	public final ResourceLocation id;
 
-	public SimpleStack(ResourceLocation id, int damage)
+	public SimpleStack(ResourceLocation id)
 	{
 		this.id = id;
 	}
