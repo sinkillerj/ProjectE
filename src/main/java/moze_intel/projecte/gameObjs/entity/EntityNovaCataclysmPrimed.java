@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -12,12 +13,14 @@ public class EntityNovaCataclysmPrimed extends EntityTNTPrimed
 	public EntityNovaCataclysmPrimed(World world) 
 	{
 		super(world);
+		this.type = ObjHandler.NOVA_CATACLYSM_PRIMED;
 		setFuse(20);
 	}
 	
 	public EntityNovaCataclysmPrimed(World world, double x, double y, double z, EntityLivingBase placer)
 	{
 		super(world, x, y, z, placer);
+		this.type = ObjHandler.NOVA_CATACLYSM_PRIMED;
 		setFuse(20);
 	}
 

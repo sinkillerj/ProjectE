@@ -1,25 +1,27 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityMobRandomizer extends PEProjectile
+public class EntityMobRandomizer extends EntityThrowable
 {
 	public EntityMobRandomizer(World world) 
 	{
-		super(world);
+		super(ObjHandler.MOB_RANDOMIZER, world);
 	}
 	
-	public EntityMobRandomizer(World world, EntityPlayer entity) 
+	public EntityMobRandomizer(EntityPlayer entity, World world)
 	{
-		super(world, entity);
+		super(ObjHandler.MOB_RANDOMIZER, entity, world);
 	}
 	
 	@Override
@@ -37,17 +39,14 @@ public class EntityMobRandomizer extends PEProjectile
 	}
 
 	@Override
-	protected void apply(RayTraceResult mop)
+	public float getGravityVelocity()
 	{
-		if (!this.getEntityWorld().isRemote)
-		{
-			if (this.isInWater())
-			{
-				this.remove();
-				return;
-			}
-		}
+		return 0;
+	}
 
+	@Override
+	protected void onImpact(RayTraceResult mop)
+	{
 		if (this.getEntityWorld().isRemote)
 		{
 			for (int i = 0; i < 4; ++i)
@@ -57,8 +56,9 @@ public class EntityMobRandomizer extends PEProjectile
 			return;
 		}
 
-		if (!(mop.entity instanceof EntityLiving))
+		if (this.isInWater() || !(mop.entity instanceof EntityLiving) || !(getThrower() instanceof EntityPlayer))
 		{
+			remove();
 			return;
 		}
 
@@ -73,5 +73,6 @@ public class EntityMobRandomizer extends PEProjectile
 			this.getEntityWorld().spawnEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}
+		remove();
 	}
 }

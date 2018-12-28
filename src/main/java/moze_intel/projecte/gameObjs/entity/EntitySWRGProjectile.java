@@ -2,27 +2,30 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntitySWRGProjectile extends PEProjectile
+public class EntitySWRGProjectile extends EntityThrowable
 {
 	private boolean fromArcana = false;
 
 	public EntitySWRGProjectile(World world)
 	{
-		super(world);
+		super(ObjHandler.SWRG_PROJECTILE, world);
 	}
 
-	public EntitySWRGProjectile(World world, EntityPlayer player, boolean fromArcana)
+	public EntitySWRGProjectile(EntityPlayer player, boolean fromArcana, World world)
 	{
-		super(world, player);
+		super(ObjHandler.SWRG_PROJECTILE, player, world);
 		this.fromArcana = fromArcana;
 	}
 
@@ -51,20 +54,33 @@ public class EntitySWRGProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(RayTraceResult mop)
+	public float getGravityVelocity()
+	{
+		return 0;
+	}
+
+	@Override
+	protected void onImpact(RayTraceResult mop)
 	{
 		if (world.isRemote)
 		{
 			return;
 		}
 
-		ItemPE consumeFrom = (ItemPE) (fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
+		if (!(getThrower() instanceof EntityPlayer))
+		{
+			remove();
+			return;
+		}
+
+		EntityPlayer player = ((EntityPlayer) getThrower());
+		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
 
 		switch (mop.type)
 		{
 			case BLOCK:
 			{
-				if(tryConsumeEmc(consumeFrom, 768))
+				if(!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true))
 				{
 					BlockPos pos = mop.getBlockPos();
 
@@ -85,10 +101,8 @@ public class EntitySWRGProjectile extends PEProjectile
 			}
 			case ENTITY:
 			{
-				if (mop.entity instanceof EntityLivingBase && tryConsumeEmc(consumeFrom, 64))
+				if (mop.entity instanceof EntityLivingBase && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true))
 				{
-					EntityPlayer player = (EntityPlayer) getThrower();
-
 					// Minor damage so we count as the attacker for launching the mob
 					mop.entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
 
@@ -103,6 +117,7 @@ public class EntitySWRGProjectile extends PEProjectile
 				break;
 			}
 		}
+		remove();
 	}
 
 	@Override

@@ -7,8 +7,10 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -16,23 +18,18 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-public class EntityLavaProjectile extends PEProjectile
+public class EntityLavaProjectile extends EntityThrowable
 {
 	public EntityLavaProjectile(World world) 
 	{
-		super(world);
+		super(ObjHandler.LAVA_PROJECTILE, world);
 	}
 
-	public EntityLavaProjectile(World world, EntityPlayer entity)
+	public EntityLavaProjectile(EntityPlayer entity, World world)
 	{
-		super(world, entity);
+		super(ObjHandler.LAVA_PROJECTILE, entity, world);
 	}
 
-	public EntityLavaProjectile(World world, double x, double y, double z) 
-	{
-		super(world, x, y, z);
-	}
-		
 	@Override
 	public void tick()
 	{
@@ -74,25 +71,36 @@ public class EntityLavaProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(RayTraceResult mop)
+	public float getGravityVelocity()
 	{
-		if (this.getEntityWorld().isRemote)
+		return 0;
+	}
+
+	@Override
+	protected void onImpact(RayTraceResult mop)
+	{
+		if (!this.getEntityWorld().isRemote || getThrower() instanceof EntityPlayer)
 		{
-			return;
+			EntityPlayer player = ((EntityPlayer) getThrower());
+			ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
+			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true))
+			{
+				switch (mop.type)
+				{
+					case BLOCK:
+						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.LAVA.getDefaultState());
+						break;
+					case ENTITY:
+						Entity ent = mop.entity;
+						ent.setFire(5);
+						ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
+				}
+			}
 		}
 
-		if (tryConsumeEmc(((ItemPE) ObjHandler.volcanite), 32))
+		if (!world.isRemote)
 		{
-			switch (mop.type)
-			{
-				case BLOCK:
-					PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), mop.getBlockPos().offset(mop.sideHit), Blocks.LAVA.getDefaultState());
-					break;
-				case ENTITY:
-					Entity ent = mop.entity;
-					ent.setFire(5);
-					ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
-			}
+			remove();
 		}
 	}
 }

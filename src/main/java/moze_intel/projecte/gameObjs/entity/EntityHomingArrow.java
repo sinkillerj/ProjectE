@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -31,12 +32,14 @@ public class EntityHomingArrow extends EntityTippedArrow
 	public EntityHomingArrow(World world)
 	{
 		super(world);
+		this.type = ObjHandler.HOMING_ARROW;
 	}
 
-	public EntityHomingArrow(World world, EntityLivingBase par2, float par3) 
+	public EntityHomingArrow(World world, EntityLivingBase shooter, float damage)
 	{
-		super(world, par2);
-		this.setDamage(par3);
+		super(world, shooter);
+		this.type = ObjHandler.HOMING_ARROW;
+		this.setDamage(damage);
 		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
 	}
 

@@ -50,9 +50,6 @@ import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.gameObjs.items.armor.GemLegs;
 import moze_intel.projecte.gameObjs.items.armor.RMArmor;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemAlchemyChestBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCollectorBlock;
-import moze_intel.projecte.gameObjs.items.itemBlocks.ItemCondenserBlock;
 import moze_intel.projecte.gameObjs.items.itemBlocks.ItemFuelBlock;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
@@ -96,6 +93,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -108,17 +106,15 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Map.Entry;
 
@@ -227,6 +223,33 @@ public class ObjHandler
 	public static final Item windProjectile = new Item().setTranslationKey("pe_wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet();
 	public static final Item manual = new PEManual();
+
+	@ObjectHolder(PECore.MODID + ":fire_projectile")
+	public static EntityType<?> FIRE_PROJECTILE;
+
+	@ObjectHolder(PECore.MODID + ":homing_arrow")
+	public static EntityType<?> HOMING_ARROW;
+
+	@ObjectHolder(PECore.MODID + ":lava_projectile")
+	public static EntityType<?> LAVA_PROJECTILE;
+
+	@ObjectHolder(PECore.MODID + ":lens_projectile")
+	public static EntityType<?> LENS_PROJECTILE;
+
+	@ObjectHolder(PECore.MODID + ":mob_randomizer")
+	public static EntityType<?> MOB_RANDOMIZER;
+
+	@ObjectHolder(PECore.MODID + ":nova_catalyst_primed")
+	public static EntityType<?> NOVA_CATALYST_PRIMED;
+
+	@ObjectHolder(PECore.MODID + ":nova_cataclysm_primed")
+	public static EntityType<?> NOVA_CATACLYSM_PRIMED;
+
+	@ObjectHolder(PECore.MODID + ":swrg_projectile")
+	public static EntityType<?> SWRG_PROJECTILE;
+
+	@ObjectHolder(PECore.MODID + ":water_projectile")
+	public static EntityType<?> WATER_PROJECTILE;
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> evt)
@@ -359,53 +382,48 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerEntities(RegistryEvent.Register<EntityEntry> evt)
+	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt)
 	{
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityWaterProjectile.class)
-				.id(new ResourceLocation(PECore.MODID, "water_projectile"), 1)
-				.name("WaterProjectile")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityLavaProjectile.class)
-				.id(new ResourceLocation(PECore.MODID, "lava_projectile"), 2)
-				.name("LavaProjectile")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityMobRandomizer.class)
-				.id(new ResourceLocation(PECore.MODID, "mob_randomizer"), 4)
-				.name("MobRandomizer")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityLensProjectile.class)
-				.id(new ResourceLocation(PECore.MODID, "lens_projectile"), 5)
-				.name("LensProjectile")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityNovaCatalystPrimed.class)
-				.id(new ResourceLocation(PECore.MODID, "nova_catalyst_primed"), 6)
-				.name("NovaCatalystPrimed")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityNovaCataclysmPrimed.class)
-				.id(new ResourceLocation(PECore.MODID, "nova_cataclysm_primed"), 7)
-				.name("NovaCataclysmPrimed")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityHomingArrow.class)
-				.id(new ResourceLocation(PECore.MODID, "homing_arrow"), 8)
-				.name("HomingArrow")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntityFireProjectile.class)
-				.id(new ResourceLocation(PECore.MODID, "fire_projectile"), 9)
-				.name("FireProjectile")
-				.tracker(256, 10, true).build());
-		evt.getRegistry().register(EntityEntryBuilder.create()
-				.entity(EntitySWRGProjectile.class)
-				.id(new ResourceLocation(PECore.MODID, "swrg_projectile"), 10)
-				.name("LightningProjectile")
-				.tracker(256, 10, true).build());
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityWaterProjectile.class, EntityWaterProjectile::new)
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "water_projectile")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityLavaProjectile.class, EntityLavaProjectile::new)
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "lava_projectile")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityMobRandomizer.class, EntityMobRandomizer::new)
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "mob_randomizer")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityLensProjectile.class, EntityLensProjectile::new)
+				.disableSummoning()
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "lens_projectile")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new)
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "nova_catalyst_primed")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new)
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "nova_cataclysm_primed")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityHomingArrow.class, EntityHomingArrow::new)
+				.disableSummoning()
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "homing_arrow")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntityFireProjectile.class, EntityFireProjectile::new)
+				.disableSummoning()
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "fire_projectile")));
+		evt.getRegistry().register(EntityType.Builder
+				.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new)
+				.disableSummoning()
+				.build("")
+				.setRegistryName(new ResourceLocation(PECore.MODID, "swrg_projectile")));
 	}
 
 	public static void register()

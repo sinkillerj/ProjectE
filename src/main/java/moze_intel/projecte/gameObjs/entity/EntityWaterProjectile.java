@@ -1,10 +1,12 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -13,21 +15,16 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-public class EntityWaterProjectile extends PEProjectile
+public class EntityWaterProjectile extends EntityThrowable
 {
 	public EntityWaterProjectile(World world)
 	{
-		super(world);
+		super(ObjHandler.WATER_PROJECTILE, world);
 	}
 
-	public EntityWaterProjectile(World world, EntityPlayer entity)
+	public EntityWaterProjectile(EntityPlayer entity, World world)
 	{
-		super(world, entity);
-	}
-
-	public EntityWaterProjectile(World world, double x, double y, double z)
-	{
-		super(world, x, y, z);
+		super(ObjHandler.WATER_PROJECTILE, entity, world);
 	}
 
 	@Override
@@ -82,10 +79,22 @@ public class EntityWaterProjectile extends PEProjectile
 	}
 
 	@Override
-	protected void apply(RayTraceResult mop)
+	public float getGravityVelocity()
+	{
+		return 0;
+	}
+
+	@Override
+	protected void onImpact(RayTraceResult mop)
 	{
 		if (this.getEntityWorld().isRemote)
 		{
+			return;
+		}
+
+		if (!(getThrower() instanceof EntityPlayer))
+		{
+			remove();
 			return;
 		}
 
@@ -108,5 +117,7 @@ public class EntityWaterProjectile extends PEProjectile
 
 			ent.addVelocity(this.motionX * 2, this.motionY * 2, this.motionZ * 2);
 		}
+
+		remove();
 	}
 }

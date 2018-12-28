@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.scoreboard.IScoreCriteria;
@@ -85,7 +86,7 @@ public final class PlayerHelper
 		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state, hand);
 	}
 
-	public static ItemStack findFirstItem(EntityPlayer player, ItemPE consumeFrom)
+	public static ItemStack findFirstItem(EntityPlayer player, Item consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
 		{
