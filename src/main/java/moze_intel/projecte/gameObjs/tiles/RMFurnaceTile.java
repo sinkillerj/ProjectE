@@ -16,6 +16,8 @@ import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.fml.relauncher.Side;
@@ -152,7 +154,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		boolean flag = furnaceBurnTime > 0;
 		boolean flag1 = false;
@@ -362,9 +364,9 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		super.readFromNBT(nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
-		inputInventory.deserializeNBT(nbt.getCompoundTag("Input"));
-		outputInventory.deserializeNBT(nbt.getCompoundTag("Output"));
-		fuelInv.deserializeNBT(nbt.getCompoundTag("Fuel"));
+		inputInventory.deserializeNBT(nbt.getCompound("Input"));
+		outputInventory.deserializeNBT(nbt.getCompound("Output"));
+		fuelInv.deserializeNBT(nbt.getCompound("Fuel"));
 		currentItemBurnTime = getItemBurnTime(getFuelItem());
 	}
 	
@@ -373,11 +375,11 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setShort("BurnTime", (short) furnaceBurnTime);
-		nbt.setShort("CookTime", (short) furnaceCookTime);
-		nbt.setTag("Input", inputInventory.serializeNBT());
-		nbt.setTag("Output", outputInventory.serializeNBT());
-		nbt.setTag("Fuel", fuelInv.serializeNBT());
+		nbt.putShort("BurnTime", (short) furnaceBurnTime);
+		nbt.putShort("CookTime", (short) furnaceCookTime);
+		nbt.put("Input", inputInventory.serializeNBT());
+		nbt.put("Output", outputInventory.serializeNBT());
+		nbt.put("Fuel", fuelInv.serializeNBT());
 		return nbt;
 	}
 

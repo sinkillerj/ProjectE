@@ -105,7 +105,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		updateChest();
 
@@ -183,7 +183,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 		if (lockCopy.hasTag() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 		{
-			lockCopy.setTagCompound(new NBTTagCompound());
+			lockCopy.setTag(new NBTTagCompound());
 		}
 
 		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
@@ -228,8 +228,8 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		inputInventory.deserializeNBT(nbt.getCompoundTag("Input"));
-		lock.deserializeNBT(nbt.getCompoundTag("LockSlot"));
+		inputInventory.deserializeNBT(nbt.getCompound("Input"));
+		lock.deserializeNBT(nbt.getCompound("LockSlot"));
 	}
 	
 	@Nonnull
@@ -237,16 +237,17 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setTag("Input", inputInventory.serializeNBT());
-		nbt.setTag("LockSlot", lock.serializeNBT());
+		nbt.put("Input", inputInventory.serializeNBT());
+		nbt.put("LockSlot", lock.serializeNBT());
 		return nbt;
 	}
 
+	// TODO 1.13 recheck
 	private void updateChest()
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{
-			world.addBlockEvent(pos, getBlockType(), 1, numPlayersUsing);
+			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;

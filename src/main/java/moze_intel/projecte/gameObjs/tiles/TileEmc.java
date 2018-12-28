@@ -37,12 +37,6 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		return writeToNBT(new NBTTagCompound());
 	}
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState state, @Nonnull IBlockState newState)
-	{
-		return state.getBlock() != newState.getBlock();
-	}
-	
 	protected boolean hasMaxedEmc()
 	{
 		return getStoredEmc() >= getMaximumEmc();

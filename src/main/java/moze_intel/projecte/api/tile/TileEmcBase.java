@@ -2,6 +2,7 @@ package moze_intel.projecte.api.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 import javax.annotation.Nonnull;
 
@@ -17,8 +18,9 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	protected double maximumEMC;
 	protected double currentEMC = 0;
 
-	protected TileEmcBase()
+	protected TileEmcBase(TileEntityType<?> type)
 	{
+		super(type);
 		setMaximumEMC(Double.MAX_VALUE);
 	}
 

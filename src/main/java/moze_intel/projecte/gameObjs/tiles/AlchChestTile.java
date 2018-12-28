@@ -31,6 +31,7 @@ public class AlchChestTile extends TileEmc
 		inventoryCap.invalidate();
 	}
 
+	@Nonnull
 	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
@@ -58,7 +59,7 @@ public class AlchChestTile extends TileEmc
 	}
 	
 	@Override
-	public void update()
+	public void tick()
 	{
 		if (++ticksSinceSync % 20 * 4 == 0)
 		{

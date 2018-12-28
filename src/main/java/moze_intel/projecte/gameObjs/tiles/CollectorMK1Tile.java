@@ -126,7 +126,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if (world.isRemote)
 			return;
@@ -280,7 +280,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	public int getSunLevel()
 	{
-		if (world.provider.doesWaterVaporize())
+		if (world.dimension.doesWaterVaporize())
 		{
 			return 16;
 		}
@@ -332,8 +332,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		super.readFromNBT(nbt);
 		storedFuelEmc = nbt.getDouble("FuelEMC");
-		input.deserializeNBT(nbt.getCompoundTag("Input"));
-		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
+		input.deserializeNBT(nbt.getCompound("Input"));
+		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
 	}
 	
 	@Nonnull
@@ -341,9 +341,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setDouble("FuelEMC", storedFuelEmc);
-		nbt.setTag("Input", input.serializeNBT());
-		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
+		nbt.putDouble("FuelEMC", storedFuelEmc);
+		nbt.put("Input", input.serializeNBT());
+		nbt.put("AuxSlots", auxSlots.serializeNBT());
 		return nbt;
 	}
 

@@ -122,7 +122,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{	
 		if (world.isRemote)
 		{
@@ -235,8 +235,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		input.deserializeNBT(nbt.getCompoundTag("Input"));
-		output.deserializeNBT(nbt.getCompoundTag("Output"));
+		input.deserializeNBT(nbt.getCompound("Input"));
+		output.deserializeNBT(nbt.getCompound("Output"));
 	}
 	
 	@Nonnull
@@ -244,8 +244,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setTag("Input", input.serializeNBT());
-		nbt.setTag("Output", output.serializeNBT());
+		nbt.put("Input", input.serializeNBT());
+		nbt.put("Output", output.serializeNBT());
 		return nbt;
 	}
 

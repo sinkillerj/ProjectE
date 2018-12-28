@@ -75,7 +75,7 @@ public class CondenserMK2Tile extends CondenserTile
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		getOutput().deserializeNBT(nbt.getCompoundTag("Output"));
+		getOutput().deserializeNBT(nbt.getCompound("Output"));
 	}
 
 	@Nonnull
@@ -83,7 +83,7 @@ public class CondenserMK2Tile extends CondenserTile
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setTag("Output", getOutput().serializeNBT());
+		nbt.put("Output", getOutput().serializeNBT());
 		return nbt;
 	}
 }

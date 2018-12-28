@@ -39,7 +39,7 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
@@ -131,7 +131,7 @@ public class DMPedestalTile extends TileEmc
 		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
-		activityCooldown = tag.getInteger("activityCooldown");
+		activityCooldown = tag.getInt("activityCooldown");
 		previousRedstoneState = tag.getBoolean("powered");
 	}
 
@@ -141,9 +141,9 @@ public class DMPedestalTile extends TileEmc
 	{
 		tag = super.writeToNBT(tag);
 		tag.merge(inventory.serializeNBT());
-		tag.setBoolean("isActive", getActive());
-		tag.setInteger("activityCooldown", activityCooldown);
-		tag.setBoolean("powered", previousRedstoneState);
+		tag.putBoolean("isActive", getActive());
+		tag.putInt("activityCooldown", activityCooldown);
+		tag.putBoolean("powered", previousRedstoneState);
 		return tag;
 	}
 
