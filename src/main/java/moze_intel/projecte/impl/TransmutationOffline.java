@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -53,7 +54,7 @@ public class TransmutationOffline
     }
 
     private static boolean cacheOfflineData(UUID playerUUID) {
-        Preconditions.checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "CRITICAL: Trying to read filesystem on client!!");
+        Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
         File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
         if (playerData.exists())
         {

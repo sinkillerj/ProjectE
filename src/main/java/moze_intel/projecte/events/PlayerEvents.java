@@ -35,6 +35,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -108,7 +109,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void onConstruct(EntityEvent.EntityConstructing evt)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER // No world to check yet
+		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER // No world to check yet
 			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.getEntity().getUniqueID());

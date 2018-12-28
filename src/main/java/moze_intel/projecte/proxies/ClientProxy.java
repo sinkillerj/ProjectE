@@ -364,13 +364,13 @@ public class ClientProxy implements IProxy
 	@Override
 	public EntityPlayer getClientPlayer()
 	{
-		return FMLClientHandler.instance().getClientPlayerEntity();
+		return Minecraft.getInstance().player;
 	}
 
 	@Override
 	public boolean isJumpPressed()
 	{
-		return FMLClientHandler.instance().getClient().gameSettings.keyBindJump.isKeyDown();
+		return Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown();
 	}
 }
 

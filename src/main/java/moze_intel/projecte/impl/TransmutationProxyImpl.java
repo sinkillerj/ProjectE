@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     @Override
     public IKnowledgeProvider getKnowledgeProviderFor(@Nonnull UUID playerUUID)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER)
         {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
             return PECore.proxy.getClientTransmutationProps();
