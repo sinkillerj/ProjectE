@@ -30,7 +30,7 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	}
 
 	@Override
-	public void doRenderLayer(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
+	public void render(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
 		if (player.isInvisible())
 		{
@@ -45,20 +45,20 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			render.getMainModel().bipedBody.postRender(0.0625F);
 			if (player.isSneaking())
 			{
-				GlStateManager.rotate(-28.64789F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotatef(-28.64789F, 1.0F, 0.0F, 0.0F);
 			}
-			GlStateManager.rotate(180, 0, 0, 1);
-			GlStateManager.scale(3.0f, 3.0f, 3.0f);
-			GlStateManager.translate(-0.5f, -0.498f, -0.5f);
-			GlStateManager.color(0.0F, 1.0F, 0.0F, 1.0F);
+			GlStateManager.rotatef(180, 0, 0, 1);
+			GlStateManager.scalef(3.0f, 3.0f, 3.0f);
+			GlStateManager.translatef(-0.5f, -0.498f, -0.5f);
+			GlStateManager.color4f(0.0F, 1.0F, 0.0F, 1.0F);
 			GlStateManager.disableLighting();
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
+			OpenGlHelper.glMultiTexCoord2f(OpenGlHelper.GL_TEXTURE1, 240f, 240f);
 			if (CLAR_UUID.equals(player.getUniqueID()))
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(HEART_LOC);
+				Minecraft.getInstance().textureManager.bindTexture(HEART_LOC);
 			} else
 			{
-				Minecraft.getMinecraft().renderEngine.bindTexture(YUE_LOC);
+				Minecraft.getInstance().textureManager.bindTexture(YUE_LOC);
 			}
 
 			Tessellator tess = Tessellator.getInstance();
@@ -71,7 +71,7 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 			tess.draw();
 
 			GlStateManager.enableLighting();
-			GlStateManager.color(1F, 1F, 1F);
+			GlStateManager.color3f(1F, 1F, 1F);
 			GlStateManager.popMatrix();
 		}
 	}

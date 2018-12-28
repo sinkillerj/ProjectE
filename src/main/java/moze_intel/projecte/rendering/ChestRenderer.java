@@ -22,22 +22,22 @@ public class ChestRenderer extends TileEntityRenderer<AlchChestTile>
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		EnumFacing direction = null;
-		if (chestTile.getWorld() != null && !chestTile.isInvalid())
+		if (chestTile.getWorld() != null && !chestTile.isRemoved())
 		{
 			IBlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
-			direction = state.getBlock() == ObjHandler.alchChest ? state.getValue(PEStateProps.FACING) : null;
+			direction = state.getBlock() == ObjHandler.alchChest ? state.get(PEStateProps.FACING) : null;
 		}
 		
 		this.bindTexture(texture);
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.translate(x, y + 1.0F, z + 1.0F);
-		GlStateManager.scale(1.0F, -1.0F, -1.0F);
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.translated(x, y + 1.0F, z + 1.0F);
+		GlStateManager.scalef(1.0F, -1.0F, -1.0F);
+		GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 
 		short angle = 0;
 
@@ -52,15 +52,15 @@ public class ChestRenderer extends TileEntityRenderer<AlchChestTile>
 			}
 		}
 
-		GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
-		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+		GlStateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
 		float adjustedLidAngle = chestTile.prevLidAngle + (chestTile.lidAngle - chestTile.prevLidAngle) * partialTicks;
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
-		model.chestLid.rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);
+		model.getLid().rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);
 		model.renderAll();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

@@ -41,26 +41,28 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.renderer.entity.RenderSprite;
 import net.minecraft.client.renderer.entity.RenderTippedArrow;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class ClientProxy implements IProxy
 {
 	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received
@@ -352,7 +354,7 @@ public class ClientProxy implements IProxy
 
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 	{
-		return manager -> new RenderSnowball<>(manager, itemToRender, Minecraft.getMinecraft().getRenderItem());
+		return manager -> new RenderSprite<>(manager, itemToRender, Minecraft.getInstance().getItemRenderer());
 	}
 
 	@Override

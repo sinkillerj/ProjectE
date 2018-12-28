@@ -15,14 +15,14 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile>
 {
 
     @Override
-    public void render(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+    public void render(@Nonnull DMPedestalTile te, double x, double y, double z, float partialTicks, int destroyStage)
     {
-        if (!te.isInvalid())
+        if (!te.isRemoved())
         {
-            if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox())
+            if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox())
             {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(x, y, z);
+                GlStateManager.translated(x, y, z);
                 GlStateManager.depthMask(false);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableLighting();
@@ -44,12 +44,12 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile>
             if (!te.getInventory().getStackInSlot(0).isEmpty())
             {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(x + 0.5, y + 0.7, z + 0.5);
-                GlStateManager.translate(0, MathHelper.sin((te.getWorld().getTotalWorldTime() + partialTicks) / 10.0F) * 0.1F + 0.1F, 0);
-                GlStateManager.scale(0.75, 0.75, 0.75);
-                float angle = (te.getWorld().getTotalWorldTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
-                GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
-                Minecraft.getMinecraft().getRenderItem().renderItem(te.getInventory().getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND);
+                GlStateManager.translated(x + 0.5, y + 0.7, z + 0.5);
+                GlStateManager.translated(0, MathHelper.sin((te.getWorld().getGameTime() + partialTicks) / 10.0F) * 0.1F + 0.1F, 0);
+                GlStateManager.scaled(0.75, 0.75, 0.75);
+                float angle = (te.getWorld().getGameTime() + partialTicks) / 20.0F * (180F / (float)Math.PI);
+                GlStateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
+                Minecraft.getInstance().getItemRenderer().renderItem(te.getInventory().getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND);
                 GlStateManager.popMatrix();
             }
         }

@@ -5,13 +5,13 @@ import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
@@ -22,22 +22,22 @@ public class CondenserRenderer extends TileEntityRenderer<CondenserTile>
 	private final ModelChest model = new ModelChest();
 	
 	@Override
-	public void render(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage, float unused)
+	public void render(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		EnumFacing direction = null;
-		if (condenser.getWorld() != null && !condenser.isInvalid())
+		if (condenser.getWorld() != null && !condenser.isRemoved())
 		{
 			IBlockState state = condenser.getWorld().getBlockState(condenser.getPos());
-			direction = state.getBlock() == ObjHandler.condenser ? state.getValue(PEStateProps.FACING) : null;
+			direction = state.getBlock() == ObjHandler.condenser ? state.get(PEStateProps.FACING) : null;
 		}
 
 		this.bindTexture(texture);
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.translate(x, y + 1.0F, z + 1.0F);
-		GlStateManager.scale(1.0F, -1.0F, -1.0F);
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.translated(x, y + 1.0F, z + 1.0F);
+		GlStateManager.scalef(1.0F, -1.0F, -1.0F);
+		GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 
 		short angle = 0;
 
@@ -52,15 +52,15 @@ public class CondenserRenderer extends TileEntityRenderer<CondenserTile>
 			}
 		}
 
-		GlStateManager.rotate(angle, 0.0F, 1.0F, 0.0F);
-		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+		GlStateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
 		float adjustedLidAngle = condenser.prevLidAngle + (condenser.lidAngle - condenser.prevLidAngle) * partialTicks;
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
-		model.chestLid.rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);
+		model.getLid().rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);
 		model.renderAll();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }
