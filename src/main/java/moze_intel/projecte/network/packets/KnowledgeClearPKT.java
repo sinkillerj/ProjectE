@@ -1,34 +1,25 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class KnowledgeClearPKT implements IMessage
 {
-	public KnowledgeClearPKT() {}
+	public static void encode(KnowledgeClearPKT msg, PacketBuffer buf) {}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {}
-
-	@Override
-	public void toBytes(ByteBuf buf) {}
-
-	public static class Handler implements IMessageHandler<KnowledgeClearPKT, IMessage>
+	public static KnowledgeClearPKT decode(PacketBuffer buf)
 	{
-		@Override
-		public IMessage onMessage(KnowledgeClearPKT pkt, MessageContext ctx)
+		return new KnowledgeClearPKT();
+	}
+
+	public static class Handler
+	{
+		public static void handle(KnowledgeClearPKT pkt, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					PECore.proxy.clearClientKnowledge();
-				}
-			});
-			return null;
+			ctx.get().enqueueWork(() -> PECore.proxy.clearClientKnowledge());
 		}
 	}
 }

@@ -1,50 +1,41 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.function.Supplier;
 
 public class ShowBagPKT implements IMessage
 {
-	private int windowId;
-
-	public ShowBagPKT() {}
+	private final int windowId;
 
 	public ShowBagPKT(int windowId)
 	{
 		this.windowId = windowId;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(ShowBagPKT msg, PacketBuffer buf)
 	{
-		windowId = buf.readByte();
+		buf.writeVarInt(msg.windowId);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static ShowBagPKT decode(PacketBuffer buf)
 	{
-		buf.writeByte(windowId);
+		return new ShowBagPKT(buf.readVarInt());
 	}
 
-	public static class Handler implements IMessageHandler<ShowBagPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(ShowBagPKT message, MessageContext ctx)
+		public static void handle(ShowBagPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().displayGuiScreen(new GUIAlchChest(Minecraft.getMinecraft().player.inventory, EnumHand.OFF_HAND, new ItemStackHandler(104)));
-					Minecraft.getMinecraft().player.openContainer.windowId = message.windowId;
-				}
+			ctx.get().enqueueWork(() -> {
+				Minecraft.getInstance().displayGuiScreen(new GUIAlchChest(Minecraft.getInstance().player.inventory, EnumHand.OFF_HAND, new ItemStackHandler(104)));
+				Minecraft.getInstance().player.openContainer.windowId = message.windowId;
 			});
-			return null;
 		}
 	}
 }

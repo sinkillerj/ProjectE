@@ -4,48 +4,39 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class SyncBagDataPKT implements IMessage
 {
-	private NBTTagCompound nbt;
-
-	public SyncBagDataPKT() {}
+	private final NBTTagCompound nbt;
 
 	public SyncBagDataPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(SyncBagDataPKT msg, PacketBuffer buf)
 	{
-		nbt = ByteBufUtils.readTag(buf);
+		buf.writeCompoundTag(msg.nbt);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static SyncBagDataPKT decode(PacketBuffer buf)
 	{
-		ByteBufUtils.writeTag(buf, nbt);
+		return new SyncBagDataPKT(buf.readCompoundTag());
 	}
 
-	public static class Handler implements IMessageHandler<SyncBagDataPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final SyncBagDataPKT message, MessageContext ctx)
+		public static void handle(final SyncBagDataPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					PECore.proxy.getClientBagProps().deserializeNBT(message.nbt);
-					PECore.debugLog("** RECEIVED BAGS CLIENTSIDE **");
-				}
+			ctx.get().enqueueWork(() -> {
+				PECore.proxy.getClientBagProps().deserializeNBT(message.nbt);
+				PECore.debugLog("** RECEIVED BAGS CLIENTSIDE **");
 			});
-
-			return null;
 		}
 	}
 }

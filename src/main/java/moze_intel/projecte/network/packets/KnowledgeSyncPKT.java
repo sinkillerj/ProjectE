@@ -4,48 +4,39 @@ import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class KnowledgeSyncPKT implements IMessage
 {
-	private NBTTagCompound nbt;
-
-	public KnowledgeSyncPKT() {}
+	private final NBTTagCompound nbt;
 
 	public KnowledgeSyncPKT(NBTTagCompound nbt)
 	{
 		this.nbt = nbt;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(KnowledgeSyncPKT msg, PacketBuffer buf)
 	{
-		nbt = ByteBufUtils.readTag(buf);
+		buf.writeCompoundTag(msg.nbt);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static KnowledgeSyncPKT decode(PacketBuffer buf)
 	{
-		ByteBufUtils.writeTag(buf, nbt);
+		return new KnowledgeSyncPKT(buf.readCompoundTag());
 	}
 
-	public static class Handler implements IMessageHandler<KnowledgeSyncPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final KnowledgeSyncPKT message, MessageContext ctx)
+		public static void handle(final KnowledgeSyncPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					PECore.proxy.getClientTransmutationProps().deserializeNBT(message.nbt);
-					PECore.debugLog("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
-				}
+			ctx.get().enqueueWork(() -> {
+				PECore.proxy.getClientTransmutationProps().deserializeNBT(message.nbt);
+				PECore.debugLog("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 			});
-
-			return null;
 		}
 	}
 }

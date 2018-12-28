@@ -1,40 +1,35 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class LeftClickArchangelPKT implements IMessage
 {
-	@Override
-	public void fromBytes(ByteBuf buf) {}
+	public static void encode(LeftClickArchangelPKT msg, PacketBuffer buf) {}
 
-	@Override
-	public void toBytes(ByteBuf buf) {}
-
-	public static class Handler implements IMessageHandler<LeftClickArchangelPKT, IMessage>
+	public static LeftClickArchangelPKT decode(PacketBuffer buf)
 	{
-		@Override
-		public IMessage onMessage(LeftClickArchangelPKT message, MessageContext ctx)
+		return new LeftClickArchangelPKT();
+	}
+
+	public static class Handler
+	{
+		public static void handle(LeftClickArchangelPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					EntityPlayer player = ctx.getServerHandler().player;
-					ItemStack main = player.getHeldItemMainhand();
-					if (!main.isEmpty() && main.getItem() == ObjHandler.angelSmite)
-					{
-						((ArchangelSmite) ObjHandler.angelSmite).fireVolley(main, player);
-					}
+			ctx.get().enqueueWork(() -> {
+				EntityPlayer player = ctx.get().getSender();
+				ItemStack main = player.getHeldItemMainhand();
+				if (!main.isEmpty() && main.getItem() == ObjHandler.angelSmite)
+				{
+					((ArchangelSmite) ObjHandler.angelSmite).fireVolley(main, player);
 				}
 			});
-
-			return null;
 		}
 	}
 }

@@ -1,46 +1,35 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class StepHeightPKT implements IMessage
 {
-	private float value;
-
-	public StepHeightPKT() {}
+	private final float value;
 
 	public StepHeightPKT(float value)
 	{
 		this.value = value;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(StepHeightPKT msg, PacketBuffer buf)
 	{
-		value = buf.readFloat();
+		buf.writeFloat(msg.value);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static StepHeightPKT decode(PacketBuffer buf)
 	{
-		buf.writeFloat(value);
+		return new StepHeightPKT(buf.readFloat());
 	}
 
-	public static class Handler implements IMessageHandler<StepHeightPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final StepHeightPKT message, MessageContext ctx)
+		public static void handle(final StepHeightPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().player.stepHeight = message.value;
-				}
-			});
-			return null;
+			ctx.get().enqueueWork(() -> Minecraft.getInstance().player.stepHeight = message.value);
 		}
 	}
 }

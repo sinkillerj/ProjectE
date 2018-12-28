@@ -1,56 +1,46 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class UpdateGemModePKT implements IMessage
 {
-	private boolean mode;
-
-	public UpdateGemModePKT() {}
+	private final boolean mode;
 
 	public UpdateGemModePKT(boolean mode)
 	{
 		this.mode = mode;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(UpdateGemModePKT msg, PacketBuffer buf)
 	{
-		mode = buf.readBoolean();
+		buf.writeBoolean(msg.mode);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static UpdateGemModePKT decode(PacketBuffer buf)
 	{
-		buf.writeBoolean(mode);
+		return new UpdateGemModePKT(buf.readBoolean());
 	}
 
-	public static class Handler implements IMessageHandler<UpdateGemModePKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx)
+		public static void handle(final UpdateGemModePKT pkt, final Supplier<NetworkEvent.Context> ctx)
 		{
-			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					ItemStack stack = ctx.getServerHandler().player.getHeldItem(EnumHand.MAIN_HAND);
-					if (stack.isEmpty())
-						stack = ctx.getServerHandler().player.getHeldItem(EnumHand.OFF_HAND);
+			ctx.get().enqueueWork(() -> {
+				ItemStack stack = ctx.get().getSender().getHeldItem(EnumHand.MAIN_HAND);
+				if (stack.isEmpty())
+					stack = ctx.get().getSender().getHeldItem(EnumHand.OFF_HAND);
 
-					if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
-					{
-						stack.getTag().setBoolean("Whitelist", pkt.mode);
-					}
+				if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
+				{
+					stack.getTag().putBoolean("Whitelist", pkt.mode);
 				}
 			});
-
-			return null;
 		}
 	}
 }

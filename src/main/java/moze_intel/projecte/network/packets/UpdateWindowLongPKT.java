@@ -1,22 +1,19 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.container.LongContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-// Version of SPacketWindowProperty that does not truncate the `value` arg to an int
+import java.util.function.Supplier;
+
+// Version of SPacketWindowProperty that supports long values
 public class UpdateWindowLongPKT implements IMessage
 {
-
-    private short windowId;
-    private short propId;
-    private long propVal;
-
-    public UpdateWindowLongPKT() {}
+    private final short windowId;
+    private final short propId;
+    private final long propVal;
 
     public UpdateWindowLongPKT(short windowId, short propId, long propVal)
     {
@@ -25,45 +22,36 @@ public class UpdateWindowLongPKT implements IMessage
         this.propVal = propVal;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static void encode(UpdateWindowLongPKT msg, PacketBuffer buf)
     {
-        windowId = buf.readUnsignedByte();
-        propId = buf.readShort();
-        propVal = buf.readLong();
+        buf.writeShort(msg.windowId);
+        buf.writeShort(msg.propId);
+        buf.writeLong(msg.propVal);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
+    public static UpdateWindowLongPKT decode(PacketBuffer buf)
     {
-        buf.writeByte(windowId);
-        buf.writeShort(propId);
-        buf.writeLong(propVal);
+        return new UpdateWindowLongPKT(buf.readShort(), buf.readShort(), buf.readLong());
     }
 
-    public static class Handler implements IMessageHandler<UpdateWindowLongPKT, IMessage>
+    public static class Handler
     {
-        @Override
-        public IMessage onMessage(final UpdateWindowLongPKT msg, MessageContext ctx)
+        public static void handle(final UpdateWindowLongPKT msg, Supplier<NetworkEvent.Context> ctx)
         {
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    EntityPlayer player = Minecraft.getMinecraft().player;
-                    if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
-                        //It should always be a LongContainer if it is this type of packet, if not fallback to normal update
-                        if (player.openContainer instanceof LongContainer)
-                        {
-                            ((LongContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
-                        }
-                        else
-                        {
-                            player.openContainer.updateProgressBar(msg.propId, (int) msg.propVal);
-                        }
+            ctx.get().enqueueWork(() -> {
+                EntityPlayer player = Minecraft.getInstance().player;
+                if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
+                    //It should always be a LongContainer if it is this type of packet, if not fallback to normal update
+                    if (player.openContainer instanceof LongContainer)
+                    {
+                        ((LongContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
+                    }
+                    else
+                    {
+                        player.openContainer.updateProgressBar(msg.propId, (int) msg.propVal);
                     }
                 }
             });
-            return null;
         }
     }
 }

@@ -1,52 +1,42 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class SetFlyPKT implements IMessage
 {
-	private boolean flag;
-
-	public SetFlyPKT() {}
+	private final boolean flag;
 
 	public SetFlyPKT(boolean value)
 	{
 		flag = value;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(SetFlyPKT msg, PacketBuffer buf)
 	{
-		flag = buf.readBoolean();
+		buf.writeBoolean(msg.flag);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static SetFlyPKT decode(PacketBuffer buf)
 	{
-		buf.writeBoolean(flag);
+		return new SetFlyPKT(buf.readBoolean());
 	}
 
-	public static class Handler implements IMessageHandler<SetFlyPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final SetFlyPKT message, MessageContext ctx)
+		public static void handle(final SetFlyPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().player.capabilities.allowFlying = message.flag;
+			ctx.get().enqueueWork(() -> {
+				Minecraft.getInstance().player.abilities.allowFlying = message.flag;
 
-					if (!message.flag)
-					{
-						Minecraft.getMinecraft().player.capabilities.isFlying = false;
-					}
+				if (!message.flag)
+				{
+					Minecraft.getInstance().player.abilities.isFlying = false;
 				}
 			});
-
-			return null;
 		}
 	}
 }

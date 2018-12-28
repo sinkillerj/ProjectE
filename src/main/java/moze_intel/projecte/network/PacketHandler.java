@@ -9,39 +9,45 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Map;
 
 public final class PacketHandler
 {
-	private static final SimpleNetworkWrapper HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel(PECore.MODID);
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
+	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
+			.named(new ResourceLocation(PECore.MODID, "main_channel"))
+			.clientAcceptedVersions(PROTOCOL_VERSION::equals)
+			.serverAcceptedVersions(PROTOCOL_VERSION::equals)
+			.networkProtocolVersion(() -> PROTOCOL_VERSION)
+			.simpleChannel();
 
 	public static void register()
 	{
 		int disc = 0;
-		HANDLER.registerMessage(SyncEmcPKT.Handler.class, SyncEmcPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(KeyPressPKT.Handler.class, KeyPressPKT.class, disc++, Side.SERVER);
-		HANDLER.registerMessage(StepHeightPKT.Handler.class, StepHeightPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(SetFlyPKT.Handler.class, SetFlyPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(KnowledgeSyncPKT.Handler.class, KnowledgeSyncPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(CheckUpdatePKT.Handler.class, CheckUpdatePKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(SyncBagDataPKT.Handler.class, SyncBagDataPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(SearchUpdatePKT.Handler.class, SearchUpdatePKT.class, disc++, Side.SERVER);
-		HANDLER.registerMessage(KnowledgeClearPKT.Handler.class, KnowledgeClearPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, disc++, Side.SERVER);
-		HANDLER.registerMessage(UpdateWindowIntPKT.Handler.class, UpdateWindowIntPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(UpdateWindowLongPKT.Handler.class, UpdateWindowLongPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(CooldownResetPKT.Handler.class, CooldownResetPKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(LeftClickArchangelPKT.Handler.class, LeftClickArchangelPKT.class, disc++, Side.SERVER);
-		HANDLER.registerMessage(SyncCovalencePKT.Handler.class, SyncCovalencePKT.class, disc++, Side.CLIENT);
-		HANDLER.registerMessage(ShowBagPKT.Handler.class, ShowBagPKT.class, disc++, Side.CLIENT);
+
+		HANDLER.registerMessage(disc++, SyncEmcPKT.class, SyncEmcPKT::encode, SyncEmcPKT::decode, SyncEmcPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, KeyPressPKT.class, KeyPressPKT::encode, KeyPressPKT::decode, KeyPressPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, StepHeightPKT.class, StepHeightPKT::encode, StepHeightPKT::decode, StepHeightPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, SetFlyPKT.class, SetFlyPKT::encode, SetFlyPKT::decode, SetFlyPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, KnowledgeSyncPKT.class, KnowledgeSyncPKT::encode, KnowledgeSyncPKT::decode, KnowledgeSyncPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, CheckUpdatePKT.class, CheckUpdatePKT::encode, CheckUpdatePKT::decode, CheckUpdatePKT.Handler::handle);
+		HANDLER.registerMessage(disc++, SyncBagDataPKT.class, SyncBagDataPKT::encode, SyncBagDataPKT::decode, SyncBagDataPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, SearchUpdatePKT.class, SearchUpdatePKT::encode, SearchUpdatePKT::decode, SearchUpdatePKT.Handler::handle);
+		HANDLER.registerMessage(disc++, KnowledgeClearPKT.class, KnowledgeClearPKT::encode, KnowledgeClearPKT::decode, KnowledgeClearPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, UpdateGemModePKT.class, UpdateGemModePKT::encode, UpdateGemModePKT::decode, UpdateGemModePKT.Handler::handle);
+		HANDLER.registerMessage(disc++, UpdateWindowIntPKT.class, UpdateWindowIntPKT::encode, UpdateWindowIntPKT::decode, UpdateWindowIntPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, UpdateWindowLongPKT.class, UpdateWindowLongPKT::encode, UpdateWindowLongPKT::decode, UpdateWindowLongPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, CooldownResetPKT.class, CooldownResetPKT::encode, CooldownResetPKT::decode, CooldownResetPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, LeftClickArchangelPKT.class, LeftClickArchangelPKT::encode, LeftClickArchangelPKT::decode, LeftClickArchangelPKT.Handler::handle);
+		HANDLER.registerMessage(disc++, SyncCovalencePKT.class, SyncCovalencePKT::encode, SyncCovalencePKT::decode, SyncCovalencePKT.Handler::handle);
+		HANDLER.registerMessage(disc++, ShowBagPKT.class, ShowBagPKT::encode, ShowBagPKT::decode, ShowBagPKT.Handler::handle);
 	}
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)
@@ -64,7 +70,7 @@ public final class PacketHandler
 	{
 		if (player.server.isDedicatedServer() || !player.getName().equals(player.server.getServerOwner()))
 		{
-			HANDLER.sendTo(msg, player);
+			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 
@@ -107,24 +113,6 @@ public final class PacketHandler
 	}
 	
 	/**
-	 * Sends a packet to all the clients.<br>
-	 * Must be called Server side.
-	 */
-	public static void sendToAll(IMessage msg)
-	{
-		HANDLER.sendToAll(msg);
-	}
-	
-	/**
-	 * Send a packet to all players around a specific point.<br>
-	 * Must be called Server side. 
-	 */
-	public static void sendToAllAround(IMessage msg, TargetPoint point)
-	{
-		HANDLER.sendToAllAround(msg, point);
-	}
-	
-	/**
 	 * Send a packet to a specific player.<br>
 	 * Must be called Server side. 
 	 */
@@ -132,16 +120,7 @@ public final class PacketHandler
 	{
 		if (!(player instanceof FakePlayer))
 		{
-			HANDLER.sendTo(msg, player);
+			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}
-	}
-	
-	/**
-	 * Send a packet to all the players in the specified dimension.<br>
-	 *  Must be called Server side.
-	 */
-	public static void sendToDimension(IMessage msg, int dimension)
-	{
-		HANDLER.sendToDimension(msg, dimension);
 	}
 }

@@ -1,32 +1,28 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class CheckUpdatePKT implements IMessage
 {
-	@Override
-	public void fromBytes(ByteBuf buf) {}
+	public static void encode(CheckUpdatePKT pkt, PacketBuffer buf) {}
 
-	@Override
-	public void toBytes(ByteBuf buf) {}
+	public static CheckUpdatePKT decode(PacketBuffer buf) {
+		return new CheckUpdatePKT();
+	}
 
-	public static class Handler implements IMessageHandler<CheckUpdatePKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(CheckUpdatePKT message, MessageContext ctx)
+		public static void handle(CheckUpdatePKT msg, Supplier<NetworkEvent.Context> ctx)
 		{
 			if (!ThreadCheckUpdate.hasRun() && updateCheckEnabled())
 			{
 				new ThreadCheckUpdate().start();
 			}
-
-			return null;
 		}
 
 		private static boolean updateCheckEnabled()

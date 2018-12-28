@@ -1,22 +1,18 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 // Version of SPacketWindowProperty that does not truncate the `value` arg to a short
 public class UpdateWindowIntPKT implements IMessage
 {
-
-    private short windowId;
-    private short propId;
-    private int propVal;
-
-    public UpdateWindowIntPKT() {}
+    private final short windowId;
+    private final short propId;
+    private final int propVal;
 
     public UpdateWindowIntPKT(short windowId, short propId, int propVal)
     {
@@ -25,38 +21,29 @@ public class UpdateWindowIntPKT implements IMessage
         this.propVal = propVal;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static void encode(UpdateWindowIntPKT msg, PacketBuffer buf)
     {
-        windowId = buf.readUnsignedByte();
-        propId = buf.readShort();
-        propVal = ByteBufUtils.readVarInt(buf, 5);
+        buf.writeShort(msg.windowId);
+        buf.writeShort(msg.propId);
+        buf.writeVarInt(msg.propVal);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
+    public static UpdateWindowIntPKT decode(PacketBuffer buf)
     {
-        buf.writeByte(windowId);
-        buf.writeShort(propId);
-        ByteBufUtils.writeVarInt(buf, propVal, 5);
+        return new UpdateWindowIntPKT(buf.readShort(), buf.readShort(), buf.readVarInt());
     }
 
-    public static class Handler implements IMessageHandler<UpdateWindowIntPKT, IMessage>
+    public static class Handler
     {
-        @Override
-        public IMessage onMessage(final UpdateWindowIntPKT msg, MessageContext ctx)
+        public static void handle(final UpdateWindowIntPKT msg, Supplier<NetworkEvent.Context> ctx)
         {
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    EntityPlayer player = Minecraft.getMinecraft().player;
-                    if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
-                    {
-                        player.openContainer.updateProgressBar(msg.propId, msg.propVal);
-                    }
+            ctx.get().enqueueWork(() -> {
+                EntityPlayer player = Minecraft.getInstance().player;
+                if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
+                {
+                    player.openContainer.updateProgressBar(msg.propId, msg.propVal);
                 }
             });
-            return null;
         }
     }
 }

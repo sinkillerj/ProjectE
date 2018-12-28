@@ -1,83 +1,73 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class SyncEmcPKT implements IMessage
 {
-	private EmcPKTInfo[] data;
-
-	public SyncEmcPKT() {}
+	private final EmcPKTInfo[] data;
 
 	public SyncEmcPKT(EmcPKTInfo[] data)
 	{
 		this.data = data;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(SyncEmcPKT pkt, PacketBuffer buf)
 	{
-		int size = ByteBufUtils.readVarInt(buf, 5);
-		data = new EmcPKTInfo[size];
+		buf.writeVarInt(pkt.data.length);
 
-		for (int i = 0; i < size; i++)
+		for (EmcPKTInfo info : pkt.data)
 		{
-			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), buf.readLong());
-		}
-	}
-
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		ByteBufUtils.writeVarInt(buf, data.length, 5);
-
-		for (EmcPKTInfo info : data)
-		{
-			ByteBufUtils.writeVarInt(buf, info.getId(), 5);
+			buf.writeVarInt(info.getId());
 			buf.writeLong(info.getEmc());
 		}
 	}
 
-	public static class Handler implements IMessageHandler<SyncEmcPKT, IMessage>
+	public static SyncEmcPKT decode(PacketBuffer buf)
 	{
-		@Override
-		public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx)
+		int size = buf.readVarInt();
+		EmcPKTInfo[] data = new EmcPKTInfo[size];
+
+		for (int i = 0; i < size; i++)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					PECore.LOGGER.info("Receiving EMC data from server.");
-					EMCMapper.emc.clear();
+			data[i] = new EmcPKTInfo(buf.readVarInt(), buf.readLong());
+		}
 
-					for (EmcPKTInfo info : pkt.data)
+		return new SyncEmcPKT(data);
+	}
+
+	public static class Handler
+	{
+		public static void handle(final SyncEmcPKT pkt, Supplier<NetworkEvent.Context> ctx)
+		{
+			ctx.get().enqueueWork(() -> {
+				PECore.LOGGER.info("Receiving EMC data from server.");
+				EMCMapper.emc.clear();
+
+				for (EmcPKTInfo info : pkt.data)
+				{
+					Item i = Item.REGISTRY.get(info.getId());
+
+					SimpleStack stack = new SimpleStack(i.getRegistryName());
+
+					if (stack.isValid())
 					{
-						Item i = Item.REGISTRY.get(info.getId());
-
-						SimpleStack stack = new SimpleStack(i.getRegistryName());
-
-						if (stack.isValid())
-						{
-							EMCMapper.emc.put(stack, info.getEmc());
-						}
+						EMCMapper.emc.put(stack, info.getEmc());
 					}
-
-					Transmutation.cacheFullKnowledge();
-					FuelMapper.loadMap();
-					PECore.refreshJEI();
 				}
-			});
 
-			return null;
+				Transmutation.cacheFullKnowledge();
+				FuelMapper.loadMap();
+				PECore.refreshJEI();
+			});
 		}
 	}
 

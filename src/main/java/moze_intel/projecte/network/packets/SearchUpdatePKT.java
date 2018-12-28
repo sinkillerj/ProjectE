@@ -1,56 +1,44 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.function.Supplier;
 
 public class SearchUpdatePKT implements IMessage
 {
-	public SearchUpdatePKT() {}
-
-	public int slot;
-	public ItemStack itemStack;
+	public final int slot;
+	public final ItemStack itemStack;
 	public SearchUpdatePKT(int slot, ItemStack itemStack)
 	{
 		this.slot = slot;
 		this.itemStack = itemStack.copy();
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public static void encode(SearchUpdatePKT msg, PacketBuffer buf)
 	{
-		slot = buf.readInt();
-		itemStack = ByteBufUtils.readItemStack(buf);
+		buf.writeVarInt(msg.slot);
+		buf.writeItemStack(msg.itemStack);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public static SearchUpdatePKT decode(PacketBuffer buf)
 	{
-		buf.writeInt(slot);
-		ByteBufUtils.writeItemStack(buf, itemStack);
+		return new SearchUpdatePKT(buf.readVarInt(), buf.readItemStack());
 	}
 
-	public static class Handler implements IMessageHandler<SearchUpdatePKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(final SearchUpdatePKT pkt, final MessageContext ctx)
+		public static void handle(final SearchUpdatePKT pkt, Supplier<NetworkEvent.Context> ctx)
 		{
-			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					if (ctx.getServerHandler().player.openContainer instanceof TransmutationContainer)
-					{
-						TransmutationContainer container = ((TransmutationContainer) ctx.getServerHandler().player.openContainer);
-						container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
-					}
+			ctx.get().enqueueWork(() -> {
+				if (ctx.get().getSender().openContainer instanceof TransmutationContainer)
+				{
+					TransmutationContainer container = ((TransmutationContainer) ctx.get().getSender().openContainer);
+					container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
 				}
 			});
-			return null;
 		}
 	}
 }

@@ -1,33 +1,24 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class CooldownResetPKT implements IMessage {
 
-	@Override
-	public void fromBytes(ByteBuf buf) {}
+	public static void encode(CooldownResetPKT pkt, PacketBuffer buf) {}
 
-	@Override
-	public void toBytes(ByteBuf buf) {}
+	public static CooldownResetPKT decode(PacketBuffer buf) {
+		return new CooldownResetPKT();
+	}
 
-	public static class Handler implements IMessageHandler<CooldownResetPKT, IMessage>
+	public static class Handler
 	{
-		@Override
-		public IMessage onMessage(CooldownResetPKT message, MessageContext ctx)
+		public static void handle(CooldownResetPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Minecraft.getMinecraft().player.resetCooldown();
-				}
-			});
-			return null;
+			ctx.get().enqueueWork(() -> Minecraft.getInstance().player.resetCooldown());
 		}
 	}
 
