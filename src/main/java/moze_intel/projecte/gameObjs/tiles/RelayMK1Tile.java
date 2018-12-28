@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -21,8 +22,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
-	private final IItemHandler automationInput;
-	private final IItemHandler automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
+	private final OptionalCapabilityInstance<IItemHandler> automationInput;
+	private final OptionalCapabilityInstance<IItemHandler> automationOutput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
 	{
 		@Nonnull
 		@Override
@@ -52,7 +53,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 			return super.extractItem(slot, amount, simulate);
 		}
-	};
+	});
 	private final int chargeRate;
 
 	public RelayMK1Tile()
@@ -75,24 +76,19 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 						: stack;
 			}
 		};
-		automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
+		automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side == EnumFacing.DOWN)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-			} else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+				return automationOutput.cast();
+			} else return automationInput.cast();
 		}
 		return super.getCapability(cap, side);
 	}

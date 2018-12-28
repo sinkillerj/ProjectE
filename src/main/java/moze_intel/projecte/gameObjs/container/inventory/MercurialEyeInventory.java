@@ -14,7 +14,7 @@ public class MercurialEyeInventory implements IItemHandlerModifiable
 	public MercurialEyeInventory(ItemStack stack)
 	{
 		this.invItem = stack;
-		this.compose = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		this.compose = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 	}
 
 	@Override

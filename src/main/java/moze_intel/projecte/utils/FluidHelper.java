@@ -15,10 +15,7 @@ public final class FluidHelper
 {
 	public static void tryFillTank(TileEntity tile, Fluid fluid, EnumFacing side, int quantity)
 	{
-		if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side))
-		{
-			IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
-			handler.fill(new FluidStack(fluid, quantity), true);
-		}
+		tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)
+				.ifPresent(handler -> handler.fill(new FluidStack(fluid, quantity), true));
 	}
 }

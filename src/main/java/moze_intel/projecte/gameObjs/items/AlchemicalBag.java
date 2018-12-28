@@ -36,7 +36,7 @@ public class AlchemicalBag extends ItemPE
 			"item.fireworksCharge.red", "item.fireworksCharge.black"
 	};
 
-	private final EnumDyeColor color;
+	public final EnumDyeColor color;
 	
 	public AlchemicalBag(Builder builder, EnumDyeColor color)
 	{
@@ -79,7 +79,8 @@ public class AlchemicalBag extends ItemPE
 
 			if (stack.getItem() instanceof AlchemicalBag)
 			{
-				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
+				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+						.orElseThrow(NullPointerException::new)
 						.getBag(((AlchemicalBag) stack.getItem()).color);
 				for (int i = 0; i < inv.getSlots(); i++) {
 					ItemStack ring = inv.getStackInSlot(i);

@@ -38,7 +38,7 @@ public final class EMCHelper
 			return minFuel;
 		}
 
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).orElseThrow(NullPointerException::new);
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int emcConsumed = 0;

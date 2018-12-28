@@ -69,19 +69,19 @@ public class ClientProxy implements IProxy
 	@Override
 	public void clearClientKnowledge()
 	{
-		FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).clearKnowledge();
+		Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 	}
 
 	@Override
 	public IKnowledgeProvider getClientTransmutationProps()
 	{
-		return FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
+		return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new));
 	}
 
 	@Override
 	public IAlchBagProvider getClientBagProps()
 	{
-		return FMLClientHandler.instance().getClientPlayerEntity().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null);
+		return Minecraft.getInstance().player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new);
 	}
 
 	@Override

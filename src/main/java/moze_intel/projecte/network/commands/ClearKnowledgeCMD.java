@@ -1,6 +1,7 @@
 package moze_intel.projecte.network.commands;
 
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
 import net.minecraft.command.CommandBase;
@@ -42,7 +43,7 @@ public class ClearKnowledgeCMD extends CommandBase
 
 		for (EntityPlayerMP player : getPlayers(server, sender, params[0]))
 		{
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).clearKnowledge();
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
 			sender.sendMessage(new TextComponentTranslation("pe.command.clearknowledge.success", player.getName()));
 

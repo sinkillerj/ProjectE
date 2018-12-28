@@ -8,7 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -16,23 +18,18 @@ import javax.annotation.Nonnull;
 public class AlchChestTile extends TileEmc
 {
 	private final ItemStackHandler inventory = new StackHandler(104);
+	private final OptionalCapabilityInstance<IItemHandler> inventoryCap = OptionalCapabilityInstance.of(() -> inventory);
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+			return inventoryCap.cast();
 		}
 		return super.getCapability(cap, side);
 	}

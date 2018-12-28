@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -55,6 +56,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	{
 		return new ICapabilitySerializable<NBTTagCompound>() {
 			private final IItemHandler inv = new ItemStackHandler(2);
+			private final OptionalCapabilityInstance<IItemHandler> invInst = OptionalCapabilityInstance.of(() -> inv);
 
 			@Override
 			public NBTTagCompound serializeNBT()
@@ -70,20 +72,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getList("Items", NBT.TAG_COMPOUND));
 			}
 
+			@Nonnull
 			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-			{
-				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-			}
-
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+			public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
-					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
+					return invInst.cast();
 				} else
 				{
-					return null;
+					return OptionalCapabilityInstance.empty();
 				}
 			}
 		};
@@ -96,7 +93,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		if (!ctx.getWorld().isRemote)
 		{
 			ItemStack stack = ctx.getItem();
-			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			IItemHandler inventory = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 
 			if (inventory.getStackInSlot(0).isEmpty()|| inventory.getStackInSlot(1).isEmpty())
 			{
@@ -245,26 +242,26 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private void addKleinEMC(ItemStack eye, long amount)
 	{
-		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+			ItemStack stack = handler.getStackInSlot(0);
 
-		ItemStack stack = handler.getStackInSlot(0);
-
-		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-		{
-			((IItemEmc) stack.getItem()).addEmc(stack, amount);
-		}
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				((IItemEmc) stack.getItem()).addEmc(stack, amount);
+			}
+		});
 	}
 
 	private void removeKleinEMC(ItemStack eye, long amount)
 	{
-		IItemHandler handler = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+			ItemStack stack = handler.getStackInSlot(0);
 
-		ItemStack stack = handler.getStackInSlot(0);
-
-		if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-		{
-			((IItemEmc) stack.getItem()).extractEmc(stack, amount);
-		}
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				((IItemEmc) stack.getItem()).extractEmc(stack, amount);
+			}
+		});
 	}
 
 	@Override

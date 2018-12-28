@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -23,7 +24,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
-	private final IItemHandler automationInventory = createAutomationInventory();
+	private final OptionalCapabilityInstance<IItemHandler> automationInventory = OptionalCapabilityInstance.of(this::createAutomationInventory);
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
@@ -85,18 +86,13 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		};
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInventory);
+			return automationInventory.cast();
 		}
 		return super.getCapability(cap, side);
 	}

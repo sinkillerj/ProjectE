@@ -60,12 +60,13 @@ public class GemChest extends GemArmorBase implements IFireProtector
         }
         else
         {
-            player.getCapability(InternalTimers.CAPABILITY, null).activateFeed();
-
-            if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
-            {
-                player.getFoodStats().addStats(2, 10);
-            }
+            player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
+                timers.activateFeed();
+                if (player.getFoodStats().needFood() && timers.canFeed())
+                {
+                    player.getFoodStats().addStats(2, 10);
+                }
+            });
         }
     }
 

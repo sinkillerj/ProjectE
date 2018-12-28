@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -28,7 +29,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
-	private final IItemHandler automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
+	private final OptionalCapabilityInstance<IItemHandler> automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -38,8 +39,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
-	};
-	private final IItemHandler automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+	});
+	private final OptionalCapabilityInstance<IItemHandler> automationAuxSlots = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
@@ -48,7 +49,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 				return super.extractItem(slot, count, simulate);
 			else return ItemStack.EMPTY;
 		}
-	};
+	});
 	public static final int UPGRADING_SLOT = 0;
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
@@ -80,22 +81,17 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return auxSlots;
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side != null && side.getAxis().isVertical())
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationAuxSlots);
+				return automationAuxSlots.cast();
 			} else
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+				return automationInput.cast();
 			}
 		}
 		return super.getCapability(cap, side);

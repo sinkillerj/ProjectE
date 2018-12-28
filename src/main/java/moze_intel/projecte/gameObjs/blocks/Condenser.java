@@ -49,8 +49,9 @@ public class Condenser extends AlchemicalChest
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)
 		{
-			IItemHandler inv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			return ItemHandlerHelper.calcRedstoneFromInventory(inv);
+			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					.map(ItemHandlerHelper::calcRedstoneFromInventory)
+					.orElse(0);
 		}
 		return 0;
 	}

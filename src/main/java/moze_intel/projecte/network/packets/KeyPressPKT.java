@@ -55,7 +55,7 @@ public class KeyPressPKT implements IMessage
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().player;
-                    InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY, null);
+                    InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY).orElseThrow(NullPointerException::new);
 
                     if (message.key == PEKeybind.ARMOR_TOGGLE)
                     {

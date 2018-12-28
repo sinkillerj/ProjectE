@@ -66,8 +66,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		{
 			return;
 		}
-		
-		condense(stack, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP));
+
+		entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP)
+				.ifPresent(inv -> condense(stack, inv));
 	}
 
 	/**
@@ -392,7 +393,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			if (te instanceof AlchChestTile)
 			{
 				AlchChestTile tile = (AlchChestTile) te;
-				condense(stack, tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
+				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+						.ifPresent(inv -> condense(stack, inv));
 				tile.markDirty();
 			}
 		}

@@ -59,18 +59,18 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-
-		player.getCapability(InternalTimers.CAPABILITY, null).activateRepair();
-
-		if (player.getCapability(InternalTimers.CAPABILITY, null).canRepair())
-		{
-			repairAllItems(player);
-		}
+		player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
+			timers.activateRepair();
+			if (timers.canRepair())
+			{
+				repairAllItems(player);
+			}
+		});
 	}
 
 	private void repairAllItems(EntityPlayer player)
 	{
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
@@ -210,7 +210,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			boolean hasAction = false;
 
-			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 			for (int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack invStack = inv.getStackInSlot(i);

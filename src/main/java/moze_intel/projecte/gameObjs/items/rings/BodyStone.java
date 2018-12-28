@@ -62,14 +62,15 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				player.getCapability(InternalTimers.CAPABILITY, null).activateFeed();
-
-				if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
-				{
-					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					player.getFoodStats().addStats(2, 10);
-					removeEmc(stack, 64);
-				}
+				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
+					timers.activateFeed();
+					if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
+					{
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						player.getFoodStats().addStats(2, 10);
+						removeEmc(stack, 64);
+					}
+				});
 			}
 		}
 	}

@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -277,37 +278,35 @@ public final class KnowledgeImpl {
     {
         public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
-        private final DefaultImpl knowledge;
+        private final DefaultImpl impl;
+        private final OptionalCapabilityInstance<IKnowledgeProvider> cap;
 
         public Provider(EntityPlayer player)
         {
-            knowledge = new DefaultImpl(player);
+            impl = new DefaultImpl(player);
+            cap = OptionalCapabilityInstance.of(() -> impl);
         }
 
+        @Nonnull
         @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-            return capability == ProjectEAPI.KNOWLEDGE_CAPABILITY;
-        }
-
-        @Override
-        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
             if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
             {
-                return ProjectEAPI.KNOWLEDGE_CAPABILITY.cast(knowledge);
+                return cap.cast();
             }
-            return null;
+            return OptionalCapabilityInstance.empty();
         }
 
         @Override
         public NBTTagCompound serializeNBT()
         {
-            return knowledge.serializeNBT();
+            return impl.serializeNBT();
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
-            knowledge.deserializeNBT(nbt);
+            impl.deserializeNBT(nbt);
         }
 
     }

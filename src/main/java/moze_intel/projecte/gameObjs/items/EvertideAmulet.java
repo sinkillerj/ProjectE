@@ -46,6 +46,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -119,21 +120,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
 	{
 		return new ICapabilityProvider() {
-			private final IFluidHandlerItem handler = new InfiniteFluidHandler(stack);
+			private final OptionalCapabilityInstance<IFluidHandlerItem> handler = OptionalCapabilityInstance.of(() -> new InfiniteFluidHandler(stack));
 
+			@Nonnull
 			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-				return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
-			}
-
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+			public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 				{
-					return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.cast(handler);
+					return handler.cast();
 				} else
 				{
-					return null;
+					return OptionalCapabilityInstance.empty();
 				}
 			}
 		};

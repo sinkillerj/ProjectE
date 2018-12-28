@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -94,20 +95,15 @@ public class InternalTimers
 
     public static class Provider implements ICapabilityProvider
     {
-        private final InternalTimers capInstance = new InternalTimers();
+        private final OptionalCapabilityInstance<InternalTimers> capInstance = OptionalCapabilityInstance.of(InternalTimers::new);
 
+        @Nonnull
         @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
-        {
-            return capability == CAPABILITY;
-        }
-
-        @Override
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
         {
             if (capability == CAPABILITY)
-                return CAPABILITY.cast(capInstance);
-            else return null;
+                return capInstance.cast();
+            else return OptionalCapabilityInstance.empty();
         }
     }
 

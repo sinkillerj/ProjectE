@@ -89,7 +89,7 @@ public class Collector extends BlockDirection
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
 		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
-		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
+		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty())
 		{
 			if (charging.getItem() instanceof IItemEmc)
@@ -121,14 +121,15 @@ public class Collector extends BlockDirection
 		TileEntity ent = world.getTileEntity(pos);
 		if (ent != null)
 		{
-			IItemHandler handler = ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
-			for (int i = 0; i < handler.getSlots(); i++)
-			{
-				if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty())
+			ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).ifPresent(handler -> {
+				for (int i = 0; i < handler.getSlots(); i++)
 				{
-					InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+					if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty())
+					{
+						InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+					}
 				}
-			}
+			});
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}

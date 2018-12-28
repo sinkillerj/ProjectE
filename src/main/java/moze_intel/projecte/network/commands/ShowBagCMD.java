@@ -73,13 +73,15 @@ public class ShowBagCMD extends CommandBase {
 		try
 		{
 			EntityPlayerMP target = getPlayer(server, sender, playerArg);
-			IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).getBag(color);
+			IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+					.orElseThrow(NullPointerException::new)
+					.getBag(color);
 			return new AlchBagContainer(sender.inventory, EnumHand.OFF_HAND, inv)
 			{
 				@Override
 				public boolean canInteractWith(@Nonnull EntityPlayer player)
 				{
-					return target.isEntityAlive() && !target.hasDisconnected();
+					return target.isAlive() && !target.hasDisconnected();
 				}
 			};
 		} catch (PlayerNotFoundException ignored) {}

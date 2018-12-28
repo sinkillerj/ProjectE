@@ -11,7 +11,9 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -23,6 +25,7 @@ public class DMPedestalTile extends TileEmc
 	private static final int RANGE = 4;
 	private boolean isActive = false;
 	private ItemStackHandler inventory = new StackHandler(1);
+	private final OptionalCapabilityInstance<IItemHandler> automationInv = OptionalCapabilityInstance.of(() -> inventory);
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
@@ -184,18 +187,13 @@ public class DMPedestalTile extends TileEmc
 		this.isActive = newState;
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+			return automationInv.cast();
 		}
 		return super.getCapability(cap, side);
 	}

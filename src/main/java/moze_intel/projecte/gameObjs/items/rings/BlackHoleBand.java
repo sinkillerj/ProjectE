@@ -171,12 +171,9 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		Map<EnumFacing, TileEntity> map = WorldHelper.getAdjacentTileEntitiesMapped(tile.getWorld(), tile);
 		for (Map.Entry<EnumFacing, TileEntity> e : map.entrySet())
 		{
-			IItemHandler inv = null;
+			IItemHandler inv = e.getValue().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey()).orElse(null);
 
-			if (e.getValue().hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey()))
-			{
-				inv = e.getValue().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey());
-			} else if (e.getValue() instanceof IInventory)
+			if (inv == null && e.getValue() instanceof IInventory)
 			{
 				inv = new InvWrapper((IInventory) e.getValue());
 			}
@@ -185,7 +182,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 			if (result.isEmpty())
 			{
-				item.setDead();
+				item.remove();
 				return;
 			}
 			else
@@ -226,16 +223,16 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			for (EntityItem e : tile.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb))
 			{
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.getEntityWorld().isRemote && !e.isDead && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
+				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), e.getItem(), false);
+					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null), e.getItem(), false);
 					if (!result.isEmpty())
 					{
 						e.setItem(result);
 					}
 					else
 					{
-						e.setDead();
+						e.remove();
 					}
 				}
 			}

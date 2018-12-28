@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -108,36 +109,30 @@ public final class AlchBagImpl
     {
 
         public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "alch_bags");
-
-        private final IAlchBagProvider cap = new DefaultImpl();
-
-        @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-        {
-            return capability == ProjectEAPI.ALCH_BAG_CAPABILITY;
-        }
+        private final IAlchBagProvider impl = new DefaultImpl();
+        private final OptionalCapabilityInstance<IAlchBagProvider> cap = OptionalCapabilityInstance.of(() -> impl);
 
         @Override
-        public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
         {
             if (capability == ProjectEAPI.ALCH_BAG_CAPABILITY)
             {
-                return ProjectEAPI.ALCH_BAG_CAPABILITY.cast(cap);
+                return cap.cast();
             }
 
-            return null;
+            return OptionalCapabilityInstance.empty();
         }
 
         @Override
         public NBTTagCompound serializeNBT()
         {
-            return cap.serializeNBT();
+            return impl.serializeNBT();
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
-            cap.deserializeNBT(nbt);
+            impl.deserializeNBT(nbt);
         }
     }
 

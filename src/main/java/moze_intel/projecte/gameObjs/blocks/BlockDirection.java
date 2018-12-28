@@ -53,8 +53,8 @@ public abstract class BlockDirection extends Block
 
 		if (tile != null)
 		{
-			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			WorldHelper.dropInventory(inv, world, pos);
+			tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					.ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 		}
 
 		super.onReplaced(state, world, pos, newState, isMoving);

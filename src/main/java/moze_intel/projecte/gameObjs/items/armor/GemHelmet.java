@@ -106,12 +106,13 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         }
         else
         {
-            player.getCapability(InternalTimers.CAPABILITY, null).activateHeal();
-
-            if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
-            {
-                player.heal(2.0F);
-            }
+            player.getCapability(InternalTimers.CAPABILITY).ifPresent(handler -> {
+                handler.activateHeal();
+                if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
+                {
+                    player.heal(2.0F);
+                }
+            });
 
             if (isNightVisionEnabled(stack))
             {

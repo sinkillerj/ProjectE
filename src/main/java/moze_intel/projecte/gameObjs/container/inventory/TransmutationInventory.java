@@ -39,11 +39,13 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public TransmutationInventory(EntityPlayer player)
 	{
-		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getInputAndLocks(),
+		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY)
+						.orElseThrow(NullPointerException::new)
+						.getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
 
 		this.player = player;
-		this.provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
+		this.provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];

@@ -45,29 +45,29 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void cloneEvent(PlayerEvent.Clone evt)
 	{
-		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).serializeNBT();
-		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).deserializeNBT(bags);
+		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElse(null).serializeNBT();
+		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElse(null).deserializeNBT(bags);
 
-		NBTTagCompound knowledge = evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).serializeNBT();
-		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).deserializeNBT(knowledge);
+		NBTTagCompound knowledge = evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).orElse(null).serializeNBT();
+		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).orElse(null).deserializeNBT(knowledge);
 	}
 
 	// On death or return from end, sync to the client
 	@SubscribeEvent
 	public static void respawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent evt)
 	{
-		evt.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync((EntityPlayerMP) evt.player);
-		evt.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, (EntityPlayerMP) evt.player);
+		evt.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) evt.player));
+		evt.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (EntityPlayerMP) evt.player));
 	}
 
 	@SubscribeEvent
 	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-		event.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).sync((EntityPlayerMP) event.player);
-		event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, (EntityPlayerMP) event.player);
+		event.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) event.player));
+		event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (EntityPlayerMP) event.player));
 
-		event.player.getCapability(InternalAbilities.CAPABILITY, null).onDimensionChange();
+		event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
 
 	@SubscribeEvent
@@ -94,11 +94,11 @@ public class PlayerEvents
 
 		PacketHandler.sendTo(new CheckUpdatePKT(), player);
 
-		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
+		IKnowledgeProvider knowledge = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 		knowledge.sync(player);
 		PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
 
-		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).sync(null, player);
+		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 
 		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.difficulty.covalenceLoss), player);
 
@@ -146,13 +146,14 @@ public class PlayerEvents
 			return;
 		}
 
-		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null)
-				.getBag(EnumDyeColor.byMetadata(bag.getItemDamage()));
+		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+				.orElseThrow(NullPointerException::new)
+				.getBag(((AlchemicalBag) bag.getItem()).color);
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 
 		if (remainder.isEmpty())
 		{
-			event.getItem().setDead();
+			event.getItem().remove();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId(), 1));
 		}

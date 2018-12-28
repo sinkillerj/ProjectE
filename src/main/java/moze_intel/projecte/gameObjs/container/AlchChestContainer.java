@@ -24,7 +24,7 @@ public class AlchChestContainer extends Container
 		this.tile = tile;
 		tile.numPlayersUsing++;
 
-		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 		//Chest Inventory
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 13; j++)

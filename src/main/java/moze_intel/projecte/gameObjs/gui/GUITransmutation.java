@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
@@ -69,7 +70,7 @@ public class GUITransmutation extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
-		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
+		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
 		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
 		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
 

@@ -85,7 +85,7 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.ALCH_BAG_GUI: {
 				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
-				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).getBag(color);
+				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(color);
 				return new AlchBagContainer(player.inventory, hand, inventory);
 			}
 			case Constants.CONDENSER_GUI:
@@ -157,7 +157,7 @@ public class GuiHandler implements IGuiHandler
 				break;
 			case Constants.ALCH_BAG_GUI: {
 				EnumDyeColor color = EnumDyeColor.byMetadata(player.getHeldItem(hand).getItemDamage());
-				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).getBag(color);
+				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(color);
 				return new GUIAlchChest(player.inventory, hand, inventory);
 			}
 			case Constants.CONDENSER_GUI:

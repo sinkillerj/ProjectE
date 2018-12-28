@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -36,7 +37,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
-	private final IItemHandlerModifiable automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN)
+	private final OptionalCapabilityInstance<IItemHandler> automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -46,8 +47,8 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
-	};
-	private final IItemHandlerModifiable automationFuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
+	});
+	private final OptionalCapabilityInstance<IItemHandler> automationFuel = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -57,10 +58,19 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
-	};
-	private final IItemHandlerModifiable automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
-	private final IItemHandler automationSides = new CombinedInvWrapper(automationFuel, automationOutput);
-	private final CombinedInvWrapper joined = new CombinedInvWrapper(automationInput, automationFuel, automationOutput);
+	});
+	private final OptionalCapabilityInstance<IItemHandler> automationOutput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
+	private final OptionalCapabilityInstance<IItemHandler> automationSides = OptionalCapabilityInstance.of(() -> {
+		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
+		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
+		return new CombinedInvWrapper(fuel, out);
+	});
+	private final OptionalCapabilityInstance<IItemHandler> joined = OptionalCapabilityInstance.of(() -> {
+		IItemHandlerModifiable in = (IItemHandlerModifiable) automationInput.orElseThrow(NullPointerException::new);
+		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
+		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
+		return new CombinedInvWrapper(in, fuel, out);
+	});
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
 	public int furnaceBurnTime;
@@ -109,27 +119,21 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side)
-	{
-		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side == null)
 			{
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(joined);
+				return joined.cast();
 			}
 			else
 			{
 				switch (side)
 				{
-					case UP: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
-					case DOWN: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-					default: return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationSides);
+					case UP: return automationInput.cast();
+					case DOWN: return automationOutput.cast();
+					default: return automationSides.cast();
 				}
 			}
 		}
@@ -234,7 +238,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		TileEntity tile = this.getWorld().getTileEntity(pos.up());
 		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
 			return;
-		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN).orElse(null);
 
 		if (handler == null)
 		{

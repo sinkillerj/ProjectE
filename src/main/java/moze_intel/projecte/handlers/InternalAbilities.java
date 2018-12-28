@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -311,25 +312,20 @@ public final class InternalAbilities
 
 	public static class Provider implements ICapabilityProvider
 	{
-		private final InternalAbilities capInstance;
+		private final OptionalCapabilityInstance<InternalAbilities> capInstance;
 
 		public Provider(EntityPlayerMP player)
 		{
-			capInstance = new InternalAbilities(player);
+			capInstance = OptionalCapabilityInstance.of(() -> new InternalAbilities(player));
 		}
 
+		@Nonnull
 		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
-		{
-			return capability == CAPABILITY;
-		}
-
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 		{
 			if (capability == CAPABILITY)
-				return CAPABILITY.cast(capInstance);
-			else return null;
+				return capInstance.cast();
+			else return OptionalCapabilityInstance.empty();
 		}
 	}
 }

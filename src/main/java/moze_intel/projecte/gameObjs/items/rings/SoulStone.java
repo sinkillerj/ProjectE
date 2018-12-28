@@ -59,14 +59,15 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				player.getCapability(InternalTimers.CAPABILITY, null).activateHeal();
-
-				if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
-				{
-					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					player.heal(2.0F);
-					removeEmc(stack, 64);
-				}
+				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
+					timers.activateHeal();
+					if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
+					{
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						player.heal(2.0F);
+						removeEmc(stack, 64);
+					}
+				});
 			}
 		}
 	}

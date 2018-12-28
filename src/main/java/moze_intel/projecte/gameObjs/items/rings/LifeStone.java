@@ -61,22 +61,25 @@ public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 			}
 			else
 			{
-				player.getCapability(InternalTimers.CAPABILITY, null).activateFeed();
-				player.getCapability(InternalTimers.CAPABILITY, null).activateHeal();
+				player
+				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
+					timers.activateFeed();
+					if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
+					{
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
+						player.getFoodStats().addStats(2, 10);
+						removeEmc(stack, 64);
+					}
 
-				if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
-				{
-					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
-					player.heal(2.0F);
-					removeEmc(stack, 64);
-				}
+					timers.activateHeal();
 
-				if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
-				{
-					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
-					player.getFoodStats().addStats(2, 10);
-					removeEmc(stack, 64);
-				}
+					if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
+					{
+						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
+						player.heal(2.0F);
+						removeEmc(stack, 64);
+					}
+				});
 			}
 		}
 	}

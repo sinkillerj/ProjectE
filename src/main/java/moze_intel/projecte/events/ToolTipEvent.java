@@ -97,7 +97,7 @@ public class ToolTipEvent
 
 				if (GuiScreen.isShiftKeyDown()
 						&& clientPlayer != null
-						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).hasKnowledge(current))
+						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).hasKnowledge(current))
 				{
 					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.has_knowledge"));
 				}

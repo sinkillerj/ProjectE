@@ -73,20 +73,20 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 				changeMode(stack, 0);
 			}
 
-			if (playerMP.capabilities.allowFlying)
+			if (playerMP.abilities.allowFlying)
 			{
-				playerMP.getCapability(InternalAbilities.CAPABILITY, null).disableSwrgFlightOverride();
+				playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::disableSwrgFlightOverride);
 			}
 
 			return;
 		}
 
-		if (!playerMP.capabilities.allowFlying)
+		if (!playerMP.abilities.allowFlying)
 		{
-			playerMP.getCapability(InternalAbilities.CAPABILITY, null).enableSwrgFlightOverride();
+			playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::enableSwrgFlightOverride);
 		}
 
-		if (playerMP.capabilities.isFlying)
+		if (playerMP.abilities.isFlying)
 		{
 			if (!isFlyingEnabled(stack))
 			{

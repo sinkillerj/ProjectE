@@ -101,7 +101,8 @@ public class Relay extends BlockDirection
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)
 		{
-			WorldHelper.dropInventory(te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), world, pos);
+			te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN)
+					.ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
