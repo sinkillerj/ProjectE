@@ -81,6 +81,14 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return auxSlots;
 	}
 
+	@Override
+	public void remove()
+	{
+		super.remove();
+		automationInput.invalidate();
+		automationAuxSlots.invalidate();
+	}
+
 	@Nonnull
 	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side) {

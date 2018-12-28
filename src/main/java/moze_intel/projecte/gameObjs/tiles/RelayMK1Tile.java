@@ -79,6 +79,14 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
 	}
 
+	@Override
+	public void remove()
+	{
+		super.remove();
+		automationInput.invalidate();
+		automationOutput.invalidate();
+	}
+
 	@Nonnull
 	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)

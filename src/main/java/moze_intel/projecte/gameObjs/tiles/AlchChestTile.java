@@ -25,6 +25,13 @@ public class AlchChestTile extends TileEmc
 	private int ticksSinceSync;
 
 	@Override
+	public void remove()
+	{
+		super.remove();
+		inventoryCap.invalidate();
+	}
+
+	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)

@@ -86,6 +86,13 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		};
 	}
 
+	@Override
+	public void remove()
+	{
+		super.remove();
+		automationInventory.invalidate();
+	}
+
 	@Nonnull
 	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)

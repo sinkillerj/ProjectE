@@ -32,6 +32,13 @@ public class DMPedestalTile extends TileEmc
 	public double centeredX, centeredY, centeredZ;
 
 	@Override
+	public void remove()
+	{
+		super.remove();
+		automationInv.invalidate();
+	}
+
+	@Override
 	public void update()
 	{
 		centeredX = pos.getX() + 0.5;

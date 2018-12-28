@@ -119,6 +119,16 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
+	public void remove()
+	{
+		super.remove();
+		automationInput.invalidate();
+		automationOutput.invalidate();
+		automationFuel.invalidate();
+		automationSides.invalidate();
+	}
+
+	@Override
 	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
