@@ -1,10 +1,12 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
+
 public class DMFurnaceTile extends RMFurnaceTile
 {
 	public DMFurnaceTile()
 	{
-		super(10, 3);
+		super(ObjHandler.DM_FURNACE_TILE, 10, 3);
 	}
 	
 	@Override

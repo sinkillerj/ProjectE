@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,6 +24,11 @@ public class AlchChestTile extends TileEmc
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	private int ticksSinceSync;
+
+	public AlchChestTile()
+	{
+		super(ObjHandler.ALCH_CHEST_TILE);
+	}
 
 	@Override
 	public void remove()

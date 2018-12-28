@@ -10,6 +10,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -21,13 +22,15 @@ import java.util.Map;
 
 public abstract class TileEmc extends TileEmcBase implements ITickable
 {
-	public TileEmc()
+	public TileEmc(TileEntityType<?> type)
 	{
+		super(type);
 		setMaximumEMC(Constants.TILE_MAX_EMC);
 	}
 	
-	public TileEmc(int maxAmount)
+	public TileEmc(TileEntityType<?> type, int maxAmount)
 	{
+		super(type);
 		setMaximumEMC(maxAmount);
 	}
 

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,11 @@ import javax.annotation.Nonnull;
 
 public class CondenserMK2Tile extends CondenserTile
 {
+	public CondenserMK2Tile()
+	{
+		super(ObjHandler.CONDENSER_MK2_TILE);
+	}
+
 	protected IItemHandler createAutomationInventory()
 	{
 		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)

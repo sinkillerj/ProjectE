@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.ItemHelper;
@@ -11,10 +12,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -81,12 +79,12 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	
 	public RMFurnaceTile()
 	{
-		this(3, 4);
+		this(ObjHandler.RM_FURNACE_TILE, 3, 4);
 	}
 
-	protected RMFurnaceTile(int ticksBeforeSmelt, int efficiencyBonus)
+	RMFurnaceTile(TileEntityType<?> type, int ticksBeforeSmelt, int efficiencyBonus)
 	{
-		super(64);
+		super(type, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
 	}

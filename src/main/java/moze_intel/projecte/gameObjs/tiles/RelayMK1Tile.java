@@ -3,12 +3,14 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
@@ -58,12 +60,12 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 	public RelayMK1Tile()
 	{
-		this(7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
+		this(ObjHandler.RELAY_MK1_TILE, 7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
 	}
 	
-	RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
+	RelayMK1Tile(TileEntityType<?> type, int sizeInv, int maxEmc, int chargeRate)
 	{
-		super(maxEmc);
+		super(type, maxEmc);
 		this.chargeRate = chargeRate;
 		input = new StackHandler(sizeInv)
 		{

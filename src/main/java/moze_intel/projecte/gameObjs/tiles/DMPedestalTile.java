@@ -2,10 +2,12 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -30,6 +32,11 @@ public class DMPedestalTile extends TileEmc
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
 	public double centeredX, centeredY, centeredZ;
+
+	public DMPedestalTile()
+	{
+		super(ObjHandler.DM_PEDESTAL_TILE);
+	}
 
 	@Override
 	public void remove()

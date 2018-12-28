@@ -9,6 +9,7 @@ import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,6 +34,16 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	public float prevLidAngle;
 	public int numPlayersUsing;
 	public long requiredEmc;
+
+	public CondenserTile()
+	{
+		this(ObjHandler.CONDENSER_TILE);
+	}
+
+	CondenserTile(TileEntityType<?> type)
+	{
+		super(type);
+	}
 
 	public ItemStackHandler getLock()
 	{

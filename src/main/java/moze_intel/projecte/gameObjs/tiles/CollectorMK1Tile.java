@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -11,6 +12,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
@@ -61,13 +63,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	public CollectorMK1Tile()
 	{
-		super(Constants.COLLECTOR_MK1_MAX);
+		super(ObjHandler.COLLECTOR_MK1_TILE, Constants.COLLECTOR_MK1_MAX);
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 	}
 	
-	public CollectorMK1Tile(int maxEmc, int emcGen)
+	public CollectorMK1Tile(TileEntityType<?> type, int maxEmc, int emcGen)
 	{
-		super(maxEmc);
+		super(type, maxEmc);
 		this.emcGen = emcGen;
 	}
 
