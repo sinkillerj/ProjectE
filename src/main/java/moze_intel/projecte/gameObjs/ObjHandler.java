@@ -1,18 +1,7 @@
 package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
-import moze_intel.projecte.gameObjs.blocks.Collector;
-import moze_intel.projecte.gameObjs.blocks.Condenser;
-import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
-import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
-import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
-import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
-import moze_intel.projecte.gameObjs.blocks.Pedestal;
-import moze_intel.projecte.gameObjs.blocks.Relay;
-import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
+import moze_intel.projecte.gameObjs.blocks.*;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -123,12 +112,13 @@ public class ObjHandler
 	};
 	public static final Block alchChest = new AlchemicalChest(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final Block interdictionTorch = new InterdictionTorch(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
 	public static final Block transmuteStone = new TransmutationStone(Block.Builder.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_stone");
 	public static final Block condenser = new Condenser(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
-	public static final Block rmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final Block dmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
-	public static final Block dmPedestal = new Pedestal(Block.Builder.create(Material.ROCK).hardnessAndResistance(1)).setRegistryName(PECore.MODID, "dm_pedestal");
+	public static final Block rmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final Block dmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final Block dmPedestal = new Pedestal(Block.Builder.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
 	public static final Block dmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_block");
 	public static final Block rmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_block");
 	public static final Block alchemicalCoalBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
@@ -344,27 +334,28 @@ public class ObjHandler
 	public static void registerBlocks(RegistryEvent.Register<Block> evt)
 	{
 		IForgeRegistry<Block> r = evt.getRegistry();
-		registerObj(r, alchChest, "alchemical_chest");
-		registerObj(r, collectorMK1, "collector_mk1");
-		registerObj(r, collectorMK2, "collector_mk2");
-		registerObj(r, collectorMK3, "collector_mk3");
-		registerObj(r, condenser, "condenser_mk1");
-		registerObj(r, condenserMk2, "condenser_mk2");
-		registerObj(r, dmFurnaceOff, "dm_furnace");
-		registerObj(r, dmPedestal, "dm_pedestal");
-		registerObj(r, alchemicalCoalBlock, "fuel_block");
-		registerObj(r, mobiusFuelBlock, "fuel_block");
-		registerObj(r, aeternalisFuelBlock, "fuel_block");
-		registerObj(r, interdictionTorch, "interdiction_torch");
-		registerObj(r, dmBlock, "matter_block");
-		registerObj(r, rmBlock, "matter_block");
-		registerObj(r, novaCatalyst, "nova_catalyst");
-		registerObj(r, novaCataclysm, "nova_cataclysm");
-		registerObj(r, relay, "relay_mk1");
-		registerObj(r, relayMK2, "relay_mk2");
-		registerObj(r, relayMK3, "relay_mk3");
-		registerObj(r, rmFurnaceOff, "rm_furnace");
-		registerObj(r, transmuteStone, "transmutation_table");
+		r.register(alchChest);
+		r.register(collectorMK1);
+		r.register(collectorMK2);
+		r.register(collectorMK3);
+		r.register(condenser);
+		r.register(condenserMk2);
+		r.register(dmFurnaceOff);
+		r.register(dmPedestal);
+		r.register(alchemicalCoalBlock);
+		r.register(mobiusFuelBlock);
+		r.register(aeternalisFuelBlock);
+		r.register(interdictionTorch);
+		r.register(interdictionTorchWall);
+		r.register(dmBlock);
+		r.register(rmBlock);
+		r.register(novaCatalyst);
+		r.register(novaCataclysm);
+		r.register(relay);
+		r.register(relayMK2);
+		r.register(relayMK3);
+		r.register(rmFurnaceOff);
+		r.register(transmuteStone);
 	}
 
 	@SubscribeEvent
@@ -382,7 +373,7 @@ public class ObjHandler
 		registerObj(r, new ItemFuelBlock(alchemicalCoalBlock, ib(), EnumFuelType.ALCHEMICAL_COAL), alchemicalCoalBlock.getRegistryName());
 		registerObj(r, new ItemFuelBlock(mobiusFuelBlock, ib(), EnumFuelType.MOBIUS_FUEL), mobiusFuelBlock.getRegistryName());
 		registerObj(r, new ItemFuelBlock(aeternalisFuelBlock, ib(), EnumFuelType.AETERNALIS_FUEL), aeternalisFuelBlock.getRegistryName());
-		registerObj(r, new ItemBlock(interdictionTorch, ib()), interdictionTorch.getRegistryName());
+		registerObj(r, new ItemWallOrFloor(interdictionTorch, interdictionTorchWall, ib()), interdictionTorch.getRegistryName());
 		registerObj(r, new ItemBlock(dmBlock, ib()), dmBlock.getRegistryName());
 		registerObj(r, new ItemBlock(rmBlock, ib()), rmBlock.getRegistryName());
 		registerObj(r, new ItemBlock(novaCatalyst, ib()), novaCatalyst.getRegistryName());
@@ -566,11 +557,6 @@ public class ObjHandler
 		// RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 
 		registerPhiloStoneSmelting(evt.getRegistry());
-	}
-	
-	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, String name)
-	{
-		registerObj(registry, o, new ResourceLocation(PECore.MODID, name));
 	}
 
 	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)

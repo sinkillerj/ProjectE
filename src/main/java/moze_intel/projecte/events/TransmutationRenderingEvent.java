@@ -190,7 +190,7 @@ public class TransmutationRenderingEvent
 	
 	private static void addBlockToRenderList(World world, BlockPos pos)
 	{
-		for (AxisAlignedBB bb : world.getBlockState(pos).getRenderShape(world, pos).toBoundingBoxList())
+		for (AxisAlignedBB bb : world.getBlockState(pos).getRaytraceShape(world, pos).toBoundingBoxList())
 		{
 			renderList.add(bb.grow(0.2).offset(-playerX, -playerY, -playerZ));
 		}

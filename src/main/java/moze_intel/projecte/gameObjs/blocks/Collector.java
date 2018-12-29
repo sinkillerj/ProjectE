@@ -29,7 +29,7 @@ public class Collector extends BlockDirection
 	
 	public Collector(int tier, Builder builder)
 	{
-		super(builder /*Material.GLASS*/);
+		super(builder);
 		this.tier = tier;
 	}
 	

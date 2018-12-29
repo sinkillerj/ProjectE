@@ -22,7 +22,6 @@ public class CondenserMK2 extends Condenser
 	public CondenserMK2(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("pe_condenser_mk2");
 	}
 
 	@Nonnull

@@ -2,13 +2,9 @@ package moze_intel.projecte.gameObjs.blocks;
 
 
 import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,17 +12,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,8 +27,8 @@ import java.util.List;
 
 public class Pedestal extends Block
 {
-
-    private static final AxisAlignedBB AABB = new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 0.75, 0.8125);
+    // todo 1.13 fancify
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(3, 0, 3, 13, 12, 13);
 
     public Pedestal(Builder builder)
     {
@@ -44,9 +37,9 @@ public class Pedestal extends Block
 
     @Nonnull
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+    public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
     {
-        return AABB;
+        return SHAPE;
     }
 
     private void dropItem(World world, BlockPos pos)
@@ -146,18 +139,6 @@ public class Pedestal extends Block
     public boolean isFullCube(IBlockState state)
     {
         return false;
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public int getLightValue(@Nonnull IBlockState state, IBlockAccess world, @Nonnull BlockPos pos)
-    {
-        return 12;
     }
 
     @Override

@@ -24,7 +24,8 @@ public class NovaCatalyst extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+			// todo 1.13 no longer have access to primer?
+			EntityNovaCatalystPrimed catalystPrimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
 			world.spawnEntity(catalystPrimed);
 			catalystPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 		}

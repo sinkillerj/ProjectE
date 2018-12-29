@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -12,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -21,8 +23,7 @@ import javax.annotation.Nonnull;
 
 public class AlchemicalChest extends BlockDirection
 {
-
-	private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
+	private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
 	public AlchemicalChest(Builder builder)
 	{
@@ -32,9 +33,9 @@ public class AlchemicalChest extends BlockDirection
 
 	@Nonnull
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
 	{
-		return AABB;
+		return SHAPE;
 	}
 	
 	@Override

@@ -17,8 +17,6 @@ public class NovaCataclysm extends BlockTNT
 	public NovaCataclysm(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("pe_nova_cataclysm");
-		this.setCreativeTab(ObjHandler.cTab);
 	}
 	
 	@Override
@@ -26,7 +24,8 @@ public class NovaCataclysm extends BlockTNT
 	{
 		if (!world.isRemote)
 		{
-			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
+			// todo 1.13 no longer have access to primer?
+			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null);
 			world.spawnEntity(cataclysmPrimed);
 			cataclysmPrimed.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1, 1);
 		}

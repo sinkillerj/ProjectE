@@ -17,11 +17,8 @@ public class MatterBlock extends Block
 	public final EnumMatterType matterType;
 	public MatterBlock(Builder builder, EnumMatterType type)
 	{
-		super(builder/*Material.IRON*/);
+		super(builder);
 		this.matterType = type;
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_matter_block");
-		this.setHardness(1000000F);
 	}
 
 	@Override
@@ -38,7 +35,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(IBlockAccess world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
+	public boolean canHarvestBlock(IBlockReader world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
 	{
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 

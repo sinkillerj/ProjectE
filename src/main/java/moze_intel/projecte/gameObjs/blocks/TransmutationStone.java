@@ -12,6 +12,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -19,7 +21,7 @@ import java.util.Random;
 
 public class TransmutationStone extends Block
 {
-	private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.25, 1);
+	private static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 4, 16);
 
 	public TransmutationStone(Builder builder)
 	{
@@ -28,8 +30,8 @@ public class TransmutationStone extends Block
 
 	@Nonnull
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return AABB;
+	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos) {
+		return SHAPE;
 	}
 	
 	@Override
@@ -40,12 +42,6 @@ public class TransmutationStone extends Block
 			player.openGui(PECore.instance, Constants.TRANSMUTE_STONE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
-	}
-	
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 	
 	@Override
