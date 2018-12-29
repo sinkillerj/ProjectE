@@ -102,6 +102,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.IFuelHandler;
@@ -176,23 +177,39 @@ public class ObjHandler
 	public static final Item darkMatter = new Item(ib()).setRegistryName(PECore.MODID, "dark_matter");
 	public static final Item redMatter = new Item(ib()).setRegistryName(PECore.MODID, "red_matter");
 
-	public static final Item dmPick = new DarkPick(ibNoStack()).setRegistryName(PECore.MODID, "dm_pick");
-	public static final Item dmAxe = new DarkAxe(ibNoStack()).setRegistryName(PECore.MODID, "dm_axe");
-	public static final Item dmShovel = new DarkShovel(ibNoStack()).setRegistryName(PECore.MODID, "dm_shovel");
+	public static final Item dmPick = new DarkPick(ibNoStack().addToolType(ToolType.PICKAXE, 4)).setRegistryName(PECore.MODID, "dm_pick");
+	public static final Item dmAxe = new DarkAxe(ibNoStack().addToolType(ToolType.AXE, 4)).setRegistryName(PECore.MODID, "dm_axe");
+	public static final Item dmShovel = new DarkShovel(ibNoStack().addToolType(ToolType.SHOVEL, 4)).setRegistryName(PECore.MODID, "dm_shovel");
 	public static final Item dmSword = new DarkSword(ibNoStack()).setRegistryName(PECore.MODID, "dm_sword");
-	public static final Item dmHoe = new DarkHoe(ibNoStack()).setRegistryName(PECore.MODID, "dm_hoe");
-	public static final Item dmShears = new DarkShears(ibNoStack()).setRegistryName(PECore.MODID, "dm_shears");
-	public static final Item dmHammer = new DarkHammer(ibNoStack()).setRegistryName(PECore.MODID, "dm_hammer");
+	public static final Item dmHoe = new DarkHoe(ibNoStack().addToolType(ToolType.get("hoe"), 4)).setRegistryName(PECore.MODID, "dm_hoe");
+	public static final Item dmShears = new DarkShears(ibNoStack().addToolType(ToolType.get("shears"), 4)).setRegistryName(PECore.MODID, "dm_shears");
+	public static final Item dmHammer = new DarkHammer(ibNoStack()
+			.addToolType(ToolType.PICKAXE, 4)
+			.addToolType(ToolType.get("hammer"), 4)
+			.addToolType(ToolType.get("chisel"), 4))
+			.setRegistryName(PECore.MODID, "dm_hammer");
 
-	public static final Item rmPick = new RedPick(ibNoStack()).setRegistryName(PECore.MODID, "rm_pick");
-	public static final Item rmAxe = new RedAxe(ibNoStack()).setRegistryName(PECore.MODID, "rm_axe");
-	public static final Item rmShovel = new RedShovel(ibNoStack()).setRegistryName(PECore.MODID, "rm_shovel");
+	public static final Item rmPick = new RedPick(ibNoStack().addToolType(ToolType.PICKAXE, 5)).setRegistryName(PECore.MODID, "rm_pick");
+	public static final Item rmAxe = new RedAxe(ibNoStack().addToolType(ToolType.AXE, 5)).setRegistryName(PECore.MODID, "rm_axe");
+	public static final Item rmShovel = new RedShovel(ibNoStack().addToolType(ToolType.SHOVEL, 5)).setRegistryName(PECore.MODID, "rm_shovel");
 	public static final Item rmSword = new RedSword(ibNoStack()).setRegistryName(PECore.MODID, "rm_sword");
-	public static final Item rmHoe = new RedHoe(ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
-	public static final Item rmShears = new RedShears(ibNoStack()).setRegistryName(PECore.MODID, "rm_shears");
-	public static final Item rmHammer = new RedHammer(ibNoStack()).setRegistryName(PECore.MODID, "rm_hammer");
-	public static final Item rmKatar = new RedKatar(ibNoStack()).setRegistryName(PECore.MODID, "rm_katar");
-	public static final Item rmStar = new RedStar(ibNoStack()).setRegistryName(PECore.MODID, "rm_morning_star");
+	public static final Item rmHoe = new RedHoe(ibNoStack().addToolType(ToolType.get("hoe"), 5)).setRegistryName(PECore.MODID, "rm_hoe");
+	public static final Item rmShears = new RedShears(ibNoStack().addToolType(ToolType.get("shears"), 5)).setRegistryName(PECore.MODID, "rm_shears");
+	public static final Item rmHammer = new RedHammer(ibNoStack()
+			.addToolType(ToolType.PICKAXE, 5)
+			.addToolType(ToolType.get("hammer"), 5)
+			.addToolType(ToolType.get("chisel"), 5))
+			.setRegistryName(PECore.MODID, "rm_hammer");
+	public static final Item rmKatar = new RedKatar(ibNoStack()
+			.addToolType(ToolType.AXE, 5)
+			.addToolType(ToolType.get("katar"), 5)
+			.addToolType(ToolType.get("shears"), 5))
+			.setRegistryName(PECore.MODID, "rm_katar");
+	public static final Item rmStar = new RedStar(ibNoStack()
+			.addToolType(ToolType.get("morning_star"), 5)
+			.addToolType(ToolType.PICKAXE, 5)
+			.addToolType(ToolType.SHOVEL, 5)
+			.addToolType(ToolType.AXE, 5)).setRegistryName(PECore.MODID, "rm_morning_star");
 
 	public static final Item dmHelmet = new DMArmor(EntityEquipmentSlot.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "dm_helmet");
 	public static final Item dmChest = new DMArmor(EntityEquipmentSlot.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "dm_chestplate");

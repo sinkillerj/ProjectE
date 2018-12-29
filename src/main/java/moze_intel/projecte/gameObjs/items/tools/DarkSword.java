@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,16 +21,14 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 {
 	public DarkSword(Builder builder)
 	{
-		super(builder, "dm_sword", (byte)2, new String[] {});
-		this.setNoRepair();
-		this.peToolMaterial = "dm_tools";
-		this.toolClasses.add("sword");
+		super(builder, (byte)2, new String[] {});
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 	}
 
 	// Only for RedSword to use
-	protected DarkSword(Builder builder, String name, byte numcharges, String[] modeDesc)
+	protected DarkSword(Builder builder, byte numcharges, String[] modeDesc)
 	{
-		super(builder, name, numcharges, modeDesc);
+		super(builder, numcharges, modeDesc);
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull IBlockState state)
 	{
 		return state.getBlock() == Blocks.COBWEB;
 	}

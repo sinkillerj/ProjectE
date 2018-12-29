@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -28,21 +27,19 @@ public class DarkPick extends PEToolBase
 {
 	public DarkPick(Builder builder)
 	{
-		super(builder, "dm_pick", (byte)2, new String[] {
+		super(builder, (byte)2, new String[] {
 				"pe.darkpick.mode1", "pe.darkpick.mode2",
 				"pe.darkpick.mode3", "pe.darkpick.mode4"});
-		this.setNoRepair();
-		this.peToolMaterial = "dm_tools";
-		this.toolClasses.add("pickaxe");
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);
 	}
 
 	// Only for RedPick
-	protected DarkPick(Builder builder, String name, byte numCharges, String[] modeDesc)
+	protected DarkPick(Builder builder, byte numCharges, String[] modeDesc)
 	{
-		super(builder, name, numCharges, modeDesc);
+		super(builder, numCharges, modeDesc);
 	}
 
 	@Nonnull

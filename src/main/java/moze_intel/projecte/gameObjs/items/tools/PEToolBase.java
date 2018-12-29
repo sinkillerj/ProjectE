@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import moze_intel.projecte.api.PESounds;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.utils.ItemHelper;
@@ -25,7 +24,6 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -58,13 +56,12 @@ public abstract class PEToolBase extends ItemMode
 	public static final float REDSWORD_BASE_ATTACK = 16.0F;
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
-	protected String peToolMaterial;
+	protected EnumMatterType peToolMaterial;
 	protected final Set<Material> harvestMaterials = new HashSet<>();
-	protected final Set<ToolType> toolClasses = new HashSet<>();
 
-	public PEToolBase(Builder builder, String unlocalName, byte numCharge, String[] modeDescrp)
+	public PEToolBase(Builder builder, byte numCharge, String[] modeDescrp)
 	{
-		super(builder, unlocalName, numCharge, modeDescrp);
+		super(builder, numCharge, modeDescrp);
 	}
 
 	@Override
@@ -74,26 +71,16 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
-	{
-		if (this.toolClasses.contains(toolClass))
-		{
-			return 4; // TiCon
-		}
-		return -1;
-	}
-
-	@Override
 	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
-		if ("dm_tools".equals(this.peToolMaterial))
+		if (this.peToolMaterial == EnumMatterType.DARK_MATTER)
 		{
 			if (canHarvestBlock(stack, state))
 			{
 				return 14.0f + (12.0f * this.getCharge(stack));
 			}
 		}
-		else if ("rm_tools".equals(this.peToolMaterial))
+		else if (this.peToolMaterial == EnumMatterType.RED_MATTER)
 		{
 			if (canHarvestBlock(stack, state))
 			{

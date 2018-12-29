@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
@@ -12,7 +11,6 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,7 +39,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 {
 	public PhilosophersStone(Builder builder)
 	{
-		super(builder, "philosophers_stone", (byte)4, new String[] {
+		super(builder, (byte)4, new String[] {
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});

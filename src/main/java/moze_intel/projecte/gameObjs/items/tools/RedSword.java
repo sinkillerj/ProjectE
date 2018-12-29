@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,12 +14,11 @@ public class RedSword extends DarkSword
 {
 	public RedSword(Builder builder)
 	{
-		super(builder, "rm_sword", (byte)3, new String[]{
+		super(builder, (byte)3, new String[]{
 				"pe.redsword.mode1",
 				"pe.redsword.mode2"
 		});
-		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add(ToolType.get("sword"));
+		this.peToolMaterial = EnumMatterType.RED_MATTER;
 	}
 
 	@Override

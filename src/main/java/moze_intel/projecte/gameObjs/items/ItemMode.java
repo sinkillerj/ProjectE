@@ -25,7 +25,7 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	private final int numCharge;
 	private final String[] modes;
 	
-	public ItemMode(Builder builder, String unlocalName, int numCharge, String[] modeDescrp)
+	public ItemMode(Builder builder, int numCharge, String[] modeDescrp)
 	{
 		super(builder);
 		this.numCharge = numCharge;

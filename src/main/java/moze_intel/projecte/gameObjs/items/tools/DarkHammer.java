@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
@@ -24,22 +23,17 @@ public class DarkHammer extends PEToolBase
 {
 	public DarkHammer(Builder builder)
 	{
-		super(builder, "dm_hammer", (byte)2, new String[] {});
-		this.setNoRepair();
-		this.peToolMaterial = "dm_tools";
+		super(builder, (byte)2, new String[] {});
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);
-
-		this.toolClasses.add("hammer");
-		this.toolClasses.add("pickaxe");
-		this.toolClasses.add("chisel");
 	}
 
 	// Only for RedHammer
-	protected DarkHammer(Builder builder, String name, byte numCharges, String[] modeDesc)
+	protected DarkHammer(Builder builder, byte numCharges, String[] modeDesc)
 	{
-		super(builder, name, numCharges, modeDesc);
+		super(builder, numCharges, modeDesc);
 	}
 
 	@Override

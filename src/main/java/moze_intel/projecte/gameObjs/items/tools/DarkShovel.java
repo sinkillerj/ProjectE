@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -20,10 +21,8 @@ public class DarkShovel extends PEToolBase
 {
 	public DarkShovel(Builder builder)
 	{
-		super(builder, "dm_shovel", (byte)1, new String[]{});
-		this.setNoRepair();
-		this.peToolMaterial = "dm_tools";
-		this.toolClasses.add("shovel");
+		super(builder, (byte)1, new String[]{});
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
 		this.harvestMaterials.add(Material.SAND);
@@ -32,9 +31,9 @@ public class DarkShovel extends PEToolBase
 	}
 
 	// Only for RedShovel
-	protected DarkShovel(Builder builder, String name, byte numCharges, String[] modeDesc)
+	protected DarkShovel(Builder builder, byte numCharges, String[] modeDesc)
 	{
-		super(builder, name, numCharges, modeDesc);
+		super(builder, numCharges, modeDesc);
 	}
 
 	@Nonnull

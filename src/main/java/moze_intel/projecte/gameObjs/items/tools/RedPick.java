@@ -1,23 +1,20 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ToolType;
 
 public class RedPick extends DarkPick
 {
 	public RedPick(Builder builder)
 	{
-		super(builder, "rm_pick", (byte)3, new String[] {
+		super(builder, (byte)3, new String[] {
 				"pe.redpick.mode1", "pe.redpick.mode2",
 				"pe.redpick.mode3", "pe.redpick.mode4"});
-		this.peToolMaterial = "rm_tools";
-		this.toolClasses.add(ToolType.PICKAXE);
+		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);

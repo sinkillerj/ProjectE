@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,10 +21,8 @@ public class DarkShears extends PEToolBase
 {
 	public DarkShears(Builder builder)
 	{
-		super(builder, "dm_shears", (byte)2, new String[]{});
-		this.setNoRepair();
-		this.peToolMaterial = "dm_tools";
-		this.toolClasses.add("shears");
+		super(builder, (byte)2, new String[]{});
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.CLOTH);
 		this.harvestMaterials.add(Material.PLANTS);
@@ -32,9 +31,9 @@ public class DarkShears extends PEToolBase
 	}
 
 	// Only for RedShears
-	protected DarkShears(Builder builder, String name, byte numCharges, String[] modeDesc)
+	protected DarkShears(Builder builder, byte numCharges, String[] modeDesc)
 	{
-		super(builder, name, numCharges, modeDesc);
+		super(builder, numCharges, modeDesc);
 	}
 
 	@Override
@@ -52,9 +51,9 @@ public class DarkShears extends PEToolBase
 	}
 	
 	@Override
-	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull IBlockState state)
 	{
-		return super.canHarvestBlock(state, stack) || state.getBlock() == Blocks.REDSTONE_WIRE || state.getBlock() == Blocks.TRIPWIRE;
+		return super.canHarvestBlock(stack, state) || state.getBlock() == Blocks.REDSTONE_WIRE || state.getBlock() == Blocks.TRIPWIRE;
 	}
 
 	@Nonnull

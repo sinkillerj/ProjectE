@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -11,6 +12,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 
@@ -18,18 +20,17 @@ public class DarkAxe extends PEToolBase
 {
 	public DarkAxe(Builder builder)
 	{
-		super(builder, "dm_axe", (byte)2, new String[]{});
-		this.peToolMaterial = "dm_tools";
-		this.toolClasses.add("axe");
+		super(builder, (byte)2, new String[]{});
+		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.VINE);
 	}
 
 	// Only for RedAxe
-	protected DarkAxe(Builder builder, String name, byte numCharges, String[] modeDesc)
+	protected DarkAxe(Builder builder, byte numCharges, String[] modeDesc)
 	{
-		super(builder, name, numCharges, modeDesc);
+		super(builder, numCharges, modeDesc);
 	}
 	
 	@Nonnull

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
@@ -12,15 +11,11 @@ public class RedHammer extends DarkHammer
 {
 	public RedHammer(Builder builder)
 	{
-		super(builder, "rm_hammer", (byte)3, new String[]{});
-		this.peToolMaterial = "rm_tools";
+		super(builder, (byte)3, new String[]{});
+		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
 		this.harvestMaterials.add(Material.ROCK);
-
-		this.toolClasses.add("hammer");
-		this.toolClasses.add("pickaxe");
-		this.toolClasses.add("chisel");
 	}
 
 	@Override

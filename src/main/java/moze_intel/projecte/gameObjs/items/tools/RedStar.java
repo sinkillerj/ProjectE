@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
@@ -34,11 +35,11 @@ public class RedStar extends PEToolBase
 {
 	public RedStar(Builder builder)
 	{
-		super(builder, "rm_morning_star", (byte) 4, new String[]{
+		super(builder, (byte) 4, new String[]{
 				"pe.morningstar.mode1", "pe.morningstar.mode2",
 				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});
-		this.peToolMaterial = "rm_tools";
+		this.peToolMaterial = EnumMatterType.RED_MATTER;
 
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
@@ -53,12 +54,6 @@ public class RedStar extends PEToolBase
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.VINE);
-
-		this.toolClasses.add(ToolType.get("morning_star"));
-		this.toolClasses.add(ToolType.PICKAXE);
-		this.toolClasses.add(ToolType.get("chisel"));
-		this.toolClasses.add(ToolType.SHOVEL);
-		this.toolClasses.add(ToolType.AXE);
 	}
 
 	@Override

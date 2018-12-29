@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.state.enums.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -32,21 +33,16 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 {
 	public RedKatar(Builder builder)
 	{
-		super(builder,"rm_katar", (byte)4, new String[] {
+		super(builder, (byte)4, new String[] {
 				"pe.katar.mode1", "pe.katar.mode2",
 		});
-		this.peToolMaterial = "rm_tools";
+		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.CLOTH);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.LEAVES);
 		this.harvestMaterials.add(Material.VINE);
-
-		this.toolClasses.add(ToolType.get("katar"));
-		this.toolClasses.add(ToolType.get("sword"));
-		this.toolClasses.add(ToolType.AXE);
-		this.toolClasses.add(ToolType.get("SHEARS"));
 	}
 
 	@Override
